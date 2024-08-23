@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 12:13:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 13:03:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 14:00:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <netinet/ip.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <iostream>
