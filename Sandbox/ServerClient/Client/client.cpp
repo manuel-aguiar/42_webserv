@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 15:05:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:21:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int main()
         return (EXIT_FAILURE);
     }
 
-    if (write(connection, REQUEST, std::strlen(REQUEST)) == -1)
+    if (write(connection, REQUEST, std::strlen(REQUEST) + 1) == -1)
     {
         std::cerr << "write(): " << std::string (std::strerror(errno)) << std::endl;
         close(connection);
@@ -72,7 +72,7 @@ int main()
     while (true)
     {
         std::memset(&readBuff, 0, sizeof(readBuff));
-        bytesRead = read(connection, readBuff, sizeof(readBuff));
+        bytesRead = read(connection, readBuff, sizeof(readBuff) - 1);
         if (bytesRead == -1)
         {
             std::cerr << "read(): " << std::string (std::strerror(errno)) << std::endl;

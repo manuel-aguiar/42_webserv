@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 15:11:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:26:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,11 @@ int main()
         return (EXIT_FAILURE);
     }
 
-    std::cout << "Waiting for connections...." << std::endl;
 
     connAddrLen = sizeof(connAddress);
     while(true)
     {
-        
+        std::cout << "  Server: Waiting for connections...." << std::endl;
         connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
         if (connection == -1)
         {
@@ -84,25 +83,39 @@ int main()
         std::cout << "  Server: Connection received" << std::endl;
         while (true)
         {
-            std::memset(&readBuff, 0, sizeof(readBuff));
-            bytesRead = read(connection, readBuff, sizeof(readBuff));
+            std::memset(readBuff, 0, sizeof(readBuff));
+            bytesRead = read(connection, readBuff, sizeof(readBuff) - 1);
+
             if (bytesRead == -1)
             {
-                std::cerr << "read(): " << std::string (std::strerror(errno)) << std::endl;
+                std::cerr << "read(): " << std::strerror(errno) << std::endl;
                 close(connection);
                 close(listener);
-                return (EXIT_FAILURE);
+                return EXIT_FAILURE;
             }
-            if (bytesRead > 0)
-                std::cout << readBuff;
+            else if (bytesRead == 0)
+            {
+                std::cout << "Client closed the connection" << std::endl;
+                break;
+            }
             else
-                break ;
+            {
+                std::cout << readBuff;
+                if (readBuff[bytesRead] == '\0')
+                    break ;
+            }
         }
-
+        if (write(connection, RESPONSE, std::strlen(RESPONSE) + 1) == -1)
+        {
+            std::cerr << "write(): " << std::string (std::strerror(errno)) << std::endl;
+            close(connection);
+            close(listener);
+            return (EXIT_FAILURE);
+        }
         std::cout << std::endl;
-        write(connection, RESPONSE, std::strlen(RESPONSE));
         close(connection);
     }
+    
 
     close(listener);
     return (EXIT_SUCCESS);
