@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.cpp                                         :+:      :+:    :+:   */
+/*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 14:46:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:05:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@
 # include <iostream>
 
 # define PORT 8080
-# define MAX_CONNECTIONS 10
+# define LOCALHOST "127.0.0.1"
 
+# define REQUEST "Hello Server!"
 
 /*
 struct sockaddr_in {
@@ -40,60 +41,51 @@ struct sockaddr_in {
 
 int main()
 {
-    int                 listener;
-    int     	        connection;
-    struct sockaddr_in  listAddress;
+    int                 connection;
     struct sockaddr_in  connAddress;
-    socklen_t           connAddrLen;
     int                 bytesRead;
     char                readBuff[256];
 
-    std::memset(&listAddress, 0, sizeof(listAddress));
-    listAddress.sin_family = AF_INET;
-    listAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    listAddress.sin_port = htons(PORT);
+    std::memset(&connAddress, 0, sizeof(connAddress));
+    connAddress.sin_family = AF_INET;
+    connAddress.sin_addr.s_addr = inet_addr(LOCALHOST);
+    connAddress.sin_port = htons(PORT);
     
-    listener = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    connection = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-    if (bind(listener, (struct sockaddr*)&listAddress, sizeof(listAddress)) == -1)
+    std::cout << "Sending Request...." << std::endl;
+
+    if (connect(connection, (struct sockaddr *)&connAddress, sizeof(connAddress)) == -1)
     {
-        std::cerr << "bind(): " << std::string (std::strerror(errno)) << std::endl;
-        close(listener);
-        return (EXIT_FAILURE);
-    }
-    if (listen(listener, MAX_CONNECTIONS) == -1)
-    {
-        std::cerr << "listen(): " << std::string (std::strerror(errno)) << std::endl;
-        close(listener);
+        std::cerr << "connect(): " << std::string (std::strerror(errno)) << std::endl;
+        close(connection);
         return (EXIT_FAILURE);
     }
 
-    std::cout << "Waiting for connections...." << std::endl;
-
-    while(true)
+    if (write(connection, REQUEST, std::strlen(REQUEST)) == -1)
     {
-        connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
-        while (true)
-        {
-            std::memset(&readBuff, 0, sizeof(readBuff));
-            bytesRead = read(connection, readBuff, sizeof(readBuff));
-            if (bytesRead > 0)
-                std::cout << readBuff;
-            else
-                break ;
-        }
+        std::cerr << "write(): " << std::string (std::strerror(errno)) << std::endl;
+        close(connection);
+        return (EXIT_FAILURE);        
+    }
+    
+    while (true)
+    {
+        std::memset(&readBuff, 0, sizeof(readBuff));
+        bytesRead = read(connection, readBuff, sizeof(readBuff));
         if (bytesRead == -1)
         {
             std::cerr << "read(): " << std::string (std::strerror(errno)) << std::endl;
             close(connection);
-            close(listener);
             return (EXIT_FAILURE);
         }
-        std::cout << std::endl;
-        write(connection, "potato!", 8);
-        close(connection);
+        if (bytesRead > 0)
+            std::cout << readBuff;
+        else
+            break ;
     }
 
-    close(listener);
+
+    close(connection);
     return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 14:38:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:11:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 # define PORT 8080
 # define MAX_CONNECTIONS 10
-
+# define RESPONSE "Hello Client!"
 
 /*
 struct sockaddr_in {
@@ -70,27 +70,37 @@ int main()
 
     std::cout << "Waiting for connections...." << std::endl;
 
+    connAddrLen = sizeof(connAddress);
     while(true)
     {
+        
         connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
+        if (connection == -1)
+        {
+            std::cerr << "accept(): " << std::string (std::strerror(errno)) << std::endl;
+            close(listener);
+            return (EXIT_FAILURE);
+        }
+        std::cout << "  Server: Connection received" << std::endl;
         while (true)
         {
             std::memset(&readBuff, 0, sizeof(readBuff));
             bytesRead = read(connection, readBuff, sizeof(readBuff));
+            if (bytesRead == -1)
+            {
+                std::cerr << "read(): " << std::string (std::strerror(errno)) << std::endl;
+                close(connection);
+                close(listener);
+                return (EXIT_FAILURE);
+            }
             if (bytesRead > 0)
                 std::cout << readBuff;
             else
                 break ;
         }
-        if (bytesRead == -1)
-        {
-            std::cerr << "read(): " << std::string (std::strerror(errno)) << std::endl;
-            close(connection);
-            close(listener);
-            return (EXIT_FAILURE);
-        }
+
         std::cout << std::endl;
-        write(connection, "potato!", 8);
+        write(connection, RESPONSE, std::strlen(RESPONSE));
         close(connection);
     }
 
