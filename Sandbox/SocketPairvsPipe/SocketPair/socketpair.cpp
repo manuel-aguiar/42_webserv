@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 12:13:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 12:56:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 13:03:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int main(void)
     int pid;
     char buffer[256];
 
+    // using UNIX domain protocol
     if (socketpair(AF_UNIX, SOCK_STREAM, 0, socketPair) == -1)
     {
         std::cerr << "socketpair(): " << std::strerror(errno) << std::endl;
