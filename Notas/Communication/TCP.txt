@@ -1,0 +1,38 @@
+
+At the TRANSPORT layer
+
+Transmission Control Protocol
+
+Operating systems implement TCP and provide wrappers for communication, known as sockets
+The client-server don't care about the handshake, flow control, error handling (at that level), breaking down packets, reassembling, etc.
+
+Our job is use that and build a server that "understands and speaks" the HTTP language, providing a way to communicate.
+
+
+There is still SSL/TLS which sits between http (application) and tcp (transport) to encript data for instance in the case of https
+
+HTTPS = http + SSL/TLS
+(mais ou menos)
+
+int server = socket(AF_INET, SOCK_STREAM, 0);
+	->"0" -> use the default protocol of the socket type (sock_stream) which is, in this case, TCP :)
+
+SOCK_STREAM, the default is TCP, to be explicit one could do IPROTO_TCP just to eb explicit
+
+"#reliable transmission" -> packets are ordered, resend if lost, critical for transfering files etc
+
+"unreliable" datagram is also usefull like live streams, loosing a frame is not a problem, better than freeze everything until every frame is received in order
+
+man "open"
+
+SOCK_NONBLOCK
+"
+				Note that the setting of this flag has no effect on the
+              	operation of poll(2), select(2), epoll(7), and similar,
+              	since those interfaces merely inform the caller about
+              	whether a file descriptor is "ready", meaning that an I/O
+              	operation performed on the file descriptor with the
+             	O_NONBLOCK flag clear would not block.
+"
+
+AF_INET SOCK_STREAM

@@ -1,0 +1,12 @@
+User Datagram Protocol
+
+At the TRANSPORT layer
+
+Connnectionless -> no handshake
+It is up to the applications to handle the data received
+
+"Unreliable" -> doesn't reorder packets, doesn't wait, if it arrived it did and that's it.
+	uses?
+		Live stream! ou a zoom call!! better to lose some frames than freezing the stream until all the packets are received in order.
+		
+		AF_INET, SOCK_DGRAM
