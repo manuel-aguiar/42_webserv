@@ -1,4 +1,9 @@
 
+https://www.baeldung.com/cs/pipes-vs-sockets
+"
+The term socket is first coined in RFC 147 in 1971 when it was used in the ARPANET.
+"
+
 
 ###########################################################################
 
@@ -66,3 +71,12 @@ Creates an endpoint for communication, returns an FD
 A SIGPIPE signal is
        raised if a process sends or receives on a broken stream;
 "
+
+because.... a socket is like a bi-directional pipe against incoming traffic, or...
+	two pipes together, where each user can read and write
+
+
+However, naturally, sockets underneath implement the transport protocols like TCP, UDP etcetc so they are more than just two pipes and extra buffers
+underneath. One could say nevertheless that the infrastructure for read/write is almost the same (added complexity for the same fd) as two pipes.
+
+And that's why (i think) SIGPIPE is used when a soocket breaks
