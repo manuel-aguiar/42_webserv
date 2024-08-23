@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 15:21:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 15:34:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ int main()
             break ;
     }
 
-
+    std::cout << std::endl;
+    
     close(connection);
     return (EXIT_SUCCESS);
 }
