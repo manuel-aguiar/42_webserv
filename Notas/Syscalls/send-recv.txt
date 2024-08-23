@@ -1,0 +1,25 @@
+
+
+from MAN
+
+read(fd, buf, len)  is the same as recv(fd, buf, len, flags = 0);
+write(fd, buf, len)  is the same as send(fd, buf, len, flags = 0);
+
+flags:
+
+
+
+When using a socket, one reads/writes from/to the same file descriptor.
+Since the point is to allow async operations between reading and writing, ineviatably socket internally has two buffers:
+
+    RX Buffer -> read data, after receiving and assembling
+    TX Buffer -> write data to, before assembling and sending
+
+such that each can work independently and allows easier management than a single buffer.
+
+However...................
+
+Same file descriptor refers to two buffers....????
+File Descriptor table!!!! the fd table marks which type of fd is it, such that read/write/open/close (etcetcetc) know
+where to look to to get to the correct place
+    -> this is all abstracted away by the operating system implementing the buffers/fds, and eventually the transport protocols (TCP, UDP).
