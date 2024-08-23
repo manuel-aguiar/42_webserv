@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 12:13:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 12:40:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/23 12:44:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int main(void)
     int pipeParentToChild[2];
     int pipeChildToParent[2];
     int pid;
-    int bytes;
     char buffer[256];
 
     if (pipe(pipeParentToChild) == -1)
@@ -65,7 +64,7 @@ int main(void)
     {
         closeFdSetMinusOne(pipeParentToChild[1]);  //close write parent
         closeFdSetMinusOne(pipeChildToParent[0]);   //close read child
-        bytes = read(pipeParentToChild[0], buffer, sizeof(buffer));        // block until it receives something
+        read(pipeParentToChild[0], buffer, sizeof(buffer));        // block until it receives something
         std::cout   <<  "I'm child, parent told me: " << buffer << std::endl
                     << "        Now i'll send a message to dad" << std::endl;
         write(pipeChildToParent[1], "Hi Dad!!", 9);
@@ -86,3 +85,6 @@ int main(void)
     closePipes(pipeParentToChild);
     closePipes(pipeChildToParent);
 }
+
+// c++ -Wall -Wextra -Werror pipe.cpp -o pipe
+// valgrind --track-fds=yes --trace-children=yes --leak-check=full ./pipe
