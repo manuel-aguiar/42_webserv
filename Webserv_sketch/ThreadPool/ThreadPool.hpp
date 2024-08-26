@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:03:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 11:27:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 13:24:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,17 @@
 
 # define THREADPOOL_HPP
 
+// https://stackoverflow.com/questions/22284557/thread-pool-implementation-using-pthreads
+
 # include <pthread.h>
 # include <queue>
 # include <list>
 # include <vector>
 # include <iostream>
 # include <cstring>
+
+
+# include "IThreadTask.hpp"
 
 class ThreadPool
 {
@@ -29,6 +34,10 @@ class ThreadPool
 
         void    destroy(bool interrupt);
         void    addTask(void *(*task)(void *), void *args);
+        void    addTask(IThreadTask* newTask);
+        void    waitCompletion();
+        void    addThread();
+        void    removeThread();
 
     private:
 
@@ -38,7 +47,7 @@ class ThreadPool
 
         class ThreadTask;
         
-        typedef std::queue<ThreadTask, std::list<ThreadTask> > tasks;
+        typedef std::queue<ThreadTask, std::list<ThreadTask *> > tasks;
 
 
         tasks                                               _tasks;
