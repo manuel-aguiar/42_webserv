@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 08:25:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 08:37:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 08:40:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,24 @@ IHttpMethod* HttpMethodFactory::create(const std::string& methodName)
 
 //individual creators
 IHttpMethod* HttpMethodFactory::createGET() {
-    return new HttpMethodGET();
+    return (new HttpMethodGET());
 }
 
 IHttpMethod* HttpMethodFactory::createHEAD() {
-    return new HttpMethodHEAD();
+    return (new HttpMethodHEAD());
 }
 
 IHttpMethod* HttpMethodFactory::createPOST() {
-    return new HttpMethodPOST();
+    return (new HttpMethodPOST());
 }
 
 IHttpMethod* HttpMethodFactory::createDELETE() {
-    return new HttpMethodDELETE();
+    return (new HttpMethodDELETE());
 }
+
+
+//boilerplate
+HttpMethodFactory::HttpMethodFactory() {}
+HttpMethodFactory::~HttpMethodFactory() {}
+HttpMethodFactory::HttpMethodFactory(const HttpMethodFactory& copy) {}
+HttpMethodFactory& HttpMethodFactory::operator=(const HttpMethodFactory& assign) {return (*this);}
