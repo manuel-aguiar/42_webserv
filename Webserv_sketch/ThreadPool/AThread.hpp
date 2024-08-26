@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:22:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 13:30:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 13:55:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,23 @@ class AThread
     public:
         AThread();
         virtual ~AThread();
+        void    startAndRun();
+        void    join();
+
     private:
+
+        void*   ThreadFunction(void* args);
+
+        enum EThreadState
+        {
+            EThread_Unitialized,
+            EThread_Initialized,
+            EThread_Joined
+        };
+
+        EThreadState    _state;
+        pthread_t       _thread;
+
         AThread(const AThread& copy);
         AThread& operator=(const AThread& assign);
 };
