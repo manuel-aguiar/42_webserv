@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:03:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 09:32:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 10:24:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 # define THREADPOOL_HPP
 
 # include <pthread.h>
+# include <queue>
 # include <list>
 # include <vector>
+# include <iostream>
+# include <cstring>
 
 class ThreadPool
 {
@@ -24,15 +27,29 @@ class ThreadPool
         ThreadPool(const int numberOfThreads);
         ~ThreadPool();
 
+        void    destroy(bool interrupt);
+
     private:
 
-        //forward declaration, private to the ThreadPool
+        //private to the ThreadPool
         class ThreadTask;
 
-        std::list<ThreadTask>    tasks;
-        std::vector<pthread_t>   threads;
+        std::queue<ThreadTask, std::list<ThreadTask> >      _tasks;
+        std::vector<pthread_t>                              _threads;
 
+        pthread_mutex_t                                     _executeTask;
+        pthread_cond_t                                      _waitTask;
+        pthread_cond_t                                      _endedTask;
 
+        const unsigned int                                  _numberOfThreads;
+        unsigned int                                        _busyThreads;
+        unsigned int                                        _numberOfTasks;
+
+        bool                                                _FlagDestroy;
+        bool                                                _FlagInterrupt;
+
+        unsigned int                                        _ErrorLastGoodThread;
+                                               
         //boilerplate
         ThreadPool();
         ThreadPool(const ThreadPool& copy);
