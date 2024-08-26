@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:03:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 09:14:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 09:32:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 # include <list>
 # include <vector>
 
-# include "ThreadTask.hpp"
-
 class ThreadPool
 {
     public:
@@ -28,6 +26,8 @@ class ThreadPool
 
     private:
 
+        //forward declaration, private to the ThreadPool
+        class ThreadTask;
 
         std::list<ThreadTask>    tasks;
         std::vector<pthread_t>   threads;
