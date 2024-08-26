@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:39:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 10:43:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:08:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,55 @@ ThreadPool::ThreadPool(const int numberOfThreads) :
     }
 }
 
+void    ThreadPool::addTask(void *(*task)(void *), void *args)
+{
+    ThreadTask newTask(task, args);
+
+    pthread_mutex_lock(&_executeTask);
+    _tasks.push(newTask);
+    if (_busyThreads < _threads.size())
+        pthread_cond_signal(&_waitTask);
+    pthread_mutex_unlock(&_executeTask);
+}
+
+ThreadPool::ThreadTask     ThreadPool::_getTask()
+{
+    ThreadTask  task(_tasks.front());
+
+    _tasks.pop();
+    return (task);
+}
+
+
 void*   ThreadPool::_taskPool(void* pool)
 {
-    ThreadPool& pool = *(ThreadPool *)pool;
+    ThreadPool* tp = (ThreadPool *)pool;
+    ThreadTask task;
 
     while (true)
     {
-        //pthread_mutex_lock()
+        pthread_mutex_lock(&tp->_executeTask);
+        if (tp->_FlagDestroy && (!tp->_tasks.size() || (tp->_tasks.size() && tp->_FlagInterrupt)))
+        {
+            pthread_mutex_unlock(&tp->_executeTask);
+            break ;
+        }
+        else if (tp->_tasks.size())
+        {
+            task = _getTask();
+            tp->_busyThreads++;
+            pthread_mutex_unlock(&tp->_executeTask);
+            task.execute();
+            pthread_mutex_lock(&tp->_executeTask);
+            tp->_busyThreads--;
+            pthread_mutex_unlock(&tp->_executeTask);
+            pthread_cond_signal(&tp->_endedTask);
+        }
+        else
+        {
+            pthread_cond_wait(&tp->_waitTask, &tp->_executeTask);
+            pthread_mutex_unlock(&tp->_executeTask);
+        }
     }
 
 

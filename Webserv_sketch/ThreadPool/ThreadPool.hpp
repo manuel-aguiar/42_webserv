@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:03:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 10:24:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:27:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,24 @@ class ThreadPool
         ~ThreadPool();
 
         void    destroy(bool interrupt);
+        void    addTask(void *(*task)(void *), void *args);
 
     private:
 
         //private to the ThreadPool
-        class ThreadTask;
 
-        std::queue<ThreadTask, std::list<ThreadTask> >      _tasks;
+        
+
+        class ThreadTask;
+        
+        typedef std::queue<ThreadTask, std::list<ThreadTask> > tasks;
+
+
+        tasks                                               _tasks;
         std::vector<pthread_t>                              _threads;
+        void*                                               _taskPool(void* pool);
+
+        ThreadTask                                          _getTask();
 
         pthread_mutex_t                                     _executeTask;
         pthread_cond_t                                      _waitTask;
@@ -43,7 +53,6 @@ class ThreadPool
 
         const unsigned int                                  _numberOfThreads;
         unsigned int                                        _busyThreads;
-        unsigned int                                        _numberOfTasks;
 
         bool                                                _FlagDestroy;
         bool                                                _FlagInterrupt;

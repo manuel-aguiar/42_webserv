@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 10:04:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:34:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,19 @@ class ThreadPool::ThreadTask
         typedef void*   args;
 
         ThreadTask(task, args);
-        ~ThreadTask();
-
-        const task& getTask() const;
-        const args& getArgs() const;
-        void setTask(const task& task);
-        void setArgs(const args& args);
-
-    private:
-        task        task;
-        args        args;
-
-        //boilerplate
         ThreadTask();
+        ~ThreadTask();
         ThreadTask(const ThreadTask& copy);
         ThreadTask& operator=(const ThreadTask& assign);
+
+        void        execute() const;
+
+    private:
+        task        _task;
+        args        _args;
+
+        
+
 };
 
 #endif
