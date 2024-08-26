@@ -6,12 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 08:25:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 08:37:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 08:37:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpMethodFactory.hpp"
 
+
+//setting up the map of methods
 const std::map<std::string, HttpMethodFactory::CtorFunc> HttpMethodFactory::ctors =
 {
     std::make_pair("GET", &HttpMethodFactory::createGET),
@@ -20,6 +22,7 @@ const std::map<std::string, HttpMethodFactory::CtorFunc> HttpMethodFactory::ctor
     std::make_pair("DELETE", &HttpMethodFactory::createDELETE)
 };
 
+//actually factory
 IHttpMethod* HttpMethodFactory::create(const std::string& methodName)
 {
     HttpMethodFactory::mapIter iter;
@@ -30,6 +33,7 @@ IHttpMethod* HttpMethodFactory::create(const std::string& methodName)
     return (NULL);
 }
 
+//individual creators
 IHttpMethod* HttpMethodFactory::createGET() {
     return new HttpMethodGET();
 }
