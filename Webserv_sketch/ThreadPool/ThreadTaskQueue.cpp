@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:06:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 14:28:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:03:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,13 @@ ThreadTaskQueue& ThreadTaskQueue::operator=(const ThreadTaskQueue& copy)
     
 }
 
-void    ThreadTaskQueue::addTask(const IThreadTask* newTask)
+void    ThreadTaskQueue::addTask(IThreadTask* newTask)
 {
-    
+    pthread_mutex_lock(&_taskAccess);
+    _queue.push_back(newTask);
+    pthread_cond_signal(&_newTaskSignal);
+    pthread_mutex_unlock(&_taskAccess);
 }
-
-
 
 void    ThreadTaskQueue::clear()
 {

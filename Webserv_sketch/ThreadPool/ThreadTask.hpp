@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 11:34:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:04:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class ThreadPool::ThreadTask
         ThreadTask(const ThreadTask& copy);
         ThreadTask& operator=(const ThreadTask& assign);
 
-        void        execute() const;
-
+        void            execute() const;
+        IThreadTask*    clone();
     private:
         task        _task;
         args        _args;

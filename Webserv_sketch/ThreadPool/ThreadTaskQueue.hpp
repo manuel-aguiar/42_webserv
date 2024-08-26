@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:33:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 14:18:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 14:36:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class ThreadTaskQueue : public IThreadTaskQueue
         ThreadTaskQueue();
         ~ThreadTaskQueue();
 
-        void                addTask(const IThreadTask* newTask);
+        void                addTask(IThreadTask* newTask);
         IThreadTask*        getTask();
         void                clear();
         void                waitForCompletion();        
