@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 09:25:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 09:26:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 class ThreadTask
 {
     public:
-
         typedef void* (*task)(void* args);
         typedef void*   args;
 
@@ -26,16 +25,12 @@ class ThreadTask
 
         const task& getTask() const;
         const args& getArgs() const;
-
         void setTask(const task& task);
         void setArgs(const args& args);
 
     private:
-
-
         task        task;
         args        args;
-
 
         //boilerplate
         ThreadTask();
