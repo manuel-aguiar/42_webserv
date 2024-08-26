@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:26:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 13:43:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:51:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,31 @@ AThread& AThread::operator=(const AThread& assign)
         return (*this);
     *this = assign;
     return (*this);
+}
+
+void    AThread::start()
+{
+    if (_state == EThread_Initialized)
+    {
+        std::cerr << "Thread already initialized" << std::endl;
+        return ;
+    }
+    if (pthread_create(&_thread, NULL, ThreadFunction, this))
+    {
+        std::cerr << "Thread failed to create" << std::endl;
+        return ;
+    }
+    _state = EThread_Initialized;
+}
+
+void    AThread::join()
+{
+
+}
+
+void*   AThread::ThreadFunction(void* args)
+{
+    AThread* thread = (AThread *)args;
+    thread->run();
+    return (NULL);
 }

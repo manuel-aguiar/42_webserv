@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:22:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 15:17:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:42:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,25 @@
 # include <iostream>
 # include <pthread.h>
 
+/*
+    ThreadFunction must be static to allow being called by all members.
+    ThreadFunction recasts to a pointer of type AThread, but it is not this
+*/
+
 class AThread
 {
     public:
         AThread();
         virtual ~AThread();
-        void    startAndRun();
+        void    start();
         void    join();
     
+    protected:
+        virtual void run() = 0;
+
     private:
 
-        void*   MyThreadFunction(void* args);
+        static void*   ThreadFunction(void* args);
 
         enum EThreadState
         {
