@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:31:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 15:19:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:10:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,20 @@
 
 # include "IThreadTask.hpp"
 
+//knows only about tasks
+
 class IThreadTaskQueue
 {
     public:
-        virtual ~IThreadTaskQueue();
+        virtual ~IThreadTaskQueue() {};
         virtual void                addTask(const IThreadTask* newTask) = 0;
         virtual IThreadTask*        getTask() = 0;
-        virtual IThreadTask*        cloneTask(const IThreadTask* base) = 0;
-        virtual void                deleteTask(IThreadTask* del) = 0;
         virtual void                clear() = 0;
         virtual void                waitForCompletion() = 0;
+        virtual void                deleteTask(IThreadTask* delTask) = 0;
+    
+    protected:
+        virtual IThreadTask*        cloneTask(const IThreadTask* base) = 0;
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:29:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 08:10:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:11:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include "AThread.hpp"
 # include "IThreadTask.hpp"
 # include "IThreadTaskQueue.hpp"
+
+//knows about threads, tasks and queues
 
 class ThreadPoolWorker : public AThread
 {

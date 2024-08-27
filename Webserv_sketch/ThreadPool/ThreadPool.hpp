@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 09:37:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:16:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,30 @@
 # include <vector>
 
 # include "IThreadPool.hpp"
+# include "IThreadTask.hpp"
+
 # include "ThreadTaskQueue.hpp"
+# include "ThreadPoolWorker.hpp"
+
+// must know about threads, tasks, and queues
+// can handle any task that complies with the IThreadTask interface
+// must take a predefined queue and threadworker, both complying 
+// with IThreadTaskQueue and IThreadPoolWorker iinterfaces, respectively
 
 
 class ThreadPool : public IThreadPool
 {
     public:
-        ThreadPool(/* args */);
+        ThreadPool(unsigned int InitialNumberOfThreads);
         ~ThreadPool();
+
+        void    addTask(IThreadTask* task);
+        void    addTask(IThreadTask& task);
+        void    addTask(IThreadTask task);
+
     private:
-        ThreadTaskQueue     queue;
-        std::vector
+        ThreadTaskQueue                         taskQueue;
+        std::vector<ThreadPoolWorker *>         threads;
 
 };
 
