@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SharedTask.hpp"
+#include "../../include/Concrete/SharedTask.hpp"
 
 SharedTask::SharedTask(pthread_mutex_t& mutex, int index) : 
     _mutex(mutex),

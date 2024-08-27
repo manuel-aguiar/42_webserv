@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:21:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:45:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ThreadPool.hpp"
+#include "../../include/Concrete/ThreadPool.hpp"
 
 ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads)
 {

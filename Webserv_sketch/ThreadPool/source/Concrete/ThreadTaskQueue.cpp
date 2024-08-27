@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:06:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:22:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:45:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ThreadTaskQueue.hpp"
+#include "../../include/Concrete/ThreadTaskQueue.hpp"
 
 ThreadTaskQueue::ThreadTaskQueue() :
     _tasksExecuting(0)
@@ -19,7 +19,7 @@ ThreadTaskQueue::ThreadTaskQueue() :
     pthread_cond_init(&_newTaskSignal, NULL);
     pthread_cond_init(&_allTasksDone, NULL);
 }
-#include <iostream>
+
 ThreadTaskQueue::~ThreadTaskQueue()
 {
     pthread_mutex_destroy(&_taskAccess);

@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 07:56:13 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:07:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:45:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "ThreadPoolWorker.hpp"
+# include "../../include/Concrete/ThreadPoolWorker.hpp"
 
 ThreadPoolWorker::ThreadPoolWorker(IThreadTaskQueue& queue) :
     AThread(),

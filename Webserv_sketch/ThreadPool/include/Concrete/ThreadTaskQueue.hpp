@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:33:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:22:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:44:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <queue>
 # include <list>
 
-# include "IThreadTaskQueue.hpp"
+# include "../Abstract/IThreadTaskQueue.hpp"
 
 
 

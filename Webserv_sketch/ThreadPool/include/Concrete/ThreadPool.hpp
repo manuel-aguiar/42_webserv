@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:08:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:44:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 
 # include <vector>
 
-# include "IThreadPool.hpp"
-# include "IThreadTask.hpp"
+# include "../Abstract/IThreadPool.hpp"
+# include "../Abstract/IThreadTask.hpp"
 
-# include "ThreadTaskQueue.hpp"
-# include "ThreadPoolWorker.hpp"
+# include "../Concrete/ThreadTaskQueue.hpp"
+# include "../Concrete/ThreadPoolWorker.hpp"
 
 // must know about threads, tasks, and queues
 // can handle any task that complies with the IThreadTask interface
