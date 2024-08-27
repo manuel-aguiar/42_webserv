@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 09:27:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:38:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class IndependentTask : public IThreadTask
         IndependentTask(std::vector<int>& vec, int index);
         ~IndependentTask();
         IndependentTask(const IndependentTask& copy);
+        IndependentTask& operator=(const IndependentTask& assign);
 
         void            execute() const;
         IThreadTask*    clone() const;
@@ -38,7 +39,7 @@ class IndependentTask : public IThreadTask
         std::vector<int>& _vec;
         int               _index;
 
-        IndependentTask& operator=(const IndependentTask& assign);
+        
         
 
 };

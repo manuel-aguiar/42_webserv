@@ -31,6 +31,7 @@ class SharedTask : public IThreadTask
         SharedTask(pthread_mutex_t& mutex, int index);
         ~SharedTask();
         SharedTask(const SharedTask& copy);
+        SharedTask& operator=(const SharedTask& assign);
 
         void            execute() const;
         IThreadTask*    clone() const;
@@ -39,7 +40,7 @@ class SharedTask : public IThreadTask
         pthread_mutex_t&    _mutex;
         int                 _index;
 
-        SharedTask& operator=(const SharedTask& assign);
+        
         
 
 };

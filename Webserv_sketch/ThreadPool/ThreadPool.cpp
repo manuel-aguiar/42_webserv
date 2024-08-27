@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:30:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:38:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,20 @@ ThreadPool::~ThreadPool()
     destroy(false);
 }
 
+void    ThreadPool::addTask(IThreadTask* newTask)
+{
+    _taskQueue.addTask(newTask);
+}
+
+void    ThreadPool::addTask(IThreadTask& newTask)
+{
+    _taskQueue.addTask(&newTask);
+}
+
+void    ThreadPool::waitForCompletion()
+{
+    _taskQueue.waitForCompletion();
+}
 
 void    ThreadPool::destroy(bool waitForCompletion)
 {

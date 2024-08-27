@@ -6,16 +6,27 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 08:43:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:35:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
-
+# include "ThreadPool.hpp"
+# include "IndependentTask.hpp"
 
 
 
 int main(void)
 {
-    
+    std::vector<int> vector(100);
+
+    ThreadPool tp(5);
+    IndependentTask task(vector, 0);
+
+    for (int i = 0; i < 100; ++i)
+    {
+        vector[i] = -1;
+        task = IndependentTask(vector, i);
+        tp.addTask(task);
+    }
 }

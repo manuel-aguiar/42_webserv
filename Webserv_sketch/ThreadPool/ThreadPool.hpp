@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:30:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:35:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ class ThreadPool : public IThreadPool
 
         void    addTask(IThreadTask* task);
         void    addTask(IThreadTask& task);
-        void    addTask(IThreadTask task);
         void    waitForCompletion();
         void    destroy(bool waitForCompletion);
         void    addThread();
