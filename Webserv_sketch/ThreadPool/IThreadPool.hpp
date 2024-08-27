@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:52:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 09:07:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:42:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 
 # define ITHREADPOOL_HPP
 
-#include "AThread.hpp"
 #include "IThreadTask.hpp"
-#include "IThreadTaskQueue.hpp"
 
 class IThreadPool
 {

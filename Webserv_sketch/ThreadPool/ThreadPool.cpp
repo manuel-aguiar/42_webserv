@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:38:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:43:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads)
 {
     ThreadPoolWorker*   newThread;
 
-    for (int i = 0; i < InitialNumberOfThreads; ++i)
+    for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
     {
         newThread = new ThreadPoolWorker(_taskQueue);
         _threads.push_back(newThread);
@@ -51,9 +51,9 @@ void    ThreadPool::destroy(bool waitForCompletion)
     else
         _taskQueue.clear();
 
-    for (int i = 0; i < _threads.size(); ++i)
+    for (unsigned int i = 0; i < _threads.size(); ++i)
         _taskQueue.addTask(NULL);
-    for (int i = 0; i < _threads.size(); ++i)
+    for (unsigned int i = 0; i < _threads.size(); ++i)
     {
         _threads[i]->join();
         delete (_threads[i]);

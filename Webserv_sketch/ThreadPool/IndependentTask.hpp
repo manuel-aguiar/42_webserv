@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:38:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:41:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef THREADTASK_HPP
+#ifndef INDEPENDENTTASK_HPP
 
-# define THREADTASK_HPP
+# define INDEPENDENTTASK_HPP
 
 //class ThreadPool;
 

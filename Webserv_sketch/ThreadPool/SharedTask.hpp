@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef THREADTASK_HPP
+#ifndef SHAREDTASK_HPP
 
-# define THREADTASK_HPP
+# define SHAREDTASK_HPP
 
 //class ThreadPool;
 
