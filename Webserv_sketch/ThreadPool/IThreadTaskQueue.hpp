@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:31:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:10:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:49:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ITHREADTASKQUEUE_HPP
 
-# define THREADTASKQUEUE_HPP
+# define ITHREADTASKQUEUE_HPP
 
 # include "IThreadTask.hpp"
 
