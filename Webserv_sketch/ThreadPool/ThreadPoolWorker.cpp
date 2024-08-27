@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 07:56:13 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 11:49:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:07:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ ThreadPoolWorker::~ThreadPoolWorker()
     #endif    
 }
 
-
 void    ThreadPoolWorker::run()
 {   
     while ((_curTask = _queue.getTask()))
@@ -37,12 +36,7 @@ void    ThreadPoolWorker::run()
         _curTask->execute();
         _queue.finishTask(_curTask);
     }
-        
 }
-
-
-
-
 
 ThreadPoolWorker::ThreadPoolWorker(const ThreadPoolWorker& copy) : 
     AThread(copy),

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:06:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 11:52:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:22:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ IThreadTask*     ThreadTaskQueue::getTask()
         pthread_cond_wait(&_newTaskSignal, &_taskAccess);
     toExecute = _tasks.front();
     _tasks.pop_front();
-    _tasksExecuting++;
+    _tasksExecuting += (toExecute != NULL);
     pthread_mutex_unlock(&_taskAccess);
     return (toExecute);
 }
@@ -83,4 +83,14 @@ void    ThreadTaskQueue::waitForCompletion()
     while (!_tasks.empty() || _tasksExecuting)
         pthread_cond_wait(&_allTasksDone, &_taskAccess);
     pthread_mutex_unlock(&_taskAccess);
+}
+
+int     ThreadTaskQueue::taskCount()
+{
+    int result;
+    
+    pthread_mutex_lock(&_taskAccess);
+    result = _tasks.size() + _tasksExecuting;
+    pthread_mutex_unlock(&_taskAccess);
+    return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:22:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 08:50:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:07:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ class AThread
         virtual ~AThread();
         void    start();
         void    join();
+        bool    joinable();
     
     protected:
         AThread();
         AThread(const AThread& copy);
-        virtual void run() = 0;
+        virtual void                    run() = 0;
 
     private:
 

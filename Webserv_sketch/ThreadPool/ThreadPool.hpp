@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:48:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:08:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,11 @@ class ThreadPool : public IThreadPool
         void    waitForCompletion();
         void    destroy(bool waitForCompletion);
         void    addThread();
-        void    removeThread();
+
+        //not implemented
+        //void    removeThread();
+        
+        int     threadCount() const;
 
     private:
         ThreadTaskQueue                         _taskQueue;
