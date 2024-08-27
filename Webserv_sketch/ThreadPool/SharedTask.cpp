@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ThreadTaskFuncPointer.cpp                          :+:      :+:    :+:   */
+/*   SharedTask.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,36 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ThreadTaskFuncPointer.hpp"
+#include "SharedTask.hpp"
 
-ThreadTaskFuncPointer::ThreadTaskFuncPointer(void* (*task)(void* ), void* args) : 
-    _task(task),
-    _args(args)
+SharedTask::SharedTask(pthread_mutex_t& mutex, int index) : 
+    _mutex(mutex),
+    _index(index)
 {
     #ifdef DEBUG_CONSTRUCTOR
-        std::cout << "ThreadTaskFuncPointer Constructor Called" << std::endl;
+        std::cout << "SharedTask Constructor Called" << std::endl;
     #endif
-    assert(_task != NULL && _args != NULL);
 }
 
-ThreadTaskFuncPointer::~ThreadTaskFuncPointer()
+SharedTask::~SharedTask()
 {
     #ifdef DEBUG_CONSTRUCTOR
-        std::cout << "ThreadTaskFuncPointer dSTRUCTOR Called" << std::endl;
+        std::cout << "SharedTask dSTRUCTOR Called" << std::endl;
     #endif    
 }
-ThreadTaskFuncPointer::ThreadTaskFuncPointer(const ThreadTaskFuncPointer& copy) :
-    _task(copy._task),
-    _args(copy._args)
+SharedTask::SharedTask(const SharedTask& copy) :
+    _mutex(copy._mutex),
+    _index(copy._index)
 {
     #ifdef DEBUG_CONSTRUCTOR
-        std::cout << "ThreadTaskFuncPointer Constructor Called" << std::endl;
+        std::cout << "SharedTask Constructor Called" << std::endl;
     #endif
-    assert(_task != NULL && _args != NULL);
 }
 
 
-ThreadTaskFuncPointer&  ThreadTaskFuncPointer::operator=(const ThreadTaskFuncPointer& copy)
+SharedTask&  SharedTask::operator=(const SharedTask& copy)
 {
     if (this == &copy)
         return (*this);
@@ -47,12 +45,14 @@ ThreadTaskFuncPointer&  ThreadTaskFuncPointer::operator=(const ThreadTaskFuncPoi
     return (*this);
 }
 
-void    ThreadTaskFuncPointer::execute() const
+void    SharedTask::execute() const
 {
-    _task(_args);
+    pthread_mutex_lock(&_mutex);
+    std::cout << "Printing my number: " << _index << std::endl;
+    pthread_mutex_unlock(&_mutex);
 }
 
-IThreadTask*    ThreadTaskFuncPointer::clone() const
+IThreadTask*    SharedTask::clone() const
 {
-    return (new ThreadTaskFuncPointer(*this));
+    return (new SharedTask(*this));
 }
