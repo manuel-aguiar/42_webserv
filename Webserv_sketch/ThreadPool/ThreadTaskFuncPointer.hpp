@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ThreadTask.hpp                                     :+:      :+:    :+:   */
+/*   ThreadTaskFuncPointer.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 15:04:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:18:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,28 @@
 # include "ThreadPool.hpp"
 
 
-class ThreadPool::ThreadTask
+class ThreadTaskFuncPointer : public IThreadTask
 {
     public:
         typedef void* (*task)(void* args);
         typedef void*   args;
 
-        ThreadTask(task, args);
-        ThreadTask();
-        ~ThreadTask();
-        ThreadTask(const ThreadTask& copy);
-        ThreadTask& operator=(const ThreadTask& assign);
+        ThreadTaskFuncPointer(task, args);
+        
+        ~ThreadTaskFuncPointer();
+        ThreadTaskFuncPointer(const ThreadTaskFuncPointer& copy);
+        
 
         void            execute() const;
         IThreadTask*    clone();
+        void            run();
+
     private:
         task        _task;
         args        _args;
 
+        ThreadTaskFuncPointer();
+        ThreadTaskFuncPointer& operator=(const ThreadTaskFuncPointer& assign);
         
 
 };

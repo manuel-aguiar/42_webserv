@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:26:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 15:51:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:12:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ void    AThread::start()
 
 void    AThread::join()
 {
-
+    pthread_join(_thread, NULL);
+    _state = EThread_Joined;
 }
 
 void*   AThread::ThreadFunction(void* args)
