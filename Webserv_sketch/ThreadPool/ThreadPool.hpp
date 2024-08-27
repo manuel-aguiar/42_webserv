@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:16:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:30:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 // must know about threads, tasks, and queues
 // can handle any task that complies with the IThreadTask interface
 // must take a predefined queue and threadworker, both complying 
-// with IThreadTaskQueue and IThreadPoolWorker iinterfaces, respectively
-
+// with IThreadTaskQueue and IThreadPoolWorker interfaces, respectively
+// queue and thread are tightely linked
 
 class ThreadPool : public IThreadPool
 {
@@ -37,10 +37,14 @@ class ThreadPool : public IThreadPool
         void    addTask(IThreadTask* task);
         void    addTask(IThreadTask& task);
         void    addTask(IThreadTask task);
+        void    waitForCompletion();
+        void    destroy(bool waitForCompletion);
+        void    addThread();
+        void    removeThread();
 
     private:
-        ThreadTaskQueue                         taskQueue;
-        std::vector<ThreadPoolWorker *>         threads;
+        ThreadTaskQueue                         _taskQueue;
+        std::vector<ThreadPoolWorker *>         _threads;
 
 };
 
