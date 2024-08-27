@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:33:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 11:25:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 11:49:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define THREADTASKQUEUE_HPP
 
 # include <pthread.h>
+# include <semaphore.h>
 # include <queue>
 # include <list>
 
@@ -32,16 +33,16 @@ class ThreadTaskQueue : public IThreadTaskQueue
         IThreadTask*        getTask();
         void                clear();
         void                waitForCompletion();        
-        void                deleteTask(IThreadTask* delTask);
+        void                finishTask(IThreadTask* delTask);
 
     private:
         IThreadTask*        cloneTask(const IThreadTask* base);
         
         std::list<IThreadTask*>                             _tasks;
+        unsigned int                                        _tasksExecuting;
         pthread_mutex_t                                     _taskAccess;
         pthread_cond_t                                      _newTaskSignal;                                   
-        pthread_cond_t                                      _allTasksDone;
-
+        pthread_cond_t                                      _allTasksDone;                                         
 
         ThreadTaskQueue(const ThreadTaskQueue& copy);
         ThreadTaskQueue& operator=(const ThreadTaskQueue& assign);

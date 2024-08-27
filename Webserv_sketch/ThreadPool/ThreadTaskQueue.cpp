@@ -6,19 +6,20 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:06:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 11:25:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 11:52:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ThreadTaskQueue.hpp"
 
-ThreadTaskQueue::ThreadTaskQueue()
+ThreadTaskQueue::ThreadTaskQueue() :
+    _tasksExecuting(0)
 {
     pthread_mutex_init(&_taskAccess, NULL);
     pthread_cond_init(&_newTaskSignal, NULL);
     pthread_cond_init(&_allTasksDone, NULL);
 }
-
+#include <iostream>
 ThreadTaskQueue::~ThreadTaskQueue()
 {
     pthread_mutex_destroy(&_taskAccess);
@@ -36,10 +37,15 @@ IThreadTask*    ThreadTaskQueue::cloneTask(const IThreadTask* newTask)
     return (newTask->clone());
 }
 
-void            ThreadTaskQueue::deleteTask(IThreadTask* delTask)
+void            ThreadTaskQueue::finishTask(IThreadTask* delTask)
 {
     if (delTask)
         delete (delTask);
+    pthread_mutex_lock(&_taskAccess);
+    _tasksExecuting--;
+    if (_tasks.size() == 0 && _tasksExecuting == 0)
+        pthread_cond_signal(&_allTasksDone);
+    pthread_mutex_unlock(&_taskAccess);
 }
 
 void    ThreadTaskQueue::addTask(const IThreadTask* newTask)
@@ -59,6 +65,7 @@ IThreadTask*     ThreadTaskQueue::getTask()
         pthread_cond_wait(&_newTaskSignal, &_taskAccess);
     toExecute = _tasks.front();
     _tasks.pop_front();
+    _tasksExecuting++;
     pthread_mutex_unlock(&_taskAccess);
     return (toExecute);
 }
@@ -71,9 +78,9 @@ void    ThreadTaskQueue::clear()
 }
 
 void    ThreadTaskQueue::waitForCompletion()
-{
+{   
     pthread_mutex_lock(&_taskAccess);
-    while (!_tasks.empty())
+    while (!_tasks.empty() || _tasksExecuting)
         pthread_cond_wait(&_allTasksDone, &_taskAccess);
     pthread_mutex_unlock(&_taskAccess);
 }

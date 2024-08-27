@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 07:56:13 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:46:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 11:49:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ ThreadPoolWorker::~ThreadPoolWorker()
 void    ThreadPoolWorker::run()
 {   
     while ((_curTask = _queue.getTask()))
+    {
         _curTask->execute();
+        _queue.finishTask(_curTask);
+    }
+        
 }
 
 
