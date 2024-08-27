@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:39:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 12:08:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:46:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ThreadPool.hpp"
-# include "ThreadTask.hpp"
+# include "ThreadTaskFuncPointer.hpp"
 
 ThreadPool::ThreadPool(const int numberOfThreads) :
     _numberOfThreads(numberOfThreads),
@@ -45,7 +45,7 @@ ThreadPool::ThreadPool(const int numberOfThreads) :
 
 void    ThreadPool::addTask(void *(*task)(void *), void *args)
 {
-    ThreadTask newTask(task, args);
+    ThreadTaskFuncPointer newTask(task, args);
 
     pthread_mutex_lock(&_executeTask);
     _tasks.push(newTask);

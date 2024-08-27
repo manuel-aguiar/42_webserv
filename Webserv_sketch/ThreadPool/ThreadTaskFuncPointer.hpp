@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 08:40:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:56:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ class ThreadTaskFuncPointer : public IThreadTask
         ThreadTaskFuncPointer(const ThreadTaskFuncPointer& copy);
 
         void            execute() const;
-        IThreadTask*    clone();
-        void            run();
+        IThreadTask*    clone() const;
 
     private:
         task        _task;

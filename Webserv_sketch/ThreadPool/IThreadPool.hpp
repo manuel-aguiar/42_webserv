@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IThreadTask.hpp                                    :+:      :+:    :+:   */
+/*   IThreadPool.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 13:19:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 08:55:51 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/08/27 08:52:48 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/08/27 09:07:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ITHREADTASK_HPP
+#ifndef ITHREADPOOL_HPP
 
-# define ITHREADTASK_HPP
+# define ITHREADPOOL_HPP
 
-class IThreadTask
+#include "AThread.hpp"
+#include "IThreadTask.hpp"
+#include "IThreadTaskQueue.hpp"
+
+class IThreadPool
 {
     public:
-        virtual ~IThreadTask() {};
-        virtual void            execute() const  = 0;
-        virtual IThreadTask*    clone() const    = 0;
+        virtual ~IThreadPool() {};
+        virtual void    addTask(IThreadTask* newTask)       = 0;
+        virtual void    destroy(bool waitForCompletion)     = 0;
+
 };
+
 
 
 #endif
