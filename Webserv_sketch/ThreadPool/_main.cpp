@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 13:29:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 14:25:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,6 @@ int main(void)
     }
     tp.addThread();
     tp.addThread();
-    //tp.waitForCompletion();
-    //for (unsigned int i = 0; i < vector.size(); ++i)
-    //{
-    //    std::cout << vector[i] << " ";
-    //}
-    //tp.waitForCompletion();
     tp.destroy(true);
     pthread_mutex_destroy(&mutex);
-    //std::cout << std::endl;
 }
