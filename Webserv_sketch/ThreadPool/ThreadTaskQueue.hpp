@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:33:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:48:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 11:25:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class ThreadTaskQueue : public IThreadTaskQueue
 
     private:
         IThreadTask*        cloneTask(const IThreadTask* base);
+        
         std::list<IThreadTask*>                             _tasks;
         pthread_mutex_t                                     _taskAccess;
         pthread_cond_t                                      _newTaskSignal;                                   
