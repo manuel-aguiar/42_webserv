@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:06:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:25:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:45:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ ThreadTaskQueue::~ThreadTaskQueue()
     pthread_cond_destroy(&_allTasksDone);
 }
 
-ThreadTaskQueue::ThreadTaskQueue(const ThreadTaskQueue& copy)  {}
-ThreadTaskQueue& ThreadTaskQueue::operator=(const ThreadTaskQueue& copy)  {}
+ThreadTaskQueue::ThreadTaskQueue(const ThreadTaskQueue& copy)  {(void)copy;}
+ThreadTaskQueue& ThreadTaskQueue::operator=(const ThreadTaskQueue& assign)  {(void)assign; return (*this);}
 
 IThreadTask*    ThreadTaskQueue::cloneTask(const IThreadTask* newTask)
 {

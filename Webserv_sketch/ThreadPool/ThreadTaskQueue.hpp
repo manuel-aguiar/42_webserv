@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:33:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:11:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:48:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef THREADTASKQUEUEASDASD_HPP
+#ifndef THREADTASKQUEUE_HPP
 
-# define THREADTASKQUEUEASDASD_HPP
+# define THREADTASKQUEUE_HPP
 
 # include <pthread.h>
 # include <queue>
