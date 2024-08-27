@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:03:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 13:24:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:40:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,15 @@ class ThreadPool
     private:
 
         //private to the ThreadPool
-
         
-
-        class ThreadTask;
-        
-        typedef std::queue<ThreadTask, std::list<ThreadTask *> > tasks;
+        typedef std::queue<IThreadTask, std::list<IThreadTask *> > tasks;
 
 
         tasks                                               _tasks;
         std::vector<pthread_t>                              _threads;
         void*                                               _taskPool(void* pool);
 
-        ThreadTask                                          _getTask();
+        IThreadTask                                          _getTask();
 
         pthread_mutex_t                                     _executeTask;
         pthread_cond_t                                      _waitTask;
