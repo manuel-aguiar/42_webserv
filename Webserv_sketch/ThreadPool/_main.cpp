@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 11:54:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 11:59:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int main(void)
     pthread_mutex_t mutex;
 
     pthread_mutex_init(&mutex, NULL);
-    ThreadPool tp(5);
+    ThreadPool tp(10);
 
     for (int i = 0; i < count; ++i)
     {
