@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 10:35:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:54:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "ThreadPool.hpp"
 # include "IndependentTask.hpp"
 
-
+// clear && c++ -Wall -Wextra -Werror  *.cpp -lpthread -o indep
 
 int main(void)
 {
