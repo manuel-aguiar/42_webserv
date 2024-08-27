@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 13:22:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 15:42:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/27 08:31:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class AThread
 {
     public:
         AThread();
+        AThread(const AThread& copy);
         virtual ~AThread();
         void    start();
         void    join();
@@ -47,7 +48,7 @@ class AThread
         EThreadState    _state;
         pthread_t       _thread;
 
-        AThread(const AThread& copy);
+        
         AThread& operator=(const AThread& assign);
 };
 
