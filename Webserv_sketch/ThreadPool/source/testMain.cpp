@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 14:54:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 07:43:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@
     (cd ../.. && ./gitcommit.sh)
     clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
 */
+unsigned long fib(unsigned long n)
+{
+    if (n <= 1)
+        return (n);
+    return ((fib(n - 1) + fib(n - 2)));
+}
 
 int main(void)
 {
