@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ThreadTask_HPP
+#ifndef INDEPENDENTTASK_HPP
 
-# define ThreadTask_HPP
+# define INDEPENDENTTASK_HPP
 
 //class ThreadPool;
 
@@ -24,13 +24,13 @@
 # include "../Abstract/IThreadTask.hpp"
 # include <vector>
 
-class ThreadTask : public IThreadTask
+class IndependentTask : public IThreadTask
 {
     public:
-        ThreadTask(std::vector<int>& vec, int index);
-        ~ThreadTask();
-        ThreadTask(const ThreadTask& copy);
-        ThreadTask& operator=(const ThreadTask& assign);
+        IndependentTask(std::vector<int>& vec, int index);
+        ~IndependentTask();
+        IndependentTask(const IndependentTask& copy);
+        IndependentTask& operator=(const IndependentTask& assign);
 
         void            execute() const;
         IThreadTask*    clone() const;
