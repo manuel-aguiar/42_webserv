@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 11:59:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:34:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,18 @@ class Test
         int _number;
 };
 
+class StaticMethod
+{
+    public:
+        static void sayHello()
+        {
+            lockWrite("                 HELLO");
+        }
+};
+
 int main(void)
 {
-    unsigned int count = 50000;
+    unsigned int count = 50;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     ThreadPool tp(2);
@@ -109,16 +118,18 @@ int main(void)
 
     for (unsigned int i = 0; i < count; ++i)
     {
-        ThreadTask<long (*)(unsigned int), unsigned int, long> task1(fib, i % vecSize, NULL);
-        ThreadTask<long(*)(unsigned long), unsigned long, long> task2(fibprint, i % vecSize, NULL);
-        ThreadTask<void (*)(unsigned long), unsigned long, void> task3(voidfibprint, i % vecSize);
-        ThreadTask<void (*)(const std::string&), const std::string&, void> task4(printf, cenas);
-        ThreadTask<void(*)(), void, void> task5(nada);
+        ThreadTask<long (*)(unsigned int)> task1(fib, i % vecSize);
+        ThreadTask<long (*)(unsigned long)> task2(fibprint, i % vecSize);
+        ThreadTask<void (*)(unsigned long)> task3(voidfibprint, i % vecSize);
+        ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
+        ThreadTask<void (*)()> task5(nada);
+        ThreadTask<void (*)()> task6(StaticMethod::sayHello);
         tp.addTask(task1);
         tp.addTask(task2);
         tp.addTask(task3);
         tp.addTask(task4);
         tp.addTask(task5);
+        tp.addTask(task6);
     }
     tp.waitForCompletion();
 
