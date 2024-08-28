@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 15:34:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:44:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,11 @@ class Test
 
         int dosomething(int number)
         {
-            _number = number;
-            return (_number);
+            (void)number;
+            lockWrite("                 I WAS GIVEN " + std::to_string(number));
+            return (number);
         };
 
-    private:
-        int _number;
 };
 
 class StaticMethod
@@ -110,6 +109,7 @@ int main(void)
     unsigned int count = 50;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
+    Test    dummy;
     ThreadPool tp(2);
 
     const std::string cenas("Hey thhere");
@@ -124,12 +124,14 @@ int main(void)
         ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
         ThreadTask<void (*)()> task5(nada);
         ThreadTask<void (*)()> task6(StaticMethod::sayHello);
+        ThreadTask<int (Test::*)(int)> task7(dummy, &Test::dosomething, i);
         tp.addTask(task1);
         tp.addTask(task2);
         tp.addTask(task3);
         tp.addTask(task4);
         tp.addTask(task5);
         tp.addTask(task6);
+        tp.addTask(task7);
     }
     tp.waitForCompletion();
 
