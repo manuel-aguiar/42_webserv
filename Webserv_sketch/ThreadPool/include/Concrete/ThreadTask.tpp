@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 10:18:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 11:14:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ template <
 class ThreadTask : public IThreadTask
 {
     public:
-        ThreadTask(Return (*function)(Args), Args& arguments, Return* placeReturn) :
+        ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn) :
             _function(function),
             _args(arguments),
             _placeReturn(placeReturn)
@@ -67,7 +67,7 @@ class ThreadTask : public IThreadTask
 
     private:
         Return          (*_function)(Args);
-        Args&           _args;
+        Args            _args;
         Return*         _placeReturn;
 };
 
@@ -128,7 +128,7 @@ template <
 class ThreadTask<Func, Args, void> : public IThreadTask
 {
     public:
-        ThreadTask(void (*function)(Args), Args& arguments) :
+        ThreadTask(void (*function)(Args), Args arguments) :
             _function(function),
             _args(arguments)
         {};
@@ -156,7 +156,7 @@ class ThreadTask<Func, Args, void> : public IThreadTask
 
     private:
         void          (*_function)(Args);
-        Args&           _args;
+        Args           _args;
 };
 
 // specialization for no args, and no return

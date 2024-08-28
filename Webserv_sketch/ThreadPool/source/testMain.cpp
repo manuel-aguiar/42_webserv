@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 10:22:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 11:14:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,108 +21,105 @@
     clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
 */
 
-long fibtest(unsigned int n)
+
+pthread_mutex_t globalWriteLock;
+
+void    lockWrite(const std::string& toWrite)
 {
-    if (n <= 1)
-        return (n);
-    return ((fibtest(n - 1) + fibtest(n - 2)));
+    pthread_mutex_lock(&globalWriteLock);
+    std::cout << toWrite << std::endl;
+    pthread_mutex_unlock(&globalWriteLock);
 }
 
-
-int main(void)
-{
-    unsigned int count = 10;
-    std::vector<long> vector(count);
-    ThreadPool tp(10);
-
-    for (unsigned int i = 0; i < count; ++i)
-    {
-        ThreadTask <long (*)(unsigned int), unsigned int, long> task1(fibtest, i, &vector[i]);
-        tp.addTask(task1);
-    }
-    tp.destroy(true);
-    for (unsigned int i = 0; i < count; ++i)
-    {
-        std::cout << "fib(" << i << ") = " << vector[i] << std::endl;
-    }
-
-    return (0);
-}
-
-int main5(void)
-{
-    unsigned int count = 30;
-    std::vector<long> vector(count);
-    pthread_mutex_t mutex;
-
-    pthread_mutex_init(&mutex, NULL);
-    ThreadPool tp(10);
-
-    for (unsigned int i = 0; i < count; ++i)
-    {
-        vector[i] = -1;
-        SharedTask task1(mutex, i);
-        tp.addTask(task1);
-    }
-    tp.addThread();
-    tp.addThread();
-    tp.destroy(true);
-    pthread_mutex_destroy(&mutex);
-    for (unsigned int i = 0; i < count; ++i)
-    {
-        std::cout << "fib(" << i << ") = " << vector[i] << std::endl;
-    }
-
-    return (0);
-}
-
-
-long fib(unsigned long n) {
+long fibBad(unsigned int n) {
     if (n <= 1)
         return n;
-    return (fib(n - 1) + fib(n - 2));
+    return (fibBad(n - 1) + fibBad(n - 2));
+}
+
+long fibGood(unsigned int n)
+{
+    long a;
+    long b;
+    long temp;
+
+    if (n <= 1)
+        return (n);
+    a = 0;
+    b = 1;
+    while (n > 0)
+    {
+        temp = b;
+        b = a + b;
+        a = temp;
+        n--;
+    }
+    return (a);
+}
+
+long fib(unsigned int n)
+{
+    return (fibBad(n));
 }
 
 long fibprint(unsigned long n) {
-    std::cout << fib(n) << std::endl;
+    lockWrite(std::to_string(fib(n)));
     return (fib(n));
 }
 
 void    voidfibprint(unsigned long n)
 {
-    std::cout << "void " << fib(n) << std::endl;
+    lockWrite("void " + std::to_string(fib(n)));
 }
 
 void    printf(const std::string& str)
 {
-    std::cout << str << std::endl;
+    lockWrite(str);
 }
 
 void nada()
 {
-    std::cout << "nada" << std::endl;
+    lockWrite("nada");
 }
 
-int main123() {
-    std::vector<long> results(10);
-    
-    for (unsigned long i = 0; i < 10; ++i) {
-        // Correct instantiation
-        ThreadTask<long(*)(unsigned long), unsigned long, long> task1(fib, i, &results[i]);
-        ThreadTask<long(*)(unsigned long), unsigned long, long> task2(fibprint, i, NULL);
-        ThreadTask<void (*)(unsigned long), unsigned long, void> task3(voidfibprint, i);
-        ThreadTask<void (*)(const std::string&), const std::string&, void> task4(printf, "Hey thhere");
-        ThreadTask<void(*)(), void, void> task5(nada);
-        task1.execute();  // This will store the result of fib(i) in results[i]
-        task2.execute();
-        task3.execute();
-        task4.execute();
-        task5.execute();
-    }
-    
-    for (unsigned long i = 0; i < 10; ++i) {
-        std::cout << "fib(" << i << ") = " << results[i] << std::endl;
-    }
 
-    return 0;
+
+int main(void)
+{
+    unsigned int count = 50000;
+    unsigned int vecSize = 10;
+    std::vector<long> vector(vecSize);
+    ThreadPool tp(2);
+
+    const std::string cenas("Hey thhere");
+
+    pthread_mutex_init(&globalWriteLock, NULL);
+
+    for (unsigned int i = 0; i < count; ++i)
+    {
+        ThreadTask<long (*)(unsigned int), unsigned int, long> task1(fib, i % vecSize, NULL);
+        ThreadTask<long(*)(unsigned long), unsigned long, long> task2(fibprint, i % vecSize, NULL);
+        ThreadTask<void (*)(unsigned long), unsigned long, void> task3(voidfibprint, i % vecSize);
+        ThreadTask<void (*)(const std::string&), const std::string&, void> task4(printf, cenas);
+        ThreadTask<void(*)(), void, void> task5(nada);
+        tp.addTask(task1);
+        tp.addTask(task2);
+        tp.addTask(task3);
+        tp.addTask(task4);
+        tp.addTask(task5);
+    }
+    tp.waitForCompletion();
+
+    pthread_mutex_lock(&globalWriteLock);
+    for (unsigned int i = 0; i < vecSize; ++i)
+    {
+        std::cout << "fib(" << i << ") = " << vector[i] << std::endl;
+    }
+    std::cout << "tp has " << tp.threadCount() << " threads" << std::endl;
+    pthread_mutex_unlock(&globalWriteLock);
+    tp.destroy(true);
+    pthread_mutex_destroy(&globalWriteLock);
+
+
+    return (0);
 }
