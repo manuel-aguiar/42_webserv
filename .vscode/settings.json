@@ -48,6 +48,13 @@
         "typeinfo": "cpp",
         "map": "cpp",
         "list": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp"
     }
 }

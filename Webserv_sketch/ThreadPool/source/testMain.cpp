@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 11:14:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/28 11:59:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,19 @@ void nada()
     lockWrite("nada");
 }
 
+class Test
+{
+    public:
 
+        int dosomething(int number)
+        {
+            _number = number;
+            return (_number);
+        };
+
+    private:
+        int _number;
+};
 
 int main(void)
 {
