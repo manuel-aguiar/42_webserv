@@ -1,24 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpMethodDELETE.hpp                               :+:      :+:    :+:   */
+/*   IThreadPool.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 07:59:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 09:52:56 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/08/27 08:52:48 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/08/27 10:42:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPMETHODGET_HPP
+#ifndef ITHREADPOOL_HPP
 
-# define HTTPMETHODGET_HPP
+# define ITHREADPOOL_HPP
 
-#include "../IHttpMethod.hpp"
+#include "IThreadTask.hpp"
 
-class HttpMethodGET : public IHttpMethod
+class IThreadPool
 {
+    public:
+        virtual ~IThreadPool() {};
+        virtual void    addTask(IThreadTask* newTask)       = 0;
+        virtual void    destroy(bool waitForCompletion)     = 0;
 
 };
+
+
 
 #endif
