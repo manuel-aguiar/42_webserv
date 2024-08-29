@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 16:16:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:33:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ class ThreadPool : public IThreadPool
         {
             ThreadTask<void (Class::*)(void) const> task(instance, function);
             _taskQueue.addTask(&task);
-        }          
+        }         
 
 };
 
