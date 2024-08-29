@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:23:48 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:36:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ class Test
 {
     public:
 
-        int dosomething(int number)
+        int dosomething(unsigned int number)
         {
             (void)number;
             lockWrite("                 I WAS GIVEN " + std::to_string(number));
@@ -111,6 +111,7 @@ int main(int ac, char **av)
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
+    (void)dummy;
     ThreadPool tp(std::atoi(av[1]));
 
     const std::string cenas("Hey thhere");
@@ -119,21 +120,24 @@ int main(int ac, char **av)
 
     for (unsigned int i = 0; i < count; ++i)
     {
-        ThreadTask<long (*)(unsigned int)> task1(fib, i % vecSize);
-        ThreadTask<long (*)(unsigned long)> task2(fibprint, i % vecSize);
-        ThreadTask<void (*)(unsigned long)> task3(voidfibprint, i % vecSize);
-        ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
-        ThreadTask<void (*)()> task5(nada);
-        ThreadTask<void (*)()> task6(StaticMethod::sayHello);
-        ThreadTask<int (Test::*)(int)> task7(dummy, &Test::dosomething, i);
-        tp.addTask(task1);
-        tp.addTask(task2);
-        tp.addTask(task3);
-        tp.addTask(task4);
-        tp.addTask(task5);
-        tp.addTask(task6);
-        tp.addTask(task7);
-        tp.addTask(fib,i % vecSize);
+        //ThreadTask<long (*)(unsigned int)> task1(fib, i % vecSize);
+        //ThreadTask<long (*)(unsigned long)> task2(fibprint, i % vecSize);
+        //ThreadTask<void (*)(unsigned long)> task3(voidfibprint, i % vecSize);
+        //ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
+        //ThreadTask<void (*)()> task5(nada);
+        //ThreadTask<void (*)()> task6(StaticMethod::sayHello);
+        //ThreadTask<int (Test::*)(int)> task7(dummy, &Test::dosomething, i);
+        //tp.addTask(task1);
+        //tp.addTask(task2);
+        //tp.addTask(task3);
+        //tp.addTask(task4);
+        //tp.addTask(task5);
+        //tp.addTask(task6);
+        //tp.addTask(task7);
+        tp.addTask(fib, i % vecSize);
+        tp.addTask(dummy, &Test::dosomething, i);
+        tp.addTask(fibprint, (unsigned long)(i % vecSize));
+        tp.addTask(nada);
     }
     tp.waitForCompletion();
 
