@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:14:38 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 10:55:53 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int main(int ac, char **av)
 {
     (void)ac;
 
-    unsigned int count = 500;
+    unsigned int count = 500000;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
@@ -156,14 +156,16 @@ int main(int ac, char **av)
         //tp.addTask(task7);
         tp.addTask(fib, i % vecSize);
         tp.addTask(Test::StaticMethod);
-        tp.addTask(allSameThreadUnsafe, i, &save);
+        //tp.addTask(allSameThreadUnsafe, i, &save);
         tp.addTask(dummy, &Test::ArgYesReturnYes, i);
         tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
         tp.addTask(dummy, &Test::ArgNoReturnYes);
         tp.addTask(dummy, &Test::ArgNoReturnNo);
         tp.addTask(fibprint, (unsigned long)(i % vecSize));
         tp.addTask(nada);
+        lockWrite("                                           finished inserting tasks");
     }
+    
     tp.waitForCompletion();
 
     pthread_mutex_lock(&globalLock);
