@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 16:33:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:47:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ class ThreadPool : public IThreadPool
         ThreadTaskQueue                         _taskQueue;
         std::vector<ThreadPoolWorker *>         _threads;
 
-    
 
 
     //public template specializations for ThreadTask
@@ -109,10 +108,6 @@ class ThreadPool : public IThreadPool
             ThreadTask<void (Class::*)(void)> task(instance, function);
             _taskQueue.addTask(&task);
         }
-
-
-
-
 
         template<typename Class, typename Args, typename Return>
         void addTask(const Class& instance, Return (Class::*function)(Args) const, Args args, Return* placeReturn = NULL)
