@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:01:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 12:17:42 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,56 +58,56 @@ class ThreadPool : public IThreadPool
         template<typename Return, typename Args>
         void addTask(Return (*function)(Args), Args args, Return* placeReturn = NULL)
         {
-            IThreadTask* task = new ThreadTask<Return (*)(Args)>(function, args, placeReturn);
-            addTask(task);
+            ThreadTask<Return (*)(Args)> task(function, args, placeReturn);
+            _taskQueue.addTask(&task);
         }
 
         template<typename Return>
         void addTask(Return (*function)(void), Return* placeReturn = NULL)
         {
-            IThreadTask* task = new ThreadTask<Return (*)(void)>(function, placeReturn);
-            addTask(task);
+            ThreadTask<Return (*)(void)> task(function, placeReturn);
+            _taskQueue.addTask(&task);
         }
 
         template<typename Args>
         void addTask(void (*function)(Args), Args args)
         {
-            IThreadTask* task = new ThreadTask<void (*)(Args)>(function, args);
-            addTask(task);
+            ThreadTask<void (*)(Args)> task (function, args);
+            _taskQueue.addTask(&task);
         }
 
         void addTask(void (*function)(void))
         {
-            IThreadTask* task = new ThreadTask<void (*)(void)>(function);
-            addTask(task);
+            ThreadTask<void (*)(void)> task(function);
+            _taskQueue.addTask(&task);
         }
 
         template<typename Class, typename Args, typename Return>
         void addTask(Class& instance, Return (Class::*function)(Args), Args args, Return* placeReturn = NULL)
         {
-            IThreadTask* task = new ThreadTask<Return (Class::*)(Args)>(instance, function, args, placeReturn);
-            addTask(task);
+            ThreadTask<Return (Class::*)(Args)> task(instance, function, args, placeReturn);
+            _taskQueue.addTask(&task);
         }
 
         template<typename Class, typename Args>
         void addTask(Class& instance, void (Class::*function)(Args), Args args)
         {
-            IThreadTask* task = new ThreadTask<void (Class::*)(Args)>(instance, function, args);
-            addTask(task);
+            ThreadTask<void (Class::*)(Args)> task(instance, function, args);
+            _taskQueue.addTask(&task);
         }
 
         template <typename Class, typename Return>
         void addTask(Class& instance, Return (Class::*function)(void), Return* placeReturn = NULL)
         {
-            IThreadTask* task = new ThreadTask<Return (Class::*)(void)>(instance, function, placeReturn);
-            addTask(task);
+            ThreadTask<Return (Class::*)(void)> task(instance, function, placeReturn);
+            _taskQueue.addTask(&task);
         }
 
         template<typename Class>
         void addTask(Class& instance, void (Class::*function)(void))
         {
-            IThreadTask* task = new ThreadTask<void (Class::*)(void)>(instance, function);
-            addTask(task);
+            ThreadTask<void (Class::*)(void)> task(instance, function);
+            _taskQueue.addTask(&task);
         }       
 
 };

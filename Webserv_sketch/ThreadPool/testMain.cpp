@@ -6,15 +6,15 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:55:53 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 11:49:50 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include "include/Concrete/ThreadTask.tpp"
 # include "include/Concrete/ThreadPool.hpp"
-# include "include/Concrete/SharedTask.hpp"
-# include "include/Concrete/IndependentTask.hpp"
+# include "_legacy/SharedTask.hpp"
+# include "_legacy/IndependentTask.hpp"
 # include <unistd.h>
 /*
     (cd ../.. && ./gitcommit.sh)
@@ -125,7 +125,7 @@ int main(int ac, char **av)
 {
     (void)ac;
 
-    unsigned int count = 500000;
+    unsigned int count = 50;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
