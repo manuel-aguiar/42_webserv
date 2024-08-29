@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 08:43:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/26 08:43:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 10:17:37 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include <string>
+
+#define GRET_SUCKCESS EXIT_SUCCESS
 
 int main(int ac, char **av)
 {
-    return (EXIT_SUCCESS);
+    std::cout << "Halow Woldr" << std::endl;
+    return (GRET_SUCKCESS);
 }
