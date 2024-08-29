@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   testMain.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 15:50:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 08:30:33 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
-# include "../include/Concrete/ThreadTask.tpp"
-# include "../include/Concrete/ThreadPool.hpp"
-# include "../include/Concrete/SharedTask.hpp"
-# include "../include/Concrete/IndependentTask.hpp"
+# include "include/Concrete/ThreadTask.tpp"
+# include "include/Concrete/ThreadPool.hpp"
+# include "include/Concrete/SharedTask.hpp"
+# include "include/Concrete/IndependentTask.hpp"
 # include <unistd.h>
 /*
     (cd ../.. && ./gitcommit.sh)
@@ -104,13 +104,14 @@ class StaticMethod
         }
 };
 
-int main(void)
+int main(int ac, char **av)
 {
-    unsigned int count = 50;
+    (void)ac;
+    unsigned int count = 500;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
-    ThreadPool tp(2);
+    ThreadPool tp(std::atoi(av[1]));
 
     const std::string cenas("Hey thhere");
 
