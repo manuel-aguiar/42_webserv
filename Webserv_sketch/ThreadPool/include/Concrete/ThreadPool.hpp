@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ThreadPool.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 14:11:04 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 15:59:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,34 @@ class ThreadPool : public IThreadPool
         {
             ThreadTask<void (Class::*)(void)> task(instance, function);
             _taskQueue.addTask(&task);
-        }       
+        }
+                template<typename Class, typename Args, typename Return>
+        void addTask(const Class& instance, Return (Class::*function)(Args) const, Args args, Return* placeReturn = NULL)
+        {
+            ThreadTask<Return (Class::*)(Args)> task(instance, function, args, placeReturn);
+            _taskQueue.addTask(&task);
+        }
+
+        template<typename Class, typename Args>
+        void addTask(const Class& instance, void (Class::*function)(Args) const, Args args)
+        {
+            ThreadTask<void (Class::*)(Args)> task(instance, function, args);
+            _taskQueue.addTask(&task);
+        }
+
+        template <typename Class, typename Return>
+        void addTask(const Class& instance, Return (Class::*function)(void) const, Return* placeReturn = NULL)
+        {
+            ThreadTask<Return (Class::*)(void)> task(instance, function, placeReturn);
+            _taskQueue.addTask(&task);
+        }
+
+        template<typename Class>
+        void addTask(const Class& instance, void (Class::*function)(void)) const
+        {
+            ThreadTask<void (Class::*)(void)> task(instance, function);
+            _taskQueue.addTask(&task);
+        }          
 
 };
 
