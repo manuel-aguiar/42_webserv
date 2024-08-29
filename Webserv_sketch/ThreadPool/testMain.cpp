@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:01:42 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 10:02:48 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,12 @@ class Test
 
         int ArgYesReturnYes(unsigned int number)
         {
-            lockWrite("                 Arg Yes Return Yes" + std::to_string(number));
+            lockWrite("                 Arg Yes Return Yes " + std::to_string(number));
             return (number);
         };
         int ArgNoReturnYes(void)
         {
-            lockWrite("                 Arg No, Return Yes " + std::to_string(42));
+            lockWrite("                 Arg No, Return Yes " + std::to_string(52));
             return (42);
         };
         void ArgYesReturnNo(int number)
