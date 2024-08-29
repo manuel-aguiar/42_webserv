@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:05:44 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 10:14:15 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
     clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
 */
 
+pthread_mutex_t globalLock;
 void    lockWrite(const std::string& toWrite);
 
 long fibBad(unsigned int n) {
@@ -74,6 +75,15 @@ void nada()
     lockWrite("nada");
 }
 
+unsigned int* allSameThreadUnsafe(unsigned int number)
+{
+    unsigned int* treta;
+
+    treta = new unsigned int[number];
+    return treta;
+}
+
+
 class Test
 {
     public:
@@ -102,13 +112,13 @@ class Test
         };        
 };
 
-pthread_mutex_t globalWriteLock;
+
 
 void    lockWrite(const std::string& toWrite)
 {
-    pthread_mutex_lock(&globalWriteLock);
+    pthread_mutex_lock(&globalLock);
     std::cout << toWrite << std::endl;
-    pthread_mutex_unlock(&globalWriteLock);
+    pthread_mutex_unlock(&globalLock);
 }
 
 int main(int ac, char **av)
@@ -120,11 +130,13 @@ int main(int ac, char **av)
     std::vector<long> vector(vecSize);
     Test    dummy;
 
+    unsigned int* save;
+    (void)save;
     ThreadPool tp(std::atoi(av[1]));
 
     const std::string cenas("Hey thhere");
 
-    pthread_mutex_init(&globalWriteLock, NULL);
+    pthread_mutex_init(&globalLock, NULL);
 
     for (unsigned int i = 0; i < count; ++i)
     {
@@ -144,6 +156,7 @@ int main(int ac, char **av)
         //tp.addTask(task7);
         tp.addTask(fib, i % vecSize);
         tp.addTask(Test::StaticMethod);
+        tp.addTask(allSameThreadUnsafe, i);
         tp.addTask(dummy, &Test::ArgYesReturnYes, i);
         tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
         tp.addTask(dummy, &Test::ArgNoReturnYes);
@@ -153,15 +166,15 @@ int main(int ac, char **av)
     }
     tp.waitForCompletion();
 
-    pthread_mutex_lock(&globalWriteLock);
+    pthread_mutex_lock(&globalLock);
     for (unsigned int i = 0; i < vecSize; ++i)
     {
         std::cout << "fib(" << i << ") = " << vector[i] << std::endl;
     }
     std::cout << "tp has " << tp.threadCount() << " threads" << std::endl;
-    pthread_mutex_unlock(&globalWriteLock);
+    pthread_mutex_unlock(&globalLock);
     tp.destroy(true);
-    pthread_mutex_destroy(&globalWriteLock);
+    pthread_mutex_destroy(&globalLock);
 
 
     return (0);
