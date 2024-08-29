@@ -3,7 +3,7 @@
 Como vamos fazer fork-exec the CGI scripts, provavelmente todos os file descriptors que encontremos
 excluindo pipes vao levar flag O_CLOEXEC:
 
-se não, mother of all fd leaks
+se não, fechar tudo no fork :| ou mother of all fd leaks
 
 
 
