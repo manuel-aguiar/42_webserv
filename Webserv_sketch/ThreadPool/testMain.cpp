@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 08:30:33 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:23:48 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ int main(int ac, char **av)
         tp.addTask(task5);
         tp.addTask(task6);
         tp.addTask(task7);
+        tp.addTask(fib,i % vecSize);
     }
     tp.waitForCompletion();
 
