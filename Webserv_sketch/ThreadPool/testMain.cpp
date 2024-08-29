@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:02:48 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 10:05:44 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,7 @@
     clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
 */
 
-
-pthread_mutex_t globalWriteLock;
-
-void    lockWrite(const std::string& toWrite)
-{
-    pthread_mutex_lock(&globalWriteLock);
-    std::cout << toWrite << std::endl;
-    pthread_mutex_unlock(&globalWriteLock);
-}
+void    lockWrite(const std::string& toWrite);
 
 long fibBad(unsigned int n) {
     if (n <= 1)
@@ -110,20 +102,24 @@ class Test
         };        
 };
 
-class StaticMethod
-{
-    public:
+pthread_mutex_t globalWriteLock;
 
-};
+void    lockWrite(const std::string& toWrite)
+{
+    pthread_mutex_lock(&globalWriteLock);
+    std::cout << toWrite << std::endl;
+    pthread_mutex_unlock(&globalWriteLock);
+}
 
 int main(int ac, char **av)
 {
     (void)ac;
+
     unsigned int count = 500;
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
-    (void)dummy;
+
     ThreadPool tp(std::atoi(av[1]));
 
     const std::string cenas("Hey thhere");
