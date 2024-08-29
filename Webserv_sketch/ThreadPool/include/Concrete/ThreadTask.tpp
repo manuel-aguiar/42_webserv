@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ThreadTask.tpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/28 15:43:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 09:01:20 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,10 @@ template <
 class ThreadTask<Return (*)(Args)> : public IThreadTask
 {
     public:
-        ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn) :
+        ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn = NULL) :
             _function(function),
             _args(arguments),
             _placeReturn(placeReturn)
-        {};
-        ThreadTask(Return (*function)(Args), Args arguments) :
-            _function(function),
-            _args(arguments),
-            _placeReturn(NULL)
         {};
         ~ThreadTask() {};
         ThreadTask(const ThreadTask& copy) :
@@ -100,13 +95,9 @@ template <
 class ThreadTask<Return (*)(void)> : public IThreadTask
 {
     public:
-        ThreadTask(Return (*function)(void), Return* placeReturn) :
+        ThreadTask(Return (*function)(void), Return* placeReturn = NULL) :
             _function(function),
             _placeReturn(placeReturn)
-        {};
-        ThreadTask(Return (*function)(void)) :
-            _function(function),
-            _placeReturn(NULL)
         {};
         ~ThreadTask() {};
         ThreadTask(const ThreadTask& copy) :
@@ -227,17 +218,11 @@ template <
 class ThreadTask<Return (Class::*)(Args)> : public IThreadTask
 {
     public:
-        ThreadTask(Class& instance, Return (Class::*function)(Args), Args arguments, Return* placeReturn) :
+        ThreadTask(Class& instance, Return (Class::*function)(Args), Args arguments, Return* placeReturn = NULL) :
             _instance(instance),
             _function(function),
             _args(arguments),
             _placeReturn(placeReturn)
-        {};
-        ThreadTask(Class& instance, Return (Class::*function)(Args), Args arguments) :
-            _instance(instance),
-            _function(function),
-            _args(arguments),
-            _placeReturn(NULL)
         {};
         ~ThreadTask() {};
         ThreadTask(const ThreadTask& copy) :
