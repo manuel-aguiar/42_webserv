@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:36:05 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:54:43 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,23 +85,35 @@ void nada()
 class Test
 {
     public:
-
-        int dosomething(unsigned int number)
+        static void StaticMethod()
         {
-            (void)number;
-            lockWrite("                 I WAS GIVEN " + std::to_string(number));
+            lockWrite("                 HELLO");
+        }
+
+        int ArgYesReturnYes(unsigned int number)
+        {
+            lockWrite("                 Arg Yes Return Yes" + std::to_string(number));
             return (number);
         };
-
+        int ArgNoReturnYes(void)
+        {
+            lockWrite("                 Arg No, Return Yes " + std::to_string(42));
+            return (42);
+        };
+        void ArgYesReturnNo(int number)
+        {
+            lockWrite("                 Arg Yes, Return No " + std::to_string(number));
+        };
+        void ArgNoReturnNo(void)
+        {
+            lockWrite("                 Arg No, Return No " + std::to_string(42));
+        };        
 };
 
 class StaticMethod
 {
     public:
-        static void sayHello()
-        {
-            lockWrite("                 HELLO");
-        }
+
 };
 
 int main(int ac, char **av)
@@ -135,7 +147,11 @@ int main(int ac, char **av)
         //tp.addTask(task6);
         //tp.addTask(task7);
         tp.addTask(fib, i % vecSize);
-        tp.addTask(dummy, &Test::dosomething, i);
+        tp.addTask(Test::StaticMethod);
+        //tp.addTask(dummy, &Test::ArgYesReturnYes, i);
+        //tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
+        //tp.addTask(dummy, &Test::ArgNoReturnYes);
+        //tp.addTask(dummy, &Test::ArgNoReturnNo);
         tp.addTask(fibprint, (unsigned long)(i % vecSize));
         tp.addTask(nada);
     }

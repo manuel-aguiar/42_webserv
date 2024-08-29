@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:01:20 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:51:35 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,6 +302,53 @@ class ThreadTask<void (Class::*)(Args)> : public IThreadTask
         Class&          _instance;
         void            (Class::*_function)(Args);
         Args            _args;
+};
+
+// Specialization for a member function, with no argument and that returns
+template <
+    typename Class,
+    typename Return
+>
+class ThreadTask<Return (Class::*)(void)> : public IThreadTask
+{
+    public:
+        ThreadTask(Class& instance, Return (Class::*function)(void), Return* placeReturn = NULL) :
+            _instance(instance),
+            _function(function),
+            _placeReturn(placeReturn)
+        {};
+        ~ThreadTask() {};
+        ThreadTask(const ThreadTask& copy) :
+            _instance(copy._instance),
+            _function(copy._function),
+            _placeReturn(copy._placeReturn)
+        {};
+        ThreadTask& operator=(const ThreadTask& assign)
+        {
+            if (this == &assign)
+                return (*this);
+            *this = assign;
+            return (*this);
+        }
+
+        void            execute() const
+        {
+            if (!_function)
+                return ;
+            if (_placeReturn)
+                *_placeReturn = (_instance.*_function)();
+            else
+                (_instance.*_function)();
+        };
+        IThreadTask*    clone() const
+        {
+            return (new ThreadTask(*this));
+        };
+
+    private:
+        Class&          _instance;
+        Return          (Class::*_function)(void);
+        Return*         _placeReturn;
 };
 
 // Specialization for a member function, with no argument and no return

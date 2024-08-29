@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:19:37 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:51:03 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,13 @@ class ThreadPool : public IThreadPool
             addTask(task);
         }
 
+        template <typename Class, typename Return>
+        void addTask(Class& instance, void (Class::*function)(void), Return* placeReturn = NULL)
+        {
+            IThreadTask* task = new ThreadTask<Return (Class::*)(void)>(instance, function, placeReturn);
+            addTask(task);
+        }
+
         template<typename Class>
         void addTask(Class& instance, void (Class::*function)(void))
         {
@@ -104,8 +111,6 @@ class ThreadPool : public IThreadPool
         }       
 
 };
-
-
 
 
 
