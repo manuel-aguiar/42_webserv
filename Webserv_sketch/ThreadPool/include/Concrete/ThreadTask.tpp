@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ThreadTask.tpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:56:16 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 15:51:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,11 @@
 
 */
 
-//General case: a function pointer, whether it is a non-member or a member function
+//Forward Declaration: a function pointer, whether it is a non-member or a member function
 template <
     typename FunctionPointer
 >
 class ThreadTask;
-
 
 
 // Specialization for a non-member function which takes an argument and returns
@@ -77,6 +76,7 @@ class ThreadTask<Return (*)(Args)> : public IThreadTask
             else
                 (*_function)(_args);
         };
+        
         IThreadTask*    clone() const
         {
             return (new ThreadTask(*this));
