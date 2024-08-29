@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:51:35 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 09:56:16 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,7 @@ class ThreadTask<void (Class::*)(Args)> : public IThreadTask
         {
             if (!_function)
                 return ;
-            _instance.*_function(_args);
+            (_instance.*_function)(_args);
         };
         IThreadTask*    clone() const
         {
@@ -379,7 +379,7 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
         {
             if (!_function)
                 return ;
-            _instance.*_function();
+            (_instance.*_function)();
         };
         IThreadTask*    clone() const
         {

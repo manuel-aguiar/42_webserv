@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 09:54:43 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 10:01:42 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,10 +148,10 @@ int main(int ac, char **av)
         //tp.addTask(task7);
         tp.addTask(fib, i % vecSize);
         tp.addTask(Test::StaticMethod);
-        //tp.addTask(dummy, &Test::ArgYesReturnYes, i);
-        //tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
-        //tp.addTask(dummy, &Test::ArgNoReturnYes);
-        //tp.addTask(dummy, &Test::ArgNoReturnNo);
+        tp.addTask(dummy, &Test::ArgYesReturnYes, i);
+        tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
+        tp.addTask(dummy, &Test::ArgNoReturnYes);
+        tp.addTask(dummy, &Test::ArgNoReturnNo);
         tp.addTask(fibprint, (unsigned long)(i % vecSize));
         tp.addTask(nada);
     }
