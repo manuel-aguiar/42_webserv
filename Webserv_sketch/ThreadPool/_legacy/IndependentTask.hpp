@@ -21,7 +21,7 @@
 # include <cstring>
 # include <cassert>
 
-# include "../Abstract/IThreadTask.hpp"
+# include "../include/Abstract/IThreadTask.hpp"
 # include <vector>
 
 class IndependentTask : public IThreadTask

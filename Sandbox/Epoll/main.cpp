@@ -5,18 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 08:43:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 10:18:08 by manuel           ###   ########.fr       */
+/*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
+/*   Updated: 2024/08/29 11:00:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <string>
+#include <sys/epoll.h>
 
-#define GRET_SUCKCESS EXIT_SUCCESS
-
-int main(int ac, char **av)
-{
-    std::cout << "Halow Woldr" << std::endl;
-    return (GRET_SUCKCESS);
-}
+/*
+epoll (epoll_create,
+epoll_ctl, epoll_wait), 
+*/

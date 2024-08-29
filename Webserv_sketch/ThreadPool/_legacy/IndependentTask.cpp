@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/Concrete/IndependentTask.hpp"
+#include "IndependentTask.hpp"
 
 IndependentTask::IndependentTask(std::vector<int>& vec, int index) : 
     _vec(vec),
