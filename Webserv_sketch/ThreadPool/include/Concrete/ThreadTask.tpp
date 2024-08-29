@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 15:58:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/29 16:11:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,6 +391,8 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
         void            (Class::*_function)();
 };
 
+
+
 /*
 
 
@@ -445,7 +447,7 @@ class ThreadTask<Return (Class::*)(Args) const> : public IThreadTask
 
     private:
         const Class&          _instance;
-        Return          (Class::*_function)(Args);
+        Return          (Class::*_function)(Args) const;
         Args            _args;
         Return*         _placeReturn;
 };
@@ -490,7 +492,7 @@ class ThreadTask<void (Class::*)(Args) const> : public IThreadTask
 
     private:
         const Class&          _instance;
-        void            (Class::*_function)(Args);
+        void            (Class::*_function)(Args) const;
         Args            _args;
 };
 
@@ -537,7 +539,7 @@ class ThreadTask<Return (Class::*)(void) const> : public IThreadTask
 
     private:
         const Class&          _instance;
-        Return          (Class::*_function)(void);
+        Return          (Class::*_function)(void) const;
         Return*         _placeReturn;
 };
 
@@ -578,7 +580,7 @@ class ThreadTask<void (Class::*)(void) const> : public IThreadTask
 
     private:
         const Class&    _instance;
-        void            (Class::*_function)();
+        void            (Class::*_function)(void) const;
 };
 
 #endif
