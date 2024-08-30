@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 08:42:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 15:26:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/30 09:59:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int main()
     listAddress.sin_addr.s_addr = htonl(INADDR_ANY);
     listAddress.sin_port = htons(PORT);
     
-    listener = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
 
     if (bind(listener, (struct sockaddr*)&listAddress, sizeof(listAddress)) == -1)
     {
