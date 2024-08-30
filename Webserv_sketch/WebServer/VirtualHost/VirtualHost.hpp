@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 13:56:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/30 14:05:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/08/30 14:22:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
     websites as "VirtualHosts"
 */
 
+# include <string>
 
 class VirtualHost
 {
@@ -31,8 +32,8 @@ class VirtualHost
     
 
     private:
-        
-}
+        std::string _hostname;
+};
 
 
 
