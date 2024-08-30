@@ -3,19 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   ThreadPool.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 09:30:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 12:14:55 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/30 08:58:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Concrete/ThreadPool.hpp"
 
-ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads)
+ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
+    _threads(InitialNumberOfThreads)
 {
+    ThreadPoolWorker*   newThread;
+    
     for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
-        addThread();
+    {
+        newThread = new ThreadPoolWorker(_taskQueue);
+        _threads[i] = newThread;
+        newThread->start();
+    }
 }
 
 ThreadPool::~ThreadPool()
