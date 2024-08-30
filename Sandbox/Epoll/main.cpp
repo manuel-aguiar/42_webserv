@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
-/*   Updated: 2024/08/29 11:00:05 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/30 09:19:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,3 +16,10 @@
 epoll (epoll_create,
 epoll_ctl, epoll_wait), 
 */
+
+
+int main(int ac, char **av)
+{
+
+    return (0);
+}
