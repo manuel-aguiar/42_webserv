@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
-/*   Updated: 2024/09/02 15:40:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:49:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ epoll_ctl, epoll_wait),
     parent will use epoll to monitor traffic, marking the read end of the pipe
     to fire an event when it is ready to be read from
 
-    epoll hanging indeffinitely, for our purposes (setting timout -1);
+    epoll don0t hang, (short timeout, could be zero be we set to 1)
 
     once the pipe is ready to read, parent writes the message received from child.
 
@@ -116,6 +116,10 @@ int main(int ac, char **av, char **env)
     event.events = EPOLLIN | EPOLLHUP;
     event.data.fd = pipefd[0];
 
+    //epoll wait will hang forever with -1 timeout and no fds to monitor
+    //epoll_wait(epollfd, wait, MAX_EVENTS, -1);
+
+
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, pipefd[0], &event) == -1)
     {
         std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
@@ -147,6 +151,8 @@ int main(int ac, char **av, char **env)
 
         close(pipefd[1]);
 
+
+        // some async BS
         write(STDOUT_FILENO, "HEYHEYHEY\n", sizeof("HEYHEYHEY\n"));
 
         sleep(2);
@@ -181,7 +187,7 @@ int main(int ac, char **av, char **env)
         {
             
             std::memset(wait, 0, sizeof(wait));
-            numWait = epoll_wait(epollfd, wait, MAX_EVENTS, 1);    //timeout eent -1, make it hang
+            numWait = epoll_wait(epollfd, wait, MAX_EVENTS, 1);    //timeout eent 1, don't hang
             if (numWait == -1)
             {
                 std::cerr << "epoll_wait() " << std::strerror(errno) << std::endl;
@@ -199,10 +205,7 @@ int main(int ac, char **av, char **env)
                     {
                         // pipe was closed (EPOLLHUP) and it is empty, unsubscribe from epoll
                         if (epoll_ctl(epollfd, EPOLL_CTL_DEL, wait[i].data.fd, NULL) == -1)
-                        {
-                            close(epollfd);
-                            close(pipefd[0]);
-                        }
+                            std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
                         exitLoop = true;
                     }
                     
