@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   SelectEventManager.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 08:43:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 14:17:08 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/02 09:30:04 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/02 09:32:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef SELECTEVENTMANAGER_HPP
 
+# define SELECTEVENTMANAGER_HPP
 
-#include <iostream>
-#include <string>
+# include "IEventManager.hpp"
 
-#define GRET_SUCKCESS EXIT_SUCCESS
-
-int main(int ac, char **av)
+class Select : public IEventManager
 {
-    std::cout << "Halow Woldr" << std::endl;
-    return (GRET_SUCKCESS);
-}
+
+};
+
+
+#endif

@@ -1,23 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IHttpMethod.hpp                                    :+:      :+:    :+:   */
+/*   Server.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 08:01:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 16:47:26 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/08/30 13:56:11 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/08/30 14:05:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IHTTPMETHOD_HPP
+#ifndef SERVER_HPP
 
-# define IHTTPMETHOD_HPP
+# define SERVER_HPP
 
-class IHttpMethod
+/*
+    Server is what is considered to be a website (directory tree).
+    A server that "serves" content from multiple websites (directory trees), sees individual
+    websites as "Servers"
+*/
+
+
+class Server
 {
-    virtual ~IHttpMethod() {};
+    public:
+        Server();
+        ~Server();
+        Server(const Server& copy);
+        Server& operator=(const Server& assign);
+    
+
+    private:
+        
 };
+
 
 
 #endif

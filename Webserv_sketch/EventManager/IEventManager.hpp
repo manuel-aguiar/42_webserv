@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   IEventManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 08:43:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 14:17:08 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/02 09:25:56 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/02 09:33:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef IEVENTMANAGER_HPP
 
+# define IEVENTMANAGER_HPP
 
-#include <iostream>
-#include <string>
-
-#define GRET_SUCKCESS EXIT_SUCCESS
-
-int main(int ac, char **av)
+class IEventManager
 {
-    std::cout << "Halow Woldr" << std::endl;
-    return (GRET_SUCKCESS);
-}
+    public:
+        virtual ~IEventManager() {}
+        int add();
+};
+
+
+
+#endif

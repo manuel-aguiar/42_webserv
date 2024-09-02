@@ -25,8 +25,9 @@ IndependentTask::~IndependentTask()
 {
     #ifdef DEBUG_CONSTRUCTOR
         std::cout << "IndependentTask dSTRUCTOR Called" << std::endl;
-    #endif    
+    #endif
 }
+
 IndependentTask::IndependentTask(const IndependentTask& copy) :
     _vec(copy._vec),
     _index(copy._index)
@@ -35,7 +36,6 @@ IndependentTask::IndependentTask(const IndependentTask& copy) :
         std::cout << "IndependentTask Constructor Called" << std::endl;
     #endif
 }
-
 
 IndependentTask&  IndependentTask::operator=(const IndependentTask& copy)
 {

@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   EPollEventManager.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 08:43:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 14:17:08 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/02 09:28:49 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/02 09:46:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef EPOLLEVENTMANAGER_HPP
 
+# define EPOLLEVENTMANAGER_HPP
 
-#include <iostream>
-#include <string>
+# include "IEventManager.hpp"
 
-#define GRET_SUCKCESS EXIT_SUCCESS
+# include <sys/epoll.h>
 
-int main(int ac, char **av)
+class EPoll : public IEventManager
 {
-    std::cout << "Halow Woldr" << std::endl;
-    return (GRET_SUCKCESS);
-}
+    
+};
+
+
+#endif

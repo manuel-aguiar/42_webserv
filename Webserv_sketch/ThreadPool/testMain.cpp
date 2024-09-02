@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   testMain.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 11:49:50 by manuel           ###   ########.fr       */
+/*   Updated: 2024/08/29 17:37:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,27 @@ class Test
         void ArgNoReturnNo(void)
         {
             lockWrite("                 Arg No, Return No " + std::to_string(42));
-        };        
+        };
+
+
+        int ArgYesReturnYes_Const(unsigned int number)
+        {
+            lockWrite("                 Const: Arg Yes Return Yes " + std::to_string(number));
+            return (number);
+        };
+        int ArgNoReturnYes_Const(void)
+        {
+            lockWrite("                 Const: Arg No, Return Yes " + std::to_string(52));
+            return (42);
+        };
+        void ArgYesReturnNo_Const(int number)
+        {
+            lockWrite("                 Const: rg Yes, Return No " + std::to_string(number));
+        };
+        void ArgNoReturnNo_Const(void) const
+        {
+            lockWrite("                 Const: Arg No, Return No " + std::to_string(42));
+        };         
 };
 
 
@@ -154,13 +174,19 @@ int main(int ac, char **av)
         //tp.addTask(task5);
         //tp.addTask(task6);
         //tp.addTask(task7);
+
+        //tp.addTask(allSameThreadUnsafe, i, &save);
+        
         tp.addTask(fib, i % vecSize);
         tp.addTask(Test::StaticMethod);
-        //tp.addTask(allSameThreadUnsafe, i, &save);
         tp.addTask(dummy, &Test::ArgYesReturnYes, i);
         tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
         tp.addTask(dummy, &Test::ArgNoReturnYes);
         tp.addTask(dummy, &Test::ArgNoReturnNo);
+        tp.addTask(dummy, &Test::ArgYesReturnYes_Const, i);
+        tp.addTask(dummy, &Test::ArgYesReturnNo_Const, (int)i);
+        tp.addTask(dummy, &Test::ArgNoReturnYes_Const);
+        tp.addTask(dummy, &Test::ArgNoReturnNo_Const);
         tp.addTask(fibprint, (unsigned long)(i % vecSize));
         tp.addTask(nada);
         lockWrite("                                           finished inserting tasks");
