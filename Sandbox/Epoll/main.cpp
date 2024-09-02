@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
-/*   Updated: 2024/09/02 13:46:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:40:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int main(int ac, char **av, char **env)
     int status;
 
     
-    char readbuf[10];
+    char readbuf[4];
     int bytesRead;
     std::string res;
     
@@ -113,7 +113,7 @@ int main(int ac, char **av, char **env)
 
     //subscribe the piperead fd to the epoll
     event = (struct epoll_event){};     //required, event.data is a union, if you use int (4bytes) you have another 4bytes of garbage (union with void *ptr);
-    event.events = EPOLLIN;
+    event.events = EPOLLIN | EPOLLHUP;
     event.data.fd = pipefd[0];
 
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, pipefd[0], &event) == -1)
@@ -135,6 +135,8 @@ int main(int ac, char **av, char **env)
     {
 
         close(pipefd[0]);                               //child closes pipe-read
+        //close(pipefd[1]);
+        //exit(1);
         if (dup2(pipefd[1], STDOUT_FILENO) == -1)       // redirect write-end of the pipe to stdout;
         {
             std::cerr << "dup2() " << std::strerror(errno) << std::endl;
@@ -145,8 +147,13 @@ int main(int ac, char **av, char **env)
 
         close(pipefd[1]);
 
-        sleep(1);
+        write(STDOUT_FILENO, "HEYHEYHEY\n", sizeof("HEYHEYHEY\n"));
 
+        sleep(2);
+
+        write(STDOUT_FILENO, "YOYOYO\n", sizeof("YOYOYO\n"));
+
+        sleep(2);
         
         //exec the command;
         if (execve(av[1], &av[1], env) == -1)
@@ -161,14 +168,16 @@ int main(int ac, char **av, char **env)
     //parent
     else
     {
-        bool wasRead = false;
         close(pipefd[1]); /// close pipe-write
+        bool exitLoop = false;
 
+        // set piperead to non-blocking, if there is nothing to read without hungup, just move along
         if (fcntl(pipefd[0], F_SETFL, O_NONBLOCK) == -1)
             std::cerr << "fcntl failed" << std::endl;
 
+        
         std::cout << "Parent is going to wait... " << std::endl;
-        while (!wasRead)
+        while (!exitLoop)
         {
             
             std::memset(wait, 0, sizeof(wait));
@@ -180,44 +189,40 @@ int main(int ac, char **av, char **env)
                 close(pipefd[0]);
                 return (EXIT_FAILURE);
             }
-            if (numWait != 0)
-                std::cout << "Parent: epoll found active fds: " << numWait << std::endl;
             for (int i = 0; i < numWait; ++i)
             {
-                if (wait[i].data.fd == pipefd[0])
+                if (wait[i].data.fd == pipefd[0])       //i don't care, i'm only listening to one
                 {   
                     bytesRead = read(pipefd[0], readbuf, sizeof(readbuf) - 1);
-                    if (bytesRead == -1)
-                    {
-                        std::cerr << "read() " << std::strerror(errno) << std::endl;
-                    }
-                    if (bytesRead == 0)
-                    {
-                        wasRead = true;
-                        break ;
-                    }
 
+                    if ((wait[i].events & EPOLLHUP) && bytesRead == 0)
+                    {
+                        // pipe was closed (EPOLLHUP) and it is empty, unsubscribe from epoll
+                        if (epoll_ctl(epollfd, EPOLL_CTL_DEL, wait[i].data.fd, NULL) == -1)
+                        {
+                            close(epollfd);
+                            close(pipefd[0]);
+                        }
+                        exitLoop = true;
+                    }
+                    
                     readbuf[bytesRead] = '\0';
                     res += readbuf;
-                    break ;
+                    std::cout << "          read " << bytesRead << std::endl;
+
                 }
             }
         }
+
+        
+        std::cout << "\n\nfiles waiting " << epoll_wait(epollfd, wait, MAX_EVENTS, 1) << std::endl;
 
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             std::cout << "Child process finished with exit status: " << WEXITSTATUS(status) << std::endl;
 
-        bytesRead = read(pipefd[0], readbuf, sizeof(readbuf) - 1);
-        if (bytesRead == -1)
-        {
-            std::cerr << "read() " << std::strerror(errno) << std::endl;
-        }
-        else
-            std::cout << "no read error" << std::endl;
-
         std::cout << res << std::endl;
-
+        
         close(epollfd);
         close(pipefd[0]);   //parent closes piperead;
     }
@@ -225,3 +230,7 @@ int main(int ac, char **av, char **env)
     return (EXIT_SUCCESS);
 
 }
+
+
+//pipe open, nothing to read, read returns -1;
+//pipe closed, nothing to read, read returns 0;
