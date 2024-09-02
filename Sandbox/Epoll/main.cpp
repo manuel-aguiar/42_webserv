@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
-/*   Updated: 2024/09/02 11:29:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/02 13:46:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ epoll_ctl, epoll_wait),
 
 
 /*
+
+
     This time we will open a pipe where child writes to parent
 
     Child will execve a command with args passed via main;
@@ -41,6 +43,8 @@ epoll_ctl, epoll_wait),
     Notes:
         using epoll_create1, we can set the close on exec flag directly without an extra call to fcntl
             -> child doesn't leak fd on execve
+
+        
 */
 
 
@@ -69,9 +73,11 @@ int main(int ac, char **av, char **env)
     int pid;
     int status;
 
-    char readbuf[100];
+    
+    char readbuf[10];
     int bytesRead;
-
+    std::string res;
+    
     struct epoll_event event;
     struct epoll_event wait[MAX_EVENTS];
     int numWait;
@@ -109,6 +115,7 @@ int main(int ac, char **av, char **env)
     event = (struct epoll_event){};     //required, event.data is a union, if you use int (4bytes) you have another 4bytes of garbage (union with void *ptr);
     event.events = EPOLLIN;
     event.data.fd = pipefd[0];
+
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, pipefd[0], &event) == -1)
     {
         std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
@@ -117,11 +124,16 @@ int main(int ac, char **av, char **env)
         close(pipefd[1]);
         return (EXIT_FAILURE);
     }
+
+
     pid = fork();
+
+
 
     //child
     if (!pid)
     {
+
         close(pipefd[0]);                               //child closes pipe-read
         if (dup2(pipefd[1], STDOUT_FILENO) == -1)       // redirect write-end of the pipe to stdout;
         {
@@ -145,49 +157,67 @@ int main(int ac, char **av, char **env)
             return (EXIT_FAILURE);
         }
     }
+
+    //parent
     else
     {
+        bool wasRead = false;
         close(pipefd[1]); /// close pipe-write
-        std::memset(wait, 0, sizeof(wait));
+
+        if (fcntl(pipefd[0], F_SETFL, O_NONBLOCK) == -1)
+            std::cerr << "fcntl failed" << std::endl;
+
         std::cout << "Parent is going to wait... " << std::endl;
-        numWait = epoll_wait(epollfd, wait, MAX_EVENTS, -1);    //timeout eent -1, make it hang
-        if (numWait == -1)
+        while (!wasRead)
         {
-            std::cerr << "epoll_wait() " << std::strerror(errno) << std::endl;
-            close(epollfd);
-            close(pipefd[0]);
-            return (EXIT_FAILURE);
-        }
-        std::cout << "Parent: epoll found active fds: " << numWait << std::endl;
-        for (int i = 0; i < numWait; ++i)
-        {
-            if (wait[i].data.fd == pipefd[0])
-            {   
-                std::cout << "Child told parent: \n\n" << std::endl;
-                while (true)
-                {
+            
+            std::memset(wait, 0, sizeof(wait));
+            numWait = epoll_wait(epollfd, wait, MAX_EVENTS, 1);    //timeout eent -1, make it hang
+            if (numWait == -1)
+            {
+                std::cerr << "epoll_wait() " << std::strerror(errno) << std::endl;
+                close(epollfd);
+                close(pipefd[0]);
+                return (EXIT_FAILURE);
+            }
+            if (numWait != 0)
+                std::cout << "Parent: epoll found active fds: " << numWait << std::endl;
+            for (int i = 0; i < numWait; ++i)
+            {
+                if (wait[i].data.fd == pipefd[0])
+                {   
                     bytesRead = read(pipefd[0], readbuf, sizeof(readbuf) - 1);
                     if (bytesRead == -1)
                     {
                         std::cerr << "read() " << std::strerror(errno) << std::endl;
-                        close(epollfd);
-                        close(pipefd[0]);
-                        return (EXIT_FAILURE);
                     }
                     if (bytesRead == 0)
+                    {
+                        wasRead = true;
                         break ;
+                    }
+
                     readbuf[bytesRead] = '\0';
-                    std::cout << readbuf;
+                    res += readbuf;
+                    break ;
                 }
-                std::cout << "\n\nChild message finished" << std::endl;
-                break ;
             }
         }
-
 
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             std::cout << "Child process finished with exit status: " << WEXITSTATUS(status) << std::endl;
+
+        bytesRead = read(pipefd[0], readbuf, sizeof(readbuf) - 1);
+        if (bytesRead == -1)
+        {
+            std::cerr << "read() " << std::strerror(errno) << std::endl;
+        }
+        else
+            std::cout << "no read error" << std::endl;
+
+        std::cout << res << std::endl;
+
         close(epollfd);
         close(pipefd[0]);   //parent closes piperead;
     }
