@@ -6,15 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 09:28:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/03 13:58:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 14:04:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENTMANAGER_HPP
 
 # define EVENTMANAGER_HPP
-
-# include "IEventManager.hpp"
 
 // C Headers
 # include <sys/epoll.h>
@@ -32,11 +30,11 @@ typedef int fd;
 
 # define EPOLL_MAXEVENTS 10
 
-class EventManager : public IEventManager
+class EventManager
 {
 	public:
 		
-		EventManager(const t_uint maxEvents);
+		EventManager();
 		~EventManager();
 
 		bool subscribe(const fd eventfd, t_uint eventFlags);
@@ -54,7 +52,6 @@ class EventManager : public IEventManager
 		std::map<fd, t_epoll_event>		_monitoredEvents;
 		
 
-		EventManager();
 		EventManager(const EventManager& copy);
 		EventManager& operator=(const EventManager& assign);
 };

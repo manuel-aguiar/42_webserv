@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:58:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/03 13:59:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 14:05:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventManager.hpp"
 
-EventManager::EventManager(const t_uint maxEvents) :
+EventManager::EventManager() :
 	_epollfd(epoll_create(EPOLL_MAXEVENTS)), 
 	_maxEvents(EPOLL_MAXEVENTS)
 {
@@ -23,6 +23,11 @@ EventManager::EventManager(const t_uint maxEvents) :
 	
 }
 
+EventManager::~EventManager()
+{
+	
+}
+
 
 bool EventManager::subscribe(const fd eventfd, t_uint eventFlags)
 {
@@ -30,7 +35,7 @@ bool EventManager::subscribe(const fd eventfd, t_uint eventFlags)
 
 	event.events = eventFlags;
 	event.data.fd = eventfd;
-	subscribe(event);
+	return (subscribe(event));
 }
 
 bool EventManager::modify(const fd eventfd, t_uint newFlags)
@@ -39,7 +44,7 @@ bool EventManager::modify(const fd eventfd, t_uint newFlags)
 
 	event.events = newFlags;
 	event.data.fd = eventfd;
-	modify(event);
+	return (modify(event));
 }
 
 bool EventManager::unsubscribe(const fd eventfd)
@@ -85,7 +90,6 @@ bool EventManager::modify(t_epoll_event& event)
 
 	if (!epoll_ctl(_epollfd, EPOLL_CTL_MOD, event.data.fd, &event))
 		throw std::runtime_error(std::string("EventManager::modify, epoll_ctl() failed: ") + std::strerror(errno));
-
 	return (1);
 }
 
@@ -105,6 +109,5 @@ bool EventManager::unsubscribe(t_epoll_event& event)
 
 
 // hiding duplicates and assignment.... super tricky to deep copy the epoll instance... and what for?
-EventManager::EventManager() : _epollfd(0), _maxEvents(EPOLL_MAXEVENTS) {}
 EventManager::EventManager(const EventManager& copy) : _epollfd(0), _maxEvents(EPOLL_MAXEVENTS) { (void)copy; }
-EventManager& EventManager::operator=(const EventManager& assign) { return (*this); }
+EventManager& EventManager::operator=(const EventManager& assign) { (void)assign; return (*this); }
