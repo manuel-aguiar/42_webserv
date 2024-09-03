@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 09:28:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/03 12:58:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 13:58:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,13 @@ class EventManager : public IEventManager
 		EventManager(const t_uint maxEvents);
 		~EventManager();
 
-		int subscribe(const fd eventfd, t_uint eventFlags);
-		int modify(const fd eventfd, t_uint newFlags);
-		int unsubscribe(const fd eventfd);
+		bool subscribe(const fd eventfd, t_uint eventFlags);
+		bool modify(const fd eventfd, t_uint newFlags);
+		bool unsubscribe(const fd eventfd);
 
+		bool subscribe(t_epoll_event& event);
+		bool modify(t_epoll_event& event);
+		bool unsubscribe(t_epoll_event& event);
 
 	private:
 		const fd						_epollfd;
@@ -50,6 +53,7 @@ class EventManager : public IEventManager
 		t_epoll_event           		_triggeredEvents[EPOLL_MAXEVENTS];                     
 		std::map<fd, t_epoll_event>		_monitoredEvents;
 		
+
 		EventManager();
 		EventManager(const EventManager& copy);
 		EventManager& operator=(const EventManager& assign);
