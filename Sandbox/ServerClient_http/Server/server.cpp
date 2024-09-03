@@ -66,7 +66,7 @@ int main()
     std::ifstream   file(std::string(WEBSITE_FOLDER) + "index.html");
     std::string     htmlContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    std::string response = "HTTP/1.0 200 OK\r\nContent-Type: text/html\r\nContent-Length: " +
+    std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: " +
                             std::to_string(htmlContent.size()) + "\r\n\r\n" + htmlContent;
 
 
@@ -108,13 +108,16 @@ int main()
         }
         std::cout << std::endl;
         std::cout << "  Server: End of client message." << std::endl;
-        if (write(connection, response.c_str(), response.length()) == -1)
+        int byteswritten = write(connection, response.c_str(), response.length());
+        if (byteswritten  == -1)
         {
             std::cerr << "write(): " << std::string (std::strerror(errno)) << std::endl;
             close(connection);
             close(listener);
             return (EXIT_FAILURE);
         }
+        else
+            std::cout << "write success: " << byteswritten << "\n\n" << response << "\n\n" << std::endl;
         close(connection);
     }
     
