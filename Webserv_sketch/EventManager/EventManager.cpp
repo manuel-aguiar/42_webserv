@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:58:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/03 14:05:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 14:15:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 EventManager::EventManager() :
 	_epollfd(epoll_create(EPOLL_MAXEVENTS)), 
-	_maxEvents(EPOLL_MAXEVENTS)
+	_maxEvents(EPOLL_MAXEVENTS), 
+	_waitTimeout(EPOLL_WAIT_TIMEOUT)
 {
 	if (_epollfd == -1)
 		throw std::runtime_error (std::string("epoll_create(): ") 
@@ -109,5 +110,5 @@ bool EventManager::unsubscribe(t_epoll_event& event)
 
 
 // hiding duplicates and assignment.... super tricky to deep copy the epoll instance... and what for?
-EventManager::EventManager(const EventManager& copy) : _epollfd(0), _maxEvents(EPOLL_MAXEVENTS) { (void)copy; }
+EventManager::EventManager(const EventManager& copy) : _epollfd(0), _maxEvents(EPOLL_MAXEVENTS), _waitTimeout(EPOLL_WAIT_TIMEOUT) { (void)copy; }
 EventManager& EventManager::operator=(const EventManager& assign) { (void)assign; return (*this); }
