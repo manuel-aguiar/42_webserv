@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/29 10:32:00 by manuel            #+#    #+#             */
-/*   Updated: 2024/09/02 15:49:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 11:48:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ epoll_ctl, epoll_wait),
     Notes:
         using epoll_create1, we can set the close on exec flag directly without an extra call to fcntl
             -> child doesn't leak fd on execve
+        epoll always tracks EPOLLHUP and EPOLLERR
+            errors and connection hangup (either socket or pipe) will always pop, those events don't have to be subscribed
 
         
 */
@@ -113,7 +115,7 @@ int main(int ac, char **av, char **env)
 
     //subscribe the piperead fd to the epoll
     event = (struct epoll_event){};     //required, event.data is a union, if you use int (4bytes) you have another 4bytes of garbage (union with void *ptr);
-    event.events = EPOLLIN | EPOLLHUP;
+    event.events = EPOLLIN;
     event.data.fd = pipefd[0];
 
     //epoll wait will hang forever with -1 timeout and no fds to monitor
