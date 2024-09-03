@@ -6,20 +6,30 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/02 07:48:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 16:20:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
+
+
+
+
+
+
+
+
+/*
 # include <iostream>
 # include "../include/Concrete/ThreadTask.tpp"
 # include "../include/Concrete/ThreadPool.hpp"
 # include "../../_legacy/SharedTask.hpp"
 # include "../../_legacy/IndependentTask.hpp"
 # include <unistd.h>
-/*
+
     (cd ../.. && ./gitcommit.sh)
     clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
-*/
+
 
 
 pthread_mutex_t globalWriteLock;
@@ -148,3 +158,5 @@ int main(void)
 
     return (0);
 }
+
+*/

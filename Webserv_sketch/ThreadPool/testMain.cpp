@@ -6,15 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 08:33:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/29 17:37:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/03 16:26:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include "include/Concrete/ThreadTask.tpp"
 # include "include/Concrete/ThreadPool.hpp"
-# include "_legacy/SharedTask.hpp"
-# include "_legacy/IndependentTask.hpp"
+//# include "_legacy/SharedTask.hpp"
+//# include "_legacy/IndependentTask.hpp"
 # include <unistd.h>
 /*
     (cd ../.. && ./gitcommit.sh)
@@ -83,14 +83,27 @@ unsigned int* allSameThreadUnsafe(unsigned int number)
     return treta;
 }
 
+class ITest
+{
+    public:
+        virtual ~ITest() {};
+        virtual int derived(unsigned int number) = 0;
 
-class Test
+};
+
+class Test : public ITest
 {
     public:
         static void StaticMethod()
         {
             lockWrite("                 HELLO");
         }
+
+        int derived(unsigned int number)
+        {
+            lockWrite("                 DerivedMethod " + std::to_string(number));
+            return (number);
+        };
 
         int ArgYesReturnYes(unsigned int number)
         {
@@ -149,6 +162,10 @@ int main(int ac, char **av)
     unsigned int vecSize = 10;
     std::vector<long> vector(vecSize);
     Test    dummy;
+    ITest*  testptr;
+    (void)testptr;
+
+    testptr = &dummy;
 
     unsigned int* save;
     (void)save;
@@ -189,6 +206,7 @@ int main(int ac, char **av)
         tp.addTask(dummy, &Test::ArgNoReturnNo_Const);
         tp.addTask(fibprint, (unsigned long)(i % vecSize));
         tp.addTask(nada);
+        tp.addTask(*testptr, &ITest::derived, i);
         lockWrite("                                           finished inserting tasks");
     }
     
