@@ -24,14 +24,15 @@
 class Server
 {
     public:
-        Server();
+        Server(const char* configFileName);
         ~Server();
         Server(const Server& copy);
         Server& operator=(const Server& assign);
     
+        void run();
 
     private:
-        
+        Server();
 };
 
 
