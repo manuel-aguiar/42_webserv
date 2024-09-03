@@ -1,7 +1,7 @@
 
 
+HTML RFC
 https://www.rfc-editor.org/rfc/rfc9110.html
-
 
 9110
 9111
@@ -9,3 +9,10 @@ https://www.rfc-editor.org/rfc/rfc9110.html
 3986
 5234
 2045
+
+
+Beej's Guide to Network Programming
+https://www.beej.us/guide/bgnet/html/
+
+What does getaddrinfo do?
+https://jameshfisher.com/2018/02/03/what-does-getaddrinfo-do/
