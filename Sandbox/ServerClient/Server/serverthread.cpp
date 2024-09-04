@@ -69,6 +69,18 @@ struct sockaddr_in {
 	unsigned short   sin_port;	 // Port number (in network byte order)
 	struct in_addr   sin_addr;	 // Internet address (struct in_addr)
 };
+
+multithreading and signals
+
+	signal handlers cannot contain mutex lock:
+
+	signal -> thread 1 received, calls signal_handler, locks ... 
+	signal_handler interrupted by signal		
+			->thread 1 received, calls signal_handler, locks ... deadlock by itself
+
+	for instance, the signal handler can safely call sem_post but not the sem_wait (in the same spirit);
+
+
 */
 
 # include <vector>
