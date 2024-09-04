@@ -56,6 +56,8 @@
 # include <cstring>
 # include <iostream>
 
+# include "../../../Webserv_sketch/ThreadPool/include/Concrete/ThreadPool.hpp"
+
 # define PORT 8080
 # define MAX_CONNECTIONS 10
 # define RESPONSE "Hello Client!"
@@ -108,6 +110,22 @@ int prepare_signal(struct sigaction *ms, void (*handler)(int))
 	c++ -Wall -Wextra -Werror serverchildren.cpp -o serverchild
 */
 
+int checkglobal()
+{
+	int signal;
+	static pthread_mutex_t* mutex;
+
+	if (!mutex)
+	{
+		mutex = new pthread_mutex_t;
+		pthread_mutex_init(mutex, NULL);
+	}
+	pthread_mutex_lock(mutex);
+	signal = g_signal;
+	pthread_mutex_unlock(mutex);
+}
+
+
 int main()
 {
 	int				 listener;
@@ -126,52 +144,6 @@ int main()
 	listAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 	listAddress.sin_port = htons(PORT);
 	
-	
-
-	/*
-		https://lwn.net/Articles/542629/
-		https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ
-
-		SO_REUSEPORT (NOT PORTABLE, linux 3.9)
-			-> allow for multiple sockets listening on the same port
-			-> rogue programs listening as well trying to get packets.....?
-
-		SO_REUSEADDR
-			-> when closing the socket, tell the kernel to not enter TIME_WAIT state for the socket
-			and forget all incoming packets that might be travelling
-			-> port is available to bind immediately by another socket
-
-		"
-		Linux >= 3.9
-			Linux 3.9 added the option SO_REUSEPORT to Linux as well. This option 
-			behaves exactly like the option in BSD and allows binding to exactly 
-			the same address and port number as long as all sockets have this option 
-			set prior to binding them.
-
-			Yet, there are still two differences to SO_REUSEPORT on other systems:
-
-			To prevent "port hijacking", there is one special limitation: All sockets 
-			that want to share the same address and port combination must belong to 
-			processes that share the same effective user ID! So one user cannot "steal" 
-			ports of another user. This is some special magic to somewhat compensate for 
-			the missing SO_EXCLBIND/SO_EXCLUSIVEADDRUSE flags.
-
-			Additionally the kernel performs some "special magic" for SO_REUSEPORT sockets 
-			that isn't found in other operating systems: For UDP sockets, it tries to distribute 
-			datagrams evenly, for TCP listening sockets, it tries to distribute incoming 
-			connect requests (those accepted by calling accept()) evenly across all the 
-			sockets that share the same address and port combination. Thus an application 
-			can easily open the same port in multiple child processes and then use 
-			SO_REUSEPORT to get a very inexpensive load balancing.
-		
-		"
-
-		#ifdef SO_REUSEPORT
-			int sockopt = SO_REUSEPORT | SO_REUSEADDR
-		#else
-			int sockopt = SO_REUSEADDR
-	*/
-
 	#ifdef SO_REUSEPORT
 		int sockopt = SO_REUSEPORT | SO_REUSEADDR;
 	#else
@@ -216,6 +188,7 @@ int main()
 				close(listener);
 				return (EXIT_FAILURE);
 			}
+			
 			if (listen(listener, MAX_CONNECTIONS) == -1)
 			{
 				std::cerr << "listen(): " << std::string (std::strerror(errno)) << std::endl;
