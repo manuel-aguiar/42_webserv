@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipe.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/23 12:13:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/23 12:44:12 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   pipe.cpp										   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/08/23 12:13:18 by mmaria-d		  #+#	#+#			 */
+/*   Updated: 2024/08/23 12:44:12 by mmaria-d		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include <unistd.h>
@@ -17,73 +17,73 @@
 
 void closePipes(int pipefds[2])
 {
-    if (pipefds[0] != -1)
-        close(pipefds[0]);
-    if (pipefds[1] != -1)
-        close(pipefds[1]);
-    pipefds[0] = -1;
-    pipefds[1] = -1;
+	if (pipefds[0] != -1)
+		close(pipefds[0]);
+	if (pipefds[1] != -1)
+		close(pipefds[1]);
+	pipefds[0] = -1;
+	pipefds[1] = -1;
 }
 
-void    closeFdSetMinusOne(int& fd)
+void	closeFdSetMinusOne(int& fd)
 {
-    close(fd);
-    fd = -1;
+	close(fd);
+	fd = -1;
 }
 
 
 int main(void)
 {
-    int pipeParentToChild[2];
-    int pipeChildToParent[2];
-    int pid;
-    char buffer[256];
+	int pipeParentToChild[2];
+	int pipeChildToParent[2];
+	int pid;
+	char buffer[256];
 
-    if (pipe(pipeParentToChild) == -1)
-    {
-        std::cerr << "pipe(): " << std::strerror(errno) << std::endl;
-        return (EXIT_FAILURE);
-    }
-    if (pipe(pipeChildToParent) == -1)
-    {
-        std::cerr << "pipe(): " << std::strerror(errno) << std::endl;
-        closePipes(pipeParentToChild);
-        return (EXIT_FAILURE);
-    }
-    pid = fork();
-    if (pid == -1)
-    {
-        std::cerr << "fork(): " << std::strerror(errno) << std::endl;
-        closePipes(pipeParentToChild);
-        closePipes(pipeChildToParent);
-        return (EXIT_FAILURE);
-    }
+	if (pipe(pipeParentToChild) == -1)
+	{
+		std::cerr << "pipe(): " << std::strerror(errno) << std::endl;
+		return (EXIT_FAILURE);
+	}
+	if (pipe(pipeChildToParent) == -1)
+	{
+		std::cerr << "pipe(): " << std::strerror(errno) << std::endl;
+		closePipes(pipeParentToChild);
+		return (EXIT_FAILURE);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		std::cerr << "fork(): " << std::strerror(errno) << std::endl;
+		closePipes(pipeParentToChild);
+		closePipes(pipeChildToParent);
+		return (EXIT_FAILURE);
+	}
 
-    // child
-    if (!pid)
-    {
-        closeFdSetMinusOne(pipeParentToChild[1]);  //close write parent
-        closeFdSetMinusOne(pipeChildToParent[0]);   //close read child
-        read(pipeParentToChild[0], buffer, sizeof(buffer));        // block until it receives something
-        std::cout   <<  "I'm child, parent told me: " << buffer << std::endl
-                    << "        Now i'll send a message to dad" << std::endl;
-        write(pipeChildToParent[1], "Hi Dad!!", 9);
-    }
+	// child
+	if (!pid)
+	{
+		closeFdSetMinusOne(pipeParentToChild[1]);  //close write parent
+		closeFdSetMinusOne(pipeChildToParent[0]);   //close read child
+		read(pipeParentToChild[0], buffer, sizeof(buffer));		// block until it receives something
+		std::cout   <<  "I'm child, parent told me: " << buffer << std::endl
+					<< "		Now i'll send a message to dad" << std::endl;
+		write(pipeChildToParent[1], "Hi Dad!!", 9);
+	}
 
-    // parent
-    else
-    {
-        closeFdSetMinusOne(pipeParentToChild[0]);  //close read parent
-        closeFdSetMinusOne(pipeChildToParent[1]);   //close write child
-        std::cout << "        I'm Dad, sending message to son" << std::endl;
-        write(pipeParentToChild[1], "Hi Son!!", 9);
-        read(pipeChildToParent[0], buffer, sizeof(buffer));             //block until it receives something
-        std::cout <<  "I'm parent, child told me: " << buffer << std::endl;
-        waitpid(pid, NULL, 0);
-    }
+	// parent
+	else
+	{
+		closeFdSetMinusOne(pipeParentToChild[0]);  //close read parent
+		closeFdSetMinusOne(pipeChildToParent[1]);   //close write child
+		std::cout << "		I'm Dad, sending message to son" << std::endl;
+		write(pipeParentToChild[1], "Hi Son!!", 9);
+		read(pipeChildToParent[0], buffer, sizeof(buffer));			 //block until it receives something
+		std::cout <<  "I'm parent, child told me: " << buffer << std::endl;
+		waitpid(pid, NULL, 0);
+	}
 
-    closePipes(pipeParentToChild);
-    closePipes(pipeChildToParent);
+	closePipes(pipeParentToChild);
+	closePipes(pipeChildToParent);
 }
 
 // c++ -Wall -Wextra -Werror pipe.cpp -o pipe

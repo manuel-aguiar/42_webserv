@@ -28,11 +28,11 @@ man "open"
 SOCK_NONBLOCK
 "
 				Note that the setting of this flag has no effect on the
-              	operation of poll(2), select(2), epoll(7), and similar,
-              	since those interfaces merely inform the caller about
-              	whether a file descriptor is "ready", meaning that an I/O
-              	operation performed on the file descriptor with the
-             	O_NONBLOCK flag clear would not block.
+			  	operation of poll(2), select(2), epoll(7), and similar,
+			  	since those interfaces merely inform the caller about
+			  	whether a file descriptor is "ready", meaning that an I/O
+			  	operation performed on the file descriptor with the
+			 	O_NONBLOCK flag clear would not block.
 "
 
 AF_INET SOCK_STREAM

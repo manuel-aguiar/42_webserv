@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   SharedTask.hpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 09:09:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/08/27 09:21:46 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   SharedTask.hpp								:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/08/26 09:09:46 by mmaria-d		  #+#	#+#			 */
+/*   Updated: 2024/08/27 09:21:46 by mmaria-d		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef SHAREDTASK_HPP
@@ -27,21 +27,21 @@
 
 class SharedTask : public IThreadTask
 {
-    public:
-        SharedTask(pthread_mutex_t& mutex, int index);
-        ~SharedTask();
-        SharedTask(const SharedTask& copy);
-        SharedTask& operator=(const SharedTask& assign);
+	public:
+		SharedTask(pthread_mutex_t& mutex, int index);
+		~SharedTask();
+		SharedTask(const SharedTask& copy);
+		SharedTask& operator=(const SharedTask& assign);
 
-        void            execute() const;
-        IThreadTask*    clone() const;
+		void			execute() const;
+		IThreadTask*	clone() const;
 
-    private:
-        pthread_mutex_t&    _mutex;
-        int                 _index;
+	private:
+		pthread_mutex_t&	_mutex;
+		int				 _index;
 
-        
-        
+		
+		
 
 };
 

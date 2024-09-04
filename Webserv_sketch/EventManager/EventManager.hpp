@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   EventManager.hpp                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/02 09:28:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/03 14:11:30 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   EventManager.hpp								   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/09/02 09:28:49 by mmaria-d		  #+#	#+#			 */
+/*   Updated: 2024/09/03 14:11:30 by mmaria-d		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef EVENTMANAGER_HPP
@@ -50,10 +50,10 @@ class EventManager : public IEventManager
 
 	private:
 		const fd						_epollfd;
-		const t_uint            		_maxEvents;
+		const t_uint					_maxEvents;
 		const t_uint					_waitTimeout;
 		t_uint							_triggeredCount;
-		t_epoll_event           		_triggeredEvents[EPOLL_MAXEVENTS];                     
+		t_epoll_event		   		_triggeredEvents[EPOLL_MAXEVENTS];					 
 		std::map<fd, t_epoll_event>		_monitoredEvents;
 		
 

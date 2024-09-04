@@ -7,9 +7,9 @@ The term socket is first coined in RFC 147 in 1971 when it was used in the ARPAN
 
 // specific for Internet Connections, defined in <netinet/in.h>
 struct sockaddr_in {
-    short            sin_family;   // Address family (AF_INET)
-    unsigned short   sin_port;     // Port number (in network byte order)
-    struct in_addr   sin_addr;     // Internet address (struct in_addr)
+	short			sin_family;   // Address family (AF_INET)
+	unsigned short   sin_port;	 // Port number (in network byte order)
+	struct in_addr   sin_addr;	 // Internet address (struct in_addr)
 };
 
 there is also sockaddr (generic), and sockaddr_un (Unix domain sockets)
@@ -78,7 +78,7 @@ Creates an endpoint for communication, returns an FD
 
 "
 A SIGPIPE signal is
-       raised if a process sends or receives on a broken stream;
+	   raised if a process sends or receives on a broken stream;
 "
 
 because.... a socket is like a bi-directional pipe against incoming traffic, or...
