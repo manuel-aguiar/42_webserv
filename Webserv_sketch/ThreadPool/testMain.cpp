@@ -158,7 +158,7 @@ int main(int ac, char **av)
 {
 	(void)ac;
 
-	unsigned int count = 50;
+	unsigned int count = 5000;
 	unsigned int vecSize = 10;
 	std::vector<long> vector(vecSize);
 	Test	dummy;

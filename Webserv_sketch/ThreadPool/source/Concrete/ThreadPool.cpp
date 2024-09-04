@@ -15,12 +15,23 @@
 ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 	_threads(InitialNumberOfThreads)
 {
-	
+	sigset_t oldSet;
+	sigset_t blockSet;
+	sigemptyset(&oldSet);
+	pthread_sigmask(SIG_BLOCK, NULL, &oldSet);			//oldset of signal masks		UNPROTECTED
+
+	sigemptyset(&blockSet);
+	sigaddset(&blockSet, SIGINT);
+	sigaddset(&blockSet, SIGQUIT);
+	pthread_sigmask(SIG_BLOCK , &blockSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
+
 	for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
 	{
 		_threads[i] = new ThreadPoolWorker(_taskQueue);
 		_threads[i]->start();
 	}
+
+	pthread_sigmask(SIG_SETMASK, &oldSet, NULL);		// reestablish the oldmask set by the user		UNPROTECTED
 }
 
 ThreadPool::~ThreadPool()

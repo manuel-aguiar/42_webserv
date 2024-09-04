@@ -16,6 +16,7 @@
 
 # include <iostream>
 # include <pthread.h>
+# include <signal.h>
 
 /*
 	ThreadFunction must be static to allow being called by all members.
