@@ -196,6 +196,7 @@ void closeSingleConn(int fd, std::map<int, Connection>& connfds, int epollfd)
 		lockWrite(std::string("epoll_ctl(): ") + std::strerror(errno), std::cerr);
 		return ;
 	}
+	close(fd);
 	connfds.erase(fd);
 }
 
@@ -318,6 +319,8 @@ int ThreadServerFunc(int serverNumber)
 				event.events = EPOLLIN | EPOLLOUT;
 				event.data.fd = newConn;		//add listener socket to the poll
 
+				connfds[newConn] = Connection(newConn, event);
+
 				if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
 				{
 					std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
@@ -326,8 +329,8 @@ int ThreadServerFunc(int serverNumber)
 					close(listener);
 					return (EXIT_FAILURE);
 				}
-				connfds[newConn] = Connection(newConn, event);
-				std::cout << "  Server " << serverNumber << " Connection received" << std::endl;
+				
+				lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Connection received", std::cerr);
 			}
 			else
 			{
@@ -354,11 +357,13 @@ int ThreadServerFunc(int serverNumber)
 						{
 							totalRead += bytesRead;
 							std::cout << readBuff;
+							if (bytesRead < 255)
+								lockWrite("", std::cout);
 							if (readBuff[bytesRead] == '\0')
 								break ;
 						}
 					}
-					lockWrite("", std::cout);
+
 					//lockWrite( std::string("\n  			Server ") + std::to_string(serverNumber) + " finished reading message, " + std::to_string(totalRead) + " bytes"  ,std::cout);
 					if (wait[i].events & EPOLLOUT && !(wait[i].events & EPOLLHUP || wait[i].events & EPOLLERR))
 					{
