@@ -20,6 +20,9 @@
 /*
 	Using the threadpool, essentially each thread is a server, all listening sockets listen to the same port/address with SO_REUSEPORT
 
+	if SO_REUSEPORT is not defined, well.. bind on the subsequent servers fails, one thread active and the remaining will be idle 
+
+
 	To manage signals:
 		each thread blocks SIGINT and SIGQUIT
 			being process-level signals, the main thread will be the one receiving those
