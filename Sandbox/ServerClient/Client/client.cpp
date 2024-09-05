@@ -79,10 +79,14 @@ int main()
 			close(connection);
 			return (EXIT_FAILURE);
 		}
-		if (bytesRead > 0)
+		if (bytesRead >= 0)
+		{
+			readBuff[bytesRead] = '\0';
 			std::cout << readBuff;
-		else
-			break ;
+			if (bytesRead < sizeof(readBuff) - 1)
+				break ;
+		}	
+
 	}
 
 	std::cout << std::endl;
