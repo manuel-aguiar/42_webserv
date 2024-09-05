@@ -21,8 +21,12 @@ ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 	pthread_sigmask(SIG_BLOCK, NULL, &oldSet);			//oldset of signal masks		UNPROTECTED
 
 	sigemptyset(&blockSet);
-	sigaddset(&blockSet, SIGINT);
-	sigaddset(&blockSet, SIGQUIT);
+	
+	if (sigismember(&oldSet, SIGINT))
+		sigaddset(&blockSet, SIGINT);
+	if (sigismember(&oldSet, SIGQUIT))
+		sigaddset(&blockSet, SIGQUIT);
+	
 	pthread_sigmask(SIG_BLOCK , &blockSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
 
 	for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)

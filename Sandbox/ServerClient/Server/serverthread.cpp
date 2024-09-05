@@ -12,32 +12,30 @@
 
 
 /*
-	Using SO_REUSEPORT to allow multiple listening sockets on the same address and port
-	Having children processes spawn their own socket on the same port
+	c++ -Wall -Wextra -Werror serverthread.cpp $(find ../../../Webserv_sketch/ThreadPool/source/ -name '*.cpp') -lpthread -o serverthread
 
-	kernel distributes traffic evenly
+	valgrind --tool=helgrind --track-fds=yes --trace-children=yes ./serverthread 
+*/
 
-	use ./client to contact the server and check which child responds.
+/*
+	Using the threadpool, essentially each thread is a server, all listening sockets listen to the same port/address with SO_REUSEPORT
 
-	The subject says it is forbidden to execve another server.......
-	But doesn't state anything about forking the program to have multiple epolls
-	and listening sockets, one case use binary semaphores to communicate
+	To manage signals:
+		each thread blocks SIGINT and SIGQUIT
+			being process-level signals, the main thread will be the one receiving those
+		each thread has an epoll
+			each epoll has the read end of a pipe monitoring read operations
+			(epoll here doesn't do much else apart from reporting connections from the listenning socket)
 
-	Concurrency problems though.....
+		global signal handler has a vector of pipes to write to
+		signal_handler: write to these pipes
+			epoll will notify when pipe is ready to read, if the fd is the correesponding signal pipe, exit the threadfunction (server)
+		main thread does nothing else more than listening to signals and sleeping
+			could use sigwait and resolve synchronously, as well
 
-
-
-	We could also have 2 threadpools
-		One pool for listening sockets, each with its own eventmanager, managing their own
-
-		Second to subscribe tasks
-		Easier to coordinate with mutexes in case there are changes to the state of the website
-
-
-
-
-	Signals to force chuildren out. parent ignores signals and just waits
-
+	ThreadWorkers don't listen to signals, main thread is the one who receives and manages them
+	threads exit gracefully, no race conditions (noted so far)
+	all memory is clean, threads joined, fds closed
 */
 
 // socket(), send(), recv(), accept(), connect(), bind(), listen()
@@ -86,185 +84,259 @@ multithreading and signals
 # include <vector>
 # include <signal.h>
 # include <sys/wait.h>
+# include <unistd.h>
+# include <sys/epoll.h>
+# include <vector>
 
-int g_signal;
+# define EPOLL_MAXEVENTS 10
 
-void	signal_handler(int signum)
+pthread_mutex_t threadlock;
+void	lockWrite(const std::string& toWrite, std::ostream& stream);
+
+
+class WebServerSignalHandler
 {
-	if (signum == SIGINT)
-		g_signal = SIGINT;
-	if (signum == SIGQUIT)
-		g_signal = SIGQUIT;
-}
+	public:
 
-int	ignore_signal(struct sigaction *ms)
+		static int PipeRead(int numServer) {return _pipes[numServer].first;}
+		static int PipeWrite(int numServer) {return _pipes[numServer].second;}
+
+		static int getSignal() {return (WebServerSignalHandler::_g_signal);};
+
+		static void		signal_handler(int sigNum)
+		{
+			if (sigNum == SIGINT || sigNum == SIGQUIT)
+				_g_signal = sigNum;
+			for (size_t i = 0; i < _pipes.size(); ++i)
+			{
+				write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM") + 1);
+			}
+		}
+
+		static int prepare_signal(struct sigaction *ms, void (*handler)(int), int numServers)
+		{
+			int pipefd[2];
+
+			ms->sa_flags = 0;
+			ms->sa_handler = handler;
+			sigemptyset(&(ms->sa_mask));
+			sigaction(SIGINT, ms, NULL);
+			sigaction(SIGQUIT, ms, NULL);
+			for (int i = 0; i < numServers; ++i)
+			{
+				pipe(pipefd);
+				_pipes.push_back(std::make_pair(pipefd[0], pipefd[1]));
+			}
+			return (1);
+		}
+		static void destroy_signal(struct sigaction *ms)
+		{
+			(void)ms;
+
+			for (size_t i = 00; i < _pipes.size(); ++i)
+			{
+				close(PipeRead(i));
+				close(PipeWrite(i));
+			}
+			_pipes.clear();
+		}
+	private:
+		static	std::vector<std::pair<int, int> >	_pipes;
+		static int 						_g_signal;
+};
+
+int		WebServerSignalHandler::_g_signal = 0;
+std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
+
+
+
+
+
+int ThreadServerFunc(int serverNumber)
 {
-	ms->sa_flags = SA_RESTART;			//restart waitpid, keep waiting for children
-	ms->sa_handler = SIG_IGN;
-	sigemptyset(&(ms->sa_mask));
-	sigaction(SIGINT, ms, NULL);
-	sigaction(SIGQUIT, ms, NULL);
-	return (1);
-}
-
-int prepare_signal(struct sigaction *ms, void (*handler)(int))
-{
-	ms->sa_flags = 0;					// stuck in accept call, don't restart, move on and if there was a signal -> it is part of the plan
-	ms->sa_handler = handler;
-	sigemptyset(&(ms->sa_mask));
-	sigaction(SIGINT, ms, NULL);
-	sigaction(SIGQUIT, ms, NULL);
-	return (1);
-}
-
-
-/*
-	c++ -Wall -Wextra -Werror serverchildren.cpp -o serverchild
-*/
-
-int checkglobal()
-{
-	int signal;
-	static pthread_mutex_t* mutex;
-
-	if (!mutex)
-	{
-		mutex = new pthread_mutex_t;
-		pthread_mutex_init(mutex, NULL);
-	}
-	pthread_mutex_lock(mutex);
-	signal = g_signal;
-	pthread_mutex_unlock(mutex);
-}
-
-
-int main()
-{
-	int				 listener;
-	int	 			connection;
-	struct sockaddr_in  listAddress;
-	struct sockaddr_in  connAddress;
-	socklen_t		   connAddrLen;
-	int				 bytesRead;
-	char				readBuff[256];
+	int				 		listener;
+	int	 					connection;
+	struct sockaddr_in  	listAddress;
+	struct sockaddr_in  	connAddress;
+	socklen_t		   		connAddrLen;
+	int				 		bytesRead;
+	char					readBuff[256];
 	int number = 1;
 
-	struct sigaction signal = (struct sigaction) {};
+	int epollfd;
+	int pipefdRead;
+
+	struct epoll_event event;
+	struct epoll_event wait[EPOLL_MAXEVENTS];
+
+
+	epollfd = epoll_create1(EPOLL_CLOEXEC);
+	pipefdRead = WebServerSignalHandler::PipeRead(serverNumber);
+
+	event = (struct epoll_event){};	
+	event.events = EPOLLIN;
+	event.data.fd = pipefdRead;		//monitor pipe that will inform signal is received
+
+	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
+	{
+		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+		close(epollfd);
+		close(pipefdRead);
+		return (EXIT_FAILURE);
+	}
+
+
 
 	std::memset(&listAddress, 0, sizeof(listAddress));
 	listAddress.sin_family = AF_INET;
 	listAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 	listAddress.sin_port = htons(PORT);
-	
+
 	#ifdef SO_REUSEPORT
 		int sockopt = SO_REUSEPORT | SO_REUSEADDR;
 	#else
 		int sockopt = SO_REUSEADDR
 	#endif
 
+	listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
 
-
-	int serverCount = 10;
-	pid_t pid;
-	std::vector<pid_t> servers;
-
-	ignore_signal(&signal);
-
-	for (int i = 0; i < serverCount; ++i)
+	if (setsockopt(listener, SOL_SOCKET, sockopt, &number, sizeof(number)) == -1)
 	{
-		pid = fork();
+		lockWrite(std::string("setsockopt(): ") + std::strerror(errno), std::cerr);
+		errno = 0;
+		close(listener);
+		return (1) ;			
+	}
 
-		//parent;
-		if (pid)
-			servers.push_back(pid);
+	if (bind(listener, (struct sockaddr*)&listAddress, sizeof(listAddress)) == -1)
+	{
+		lockWrite(std::string("bind(): ") + std::strerror(errno), std::cerr);
+		close(listener);
+		return (EXIT_FAILURE);
+	}
+	
+	if (listen(listener, MAX_CONNECTIONS) == -1)
+	{
+		lockWrite(std::string("listen(): ") + std::strerror(errno), std::cerr);
+		close(listener);
+		return (EXIT_FAILURE);
+	}
 
-		//child, stuck on loop and always returning (exiting)
-		else
+	event = (struct epoll_event){};	
+	event.events = EPOLLIN;
+	event.data.fd = listener;		//add listener socket to the poll
+
+	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
+	{
+		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+		close(epollfd);
+		close(listener);
+		return (EXIT_FAILURE);
+	}
+
+	
+	lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Waiting for connections....", std::cerr);
+
+	connAddrLen = sizeof(connAddress);
+	while(1)
+	{
+
+		int numWait = epoll_wait(epollfd, wait, EPOLL_MAXEVENTS, -1);	// BLOCK
+
+		for (int i = 0; i < numWait; ++i)
 		{
-			prepare_signal(&signal, signal_handler);
-
-
-			listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
-
-			if (setsockopt(listener, SOL_SOCKET, sockopt, &number, sizeof(number)) == -1)
+			if (wait[i].data.fd == pipefdRead)
 			{
-				std::cerr << "setsockopt(): " << std::strerror(errno) << std::endl;
-				errno = 0;
+				lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Signaled to exit", std::cerr);
 				close(listener);
-				return (1) ;			
+				close(epollfd);
+				return (EXIT_SUCCESS);
 			}
+			//won't bother to subscribe conenction to epoll, for now
 
-			if (bind(listener, (struct sockaddr*)&listAddress, sizeof(listAddress)) == -1)
-			{
-				std::cerr << "bind(): " << std::string (std::strerror(errno)) << std::endl;
-				close(listener);
-				return (EXIT_FAILURE);
-			}
 			
-			if (listen(listener, MAX_CONNECTIONS) == -1)
+			connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
+			if (connection == -1)
 			{
-				std::cerr << "listen(): " << std::string (std::strerror(errno)) << std::endl;
+				lockWrite(std::string("accept(): ") + std::strerror(errno), std::cerr);
+				close(epollfd);
 				close(listener);
-				return (EXIT_FAILURE);
+				return (1);
 			}
-
-
-			connAddrLen = sizeof(connAddress);
-			while(!g_signal)
+			std::cout << "  Server " << serverNumber << " Connection received" << std::endl;
+			while (true)
 			{
-				std::cout << "  Server " << i << ": Waiting for connections...." << std::endl;
-				connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
-				if (connection == -1)
-				{
-					if (!g_signal)
-						std::cerr << "accept(): " << std::string (std::strerror(errno)) << std::endl;
-					close(listener);
-					return (g_signal != 0);
-				}
-				std::cout << "  Server " << i << " Connection received" << std::endl;
-				while (true)
-				{
-					std::memset(readBuff, 0, sizeof(readBuff));
-					bytesRead = read(connection, readBuff, sizeof(readBuff) - 1);
+				std::memset(readBuff, 0, sizeof(readBuff));
+				bytesRead = read(connection, readBuff, sizeof(readBuff) - 1);
 
-					if (bytesRead == -1)
-					{
-						std::cerr << "read(): " << std::strerror(errno) << std::endl;
-						close(connection);
-						close(listener);
-						return EXIT_FAILURE;
-					}
-					else if (bytesRead == 0)
-					{
-						std::cout << "  Server " << i << "Client closed the connection" << std::endl;
-						break;
-					}
-					else
-					{
-						std::cout << readBuff;
-						if (readBuff[bytesRead] == '\0')
-							break ;
-					}
-				}
-				if (write(connection, RESPONSE, std::strlen(RESPONSE) + 1) == -1)
+				if (bytesRead == -1)
 				{
-					std::cerr << "write(): " << std::string (std::strerror(errno)) << std::endl;
+					lockWrite(std::string("read(): ") + std::strerror(errno), std::cerr);
+					close(epollfd);
 					close(connection);
 					close(listener);
-					return (EXIT_FAILURE);
+					return EXIT_FAILURE;
 				}
-				std::cout << std::endl;
-				close(connection);
+				else if (bytesRead == 0)
+				{
+					lockWrite(std::string("  Server ") + std::to_string(serverNumber) + "Client closed the connection", std::cerr);
+					break;
+				}
+				else
+				{
+					std::cout << readBuff;
+					if (readBuff[bytesRead] == '\0')
+						break ;
+				}
 			}
-			
-
-			close(listener);
-			return (EXIT_SUCCESS);
+			if (write(connection, RESPONSE, std::strlen(RESPONSE) + 1) == -1)
+			{
+				lockWrite(std::string("write(): ") + std::strerror(errno), std::cerr);
+				close(epollfd);
+				close(connection);
+				close(listener);
+				return (EXIT_FAILURE);
+			}
+			std::cout << std::endl;
+			close(connection);
+		
 		}
 	}
-	for (int i = 0; i < serverCount; ++i)
+	close(listener);
+	close(epollfd);
+	return (EXIT_SUCCESS);
+}
+
+void	lockWrite(const std::string& toWrite, std::ostream& stream)
+{
+	pthread_mutex_lock(&threadlock);
+	stream << toWrite << std::endl;
+	pthread_mutex_unlock(&threadlock);
+}
+
+int main(void)
+{
+	struct sigaction signal = (struct sigaction){};
+	int numServers = 10;
+	ThreadPool tp(numServers);
+
+	WebServerSignalHandler::prepare_signal(&signal, WebServerSignalHandler::signal_handler, numServers);
+
+	pthread_mutex_init(&threadlock, NULL);
+
+	for (int i = 0; i < numServers; ++i)
 	{
-		waitpid(-1, NULL, 0);
+		if (WebServerSignalHandler::getSignal())
+			break ;
+		tp.addTask(ThreadServerFunc, i);
 	}
+
+	while (!WebServerSignalHandler::getSignal())
+		usleep(1000);
+
+	tp.destroy(false);
+
+	WebServerSignalHandler::destroy_signal(&signal);
+
 	return (EXIT_SUCCESS);
 }

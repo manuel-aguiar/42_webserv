@@ -154,6 +154,46 @@ void	lockWrite(const std::string& toWrite)
 	pthread_mutex_unlock(&globalLock);
 }
 
+
+
+
+#include <signal.h>
+
+class WebServerSignalHandler
+{
+	public:
+		static int getSignal() {return (_g_signal);};
+
+		static void		signal_handler(int sigNum)
+		{
+			if (sigNum == SIGINT || sigNum == SIGQUIT)
+				_g_signal = sigNum;
+		}
+		static int	ignore_signal(struct sigaction *ms)
+		{
+			ms->sa_flags = SA_RESTART;
+			ms->sa_handler = SIG_IGN;
+			sigemptyset(&(ms->sa_mask));
+			sigaction(SIGINT, ms, NULL);
+			sigaction(SIGQUIT, ms, NULL);
+			return (1);
+		}
+
+		static int prepare_signal(struct sigaction *ms, void (*handler)(int))
+		{
+			ms->sa_flags = 0;
+			ms->sa_handler = handler;
+			sigemptyset(&(ms->sa_mask));
+			sigaction(SIGINT, ms, NULL);
+			sigaction(SIGQUIT, ms, NULL);
+			return (1);
+		}
+	private:
+		static int _g_signal;
+};
+
+int		WebServerSignalHandler::_g_signal = 0;
+
 int main(int ac, char **av)
 {
 	(void)ac;
@@ -164,6 +204,10 @@ int main(int ac, char **av)
 	Test	dummy;
 	ITest*  testptr;
 	(void)testptr;
+
+	struct sigaction sigaction = (struct sigaction){};
+
+	WebServerSignalHandler::prepare_signal(&sigaction, WebServerSignalHandler::signal_handler);
 
 	testptr = &dummy;
 
@@ -193,7 +237,9 @@ int main(int ac, char **av)
 		//tp.addTask(task7);
 
 		//tp.addTask(allSameThreadUnsafe, i, &save);
-		
+		if (WebServerSignalHandler::getSignal())
+			break ;
+
 		tp.addTask(fib, i % vecSize);
 		tp.addTask(Test::StaticMethod);
 		tp.addTask(dummy, &Test::ArgYesReturnYes, i);
