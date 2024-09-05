@@ -109,10 +109,12 @@ class WebServerSignalHandler
 		static void		signal_handler(int sigNum)
 		{
 			if (sigNum == SIGINT || sigNum == SIGQUIT)
-				_g_signal = sigNum;
-			for (size_t i = 0; i < _pipes.size(); ++i)
 			{
-				write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM") + 1);
+				_g_signal = sigNum;
+				for (size_t i = 0; i < _pipes.size(); ++i)
+				{
+					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM") + 1);
+				}
 			}
 		}
 
@@ -184,7 +186,6 @@ int ThreadServerFunc(int serverNumber)
 	{
 		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
 		close(epollfd);
-		close(pipefdRead);
 		return (EXIT_FAILURE);
 	}
 
@@ -208,6 +209,7 @@ int ThreadServerFunc(int serverNumber)
 		lockWrite(std::string("setsockopt(): ") + std::strerror(errno), std::cerr);
 		errno = 0;
 		close(listener);
+		close(epollfd);
 		return (1) ;			
 	}
 
@@ -215,6 +217,7 @@ int ThreadServerFunc(int serverNumber)
 	{
 		lockWrite(std::string("bind(): ") + std::strerror(errno), std::cerr);
 		close(listener);
+		close(epollfd);
 		return (EXIT_FAILURE);
 	}
 	
@@ -222,6 +225,7 @@ int ThreadServerFunc(int serverNumber)
 	{
 		lockWrite(std::string("listen(): ") + std::strerror(errno), std::cerr);
 		close(listener);
+		close(epollfd);
 		return (EXIT_FAILURE);
 	}
 
@@ -317,11 +321,12 @@ void	lockWrite(const std::string& toWrite, std::ostream& stream)
 	pthread_mutex_unlock(&threadlock);
 }
 
+
 int main(void)
 {
 	struct sigaction signal = (struct sigaction){};
 	int numServers = 10;
-	ThreadPool tp(numServers);
+	ThreadPool servers(numServers);
 
 	WebServerSignalHandler::prepare_signal(&signal, WebServerSignalHandler::signal_handler, numServers);
 
@@ -331,13 +336,13 @@ int main(void)
 	{
 		if (WebServerSignalHandler::getSignal())
 			break ;
-		tp.addTask(ThreadServerFunc, i);
+		servers.addTask(ThreadServerFunc, i);
 	}
 
 	while (!WebServerSignalHandler::getSignal())
 		usleep(1000);
 
-	tp.destroy(false);
+	servers.destroy(false);
 
 	WebServerSignalHandler::destroy_signal(&signal);
 
