@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*																			*/
 /*														:::	  ::::::::   */
-/*   HttpMethodHEAD.hpp								 :+:	  :+:	:+:   */
+/*   main.cpp										   :+:	  :+:	:+:   */
 /*													+:+ +:+		 +:+	 */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/08/26 07:59:24 by mmaria-d		  #+#	#+#			 */
-/*   Updated: 2024/08/26 08:05:54 by mmaria-d		 ###   ########.fr	   */
+/*   Created: 2024/09/03 19:35:32 by mmaria-d		  #+#	#+#			 */
+/*   Updated: 2024/09/03 19:36:55 by mmaria-d		 ###   ########.fr	   */
 /*																			*/
 /* ************************************************************************** */
 
-#ifndef HTTPMETHODHEAD_HPP
+# include "TCP.hpp"
 
-# define HTTPMETHODHEAD_HPP
+int main(void)
 
-#include "../IHttpMethod.hpp"
+ {
 
-class HttpMethodHEAD : public IHttpMethod
-{
+	Socket<TCP> socket;
 
-};
+	return (0);
 
-#endif
+ }

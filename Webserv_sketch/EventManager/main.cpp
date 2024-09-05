@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*																			*/
 /*														:::	  ::::::::   */
-/*   HttpMethodHEAD.hpp								 :+:	  :+:	:+:   */
+/*   main.cpp										   :+:	  :+:	:+:   */
 /*													+:+ +:+		 +:+	 */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/08/26 07:59:24 by mmaria-d		  #+#	#+#			 */
-/*   Updated: 2024/08/26 08:05:54 by mmaria-d		 ###   ########.fr	   */
+/*   Created: 2024/09/03 14:00:52 by mmaria-d		  #+#	#+#			 */
+/*   Updated: 2024/09/03 14:11:20 by mmaria-d		 ###   ########.fr	   */
 /*																			*/
 /* ************************************************************************** */
 
-#ifndef HTTPMETHODHEAD_HPP
+#include "EventManager.hpp"
 
-# define HTTPMETHODHEAD_HPP
-
-#include "../IHttpMethod.hpp"
-
-class HttpMethodHEAD : public IHttpMethod
+int main(void)
 {
+	EventManager manager;
 
-};
 
-#endif
+	return (0);
+}

@@ -20,7 +20,16 @@
 	websites as "Servers"
 */
 
+#include <set>
 
+#include "../VirtualHost/VirtualHost.hpp"
+#include "../../EventManager/EventManager.hpp"
+
+
+template <
+	typename ApplicationLayer,
+	typename TransportLayer
+>
 class Server
 {
 	public:
@@ -32,7 +41,12 @@ class Server
 		void run();
 
 	private:
+		EventManager<TransportLayer> _manager;
+		std::set<VirtualHost> hosts;
+
+
 		Server();
+		
 };
 
 

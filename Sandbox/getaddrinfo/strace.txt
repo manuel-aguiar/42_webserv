@@ -3,13 +3,13 @@ good luck, buddy
 
 
 execve("./getaddrinfo", ["./getaddrinfo"], 0x7ffd3c3d8a70 /* 104 vars */) = 0
-brk(NULL)                               = 0x62bd0924f000
+brk(NULL)							   = 0x62bd0924f000
 arch_prctl(0x3001 /* ARCH_??? */, 0x7ffea9c7d5d0) = -1 EINVAL (Invalid argument)
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+access("/etc/ld.so.preload", R_OK)	  = -1 ENOENT (No such file or directory)
 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=38479, ...}) = 0
 mmap(NULL, 38479, PROT_READ, MAP_PRIVATE, 3, 0) = 0x73d22e1a0000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0 \341\t\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=1956992, ...}) = 0
@@ -20,7 +20,7 @@ mmap(0x73d22e052000, 987136, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENY
 mmap(0x73d22e143000, 299008, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x187000) = 0x73d22e143000
 mmap(0x73d22e18d000, 57344, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1d0000) = 0x73d22e18d000
 mmap(0x73d22e19b000, 10240, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x73d22e19b000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\3405\0\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=104984, ...}) = 0
@@ -28,7 +28,7 @@ mmap(NULL, 107592, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x73d22dfa1000
 mmap(0x73d22dfa4000, 73728, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x3000) = 0x73d22dfa4000
 mmap(0x73d22dfb6000, 16384, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x15000) = 0x73d22dfb6000
 mmap(0x73d22dfba000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18000) = 0x73d22dfba000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\300A\2\0\0\0\0\0"..., 832) = 832
 pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 784, 64) = 784
@@ -43,7 +43,7 @@ mmap(0x73d22ddd1000, 1540096, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DEN
 mmap(0x73d22df49000, 319488, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x19a000) = 0x73d22df49000
 mmap(0x73d22df97000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x73d22df97000
 mmap(0x73d22df9d000, 13920, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x73d22df9d000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\300\323\0\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=1369384, ...}) = 0
@@ -51,7 +51,7 @@ mmap(NULL, 1368336, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x73d22dc60000
 mmap(0x73d22dc6d000, 684032, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xd000) = 0x73d22dc6d000
 mmap(0x73d22dd14000, 626688, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xb4000) = 0x73d22dd14000
 mmap(0x73d22ddad000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x14c000) = 0x73d22ddad000
-close(3)                                = 0
+close(3)								= 0
 mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x73d22dc5e000
 arch_prctl(ARCH_SET_FS, 0x73d22dc5f100) = 0
 mprotect(0x73d22df97000, 16384, PROT_READ) = 0
@@ -61,9 +61,9 @@ mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x73d
 mprotect(0x73d22e18d000, 45056, PROT_READ) = 0
 mprotect(0x62bd0806c000, 4096, PROT_READ) = 0
 mprotect(0x73d22e1d7000, 4096, PROT_READ) = 0
-munmap(0x73d22e1a0000, 38479)           = 0
-brk(NULL)                               = 0x62bd0924f000
-brk(0x62bd09270000)                     = 0x62bd09270000
+munmap(0x73d22e1a0000, 38479)		   = 0
+brk(NULL)							   = 0x62bd0924f000
+brk(0x62bd09270000)					 = 0x62bd09270000
 socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 3
 bind(3, {sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, 12) = 0
 getsockname(3, {sa_family=AF_NETLINK, nl_pid=6585, nl_groups=00000000}, [12]) = 0
@@ -73,31 +73,31 @@ recvmsg(3, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_n
 recvmsg(3, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_namelen=12, msg_iov=[{iov_base={{len=20, type=NLMSG_DONE, flags=NLM_F_MULTI, seq=1725263863, pid=6585}, 0}, iov_len=4096}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 20
 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 4
 connect(4, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
-close(4)                                = 0
-close(3)                                = 0
+close(4)								= 0
+close(3)								= 0
 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 3
 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=494, ...}) = 0
 read(3, "# /etc/nsswitch.conf\n#\n# Example"..., 4096) = 494
-read(3, "", 4096)                       = 0
-close(3)                                = 0
+read(3, "", 4096)					   = 0
+close(3)								= 0
 stat("/etc/resolv.conf", {st_mode=S_IFREG|0644, st_size=417, ...}) = 0
 openat(AT_FDCWD, "/etc/host.conf", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=92, ...}) = 0
 read(3, "# The \"order\" line is only used "..., 4096) = 92
-read(3, "", 4096)                       = 0
-close(3)                                = 0
+read(3, "", 4096)					   = 0
+close(3)								= 0
 openat(AT_FDCWD, "/etc/resolv.conf", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=417, ...}) = 0
 read(3, "# Dynamic resolv.conf(5) file fo"..., 4096) = 417
-read(3, "", 4096)                       = 0
-close(3)                                = 0
+read(3, "", 4096)					   = 0
+close(3)								= 0
 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=38479, ...}) = 0
 mmap(NULL, 38479, PROT_READ, MAP_PRIVATE, 3, 0) = 0x73d22e1a0000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libnss_files.so.2", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\3005\0\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=51856, ...}) = 0
@@ -106,20 +106,20 @@ mmap(0x73d22dc4b000, 28672, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYW
 mmap(0x73d22dc52000, 8192, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xa000) = 0x73d22dc52000
 mmap(0x73d22dc54000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0xb000) = 0x73d22dc54000
 mmap(0x73d22dc56000, 22328, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x73d22dc56000
-close(3)                                = 0
+close(3)								= 0
 mprotect(0x73d22dc54000, 4096, PROT_READ) = 0
-munmap(0x73d22e1a0000, 38479)           = 0
+munmap(0x73d22e1a0000, 38479)		   = 0
 openat(AT_FDCWD, "/etc/hosts", O_RDONLY|O_CLOEXEC) = 3
-lseek(3, 0, SEEK_CUR)                   = 0
+lseek(3, 0, SEEK_CUR)				   = 0
 fstat(3, {st_mode=S_IFREG|0644, st_size=178, ...}) = 0
 read(3, "127.0.0.1\tlocalhost\n::1\tlocalhos"..., 4096) = 178
-lseek(3, 0, SEEK_CUR)                   = 178
-read(3, "", 4096)                       = 0
-close(3)                                = 0
+lseek(3, 0, SEEK_CUR)				   = 178
+read(3, "", 4096)					   = 0
+close(3)								= 0
 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=38479, ...}) = 0
 mmap(NULL, 38479, PROT_READ, MAP_PRIVATE, 3, 0) = 0x73d22e1a0000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libnss_dns.so.2", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0 \23\0\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=27112, ...}) = 0
@@ -127,7 +127,7 @@ mmap(NULL, 28888, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x73d22dc40000
 mmap(0x73d22dc41000, 16384, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1000) = 0x73d22dc41000
 mmap(0x73d22dc45000, 4096, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x5000) = 0x73d22dc45000
 mmap(0x73d22dc46000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x5000) = 0x73d22dc46000
-close(3)                                = 0
+close(3)								= 0
 openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libresolv.so.2", O_RDONLY|O_CLOEXEC) = 3
 read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0 G\0\0\0\0\0\0"..., 832) = 832
 fstat(3, {st_mode=S_IFREG|0644, st_size=101352, ...}) = 0
@@ -136,39 +136,39 @@ mmap(0x73d22dc28000, 65536, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYW
 mmap(0x73d22dc38000, 16384, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x14000) = 0x73d22dc38000
 mmap(0x73d22dc3c000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x17000) = 0x73d22dc3c000
 mmap(0x73d22dc3e000, 6784, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x73d22dc3e000
-close(3)                                = 0
+close(3)								= 0
 mprotect(0x73d22dc3c000, 4096, PROT_READ) = 0
 mprotect(0x73d22dc46000, 4096, PROT_READ) = 0
-munmap(0x73d22e1a0000, 38479)           = 0
+munmap(0x73d22e1a0000, 38479)		   = 0
 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, IPPROTO_IP) = 3
 setsockopt(3, SOL_IP, IP_RECVERR, [1], 4) = 0
 connect(3, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, 16) = 0
-poll([{fd=3, events=POLLOUT}], 1, 0)    = 1 ([{fd=3, revents=POLLOUT}])
+poll([{fd=3, events=POLLOUT}], 1, 0)	= 1 ([{fd=3, revents=POLLOUT}])
 sendmmsg(3, [{msg_hdr={msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\362\n\1\0\0\1\0\0\0\0\0\0\6google\3com\0\0\1\0\1", iov_len=28}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, msg_len=28}, {msg_hdr={msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\t\1\0\0\1\0\0\0\0\0\0\6google\3com\0\0\34\0\1", iov_len=28}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, msg_len=28}], 2, MSG_NOSIGNAL) = 2
 poll([{fd=3, events=POLLIN}], 1, 1000)  = 1 ([{fd=3, revents=POLLIN}])
-ioctl(3, FIONREAD, [44])                = 0
+ioctl(3, FIONREAD, [44])				= 0
 recvfrom(3, "\362\n\201\200\0\1\0\1\0\0\0\0\6google\3com\0\0\1\0\1\300\f\0\1"..., 2048, 0, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, [28->16]) = 44
 poll([{fd=3, events=POLLIN}], 1, 999)   = 1 ([{fd=3, revents=POLLIN}])
-ioctl(3, FIONREAD, [56])                = 0
-brk(0x62bd09294000)                     = 0x62bd09294000
+ioctl(3, FIONREAD, [56])				= 0
+brk(0x62bd09294000)					 = 0x62bd09294000
 recvfrom(3, "l\t\201\200\0\1\0\1\0\0\0\0\6google\3com\0\0\34\0\1\300\f\0\34"..., 65536, 0, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("127.0.0.53")}, [28->16]) = 56
-close(3)                                = 0
-brk(0x62bd09284000)                     = 0x62bd09284000
+close(3)								= 0
+brk(0x62bd09284000)					 = 0x62bd09284000
 openat(AT_FDCWD, "/etc/gai.conf", O_RDONLY|O_CLOEXEC) = 3
 fstat(3, {st_mode=S_IFREG|0644, st_size=2584, ...}) = 0
 fstat(3, {st_mode=S_IFREG|0644, st_size=2584, ...}) = 0
 read(3, "# Configuration for getaddrinfo("..., 4096) = 2584
-read(3, "", 4096)                       = 0
-close(3)                                = 0
+read(3, "", 4096)					   = 0
+close(3)								= 0
 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
 connect(3, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("216.58.201.110")}, 16) = 0
 getsockname(3, {sa_family=AF_INET, sin_port=htons(59757), sin_addr=inet_addr("10.0.0.79")}, [28->16]) = 0
-close(3)                                = 0
+close(3)								= 0
 socket(AF_INET6, SOCK_DGRAM|SOCK_CLOEXEC, IPPROTO_IP) = 3
 connect(3, {sa_family=AF_INET6, sin6_port=htons(0), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "2a00:1450:4009:815::200e", &sin6_addr), sin6_scope_id=0}, 28) = -1 ENETUNREACH (Network is unreachable)
-close(3)                                = 0
+close(3)								= 0
 fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0), ...}) = 0
 write(1, "google.com is at: 216.58.201.110"..., 33google.com is at: 216.58.201.110
 ) = 33
-exit_group(0)                           = ?
+exit_group(0)						   = ?
 +++ exited with 0 +++

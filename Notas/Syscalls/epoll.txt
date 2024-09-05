@@ -8,8 +8,8 @@ se não, fechar tudo no fork :| ou mother of all fd leaks
 
 
 filedescriptors:
-    epoll   epoll_create1(EPOLL_CLOEXEC) ou fcntl (que nao da para perceber se é só para MAcOS ou nao)
-    socket
-    files to send to clients (open, bits the O_CLOEXEC, easy)
-    configurations
+	epoll   epoll_create1(EPOLL_CLOEXEC) ou fcntl (que nao da para perceber se é só para MAcOS ou nao)
+	socket
+	files to send to clients (open, bits the O_CLOEXEC, easy)
+	configurations
 
