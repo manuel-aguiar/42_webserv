@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 11:23:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/06 14:41:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,26 @@ template <
 >
 class ThreadTask;
 
-
+// Specialization for const member function with 1 argument and a return
 template <
 	typename Class,
-	typename Args,
+	typename Arg1,
 	typename Return
 >
-class ThreadTask<Return (Class::*)(Args) const> : public IThreadTask
+class ThreadTask<Return (Class::*)(Arg1) const> : public IThreadTask
 {
 	public:
-		ThreadTask(const Class& instance, Return (Class::*function)(Args) const, Args arguments, Return* placeReturn = NULL) :
+		ThreadTask(const Class& instance, Return (Class::*function)(Arg1) const, Arg1 arg1, Return* placeReturn = NULL) :
 			_instance(instance),
 			_function(function),
-			_args(arguments),
+			_arg1(arg1),
 			_placeReturn(placeReturn)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
 			_instance(copy._instance),
 			_function(copy._function),
-			_args(copy._args),
+			_arg1(copy._arg1),
 			_placeReturn(copy._placeReturn)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
@@ -64,25 +64,259 @@ class ThreadTask<Return (Class::*)(Args) const> : public IThreadTask
 			return (*this);
 		}
 
-		void			execute() const
+		void execute() const
 		{
-			if (!_function)
-				return ;
+			if (!_function) return;
 			if (_placeReturn)
-				*_placeReturn = (_instance.*_function)(_args);
+				*_placeReturn = (_instance.*_function)(_arg1);
 			else
-				(_instance.*_function)(_args);
-		};
-		IThreadTask*	clone() const
+				(_instance.*_function)(_arg1);
+		}
+
+		IThreadTask* clone() const
 		{
-			return (new ThreadTask(*this));
-		};
+			return new ThreadTask(*this);
+		}
 
 	private:
-		const Class&		  _instance;
-		Return		  (Class::*_function)(Args) const;
-		Args			_args;
-		Return*		 _placeReturn;
+		const Class& _instance;
+		Return (Class::*_function)(Arg1) const;
+		Arg1 _arg1;
+		Return* _placeReturn;
+};
+
+// Specialization for const member function with 2 arguments and a return
+template <
+	typename Class,
+	typename Arg1, typename Arg2,
+	typename Return
+>
+class ThreadTask<Return (Class::*)(Arg1, Arg2) const> : public IThreadTask
+{
+	public:
+		ThreadTask(const Class& instance, Return (Class::*function)(Arg1, Arg2) const, Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL) :
+			_instance(instance),
+			_function(function),
+			_arg1(arg1),
+			_arg2(arg2),
+			_placeReturn(placeReturn)
+		{};
+		~ThreadTask() {};
+		ThreadTask(const ThreadTask& copy) :
+			_instance(copy._instance),
+			_function(copy._function),
+			_arg1(copy._arg1),
+			_arg2(copy._arg2),
+			_placeReturn(copy._placeReturn)
+		{};
+		ThreadTask& operator=(const ThreadTask& assign)
+		{
+			if (this == &assign)
+				return (*this);
+			*this = assign;
+			return (*this);
+		}
+
+		void execute() const
+		{
+			if (!_function) return;
+			if (_placeReturn)
+				*_placeReturn = (_instance.*_function)(_arg1, _arg2);
+			else
+				(_instance.*_function)(_arg1, _arg2);
+		}
+
+		IThreadTask* clone() const
+		{
+			return new ThreadTask(*this);
+		}
+
+	private:
+		const Class& _instance;
+		Return (Class::*_function)(Arg1, Arg2) const;
+		Arg1 _arg1;
+		Arg2 _arg2;
+		Return* _placeReturn;
+};
+
+// Specialization for const member function with 3 arguments and a return
+template <
+	typename Class,
+	typename Arg1, typename Arg2, typename Arg3,
+	typename Return
+>
+class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3) const> : public IThreadTask
+{
+	public:
+		ThreadTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL) :
+			_instance(instance),
+			_function(function),
+			_arg1(arg1),
+			_arg2(arg2),
+			_arg3(arg3),
+			_placeReturn(placeReturn)
+		{};
+		~ThreadTask() {};
+		ThreadTask(const ThreadTask& copy) :
+			_instance(copy._instance),
+			_function(copy._function),
+			_arg1(copy._arg1),
+			_arg2(copy._arg2),
+			_arg3(copy._arg3),
+			_placeReturn(copy._placeReturn)
+		{};
+		ThreadTask& operator=(const ThreadTask& assign)
+		{
+			if (this == &assign)
+				return (*this);
+			*this = assign;
+			return (*this);
+		}
+
+		void execute() const
+		{
+			if (!_function) return;
+			if (_placeReturn)
+				*_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3);
+			else
+				(_instance.*_function)(_arg1, _arg2, _arg3);
+		}
+
+		IThreadTask* clone() const
+		{
+			return new ThreadTask(*this);
+		}
+
+	private:
+		const Class& _instance;
+		Return (Class::*_function)(Arg1, Arg2, Arg3) const;
+		Arg1 _arg1;
+		Arg2 _arg2;
+		Arg3 _arg3;
+		Return* _placeReturn;
+};
+
+// Specialization for const member function with 4 arguments and a return
+template <
+	typename Class,
+	typename Arg1, typename Arg2, typename Arg3, typename Arg4,
+	typename Return
+>
+class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4) const> : public IThreadTask
+{
+	public:
+		ThreadTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL) :
+			_instance(instance),
+			_function(function),
+			_arg1(arg1),
+			_arg2(arg2),
+			_arg3(arg3),
+			_arg4(arg4),
+			_placeReturn(placeReturn)
+		{};
+		~ThreadTask() {};
+		ThreadTask(const ThreadTask& copy) :
+			_instance(copy._instance),
+			_function(copy._function),
+			_arg1(copy._arg1),
+			_arg2(copy._arg2),
+			_arg3(copy._arg3),
+			_arg4(copy._arg4),
+			_placeReturn(copy._placeReturn)
+		{};
+		ThreadTask& operator=(const ThreadTask& assign)
+		{
+			if (this == &assign)
+				return (*this);
+			*this = assign;
+			return (*this);
+		}
+
+		void execute() const
+		{
+			if (!_function) return;
+			if (_placeReturn)
+				*_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3, _arg4);
+			else
+				(_instance.*_function)(_arg1, _arg2, _arg3, _arg4);
+		}
+
+		IThreadTask* clone() const
+		{
+			return new ThreadTask(*this);
+		}
+
+	private:
+		const Class& _instance;
+		Return (Class::*_function)(Arg1, Arg2, Arg3, Arg4) const;
+		Arg1 _arg1;
+		Arg2 _arg2;
+		Arg3 _arg3;
+		Arg4 _arg4;
+		Return* _placeReturn;
+};
+
+// Specialization for const member function with 5 arguments and a return
+template <
+	typename Class,
+	typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5,
+	typename Return
+>
+class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const> : public IThreadTask
+{
+	public:
+		ThreadTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL) :
+			_instance(instance),
+			_function(function),
+			_arg1(arg1),
+			_arg2(arg2),
+			_arg3(arg3),
+			_arg4(arg4),
+			_arg5(arg5),
+			_placeReturn(placeReturn)
+		{};
+		~ThreadTask() {};
+		ThreadTask(const ThreadTask& copy) :
+			_instance(copy._instance),
+			_function(copy._function),
+			_arg1(copy._arg1),
+			_arg2(copy._arg2),
+			_arg3(copy._arg3),
+			_arg4(copy._arg4),
+			_arg5(copy._arg5),
+			_placeReturn(copy._placeReturn)
+		{};
+		ThreadTask& operator=(const ThreadTask& assign)
+		{
+			if (this == &assign)
+				return (*this);
+			*this = assign;
+			return (*this);
+		}
+
+		void execute() const
+		{
+			if (!_function) return;
+			if (_placeReturn)
+				*_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
+			else
+				(_instance.*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
+		}
+
+		IThreadTask* clone() const
+		{
+			return new ThreadTask(*this);
+		}
+
+	private:
+		const Class& _instance;
+		Return (Class::*_function)(Arg1, Arg2, Arg3, Arg4, Arg5) const;
+		Arg1 _arg1;
+		Arg2 _arg2;
+		Arg3 _arg3;
+		Arg4 _arg4;
+		Arg5 _arg5;
+		Return* _placeReturn;
 };
 
 
