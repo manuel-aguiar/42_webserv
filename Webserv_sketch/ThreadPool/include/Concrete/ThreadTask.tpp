@@ -31,6 +31,7 @@
 	and Classs member functions, returning and non returning, both up to a single argument
 	No access to c++11 variadic functions.
 
+	Then chatgpt did all the prototypes up to 5 arguments, saved me hours
 */
 
 //Forward Declaration: a function pointer, whether it is a non-member or a member function
