@@ -177,59 +177,16 @@ void	lockWrite(const std::string& toWrite)
 }
 
 
-
-
-#include <signal.h>
-
-class WebServerSignalHandler
-{
-	public:
-		static int getSignal() {return (_g_signal);};
-
-		static void		signal_handler(int sigNum)
-		{
-			if (sigNum == SIGINT || sigNum == SIGQUIT)
-				_g_signal = sigNum;
-		}
-		static int	ignore_signal(struct sigaction *ms)
-		{
-			ms->sa_flags = SA_RESTART;
-			ms->sa_handler = SIG_IGN;
-			sigemptyset(&(ms->sa_mask));
-			sigaction(SIGINT, ms, NULL);
-			sigaction(SIGQUIT, ms, NULL);
-			return (1);
-		}
-
-		static int prepare_signal(struct sigaction *ms, void (*handler)(int))
-		{
-			ms->sa_flags = 0;
-			ms->sa_handler = handler;
-			sigemptyset(&(ms->sa_mask));
-			sigaction(SIGINT, ms, NULL);
-			sigaction(SIGQUIT, ms, NULL);
-			return (1);
-		}
-	private:
-		static int _g_signal;
-};
-
-int		WebServerSignalHandler::_g_signal = 0;
-
 int main(int ac, char **av)
 {
 	(void)ac;
 
-	unsigned int count = 50;
+	unsigned int count = 5000;
 	unsigned int vecSize = 10;
 	std::vector<long> vector(vecSize);
 	Test	dummy;
 	ITest*  testptr;
 	(void)testptr;
-
-	struct sigaction sigaction = (struct sigaction){};
-
-	WebServerSignalHandler::prepare_signal(&sigaction, WebServerSignalHandler::signal_handler);
 
 	testptr = &dummy;
 
@@ -245,24 +202,6 @@ int main(int ac, char **av)
 
 	for (unsigned int i = 0; i < count; ++i)
 	{
-		//ThreadTask<long (*)(unsigned int)> task1(fib, i % vecSize);
-		//ThreadTask<long (*)(unsigned long)> task2(fibprint, i % vecSize);
-		//ThreadTask<void (*)(unsigned long)> task3(voidfibprint, i % vecSize);
-		//ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
-		//ThreadTask<void (*)()> task5(nada);
-		//ThreadTask<void (*)()> task6(StaticMethod::sayHello);
-		//ThreadTask<int (Test::*)(int)> task7(dummy, &Test::dosomething, i);
-		//tp.addTask(task1);
-		//tp.addTask(task2);
-		//tp.addTask(task3);
-		//tp.addTask(task4);
-		//tp.addTask(task5);
-		//tp.addTask(task6);
-		//tp.addTask(task7);
-
-		//tp.addTask(allSameThreadUnsafe, i, &save);
-		if (WebServerSignalHandler::getSignal())
-			break ;
 
 		tp.addTask(fib, i % vecSize);
 		tp.addTask(Test::StaticMethod);
