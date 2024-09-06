@@ -23,15 +23,22 @@
 class ThreadPoolWorker : public AThread
 {
 	public:
-		ThreadPoolWorker(IThreadTaskQueue& queue);
+		ThreadPoolWorker(IThreadTaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
 		~ThreadPoolWorker();
+
+		bool	exitedQueue();
 
 	protected:
 		void	run();
-
+		
 	private:
-		IThreadTaskQueue&	_queue;
-		IThreadTask*		 _curTask;
+		IThreadTaskQueue&		_queue;
+		IThreadTask*		 	_curTask;
+		pthread_mutex_t&		_statusLock;
+		pthread_cond_t&			_exitSignal;
+		bool					_exited;
+
+
 		ThreadPoolWorker(const ThreadPoolWorker& copy);
 		ThreadPoolWorker& operator=(const ThreadPoolWorker& assign);
 };

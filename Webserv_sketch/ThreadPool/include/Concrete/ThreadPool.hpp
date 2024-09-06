@@ -40,6 +40,7 @@ class ThreadPool : public IThreadPool
 		void	waitForCompletion();
 		void	destroy(bool waitForCompletion);
 		void	addThread();
+		void	removeThread();
 
 		//not implemented
 		//void	removeThread();
@@ -47,8 +48,10 @@ class ThreadPool : public IThreadPool
 		int	 threadCount() const;
 
 	private:
-		ThreadTaskQueue						 _taskQueue;
-		std::vector<ThreadPoolWorker *>		 _threads;
+		ThreadTaskQueue						_taskQueue;
+		std::vector<ThreadPoolWorker *>		_threads;
+		pthread_mutex_t						_statusLock;
+		pthread_cond_t						_exitSignal;
 
 
 

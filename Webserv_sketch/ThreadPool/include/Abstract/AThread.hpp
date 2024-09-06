@@ -36,16 +36,17 @@ class AThread
 		AThread(const AThread& copy);
 		virtual void					run() = 0;
 
-	private:
-
-		static void*   ThreadFunction(void* args);
-
 		enum EThreadState
 		{
 			EThread_Unitialized,
 			EThread_Initialized,
+			EThread_Joinable,
 			EThread_Joined
 		};
+
+	private:
+
+		static void*   ThreadFunction(void* args);
 
 		EThreadState	_state;
 		pthread_t	   _thread;

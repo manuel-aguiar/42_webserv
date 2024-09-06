@@ -20,6 +20,8 @@
 /*
 	(cd ../.. && ./gitcommit.sh)
 	(cd .. && make) && c++ -Wall -Wextra -Werror testMain.cpp -L../ -lpthread -lthreadpool -o tptest
+
+	valgrind --tool=helgrind ./tptest 10
 */
 
 pthread_mutex_t globalLock;
@@ -218,7 +220,7 @@ int main(int ac, char **av)
 {
 	(void)ac;
 
-	unsigned int count = 5000;
+	unsigned int count = 50;
 	unsigned int vecSize = 10;
 	std::vector<long> vector(vecSize);
 	Test	dummy;
@@ -238,6 +240,8 @@ int main(int ac, char **av)
 	const std::string cenas("Hey thhere");
 
 	pthread_mutex_init(&globalLock, NULL);
+
+	tp.addThread();
 
 	for (unsigned int i = 0; i < count; ++i)
 	{
@@ -278,6 +282,8 @@ int main(int ac, char **av)
 		lockWrite("										   finished inserting tasks");
 	}
 	
+
+
 	tp.waitForCompletion();
 
 	pthread_mutex_lock(&globalLock);
