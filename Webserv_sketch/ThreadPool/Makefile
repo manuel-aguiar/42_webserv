@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/06 14:05:07 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/06 14:25:36 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 
 
 ## GENERAL RULES
-NAME 				= 	threadpool.a
+NAME 				= 	libthreadpool.a
 COMP 				= 	c++ -std=c++98
 FLAGS 				= 	-Wall -Wextra -Werror
 LIB 				= 	ar rcs
@@ -56,7 +56,7 @@ INC_CONC_FILES		=	ThreadPool.hpp										\
 						ThreadTask_NonMemb_Args_Return.tpp					\
 						ThreadTask_NonMemb_Args_NoReturn.tpp
 
-SRC_ABST_FILES		=	AThread.cpp											
+SRC_ABST_FILES		=	AThread.cpp
 
 SRC_CONC_FILES		=	ThreadPool.cpp										\
 						ThreadPoolWorker.cpp								\
@@ -69,7 +69,7 @@ SRC_CONC_FILES		=	ThreadPool.cpp										\
 INCS				=	$(addprefix $(INC_ABST_PATH)/, $(INC_ABST_FILES))	\
 						$(addprefix $(INC_CONC_PATH)/, $(INC_CONC_FILES))	
 
-SRCS				=	$(addprefix $(SRC_ABST_PATH)/, $(SRCS_ABST_FILES))	\
+SRCS				=	$(addprefix $(SRC_ABST_PATH)/, $(SRC_ABST_FILES))	\
 						$(addprefix $(SRC_CONC_PATH)/, $(SRC_CONC_FILES))	
 
 OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
@@ -87,6 +87,9 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS)
 
 
 ## Rules
+
+all: $(NAME)
+
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
