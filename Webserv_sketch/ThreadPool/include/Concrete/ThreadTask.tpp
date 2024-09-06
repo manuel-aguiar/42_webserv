@@ -34,6 +34,7 @@
 	Then chatgpt did all the prototypes up to 5 arguments, saved me hours
 */
 
+
 //Forward Declaration: a function pointer, whether it is a non-member or a member function
 template <
 	typename FunctionPointer
