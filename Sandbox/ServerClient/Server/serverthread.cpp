@@ -91,6 +91,7 @@ multithreading and signals
 # include <unistd.h>
 # include <sys/epoll.h>
 # include <vector>
+# include <fcntl.h>
 
 # define EPOLL_MAXEVENTS 10
 
@@ -114,7 +115,7 @@ class WebServerSignalHandler
 				_g_signal = sigNum;
 				for (size_t i = 0; i < _pipes.size(); ++i)
 				{
-					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM") + 1);
+					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
 				}
 			}
 		}
@@ -285,6 +286,24 @@ int ThreadServerFunc(int serverNumber)
 		return (EXIT_FAILURE);
 	}
 
+
+
+
+
+	event = (struct epoll_event){};	
+	event.events = EPOLLIN;
+	event.data.fd = STDIN_FILENO;		//subscribe stdin to epoll to allow for reading commands, ONLY ONE EPOLL
+
+	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
+	{
+		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+		close(epollfd);
+		close(listener);
+		return (EXIT_FAILURE);
+	}
+	
+
+
 	
 	lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Waiting for connections....", std::cerr);
 
@@ -304,6 +323,24 @@ int ThreadServerFunc(int serverNumber)
 				close(epollfd);
 				return (EXIT_SUCCESS);
 			}
+			if (wait[i].data.fd == STDIN_FILENO && wait[i].events & EPOLLIN)
+			{
+				std::string buffer;
+				
+				std::memset(readBuff, 0, sizeof(readBuff));
+				
+				pthread_mutex_lock(&threadlock);
+				bytesRead = read(wait[i].data.fd, readBuff, sizeof(readBuff) - 1);
+				pthread_mutex_unlock(&threadlock);
+				if (bytesRead != -1)
+				{
+					if (std::string(readBuff) == "STATUS\n")
+						lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": all alive and kicking", std::cerr);
+					else
+						lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": unknown command", std::cerr);
+				}
+			}	
+					
 			else if (wait[i].data.fd == listener)
 			{
 				int newConn = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
@@ -356,7 +393,7 @@ int ThreadServerFunc(int serverNumber)
 						else
 						{
 							totalRead += bytesRead;
-							std::cout << readBuff;
+							lockWrite(readBuff, std::cout);
 							if (bytesRead < 255)
 								lockWrite("", std::cout);
 							if (readBuff[bytesRead] == '\0')
@@ -416,6 +453,8 @@ int main(void)
 	WebServerSignalHandler::prepare_signal(&signal, WebServerSignalHandler::signal_handler, numServers);
 
 	pthread_mutex_init(&threadlock, NULL);
+
+	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
 	for (int i = 0; i < numServers; ++i)
 	{

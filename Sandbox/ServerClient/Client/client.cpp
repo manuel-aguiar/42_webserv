@@ -83,7 +83,7 @@ int main()
 		{
 			readBuff[bytesRead] = '\0';
 			std::cout << readBuff;
-			if (bytesRead < sizeof(readBuff) - 1)
+			if ((size_t)bytesRead < sizeof(readBuff) - 1)
 				break ;
 		}	
 
