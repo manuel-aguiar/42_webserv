@@ -15,27 +15,16 @@
 ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 	_threads(InitialNumberOfThreads)
 {
-	sigset_t oldSet;
-	sigset_t blockSet;
-	sigemptyset(&oldSet);
-	pthread_sigmask(SIG_BLOCK, NULL, &oldSet);			//oldset of signal masks		UNPROTECTED
+	pthread_mutex_init(&_statusLock, NULL);
+	pthread_cond_init(&_exitSignal, NULL);
 
-	sigemptyset(&blockSet);
-	
-	if (sigismember(&oldSet, SIGINT))
-		sigaddset(&blockSet, SIGINT);
-	if (sigismember(&oldSet, SIGQUIT))
-		sigaddset(&blockSet, SIGQUIT);
-	
-	pthread_sigmask(SIG_BLOCK , &blockSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
-
+	pthread_mutex_lock(&_statusLock);
 	for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
 	{
-		_threads[i] = new ThreadPoolWorker(_taskQueue);
+		_threads[i] = new ThreadPoolWorker(_taskQueue, _statusLock, _exitSignal);
 		_threads[i]->start();
 	}
-
-	pthread_sigmask(SIG_SETMASK, &oldSet, NULL);		// reestablish the oldmask set by the user		UNPROTECTED
+	pthread_mutex_unlock(&_statusLock);
 }
 
 ThreadPool::~ThreadPool()
@@ -77,9 +66,29 @@ void	ThreadPool::addThread()
 {
 	ThreadPoolWorker*   newThread;
 
-	newThread = new ThreadPoolWorker(_taskQueue);
+	newThread = new ThreadPoolWorker(_taskQueue, _statusLock, _exitSignal);
 	_threads.push_back(newThread);
 	newThread->start();
+}
+
+void	ThreadPool::removeThread()
+{
+	pthread_mutex_lock(&_statusLock);
+	_taskQueue.addTask(NULL);
+	pthread_cond_wait(&_exitSignal, &_statusLock);
+
+	std::vector<ThreadPoolWorker*>::iterator curThread;	
+	for (curThread = _threads.begin(); curThread != _threads.end(); ++curThread)
+	{
+		if ((*curThread)->exitedQueue())
+		{
+			(*curThread)->join();
+			delete (*curThread);
+			_threads.erase(curThread);
+			break ;
+		}
+	}
+	pthread_mutex_unlock(&_statusLock);
 }
 
 int	ThreadPool::threadCount() const

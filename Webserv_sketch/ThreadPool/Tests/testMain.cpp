@@ -11,14 +11,17 @@
 /* ************************************************************************** */
 
 # include <iostream>
-# include "include/Concrete/ThreadTask.tpp"
-# include "include/Concrete/ThreadPool.hpp"
+# include "../include/Concrete/ThreadTask.tpp"
+# include "../include/Concrete/ThreadPool.hpp"
 //# include "_legacy/SharedTask.hpp"
 //# include "_legacy/IndependentTask.hpp"
 # include <unistd.h>
+
 /*
 	(cd ../.. && ./gitcommit.sh)
-	clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
+	(cd .. && make) && c++ -Wall -Wextra -Werror testMain.cpp -L../ -lpthread -lthreadpool -o tptest
+
+	valgrind --tool=helgrind ./tptest 10
 */
 
 pthread_mutex_t globalLock;
@@ -125,17 +128,36 @@ class Test : public ITest
 		};
 
 
-		int ArgYesReturnYes_Const(unsigned int number)
+		int ArgYesReturnYes_Const(unsigned int number) const
 		{
 			lockWrite("				 Const: Arg Yes Return Yes " + std::to_string(number));
 			return (number);
 		};
-		int ArgNoReturnYes_Const(void)
+		int TwoArgReturnYes(unsigned int number, char c)
+		{
+			(void)c;
+			lockWrite("				 				TTWO ARGS Return Yes " + std::to_string(number));
+			return (number);
+		};
+		int TwoArgReturnYes_Const(unsigned int number, char c) const
+		{
+			(void)c;
+			lockWrite("				 				Const: THREE ARGS Return Yes " + std::to_string(number));
+			return (number);
+		};
+		int ThreeArgReturnYes_Const(unsigned int number, int hey, char c) const
+		{
+			(void)hey;
+			(void)c;
+			lockWrite("				 				Const: THREE ARGS Return Yes " + std::to_string(number));
+			return (number);
+		};
+		int ArgNoReturnYes_Const(void) const
 		{
 			lockWrite("				 Const: Arg No, Return Yes " + std::to_string(52));
 			return (42);
 		};
-		void ArgYesReturnNo_Const(int number)
+		void ArgYesReturnNo_Const(int number) const
 		{
 			lockWrite("				 Const: rg Yes, Return No " + std::to_string(number));
 		};
@@ -198,7 +220,7 @@ int main(int ac, char **av)
 {
 	(void)ac;
 
-	unsigned int count = 5000;
+	unsigned int count = 50;
 	unsigned int vecSize = 10;
 	std::vector<long> vector(vecSize);
 	Test	dummy;
@@ -218,6 +240,8 @@ int main(int ac, char **av)
 	const std::string cenas("Hey thhere");
 
 	pthread_mutex_init(&globalLock, NULL);
+
+	tp.addThread();
 
 	for (unsigned int i = 0; i < count; ++i)
 	{
@@ -250,12 +274,16 @@ int main(int ac, char **av)
 		tp.addTask(dummy, &Test::ArgYesReturnNo_Const, (int)i);
 		tp.addTask(dummy, &Test::ArgNoReturnYes_Const);
 		tp.addTask(dummy, &Test::ArgNoReturnNo_Const);
+		tp.addTask(dummy, &Test::TwoArgReturnYes, i, 'c');
+		tp.addTask(dummy, &Test::ThreeArgReturnYes_Const, i, 42, 'c');
 		tp.addTask(fibprint, (unsigned long)(i % vecSize));
 		tp.addTask(nada);
 		tp.addTask(*testptr, &ITest::derived, i);
 		lockWrite("										   finished inserting tasks");
 	}
 	
+
+
 	tp.waitForCompletion();
 
 	pthread_mutex_lock(&globalLock);

@@ -12,7 +12,7 @@
 
 
 /*
-	c++ -Wall -Wextra -Werror serverthread.cpp $(find ../../../Webserv_sketch/ThreadPool/source/ -name '*.cpp') -lpthread -o serverthread
+	c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
 
 	valgrind --tool=helgrind --track-fds=yes --trace-children=yes ./serverthread 
 */
@@ -85,11 +85,13 @@ multithreading and signals
 */
 
 # include <vector>
+# include <map>
 # include <signal.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include <sys/epoll.h>
 # include <vector>
+# include <fcntl.h>
 
 # define EPOLL_MAXEVENTS 10
 
@@ -113,7 +115,7 @@ class WebServerSignalHandler
 				_g_signal = sigNum;
 				for (size_t i = 0; i < _pipes.size(); ++i)
 				{
-					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM") + 1);
+					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
 				}
 			}
 		}
@@ -156,17 +158,60 @@ std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
 
 
 
+class Connection
+{
+	public:
+		Connection() : _fd(-1), _event((struct epoll_event) {}) {}
+		Connection(const int fd) : _fd(fd), _event((struct epoll_event) {}) {}
+		Connection(const int fd, const struct epoll_event event) : _fd(fd), _event(event) {}
+		~Connection() {};
+		Connection(const Connection& copy) : _fd(copy._fd) {(void)copy;}
+		Connection& operator=(const Connection& assign) {if (this == &assign) return (*this); _fd = assign._fd; _event = assign._event; return (*this);}
+
+		void setEvent(const struct epoll_event event) {_event = event;}
+		struct epoll_event& getEvent() {return (_event);}
+	private:
+		int		 			_fd;
+		struct epoll_event	_event;
+};
+
+void closeconnections(std::map<int, Connection>& connfds, int epollfd)
+{
+	std::map<int, Connection>::iterator iter;
+	for (iter = connfds.begin(); iter != connfds.end(); ++iter)
+	{
+		if (epoll_ctl(epollfd, EPOLL_CTL_DEL, iter->first, &(iter->second.getEvent())) == -1)
+			lockWrite(std::string("epoll_ctl() potato: ") + std::strerror(errno), std::cerr);
+		close(iter->first);
+	}
+	connfds.clear();
+}
+
+void closeSingleConn(int fd, std::map<int, Connection>& connfds, int epollfd)
+{
+	Connection& conn = connfds[fd];
+
+	conn.setEvent((struct epoll_event){});
+	if (epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &(conn.getEvent())) == -1)
+	{
+		lockWrite(std::string("epoll_ctl(): ") + std::strerror(errno), std::cerr);
+		return ;
+	}
+	close(fd);
+	connfds.erase(fd);
+}
 
 int ThreadServerFunc(int serverNumber)
 {
 	int				 		listener;
-	int	 					connection;
 	struct sockaddr_in  	listAddress;
 	struct sockaddr_in  	connAddress;
 	socklen_t		   		connAddrLen;
 	int				 		bytesRead;
 	char					readBuff[256];
 	int number = 1;
+
+	std::map<int, Connection>		connfds;
 
 	int epollfd;
 	int pipefdRead;
@@ -184,7 +229,7 @@ int ThreadServerFunc(int serverNumber)
 
 	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
 	{
-		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+		lockWrite(std::string("epoll_ctl(): ") + std::strerror(errno), std::cerr);
 		close(epollfd);
 		return (EXIT_FAILURE);
 	}
@@ -202,7 +247,7 @@ int ThreadServerFunc(int serverNumber)
 		int sockopt = SO_REUSEADDR
 	#endif
 
-	listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
+	listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, IPPROTO_TCP);
 
 	if (setsockopt(listener, SOL_SOCKET, sockopt, &number, sizeof(number)) == -1)
 	{
@@ -241,6 +286,24 @@ int ThreadServerFunc(int serverNumber)
 		return (EXIT_FAILURE);
 	}
 
+
+
+
+
+	event = (struct epoll_event){};	
+	event.events = EPOLLIN;
+	event.data.fd = STDIN_FILENO;		//subscribe stdin to epoll to allow for reading commands, ONLY ONE EPOLL
+
+	if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
+	{
+		std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+		close(epollfd);
+		close(listener);
+		return (EXIT_FAILURE);
+	}
+	
+
+
 	
 	lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Waiting for connections....", std::cerr);
 
@@ -255,60 +318,119 @@ int ThreadServerFunc(int serverNumber)
 			if (wait[i].data.fd == pipefdRead)
 			{
 				lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Signaled to exit", std::cerr);
+				closeconnections(connfds, epollfd);
 				close(listener);
 				close(epollfd);
 				return (EXIT_SUCCESS);
 			}
-			//won't bother to subscribe conenction to epoll, for now
-
-			
-			connection = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
-			if (connection == -1)
+			if (wait[i].data.fd == STDIN_FILENO && wait[i].events & EPOLLIN)
 			{
-				lockWrite(std::string("accept(): ") + std::strerror(errno), std::cerr);
-				close(epollfd);
-				close(listener);
-				return (1);
-			}
-			std::cout << "  Server " << serverNumber << " Connection received" << std::endl;
-			while (true)
-			{
+				std::string buffer;
+				
 				std::memset(readBuff, 0, sizeof(readBuff));
-				bytesRead = read(connection, readBuff, sizeof(readBuff) - 1);
-
-				if (bytesRead == -1)
+				
+				pthread_mutex_lock(&threadlock);
+				bytesRead = read(wait[i].data.fd, readBuff, sizeof(readBuff) - 1);
+				pthread_mutex_unlock(&threadlock);
+				if (bytesRead != -1)
 				{
-					lockWrite(std::string("read(): ") + std::strerror(errno), std::cerr);
-					close(epollfd);
-					close(connection);
-					close(listener);
-					return EXIT_FAILURE;
+					if (std::string(readBuff) == "STATUS\n")
+						lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": all alive and kicking", std::cerr);
+					else
+						lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": unknown command", std::cerr);
 				}
-				else if (bytesRead == 0)
-				{
-					lockWrite(std::string("  Server ") + std::to_string(serverNumber) + "Client closed the connection", std::cerr);
-					break;
-				}
-				else
-				{
-					std::cout << readBuff;
-					if (readBuff[bytesRead] == '\0')
-						break ;
-				}
-			}
-			if (write(connection, RESPONSE, std::strlen(RESPONSE) + 1) == -1)
+			}	
+					
+			else if (wait[i].data.fd == listener)
 			{
-				lockWrite(std::string("write(): ") + std::strerror(errno), std::cerr);
-				close(epollfd);
-				close(connection);
-				close(listener);
-				return (EXIT_FAILURE);
+				int newConn = accept(listener, (struct sockaddr*)&connAddress, &connAddrLen);
+				if (newConn == -1)
+				{
+					lockWrite(std::string("accept(): ") + std::strerror(errno), std::cerr);
+					closeconnections(connfds, epollfd);
+					close(epollfd);
+					close(listener);
+					return (1);
+				}
+				event = (struct epoll_event){};	
+				event.events = EPOLLIN | EPOLLOUT;
+				event.data.fd = newConn;		//add listener socket to the poll
+
+				connfds[newConn] = Connection(newConn, event);
+
+				if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
+				{
+					std::cerr << "epoll_ctl() " << std::strerror(errno) << std::endl;
+					closeconnections(connfds, epollfd);
+					close(epollfd);
+					close(listener);
+					return (EXIT_FAILURE);
+				}
+				
+				lockWrite(std::string("  Server ") + std::to_string(serverNumber) + ": Connection received", std::cerr);
 			}
-			std::cout << std::endl;
-			close(connection);
-		
+			else
+			{
+				if (wait[i].events & EPOLLIN)
+				{
+					//lockWrite( std::string("\n  			Server ") + std::to_string(serverNumber) + " received message from client" ,std::cout);
+					int totalRead = 0;
+					while (true)
+					{
+						std::memset(readBuff, 0, sizeof(readBuff));
+						bytesRead = read(wait[i].data.fd, readBuff, sizeof(readBuff) - 1);
+
+						if (bytesRead == -1)
+						{
+							lockWrite(std::string("read(): ") + std::strerror(errno), std::cerr);
+							close(epollfd);
+							closeconnections(connfds, epollfd);
+							close(listener);
+							return EXIT_FAILURE;
+						}
+						else if (bytesRead == 0)
+							break;
+						else
+						{
+							totalRead += bytesRead;
+							lockWrite(readBuff, std::cout);
+							if (bytesRead < 255)
+								lockWrite("", std::cout);
+							if (readBuff[bytesRead] == '\0')
+								break ;
+						}
+					}
+
+					//lockWrite( std::string("\n  			Server ") + std::to_string(serverNumber) + " finished reading message, " + std::to_string(totalRead) + " bytes"  ,std::cout);
+					if (wait[i].events & EPOLLOUT && !(wait[i].events & EPOLLHUP || wait[i].events & EPOLLERR))
+					{
+						//lockWrite( std::string("  			Server ") + std::to_string(serverNumber) + " can write to client" ,std::cout);
+						int bytes = write(wait[i].data.fd, RESPONSE, std::strlen(RESPONSE) + 1);
+						if (bytes == -1)
+						{
+							lockWrite(std::string("write(): ") + std::strerror(errno), std::cerr);
+							close(epollfd);
+							closeconnections(connfds, epollfd);
+							close(listener);
+							return (EXIT_FAILURE);
+						}
+						//lockWrite( std::string("  			Server ") + std::to_string(serverNumber) + " writing to client was successfull, " + std::to_string(bytes) + " bytes" ,std::cout);
+					}
+					//else
+					//	lockWrite( std::string("  			Server ") + std::to_string(serverNumber) + " Client not ready to receive message" ,std::cout);
+				}
+				
+				if (wait[i].events & EPOLLHUP || wait[i].events & EPOLLERR)
+				{
+					closeSingleConn(wait[i].data.fd, connfds, epollfd);
+					lockWrite(std::string("  			Server ") + std::to_string(serverNumber) + "  Client closed the connection", std::cerr);
+				}
+			}
+				
+
 		}
 	}
+	closeconnections(connfds, epollfd);
 	close(listener);
 	close(epollfd);
 	return (EXIT_SUCCESS);
@@ -324,13 +446,29 @@ void	lockWrite(const std::string& toWrite, std::ostream& stream)
 
 int main(void)
 {
-	struct sigaction signal = (struct sigaction){};
+
+	sigset_t threadSigSet;
+
+	/* Disable SIGINT and SIGQUIT for the threadpool workers*/
+	sigemptyset(&threadSigSet);
+	sigaddset(&threadSigSet, SIGINT);
+	sigaddset(&threadSigSet, SIGQUIT);
+
+	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
+
 	int numServers = 10;
 	ThreadPool servers(numServers);
 
+	/* Re-enable for the main thread*/
+	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);		// reestablish the oldmask set by the user		UNPROTECTED
+
+	/* Signal Handler for the program*/
+	struct sigaction signal = (struct sigaction){};
 	WebServerSignalHandler::prepare_signal(&signal, WebServerSignalHandler::signal_handler, numServers);
 
 	pthread_mutex_init(&threadlock, NULL);
+
+	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
 	for (int i = 0; i < numServers; ++i)
 	{
