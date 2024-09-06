@@ -16,9 +16,10 @@
 //# include "_legacy/SharedTask.hpp"
 //# include "_legacy/IndependentTask.hpp"
 # include <unistd.h>
+
 /*
 	(cd ../.. && ./gitcommit.sh)
-	clear && c++ -g -Wall -Wextra -Werror $(find . -name '*.cpp') -lpthread -o indep
+	(cd .. && make) && c++ -Wall -Wextra -Werror testMain.cpp -L../ -lpthread -lthreadpool -o tptest
 */
 
 pthread_mutex_t globalLock;

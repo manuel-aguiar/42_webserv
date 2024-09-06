@@ -12,7 +12,7 @@
 
 
 /*
-	c++ -Wall -Wextra -Werror serverthread.cpp $(find ../../../Webserv_sketch/ThreadPool/source/ -name '*.cpp') -lpthread -o serverthread
+	c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
 
 	valgrind --tool=helgrind --track-fds=yes --trace-children=yes ./serverthread 
 */
