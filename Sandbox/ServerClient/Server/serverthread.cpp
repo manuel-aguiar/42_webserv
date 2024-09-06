@@ -446,10 +446,24 @@ void	lockWrite(const std::string& toWrite, std::ostream& stream)
 
 int main(void)
 {
-	struct sigaction signal = (struct sigaction){};
+
+	sigset_t threadSigSet;
+
+	/* Disable SIGINT and SIGQUIT for the threadpool workers*/
+	sigemptyset(&threadSigSet);
+	sigaddset(&threadSigSet, SIGINT);
+	sigaddset(&threadSigSet, SIGQUIT);
+
+	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
+
 	int numServers = 10;
 	ThreadPool servers(numServers);
 
+	/* Re-enable for the main thread*/
+	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);		// reestablish the oldmask set by the user		UNPROTECTED
+
+	/* Signal Handler for the program*/
+	struct sigaction signal = (struct sigaction){};
 	WebServerSignalHandler::prepare_signal(&signal, WebServerSignalHandler::signal_handler, numServers);
 
 	pthread_mutex_init(&threadlock, NULL);
