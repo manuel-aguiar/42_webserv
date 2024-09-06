@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 11:16:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/06 14:07:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ template <typename Class, typename Arg1, typename Arg2, typename Return>
 class ThreadTask<Return (Class::*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
-    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = nullptr) :
+    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL) :
         _instance(instance),
         _function(function),
         _arg1(arg1),
@@ -117,7 +117,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -127,7 +127,7 @@ public:
             (_instance.*_function)(_arg1, _arg2);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -145,7 +145,7 @@ template <typename Class, typename Arg1, typename Arg2, typename Arg3, typename 
 class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
-    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = nullptr) :
+    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL) :
         _instance(instance),
         _function(function),
         _arg1(arg1),
@@ -175,7 +175,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -185,7 +185,7 @@ public:
             (_instance.*_function)(_arg1, _arg2, _arg3);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -205,7 +205,7 @@ template <typename Class, typename Arg1, typename Arg2, typename Arg3, typename 
 class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
-    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = nullptr) :
+    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL) :
         _instance(instance),
         _function(function),
         _arg1(arg1),
@@ -238,7 +238,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -248,7 +248,7 @@ public:
             (_instance.*_function)(_arg1, _arg2, _arg3, _arg4);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -268,7 +268,7 @@ template <typename Class, typename Arg1, typename Arg2, typename Arg3, typename 
 class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
 {
 public:
-    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = nullptr) :
+    ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL) :
         _instance(instance),
         _function(function),
         _arg1(arg1),
@@ -304,7 +304,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -314,7 +314,7 @@ public:
             (_instance.*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }

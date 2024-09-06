@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 11:12:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/06 14:07:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,14 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
         (*_function)(_args);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -102,14 +102,14 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
         (*_function)(_arg1, _arg2);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -150,14 +150,14 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
         (*_function)(_arg1, _arg2, _arg3);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -202,14 +202,14 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
         (*_function)(_arg1, _arg2, _arg3, _arg4);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -258,14 +258,14 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
         (*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }

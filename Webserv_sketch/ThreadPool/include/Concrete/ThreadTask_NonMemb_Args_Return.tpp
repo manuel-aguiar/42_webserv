@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 11:11:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/06 14:07:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ template <typename Args, typename Return>
 class ThreadTask<Return (*)(Args)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn = nullptr) :
+    ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn = NULL) :
         _function(function),
         _args(arguments),
         _placeReturn(placeReturn)
@@ -59,7 +59,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -69,7 +69,7 @@ public:
             (*_function)(_args);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -87,7 +87,7 @@ template <typename Arg1, typename Arg2, typename Return>
 class ThreadTask<Return (*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = nullptr) :
+    ThreadTask(Return (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL) :
         _function(function),
         _arg1(arg1),
         _arg2(arg2),
@@ -111,7 +111,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -121,7 +121,7 @@ public:
             (*_function)(_arg1, _arg2);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -142,7 +142,7 @@ template <typename Arg1, typename Arg2, typename Arg3, typename Return>
 class ThreadTask<Return (*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = nullptr) :
+    ThreadTask(Return (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL) :
         _function(function),
         _arg1(arg1),
         _arg2(arg2),
@@ -169,7 +169,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -179,7 +179,7 @@ public:
             (*_function)(_arg1, _arg2, _arg3);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -197,7 +197,7 @@ template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename R
 class ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = nullptr) :
+    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL) :
         _function(function),
         _arg1(arg1),
         _arg2(arg2),
@@ -227,7 +227,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -237,7 +237,7 @@ public:
             (*_function)(_arg1, _arg2, _arg3, _arg4);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
@@ -255,7 +255,7 @@ template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename A
 class ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = nullptr) :
+    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL) :
         _function(function),
         _arg1(arg1),
         _arg2(arg2),
@@ -288,7 +288,7 @@ public:
         return *this;
     }
 
-    void execute() const override
+    void execute() const
     {
         if (!_function)
             return;
@@ -298,7 +298,7 @@ public:
             (*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
     }
 
-    IThreadTask* clone() const override
+    IThreadTask* clone() const
     {
         return new ThreadTask(*this);
     }
