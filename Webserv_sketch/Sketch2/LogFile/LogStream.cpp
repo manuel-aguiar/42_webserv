@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LogStream.hpp                                      :+:      :+:    :+:   */
+/*   LogStream.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 10:55:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 11:04:20 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/09 10:28:33 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/09 10:39:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOGSTREAM_HPP
+#include "LogStream.hpp"
 
-# define LOGSTREAM_HPP
-
-# include "ILog.hpp"
-
-class LogStream : public ILog
+LogStream::LogStream(std::ostream& stream) : _stream(stream)
 {
-    public:
-        LogStream(std::ostream& stream);
-        ~LogStream();
 
-        void record(const std::string& entry);
-    
-    private:
-        std::ostream&   _stream;
-};
+}
 
+LogStream::~LogStream()
+{
 
+}
 
-#endif
+void    LogStream::record(const std::string& entry)
+{
+    _stream << entry;
+}

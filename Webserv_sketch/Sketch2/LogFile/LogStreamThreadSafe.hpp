@@ -1,33 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LogStream.hpp                                      :+:      :+:    :+:   */
+/*   LogStreamThreadSafe.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 10:55:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 11:04:20 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/09 10:58:07 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/09 11:03:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOGSTREAM_HPP
+#ifndef LOGSTREAMTHREADSAFE_HPP
 
-# define LOGSTREAM_HPP
+# define LOGSTREAMTHREADSAFE_HPP
 
 # include "ILog.hpp"
 
-class LogStream : public ILog
+
+# include <pthread.h>
+
+
+# include <exception>
+# include <stdexcept>
+# include <cstring>
+
+class LogStreamThreadSafe : public ILog
 {
     public:
-        LogStream(std::ostream& stream);
-        ~LogStream();
+        LogStreamThreadSafe(std::ostream& stream);
+        ~LogStreamThreadSafe();
 
-        void record(const std::string& entry);
+        void    record(const std::string& entry);
     
     private:
-        std::ostream&   _stream;
+        std::ostream&       _stream;
+        pthread_mutex_t     _writeLock;
 };
-
-
 
 #endif
