@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:15:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 11:19:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 13:31:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,17 @@
 # include "../Log/ILog.hpp"
 
 
-class Server {
-public:
-    Server(ILog& logger, IEventPoll& poll, IExecuter& executer, IInterpreter& interpreter)
-        : _logger(logger), _poll(poll), _executer(executer), _interpreter(interpreter) {}
+class Server
+{
+    public:
+        Server(ILog& logger, IEventPoll& poll, IExecuter& executer, IInterpreter& interpreter);
+        void run();
 
-    void run() {
-        _logger.record("Server started");
-        _poll.poll();
-        _executer.execute();
-        _interpreter.interpret();
-        _logger.record("Server stopped");
-    }
-
-private:
-    ILog&                   _logger;
-    IEventPoll&             _poll;
-    IExecuter&              _executer;
-    IInterpreter&           _interpreter;
+    private:
+        ILog&                   _logger;
+        IEventPoll&             _poll;
+        IExecuter&              _executer;
+        IInterpreter&           _interpreter;
 };
 
 
