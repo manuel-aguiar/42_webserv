@@ -20,7 +20,7 @@ LogStreamThreadSafe::LogStreamThreadSafe(std::ostream& stream) : _stream(stream)
 
 LogStreamThreadSafe::~LogStreamThreadSafe()
 {
-
+    pthread_mutex_destroy(&_writeLock);
 }
 
 void    LogStreamThreadSafe::record(const std::string& entry)

@@ -19,7 +19,6 @@ LogFileThreadSafe::LogFileThreadSafe()
         throw std::runtime_error (std::string("Failed to start LogFileThreadSafe at: open(): ") + std::strerror(errno));
     if (pthread_mutex_init(&_writeLock, NULL))
         throw std::runtime_error (std::string("Failed to start LogFileThreadSafe at: pthread_mutex_init(): ") + std::strerror(errno));
-
 }
 
 LogFileThreadSafe::~LogFileThreadSafe()
