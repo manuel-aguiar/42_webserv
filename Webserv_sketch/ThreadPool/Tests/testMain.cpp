@@ -86,6 +86,73 @@ unsigned int* allSameThreadUnsafe(unsigned int number)
 	return treta;
 }
 
+
+
+// Non-const methods
+int ArgYesReturnYes(unsigned int number)
+{
+	lockWrite("NON-MEMB Arg Yes Return Yes " + std::to_string(number));
+	return number;
+}
+
+int ArgNoReturnYes(void)
+{
+	lockWrite("NON-MEMB Arg No, Return Yes 52");
+	return 42;
+}
+
+void ArgYesReturnNo(int number)
+{
+	lockWrite("NON-MEMB Arg Yes, Return No " + std::to_string(number));
+}
+
+void ArgNoReturnNo(void)
+{
+	lockWrite("NON-MEMB Arg No, Return No 42");
+}
+
+int TwoArgReturnYes(unsigned int number, char c)
+{
+	(void)c;
+	lockWrite("NON-MEMB TWO ARGS Return Yes " + std::to_string(number));
+	return number;
+}
+
+int ThreeArgReturnYes(unsigned int number, int hey, char c)
+{
+	(void)hey;
+	(void)c;
+	lockWrite("NON-MEMB THREE ARGS Return Yes " + std::to_string(number));
+	return number;
+}
+
+void ThreeArgReturnNo(unsigned int number, int hey, char c)
+{ (void)number; (void)hey; (void)c;
+	lockWrite("NON-MEMB THREE ARGS Return No");
+}
+
+int FourArgReturnYes(unsigned int number, int hey, char c, float f)
+{ (void)hey; (void)c; (void)f;
+	lockWrite("NON-MEMB FOUR ARGS Return Yes " + std::to_string(number));
+	return number;
+}
+
+void FourArgReturnNo(unsigned int number, int hey, char c, float f)
+{ (void)number; (void)hey; (void)c; (void)f;
+	lockWrite("NON-MEMB FOUR ARGS Return No");
+}
+
+int FiveArgReturnYes(unsigned int number, int hey, char c, float f, double d)
+{ (void)hey; (void)c; (void)f; (void)d;
+	lockWrite("NON-MEMB FIVE ARGS Return Yes " + std::to_string(number));
+	return number;
+}
+
+void FiveArgReturnNo(unsigned int number, int hey, char c, float f, double d)
+{ (void)number; (void)hey; (void)c; (void)f; (void)d;
+	lockWrite("NON-MEMB FIVE ARGS Return No");
+}
+
 class ITest
 {
 	public:
@@ -96,75 +163,149 @@ class ITest
 
 class Test : public ITest
 {
-	public:
-		static void StaticMethod()
-		{
-			lockWrite("				 HELLO");
-		}
+public:
+    // Static method
+    static void StaticMethod()
+    {
+        lockWrite("HELLO");
+    }
 
-		int derived(unsigned int number)
-		{
-			lockWrite("				 DerivedMethod " + std::to_string(number));
-			return (number);
-		};
+	int derived(unsigned int number)
+	{
+		lockWrite("Derived Method " + std::to_string(number));
+		return (number);
+	}
 
-		int ArgYesReturnYes(unsigned int number)
-		{
-			lockWrite("				 Arg Yes Return Yes " + std::to_string(number));
-			return (number);
-		};
-		int ArgNoReturnYes(void)
-		{
-			lockWrite("				 Arg No, Return Yes " + std::to_string(52));
-			return (42);
-		};
-		void ArgYesReturnNo(int number)
-		{
-			lockWrite("				 Arg Yes, Return No " + std::to_string(number));
-		};
-		void ArgNoReturnNo(void)
-		{
-			lockWrite("				 Arg No, Return No " + std::to_string(42));
-		};
+    // Non-const methods
+    int ArgYesReturnYes(unsigned int number)
+    {
+        lockWrite("Arg Yes Return Yes " + std::to_string(number));
+        return number;
+    }
 
+    int ArgNoReturnYes(void)
+    {
+        lockWrite("Arg No, Return Yes 52");
+        return 42;
+    }
 
-		int ArgYesReturnYes_Const(unsigned int number) const
-		{
-			lockWrite("				 Const: Arg Yes Return Yes " + std::to_string(number));
-			return (number);
-		};
-		int TwoArgReturnYes(unsigned int number, char c)
-		{
-			(void)c;
-			lockWrite("				 				TTWO ARGS Return Yes " + std::to_string(number));
-			return (number);
-		};
-		int TwoArgReturnYes_Const(unsigned int number, char c) const
-		{
-			(void)c;
-			lockWrite("				 				Const: THREE ARGS Return Yes " + std::to_string(number));
-			return (number);
-		};
-		int ThreeArgReturnYes_Const(unsigned int number, int hey, char c) const
-		{
-			(void)hey;
-			(void)c;
-			lockWrite("				 				Const: THREE ARGS Return Yes " + std::to_string(number));
-			return (number);
-		};
-		int ArgNoReturnYes_Const(void) const
-		{
-			lockWrite("				 Const: Arg No, Return Yes " + std::to_string(52));
-			return (42);
-		};
-		void ArgYesReturnNo_Const(int number) const
-		{
-			lockWrite("				 Const: rg Yes, Return No " + std::to_string(number));
-		};
-		void ArgNoReturnNo_Const(void) const
-		{
-			lockWrite("				 Const: Arg No, Return No " + std::to_string(42));
-		};		 
+    void ArgYesReturnNo(int number)
+    {
+        lockWrite("Arg Yes, Return No " + std::to_string(number));
+    }
+
+    void ArgNoReturnNo(void)
+    {
+        lockWrite("Arg No, Return No 42");
+    }
+
+    int TwoArgReturnYes(unsigned int number, char c)
+    {
+        (void)c;
+        lockWrite("TWO ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    int ThreeArgReturnYes(unsigned int number, int hey, char c)
+    {
+        (void)hey;
+        (void)c;
+        lockWrite("THREE ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void ThreeArgReturnNo(unsigned int number, int hey, char c)
+    { (void)number; (void)hey; (void)c;
+        lockWrite("THREE ARGS Return No");
+    }
+
+    int FourArgReturnYes(unsigned int number, int hey, char c, float f)
+    { (void)hey; (void)c; (void)f;
+        lockWrite("FOUR ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void FourArgReturnNo(unsigned int number, int hey, char c, float f)
+    { (void)number; (void)hey; (void)c; (void)f;
+        lockWrite("FOUR ARGS Return No");
+    }
+
+    int FiveArgReturnYes(unsigned int number, int hey, char c, float f, double d)
+    { (void)hey; (void)c; (void)f; (void)d;
+        lockWrite("FIVE ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void FiveArgReturnNo(unsigned int number, int hey, char c, float f, double d)
+    { (void)number; (void)hey; (void)c; (void)f; (void)d;
+        lockWrite("FIVE ARGS Return No");
+    }
+
+    // Const methods
+    int ArgYesReturnYes_Const(unsigned int number) const
+    {
+        lockWrite("Const: Arg Yes Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    int ArgNoReturnYes_Const(void) const
+    {
+        lockWrite("Const: Arg No, Return Yes 52");
+        return 42;
+    }
+
+    void ArgYesReturnNo_Const(int number) const
+    {
+        lockWrite("Const: Arg Yes, Return No " + std::to_string(number));
+    }
+
+    void ArgNoReturnNo_Const(void) const
+    {
+        lockWrite("Const: Arg No, Return No 42");
+    }
+
+    int TwoArgReturnYes_Const(unsigned int number, char c) const
+    {
+        (void)c;
+        lockWrite("Const: TWO ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    int ThreeArgReturnYes_Const(unsigned int number, int hey, char c) const
+    {
+        (void)hey;
+        (void)c;
+        lockWrite("Const: THREE ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void ThreeArgReturnNo_Const(unsigned int number, int hey, char c) const
+    { (void)number; (void)hey; (void)c;
+        lockWrite("Const: THREE ARGS Return No");
+    }
+
+    int FourArgReturnYes_Const(unsigned int number, int hey, char c, float f) const
+    { (void)hey; (void)c; (void)f;
+        lockWrite("Const: FOUR ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void FourArgReturnNo_Const(unsigned int number, int hey, char c, float f) const
+    { (void)number; (void)hey; (void)c; (void)f;
+        lockWrite("Const: FOUR ARGS Return No");
+    }
+
+    int FiveArgReturnYes_Const(unsigned int number, int hey, char c, float f, double d) const
+    { (void)hey; (void)c; (void)f; (void)d;
+        lockWrite("Const: FIVE ARGS Return Yes " + std::to_string(number));
+        return number;
+    }
+
+    void FiveArgReturnNo_Const(unsigned int number, int hey, char c, float f, double d) const
+    {
+        (void)number; (void)hey; (void)c; (void)f; (void)d;
+        lockWrite("Const: FIVE ARGS Return No");
+    }
 };
 
 
@@ -178,121 +319,127 @@ void	lockWrite(const std::string& toWrite)
 
 
 
-
-#include <signal.h>
-
-class WebServerSignalHandler
-{
-	public:
-		static int getSignal() {return (_g_signal);};
-
-		static void		signal_handler(int sigNum)
-		{
-			if (sigNum == SIGINT || sigNum == SIGQUIT)
-				_g_signal = sigNum;
-		}
-		static int	ignore_signal(struct sigaction *ms)
-		{
-			ms->sa_flags = SA_RESTART;
-			ms->sa_handler = SIG_IGN;
-			sigemptyset(&(ms->sa_mask));
-			sigaction(SIGINT, ms, NULL);
-			sigaction(SIGQUIT, ms, NULL);
-			return (1);
-		}
-
-		static int prepare_signal(struct sigaction *ms, void (*handler)(int))
-		{
-			ms->sa_flags = 0;
-			ms->sa_handler = handler;
-			sigemptyset(&(ms->sa_mask));
-			sigaction(SIGINT, ms, NULL);
-			sigaction(SIGQUIT, ms, NULL);
-			return (1);
-		}
-	private:
-		static int _g_signal;
-};
-
-int		WebServerSignalHandler::_g_signal = 0;
-
 int main(int ac, char **av)
 {
 	(void)ac;
 
-	unsigned int count = 50;
-	unsigned int vecSize = 10;
-	std::vector<long> vector(vecSize);
+	if (ac != 2)
+	{
+		std::cout << "wrong number of arguments, 1 arg as a number of threads up to 100" << std::endl;
+		return (0);
+	}
+
+	int numThreads = std::atoi(av[1]);
+
+
+	if (numThreads <= 0 || numThreads > 100)
+	{
+		std::cout << "number of threads: " << numThreads << " is invalid, must be between 1 and 100" << std::endl;
+		return (0);
+	}
+
+	std::vector<int> returnValues(18);		//saving return values
 	Test	dummy;
 	ITest*  testptr;
-	(void)testptr;
-
-	struct sigaction sigaction = (struct sigaction){};
-
-	WebServerSignalHandler::prepare_signal(&sigaction, WebServerSignalHandler::signal_handler);
 
 	testptr = &dummy;
+	ThreadPool tp(numThreads);
 
-	unsigned int* save;
-	(void)save;
-	ThreadPool tp(std::atoi(av[1]));
-
-	const std::string cenas("Hey thhere");
 
 	pthread_mutex_init(&globalLock, NULL);
 
-	tp.addThread();
+	tp.addThread();			//testing adding a thread
+	tp.removeThread();		//testing removing a thread
 
-	for (unsigned int i = 0; i < count; ++i)
 	{
-		//ThreadTask<long (*)(unsigned int)> task1(fib, i % vecSize);
-		//ThreadTask<long (*)(unsigned long)> task2(fibprint, i % vecSize);
-		//ThreadTask<void (*)(unsigned long)> task3(voidfibprint, i % vecSize);
-		//ThreadTask<void (*)(const std::string&)> task4(printf, cenas);
-		//ThreadTask<void (*)()> task5(nada);
-		//ThreadTask<void (*)()> task6(StaticMethod::sayHello);
-		//ThreadTask<int (Test::*)(int)> task7(dummy, &Test::dosomething, i);
-		//tp.addTask(task1);
-		//tp.addTask(task2);
-		//tp.addTask(task3);
-		//tp.addTask(task4);
-		//tp.addTask(task5);
-		//tp.addTask(task6);
-		//tp.addTask(task7);
+		unsigned int i = 0;
+		int j = 0;
 
-		//tp.addTask(allSameThreadUnsafe, i, &save);
-		if (WebServerSignalHandler::getSignal())
-			break ;
+		// 1. Non member functions
+		tp.addTask(ArgYesReturnYes, i++);                     // Single argument, returns int
+		tp.addTask(ArgYesReturnNo, static_cast<int>(i));     // Single argument, no return
+		tp.addTask(ArgNoReturnYes);                          // No arguments, returns int
+		tp.addTask(ArgNoReturnNo);                           // No arguments, no return
+		tp.addTask(TwoArgReturnYes, i++, 'c');                 // Two arguments, returns int
+		tp.addTask(ThreeArgReturnYes, i++, 42, 'c');           // Three arguments, returns int
+		tp.addTask(ThreeArgReturnNo, i++, 42, 'c');            // Three arguments, no return
+		tp.addTask(FourArgReturnYes, i++, 42, 'c', 3.14f);     // Four arguments, returns int
+		tp.addTask(FourArgReturnNo, i++, 42, 'c', 3.14f);      // Four arguments, no return
+		tp.addTask(FiveArgReturnYes, i++, 42, 'c', 3.14f, 2.718); // Five arguments, returns int
+		tp.addTask(FiveArgReturnNo, i++, 42, 'c', 3.14f, 2.718);  // Five arguments, no return
 
-		tp.addTask(fib, i % vecSize);
+
+    	// 2. Static method
 		tp.addTask(Test::StaticMethod);
-		tp.addTask(dummy, &Test::ArgYesReturnYes, i);
-		tp.addTask(dummy, &Test::ArgYesReturnNo, (int)i);
+
+		// 3. Non-const member functions
+		tp.addTask(ArgYesReturnYes, i++);
+		tp.addTask(dummy, &Test::ArgYesReturnYes, i++);
+		tp.addTask(dummy, &Test::ArgYesReturnNo, static_cast<int>(i));
 		tp.addTask(dummy, &Test::ArgNoReturnYes);
 		tp.addTask(dummy, &Test::ArgNoReturnNo);
-		tp.addTask(dummy, &Test::ArgYesReturnYes_Const, i);
-		tp.addTask(dummy, &Test::ArgYesReturnNo_Const, (int)i);
+		tp.addTask(dummy, &Test::TwoArgReturnYes, i++, 'c');
+		tp.addTask(dummy, &Test::ThreeArgReturnYes, i++, 42, 'c');
+		tp.addTask(dummy, &Test::ThreeArgReturnNo, i++, 42, 'c');
+		tp.addTask(dummy, &Test::FourArgReturnYes, i++, 42, 'c', 3.14f);
+		tp.addTask(dummy, &Test::FourArgReturnNo, i++, 42, 'c', 3.14f);
+		tp.addTask(dummy, &Test::FiveArgReturnYes, i++, 42, 'c', 3.14f, 2.718);
+		tp.addTask(dummy, &Test::FiveArgReturnNo, i++, 42, 'c', 3.14f, 2.718);
+
+		// 4. Const member functions
+		tp.addTask(dummy, &Test::ArgYesReturnYes_Const, i++);
+		tp.addTask(dummy, &Test::ArgYesReturnNo_Const, static_cast<int>(i++));
 		tp.addTask(dummy, &Test::ArgNoReturnYes_Const);
 		tp.addTask(dummy, &Test::ArgNoReturnNo_Const);
-		tp.addTask(dummy, &Test::TwoArgReturnYes, i, 'c');
-		tp.addTask(dummy, &Test::ThreeArgReturnYes_Const, i, 42, 'c');
-		tp.addTask(fibprint, (unsigned long)(i % vecSize));
-		tp.addTask(nada);
-		tp.addTask(*testptr, &ITest::derived, i);
-		lockWrite("										   finished inserting tasks");
-	}
-	
+		tp.addTask(dummy, &Test::TwoArgReturnYes_Const, i++, 'c');
+		tp.addTask(dummy, &Test::ThreeArgReturnYes_Const, i++, 42, 'c');
+		tp.addTask(dummy, &Test::ThreeArgReturnNo_Const, i++, 42, 'c');
+		tp.addTask(dummy, &Test::FourArgReturnYes_Const, i++, 42, 'c', 3.14f);
+		tp.addTask(dummy, &Test::FourArgReturnNo_Const, i++, 42, 'c', 3.14f);
+		tp.addTask(dummy, &Test::FiveArgReturnYes_Const, i++, 42, 'c', 3.14f, 2.718);
+		tp.addTask(dummy, &Test::FiveArgReturnNo_Const, i++, 42, 'c', 3.14f, 2.718);
 
+		// 5. Member function derived from base class (non-const)
+		tp.addTask(*testptr, &ITest::derived, i);
+
+		// 6. saving return values to check if it works
+		tp.addTask(ArgYesReturnYes, i++, &returnValues[j++]);                     // Single argument, returns int
+		tp.addTask(ArgNoReturnYes, &returnValues[j++]);                         // No arguments, returns int
+		tp.addTask(TwoArgReturnYes, i++, 'c', &returnValues[j++]);                // Two arguments, returns int
+		tp.addTask(ThreeArgReturnYes, i++, 42, 'c', &returnValues[j++]);          // Three arguments, returns int
+		tp.addTask(FourArgReturnYes, i++, 42, 'c', 3.14f, &returnValues[j++]);    // Four arguments, returns int
+		tp.addTask(FiveArgReturnYes, i++, 42, 'c', 3.14f, 2.718, &returnValues[j++]); // Five arguments, returns int
+
+		tp.addTask(dummy, &Test::ArgYesReturnYes, i++, &returnValues[j++]);       // Single argument, returns int
+		tp.addTask(dummy, &Test::ArgNoReturnYes, &returnValues[j++]);           // No arguments, returns int
+		tp.addTask(dummy, &Test::TwoArgReturnYes, i++, 'c', &returnValues[j++]);  // Two arguments, returns int
+		tp.addTask(dummy, &Test::ThreeArgReturnYes, i++, 42, 'c', &returnValues[j++]); // Three arguments, returns int
+		tp.addTask(dummy, &Test::FourArgReturnYes, i++, 42, 'c', 3.14f, &returnValues[j++]); // Four arguments, returns int
+		tp.addTask(dummy, &Test::FiveArgReturnYes, i++, 42, 'c', 3.14f, 2.718, &returnValues[j++]); // Five arguments, returns int
+
+		tp.addTask(dummy, &Test::ArgYesReturnYes_Const, i++, &returnValues[j++]); // Single argument, returns int
+		tp.addTask(dummy, &Test::ArgNoReturnYes_Const, &returnValues[j++]);     // No arguments, returns int
+		tp.addTask(dummy, &Test::TwoArgReturnYes_Const, i++, 'c', &returnValues[j++]); // Two arguments, returns int
+		tp.addTask(dummy, &Test::ThreeArgReturnYes_Const, i++, 42, 'c', &returnValues[j++]); // Three arguments, returns int
+		tp.addTask(dummy, &Test::FourArgReturnYes_Const, i++, 42, 'c', 3.14f, &returnValues[j++]); // Four arguments, returns int
+		tp.addTask(dummy, &Test::FiveArgReturnYes_Const, i++, 42, 'c', 3.14f, 2.718, &returnValues[j++]); // Five arguments, returns int
+
+		lockWrite("										   finished inserting tasks");
+
+	}	
 
 	tp.waitForCompletion();
 
 	pthread_mutex_lock(&globalLock);
-	for (unsigned int i = 0; i < vecSize; ++i)
+	for (unsigned int i = 0; i < returnValues.size(); ++i)
 	{
-		std::cout << "fib(" << i << ") = " << vector[i] << std::endl;
+		std::cout << "vector(" << i << ") = " << returnValues[i] << std::endl;
 	}
 	std::cout << "tp has " << tp.threadCount() << " threads" << std::endl;
 	pthread_mutex_unlock(&globalLock);
+
+
+
 	tp.destroy(true);
 	pthread_mutex_destroy(&globalLock);
 
