@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:58:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 11:03:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 12:51:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 # include <pthread.h>
 
-
+# include <iostream>
 # include <exception>
 # include <stdexcept>
 # include <cstring>
@@ -31,7 +31,7 @@ class LogStreamThreadSafe : public ILog
         ~LogStreamThreadSafe();
 
         void    record(const std::string& entry);
-    
+        void    record(const char* entry);
     private:
         std::ostream&       _stream;
         pthread_mutex_t     _writeLock;

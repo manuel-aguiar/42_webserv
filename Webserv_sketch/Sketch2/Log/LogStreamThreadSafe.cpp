@@ -31,3 +31,13 @@ void    LogStreamThreadSafe::record(const std::string& entry)
         pthread_mutex_unlock(&_writeLock);
     }
 }
+
+
+void    LogStreamThreadSafe::record(const char* entry)
+{
+    if (!pthread_mutex_lock(&_writeLock))
+    {
+        _stream << entry;
+        pthread_mutex_unlock(&_writeLock);
+    }
+}

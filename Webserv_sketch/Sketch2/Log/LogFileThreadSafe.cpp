@@ -35,3 +35,8 @@ void    LogFileThreadSafe::record(const std::string& entry)
         pthread_mutex_unlock(&_writeLock);
     }
 }
+
+void    LogFileThreadSafe::record(const char* entry)
+{
+    write(_fd, entry, std::strlen(entry));
+}

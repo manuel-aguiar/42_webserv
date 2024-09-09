@@ -26,3 +26,8 @@ void    LogStream::record(const std::string& entry)
 {
     _stream << entry;
 }
+
+void    LogStream::record(const char* entry)
+{
+    _stream << entry;
+}
