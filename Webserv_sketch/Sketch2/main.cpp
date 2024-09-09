@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 12:27:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 12:55:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,6 @@ int main(int ac, char **av)
         LogFile     logFile("teste.txt");
         LogStream   logStream(std::cout);
 
-        (void)ac;
-        (void)av;
-
         Server server(logFile, poll, executer, interpreter);
 
         std::cout << "exiting" << std::endl;
@@ -45,5 +42,6 @@ int main(int ac, char **av)
         std::cerr << e.what() << '\n';
         return (1);
     }
+
     return (0);
 }

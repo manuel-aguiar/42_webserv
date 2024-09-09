@@ -23,7 +23,6 @@ LogFile::LogFile(const char* filename)
 LogFile::~LogFile()
 {
     close(_fd);
-    std::cout << "destructor called " << std::endl;
 }
 
 void    LogFile::record(const std::string& entry)
