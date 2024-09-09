@@ -19,7 +19,6 @@ LogFile::LogFile(const char* filename)
         throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
 }
 
-#include <iostream>
 LogFile::~LogFile()
 {
     close(_fd);
