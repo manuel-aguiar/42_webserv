@@ -12,9 +12,9 @@
 
 #include "LogFile.hpp"
 
-LogFile::LogFile()
+LogFile::LogFile(const char* filename)
 {
-    _fd = open("LogFileFile.txt", O_CREAT | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_RDWR, S_IRWXG);
+    _fd = open(filename, O_CREAT | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_RDWR, S_IRWXG);
     if (_fd == -1)
         throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
 }

@@ -30,7 +30,7 @@ class LogFileThreadSafe : public ILog
 {
 
     public:
-        LogFileThreadSafe();
+        LogFileThreadSafe(const char* filename);
         ~LogFileThreadSafe();
 
         void    record(const std::string& entry);

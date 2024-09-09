@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:24:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 10:52:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 11:29:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class LogFile : public ILog
 {
 
     public:
-        LogFile();
+        LogFile(const char* filename);
         ~LogFile();
 
         void    record(const std::string& entry);

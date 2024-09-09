@@ -12,9 +12,9 @@
 
 # include "LogFileThreadSafe.hpp"
 
-LogFileThreadSafe::LogFileThreadSafe()
+LogFileThreadSafe::LogFileThreadSafe(const char* filename)
 {
-    _fd = open("LogFileThreadSafeFile.txt", O_CREAT | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_RDWR, S_IRWXG);
+    _fd = open(filename, O_CREAT | O_APPEND | O_NONBLOCK | O_CLOEXEC | O_RDWR, S_IRWXG);
     if (_fd == -1)
         throw std::runtime_error (std::string("Failed to start LogFileThreadSafe at: open(): ") + std::strerror(errno));
     if (pthread_mutex_init(&_writeLock, NULL))
