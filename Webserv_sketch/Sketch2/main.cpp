@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 13:26:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 14:09:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server/Server.hpp"
-#include "EventPoll/EventPoll.hpp"
+#include "EventPoll/EventManager.hpp"
 #include "Executer/Executer.hpp"
 #include "Interpreter/Interpreter.hpp"
 #include "Log/LogFile.hpp"
@@ -22,10 +22,10 @@
 
 int RunSingleThreadedServer()
 {
-    EventPoll   poll;
-    Executer    executer;
-    Interpreter interpreter;
-    LogFile     logFile("teste.txt");
+    EventManager    poll;
+    Executer        executer;
+    Interpreter     interpreter;
+    LogFile         logFile("teste.txt");
 
     Server server(logFile, poll, executer, interpreter);
 
@@ -36,7 +36,7 @@ int RunSingleThreadedServer()
 
 int RunMultiThreadedServer()
 {
-    EventPoll               poll;
+    EventManager               poll;
     Executer                executer;
     Interpreter             interpreter;
     LogFileThreadSafe       logFile("teste.txt");

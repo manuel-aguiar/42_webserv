@@ -26,7 +26,13 @@ EventManager::EventManager() :
 
 EventManager::~EventManager()
 {
-	
+	if (_epollfd != -1)
+		close(_epollfd);
+}
+
+void	EventManager::poll()
+{
+
 }
 
 
