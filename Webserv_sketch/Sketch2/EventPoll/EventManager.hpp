@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:11:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 14:11:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 14:14:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ class EventManager : public IEventPoll
 		EventManager();
 		~EventManager();
 
-		bool subscribe(const fd eventfd, t_uint eventFlags);
-		bool modify(const fd eventfd, t_uint newFlags);
-		bool unsubscribe(const fd eventfd);
+		bool add(const fd eventfd, t_uint eventFlags);
+		bool mod(const fd eventfd, t_uint newFlags);
+		bool del(const fd eventfd);
 
-		bool subscribe(t_epoll_event& event);
-		bool modify(t_epoll_event& event);
-		bool unsubscribe(t_epoll_event& event);
+		bool add(t_epoll_event& event);
+		bool mod(t_epoll_event& event);
+		bool del(t_epoll_event& event);
 
 		void poll();
 
