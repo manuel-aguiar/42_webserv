@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LogThreadSafe.hpp                                  :+:      :+:    :+:   */
+/*   LogFileThreadSafe.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOGTHREADSAFE_HPP
+#ifndef LOGFILETHREADSAFE_HPP
 
-# define LOGTHREADSAFE_HPP
+# define LOGFILETHREADSAFE_HPP
 
 # include "ILog.hpp"
 
@@ -26,12 +26,12 @@
 # include <cstring>
 # include <string>
 
-class LogThreadSafe : public ILog
+class LogFileThreadSafe : public ILog
 {
 
     public:
-        LogThreadSafe();
-        ~LogThreadSafe();
+        LogFileThreadSafe();
+        ~LogFileThreadSafe();
 
         void    record(const std::string& entry);
     
