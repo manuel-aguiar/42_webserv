@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 14:09:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:46:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "Log/LogFile.hpp"
 #include "Log/LogFileThreadSafe.hpp"
 #include "Log/LogStream.hpp"
+
+#include "Connection/Connection.tpp"
 
 #include <iostream>
 
@@ -36,7 +38,7 @@ int RunSingleThreadedServer()
 
 int RunMultiThreadedServer()
 {
-    EventManager               poll;
+    EventManager            poll;
     Executer                executer;
     Interpreter             interpreter;
     LogFileThreadSafe       logFile("teste.txt");
@@ -58,6 +60,8 @@ int main(int ac, char **av)
 
     try
     {
+        Connection<struct sockaddr_in> conn(3);
+
         if (multithreaded)
             RunMultiThreadedServer();
         else
