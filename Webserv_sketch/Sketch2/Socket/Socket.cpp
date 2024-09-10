@@ -6,31 +6,21 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:52:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:01:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 09:14:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 
-class Socket : public FileDescriptor {
-public:
-    Socket() : FileDescriptor() {
-        // Constructor implementation
-    }
+Socket::Socket() : FileDescriptor() {}
 
-    Socket(const Socket& other) : FileDescriptor(other) {
-        // Copy constructor implementation
-    }
+Socket::Socket(const Socket& other) : FileDescriptor(other) {}
 
-    Socket& operator=(const Socket& other) {
-        if (this != &other) {
-            FileDescriptor::operator=(other);
-            // Copy assignment implementation
-        }
-        return *this;
-    }
+Socket& Socket::operator=(const Socket& other)
+{
+    if (this != &other)
+        FileDescriptor::operator=(other);
+    return *this;
+}
 
-    ~Socket() {
-        // Destructor implementation
-    }
-};
+Socket::~Socket() {}
