@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ClientSocket.hpp                                   :+:      :+:    :+:   */
+/*   RemoteClient.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:50:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 17:14:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:07:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENTSOCKET_HPP
+#ifndef REMOTECLIENT_HPP
 
-# define CLIENTSOCKET_HPP
+# define REMOTECLIENT_HPP
 
 /*
     ServerSocket and ClientSocket must be aware of each other....
@@ -22,17 +22,19 @@
 
 #include "Socket.hpp"
 
-class ClientSocket : public Socket
+class RemoteClient
 {
     public:
-        ClientSocket(const int listeningFd, const ISocketAddress& addr);
-        ClientSocket(const ClientSocket& other);
-        ClientSocket& operator=(const ClientSocket& other);
-        ~ClientSocket();
 
+        RemoteClient(int acceptfd, const Socket& socket);
+        RemoteClient(const RemoteClient& copy);
+        RemoteClient& operator=(const RemoteClient& assign);
+        ~RemoteClient();
+        
     
     private:
-        ClientSocket();
+        Socket   _socket;
+        RemoteClient();
 };
 
 

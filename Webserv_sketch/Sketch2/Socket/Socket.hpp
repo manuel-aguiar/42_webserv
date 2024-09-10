@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:30:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 17:16:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:07:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,15 @@ class Socket : public FileDescriptor
     public:
         virtual ~Socket();
 
-        const ISocketAddress&       getAddress() const;    
+        ISocketAddress&             getAddress() const;    
         void                        setAddress(const ISocketAddress& address);
-    protected:
-        ISocketAddress* _addr;
-
-        //empty socket
+        
+        Socket(const ISocketAddress& addr);
         Socket();
 
         //with address info
         Socket(int domain);
-        Socket(const ISocketAddress& addr);
+        
 
         //ready to roll
         Socket(int domain, int type, int protocol);
@@ -51,6 +49,12 @@ class Socket : public FileDescriptor
 
         Socket(const Socket& copy);
         Socket& operator=(const Socket& assign);
+
+    protected:
+        ISocketAddress* _addr;
+
+        //empty socket
+
 
     private:
         void    _prepareSockAddr(int domain);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerSocket.hpp                                   :+:      :+:    :+:   */
+/*   LocalServerSocket.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:49:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 16:35:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:03:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@
 
 # include "Socket.hpp"
 
-class ClientSocket;
+class RemoteClient;
 
-class ServerSocket : public Socket
+class LocalServerSocket : public Socket
 {
     public:
-        ServerSocket(const ISocketAddress& addr, int type, int protocol, int maxConnections);
+        LocalServerSocket(const ISocketAddress& addr, int type, int protocol, int maxConnections);
 
-        ServerSocket(const ServerSocket& other);
-        ServerSocket& operator=(const ServerSocket& other);
-        ~ServerSocket();
+        LocalServerSocket(const LocalServerSocket& other);
+        LocalServerSocket& operator=(const LocalServerSocket& other);
+        ~LocalServerSocket();
 
-        ClientSocket*       accept();
+        RemoteClient*       acceptConnection();
 
     private:
         void                bindListen(int maxConnections);
-        ServerSocket();
+        LocalServerSocket();
 
 };
 

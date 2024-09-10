@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:52:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 17:17:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:02:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Socket::Socket() : FileDescriptor(), _addr(NULL)
     */
 }
 
-const ISocketAddress&       Socket::getAddress() const
+ISocketAddress&             Socket::getAddress() const
 {
     return (*_addr);
 }

@@ -1,35 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ClientSocket.cpp                                   :+:      :+:    :+:   */
+/*   RemoteClient.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:53:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 17:22:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 18:07:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ClientSocket.hpp"
+#include "RemoteClient.hpp"
 
-ClientSocket::ClientSocket(const int listeningFd, const ISocketAddress& addr) : Socket(addr)
+RemoteClient::RemoteClient(int acceptfd, const Socket& socket) : _socket(socket)
 {
-    _fd = accept(listeningFd, _addr->getSockAddr(), _addr->getAddrLen());
-    if (_fd == -1)
-        throw std::runtime_error(std::string("ClientSocket construction failed, accept(): ") + std::strerror(errno));
+    _socket.setFd(acceptfd);
 }
 
-ClientSocket::ClientSocket(const ClientSocket& other) : Socket(other) {}
+RemoteClient::RemoteClient(const RemoteClient& copy) : _socket(copy._socket) {}
 
 
-ClientSocket& ClientSocket::operator=(const ClientSocket& other)
+RemoteClient& RemoteClient::operator=(const RemoteClient& assign)
 {
-    if (this != &other)
-        Socket::operator=(other);
+    if (this != &assign)
+        _socket = assign._socket;
     return *this;
 }
 
-ClientSocket::~ClientSocket()
+RemoteClient::~RemoteClient()
 {
     
 }
