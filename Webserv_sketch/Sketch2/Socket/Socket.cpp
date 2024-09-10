@@ -6,11 +6,20 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:52:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:51:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:59:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+/*
+
+    This is WRONG
+    ClientSocket cannot be derived from Socket because the creation is different
+    It is the ServerSocket that calls socket(), not client.
+    Client is born from the accept() call in ServerSocket
+    
+*/
+
 
 Socket::Socket(int domain, int type, int protocol) : FileDescriptor(), _addr(NULL)
 {

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:49:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:29:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:55:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,9 @@ class ClientSocket;
 class ServerSocket : public Socket
 {
     public:
-        ServerSocket() : Socket() {}
-        ServerSocket(const ServerSocket& other) : Socket(other) {}
-        ServerSocket& operator=(const ServerSocket& other)
-        {
-            if (this != &other)
-            {
-                Socket::operator=(other);
-            }
-            return *this;
-        }
+        ServerSocket(int domain, int type, int protocol);
+        ServerSocket(const ServerSocket& other);
+        ServerSocket& operator=(const ServerSocket& other);
         ~ServerSocket() {}
 
         bool                bind();
