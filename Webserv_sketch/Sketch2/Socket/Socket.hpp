@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:30:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 14:21:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:16:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,29 @@ class Socket : public FileDescriptor
 {
     public:
         virtual ~Socket();
-    
+
+        const ISocketAddress&       getAddress() const;    
+        void                        setAddress(const ISocketAddress& address);
     protected:
         ISocketAddress* _addr;
 
-        
-        Socket(int addressFamily);
+        //empty socket
+        Socket();
+
+        //with address info
+        Socket(int domain);
+        Socket(const ISocketAddress& addr);
+
+        //ready to roll
+        Socket(int domain, int type, int protocol);
+        Socket(const ISocketAddress& addr, int type, int protocol);
+
         Socket(const Socket& copy);
         Socket& operator=(const Socket& assign);
-    
+
     private:
-        Socket();
+        void    _prepareSockAddr(int domain);
+        
 };
 
 #endif

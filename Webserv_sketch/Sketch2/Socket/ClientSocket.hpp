@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:50:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:54:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:14:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,10 @@
 
 #include "Socket.hpp"
 
-class ServerSocket;
-
 class ClientSocket : public Socket
 {
     public:
-        ClientSocket(const ServerSocket& server);
+        ClientSocket(const int listeningFd, const ISocketAddress& addr);
         ClientSocket(const ClientSocket& other);
         ClientSocket& operator=(const ClientSocket& other);
         ~ClientSocket();

@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 14:32:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 17:12:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IPv4Address.hpp"
 
-IPv4Address::IPv4Address(const struct sockaddr_in& addr) : _addr(addr) {}
+IPv4Address::IPv4Address(const struct sockaddr_in& addr) : _addr(addr), _addrLen(sizeof(_addr)) {}
 
 IPv4Address::IPv4Address(const std::string& ip, uint16_t port)
 {
@@ -34,7 +34,7 @@ int IPv4Address::getAddrFamily() const
     return (_addr.sin_family);
 }
 
-IPv4Address::IPv4Address(const IPv4Address& copy) : _addr(copy._addr) {}
+IPv4Address::IPv4Address(const IPv4Address& copy) : _addr(copy._addr), _addrLen(sizeof(copy._addr)) {}
 
 IPv4Address& IPv4Address::operator=(const IPv4Address& assign)
 {
@@ -60,9 +60,9 @@ struct sockaddr*    IPv4Address::getSockAddr()
     return (reinterpret_cast<struct sockaddr*>(&_addr));
 }
 
-socklen_t           IPv4Address::getSize() const
+socklen_t*          IPv4Address::getAddrLen()
 {
-    return sizeof(_addr);
+    return (&_addrLen);
 }
 
 ISocketAddress*     IPv4Address::clone() const
