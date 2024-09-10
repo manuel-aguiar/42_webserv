@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:48:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:41:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ class FileDescriptor {
 
         bool    redirectTo   (const int newFd);
         bool    redirectTo   (const FileDescriptor& newFd);
+
+        int     getFd() const;
 
     protected:
         bool    _addFlags(int flags);
