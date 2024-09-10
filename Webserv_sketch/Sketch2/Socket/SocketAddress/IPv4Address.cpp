@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:09:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:31:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ socklen_t           IPv4Address::getSize() const
     return sizeof(_addr);
 }
 
+ISocketAddress*     IPv4Address::clone() const
+{
+    return (new IPv4Address(*this));
+}
 
 
 // private default constructor

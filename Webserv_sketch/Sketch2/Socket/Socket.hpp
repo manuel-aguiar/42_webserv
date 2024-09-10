@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:30:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:13:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:19:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,20 @@
 # include "sys/socket.h"
 
 # include "../FileDescriptor/FileDescriptor.hpp"
+# include "SocketAddress/ISocketAddress.hpp"
 
 class Socket : public FileDescriptor
 {
     public:
-        Socket();
+        Socket(int domain, int type, int protocol);
         Socket(const Socket& other);
         Socket& operator=(const Socket& other);
         virtual ~Socket();
+    
+    protected:
+        ISocketAddress* _addr;
+
+        Socket();
 };
 
 #endif

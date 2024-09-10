@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:49:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:01:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 11:29:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ class ServerSocket : public Socket
         bool                listen();
         ClientSocket        accept();
 
-    private:
-        // ServerSocket specific members
 };
 
 #endif
