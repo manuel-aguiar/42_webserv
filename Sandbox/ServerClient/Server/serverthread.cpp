@@ -12,7 +12,7 @@
 
 
 /*
-	c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
+	(cd ../../../Webserv_sketch/ThreadPool/ && make) && c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
 
 	valgrind --tool=helgrind --track-fds=yes --trace-children=yes ./serverthread 
 */
@@ -247,7 +247,7 @@ int ThreadServerFunc(int serverNumber)
 		int sockopt = SO_REUSEADDR
 	#endif
 
-	listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, IPPROTO_TCP);
+	listener = socket(AF_INET6, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, IPPROTO_TCP);
 
 	if (setsockopt(listener, SOL_SOCKET, sockopt, &number, sizeof(number)) == -1)
 	{

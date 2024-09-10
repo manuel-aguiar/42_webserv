@@ -1,29 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ClientSocket.cpp                                   :+:      :+:    :+:   */
+/*   testSocket.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 08:53:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:54:58 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/10 10:00:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ClientSocket.hpp"
+# include "../Socket.hpp"
 
-ClientSocket::ClientSocket(const ServerSocket& server) : Socket()
+int main(void)
 {
-    (void)server;
+    Socket s;
+
+    
+    return (0);
 }
-ClientSocket::ClientSocket(const ClientSocket& other) : Socket(other) {}
-
-
-ClientSocket& ClientSocket::operator=(const ClientSocket& other)
-{
-    if (this != &other)
-        Socket::operator=(other);
-    return *this;
-}
-
-ClientSocket::~ClientSocket() {}

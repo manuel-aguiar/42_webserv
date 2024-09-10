@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ClientSocket.cpp                                   :+:      :+:    :+:   */
+/*   ISocketAddress.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 08:53:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:54:58 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/10 10:32:08 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/10 10:37:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ClientSocket.hpp"
+#ifndef SOCKETADDRESS_HPP
 
-ClientSocket::ClientSocket(const ServerSocket& server) : Socket()
-{
-    (void)server;
-}
-ClientSocket::ClientSocket(const ClientSocket& other) : Socket(other) {}
+# define SOCKETADDRESS_HPP
+
+# include <sys/socket.h>
+# include <netinet/in.h>
+
+/*
+    Interface for sock addresses depending on the address family the user wants
+*/
+
+class ISocketAddress {
+    public:
+        virtual ~ISocketAddress();
+        virtual struct sockaddr* getSockAddr() const = 0;
+        virtual socklen_t getSize() const = 0;
+};
 
 
-ClientSocket& ClientSocket::operator=(const ClientSocket& other)
-{
-    if (this != &other)
-        Socket::operator=(other);
-    return *this;
-}
 
-ClientSocket::~ClientSocket() {}
+#endif

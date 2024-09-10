@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 09:06:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 09:48:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 # define FILEDESCRIPTOR_HPP
 
 # include <fcntl.h>
+# include <unistd.h>
 
 /*
     FileDescriptor class doesn't not open fds, so it is not responsible for closing them
+
+    Virtual Destructor -> FileDescriptor is a base class that is expected to be derived from
 */
 
 
@@ -31,18 +34,21 @@ class FileDescriptor {
         virtual ~FileDescriptor();
 
         // for simple comparison
-        bool operator==(int other) const;
-        bool operator==(const FileDescriptor& other) const;
+        bool    operator==(const int other) const;
+        bool    operator==(const FileDescriptor& other) const;
 
         // for STL ordering, std::lower
-        bool operator<(int other) const;
-        bool operator<(const FileDescriptor& other) const;
+        bool    operator<(const int other) const;
+        bool    operator<(const FileDescriptor& other) const;
 
         bool    setCloseOnExec_NonBlocking();
 
+        bool    redirectTo   (const int newFd);
+        bool    redirectTo   (const FileDescriptor& newFd);
+
     protected:
         bool    _addFlags(int flags);
-        int _fd;
+        int     _fd;
 
 };
 
