@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 14:02:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:32:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ IPv4Address::IPv4Address(uint32_t ip, uint16_t port)
     _addr.sin_family = AF_INET;
     _addr.sin_port = htons(port);
     _addr.sin_addr.s_addr = htonl(ip);
+}
+
+int IPv4Address::getAddrFamily() const
+{
+    return (_addr.sin_family);
 }
 
 IPv4Address::IPv4Address(const IPv4Address& copy) : _addr(copy._addr) {}

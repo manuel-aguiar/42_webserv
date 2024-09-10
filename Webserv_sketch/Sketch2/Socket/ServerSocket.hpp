@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:49:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:55:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:15:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,12 @@ class ServerSocket : public Socket
         ServerSocket& operator=(const ServerSocket& other);
         ~ServerSocket() {}
 
+
+        ClientSocket        accept();
+
+    private:
         bool                bind();
         bool                listen();
-        ClientSocket        accept();
 
 };
 

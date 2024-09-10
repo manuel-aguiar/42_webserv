@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:32:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:32:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:32:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class ISocketAddress
         
         virtual struct sockaddr*    getSockAddr() = 0;
         virtual socklen_t           getSize() const = 0;
-
+        virtual int                 getAddrFamily() const = 0;
         virtual ISocketAddress*     clone() const = 0;
 };
 
