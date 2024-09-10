@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:31:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:02:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IPv4Address.hpp"
 
-IPv4Address::IPv4Address(const sockaddr_in& addr) : _addr(addr) {}
+IPv4Address::IPv4Address(const struct sockaddr_in& addr) : _addr(addr) {}
 
 IPv4Address::IPv4Address(const std::string& ip, uint16_t port)
 {
@@ -29,12 +29,19 @@ IPv4Address::IPv4Address(uint32_t ip, uint16_t port)
     _addr.sin_addr.s_addr = htonl(ip);
 }
 
-IPv4Address::IPv4Address(const IPv4Address& other) : _addr(other._addr) {}
+IPv4Address::IPv4Address(const IPv4Address& copy) : _addr(copy._addr) {}
 
-IPv4Address& IPv4Address::operator=(const IPv4Address& other)
+IPv4Address& IPv4Address::operator=(const IPv4Address& assign)
 {
-    if (this != &other)
-        _addr = other._addr;
+    if (this != &assign)
+        _addr = assign._addr;
+    return *this;
+}
+
+IPv4Address& IPv4Address::operator=(const struct sockaddr_in& assign)
+{
+    if (&_addr != &assign)
+        _addr = assign;
     return *this;
 }
 
@@ -60,4 +67,4 @@ ISocketAddress*     IPv4Address::clone() const
 
 
 // private default constructor
-IPv4Address::IPv4Address() {}
+IPv4Address::IPv4Address() : _addr((struct sockaddr_in) {}) {}

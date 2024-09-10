@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:36:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:49:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 13:59:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,13 @@ class IPv4Address : public ISocketAddress
 {
     public:
         IPv4Address();
-        IPv4Address(const sockaddr_in& addr);
+        IPv4Address(const  struct sockaddr_in& addr);
         IPv4Address(const std::string& ip, uint16_t port);
         IPv4Address(uint32_t ip, uint16_t port);
 
-        IPv4Address(const IPv4Address& other);
-        IPv4Address& operator=(const IPv4Address& other);
+        IPv4Address(const IPv4Address& copy);
+        IPv4Address& operator=(const IPv4Address& assign);
+        IPv4Address& operator=(const struct sockaddr_in& assign);
         ~IPv4Address();
 
         struct sockaddr*    getSockAddr();

@@ -6,34 +6,30 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:52:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:59:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/10 14:03:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+
 /*
 
-    This is WRONG
-    ClientSocket cannot be derived from Socket because the creation is different
-    It is the ServerSocket that calls socket(), not client.
-    Client is born from the accept() call in ServerSocket
-    
+    Socket in reality is only responsible for setting up the address family struct
+    Socket opening is done on ServerSocket, calling the socket() function
+    ServerSocket will create ClientSocket via accept() function
 */
 
-
-Socket::Socket(int domain, int type, int protocol) : FileDescriptor(), _addr(NULL)
+Socket::Socket(int addressFamily) : FileDescriptor(), _addr(NULL)
 {
-    _addr = SocketAddressFactory::createSocketAddress(domain);
+    _addr = SocketAddressFactory::createSocketAddress(addressFamily);
     if (!_addr)
         throw std::runtime_error("Socket constructor failed, domain not supported");
-    _fd = socket(domain, type, protocol);
-    if (_fd == -1)
-        throw std::runtime_error(std::string("Socket constructor failed, socket(): ") + std::strerror(errno));
 }
 
-Socket::Socket(const Socket& copy) : FileDescriptor(copy)
+Socket::Socket(const Socket& copy) : FileDescriptor(copy), _addr(NULL)
 {
-    _addr = copy._addr->clone();
+    if (copy._addr)
+        _addr = copy._addr->clone();
 }
 
 Socket& Socket::operator=(const Socket& assign)
@@ -44,7 +40,10 @@ Socket& Socket::operator=(const Socket& assign)
     FileDescriptor::operator=(assign);
     if (_addr)
         delete (_addr);
-    _addr = assign._addr->clone();
+    _addr = NULL;
+    
+    if (assign._addr)
+        _addr = assign._addr->clone();
     
     return (*this);
 }
@@ -55,7 +54,4 @@ Socket::~Socket()
         delete (_addr);
 }
 
-Socket::Socket() : FileDescriptor()
-{
-    
-}
+Socket::Socket() : FileDescriptor() {}
