@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMMUNICATINGSOCKET_HPP
+#ifndef COMMUNICATIONSOCKET_HPP
 
-# define COMMUNICATINGSOCKET_HPP
+# define COMMUNICATIONGSOCKET_HPP
 
 # include "ACommunicationSocket.hpp"  
 

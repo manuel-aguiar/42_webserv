@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:20:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:25:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void    ServerSocket::listen()
 
 ACommunicationSocket* ServerSocket::accept()
 {
-    CommunicationSocket*    newSocket = NULL;
+    ACommunicationSocket*    newSocket = NULL;
     ISocketAddress*         newAddr = _addr->clone();
     
     int newFd = ::accept(_fd, newAddr->getSockAddr(), newAddr->getAddrLen());
@@ -70,8 +70,6 @@ void    ServerSocket::close()
 
 ServerSocket::~ServerSocket()
 {
-    if (_addr != NULL)
-        delete _addr;
     close();
 }
 

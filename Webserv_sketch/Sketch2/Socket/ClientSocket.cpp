@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:46:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:51:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:44:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,13 @@ ClientSocket::ClientSocket(const ISocketAddress& addr, int type, int protocol) :
 ClientSocket::~ClientSocket()
 {
     // Destructor implementation
+    close();
 }
 
 void ClientSocket::close()
 {
+    if (_fd >= 0)
+        ::close(_fd);
     // Implementation of close() method
 }
 

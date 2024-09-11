@@ -19,12 +19,13 @@ CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : A
 
 CommunicationSocket::~CommunicationSocket()
 {
-    
+    close();
 }
 
 void    CommunicationSocket::close()
 {
-    
+    if (_fd >= 0)
+        ::close(_fd);
 }
 
 void    CommunicationSocket::send()
