@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:16:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:36:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,7 @@ ServerSocket::~ServerSocket()
 
 //private
 ServerSocket::ServerSocket() {}
-ServerSocket::ServerSocket(const ServerSocket& copy) : ASocket(copy) {}
+ServerSocket::ServerSocket(const ServerSocket& copy) : ASocket(copy)
+{
+    FileDescriptor::_setCloseOnDestruct(false);
+}

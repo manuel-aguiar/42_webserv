@@ -6,12 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:57:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:37:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
     clear && c++ -Wall -Wextra -Werror $(find . -name "*.cpp") ../FileDescriptor/FileDescriptor.cpp ../Exceptions/ParameterException.cpp -o sockets
+
+    valgrind --track-fds=yes ./sockets
 */
 
 # include "../SocketAddress/IPv4Address.hpp"

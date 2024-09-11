@@ -24,8 +24,7 @@ CommunicationSocket::~CommunicationSocket()
 
 void    CommunicationSocket::close()
 {
-    if (_fd >= 0)
-        ::close(_fd);
+    FileDescriptor::close();
 }
 
 void    CommunicationSocket::send()
