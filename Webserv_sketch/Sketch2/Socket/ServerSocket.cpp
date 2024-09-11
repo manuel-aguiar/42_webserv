@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:52:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:06:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void    ServerSocket::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 
-ACommunicationSocket* ServerSocket::accept()
+CommunicationSocket* ServerSocket::accept()
 {
     CommunicationSocket*    newSocket = NULL;
     ISocketAddress*         newAddr = _addr->clone();

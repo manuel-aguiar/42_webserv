@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:48:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:06:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class ServerSocket : public AServerSocket
         // inherited from AServerSocket
         void                            bind();
         void                            listen();
-        ACommunicationSocket*           accept();
+        CommunicationSocket*            accept();
 
         bool                            operator<(const ServerSocket& other) const;
 
