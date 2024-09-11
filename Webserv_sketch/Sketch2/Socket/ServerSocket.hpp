@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 09:46:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:48:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,38 +23,40 @@
 
 // Concrete Project headers
 # include "../FileDescriptor/FileDescriptor.hpp"
+# include "../Exceptions/ParameterException.hpp"
 
 // Interface Project headers
-# include "SocketAddress/ISocketAddress.hpp"
-# include "IServerSocket.hpp"
+# include "AServerSocket.hpp"
 
+class CommunicationSocket;
 
 //final class
-class ServerSocket : public IServerSocket
+class ServerSocket : public AServerSocket
 {
     public:
         
         ServerSocket(const ISocketAddress& addr, int type, int protocol);
+        ~ServerSocket();
+        
+        // inherited from ISocket
+        void                            close();
 
+        // inherited from AServerSocket
+        void                            bind();
+        void                            listen();
+        ACommunicationSocket*           accept();
+
+        bool                            operator<(const ServerSocket& other) const;
+
+    private:
+
+
+        //private
+        ServerSocket();
+
+        //avoid duplicate sockets, duplicate fds
         ServerSocket(const ServerSocket& copy);
         ServerSocket& operator=(const ServerSocket& assign);
-        ~ServerSocket();
-
-        // inherited from ISocket
-        void                    close();
-
-        // inherited from IServerSocket
-        void                    bind();
-        void                    listen();
-        ISendReceiveSocket*     accept();
-    
-    private:
-        FileDescriptor          _fd;
-        ISocketAddress*         _addr;
-
-
-
-        ServerSocket();
 };
 
 

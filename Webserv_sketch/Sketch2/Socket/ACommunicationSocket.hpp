@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SocketAddressFactory.hpp                           :+:      :+:    :+:   */
+/*   ACommunicationSocket.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 11:45:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:56:15 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 13:27:25 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 13:42:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKETADDRESSFACTORY_HPP
+#ifndef ACOMMUNICATIONSOCKET_HPP
 
-# define SOCKETADDRESSFACTORY_HPP
+# define ACOMMUNICATIONSOCKET_HPP
 
-# include "ISocketAddress.hpp"
-# include "IPv4Address.hpp"
-# include "IPv6Address.hpp"
+# include "ASocket.hpp"
+# include "IFunctionsCommunication.hpp"
 
-class SocketAddressFactory
+class ACommunicationSocket : virtual public ASocket, public ICommunicationFunctions
 {
     public:
-        static ISocketAddress* createSocketAddress(int domain);
+        virtual ~ACommunicationSocket() {}
+
 };
+
+
 
 #endif

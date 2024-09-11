@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IServerSocket.hpp                                  :+:      :+:    :+:   */
+/*   AServerSocket.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:16 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 09:09:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:48:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,14 @@
 
 # define ISERVERSOCKET_HPP
 
-# include "ISocket.hpp"
-# include "ISendReceiveSocket.hpp"
+# include "ASocket.hpp"
+# include "IFunctionsServer.hpp"
 
-class IServerSocket : public ISocket
+class AServerSocket : virtual public ASocket, public IFunctionsServer
 {
     public:
-        virtual                         ~IServerSocket() {}
-        virtual void                    bind() = 0;
-        virtual void                    listen() = 0;
-        virtual ISendReceiveSocket*     accept() = 0;
+        virtual                         ~AServerSocket() {}
+       
 };
 
 #endif

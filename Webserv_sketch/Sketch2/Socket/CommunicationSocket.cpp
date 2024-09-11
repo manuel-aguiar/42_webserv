@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ISendReceiveSocket.hpp                             :+:      :+:    :+:   */
+/*   CommunicationSocket.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 09:02:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 09:10:08 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 12:39:57 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 12:45:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ISENDRECEIVESOCKET_HPP
+# include "CommunicationSocket.hpp"
 
-# define ISENDRECEIVESOCKET_HPP
-
-# include "ISocket.hpp"
-
-class ISendReceiveSocket : public ISocket
+CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : ASocket(fd, addr)
 {
-    public:
-        virtual ~ISendReceiveSocket() {}
 
-        virtual void send() = 0;
-        virtual void receive() = 0;
-};
+}
 
+CommunicationSocket::~CommunicationSocket()
+{
+    
+}
 
-#endif
+void    CommunicationSocket::close()
+{
+    
+}
+
+void    CommunicationSocket::send()
+{
+    
+}
+
+void    CommunicationSocket::receive()
+{
+    
+}

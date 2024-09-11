@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 12:13:17 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 10:55:08 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 11:41:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../SocketAddress/IPv4Address.hpp"
-# include "../RemoteClient.hpp"
-# include "../LocalServerSocket.hpp"
+# include "../FileDescriptor.hpp"
 
-int main(void)
+#include <iostream>
+
+int main()
 {
-    IPv4Address                 ipv4(0, 8080);
-    LocalServerSocket           server(ipv4, SOCK_STREAM, IPPROTO_TCP, 100);
-    RemoteClient*               client = server.acceptConnection();
+    FileDescriptor fd(1);
+    FileDescriptor fd2(2);
+
+    if (fd == 1)
+        std::cout << "fd is 1" << std::endl;
+    if (fd2 == 2)
+        std::cout << "fd2 is 2" << std::endl;
+    if (fd < 2)
+        std::cout << "fd is less than 2" << std::endl;
+    if (fd2 < 3)
+        std::cout << "fd2 is less than 3" << std::endl;
     
+    std::cout << fd() << std::endl; 
+
     return (0);
 }

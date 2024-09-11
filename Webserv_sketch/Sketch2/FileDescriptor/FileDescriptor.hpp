@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 18:06:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 12:33:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@ class FileDescriptor {
 
     public:
         FileDescriptor();
-        FileDescriptor(int fileDescriptor);
-        FileDescriptor(const FileDescriptor& other);
-        FileDescriptor& operator=(const FileDescriptor& other);
+        FileDescriptor(int fileDescriptor, bool markToClose = false);
+
         virtual ~FileDescriptor();
+
+        //      to access the fd
+        int     operator()() const;
 
         // for simple comparison
         bool    operator==(const int other) const;
@@ -43,15 +45,25 @@ class FileDescriptor {
 
         bool    setCloseOnExec_NonBlocking();
 
-        bool    redirectTo   (const int newFd);
-        bool    redirectTo   (const FileDescriptor& newFd);
 
-        void    setFd(const int fd);
-        int     getFd() const;
+        void    close();
 
     protected:
-        bool    _addFlags(int flags);
-        int     _fd;
+        int             _fd;
+
+        bool            _addFlags(int flags);
+        
+        //avoid duplicate fds, the new fd/the one that gets assigned to gets the responsibility
+        //to close it
+        FileDescriptor(const FileDescriptor& other);
+        FileDescriptor& operator=(const FileDescriptor& other);
+
+    private:
+        bool            _markToClose;
+
+        //já vejo onde ponho isto
+        bool    redirectTo   (const int newFd);
+        bool    redirectTo   (const FileDescriptor& newFd);
 
 };
 

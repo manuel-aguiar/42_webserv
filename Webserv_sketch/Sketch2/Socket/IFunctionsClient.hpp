@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RemoteServer.hpp                                   :+:      :+:    :+:   */
+/*   IFunctionsClient.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 18:17:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 18:27:31 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 13:21:27 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 13:39:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REMOTESERVER_HPP
+#ifndef ICLIENTFUNCTIONS_HPP
 
-# define REMOTESERVER_HPP
+# define ICLIENTFUNCTIONS_HPP
 
-# include "Socket.hpp"
+class IClientFunctions
+{
+    public:
+        virtual ~IClientFunctions() {}
 
-typedef Socket RemoteServer;
+        virtual void connect() = 0;
+        virtual void disconnect() = 0;
+};
+
 
 #endif

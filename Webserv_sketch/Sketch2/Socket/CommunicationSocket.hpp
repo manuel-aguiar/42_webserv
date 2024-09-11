@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SocketAddressFactory.hpp                           :+:      :+:    :+:   */
+/*   CommunicationSocket.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 11:45:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:56:15 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 12:39:19 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 12:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKETADDRESSFACTORY_HPP
+#ifndef COMMUNICATINGSOCKET_HPP
 
-# define SOCKETADDRESSFACTORY_HPP
+# define COMMUNICATINGSOCKET_HPP
 
-# include "ISocketAddress.hpp"
-# include "IPv4Address.hpp"
-# include "IPv6Address.hpp"
+# include "ACommunicationSocket.hpp"  
 
-class SocketAddressFactory
+class CommunicationSocket : public ACommunicationSocket
 {
     public:
-        static ISocketAddress* createSocketAddress(int domain);
+        CommunicationSocket(int fd, const ISocketAddress& addr);
+        ~CommunicationSocket();
+
+
+        // implementation  of ASocket
+        void close();
+        
+        // implementation  of ICommunicationFunctions
+        void send();
+        void receive();
 };
+
 
 #endif

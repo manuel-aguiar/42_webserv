@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RemoteClient.cpp                                   :+:      :+:    :+:   */
+/*   ICommunicationFunctions.hpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/10 08:53:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 18:07:22 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 09:02:21 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 13:24:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RemoteClient.hpp"
+#ifndef ICOMMUNICATIONFUNCTIONS_HPP
 
-RemoteClient::RemoteClient(int acceptfd, const Socket& socket) : _socket(socket)
+# define ICOMMUNICATIONFUNCTION_HPP
+
+# include "ASocket.hpp"
+
+class ICommunicationFunctions : virtual public ASocket
 {
-    _socket.setFd(acceptfd);
-}
+    public:
+        virtual ~ICommunicationFunctions() {}
 
-RemoteClient::RemoteClient(const RemoteClient& copy) : _socket(copy._socket) {}
+        virtual void send() = 0;
+        virtual void receive() = 0;
+};
 
 
-RemoteClient& RemoteClient::operator=(const RemoteClient& assign)
-{
-    if (this != &assign)
-        _socket = assign._socket;
-    return *this;
-}
-
-RemoteClient::~RemoteClient()
-{
-    
-}
+#endif
