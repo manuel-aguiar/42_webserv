@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:25:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:16:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,7 @@ ACommunicationSocket* ServerSocket::accept()
 
 void    ServerSocket::close()
 {
-    if (_fd != -1)
-        ::close(_fd);
+    FileDescriptor::close();
 }
 
 ServerSocket::~ServerSocket()
