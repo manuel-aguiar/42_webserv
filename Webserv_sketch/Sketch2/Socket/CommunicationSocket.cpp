@@ -36,3 +36,16 @@ void    CommunicationSocket::receive()
 {
     
 }
+
+CommunicationSocket::CommunicationSocket(const CommunicationSocket& copy) : ASocket(copy)
+{
+
+}
+
+
+CommunicationSocket& CommunicationSocket::operator=(const CommunicationSocket& assign)
+{
+    if (this == &assign)
+        return (*this);
+    return (*this);
+}

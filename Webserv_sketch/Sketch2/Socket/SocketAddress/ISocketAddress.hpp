@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:32:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 17:11:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:18:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 class ISocketAddress
 {
     public:
-        virtual ~ISocketAddress();
+        virtual ~ISocketAddress() {};
         
         virtual struct sockaddr*    getSockAddr() = 0;
         virtual socklen_t*          getAddrLen() = 0;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:31:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:12:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 class ASocket : public FileDescriptor
 {
     public:
-        virtual ~ASocket() {}
+        virtual ~ASocket();
         virtual void close() = 0;
 
     protected:

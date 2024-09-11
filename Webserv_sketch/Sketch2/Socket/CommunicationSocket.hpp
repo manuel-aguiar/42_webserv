@@ -20,6 +20,8 @@ class CommunicationSocket : public ACommunicationSocket
 {
     public:
         CommunicationSocket(int fd, const ISocketAddress& addr);
+        CommunicationSocket(const CommunicationSocket& copy);
+        CommunicationSocket& operator=(const CommunicationSocket& assign);
         ~CommunicationSocket();
 
 

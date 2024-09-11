@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:06:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 14:20:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 ServerSocket::ServerSocket(const ISocketAddress& addr, int type, int protocol) : ASocket(socket(addr.getAddrFamily(), type, protocol), addr)
 {
-    if (_fd != -1)
+    if (_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
     if (_addr == NULL)
         throw ParameterException("SocketServer constructor failed", "new", std::strerror(errno));
@@ -46,7 +46,7 @@ void    ServerSocket::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 
-CommunicationSocket* ServerSocket::accept()
+ACommunicationSocket* ServerSocket::accept()
 {
     CommunicationSocket*    newSocket = NULL;
     ISocketAddress*         newAddr = _addr->clone();
@@ -77,4 +77,4 @@ ServerSocket::~ServerSocket()
 
 //private
 ServerSocket::ServerSocket() {}
-ServerSocket::ServerSocket(const ServerSocket& copy) {}
+ServerSocket::ServerSocket(const ServerSocket& copy) : ASocket(copy) {}
