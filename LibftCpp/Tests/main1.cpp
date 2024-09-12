@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 18:56:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:06:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,47 @@ class Test
             return (UniquePtr<Test>(cenas));
         }
 
-        //static UniquePtr<Test>&        _createTestPtr(int value)
-        //{
-        //    //UniquePtr<Test> cenas = new Test(value);
-        //    return (new Test(value));
-        //}
     private:
         int _value;
 
+};
 
+class UniqueHolder
+{
+    public:
 
+        UniqueHolder() : _cenas(NULL) {}
+
+        UniqueHolder(UniquePtr<Test>& cenas) : _cenas(cenas) {}
+
+        UniqueHolder(const UniqueHolder& outro);
+        UniqueHolder& operator=(const UniqueHolder& outro);
+
+        UniqueHolder(UniqueHolder& outro) : _cenas(outro._cenas) {}
+        
+        UniqueHolder& operator=(UniqueHolder& outro)
+        {
+            if (this == &outro)
+                return (*this);
+            
+            _cenas = outro._cenas;
+
+            return (*this);
+        }
+
+        int print()
+        {
+            return (_cenas->getValue());
+        }
+    private:
+        UniquePtr<Test> _cenas;
 };
 
 
 int main()
 {
+
+    /* for unique pointers one must allow construction from non const sources */
 
     /*
         UniquePtr<Test> ptr = Test::_createTest(42);
@@ -77,6 +103,20 @@ int main()
 
     std::cout << "ptr4 address: " << ptr4.get() << std::endl;
     std::cout << "ptr5 value: " << ptr5->getValue() << std::endl << std::endl;
+
+    UniqueHolder holder(ptr5);
+
+    std::cout << holder.print() << std::endl;
+
+    UniqueHolder holder2(holder);
+
+    std::cout << holder2.print() << std::endl;
+
+    UniqueHolder holder3;
+
+    holder3 = holder2; 
+
+    std::cout << holder3.print() << std::endl;
 
 /*
     UniquePtr<Test> ptr2(ptr);
