@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 18:43:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:55:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 
 # include <cstdlib>
 // for "NULL" definition
+
+# include <iostream>
 
 template <typename T>
 class UniquePtr
@@ -39,11 +41,13 @@ class UniquePtr
         }
 
         //declared but not defined
-        UniquePtr(const UniquePtr& moveCopy);
-        UniquePtr& operator=(const UniquePtr& moveAssign);
+        
+        UniquePtr(const UniquePtr& moveCopy); // {std::cout << "                copy" << std::endl;(void)moveCopy;}
+        UniquePtr& operator=(const UniquePtr& moveAssign); // {std::cout << "               assign" << std::endl;(void)moveAssign; return *this;}
 
         UniquePtr(UniquePtr& moveCopy)
         {
+            //std::cout << "              move copy" << std::endl;
             _ptr = moveCopy._ptr;
             moveCopy._ptr = NULL;
         }
@@ -51,6 +55,7 @@ class UniquePtr
         //will be called only between two already-constructed objects
         UniquePtr& operator=(UniquePtr& moveAssign)
         {
+            //std::cout << "              move assign" << std::endl;
             if (this != &moveAssign)
             {
                 _safeDeletePtr();

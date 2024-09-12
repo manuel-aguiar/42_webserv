@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 18:42:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:56:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,35 +41,6 @@ class Test
 
 };
 
-template <typename T, typename Arg1>
-UniquePtr<T> make_UniquePtr(Arg1 arg1)
-{
-    return UniquePtr<T>(new T(arg1));
-}
-
-template <typename T, typename Arg1, typename Arg2>
-UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2)
-{
-    return UniquePtr<T>(new T(arg1, arg2));
-}
-
-template <typename T, typename Arg1, typename Arg2, typename Arg3>
-UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3)
-{
-    return UniquePtr<T>(new T(arg1, arg2, arg3));
-}
-
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
-{
-    return UniquePtr<T>(new T(arg1, arg2, arg3, arg4));
-}
-
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
-{
-    return UniquePtr<T>(new T(arg1, arg2, arg3, arg4, arg5));
-}
 
 int main()
 {
@@ -93,17 +64,19 @@ int main()
     
     std::cout << "ptr1 address: " << ptr1.get() << std::endl;
     std::cout << "ptr2 address: " << ptr2.get() << std::endl;
-    std::cout << "ptr3 value: " << ptr3->getValue() << std::endl;
+    std::cout << "ptr3 value: " << ptr3->getValue() << std::endl << std::endl;
 
     UniquePtr<Test> ptr4;
 
     ptr4 = ptr3;
 
-    std::cout << "ptr4 value: " << ptr4->getValue() << std::endl;
+    std::cout << "ptr3 address: " << ptr3.get() << std::endl;
+    std::cout << "ptr4 value: " << ptr4->getValue() << std::endl << std::endl;
 
     UniquePtr<Test> ptr5 = make_UniquePtr<Test>(32);
 
-    std::cout << "ptr5 value: " << ptr5->getValue() << std::endl;
+    std::cout << "ptr4 address: " << ptr4.get() << std::endl;
+    std::cout << "ptr5 value: " << ptr5->getValue() << std::endl << std::endl;
 
 /*
     UniquePtr<Test> ptr2(ptr);
