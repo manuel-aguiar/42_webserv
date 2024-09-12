@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 09:16:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 09:29:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@
 # include <cstdlib>
 // for "NULL" definition
 
-template <
-    typename T
->
+template <typename T>
 class UniquePtr
 {
     public:
-        UniquePtr(T* newPtr = NULL);
-        ~UniquePtr();
+        UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
+
+        ~UniquePtr()
+        {
+            _safeDeletePtr();
+        }
 
         /*
             uses const_cast to allow move semantics (DANGEROUS)
@@ -36,106 +38,78 @@ class UniquePtr
             not really missing out on anything     
         */
 
-        UniquePtr(const UniquePtr& moveCopy);
-        UniquePtr& operator=(const UniquePtr& moveAssign);
+        UniquePtr(const UniquePtr& moveCopy)
+        {
+            UniquePtr<T>* NonConstPtr;
+            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+            _ptr = NonConstPtr->_ptr;
+            NonConstPtr->_ptr = NULL;
+        }
 
-        T*          get() const;
-        T&          operator*() const;
-        T*          operator->() const;
-        T*          release();
-        void        reset(T* newPtr = NULL);
-        
+        /*
+            uses const_cast to allow move semantics (DANGEROUS)
+            true copying cannot be done, must release the argument from owning the resource   
+            not really missing out on anything     
+        */
+
+        UniquePtr& operator=(const UniquePtr& moveAssign)
+        {
+            UniquePtr<T>* NonConstPtr;
+
+            if (this != &moveAssign)
+            {
+                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
+                _safeDeletePtr();
+                _ptr = NonConstPtr->_ptr;
+                NonConstPtr->_ptr = NULL;
+            }
+            return (*this);
+        }
+
+        T* get() const
+        {
+            return (_ptr);
+        }
+
+        T& operator*() const
+        {
+            return (*_ptr);
+        }
+
+        T* operator->() const
+        {
+            return (_ptr);
+        }
+
+        T* release()
+        {
+            T* temp;
+            temp = _ptr;
+            _ptr = NULL;
+            return (temp);
+        }
+
+        void reset(T* newPtr = NULL)
+        {
+            if (_ptr != newPtr)
+            {
+                _safeDeletePtr();
+                _ptr = newPtr;
+            }
+        }
+
     private:
         T* _ptr;
-        
-        void        _safeDeletePtr();
 
-
+        void _safeDeletePtr()
+        {
+            if (_ptr)
+            {
+                delete (_ptr);
+                _ptr = NULL;
+            }
+        }
 };
-
-template <typename T>
-UniquePtr<T>::UniquePtr(T* newPtr) : _ptr(newPtr) {}
-
-template <typename T>
-UniquePtr<T>::~UniquePtr()
-{
-    _safeDeletePtr();
-}
-
-
-#include <iostream>
-template <typename T>
-UniquePtr<T>::UniquePtr(const UniquePtr& moveCopy)
-{
-    UniquePtr<T>* NonConstPtr;
-    
-    NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
-    _ptr = NonConstPtr->_ptr;
-    NonConstPtr->_ptr = NULL;
-}
-
-template <typename T>
-UniquePtr<T>& UniquePtr<T>::operator=(const UniquePtr& moveAssign)
-{
-    UniquePtr<T>* NonConstPtr;
-    
-    if (this != &moveAssign)
-    {
-        NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
-        _safeDeletePtr();
-        _ptr = NonConstPtr->_ptr;
-        NonConstPtr->_ptr = NULL;
-    }
-    return (*this);
-}
-
-template<typename T>
-void UniquePtr<T>::_safeDeletePtr()
-{
-    if (_ptr)
-    {
-        delete (_ptr);
-        _ptr = NULL;
-    }
-}
-
-template <typename T>
-T* UniquePtr<T>::get() const
-{
-    return (_ptr);
-}
-
-template <typename T>
-T& UniquePtr<T>::operator*() const
-{
-    return (*_ptr);
-}
-
-template <typename T>
-T* UniquePtr<T>::operator->() const
-{
-    return (_ptr);
-}
-
-template <typename T>
-T* UniquePtr<T>::release()
-{
-    T* temp;
-    
-    temp = _ptr;
-    _ptr = NULL;
-    return (temp);
-}
-
-template <typename T>
-void UniquePtr<T>::reset(T* newPtr)
-{
-    if (_ptr != newPtr)
-    {
-        _safeDeletePtr();
-        _ptr = newPtr;
-    }
-}
 
 
 
