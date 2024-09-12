@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 09:23:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 09:27:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ class Test
             return ( UniquePtr<Test>)(new Test(value));
         }
 
+
+        //implicit conversions, constructor is not <explicit>
         static Test*        _createTestPtr(int value)
         {
             return (new Test(value));
@@ -91,6 +93,13 @@ int main()
 
     std::cout << "ptr1 value: " << *ptr6 << std::endl;
 
+
+    UniquePtr<int> ptr7(new int(4));
+    int* rawPtr7 = ptr7.release();  // Manually release the pointer, now ptr1 no longer owns it
+
+    std::cout << "rawPtr = " << *rawPtr7 << std::endl; // rawPtr still points to the resource
+
+    delete rawPtr7;
 
     return (0);
 }
