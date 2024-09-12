@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 13:56:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:28:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,33 +22,21 @@ class Test
         int getValue() const { return (_value); }
 
 
+        //implicit conversions, constructor is not <explicit>
         static UniquePtr<Test> _createTest(int value)
         {
-            return (UniquePtr<Test>(new Test(value)));
+            Test* cenas = new Test(value);
+            return (UniquePtr<Test>(cenas));
         }
-
-
-        //implicit conversions, constructor is not <explicit>
-        static Test*        _createTestPtr(int value)
-        {
-            return (new Test(value));
-        }
+        //static UniquePtr<Test>&        _createTestPtr(int value)
+        //{
+        //    //UniquePtr<Test> cenas = new Test(value);
+        //    return (new Test(value));
+        //}
     private:
         int _value;
 };
 
-class Testmember
-{
-    public:
-        Testmember(Test* value) : _test(value) {}
-        Testmember(const Testmember& copy) : _test(copy._test) {}
-        ~Testmember() { std::cout << "Testmember destroyed" << std::endl; }
-
-        const Test& getTest() const { return (*_test); }
-        UniquePtr<Test>& getTestOwner() { return (_test); }
-    private:
-        UniquePtr<Test> _test;
-};
 
 int main()
 {
@@ -65,41 +53,13 @@ int main()
     */
 
     UniquePtr<Test> ptr1(new Test(42));
-    UniquePtr<Test> ptr2;
+    UniquePtr<Test> ptr2 = Test::_createTest(37);
 
-    ptr2.reset(Test::_createTestPtr(37));
     ptr2 = ptr1;
     
     std::cout << "ptr2 value: " << ptr2->getValue() << std::endl;
     std::cout << "ptr1 address: " << ptr1.get() << std::endl;
 
-    Testmember tester1(new Test(29));
-    std::cout << "testmember value: " << tester1.getTest().getValue() << std::endl;
-    Testmember tester2(tester1);
-    std::cout << "testmember value: " << tester2.getTest().getValue() << std::endl;
-    std::cout << "testmember value: " << tester2.getTest().getValue() << std::endl;
-
-    UniquePtr<Test> ptr3 = tester2.getTestOwner();
-
-
-    std::cout << "ptr3 value: " << ptr3->getValue() << std::endl;
-
-    UniquePtr<Test> ptr4 = tester2.getTestOwner();
-
-    std::cout << "ptr3 address: " << ptr3.get() << std::endl;
-    std::cout << "ptr4 address: " << ptr4.get() << std::endl << std::endl;
-
-    
-    const UniquePtr<Test>& check = ptr3;
-
-    std::cout << "ptr3 address: " << ptr3.get() << std::endl;
-    std::cout << "check address: " << check.get() << std::endl << std::endl;
-
-    UniquePtr<Test> ptr8 = check;
-
-    std::cout << "ptr3 address: " << ptr3.get() << std::endl;
-    std::cout << "ptr8 address: " << ptr8.get() << std::endl;
-    std::cout << "check address: " << check.get() << std::endl << std::endl;
 
 
 /*

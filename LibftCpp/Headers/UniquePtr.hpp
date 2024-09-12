@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UniquePtr.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 13:34:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 18:29:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,13 @@
 template <typename T>
 class UniquePtr
 {
+    private:
+
+
     public:
+
+
+
         UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
 
         ~UniquePtr()
@@ -32,7 +38,10 @@ class UniquePtr
             _safeDeletePtr();
         }
 
-        //will be called only between two already-constructed objects
+        //declared but not defined
+        UniquePtr(const UniquePtr& moveCopy);
+        UniquePtr& operator=(const UniquePtr& moveAssign);
+
         UniquePtr(UniquePtr& moveCopy)
         {
             _ptr = moveCopy._ptr;
@@ -51,44 +60,6 @@ class UniquePtr
             return (*this);
         }
 
-        /*
-            While this technically works, const cast is dangerous.
-            A copy const reference would represent a change in ownership
-            Given the constraints of c++11, best to have an explicit transfer of control
-
-
-            uses const_cast to allow move semantics (DANGEROUS)
-            true copying cannot be done, must release the argument from owning the resource   
-            not really missing out on anything     
-        */
-
-        UniquePtr(const UniquePtr& moveCopy)
-        {
-            UniquePtr<T>* NonConstPtr;
-            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
-            _ptr = NonConstPtr->_ptr;
-            NonConstPtr->_ptr = NULL;
-        }
-
-        /*
-            uses const_cast to allow move semantics (DANGEROUS)
-            true copying cannot be done, must release the argument from owning the resource   
-            not really missing out on anything     
-        */
-
-        UniquePtr& operator=(const UniquePtr& moveAssign)
-        {
-            UniquePtr<T>* NonConstPtr;
-
-            if (this != &moveAssign)
-            {
-                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
-                _safeDeletePtr();
-                _ptr = NonConstPtr->_ptr;
-                NonConstPtr->_ptr = NULL;
-            }
-            return (*this);
-        }
 
         T* get() const
         {
@@ -126,8 +97,6 @@ class UniquePtr
                 _ptr = newPtr;
             }
         }
-
-
         //in the absense of move constructors...
         void transfer(UniquePtr& other)
         {
@@ -148,6 +117,7 @@ class UniquePtr
                 _ptr = NULL;
             }
         }
+
 
 };
 
