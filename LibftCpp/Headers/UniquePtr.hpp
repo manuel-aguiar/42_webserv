@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 08:48:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 09:16:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,12 @@ class UniquePtr
         UniquePtr(T* newPtr = NULL);
         ~UniquePtr();
 
-        //uses const_cast to allow move semantics (DANGEROUS)
+        /*
+            uses const_cast to allow move semantics (DANGEROUS)
+            true copying cannot be done, must release the argument from owning the resource   
+            not really missing out on anything     
+        */
+
         UniquePtr(const UniquePtr& moveCopy);
         UniquePtr& operator=(const UniquePtr& moveAssign);
 
@@ -57,23 +62,29 @@ UniquePtr<T>::~UniquePtr()
     _safeDeletePtr();
 }
 
+
+#include <iostream>
 template <typename T>
 UniquePtr<T>::UniquePtr(const UniquePtr& moveCopy)
 {
-    UniquePtr<T> unConstRef = const_cast<UniquePtr&>(moveCopy);
-    _ptr = unConstRef._ptr;
-    unConstRef._ptr = NULL;
+    UniquePtr<T>* NonConstPtr;
+    
+    NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+    _ptr = NonConstPtr->_ptr;
+    NonConstPtr->_ptr = NULL;
 }
 
 template <typename T>
 UniquePtr<T>& UniquePtr<T>::operator=(const UniquePtr& moveAssign)
 {
+    UniquePtr<T>* NonConstPtr;
+    
     if (this != &moveAssign)
     {
-        UniquePtr<T> unConstRef = const_cast<UniquePtr&>(moveAssign);
+        NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
         _safeDeletePtr();
-        _ptr = unConstRef._ptr;
-        unConstRef._ptr = NULL;
+        _ptr = NonConstPtr->_ptr;
+        NonConstPtr->_ptr = NULL;
     }
     return (*this);
 }
