@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:46:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:36:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/11 15:32:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,7 @@ ClientSocket::~ClientSocket()
 
 void ClientSocket::close()
 {
-    if (_fd != -1)
-    {
-        ::close(_fd);
-        _fd = -1;
-    }
+    FileDescriptor::close();
 }
 
 void ClientSocket::connect()
@@ -40,7 +36,7 @@ void ClientSocket::connect()
 
 void ClientSocket::disconnect()
 {
-    FileDescriptor::close();
+    close();
 }
 
 void ClientSocket::send()
