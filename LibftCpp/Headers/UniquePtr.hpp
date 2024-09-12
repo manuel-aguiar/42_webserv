@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 18:55:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:19:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,12 @@ class UniquePtr
 /*
     Oh yeah make_UniquePtr specializations for constructors with up to 5 arguments
 */
+
+template <typename T>
+UniquePtr<T> make_UniquePtr()
+{
+    return (UniquePtr<T>());
+}
 
 template <typename T, typename Arg1>
 UniquePtr<T> make_UniquePtr(Arg1 arg1)

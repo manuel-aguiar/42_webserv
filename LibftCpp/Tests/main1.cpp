@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 19:06:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/12 19:16:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 class Test
 {
     public:
+        Test() : _value(0) {}
         Test(int value) : _value(value) {}
         ~Test() { std::cout << "Test " << _value << "destroyed" << std::endl; }
         int getValue() const { return (_value); }
@@ -55,6 +56,11 @@ class UniqueHolder
             _cenas = outro._cenas;
 
             return (*this);
+        }
+        
+        Test address()
+        {
+            return (*_cenas);
         }
 
         int print()
@@ -118,6 +124,10 @@ int main()
 
     std::cout << holder3.print() << std::endl;
 
+    UniquePtr<UniqueHolder> holderholder = make_UniquePtr<UniqueHolder>();
+
+    std::cout << holderholder.get() << std::endl;
+    
 /*
     UniquePtr<Test> ptr2(ptr);
 
