@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:58:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 12:46:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,20 @@
 
 # define SHAREDPTR_HPP
 
-#include "UniquePtr.hpp"
+# include <cstdlib>
+# include <stdexcept>   
 
-template <typename T>
+#include "UniquePtr.hpp"
+#include "DefaultDeleters.hpp"
+
+
+template <typename T, typename Del = DefaultDeleter<T> >
 class SharedPtr
 {
     public:
-        SharedPtr(T* ptr = NULL) : _ptr(ptr), _refCount(new int(1)) {}
-        SharedPtr (UniquePtr<T>& unique) : _ptr(unique.release()), _refCount(new int(1)) {}
-        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount) { ++(*_refCount); }
+        SharedPtr(T* ptr = NULL, Del deleter = Del()) : _ptr(ptr), _refCount(new int(1)), _deleter(deleter) {}
+        SharedPtr (UniquePtr<T>& unique) : _ptr(unique.release()), _refCount(new int(1)), _deleter(unique.getDeleter()) {}
+        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _deleter(other._deleter) { ++(*_refCount); }
         
         SharedPtr& operator=(const SharedPtr& other)
         {
@@ -79,13 +84,16 @@ class SharedPtr
             return temp;
         }
 
+        Del getDeleter() const { return (_deleter); }
+
         // Reset the managed resource to a new one
-        void reset(T* newPtr = NULL)
+        void reset(T* newPtr = NULL, Del deleter = Del())
         {
             if (_ptr != newPtr)
             {
                 _decrementRefCount();
                 _ptr = newPtr;
+                _deleter = deleter;
                 _refCount = new int(1);
             }
         }
@@ -93,14 +101,31 @@ class SharedPtr
         // Accessors
         T*          get() const { return (_ptr); }
 
-        T&          operator*() { return *_ptr; }
-        const T&    operator*() const { return *_ptr; }
+        T&          operator*()
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return (*_ptr);
+        }
 
-        T*          operator->() const { return (_ptr); }
+        const T&    operator*() const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return (*_ptr);
+        }
+
+        T*          operator->() const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Accessing member functions of a null pointer");
+            return (_ptr);
+        }
 
     private:
         T*      _ptr;
         int*    _refCount;
+        Del     _deleter;
 
         void _decrementRefCount()
         {
@@ -108,7 +133,7 @@ class SharedPtr
             {
                 if (_ptr)
                 {
-                    delete _ptr;
+                    _deleter(_ptr);
                     _ptr = NULL;
                 }
                 if (_refCount)
@@ -157,13 +182,13 @@ SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg
 }
 
 // Template specialization for arrays
-template <typename T>
-class SharedPtr<T[]>
+template <typename T, typename Del>
+class SharedPtr<T[], Del>
 {
     public:
-        SharedPtr(T* ptr = NULL) : _ptr(ptr), _refCount(new int(1)) {}
-        SharedPtr (UniquePtr<T[]>& unique) : _ptr(unique.release()), _refCount(new int(1)) {}
-        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount) { ++(*_refCount); }
+        SharedPtr(T* ptr = NULL, Del deleter = Del()) : _ptr(ptr), _refCount(new int(1)), _deleter(deleter) {}
+        SharedPtr (UniquePtr<T[]>& unique) : _ptr(unique.release()), _refCount(new int(1)), _deleter(unique.getDeleter()) {}
+        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _deleter(other._deleter) { ++(*_refCount); }
         
         SharedPtr& operator=(const SharedPtr& other)
         {
@@ -193,12 +218,7 @@ class SharedPtr<T[]>
         void    transfer(SharedPtr& other)
         {
             if (this != &other)
-            {
-                _decrementRefCount();
-                _ptr = other._ptr;
-                _refCount = other._refCount;
-                ++(*_refCount);
-            }
+                *this = other;
         }
 
         void    transfer(UniquePtr<T>& other)
@@ -208,6 +228,7 @@ class SharedPtr<T[]>
                 _decrementRefCount();
                 _ptr = other.release();
                 _refCount = new int(1);
+                _deleter = other.getDeleter();
                 ++(*_refCount);
             }
         }
@@ -220,13 +241,16 @@ class SharedPtr<T[]>
             return temp;
         }
 
+        Del getDeleter() const { return (_deleter); }
+
         // Reset the managed resource to a new one
-        void reset(T* newPtr = NULL)
+        void reset(T* newPtr = NULL, Del deleter = Del())
         {
             if (_ptr != newPtr)
             {
                 _decrementRefCount();
                 _ptr = newPtr;
+                _deleter = deleter;
                 _refCount = new int(1);
             }
         }
@@ -234,12 +258,23 @@ class SharedPtr<T[]>
         // Accessors
         T*          get() const { return (_ptr); }
 
-        T&          operator[](const std::size_t index) { return _ptr[index];}
-        const T&    operator[](const std::size_t index) const { return _ptr[index];}
+        T&          operator[](const std::size_t index)
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return _ptr[index];
+        }
+        const T&    operator[](const std::size_t index) const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return _ptr[index];
+        }
 
     private:
         T*      _ptr;
         int*    _refCount;
+        Del     _deleter;
 
         void _decrementRefCount()
         {
@@ -247,7 +282,7 @@ class SharedPtr<T[]>
             {
                 if (_ptr)
                 {
-                    delete[] _ptr;
+                    delete[] _ptr;  //no choice
                     _ptr = NULL;
                 }
                 if (_refCount)

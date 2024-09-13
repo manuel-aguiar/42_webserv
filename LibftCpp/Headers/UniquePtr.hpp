@@ -6,14 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 10:29:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 12:45:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UNIQUEPTR_HPP
 
 # define UNIQUEPTR_HPP
-#include <iostream>
 
 /*
     Simple Implementation of c++11 std::unique_ptr
@@ -55,19 +54,18 @@
 */
 
 # include <cstdlib>
+# include <stdexcept>
 // for "NULL" definition
 
-# include <iostream>
+#include "DefaultDeleters.hpp"
 
-template <typename T>
+
+template <typename T, typename Del = DefaultDeleter<T> >
 class UniquePtr
 {
-    private:
-
-
     public:
 
-        UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
+        UniquePtr(T* newPtr = NULL, Del deleter = Del()) : _ptr(newPtr), _deleter(deleter){}
 
         ~UniquePtr()
         {
@@ -81,6 +79,7 @@ class UniquePtr
         UniquePtr(UniquePtr& moveCopy)
         {
             _ptr = moveCopy._ptr;
+            _deleter = moveCopy._deleter;
             moveCopy._ptr = NULL;
         }
 
@@ -92,6 +91,7 @@ class UniquePtr
             {
                 _safeDeletePtr();
                 _ptr = moveAssign._ptr;
+                _deleter = moveAssign._deleter;
                 moveAssign._ptr = NULL;
             }
             return (*this);
@@ -100,10 +100,26 @@ class UniquePtr
 
         T*          get() const { return (_ptr); }
         
-        T&          operator*() { return *_ptr; }
-        const T&    operator*() const { return *_ptr; }
+        T&          operator*()
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return (*_ptr);
+        }
 
-        T*          operator->() const { return (_ptr); }
+        const T&    operator*() const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return (*_ptr);
+        }
+
+        T*          operator->() const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Accessing member functions of a null pointer");
+            return (_ptr);
+        }
 
         T* release()
         {
@@ -114,31 +130,33 @@ class UniquePtr
             return (save);
         }
 
-        void reset(T* newPtr = NULL)
+        Del getDeleter() const { return (_deleter); }
+
+        void reset(T* newPtr = NULL, Del deleter = Del())
         {
             if (_ptr != newPtr)
             {
                 _safeDeletePtr();
                 _ptr = newPtr;
+                _deleter = deleter;
             }
         }
         //in the absense of move constructors...
         void transfer(UniquePtr& other)
         {
             if (this != &other)
-            {
-                reset(other.release());
-            }
+                *this = other;
         }
 
     private:
-        T* _ptr;
+        T*      _ptr;
+        Del     _deleter;
 
         void _safeDeletePtr()
         {
             if (_ptr)
             {
-                delete (_ptr);
+                _deleter (_ptr);
                 _ptr = NULL;
             }
         }
@@ -188,23 +206,12 @@ UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg
 
 
 //Template Specialization for arrays
-template <typename T>
-class UniquePtr<T[]>
+template <typename T, typename Del>
+class UniquePtr<T[], Del>
 {
-    private:
-        T* _ptr;
-
-        void _safeDeletePtr()
-        {
-            if (_ptr)
-            {
-                delete[] _ptr;
-                _ptr = NULL;
-            }
-        }
 
     public:
-        UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
+        UniquePtr(T* newPtr = NULL, Del deleter = Del()) : _ptr(newPtr), _deleter(deleter) {}
 
         ~UniquePtr()
         {
@@ -219,6 +226,7 @@ class UniquePtr<T[]>
         UniquePtr(UniquePtr& moveCopy)
         {
             _ptr = moveCopy._ptr;
+            _deleter = moveCopy._deleter;
             moveCopy._ptr = NULL;
         }
 
@@ -229,6 +237,7 @@ class UniquePtr<T[]>
             {
                 _safeDeletePtr();
                 _ptr = moveAssign._ptr;
+                _deleter = moveAssign._deleter;
                 moveAssign._ptr = NULL;
             }
             return (*this);
@@ -236,9 +245,20 @@ class UniquePtr<T[]>
 
         T*          get() const { return (_ptr); }
 
-        T&          operator[](const std::size_t index) { return _ptr[index];}
-        const T&    operator[](const std::size_t index) const { return _ptr[index];}
+        T&          operator[](const std::size_t index)
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return _ptr[index];
+        }
+        const T&    operator[](const std::size_t index) const
+        {
+            if (!_ptr)
+                throw std::runtime_error("Dereferencing a null pointer");
+            return _ptr[index];
+        }
 
+        
         T* release()
         {
             T* save = _ptr;
@@ -246,22 +266,38 @@ class UniquePtr<T[]>
             return save;
         }
 
-        void reset(T* newPtr = NULL)
+        Del getDeleter() const { return (_deleter); }
+
+        void reset(T* newPtr = NULL, Del deleter = Del())
         {
             if (_ptr != newPtr)
             {
                 _safeDeletePtr();
                 _ptr = newPtr;
+                _deleter = deleter;
             }
         }
 
         void transfer(UniquePtr& other)
         {
             if (this != &other)
+                *this = other;
+        }
+
+    private:
+        T*      _ptr;
+        Del     _deleter;
+
+
+        void _safeDeletePtr()
+        {
+            if (_ptr)
             {
-                reset(other.release());
+                delete[] (_ptr);    //no choice
+                _ptr = NULL;
             }
         }
+
 };
 
 

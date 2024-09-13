@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 10:36:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 12:54:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ class Test
         //implicit conversions, constructor is not <explicit>
         static UniquePtr<Test> _createTest(int value)
         {
-            Test* cenas = new Test(value);
-            return (UniquePtr<Test>(cenas));
+            return (UniquePtr<Test>(new Test(value)));
         }
 
     private:
@@ -93,15 +92,31 @@ class UniqueHolder
 };
 
 
+#include <pthread.h>
+class Mutex
+{
+    public:
+        Mutex() {pthread_mutex_init(&_mutex, NULL);}
+        Mutex(const pthread_mutexattr_t* attr) {pthread_mutex_init(&_mutex, attr);}
+        ~Mutex() {destroy();}
+        
+        
+        void    destroy() {pthread_mutex_destroy(&_mutex);}
+        void    lock() {pthread_mutex_lock(&_mutex);}
+        void    unlock() {pthread_mutex_unlock(&_mutex);};
+
+    private:
+        
+        Mutex(const Mutex& copy);
+        Mutex& operator=(const Mutex& assign);
+
+        pthread_mutex_t _mutex;
+};
+
 int main()
 {
 
     /* for unique pointers one must allow construction from non const sources */
-
-    /*
-        UniquePtr<Test> ptr = Test::_createTest(42);
-        //doesn't compile because of lack move constructor support
-    */
 
     /*
         UniquePtr<Test> ptr;
@@ -187,6 +202,27 @@ int main()
     ptr10[1] = 42;
     
     std::cout << ptr10[1] << std::endl;
+    
+    UniquePtr<Mutex> mutex = make_UniquePtr<Mutex>();
+    
+    
+
+    (*mutex).lock();
+    std::cout << "hey mom!" << std::endl;
+    mutex->unlock();
+
+    UniquePtr<Mutex> mutex2(mutex);
+
+    try
+    {
+        (*mutex).lock();
+        std::cout << "hey mom!" << std::endl;
+        mutex->unlock();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
     
     return (0);
 }
