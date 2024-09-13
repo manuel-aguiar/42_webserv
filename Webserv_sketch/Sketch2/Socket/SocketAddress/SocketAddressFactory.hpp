@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 11:45:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:56:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:40:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 # define SOCKETADDRESSFACTORY_HPP
 
+
+# include "../../../../LibftCpp/libftcpp.hpp"
 # include "ISocketAddress.hpp"
 # include "IPv4Address.hpp"
 # include "IPv6Address.hpp"
@@ -21,7 +23,7 @@
 class SocketAddressFactory
 {
     public:
-        static ISocketAddress* createSocketAddress(int domain);
+        static UniquePtr<ISocketAddress>     createSocketAddress(int domain);
 };
 
 #endif

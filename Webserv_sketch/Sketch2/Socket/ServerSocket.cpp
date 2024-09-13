@@ -6,32 +6,23 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:36:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:55:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerSocket.hpp"
 # include "CommunicationSocket.hpp"
 
-ServerSocket::ServerSocket(const ISocketAddress& addr, int type, int protocol) : ASocket(socket(addr.getAddrFamily(), type, protocol), addr)
+ServerSocket::ServerSocket(const ISocketAddress& addr, int type, int protocol) : 
+    ASocket(socket(addr.getAddrFamily(), type, protocol), addr)
 {
+    int opt = 1;
     if (_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-    if (_addr == NULL)
+    if (_addr.get() == NULL)
         throw ParameterException("SocketServer constructor failed", "new", std::strerror(errno));
-}
-
-
-ServerSocket& ServerSocket::operator=(const ServerSocket& assign)
-{
-    if (this == &assign)
-        return (*this);
-    return (*this);
-}
-
-bool    ServerSocket::operator<(const ServerSocket& other) const
-{
-    return (_fd < other._fd);
+    if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+        throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
 }
 
 void    ServerSocket::bind()
@@ -46,35 +37,21 @@ void    ServerSocket::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 
-ACommunicationSocket* ServerSocket::accept()
+UniquePtr<ACommunicationSocket> ServerSocket::accept()
 {
-    ACommunicationSocket*    newSocket = NULL;
-    ISocketAddress*         newAddr = _addr->clone();
+    UniquePtr<ISocketAddress>               newAddr = _addr->clone();
     
     int newFd = ::accept(_fd, newAddr->getSockAddr(), newAddr->getAddrLen());
     if (newFd == -1)
-    {
-        delete (newAddr);
-        return (newSocket);
-    }
-    newSocket = new (std::nothrow) CommunicationSocket(newFd, *newAddr);
-    delete (newAddr);
-    return (newSocket);
+        return (NULL);
+    return (UniquePtr<ACommunicationSocket> (new CommunicationSocket(newFd, *newAddr)));
 }
 
-void    ServerSocket::close()
+ServerSocket::~ServerSocket() {}
+ServerSocket::ServerSocket() : ASocket() {}
+ServerSocket::ServerSocket(ServerSocket& moveCopy) : ASocket(moveCopy) {}
+ServerSocket& ServerSocket::operator=(ServerSocket& moveAssign)
 {
-    FileDescriptor::close();
-}
-
-ServerSocket::~ServerSocket()
-{
-    close();
-}
-
-//private
-ServerSocket::ServerSocket() {}
-ServerSocket::ServerSocket(const ServerSocket& copy) : ASocket(copy)
-{
-    FileDescriptor::_setCloseOnDestruct(false);
+    ASocket::operator=(moveAssign);
+    return (*this);
 }

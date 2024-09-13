@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:37:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:49:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,12 @@ int main(void)
         server.listen();
         client.connect();
         
-        CommunicationSocket* connection = dynamic_cast<CommunicationSocket*>(server.accept());
+        UniquePtr<CommunicationSocket> connection = 
+        UniquePtr<CommunicationSocket>(dynamic_cast<CommunicationSocket*>(server.accept().release()));
         
         connection->send();
+        client.receive();
         
-        delete connection;
         return (0);
     }
     catch(const std::exception& e)

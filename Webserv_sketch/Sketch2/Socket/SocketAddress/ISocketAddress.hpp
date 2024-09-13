@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:32:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:18:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:08:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 # define SOCKETADDRESS_HPP
 
+
+# include "../../../../LibftCpp/libftcpp.hpp"
 # include <sys/socket.h>
 
 /*
@@ -25,10 +27,10 @@ class ISocketAddress
     public:
         virtual ~ISocketAddress() {};
         
-        virtual struct sockaddr*    getSockAddr() = 0;
-        virtual socklen_t*          getAddrLen() = 0;
-        virtual int                 getAddrFamily() const = 0;
-        virtual ISocketAddress*     clone() const = 0;
+        virtual struct sockaddr*                    getSockAddr() = 0;
+        virtual socklen_t*                          getAddrLen() = 0;
+        virtual int                                 getAddrFamily() const = 0;
+        virtual UniquePtr<ISocketAddress>           clone() const = 0;
 };
 
 

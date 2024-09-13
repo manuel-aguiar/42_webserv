@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 14:53:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:41:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,24 @@ void    FileDescriptor::close()
     }
 }
 
-
-FileDescriptor::FileDescriptor(const FileDescriptor& copy) : _fd(copy._fd) {}
-
-FileDescriptor& FileDescriptor::operator=(const FileDescriptor& assign)
+FileDescriptor::FileDescriptor(FileDescriptor& moveCopy) : _fd(moveCopy._fd)
 {
-    if (this != &assign)
-        _fd = assign._fd;
+    moveCopy._fd = -1;
+}
+
+FileDescriptor& FileDescriptor::operator=(FileDescriptor& moveCopy)
+{
+    if (this != &moveCopy)
+    {
+        _fd = moveCopy._fd;
+        moveCopy._fd = -1;
+    }
+    return (*this);
+}
+
+FileDescriptor::FileDescriptor(const FileDescriptor& hardCopy) {(void)hardCopy;}
+FileDescriptor& FileDescriptor::operator=(const FileDescriptor& hardAssign)
+{
+    (void)hardAssign;
     return (*this);
 }

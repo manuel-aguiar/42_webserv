@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 15:49:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:37:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,18 @@ template <typename T>
 UniquePtr<T> make_UniquePtr()
 {
     return (UniquePtr<T>(new T()));
+}
+
+template <typename T>
+UniquePtr<T> make_UniquePtr(const T& copy)
+{
+    return (UniquePtr<T>(new T(copy)));
+}
+
+template <typename T>
+UniquePtr<T> make_UniquePtr(T& copy)
+{
+    return (UniquePtr<T>(new T(copy)));
 }
 
 template <typename T, typename Arg1>

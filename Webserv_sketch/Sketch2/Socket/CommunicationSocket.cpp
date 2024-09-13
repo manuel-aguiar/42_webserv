@@ -12,24 +12,13 @@
 
 # include "CommunicationSocket.hpp"
 
-CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : ASocket(fd, addr)
-{
-
-}
-
-CommunicationSocket::~CommunicationSocket()
-{
-    close();
-}
-
-void    CommunicationSocket::close()
-{
-    FileDescriptor::close();
-}
+CommunicationSocket::CommunicationSocket() : ASocket() {}
+CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : ASocket(fd, addr) {}
+CommunicationSocket::~CommunicationSocket() {}
 
 void    CommunicationSocket::send()
 {
-    
+    write(_fd, "Hello, World!", 13);
 }
 
 void    CommunicationSocket::receive()
@@ -37,15 +26,11 @@ void    CommunicationSocket::receive()
     
 }
 
-CommunicationSocket::CommunicationSocket(const CommunicationSocket& copy) : ASocket(copy)
+CommunicationSocket::CommunicationSocket(CommunicationSocket& copy) : ASocket(copy) {}
+
+CommunicationSocket& CommunicationSocket::operator=(CommunicationSocket& assign)
 {
-
-}
-
-
-CommunicationSocket& CommunicationSocket::operator=(const CommunicationSocket& assign)
-{
-    if (this == &assign)
-        return (*this);
+    ASocket::operator=(assign);
     return (*this);
 }
+

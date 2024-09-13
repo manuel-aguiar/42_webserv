@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 19:22:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 16:56:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,29 +34,23 @@ class CommunicationSocket;
 class ServerSocket : public AServerSocket
 {
     public:
-        
+        ServerSocket();
         ServerSocket(const ISocketAddress& addr, int type, int protocol);
         ~ServerSocket();
         
-        // inherited from ISocket
-        void                            close();
+        //move
+        ServerSocket(ServerSocket& copy);
+        ServerSocket& operator=(ServerSocket& assign);
 
-        // inherited from AServerSocket
-        void                            bind();
-        void                            listen();
-        ACommunicationSocket*            accept();
-
-        bool                            operator<(const ServerSocket& other) const;
-
-    private:
-
-
-        //private
-        ServerSocket();
-
-        //avoid duplicate sockets, duplicate fds
+        //copy
         ServerSocket(const ServerSocket& copy);
         ServerSocket& operator=(const ServerSocket& assign);
+
+        // inherited from AServerSocket
+        void                                bind();
+        void                                listen();
+        UniquePtr<ACommunicationSocket>     accept();
+
 };
 
 

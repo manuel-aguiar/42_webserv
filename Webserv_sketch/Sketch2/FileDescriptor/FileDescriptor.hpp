@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 15:01:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:52:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,21 @@
     Virtual Destructor -> FileDescriptor is a base class that is expected to be derived from
 */
 
+#include <iostream>
 
 class FileDescriptor {
 
     public:
         FileDescriptor();
         FileDescriptor(int fileDescriptor);
+
+        //move
+        FileDescriptor(FileDescriptor& moveCopy);
+        FileDescriptor& operator=(FileDescriptor& moveAssign);
+
+        //copy
+        FileDescriptor(const FileDescriptor& hardCopy);
+        FileDescriptor& operator=(const FileDescriptor& hardAssign);
 
         virtual ~FileDescriptor();
 
@@ -52,11 +61,10 @@ class FileDescriptor {
 
     protected:
         int                 _fd;
-        bool                _addFlags(int flags);
-       
 
-        FileDescriptor(const FileDescriptor& other);
-        FileDescriptor& operator=(const FileDescriptor& other);
+
+        //helper
+        bool                _addFlags(int flags);
 
 };
 

@@ -19,18 +19,26 @@
 class CommunicationSocket : public ACommunicationSocket
 {
     public:
-        CommunicationSocket(int fd, const ISocketAddress& addr);
+        CommunicationSocket();
+
+        CommunicationSocket(const int fd, const ISocketAddress& addr);
+
+        //move
+        CommunicationSocket(CommunicationSocket& copy);
+        CommunicationSocket& operator=(CommunicationSocket& assign);
+        
         CommunicationSocket(const CommunicationSocket& copy);
         CommunicationSocket& operator=(const CommunicationSocket& assign);
+
         ~CommunicationSocket();
 
-
-        // implementation  of ASocket
-        void close();
         
         // implementation  of ICommunicationFunctions
         void send();
         void receive();
+
+    private:
+
 };
 
 

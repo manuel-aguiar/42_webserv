@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:46:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:32:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:52:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,8 @@ ClientSocket::ClientSocket(const ISocketAddress& addr, int type, int protocol) :
     
 }
 
-ClientSocket::~ClientSocket()
-{
-    close();
-}
+ClientSocket::~ClientSocket() {}
 
-void ClientSocket::close()
-{
-    FileDescriptor::close();
-}
 
 void ClientSocket::connect()
 {
@@ -36,7 +29,7 @@ void ClientSocket::connect()
 
 void ClientSocket::disconnect()
 {
-    close();
+    
 }
 
 void ClientSocket::send()
@@ -46,5 +39,18 @@ void ClientSocket::send()
 
 void ClientSocket::receive()
 {
-    // Implementation of receive() method
+    char buffer[1024];
+
+        int bytesReceived = read(_fd, buffer, sizeof(buffer) - 1);
+        if (bytesReceived == -1)
+            throw ParameterException("ClientSocket::receive", "read", std::strerror(errno));
+        buffer[bytesReceived] = '\0';
+        std::cout << "Received: " << std::string(buffer, 0, bytesReceived) << std::endl;
+}
+
+ClientSocket::ClientSocket() : ASocket() {}
+
+ClientSocket::ClientSocket(ClientSocket& moveCopy) : ASocket(moveCopy)
+{
+
 }
