@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:50:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 10:26:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,44 @@
 
 # define UNIQUEPTR_HPP
 #include <iostream>
+
 /*
     Simple Implementation of c++11 std::unique_ptr
+
+    Unlike other classes where such feature would be desired, we cannot "copy"
+    a unique pointer as it would no longer be "unique"
+
+    Copy/assignment must change the argument object, by removing its ownership
+    (setting its pointer to NULL) after copying its value.
+
+    So, forget: 
+        UniquePtr<T>(const UniquePtr<T>&) and UniquePtr<T>& operator=(const UniquePtr<T>&)
+
+    For the effect, the arguments MUST be non-const references:
+        UniquePtr<T>(UniquePtr<T>&) and UniquePtr<T>& operator=(UniquePtr<T>&)
+
+    such that we can change ownership.
+
+
+    If we were in C++11, we could use move semantics to differentiate them from the copy versions.
+
+
+    Downsides (are they?):
+        like in C++11, a class who has a member variable that is a unique pointer, cannot be copied.
+            - makes total sense, then what would one want a unique ptr for???
+            - classes that have uniquePtr member variables will have to do the same construction/assignment pattern
+            to the uniquePtr itself:
+                - declare and not implement the copy/assignment;
+                - declare and implement the move copy/assignment (non-const);
+            - and fortunatelly, such classes can have members without move constructors, compiler will link with their const versions
+            :)
+                - best upgrade to const than downgrade to non-const, right?
+        - Examples in the /Tests folder
+    
+    Fortunatelly we are avoiding the const_cast BS which looking back, would be a semantic mess
+    (and a dangerous one at that)
+        - Old attempt at the end of the file, for historic purposes
+
 */
 
 # include <cstdlib>
@@ -38,9 +74,9 @@ class UniquePtr
             _safeDeletePtr();
         }
 
-        //declared but not defined
-        UniquePtr(const UniquePtr& moveCopy); // {std::cout << "                copy" << std::endl;(void)moveCopy;}
-        UniquePtr& operator=(const UniquePtr& moveAssign); // {std::cout << "               assign" << std::endl;(void)moveAssign; return *this;}
+        //declared but not defined, compiler will link with the non-const version
+        UniquePtr(const UniquePtr& moveCopy);
+        UniquePtr& operator=(const UniquePtr& moveAssign);
 
         UniquePtr(UniquePtr& moveCopy)
         {
@@ -176,7 +212,7 @@ class UniquePtr<T[]>
             _safeDeletePtr();
         }
 
-        // Disable copy constructor and assignment for unique ownership
+        //declared but not defined, compiler will link with the move constructor/assignment
         UniquePtr(const UniquePtr&);
         UniquePtr& operator=(const UniquePtr&);
 
@@ -236,46 +272,46 @@ UniquePtr<T[]> make_UniqueArray(size_t size)
     return (UniquePtr<T[]>(new T[size]));
 }
 
-        /*
+/*
 
-            While this technically works, const cast is dangerous.
-            A copy const reference would represent a change in ownership
-            Given the constraints of c++11, best to have an explicit transfer of control
+    While this technically works, const cast is dangerous.
+    A copy const reference would represent a change in ownership
+    Given the constraints of c++11, best to have an explicit transfer of control
 
 
 
-            uses const_cast to allow move semantics (DANGEROUS)
-            true copying cannot be done, must release the argument from owning the resource   
-            not really missing out on anything     
-        
+    uses const_cast to allow move semantics (DANGEROUS)
+    true copying cannot be done, must release the argument from owning the resource   
+    not really missing out on anything     
 
-        UniquePtr(const UniquePtr& moveCopy)
-        {
-            UniquePtr<T>* NonConstPtr;
-            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
-            _ptr = NonConstPtr->_ptr;
-            NonConstPtr->_ptr = NULL;
-        }
 
-        
-            uses const_cast to allow move semantics (DANGEROUS)
-            true copying cannot be done, must release the argument from owning the resource   
-            not really missing out on anything     
-        
+UniquePtr(const UniquePtr& moveCopy)
+{
+    UniquePtr<T>* NonConstPtr;
+    NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+    _ptr = NonConstPtr->_ptr;
+    NonConstPtr->_ptr = NULL;
+}
 
-        UniquePtr& operator=(const UniquePtr& moveAssign)
-        {
-            UniquePtr<T>* NonConstPtr;
 
-            if (this != &moveAssign)
-            {
-                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
-                _safeDeletePtr();
-                _ptr = NonConstPtr->_ptr;
-                NonConstPtr->_ptr = NULL;
-            }
-            return (*this);
-        }
-        */
+    uses const_cast to allow move semantics (DANGEROUS)
+    true copying cannot be done, must release the argument from owning the resource   
+    not really missing out on anything     
+
+
+UniquePtr& operator=(const UniquePtr& moveAssign)
+{
+    UniquePtr<T>* NonConstPtr;
+
+    if (this != &moveAssign)
+    {
+        NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
+        _safeDeletePtr();
+        _ptr = NonConstPtr->_ptr;
+        NonConstPtr->_ptr = NULL;
+    }
+    return (*this);
+}
+*/
 
 #endif

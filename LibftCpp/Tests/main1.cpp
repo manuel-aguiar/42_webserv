@@ -6,13 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 10:07:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 10:23:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libftcpp.hpp"
 
 #include <iostream>
+#include <vector>
 
 /*
     c++ -Wall -Wextra -Werror -std=c++98 main1.cpp -o main
@@ -24,6 +25,14 @@ class Test
     public:
         Test() : _value(0) {}
         Test(int value) : _value(value) {}
+        Test(const Test& outro) : _value(outro._value) {}
+        Test& operator=(const Test& outro)
+        {
+            if (this == &outro)
+                return (*this);
+            _value = outro._value;
+            return (*this);
+        }
         ~Test() { std::cout << "Test " << _value << "destroyed" << std::endl; }
         int getValue() const { return (_value); }
 
@@ -46,12 +55,12 @@ class UniqueHolder
 
         UniqueHolder() : _cenas(NULL) {}
 
-        UniqueHolder(UniquePtr<Test>& cenas) : _cenas(cenas) {}
+        UniqueHolder(UniquePtr<Test>& cenas) : _cenas(cenas), _values(0), _test(0) {}
 
         UniqueHolder(const UniqueHolder& outro);
         UniqueHolder& operator=(const UniqueHolder& outro);
 
-        UniqueHolder(UniqueHolder& outro) : _cenas(outro._cenas) {}
+        UniqueHolder(UniqueHolder& outro) : _cenas(outro._cenas), _values(outro._values), _test(outro._test) {}
         
         UniqueHolder& operator=(UniqueHolder& outro)
         {
@@ -59,6 +68,8 @@ class UniqueHolder
                 return (*this);
             
             _cenas = outro._cenas;
+            _values = outro._values;
+            _test = outro._test;
 
             return (*this);
         }
@@ -73,7 +84,12 @@ class UniqueHolder
             return (_cenas->getValue());
         }
     private:
-        UniquePtr<Test> _cenas;
+        UniquePtr<Test>     _cenas;
+
+
+        std::vector<int>    _values;
+
+        Test                _test;
 };
 
 
