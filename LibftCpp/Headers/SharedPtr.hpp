@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 12:46:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 15:48:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,22 +103,19 @@ class SharedPtr
 
         T&          operator*()
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return (*_ptr);
         }
 
         const T&    operator*() const
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return (*_ptr);
         }
 
         T*          operator->() const
         {
-            if (!_ptr)
-                throw std::runtime_error("Accessing member functions of a null pointer");
+            assert(_ptr != NULL);
             return (_ptr);
         }
 
@@ -260,14 +257,12 @@ class SharedPtr<T[], Del>
 
         T&          operator[](const std::size_t index)
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return _ptr[index];
         }
         const T&    operator[](const std::size_t index) const
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return _ptr[index];
         }
 

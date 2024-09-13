@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:31:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:53:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "FileDescriptor.hpp"
 
-FileDescriptor::FileDescriptor() : _fd(-1), _closeOnDestruct(false) {}
-FileDescriptor::FileDescriptor(int fileDescriptor, bool markToClose) : _fd(fileDescriptor), _closeOnDestruct(markToClose) {}
+FileDescriptor::FileDescriptor() : _fd(-1) {}
+FileDescriptor::FileDescriptor(int fileDescriptor) : _fd(fileDescriptor) {}
 
 FileDescriptor::~FileDescriptor()
 {
@@ -71,19 +71,13 @@ bool   FileDescriptor::redirectTo(const FileDescriptor& newFd)
 
 void    FileDescriptor::close()
 {
-    if (_fd >= 0 && _closeOnDestruct)
+    if (_fd != -1)
+    {
         ::close(_fd);
+        _fd = -1;
+    }
 }
 
-void    FileDescriptor::_setCloseOnDestruct(const bool markToClose)
-{
-    _closeOnDestruct = markToClose;
-}
-
-bool    FileDescriptor::_getCloseOnDestruct() const
-{
-    return (_closeOnDestruct);
-}
 
 FileDescriptor::FileDescriptor(const FileDescriptor& copy) : _fd(copy._fd) {}
 
