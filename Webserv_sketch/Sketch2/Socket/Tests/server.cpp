@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:49:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 19:21:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,40 @@
 # include "../CommunicationSocket.hpp"
 
 # include <iostream>
+# include <map>
+# include <vector>
+
 
 int main(void)
 {
     try
     {
-        IPv4Address                 ipv4(0, 8080);
-        ServerSocket                server(ipv4, SOCK_STREAM, IPPROTO_TCP);
-        ClientSocket                client(ipv4, SOCK_STREAM, IPPROTO_TCP);
+        std::vector<UniquePtr<ACommunicationSocket> >   connections;
+        //std::map<int, UniquePtr<ACommunicationSocket> >  connections;
+        IPv4Address                                     ipv4(0, 8080);
+        ServerSocket                                    server(ipv4, SOCK_STREAM, IPPROTO_TCP);
+        ClientSocket                                    client(ipv4, SOCK_STREAM, IPPROTO_TCP);
         
         server.bind();
         server.listen();
         client.connect();
         
-        UniquePtr<CommunicationSocket> connection = 
-        UniquePtr<CommunicationSocket>(dynamic_cast<CommunicationSocket*>(server.accept().release()));
+        //UniquePtr<ACommunicationSocket> connection = server.accept();
+        //connections.push_back(new UniquePtr<ACommunicationSocket>(connection));
+//
+        //(*connections[0])->send();
         
-        connection->send();
+        
+        connections.push_back(server.accept());
+        connections[0]->send();
+        
+        //UniquePtr<ACommunicationSocket> connection = server.accept();
+        //connections[connection.get()->getFd()] = (server.accept());
+        //connections[connection.get()->getFd()]->send();
+
         client.receive();
         
+        //delete connections[0];
         return (0);
     }
     catch(const std::exception& e)

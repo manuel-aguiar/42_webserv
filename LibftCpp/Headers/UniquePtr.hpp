@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 16:37:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 19:19:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,17 @@
 
 #include "DefaultDeleters.hpp"
 
+template <class T>
+struct rref { 
+    rref (T& t) : t(t) {}
+    T& t; 
+};
+
+template<class T>
+rref<T> move(const T& t) {
+   return rref<T>(const_cast<T&>(t));
+}
+
 
 template <typename T, typename Del = DefaultDeleter<T> >
 class UniquePtr
@@ -74,8 +85,31 @@ class UniquePtr
         }
 
         //declared but not defined, compiler will link with the non-const version
-        UniquePtr(const UniquePtr& moveCopy);
-        UniquePtr& operator=(const UniquePtr& moveAssign);
+        UniquePtr(const UniquePtr& moveCopy)
+        {
+            UniquePtr<T>* NonConstPtr;
+            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+            _ptr = NonConstPtr->_ptr;
+            _deleter = NonConstPtr->_deleter;
+            NonConstPtr->_ptr = NULL;
+        }
+        UniquePtr& operator=(const UniquePtr& moveAssign)
+        {
+            UniquePtr<T>* NonConstPtr;
+
+            if (this != &moveAssign)
+            {
+                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
+                _safeDeletePtr();
+                _ptr = NonConstPtr->_ptr;
+                _deleter = NonConstPtr->_deleter;
+                NonConstPtr->_ptr = NULL;
+            }
+            return (*this);
+        }
+
+        //UniquePtr(const UniquePtr& moveCopy);
+        //UniquePtr& operator=(const UniquePtr& moveAssign);
 
         UniquePtr(UniquePtr& moveCopy)
         {
@@ -229,9 +263,31 @@ class UniquePtr<T[], Del>
         }
 
         //declared but not defined, compiler will link with the move constructor/assignment
-        UniquePtr(const UniquePtr& copy);
-        UniquePtr& operator=(const UniquePtr& assign);
+        UniquePtr(const UniquePtr& moveCopy)
+        {
+            UniquePtr<T>* NonConstPtr;
+            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+            _ptr = NonConstPtr->_ptr;
+            _deleter = NonConstPtr->_deleter;
+            NonConstPtr->_ptr = NULL;
+        }
+        UniquePtr& operator=(const UniquePtr& moveAssign)
+        {
+            UniquePtr<T>* NonConstPtr;
 
+            if (this != &moveAssign)
+            {
+                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
+                _safeDeletePtr();
+                _ptr = NonConstPtr->_ptr;
+                _deleter = NonConstPtr->_deleter;
+                NonConstPtr->_ptr = NULL;
+            }
+            return (*this);
+        }
+
+        //UniquePtr(const UniquePtr& moveCopy);
+        //UniquePtr& operator=(const UniquePtr& moveAssign);
         // Move constructor
         UniquePtr(UniquePtr& moveCopy)
         {

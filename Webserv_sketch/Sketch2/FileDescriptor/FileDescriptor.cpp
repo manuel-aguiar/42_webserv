@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:41:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:41:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ FileDescriptor::~FileDescriptor()
     close();
 }
 
+int FileDescriptor::getFd() const
+{
+    return (_fd);
+}
 
 bool FileDescriptor::operator==(const int other) const
 {
