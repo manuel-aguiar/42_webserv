@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UniquePtr.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 19:19:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:00:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ class UniquePtr
         }
 
         //declared but not defined
-        
         UniquePtr(const UniquePtr& moveCopy); // {std::cout << "                copy" << std::endl;(void)moveCopy;}
         UniquePtr& operator=(const UniquePtr& moveAssign); // {std::cout << "               assign" << std::endl;(void)moveAssign; return *this;}
 
@@ -139,31 +138,31 @@ UniquePtr<T> make_UniquePtr()
 template <typename T, typename Arg1>
 UniquePtr<T> make_UniquePtr(Arg1 arg1)
 {
-    return UniquePtr<T>(new T(arg1));
+    return (UniquePtr<T>(new T(arg1)));
 }
 
 template <typename T, typename Arg1, typename Arg2>
 UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2)
 {
-    return UniquePtr<T>(new T(arg1, arg2));
+    return (UniquePtr<T>(new T(arg1, arg2)));
 }
 
 template <typename T, typename Arg1, typename Arg2, typename Arg3>
 UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3)
 {
-    return UniquePtr<T>(new T(arg1, arg2, arg3));
+    return (UniquePtr<T>(new T(arg1, arg2, arg3)));
 }
 
 template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 {
-    return UniquePtr<T>(new T(arg1, arg2, arg3, arg4));
+    return (UniquePtr<T>(new T(arg1, arg2, arg3, arg4)));
 }
 
 template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 {
-    return UniquePtr<T>(new T(arg1, arg2, arg3, arg4, arg5));
+    return (UniquePtr<T>(new T(arg1, arg2, arg3, arg4, arg5)));
 }
 
         /*

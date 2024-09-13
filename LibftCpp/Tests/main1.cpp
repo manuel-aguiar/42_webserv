@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 19:16:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 08:51:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,16 @@ int main()
 
     std::cout << holderholder.get() << std::endl;
     
+    UniquePtr<Test> ptr6(new Test(3));
+    SharedPtr<Test> shr1(ptr6);
+
+    std::cout << "ptr6 address " << ptr6.get() << std::endl;
+    std::cout << "shr1 address " << shr1.get() << std::endl;
+
+    SharedPtr<Test> shr2(shr1);
+    std::cout << "shr1 address " << shr1.get() << std::endl;
+    std::cout << "shr2 address " << shr2.get() << std::endl;
+
 /*
     UniquePtr<Test> ptr2(ptr);
 

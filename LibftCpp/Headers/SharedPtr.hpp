@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 13:24:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 08:59:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,16 @@
 
 # define SHAREDPTR_HPP
 
+#include "UniquePtr.hpp"
+
 template <typename T>
 class SharedPtr
 {
     public:
         SharedPtr(T* ptr = NULL) : _ptr(ptr), _refCount(new int(1)) {}
-
-        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount)
-        {
-            ++(*_refCount);
-        }
-
+        SharedPtr (UniquePtr<T>& unique) : _ptr(unique.release()), _refCount(new int(1)) {}
+        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount) { ++(*_refCount); }
+        
         SharedPtr& operator=(const SharedPtr& other)
         {
             if (this != &other)
@@ -34,6 +33,14 @@ class SharedPtr
                 _refCount = other._refCount;
                 ++(*_refCount);
             }
+            return (*this);
+        }
+
+        SharedPtr& operator=(UniquePtr<T>& unique)
+        {
+            _decrementRefCount();
+            _ptr = unique.release();
+            _refCount = new int(1);
             return (*this);
         }
 
@@ -53,14 +60,22 @@ class SharedPtr
             }
         }
 
+        void    transfer(UniquePtr<T>& other)
+        {
+            if (this != &other)
+            {
+                _decrementRefCount();
+                _ptr = other.release();
+                _refCount = new int(1);
+                ++(*_refCount);
+            }
+        }
+
         T* release()
         {
             T* temp = _ptr;
             if (temp)
-            {
                 _ptr = NULL;
-                // Do not decrement ref count here, because we are transferring ownership
-            }
             return temp;
         }
 
@@ -103,5 +118,40 @@ class SharedPtr
         }
 };
 
+template <typename T>
+SharedPtr<T> make_SharedPtr()
+{
+    return (SharedPtr<T>());
+}
+
+template <typename T, typename Arg1>
+SharedPtr<T> make_SharedPtr(Arg1 arg1)
+{
+    return SharedPtr<T>(new T(arg1));
+}
+
+template <typename T, typename Arg1, typename Arg2>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2)
+{
+    return SharedPtr<T>(new T(arg1, arg2));
+}
+
+template <typename T, typename Arg1, typename Arg2, typename Arg3>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3)
+{
+    return SharedPtr<T>(new T(arg1, arg2, arg3));
+}
+
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
+{
+    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4));
+}
+
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
+{
+    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4, arg5));
+}
 
 #endif
