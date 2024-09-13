@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:00:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:15:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,14 @@ int main()
     SharedPtr<Test> shr2(shr1);
     std::cout << "shr1 address " << shr1.get() << std::endl;
     std::cout << "shr2 address " << shr2.get() << std::endl;
+
+
+    UniquePtr<Test> ptr7(new Test(4));
+    SharedPtr<Test> shr3(ptr7);
+
+    std::cout << "ptr7 address " << ptr7.get() << std::endl;
+    std::cout << "shr3 address " << shr3.get() << std::endl;
+
 
 /*
     UniquePtr<Test> ptr2(ptr);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:00:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:17:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ class UniquePtr
 
 
     public:
-
-
 
         UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
 
@@ -164,6 +162,96 @@ UniquePtr<T> make_UniquePtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg
 {
     return (UniquePtr<T>(new T(arg1, arg2, arg3, arg4, arg5)));
 }
+
+
+//Template Specialization for arrays
+template <typename T>
+class UniquePtr<T[]>
+{
+    private:
+        T* _ptr;
+
+        void _safeDeletePtr()
+        {
+            if (_ptr)
+            {
+                delete[] _ptr;
+                _ptr = NULL;
+            }
+        }
+
+    public:
+        UniquePtr(T* newPtr = NULL) : _ptr(newPtr) {}
+
+        ~UniquePtr()
+        {
+            _safeDeletePtr();
+        }
+
+        // Disable copy constructor and assignment for unique ownership
+        UniquePtr(const UniquePtr&);
+        UniquePtr& operator=(const UniquePtr&);
+
+        // Move constructor
+        UniquePtr(UniquePtr& moveCopy)
+        {
+            _ptr = moveCopy._ptr;
+            moveCopy._ptr = NULL;
+        }
+
+        // Move assignment
+        UniquePtr& operator=(UniquePtr& moveAssign)
+        {
+            if (this != &moveAssign)
+            {
+                _safeDeletePtr();
+                _ptr = moveAssign._ptr;
+                moveAssign._ptr = NULL;
+            }
+            return (*this);
+        }
+
+        T* get() const
+        {
+            return _ptr;
+        }
+
+        // No `operator*()` for arrays, as it's not meaningful
+
+        T& operator[](std::size_t index)
+        {
+            return _ptr[index];
+        }
+
+        const T& operator[](std::size_t index) const
+        {
+            return _ptr[index];
+        }
+
+        T* release()
+        {
+            T* save = _ptr;
+            _ptr = NULL;
+            return save;
+        }
+
+        void reset(T* newPtr = NULL)
+        {
+            if (_ptr != newPtr)
+            {
+                _safeDeletePtr();
+                _ptr = newPtr;
+            }
+        }
+
+        void transfer(UniquePtr& other)
+        {
+            if (this != &other)
+            {
+                reset(other.release());
+            }
+        }
+};
 
         /*
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 10:04:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 10:13:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:04:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ ParameterException::ParameterException(const ParameterException& copy) :
     std::memcpy(_buffer, copy._buffer, sizeof(_buffer));
 }
 
-ParameterException::~ParameterException() {}
+ParameterException::~ParameterException() throw() {}
 
 const char* ParameterException::what() const throw()
 {

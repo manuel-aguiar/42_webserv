@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:50:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 10:20:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:04:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class ParameterException : public std::exception
     public:
         ParameterException(const char* caller, const char* syscall, const char* strerror);
         ParameterException(const ParameterException& copy);
-        ~ParameterException();
+        ~ParameterException() throw();
         
         const char* what() const throw();
 
