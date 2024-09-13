@@ -59,6 +59,8 @@
         "compare": "cpp",
         "concepts": "cpp",
         "numbers": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "cerrno": "cpp",
+        "cassert": "cpp"
     }
 }

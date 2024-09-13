@@ -12,7 +12,7 @@
 
 
 /*
-	c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
+	(cd ../../../Webserv_sketch/ThreadPool/ && make) && c++ -Wall -Wextra -Werror serverthread.cpp  -L../../../Webserv_sketch/ThreadPool/ -lthreadpool -lpthread -o serverthread
 
 	valgrind --tool=helgrind --track-fds=yes --trace-children=yes ./serverthread 
 */
@@ -158,15 +158,15 @@ std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
 
 
 
-class Connection
+class RemoteClient
 {
 	public:
-		Connection() : _fd(-1), _event((struct epoll_event) {}) {}
-		Connection(const int fd) : _fd(fd), _event((struct epoll_event) {}) {}
-		Connection(const int fd, const struct epoll_event event) : _fd(fd), _event(event) {}
-		~Connection() {};
-		Connection(const Connection& copy) : _fd(copy._fd) {(void)copy;}
-		Connection& operator=(const Connection& assign) {if (this == &assign) return (*this); _fd = assign._fd; _event = assign._event; return (*this);}
+		RemoteClient() : _fd(-1), _event((struct epoll_event) {}) {}
+		RemoteClient(const int fd) : _fd(fd), _event((struct epoll_event) {}) {}
+		RemoteClient(const int fd, const struct epoll_event event) : _fd(fd), _event(event) {}
+		~RemoteClient() {};
+		RemoteClient(const RemoteClient& copy) : _fd(copy._fd) {(void)copy;}
+		RemoteClient& operator=(const RemoteClient& assign) {if (this == &assign) return (*this); _fd = assign._fd; _event = assign._event; return (*this);}
 
 		void setEvent(const struct epoll_event event) {_event = event;}
 		struct epoll_event& getEvent() {return (_event);}
@@ -175,9 +175,9 @@ class Connection
 		struct epoll_event	_event;
 };
 
-void closeconnections(std::map<int, Connection>& connfds, int epollfd)
+void closeconnections(std::map<int, RemoteClient>& connfds, int epollfd)
 {
-	std::map<int, Connection>::iterator iter;
+	std::map<int, RemoteClient>::iterator iter;
 	for (iter = connfds.begin(); iter != connfds.end(); ++iter)
 	{
 		if (epoll_ctl(epollfd, EPOLL_CTL_DEL, iter->first, &(iter->second.getEvent())) == -1)
@@ -187,9 +187,9 @@ void closeconnections(std::map<int, Connection>& connfds, int epollfd)
 	connfds.clear();
 }
 
-void closeSingleConn(int fd, std::map<int, Connection>& connfds, int epollfd)
+void closeSingleConn(int fd, std::map<int, RemoteClient>& connfds, int epollfd)
 {
-	Connection& conn = connfds[fd];
+	RemoteClient& conn = connfds[fd];
 
 	conn.setEvent((struct epoll_event){});
 	if (epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &(conn.getEvent())) == -1)
@@ -211,7 +211,7 @@ int ThreadServerFunc(int serverNumber)
 	char					readBuff[256];
 	int number = 1;
 
-	std::map<int, Connection>		connfds;
+	std::map<int, RemoteClient>		connfds;
 
 	int epollfd;
 	int pipefdRead;
@@ -247,7 +247,7 @@ int ThreadServerFunc(int serverNumber)
 		int sockopt = SO_REUSEADDR
 	#endif
 
-	listener = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, IPPROTO_TCP);
+	listener = socket(AF_INET6, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, IPPROTO_TCP);
 
 	if (setsockopt(listener, SOL_SOCKET, sockopt, &number, sizeof(number)) == -1)
 	{
@@ -356,7 +356,7 @@ int ThreadServerFunc(int serverNumber)
 				event.events = EPOLLIN | EPOLLOUT;
 				event.data.fd = newConn;		//add listener socket to the poll
 
-				connfds[newConn] = Connection(newConn, event);
+				connfds[newConn] = RemoteClient(newConn, event);
 
 				if (epoll_ctl(epollfd, EPOLL_CTL_ADD, event.data.fd, &event) == -1)
 				{
