@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 10:26:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 10:29:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ class UniquePtr
 
         UniquePtr(UniquePtr& moveCopy)
         {
-            //std::cout << "              move copy" << std::endl;
             _ptr = moveCopy._ptr;
             moveCopy._ptr = NULL;
         }
@@ -213,8 +212,8 @@ class UniquePtr<T[]>
         }
 
         //declared but not defined, compiler will link with the move constructor/assignment
-        UniquePtr(const UniquePtr&);
-        UniquePtr& operator=(const UniquePtr&);
+        UniquePtr(const UniquePtr& copy);
+        UniquePtr& operator=(const UniquePtr& assign);
 
         // Move constructor
         UniquePtr(UniquePtr& moveCopy)
@@ -274,6 +273,8 @@ UniquePtr<T[]> make_UniqueArray(size_t size)
 
 /*
 
+    History:
+
     While this technically works, const cast is dangerous.
     A copy const reference would represent a change in ownership
     Given the constraints of c++11, best to have an explicit transfer of control
@@ -285,13 +286,13 @@ UniquePtr<T[]> make_UniqueArray(size_t size)
     not really missing out on anything     
 
 
-UniquePtr(const UniquePtr& moveCopy)
-{
-    UniquePtr<T>* NonConstPtr;
-    NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
-    _ptr = NonConstPtr->_ptr;
-    NonConstPtr->_ptr = NULL;
-}
+        UniquePtr(const UniquePtr& moveCopy)
+        {
+            UniquePtr<T>* NonConstPtr;
+            NonConstPtr = &(const_cast<UniquePtr&>(moveCopy));
+            _ptr = NonConstPtr->_ptr;
+            NonConstPtr->_ptr = NULL;
+        }
 
 
     uses const_cast to allow move semantics (DANGEROUS)
@@ -299,19 +300,20 @@ UniquePtr(const UniquePtr& moveCopy)
     not really missing out on anything     
 
 
-UniquePtr& operator=(const UniquePtr& moveAssign)
-{
-    UniquePtr<T>* NonConstPtr;
+        UniquePtr& operator=(const UniquePtr& moveAssign)
+        {
+            UniquePtr<T>* NonConstPtr;
 
-    if (this != &moveAssign)
-    {
-        NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
-        _safeDeletePtr();
-        _ptr = NonConstPtr->_ptr;
-        NonConstPtr->_ptr = NULL;
-    }
-    return (*this);
-}
+            if (this != &moveAssign)
+            {
+                NonConstPtr = &(const_cast<UniquePtr&>(moveAssign));
+                _safeDeletePtr();
+                _ptr = NonConstPtr->_ptr;
+                NonConstPtr->_ptr = NULL;
+            }
+            return (*this);
+        }
+        
 */
 
 #endif

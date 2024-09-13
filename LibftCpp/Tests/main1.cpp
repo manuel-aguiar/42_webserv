@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 10:23:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 10:30:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,9 @@ int main()
 
     shr4 = ptr9;
     SharedPtr<Test[]> shr5 = new Test[32];
+
+    std::cout << shr5[1].getValue() << std::endl;
+
     shr5 = ptr9;
     
     UniquePtr<int[]> ptr10 = make_UniqueArray<int>(64);
