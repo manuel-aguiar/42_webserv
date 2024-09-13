@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:17:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 09:50:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,12 @@ class UniquePtr
         }
 
 
-        T* get() const
-        {
-            return (_ptr);
-        }
+        T*          get() const { return (_ptr); }
+        
+        T&          operator*() { return *_ptr; }
+        const T&    operator*() const { return *_ptr; }
 
-        T& operator*()
-        {
-            return (*_ptr);
-        }
-        const T& operator*() const
-        {
-            return (*_ptr);
-        }
-
-        T* operator->() const
-        {
-            return (_ptr);
-        }
+        T*          operator->() const { return (_ptr); }
 
         T* release()
         {
@@ -130,7 +118,7 @@ class UniquePtr
 template <typename T>
 UniquePtr<T> make_UniquePtr()
 {
-    return (UniquePtr<T>());
+    return (UniquePtr<T>(new T()));
 }
 
 template <typename T, typename Arg1>
@@ -211,22 +199,10 @@ class UniquePtr<T[]>
             return (*this);
         }
 
-        T* get() const
-        {
-            return _ptr;
-        }
+        T*          get() const { return (_ptr); }
 
-        // No `operator*()` for arrays, as it's not meaningful
-
-        T& operator[](std::size_t index)
-        {
-            return _ptr[index];
-        }
-
-        const T& operator[](std::size_t index) const
-        {
-            return _ptr[index];
-        }
+        T&          operator[](const std::size_t index) { return _ptr[index];}
+        const T&    operator[](const std::size_t index) const { return _ptr[index];}
 
         T* release()
         {
@@ -252,6 +228,13 @@ class UniquePtr<T[]>
             }
         }
 };
+
+
+template <typename T>
+UniquePtr<T[]> make_UniqueArray(size_t size)
+{
+    return (UniquePtr<T[]>(new T[size]));
+}
 
         /*
 

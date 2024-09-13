@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:15:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 10:02:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,73 +151,17 @@ int main()
     std::cout << "shr3 address " << shr3.get() << std::endl;
 
 
-/*
-    UniquePtr<Test> ptr2(ptr);
+    UniquePtr<int[]> ptr123(new int[32]);
+    ptr123[1] = 42;
+    std::cout << ptr123[1] << std::endl;
 
-    if(ptr2->getValue() != 42)
-        std::cout << "not passed" << std::endl;
-    if (ptr.get() != NULL)
-        std::cout << "not passed" << std::endl;
+    UniquePtr<Test[]> ptr8 = make_UniqueArray<Test>(64);
+    UniquePtr<Test[]> ptr9(ptr8);
+    SharedPtr<Test[]> shr4 = make_SharedArray<Test>(78);
 
-    UniquePtr<Test> ptr3;
-
-    ptr3 = ptr2;
-
-    if(ptr3->getValue() != 42)
-        std::cout << "not passed" << std::endl;
-    if (ptr2.get() != NULL)
-        std::cout << "not passed" << std::endl;
-
-    std::cout << "ptr3 value: " << ptr3->getValue() << std::endl;
-
-    UniquePtr<Test> ptr4(new Test(123));
+    shr4 = ptr9;
+    SharedPtr<Test[]> shr5 = new Test[32];
+    shr5 = ptr9;
     
-    std::cout << "ptr4 value: " << ptr4->getValue() << std::endl;
-
-    ptr4 = ptr3;
-    std::cout << "ptr4 value: " << ptr4->getValue() << std::endl;
-
-
-    //implicit conversion of a pointer to a unique pointer
-    // constructor is not <explicit>, if that was the case, no implicit promotions are possible
-    ptr4 = Test::_createTestPtr(321);
-    
-    std::cout << "ptr4 value: " << ptr4->getValue() << std::endl;
-
-    UniquePtr<int> ptr11(new int(42));
-    UniquePtr<int> ptr12(ptr11);
-
-    std::cout << "ptr11 = " << ptr11.get() << std::endl;
-    std::cout << "ptr12 = " << ptr12.get() << std::endl;
-
-    ptr12 = ptr12;
-
-    std::cout << "ptr12 = " << *ptr12 << std::endl;
-
-
-    UniquePtr<int> ptr6(new int(3));
-    int* rawPtr = ptr6.get();
-    ptr6.reset(rawPtr); // Attempt to reset to the same pointer
-    std::cout << "ptr1 value: " << *ptr6 << std::endl;
-
-
-    UniquePtr<int> ptr7(new int(4));
-    int* rawPtr7 = ptr7.release();  // Manually release the pointer, now ptr1 no longer owns it
-    std::cout << "rawPtr = " << *rawPtr7 << std::endl; // rawPtr still points to the resource
-    delete rawPtr7;
-
-    Testmember testmember(new Test(42));
-    std::cout << "testmember value: " << testmember.getTest().get() << std::endl;
-    Testmember testmember2(testmember);
-    std::cout << "testmember value: " << testmember.getTest().get() << std::endl;
-    std::cout << "testmember2 value: " << testmember2.getTest().get() << std::endl;
-
-    const UniquePtr<Test>& check = testmember2.getTest();
-    *check = 37;
-    std::cout << "testmember2 value: " << testmember2.getTest().get()->getValue() << std::endl;
-    UniquePtr<Test> steal = check;
-
-    std::cout << "testmember2 value: " << testmember2.getTest().get()->getValue() << std::endl;
-*/
     return (0);
 }
