@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:52:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/14 12:33:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ class BorrowPtr
             return (*this);
         }
         
+        T*          get() const { return (_ptr); }
+
         bool        operator==(const BorrowPtr& other) const { return (_ptr == other._ptr); }
 
         T&          operator*()
@@ -115,6 +117,8 @@ class BorrowPtr<T[]>
                 _ptr = hardAssign._ptr;
             return (*this);
         }
+
+        T*          get() const { return (_ptr); }
 
         bool        operator==(const BorrowPtr& other) const { return (_ptr == other._ptr); }
 

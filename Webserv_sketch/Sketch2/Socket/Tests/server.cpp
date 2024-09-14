@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:53:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/14 12:36:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,29 @@
 # include <vector>
 
 
+class DumbEpoll
+{
+    public:
+        template <typename T>
+        void add(UniquePtr<T> fd)
+        {
+            _epoll.push_back(UniquePtr<FileDescriptor>(dynamic_cast<FileDescriptor*>(fd.release())));
+        }
+
+        BorrowPtr<FileDescriptor> operator[](size_t index)
+        {
+            return (BorrowPtr<FileDescriptor>(_epoll[index]));
+        }
+    private:
+        std::vector <UniquePtr<FileDescriptor> > _epoll;
+};
+
+
 int main(void)
 {
     try
     {
-        std::vector<UniquePtr<ACommunicationSocket> >   connections;
+        DumbEpoll                                      epoll;
         
         IPv4Address                                     ipv4(0, 8080);
         ServerSocket                                    server(ipv4, SOCK_STREAM, IPPROTO_TCP);
@@ -40,11 +58,12 @@ int main(void)
         server.listen();
         client.connect();
         
-        connections.push_back(server.accept());
+        epoll.add(server.accept());
 
-        BorrowPtr<ACommunicationSocket> borrow = connections[0].lend();
+        //BorrowPtr<ACommunicationSocket> borrow = epoll[0].lend();
 
-        connections[0]->send();
+        BorrowPtr<ACommunicationSocket> borrow(dynamic_cast<ACommunicationSocket*>(epoll[0].get()));
+        borrow->send();
         client.receive();
 
         return (0);
