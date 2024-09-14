@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 11:51:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:44:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/14 10:54:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,3 +34,15 @@ ASocket& ASocket::operator=(ASocket& assign)
 }
 
 //copy not implemented, only move
+
+ASocket::ASocket(const ASocket& hardCopy) : FileDescriptor(hardCopy), _addr(hardCopy._addr) {}
+
+ASocket& ASocket::operator=(const ASocket& hardAssign)
+{
+    if (this != &hardAssign)
+    {
+        FileDescriptor::operator=(hardAssign);
+        _addr = hardAssign._addr;
+    }
+    return (*this);
+}

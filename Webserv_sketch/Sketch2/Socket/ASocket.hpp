@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:35:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/14 10:57:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class ASocket : public FileDescriptor
         ASocket& operator=(const ASocket& assign);
     
     private:
+
+
 
 };
 

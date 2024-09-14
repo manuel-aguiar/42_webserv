@@ -26,9 +26,6 @@ class CommunicationSocket : public ACommunicationSocket
         //move
         CommunicationSocket(CommunicationSocket& copy);
         CommunicationSocket& operator=(CommunicationSocket& assign);
-        
-        CommunicationSocket(const CommunicationSocket& copy);
-        CommunicationSocket& operator=(const CommunicationSocket& assign);
 
         ~CommunicationSocket();
 
@@ -38,6 +35,8 @@ class CommunicationSocket : public ACommunicationSocket
         void receive();
 
     private:
+        CommunicationSocket(const CommunicationSocket& copy);
+        CommunicationSocket& operator=(const CommunicationSocket& assign);
 
 };
 

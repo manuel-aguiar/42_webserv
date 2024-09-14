@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 16:56:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/14 10:56:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,17 @@ class ServerSocket : public AServerSocket
         ServerSocket(ServerSocket& copy);
         ServerSocket& operator=(ServerSocket& assign);
 
-        //copy
-        ServerSocket(const ServerSocket& copy);
-        ServerSocket& operator=(const ServerSocket& assign);
+
 
         // inherited from AServerSocket
         void                                bind();
         void                                listen();
         UniquePtr<ACommunicationSocket>     accept();
+    
+    private:
+        //copy
+        ServerSocket(const ServerSocket& copy);
+        ServerSocket& operator=(const ServerSocket& assign);
 
 };
 

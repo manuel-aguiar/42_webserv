@@ -26,9 +26,22 @@ void    CommunicationSocket::receive()
     
 }
 
+
+//move
 CommunicationSocket::CommunicationSocket(CommunicationSocket& copy) : ASocket(copy) {}
 
 CommunicationSocket& CommunicationSocket::operator=(CommunicationSocket& assign)
+{
+    ASocket::operator=(assign);
+    return (*this);
+}
+
+
+
+//hardcopy
+CommunicationSocket::CommunicationSocket(const CommunicationSocket& copy) : ASocket(copy) {}
+
+CommunicationSocket& CommunicationSocket::operator=(const CommunicationSocket& assign)
 {
     ASocket::operator=(assign);
     return (*this);
