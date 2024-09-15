@@ -40,9 +40,15 @@ CommunicationSocket& CommunicationSocket::operator=(CommunicationSocket& assign)
     return (*this);
 }
 
-void    CommunicationSocket::onClose() {}
+void    CommunicationSocket::onClose() 
+{
+    
+}
 
-void    CommunicationSocket::onRead() {}
+void    CommunicationSocket::onRead()
+{
+    receive();
+}
 
 void    CommunicationSocket::onWrite()
 {

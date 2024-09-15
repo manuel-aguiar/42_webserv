@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:54:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 10:50:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,23 +57,24 @@ int main(void)
 {
     try
     {
-        DumbEpoll                                      epoll;
+        DumbEpoll                                       epoll;
         
         IPv4Address                                     ipv4(0, 8080);
-        ServerSocket                                    server(ipv4, SOCK_STREAM, IPPROTO_TCP);
+        UniquePtr<ServerSocket>                         server = new ServerSocket(ipv4, SOCK_STREAM, IPPROTO_TCP);
         ClientSocket                                    client(ipv4, SOCK_STREAM, IPPROTO_TCP);
         
-        server.bind();
-        server.listen();
+        server->bind();
+        server->listen();
         client.connect();
         
-        epoll.add(server.accept());
+        epoll.add(server);
+        epoll.add(server->accept());
         
         epoll[0]->onWrite();
         
         client.receive();
-
         return (0);
+
     }
     catch(const std::exception& e)
     {

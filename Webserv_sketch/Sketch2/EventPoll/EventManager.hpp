@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 14:11:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 14:14:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 10:45:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 # include <exception>
 # include <stdexcept>
 # include <cstring>
+# include <cassert>
 
+# include "../FileDescriptor/FileDescriptor.hpp"
 
 typedef unsigned int t_uint;
 typedef struct epoll_event t_epoll_event;
@@ -34,7 +36,7 @@ typedef int fd;
 # define EPOLL_MAXEVENTS 10
 # define EPOLL_WAIT_TIMEOUT 10
 
-class EventManager : public IEventPoll
+class EventManager : public FileDescriptor, public IEventPoll
 {
 	public:
 		
@@ -51,8 +53,12 @@ class EventManager : public IEventPoll
 
 		void poll();
 
+        // iherited from FileDescriptor
+        void            onClose();
+        void            onRead();
+        void            onWrite();
+
 	private:
-		const fd						_epollfd;
 		const t_uint					_maxEvents;
 		const t_uint					_waitTimeout;
 		t_uint							_triggeredCount;
@@ -60,6 +66,7 @@ class EventManager : public IEventPoll
 		std::map<fd, t_epoll_event>		_monitoredEvents;
 		
 
+		//private copy and assign
 		EventManager(const EventManager& copy);
 		EventManager& operator=(const EventManager& assign);
 };
