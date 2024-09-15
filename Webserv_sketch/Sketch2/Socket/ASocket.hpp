@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:31:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:17:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,37 @@
 # include "SocketAddress/ISocketAddress.hpp"
 # include "../Exceptions/ParameterException.hpp"
 
+template <
+    typename SockAddr
+>
 class ASocket : public FileDescriptor
 {
     public:
-        virtual ~ASocket();
+        virtual ~ASocket() {};
 
     protected:
-        ISocketAddress*     _addr;
+        SockAddr     _addr;
         
-        ASocket();
-        ASocket(const int fd, const ISocketAddress& addr);
+        ASocket() :
+            FileDescriptor(-1),
+            _addr() {}
+            
+        ASocket(const int fd, const SockAddr& addr) :
+            FileDescriptor(fd),
+            _addr(addr) {}
         
-        ASocket(const ASocket& copy);
-        ASocket& operator=(const ASocket& assign);
+        ASocket(const ASocket& copy) :
+            FileDescriptor(copy),
+            _addr(copy._addr) {}
+
+        ASocket& operator=(const ASocket& assign)
+        {
+            if (this == &assign)
+                return (*this);
+            FileDescriptor::operator=(assign);
+            _addr = assign._addr;
+            return (*this);
+        }
 
 };
 

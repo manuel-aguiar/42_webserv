@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:41:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:19:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,4 @@ UniquePtr<ISocketAddress>     IPv4Address::clone() const
 
 
 // private default constructor
-IPv4Address::IPv4Address() : _addr((struct sockaddr_in) {}) {}
+IPv4Address::IPv4Address() : _addr((struct sockaddr_in) {}), _addrLen(sizeof(_addr)) {}

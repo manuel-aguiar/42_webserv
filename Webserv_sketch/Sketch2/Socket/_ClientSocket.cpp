@@ -6,24 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:46:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:01:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 16:48:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClientSocket.hpp"
 
-ClientSocket::ClientSocket(const ISocketAddress& addr, int type, int protocol) :
-    ASocket(socket(addr.getAddrFamily(), type, protocol), addr)
-{
-    
-}
 
-ClientSocket::~ClientSocket()
-{
-    if (_fd != -1)
-        close(_fd);
-}
-
+/*
 
 void ClientSocket::connect()
 {
@@ -65,3 +55,5 @@ ClientSocket& ClientSocket::operator=(const ClientSocket& moveAssign)
     ASocket::operator=(moveAssign);
     return (*this);
 }
+
+*/

@@ -12,6 +12,8 @@
 
 # include "CommunicationSocket.hpp"
 
+/*
+
 CommunicationSocket::CommunicationSocket() : ASocket() {}
 CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : ASocket(fd, addr) {}
 CommunicationSocket::~CommunicationSocket()
@@ -30,15 +32,6 @@ void    CommunicationSocket::receive()
     
 }
 
-
-//move
-CommunicationSocket::CommunicationSocket(CommunicationSocket& copy) : ASocket(copy) {}
-
-CommunicationSocket& CommunicationSocket::operator=(CommunicationSocket& assign)
-{
-    ASocket::operator=(assign);
-    return (*this);
-}
 
 void    CommunicationSocket::onClose() 
 {
@@ -64,3 +57,4 @@ CommunicationSocket& CommunicationSocket::operator=(const CommunicationSocket& a
     return (*this);
 }
 
+*/

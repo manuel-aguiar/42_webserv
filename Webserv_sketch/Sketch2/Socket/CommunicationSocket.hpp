@@ -16,31 +16,42 @@
 
 # include "ACommunicationSocket.hpp"  
 
-class CommunicationSocket : public ACommunicationSocket
+template <
+    typename SockAddr
+>
+class CommunicationSocket : public ACommunicationSocket<SockAddr>
 {
     public:
         CommunicationSocket();
 
-        CommunicationSocket(const int fd, const ISocketAddress& addr);
+        CommunicationSocket(const int fd, const SockAddr& addr) :
+            ASocket<SockAddr>(fd, addr) {}
 
-        //move
-        CommunicationSocket(CommunicationSocket& copy);
-        CommunicationSocket& operator=(CommunicationSocket& assign);
-
-        ~CommunicationSocket();
-
+        ~CommunicationSocket()
+        {
+            if (this->_fd != -1)
+                ::close(this->_fd);
+        }
         // implementation of FileDescriptor Functions
-        void            onClose();
-        void            onRead();
-        void            onWrite();        
+        void            onClose() {};
+        void            onRead() {};
+        void            onWrite() {};        
         
         // implementation  of ICommunicationFunctions
-        void send();
-        void receive();
+        void send()
+        {
+            write(this->_fd, "Hello, World!", 13);
+        }
+
+        void receive() {};
 
     private:
-        CommunicationSocket(const CommunicationSocket& copy);
-        CommunicationSocket& operator=(const CommunicationSocket& assign);
+        CommunicationSocket(const CommunicationSocket& copy) : ASocket<SockAddr>(copy) {}
+        CommunicationSocket& operator=(const CommunicationSocket& assign)
+        {
+            ASocket<SockAddr>::operator=(assign);
+            return (*this);
+        }
 
 };
 

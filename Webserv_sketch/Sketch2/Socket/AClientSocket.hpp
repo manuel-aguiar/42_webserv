@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 14:42:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 16:45:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@
 # include "IFunctionsClient.hpp"
 # include "IFunctionsCommunication.hpp"
 
-class AClientSocket : virtual public ASocket, public ICommunicationFunctions, public IClientFunctions
+template <
+    typename SockAddr
+>
+class AClientSocket : virtual public ASocket<SockAddr>, public ICommunicationFunctions, public IClientFunctions
 {
     public:
         virtual ~AClientSocket() {}
