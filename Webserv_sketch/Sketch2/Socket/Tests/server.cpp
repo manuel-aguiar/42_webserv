@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:50:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 11:14:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-    clear && c++ -Wall -Wextra -Werror $(find . -name "*.cpp") ../FileDescriptor/FileDescriptor.cpp ../Exceptions/ParameterException.cpp -o sockets
+   clear && c++ -Wall -Wextra -Werror $(find . -name "*.cpp") ../FileDescriptor/FileDescriptor.cpp ../FileDescriptorManager/FileDescriptorManager.cpp ../Exceptions/ParameterException.cpp -o sockets
 
     valgrind --track-fds=yes ./sockets
 */
@@ -20,6 +20,8 @@
 # include "../ServerSocket.hpp"
 # include "../ClientSocket.hpp"
 # include "../CommunicationSocket.hpp"
+# include "../../FileDescriptorManager/FileDescriptorManager.hpp"
+
 
 # include <iostream>
 # include <map>
@@ -37,15 +39,14 @@ class DumbEpoll
             _epoll.clear();
         }
 
-        template <typename T>
-        void add(UniquePtr<T> fd)
+        void add(const FileDescriptor& fd)
         {
-            _epoll.push_back(fd.release());
+            _epoll.push_back(&fd);
         }
 
-        FileDescriptor* operator[](size_t index)
+        const FileDescriptor& operator[](size_t index)
         {
-            return (_epoll[index]);
+            return (*_epoll[index]);
         }
 
     private:
@@ -57,18 +58,23 @@ int main(void)
 {
     try
     {
+        FileDescriptorManager                           fdManager;
         DumbEpoll                                       epoll;
         
         IPv4Address                                     ipv4(0, 8080);
         UniquePtr<ServerSocket>                         server = new ServerSocket(ipv4, SOCK_STREAM, IPPROTO_TCP);
         ClientSocket                                    client(ipv4, SOCK_STREAM, IPPROTO_TCP);
         
+        int serverFd = server->getFd();
+
+        fdManager.addFileDescriptor(UniquePtr<FileDescriptor>(dynamic_cast<FileDescriptor*>(server.release())));
+
         server->bind();
         server->listen();
         client.connect();
         
-        epoll.add(server);
-        epoll.add(server->accept());
+        epoll.add(fdManager.getFileDescriptor(serverFd));
+        epoll.add(fdManager.getFileDescriptor(serverFd).onRead());
         
         epoll[0]->onWrite();
         

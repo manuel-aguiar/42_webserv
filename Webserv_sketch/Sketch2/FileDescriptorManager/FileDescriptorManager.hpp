@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:55:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 11:17:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class FileDescriptorManager : public IFileDescriptorManager
 
         void                                    addFileDescriptor(UniquePtr<FileDescriptor> newFd);
         void                                    removeFileDescriptor(const int fd);
-    
+        const FileDescriptor&                   getFileDescriptor(const int fd) const;
 
     private:
         std::map<int, const FileDescriptor*>          _openFds;
