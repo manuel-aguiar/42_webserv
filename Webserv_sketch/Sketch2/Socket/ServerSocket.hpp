@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 10:56:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:46:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,12 @@ class ServerSocket : public AServerSocket
         ServerSocket(ServerSocket& copy);
         ServerSocket& operator=(ServerSocket& assign);
 
+        // implementation of FileDescriptor Functions
+        void            onClose();
+        void            onRead();
+        void            onWrite(); 
 
-
-        // inherited from AServerSocket
+        // implementation of AServerSocket
         void                                bind();
         void                                listen();
         UniquePtr<ACommunicationSocket>     accept();

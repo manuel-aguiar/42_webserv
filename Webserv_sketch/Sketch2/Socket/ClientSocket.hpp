@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 10:56:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:49:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,10 @@ class ClientSocket : public AClientSocket
         ClientSocket(const ISocketAddress& addr, int type, int protocol);
         ~ClientSocket();
 
-        //move
-        ClientSocket(ClientSocket& moveCopy);
-        ClientSocket& operator=(ClientSocket& moveAssign);
-
-        //copy
-
+        // implementation of FileDescriptor Functions
+        void            onClose();
+        void            onRead();
+        void            onWrite();  
 
         //implementation of IClientFunctions
         void connect();

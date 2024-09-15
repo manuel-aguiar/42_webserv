@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:55:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 10:01:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ ServerSocket::ServerSocket(const ISocketAddress& addr, int type, int protocol) :
     int opt = 1;
     if (_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-    if (_addr.get() == NULL)
+    if (_addr == NULL)
         throw ParameterException("SocketServer constructor failed", "new", std::strerror(errno));
     if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
         throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
@@ -37,17 +37,28 @@ void    ServerSocket::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 
-UniquePtr<ACommunicationSocket> ServerSocket::accept()
+UniquePtr<ACommunicationSocket>    ServerSocket::accept()
 {
-    UniquePtr<ISocketAddress>               newAddr = _addr->clone();
+    UniquePtr<ISocketAddress>               newAddr = UniquePtr<ISocketAddress> (_addr->clone());
     
     int newFd = ::accept(_fd, newAddr->getSockAddr(), newAddr->getAddrLen());
     if (newFd == -1)
         return (NULL);
-    return (UniquePtr<ACommunicationSocket> (new CommunicationSocket(newFd, *newAddr)));
+    return (UniquePtr<ACommunicationSocket>(new CommunicationSocket(newFd, *newAddr)));
 }
 
-ServerSocket::~ServerSocket() {}
+void    ServerSocket::onClose() {}
+void    ServerSocket::onRead() {}
+void    ServerSocket::onWrite() {}
+
+
+
+ServerSocket::~ServerSocket()
+{
+    if (_fd != -1)
+        close(_fd);
+}
+
 ServerSocket::ServerSocket() : ASocket() {}
 ServerSocket::ServerSocket(ServerSocket& moveCopy) : ASocket(moveCopy) {}
 ServerSocket& ServerSocket::operator=(ServerSocket& moveAssign)

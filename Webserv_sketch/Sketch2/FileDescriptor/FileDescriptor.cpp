@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:07:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:27:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 FileDescriptor::FileDescriptor() : _fd(-1) {}
 FileDescriptor::FileDescriptor(int fileDescriptor) : _fd(fileDescriptor) {}
 
-FileDescriptor::~FileDescriptor()
-{
-    close();
-}
+FileDescriptor::~FileDescriptor() {}
 
 int FileDescriptor::getFd() const
 {
@@ -73,34 +70,11 @@ bool   FileDescriptor::redirectTo(const FileDescriptor& newFd)
     return (::dup2(_fd, newFd._fd) != -1);
 }
 
-void    FileDescriptor::close()
-{
-    if (_fd != -1)
-    {
-        std::cout << " calling close" << std::endl;
-        ::close(_fd);
-        _fd = -1;
-    }
-}
-
-FileDescriptor::FileDescriptor(FileDescriptor& moveCopy) : _fd(moveCopy._fd)
-{
-    moveCopy._fd = -1;
-}
-
-FileDescriptor& FileDescriptor::operator=(FileDescriptor& moveCopy)
-{
-    if (this != &moveCopy)
-    {
-        _fd = moveCopy._fd;
-        moveCopy._fd = -1;
-    }
-    return (*this);
-}
-
-FileDescriptor::FileDescriptor(const FileDescriptor& hardCopy) {(void)hardCopy;}
+FileDescriptor::FileDescriptor(const FileDescriptor& hardCopy)  : _fd(hardCopy._fd) {(void)hardCopy;}
 FileDescriptor& FileDescriptor::operator=(const FileDescriptor& hardAssign)
 {
-    (void)hardAssign;
+    if (this == &hardAssign)
+        return (*this);
+    _fd = hardAssign._fd;
     return (*this);
 }

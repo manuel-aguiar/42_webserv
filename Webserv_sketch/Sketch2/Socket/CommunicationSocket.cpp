@@ -14,7 +14,11 @@
 
 CommunicationSocket::CommunicationSocket() : ASocket() {}
 CommunicationSocket::CommunicationSocket(int fd, const ISocketAddress& addr) : ASocket(fd, addr) {}
-CommunicationSocket::~CommunicationSocket() {}
+CommunicationSocket::~CommunicationSocket()
+{
+    if (_fd != -1)
+        close(_fd);
+}
 
 void    CommunicationSocket::send()
 {
@@ -36,7 +40,14 @@ CommunicationSocket& CommunicationSocket::operator=(CommunicationSocket& assign)
     return (*this);
 }
 
+void    CommunicationSocket::onClose() {}
 
+void    CommunicationSocket::onRead() {}
+
+void    CommunicationSocket::onWrite()
+{
+    send();
+}
 
 //hardcopy
 CommunicationSocket::CommunicationSocket(const CommunicationSocket& copy) : ASocket(copy) {}

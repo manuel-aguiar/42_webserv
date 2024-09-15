@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:33:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:25:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,6 @@ class FileDescriptor {
         FileDescriptor();
         FileDescriptor(int fileDescriptor);
 
-        //move
-        FileDescriptor(FileDescriptor& moveCopy);
-        FileDescriptor& operator=(FileDescriptor& moveAssign);
-
-        //copy
-        FileDescriptor(const FileDescriptor& hardCopy);
-        FileDescriptor& operator=(const FileDescriptor& hardAssign);
-
         virtual ~FileDescriptor();
 
         int     getFd() const;
@@ -57,15 +49,20 @@ class FileDescriptor {
 
         bool    setCloseOnExec_NonBlocking();
 
-        void    close();
-
         bool    redirectTo   (const int newFd);
         bool    redirectTo   (const FileDescriptor& newFd);
 
+        // descendents will have to implement
+        virtual void            onClose() = 0;
+        virtual void            onRead() = 0;
+        virtual void            onWrite() = 0;
+
     protected:
         int                 _fd;
-
-
+        
+        // hard copy and assign is only for descendents
+        FileDescriptor(const FileDescriptor& hardCopy);
+        FileDescriptor& operator=(const FileDescriptor& hardAssign);
 
         //helper
         bool                _addFlags(int flags);

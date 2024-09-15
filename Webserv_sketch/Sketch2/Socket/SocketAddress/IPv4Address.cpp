@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 16:08:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:41:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ socklen_t*          IPv4Address::getAddrLen()
 
 UniquePtr<ISocketAddress>     IPv4Address::clone() const
 {
-    return (UniquePtr<ISocketAddress> (new IPv4Address(*this)));
+    return (UniquePtr<ISocketAddress>(new IPv4Address(*this)));
 }
 
 

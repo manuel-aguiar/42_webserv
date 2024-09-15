@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 10:57:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:31:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,13 @@ class ASocket : public FileDescriptor
         virtual ~ASocket();
 
     protected:
-        UniquePtr<ISocketAddress>     _addr;
+        ISocketAddress*     _addr;
         
-        //bare minimum, an fd and an address structure
-        ASocket(const int fd, const ISocketAddress& addr);
         ASocket();
-
-        //move
-        ASocket(ASocket& copy);
-        ASocket& operator=(ASocket& assign);
-
-        //copy
+        ASocket(const int fd, const ISocketAddress& addr);
+        
         ASocket(const ASocket& copy);
         ASocket& operator=(const ASocket& assign);
-    
-    private:
-
-
 
 };
 

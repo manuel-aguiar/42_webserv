@@ -29,6 +29,10 @@ class CommunicationSocket : public ACommunicationSocket
 
         ~CommunicationSocket();
 
+        // implementation of FileDescriptor Functions
+        void            onClose();
+        void            onRead();
+        void            onWrite();        
         
         // implementation  of ICommunicationFunctions
         void send();

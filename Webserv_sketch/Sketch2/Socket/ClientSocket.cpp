@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:46:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 17:52:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 10:01:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ ClientSocket::ClientSocket(const ISocketAddress& addr, int type, int protocol) :
     
 }
 
-ClientSocket::~ClientSocket() {}
+ClientSocket::~ClientSocket()
+{
+    if (_fd != -1)
+        close(_fd);
+}
 
 
 void ClientSocket::connect()
@@ -48,9 +52,16 @@ void ClientSocket::receive()
         std::cout << "Received: " << std::string(buffer, 0, bytesReceived) << std::endl;
 }
 
+
+void    ClientSocket::onClose() {}
+void    ClientSocket::onRead() {}
+void    ClientSocket::onWrite() {}
+
+
 ClientSocket::ClientSocket() : ASocket() {}
-
-ClientSocket::ClientSocket(ClientSocket& moveCopy) : ASocket(moveCopy)
+ClientSocket::ClientSocket(const ClientSocket& moveCopy) : ASocket(moveCopy) {}
+ClientSocket& ClientSocket::operator=(const ClientSocket& moveAssign)
 {
-
+    ASocket::operator=(moveAssign);
+    return (*this);
 }
