@@ -6,15 +6,16 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:43:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 11:36:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerSocket.hpp"
 # include "CommunicationSocket.hpp"
 
-ServerSocket::ServerSocket(const ISocketAddress& addr, int type, int protocol) : 
-    ASocket(socket(addr.getAddrFamily(), type, protocol), addr)
+ServerSocket::ServerSocket(IFileDescriptorManager& fdManager, const ISocketAddress& addr, int type, int protocol) : 
+    ASocket(socket(addr.getAddrFamily(), type, protocol), addr),
+    _fdManager(fdManager)
 {
     int opt = 1;
     if (_fd == -1)
@@ -48,7 +49,12 @@ UniquePtr<ACommunicationSocket>    ServerSocket::accept()
 }
 
 void    ServerSocket::onClose()     {}
-void    ServerSocket::onRead()      {}
+void    ServerSocket::onRead()
+{
+    UniquePtr<ACommunicationSocket> newComm = accept();
+    if (newComm.get() != NULL)
+        _fdManager.addFileDescriptor(UniquePtr<FileDescriptor>(dynamic_cast<FileDescriptor*>(newComm.release())));
+}
 void    ServerSocket::onWrite()     {}
 
 
@@ -59,10 +65,8 @@ ServerSocket::~ServerSocket()
         close(_fd);
 }
 
-ServerSocket::ServerSocket() : ASocket() {}
-ServerSocket::ServerSocket(ServerSocket& moveCopy) : ASocket(moveCopy) {}
-ServerSocket& ServerSocket::operator=(ServerSocket& moveAssign)
-{
-    ASocket::operator=(moveAssign);
-    return (*this);
-}
+
+//private, can't copy
+ServerSocket::ServerSocket(const ServerSocket& moveCopy) : ASocket(moveCopy), _fdManager(moveCopy._fdManager) {(void)moveCopy;}
+ServerSocket& ServerSocket::operator=(const ServerSocket& moveAssign) {(void)moveAssign; return (*this);}
+    

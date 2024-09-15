@@ -6,32 +6,34 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 11:16:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 12:00:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "FileDescriptorManager.hpp"
 
-FileDescriptorManager::FileDescriptorManager()
+FileDescriptorManager::FileDescriptorManager(IEventPoll* poll) :
+    _epoll(poll)
 {
-    for (std::map<int, const FileDescriptor*>::iterator it = _openFds.begin(); it != _openFds.end(); it++)
+    if (_epoll)
+        addFileDescriptor(UniquePtr<FileDescriptor>(dynamic_cast<FileDescriptor*> (_epoll)), false);
+}
+
+FileDescriptorManager::~FileDescriptorManager()
+{
+    for (std::map<int, FileDescriptor*>::iterator it = _openFds.begin(); it != _openFds.end(); it++)
     {
         delete it->second;
     }
     _openFds.clear();
 }
 
-FileDescriptorManager::~FileDescriptorManager()
+void FileDescriptorManager::addFileDescriptor(UniquePtr<FileDescriptor> newFd, bool willMonitor)
 {
-    for (std::map<int, const FileDescriptor*>::iterator it = _openFds.begin(); it != _openFds.end(); it++)
-    {
-        delete it->second;
-    }
-}
-
-void FileDescriptorManager::addFileDescriptor(UniquePtr<FileDescriptor> newFd)
-{
-    _openFds[newFd->getFd()] = newFd.release();
+    FileDescriptor* fd = newFd.release();
+    _openFds[fd->getFd()] = fd;
+    if (willMonitor && _epoll)
+        _epoll->add(fd->getFd(), 1);
 }
 
 void FileDescriptorManager::removeFileDescriptor(const int fd)
@@ -42,10 +44,10 @@ void FileDescriptorManager::removeFileDescriptor(const int fd)
     _openFds.erase(fd);
 }
 
-const FileDescriptor& FileDescriptorManager::getFileDescriptor(const int fd) const 
+FileDescriptor* FileDescriptorManager::getFileDescriptor(const int fd)
 {
     assert(_openFds.find(fd) != _openFds.end());
-    return (*_openFds[fd]);
+    return (_openFds[fd]);
 }
 
 //private
@@ -62,3 +64,6 @@ FileDescriptorManager& FileDescriptorManager::operator=(const FileDescriptorMana
     _openFds = assign._openFds;
     return (*this);
 }
+
+
+

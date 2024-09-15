@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:46:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 11:38:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 // Concrete Project headers
 # include "../FileDescriptor/FileDescriptor.hpp"
 # include "../Exceptions/ParameterException.hpp"
-
+# include "../FileDescriptorManager/FileDescriptorManager.hpp"
 // Interface Project headers
 # include "AServerSocket.hpp"
 
@@ -35,7 +35,7 @@ class ServerSocket : public AServerSocket
 {
     public:
         ServerSocket();
-        ServerSocket(const ISocketAddress& addr, int type, int protocol);
+        ServerSocket(IFileDescriptorManager& fdManager, const ISocketAddress& addr, int type, int protocol);
         ~ServerSocket();
         
         //move
@@ -53,6 +53,8 @@ class ServerSocket : public AServerSocket
         UniquePtr<ACommunicationSocket>     accept();
     
     private:
+        IFileDescriptorManager&             _fdManager;
+        
         //copy
         ServerSocket(const ServerSocket& copy);
         ServerSocket& operator=(const ServerSocket& assign);
