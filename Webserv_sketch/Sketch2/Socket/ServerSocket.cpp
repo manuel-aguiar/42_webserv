@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:23:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 11:36:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 12:17:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void    ServerSocket::onRead()
 {
     UniquePtr<ACommunicationSocket> newComm = accept();
     if (newComm.get() != NULL)
-        _fdManager.addFileDescriptor(UniquePtr<FileDescriptor>(dynamic_cast<FileDescriptor*>(newComm.release())));
+        _fdManager.addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
 }
 void    ServerSocket::onWrite()     {}
 

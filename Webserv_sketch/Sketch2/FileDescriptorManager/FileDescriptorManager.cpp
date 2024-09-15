@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 12:00:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 12:20:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,11 @@ FileDescriptorManager::~FileDescriptorManager()
     _openFds.clear();
 }
 
-void FileDescriptorManager::addFileDescriptor(UniquePtr<FileDescriptor> newFd, bool willMonitor)
+void FileDescriptorManager::addFileDescriptor(FileDescriptor* newFd, bool willMonitor)
 {
-    FileDescriptor* fd = newFd.release();
-    _openFds[fd->getFd()] = fd;
+    _openFds[newFd->getFd()] = newFd;
     if (willMonitor && _epoll)
-        _epoll->add(fd->getFd(), 1);
+        _epoll->add(newFd->getFd(), 1);
 }
 
 void FileDescriptorManager::removeFileDescriptor(const int fd)

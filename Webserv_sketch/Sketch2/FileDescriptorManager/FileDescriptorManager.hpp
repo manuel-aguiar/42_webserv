@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 11:54:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 12:20:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,16 @@ class FileDescriptorManager : public IFileDescriptorManager
         FileDescriptorManager(IEventPoll* poll = NULL);
         ~FileDescriptorManager();
 
-        void                                    addFileDescriptor(UniquePtr<FileDescriptor> newFd, bool willMonitor);
+        
+        //inherited from IFileDescriptorManager
+        void                                    addFileDescriptor(FileDescriptor* newFd, bool willMonitor);
+        
+        template <typename T>
+        void                                    addFileDescriptor(UniquePtr<T> newFd, bool willMonitor)
+        {
+            FileDescriptor* fd = dynamic_cast<FileDescriptor*>(newFd.release());
+            addFileDescriptor(fd, willMonitor);
+        }
         
         void                                    removeFileDescriptor(const int fd);
         FileDescriptor*                         getFileDescriptor(const int fd);
@@ -32,6 +41,9 @@ class FileDescriptorManager : public IFileDescriptorManager
     private:
         std::map<int, FileDescriptor*>          _openFds;
         IEventPoll*                             _epoll;
+
+
+        
 
         FileDescriptorManager(const FileDescriptorManager& copy);
         FileDescriptorManager& operator=(const FileDescriptorManager& assign);
