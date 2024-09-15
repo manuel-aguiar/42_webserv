@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 17:20:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 17:22:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include "../FileDescriptor/FileDescriptor.hpp"
 # include "../Exceptions/ParameterException.hpp"
 # include "../FileDescriptorManager/FileDescriptorManager.hpp"
+
 // Interface Project headers
 # include "AServerSocket.hpp"
 
@@ -55,7 +56,7 @@ class ServerSocket : public AServerSocket<SockAddr>
         ~ServerSocket()
         {
             if (this->_fd != -1)
-                close(this->_fd);
+                ::close(this->_fd);
         }
         
         // implementation of FileDescriptor Functions
