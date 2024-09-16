@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:14:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:48:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:59:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,22 +67,22 @@ ASocket<SockAddr>& ASocket<SockAddr>::operator=(const ASocket& assign)
     if (this == &assign)
         return (*this);
     FileDescriptor::operator=(assign);
-    _addr = assign._addr;
+    this->_addr = assign._addr;
     return (*this);
 }
 
         //inherited from ISocketAddress
 template <typename SockAddr>
-struct sockaddr*            ASocket<SockAddr>::getSockAddr()            {return (_addr.getSockAddr());};
+struct sockaddr*            ASocket<SockAddr>::getSockAddr()            {return (this->_addr.getSockAddr());};
 
 template <typename SockAddr>
-socklen_t*                  ASocket<SockAddr>::getAddrLen()          {return (_addr.getAddrLen());};
+socklen_t*                  ASocket<SockAddr>::getAddrLen()          {return (this->_addr.getAddrLen());};
 
 template <typename SockAddr>
-int                         ASocket<SockAddr>::getAddrFamily() const {return (_addr.getAddrFamily());};
+int                         ASocket<SockAddr>::getAddrFamily() const {return (this->_addr.getAddrFamily());};
 
 template <typename SockAddr>
-UniquePtr<ISocketAddress>   ASocket<SockAddr>::clone() const       {return (_addr.clone());};
+UniquePtr<ISocketAddress>   ASocket<SockAddr>::clone() const       {return (this->_addr.clone());};
 
 
 #endif

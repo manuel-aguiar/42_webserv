@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:57:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:56:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,14 @@ class ServerSocket : public AServerSocket<SockAddr>
 
 template <typename SockAddr>
 ServerSocket<SockAddr>::ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager) :
-    ASocket<SockAddr>(socket(addr.getAddrFamily(), type, protocol), addr),
+    FileDescriptor(::socket(addr.getAddrFamily(), type, protocol)),
+    ASocket<SockAddr>(-1, addr),
     _fdManager(fdManager)
 {
     int opt = 1;
     if (this->_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-    if (setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    if (::setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
         throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
 }
 
@@ -134,10 +135,10 @@ UniquePtr<ACommunicationSocket<SockAddr> >      ServerSocket<SockAddr>::accept()
     
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket() {};
+ServerSocket<SockAddr>::ServerSocket() : FileDescriptor(-1) {};
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : ASocket<SockAddr>(copy), _fdManager(copy._fdManager) {}
+ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : FileDescriptor(copy), ASocket<SockAddr>(copy), _fdManager(copy._fdManager) {}
 
 template <typename SockAddr>
 ServerSocket<SockAddr>& ServerSocket<SockAddr>::operator=(const ServerSocket<SockAddr>& assign) {(void)assign; return (*this);}

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:04:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:58:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ template <
 class ClientSocket : public AClientSocket<SockAddr>
 {
     public:
-        ClientSocket() {};
+        ClientSocket() : FileDescriptor(-1) {};
         
         ClientSocket(const SockAddr& addr, int type, int protocol) :
-            ASocket<SockAddr>(socket(addr.getAddrFamily(), type, protocol), addr) {}
+            FileDescriptor(::socket(addr.getAddrFamily(), type, protocol)),
+            ASocket<SockAddr>(-1, addr) {}
 
         ~ClientSocket()
         {
@@ -62,7 +63,7 @@ class ClientSocket : public AClientSocket<SockAddr>
 
     private:
 
-        ClientSocket(const ClientSocket& copy) : ASocket<SockAddr>(copy) {}
+        ClientSocket(const ClientSocket& copy) : FileDescriptor(copy), ASocket<SockAddr>(copy) {}
         ClientSocket& operator=(const ClientSocket& assign)
         {
             ASocket<SockAddr>::operator=(assign);

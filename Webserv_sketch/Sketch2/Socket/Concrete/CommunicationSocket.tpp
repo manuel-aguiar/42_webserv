@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:07:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:09:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:58:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@ template <
 class CommunicationSocket : public ACommunicationSocket<SockAddr>
 {
     public:
-        CommunicationSocket();
+        CommunicationSocket() : FileDescriptor(-1) {};
 
         CommunicationSocket(const int fd, const SockAddr& addr) :
+            FileDescriptor(fd),
             ASocket<SockAddr>(fd, addr) {}
 
         ~CommunicationSocket()
@@ -46,7 +47,7 @@ class CommunicationSocket : public ACommunicationSocket<SockAddr>
         void receive() {};
 
     private:
-        CommunicationSocket(const CommunicationSocket& copy) : ASocket<SockAddr>(copy) {}
+        CommunicationSocket(const CommunicationSocket& copy) : FileDescriptor(copy), ASocket<SockAddr>(copy) {}
         CommunicationSocket& operator=(const CommunicationSocket& assign)
         {
             ASocket<SockAddr>::operator=(assign);

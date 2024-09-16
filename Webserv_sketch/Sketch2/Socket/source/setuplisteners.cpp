@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 12:11:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 13:01:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int setupListeners()
     struct addrinfo *cur;
 
     hints = (struct addrinfo){};
-    hints.ai_family = AF_INET;
+    hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
 	int status = getaddrinfo(NULL, "8080", &hints, &res);
@@ -53,19 +53,18 @@ int setupListeners()
     
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
-        std::cout << "loop" << std::endl;
         try
         {
-            UniquePtr<IServerSocket> server = ServerSocketFactory::create(*cur);
-            if (!server.get())
+            UniquePtr<IServerSocket> serverSock = ServerSocketFactory::create(*cur);
+            if (!serverSock.get())
             {
-                std::cerr << "ServerSocketFactory::create() failed" << std::endl;
+                std::cerr << "server not added" << std::endl;
                 continue ;
             }
-            server->bind();
-            server->listen();
-            server->setFdManager(&fdManager);
-            fdManager.addFileDescriptor(server, true);
+            serverSock->bind();
+            serverSock->listen();
+            serverSock->setFdManager(&fdManager);
+            fdManager.addFileDescriptor(serverSock, true);
             std::cout << "server added" << std::endl;   
         }
         catch(const std::exception& e)
@@ -81,6 +80,15 @@ int setupListeners()
 int main(void)
 {
     setupListeners();
+    return (0);
+}
+
+int main4(void)
+{
+    IPv4Address addr(0, 8080);
+    UniquePtr<IServerSocket> server = new ServerSocket<IPv4Address>(addr, SOCK_STREAM, IPPROTO_TCP);    
+    if (!server.get())
+        std::cerr << "ServerSocketFactory::create() failed" << std::endl;
     return (0);
 }
 

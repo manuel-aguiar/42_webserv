@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:41:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:49:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ class IServerSocket : virtual public FileDescriptor
 {
     public:
         virtual ~IServerSocket() {}
-
         virtual void                                                bind() = 0;
         virtual void                                                listen() = 0;
         virtual void                                                setFdManager(IFileDescriptorManager* fdManager) = 0;
