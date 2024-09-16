@@ -6,21 +6,21 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 14:57:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:58:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:03:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IPOLLABLESOCKET_HPP
+#ifndef IPOLLABLEFILEDESCRIPTOR_HPP
 
-# define IPOLLABLESOCKET_HPP
+# define IPOLLABLEFILEDESCRIPTOR_HPP
 
-# include "ISocket.hpp"
+# include "../../FileDescriptor/FileDescriptor.hpp"
 # include "IOnEvents.hpp"
 
-class IPollableSocket : public ISocket, public IOnEvents
+class IPollableFileDescriptor : public FileDescriptor, public IOnEvents
 {
     public:
-        virtual ~IPollableSocket() {}
+        virtual ~IPollableFileDescriptor() {}
 };
 
 

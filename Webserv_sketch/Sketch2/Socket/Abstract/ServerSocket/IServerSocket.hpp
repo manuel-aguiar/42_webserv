@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:59:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:04:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 # define ISERVERSOCKET_HPP
 
-#include "../IPollableSocket.hpp"
+# include "../ISocket.hpp"
 #include "IServerMethods.hpp"
 
-class IServerSocket : public IPollableSocket, public IServerMethods
+class IServerSocket : public ISocket, public IServerMethods
 {
     public:
         virtual ~IServerSocket() {}
