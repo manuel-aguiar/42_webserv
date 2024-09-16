@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:21:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 13:52:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:58:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 
 #include "../../../FileDescriptor/FileDescriptor.hpp"
 
-# include "../ISocket.hpp"
+# include "../IPollableSocket.hpp"
 # include "IClientMethods.hpp"
 # include "../CommunicationSocket/ICommunicationMethods.hpp"
 
-class IClientSocket : public ISocket, public IClientMethods, public ICommunicationMethods
+class IClientSocket : public IPollableSocket, public IClientMethods, public ICommunicationMethods
 {
     public:
         virtual ~IClientSocket() {}

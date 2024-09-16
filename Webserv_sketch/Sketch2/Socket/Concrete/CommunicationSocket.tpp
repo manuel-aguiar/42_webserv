@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:07:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:39:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:59:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ class CommunicationSocket : public ICommunicationSocket
             if (_fd != -1)
                 ::close(_fd);
         }
-        // implementation of FileDescriptor Functions
+
+        // implementation of IOnEvents
         void            onClose() {};
         void            onRead() {};
         void            onWrite() {};        
         void            onError() {}; 
+        
         // implementation  of ICommunicationFunctions
         void send()
         {

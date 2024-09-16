@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:43:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:59:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ class ServerSocket : public IServerSocket
         ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager = NULL);
         ~ServerSocket();
         
+
+        // implementation of IOnEvents
         void            onClose();
         void            onRead();
         void            onWrite();

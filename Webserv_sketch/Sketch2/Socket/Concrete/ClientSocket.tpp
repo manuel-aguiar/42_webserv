@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:42:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:59:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class ClientSocket : public IClientSocket
                 ::close(_fd);
         }
         
-        // implementation of FileDescriptor Functions
+        // implementation ofIOnEvents
         void            onClose() {};
         void            onRead() {};
         void            onWrite() {};  
