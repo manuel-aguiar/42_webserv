@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 17:17:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 07:52:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 # include "../../../LibftCpp/libftcpp.hpp"
 # include "../FileDescriptor/FileDescriptor.hpp"
-# include "SocketAddress/ISocketAddress.hpp"
+# include "ISocketAddress.hpp"
 # include "../Exceptions/ParameterException.hpp"
 
 template <

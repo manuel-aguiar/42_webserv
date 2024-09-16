@@ -14,7 +14,7 @@
 
 # define COMMUNICATIONGSOCKET_HPP
 
-# include "ACommunicationSocket.hpp"  
+# include "../Abstract/ACommunicationSocket.hpp"  
 
 template <
     typename SockAddr
