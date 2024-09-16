@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 12:49:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:08:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,13 @@
 
 # define ISERVERSOCKET_HPP
 
-#include "../../../FileDescriptorManager/IFileDescriptorManager.hpp"
-#include "../../../FileDescriptor/FileDescriptor.hpp"
+#include "../ISocket.hpp"
+#include "IServerMethods.hpp"
 
-class IServerSocket : virtual public FileDescriptor
+class IServerSocket : public ISocket, public IServerMethods
 {
     public:
         virtual ~IServerSocket() {}
-        virtual void                                                bind() = 0;
-        virtual void                                                listen() = 0;
-        virtual void                                                setFdManager(IFileDescriptorManager* fdManager) = 0;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 12:58:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:42:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,29 @@
 
 # define CLIENTSOCKET_TPP
 
-# include "../Abstract/ClientSocket/AClientSocket.hpp"
+# include "../Abstract/ClientSocket/IClientSocket.hpp"
 
 template <
     typename SockAddr
 >
-class ClientSocket : public AClientSocket<SockAddr>
+class ClientSocket : public IClientSocket
 {
     public:
-        ClientSocket() : FileDescriptor(-1) {};
+        ClientSocket()
+            {_fd = -1;}
         
         ClientSocket(const SockAddr& addr, int type, int protocol) :
-            FileDescriptor(::socket(addr.getAddrFamily(), type, protocol)),
-            ASocket<SockAddr>(-1, addr) {}
+            _addr(addr)
+        {
+            _fd = ::socket(addr.getAddrFamily(), type, protocol);
+            if (_fd == -1)
+                throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
+        }
 
         ~ClientSocket()
         {
-            if (this->_fd != -1)
-                close(this->_fd);
+            if (_fd != -1)
+                ::close(_fd);
         }
         
         // implementation of FileDescriptor Functions
@@ -40,33 +45,44 @@ class ClientSocket : public AClientSocket<SockAddr>
         void            onWrite() {};  
         void            onError() {}; 
         
-        //implementation of IClientFunctions
+        //implementation of IClientMethods
         void connect()
         {
-            if (::connect(this->_fd, this->_addr.getSockAddr(), *(this->_addr.getAddrLen())) == -1)
+            if (::connect(_fd, _addr.getSockAddr(), *(_addr.getAddrLen())) == -1)
                 throw ParameterException("ClientSocket::connect", "connect", std::strerror(errno));
         }
         void disconnect() {};
 
-        //implementation of ICommunicationFunctions
+        //implementation of ICommunicationMethods
         void send() {};
         void receive()
         {
             char buffer[1024];
 
-            int bytesReceived = read(this->_fd, buffer, sizeof(buffer) - 1);
+            int bytesReceived = read(_fd, buffer, sizeof(buffer) - 1);
             if (bytesReceived == -1)
                 throw ParameterException("ClientSocket::receive", "read", std::strerror(errno));
             buffer[bytesReceived] = '\0';
             std::cout << "Received: " << std::string(buffer, 0, bytesReceived) << std::endl;
         }
 
-    private:
+        // implementation of ISocketAddress methods
+        struct sockaddr*                    getSockAddr() { return (_addr.getSockAddr()); }
+        socklen_t*                          getAddrLen() { return (_addr.getAddrLen()); };
+        int                                 getAddrFamily() const { return (_addr.getAddrFamily()); }
+        UniquePtr<ISocketAddress>           clone() const { return (_addr.clone()); }      
 
-        ClientSocket(const ClientSocket& copy) : FileDescriptor(copy), ASocket<SockAddr>(copy) {}
+    private:
+        SockAddr             _addr;
+
+
+        ClientSocket(const ClientSocket& copy) : _addr(copy._addr) {_fd = copy._fd;}
         ClientSocket& operator=(const ClientSocket& assign)
         {
-            ASocket<SockAddr>::operator=(assign);
+            if(this == &assign)
+                return (*this);
+            _fd = assign._fd;
+            _addr(assign._addr);
             return (*this);
         }
 };

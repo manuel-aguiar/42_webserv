@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AClientSocket.hpp                                  :+:      :+:    :+:   */
+/*   IClientMethods.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 09:02:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:47:05 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 13:48:40 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 13:52:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ACLIENTSOCKET_HPP
+#ifndef ICLIENTMETHODS_HPP
 
-# define ACLIENTSOCKET_HPP
+# define ICLIENTMETHODS_HPP
 
-# include "../ASocket.hpp"
-# include "IClientSocket.hpp"
-# include "../CommunicationSocket/ICommunicationSocket.hpp"	
-
-template <
-    typename SockAddr
->
-class AClientSocket : virtual public ASocket<SockAddr>, public ICommunicationSocket, public IClientSocket
+class IClientMethods
 {
     public:
-        virtual ~AClientSocket() {}
-};
+        virtual ~IClientMethods() {}
 
+        virtual void connect() = 0;
+        virtual void disconnect() = 0;
+
+};
 
 #endif

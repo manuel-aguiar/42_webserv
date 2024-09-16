@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:46:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:11:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include "../../FileDescriptorManager/FileDescriptorManager.hpp"
 
 // Interface Project headers
-# include "../Abstract/ServerSocket/AServerSocket.hpp"
+# include "../Abstract/ServerSocket/IServerSocket.hpp"
 
 template <
     typename SockAddr

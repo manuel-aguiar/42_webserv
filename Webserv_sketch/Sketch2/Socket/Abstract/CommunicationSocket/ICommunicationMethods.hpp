@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AServerSocket.hpp                                  :+:      :+:    :+:   */
+/*   ICommunicationMethods.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 09:02:16 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 12:52:38 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 13:49:28 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 13:50:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ASERVERSOCKET_HPP
+#ifndef ICOMMUNICATIONMETHODS_HPP
 
-# define ASERVERSOCKET_HPP
+# define ICOMMUNICATIONMETHODS_HPP
 
-# include "../ASocket.hpp"
-# include "IServerSocketAccept.hpp"
-# include "IServerSocket.hpp"
-
-template <
-    typename SockAddr
->
-class AServerSocket : virtual public ASocket<SockAddr>, public IServerSocketAccept<SockAddr>, virtual public IServerSocket
+class ICommunicationMethods
 {
     public:
-        virtual                         ~AServerSocket() {}
-       
+        virtual ~ICommunicationMethods() {}
+
+        virtual void send() = 0;
+        virtual void receive() = 0;
+
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 12:56:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:43:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,9 @@
 # include <stdexcept>
 
 // Concrete Project headers
-# include "../../FileDescriptor/FileDescriptor.hpp"
-# include "../../Exceptions/ParameterException.hpp"
-# include "../../FileDescriptorManager/IFileDescriptorManager.hpp"
 
 // Interface Project headers
-# include "../Abstract/ServerSocket/AServerSocket.hpp"
+# include "../Abstract/ServerSocket/IServerSocket.hpp"
 # include "CommunicationSocket.hpp"
 
 template <
@@ -38,7 +35,7 @@ class CommunicationSocket;
 template <
     typename SockAddr
 >
-class ServerSocket : public AServerSocket<SockAddr>
+class ServerSocket : public IServerSocket
 {
     public:
         
@@ -54,9 +51,18 @@ class ServerSocket : public AServerSocket<SockAddr>
         
         void                                                bind();
         void                                                listen();
-        UniquePtr<ACommunicationSocket<SockAddr> >          accept();
-    
+        UniquePtr<ICommunicationSocket>                     accept();
+
+
+        //ISocketAddress methods
+        struct sockaddr*                    getSockAddr() { return (this->_addr.getSockAddr()); }
+        socklen_t*                          getAddrLen() { return (this->_addr.getAddrLen()); };
+        int                                 getAddrFamily() const { return (this->_addr.getAddrFamily()); }
+        UniquePtr<ISocketAddress>           clone() const { return (this->_addr.clone()); }  
+
+
     private:
+        SockAddr                            _addr;
         IFileDescriptorManager*             _fdManager;
         
         //copy
@@ -68,22 +74,22 @@ class ServerSocket : public AServerSocket<SockAddr>
 
 template <typename SockAddr>
 ServerSocket<SockAddr>::ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager) :
-    FileDescriptor(::socket(addr.getAddrFamily(), type, protocol)),
-    ASocket<SockAddr>(-1, addr),
+    _addr(addr),
     _fdManager(fdManager)
 {
     int opt = 1;
-    if (this->_fd == -1)
+    _fd = ::socket(addr.getAddrFamily(), type, protocol);   
+    if (_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-    if (::setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    if (::setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
         throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
 }
 
 template <typename SockAddr>
 ServerSocket<SockAddr>::~ServerSocket()
 {
-    if (this->_fd != -1)
-        ::close(this->_fd);
+    if (_fd != -1)
+        ::close(_fd);
 }
         
         // implementation of FileDescriptor Functions
@@ -95,7 +101,7 @@ void            ServerSocket<SockAddr>::onRead()
 {
     assert(_fdManager != NULL);
     
-    UniquePtr<ACommunicationSocket<SockAddr> > newComm = this->accept();
+    UniquePtr<ICommunicationSocket> newComm = this->accept();
     if (newComm.get() != NULL)
         _fdManager->addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
     
@@ -123,22 +129,22 @@ void            ServerSocket<SockAddr>::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 template <typename SockAddr>
-UniquePtr<ACommunicationSocket<SockAddr> >      ServerSocket<SockAddr>::accept()
+UniquePtr<ICommunicationSocket>      ServerSocket<SockAddr>::accept()
 {
     SockAddr newAddress;
     
-    int newFd = ::accept(this->_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
+    int newFd = ::accept(_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
     if (newFd == -1)
         return (NULL);
-    return (UniquePtr<ACommunicationSocket<SockAddr> >(new CommunicationSocket<SockAddr> (newFd, newAddress)));
+    return (UniquePtr<ICommunicationSocket>(new CommunicationSocket<SockAddr> (newFd, newAddress)));
 }
-    
+
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket() : FileDescriptor(-1) {};
+ServerSocket<SockAddr>::ServerSocket()  {_fd = -1;};
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : FileDescriptor(copy), ASocket<SockAddr>(copy), _fdManager(copy._fdManager) {}
+ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : _addr(copy._addr), _fdManager(copy._fdManager) {_fd = copy._fd;}
 
 template <typename SockAddr>
 ServerSocket<SockAddr>& ServerSocket<SockAddr>::operator=(const ServerSocket<SockAddr>& assign) {(void)assign; return (*this);}
