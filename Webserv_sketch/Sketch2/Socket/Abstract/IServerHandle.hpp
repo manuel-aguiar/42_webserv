@@ -1,33 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IFunctionsServer.hpp                               :+:      :+:    :+:   */
+/*   IServerHandle.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 12:14:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 16:34:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 09:32:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IFUNCTIONSSERVER_HPP
+#ifndef ISERVERHANDLE_HPP
 
-# define IFUNCTIONSSERVER_HPP
+# define ISERVERHANDLE_HPP
 
-# include "ACommunicationSocket.hpp"
+#include "../../FileDescriptorManager/IFileDescriptorManager.hpp"
+#include "../../FileDescriptor/FileDescriptor.hpp"
 
-template <
-    typename SockAddr
->
-class IServerFunctions
+class IServerHandle : virtual public FileDescriptor
 {
     public:
-        virtual ~IServerFunctions() {}
+        virtual ~IServerHandle() {}
 
         virtual void                                                bind() = 0;
         virtual void                                                listen() = 0;
-        virtual UniquePtr<ACommunicationSocket<SockAddr> >          accept() = 0;
+        virtual void                                                setFileManager(IFileDescriptorManager* fdManager) = 0;
 };
-
 
 #endif

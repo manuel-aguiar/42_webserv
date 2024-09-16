@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:38:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/10 11:39:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 09:05:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-/*
+
 
 #ifndef IPV6ADDRESS_HPP
 
@@ -54,4 +54,3 @@ class IPv6Address : public ISocketAddress
 #endif
 
 
-*/

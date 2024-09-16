@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IFunctionsClient.hpp                               :+:      :+:    :+:   */
+/*   ICommunicationHandle.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 13:21:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 13:39:13 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 09:02:21 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 09:38:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ICLIENTFUNCTIONS_HPP
+#ifndef ICOMMUNICATIONFUNCTIONS_HPP
 
-# define ICLIENTFUNCTIONS_HPP
+# define ICOMMUNICATIONFUNCTIONS_HPP
 
-class IClientFunctions
+#include "../../FileDescriptor/FileDescriptor.hpp"
+
+class ICommunicationHandle : virtual public FileDescriptor
 {
     public:
-        virtual ~IClientFunctions() {}
-
-        virtual void connect() = 0;
-        virtual void disconnect() = 0;
+        virtual ~ICommunicationHandle() {}
+        virtual void send() = 0;
+        virtual void receive() = 0;
 };
 
 

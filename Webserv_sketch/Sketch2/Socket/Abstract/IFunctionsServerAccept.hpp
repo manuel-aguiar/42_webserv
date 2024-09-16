@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ACommunicationSocket.hpp                           :+:      :+:    :+:   */
+/*   IFunctionsServerAccept.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 13:27:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:38:31 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 12:14:19 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 09:38:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ACOMMUNICATIONSOCKET_HPP
+#ifndef IFUNCTIONSSERVER_HPP
 
-# define ACOMMUNICATIONSOCKET_HPP
+# define IFUNCTIONSSERVER_HPP
 
-# include "ASocket.hpp"
-# include "ICommunicationHandle.hpp"
+# include "ACommunicationSocket.hpp"
 
 template <
     typename SockAddr
 >
-class ACommunicationSocket : virtual public ASocket<SockAddr>, public ICommunicationHandle
+class IServerAccept
 {
     public:
-        virtual ~ACommunicationSocket() {}
+        virtual ~IServerAccept() {}
 
+        virtual UniquePtr<ACommunicationSocket<SockAddr> >          accept() = 0;
 };
-
 
 
 #endif

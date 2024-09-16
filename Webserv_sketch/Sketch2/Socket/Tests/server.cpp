@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 17:23:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 08:31:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
     valgrind --track-fds=yes ./sockets
 */
 
-# include "../SocketAddress/IPv4Address.hpp"
-# include "../ServerSocket.hpp"
-# include "../ClientSocket.hpp"
-# include "../CommunicationSocket.hpp"
+# include "../Concrete/IPv4Address.hpp"
+# include "../Concrete/ServerSocket.hpp"
+# include "../Concrete/ClientSocket.hpp"
+# include "../Concrete/CommunicationSocket.hpp"
 # include "../../FileDescriptorManager/FileDescriptorManager.hpp"
 
 
@@ -35,7 +35,7 @@ int main(void)
         FileDescriptorManager                           fdManager;
         
         IPv4Address                                     ipv4(0, 8080);
-        UniquePtr<ServerSocket<IPv4Address> >           server = new ServerSocket<IPv4Address> (fdManager, ipv4, SOCK_STREAM, IPPROTO_TCP);
+        UniquePtr<ServerSocket<IPv4Address> >           server = new ServerSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP, &fdManager);
         UniquePtr<ClientSocket<IPv4Address> >           client = new ClientSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP);
         
         int serverFd = server->getFd();

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 07:51:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 09:31:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class ServerSocket : public AServerSocket<SockAddr>
 {
     public:
         
-        ServerSocket(IFileDescriptorManager& fdManager, const SockAddr& addr, int type, int protocol) :
+        ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager = NULL) :
             ASocket<SockAddr>(socket(addr.getAddrFamily(), type, protocol), addr),
             _fdManager(fdManager)
         {
@@ -64,6 +64,8 @@ class ServerSocket : public AServerSocket<SockAddr>
 
         void            onRead()
         {
+            assert(_fdManager != NULL);
+            
             UniquePtr<ACommunicationSocket<SockAddr> > newComm = this->accept();
             if (newComm.get() != NULL)
                 _fdManager.addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
@@ -71,6 +73,8 @@ class ServerSocket : public AServerSocket<SockAddr>
         void            onWrite() {};
 
         void            onError() {}; 
+
+        void            setFileManager(IFileDescriptorManager* manager) {_fdManager = manager;}
 
         // implementation of AServerSocket
         void                                            bind()
@@ -96,7 +100,7 @@ class ServerSocket : public AServerSocket<SockAddr>
         }
     
     private:
-        IFileDescriptorManager&             _fdManager;
+        IFileDescriptorManager*             _fdManager;
         
         //copy
         ServerSocket();
