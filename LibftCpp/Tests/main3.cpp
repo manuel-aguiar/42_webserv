@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   main3.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/13 18:54:04 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/13 18:58:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+/*
+    c++ -Wall -Wextra -Werror -std=c++98 main1.cpp -o main
+*/
 
-# define LIBFTCPP_HPP
+#include "../libftcpp.hpp"
+# include <iostream>
+# include <vector>
 
+int main(void)
+{
+    //std::vector <UniquePtr<int> > vector;
+    //vector.push_back(UniquePtr<int>(new int(42)));
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
+    const UniquePtr<int> ptr(new int(42));
 
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
+    UniquePtr<int> ptr2 = ptr;  
 
-
-#endif
+    return (0);
+}

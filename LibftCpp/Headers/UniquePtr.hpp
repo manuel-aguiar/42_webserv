@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 12:45:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 09:58:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,25 @@
 */
 
 # include <cstdlib>
-# include <stdexcept>
+# include <cassert>
+
 // for "NULL" definition
 
 #include "DefaultDeleters.hpp"
+
+template <class T>
+struct rref { 
+    rref (T& t) : t(t) {}
+    T& t; 
+};
+
+template<class T>
+rref<T> move(const T& t) {
+   return rref<T>(const_cast<T&>(t));
+}
+
+template<class T>
+class BorrowPtr;
 
 
 template <typename T, typename Del = DefaultDeleter<T> >
@@ -72,10 +87,6 @@ class UniquePtr
             _safeDeletePtr();
         }
 
-        //declared but not defined, compiler will link with the non-const version
-        UniquePtr(const UniquePtr& moveCopy);
-        UniquePtr& operator=(const UniquePtr& moveAssign);
-
         UniquePtr(UniquePtr& moveCopy)
         {
             _ptr = moveCopy._ptr;
@@ -83,10 +94,8 @@ class UniquePtr
             moveCopy._ptr = NULL;
         }
 
-        //will be called only between two already-constructed objects
         UniquePtr& operator=(UniquePtr& moveAssign)
         {
-            //std::cout << "              move assign" << std::endl;
             if (this != &moveAssign)
             {
                 _safeDeletePtr();
@@ -97,27 +106,29 @@ class UniquePtr
             return (*this);
         }
 
+        UniquePtr(const UniquePtr& moveCopy);
+        UniquePtr& operator=(const UniquePtr& moveAssign);
 
-        T*          get() const { return (_ptr); }
+
+
+        T*                      get() const { return (_ptr); }
+        BorrowPtr<T>            lend() const { return (BorrowPtr<T>(_ptr)); }
         
         T&          operator*()
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return (*_ptr);
         }
 
         const T&    operator*() const
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return (*_ptr);
         }
 
         T*          operator->() const
         {
-            if (!_ptr)
-                throw std::runtime_error("Accessing member functions of a null pointer");
+            assert(_ptr != NULL);
             return (_ptr);
         }
 
@@ -174,6 +185,18 @@ UniquePtr<T> make_UniquePtr()
     return (UniquePtr<T>(new T()));
 }
 
+template <typename T>
+UniquePtr<T> make_UniquePtr(const T& copy)
+{
+    return (UniquePtr<T>(new T(copy)));
+}
+
+template <typename T>
+UniquePtr<T> make_UniquePtr(T& copy)
+{
+    return (UniquePtr<T>(new T(copy)));
+}
+
 template <typename T, typename Arg1>
 UniquePtr<T> make_UniquePtr(Arg1 arg1)
 {
@@ -218,10 +241,10 @@ class UniquePtr<T[], Del>
             _safeDeletePtr();
         }
 
-        //declared but not defined, compiler will link with the move constructor/assignment
-        UniquePtr(const UniquePtr& copy);
-        UniquePtr& operator=(const UniquePtr& assign);
 
+        UniquePtr(const UniquePtr& moveCopy);
+        UniquePtr& operator=(const UniquePtr& moveAssign);
+        
         // Move constructor
         UniquePtr(UniquePtr& moveCopy)
         {
@@ -247,14 +270,12 @@ class UniquePtr<T[], Del>
 
         T&          operator[](const std::size_t index)
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return _ptr[index];
         }
         const T&    operator[](const std::size_t index) const
         {
-            if (!_ptr)
-                throw std::runtime_error("Dereferencing a null pointer");
+            assert(_ptr != NULL);
             return _ptr[index];
         }
 

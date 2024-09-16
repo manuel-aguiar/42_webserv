@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 08:14:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 12:54:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:53:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 /*
     c++ -Wall -Wextra -Werror -std=c++98 main1.cpp -o main
 */
-
 
 class Test
 {
@@ -112,6 +111,7 @@ class Mutex
 
         pthread_mutex_t _mutex;
 };
+
 
 int main()
 {
@@ -224,5 +224,7 @@ int main()
         std::cerr << e.what() << '\n';
     }
     
+
+
     return (0);
 }

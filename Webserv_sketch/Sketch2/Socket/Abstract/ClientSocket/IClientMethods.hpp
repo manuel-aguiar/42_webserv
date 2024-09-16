@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   IClientMethods.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 13:48:40 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 13:52:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef ICLIENTMETHODS_HPP
 
-# define LIBFTCPP_HPP
+# define ICLIENTMETHODS_HPP
 
+class IClientMethods
+{
+    public:
+        virtual ~IClientMethods() {}
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
+        virtual void connect() = 0;
+        virtual void disconnect() = 0;
 
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
-
+};
 
 #endif

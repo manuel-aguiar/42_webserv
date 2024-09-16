@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   ISocket.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 10:59:48 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 15:30:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef ISOCKET_HPP
 
-# define LIBFTCPP_HPP
+# define ISOCKET_HPP
 
+# include "../../FileDescriptor/FileDescriptor.hpp"
+# include "ISocketAddress.hpp"
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
-
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
-
+class ISocket : public FileDescriptor, public ISocketAddress
+{
+    public:
+        virtual         ~ISocket() {}
+};
 
 #endif

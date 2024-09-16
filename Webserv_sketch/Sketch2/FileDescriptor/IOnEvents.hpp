@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   IOnEvents.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 14:55:53 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 15:34:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef IONEVENTS_HPP
 
-# define LIBFTCPP_HPP
+# define IONEVENTS_HPP
 
+class IOnEvents
+{
+    public:
+        virtual ~IOnEvents() {}
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
-
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
+        virtual void onClose() = 0;
+        virtual void onRead() = 0;
+        virtual void onWrite() = 0;
+        virtual void onError() = 0;
+};
 
 
 #endif

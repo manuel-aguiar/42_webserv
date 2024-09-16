@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   ICommunicationSocket.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 09:02:21 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 15:05:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef ICOMMUNICATIONSOCKET_HPP
 
-# define LIBFTCPP_HPP
+# define ICOMMUNICATIONSOCKET_HPP
 
+# include "../../../FileDescriptor/FileDescriptor.hpp"
+# include "../ISocket.hpp"
+# include "ICommunicationMethods.hpp"
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
+class ICommunicationSocket : public ISocket, public ICommunicationMethods
+{
+    public:
+        virtual ~ICommunicationSocket() {}
 
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
+};
 
 
 #endif

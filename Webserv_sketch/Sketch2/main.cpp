@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 15:48:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/15 10:45:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "Log/LogFile.hpp"
 #include "Log/LogFileThreadSafe.hpp"
 #include "Log/LogStream.hpp"
+#include "FileDescriptor/FileDescriptor.hpp"
+#include "FileDescriptorManager/FileDescriptorManager.hpp"
 
 #include "Connection/Connection.tpp"
 
@@ -24,12 +26,13 @@
 
 int RunSingleThreadedServer()
 {
-    EventManager    poll;
-    Executer        executer;
-    Interpreter     interpreter;
-    LogFile         logFile("teste.txt");
+    EventManager            poll;
+    Executer                executer;
+    Interpreter             interpreter;
+    LogFile                 logFile("teste.txt");
+    FileDescriptorManager   fdManager;
 
-    Server server(logFile, poll, executer, interpreter);
+    Server server(logFile, poll, executer, interpreter, fdManager);
 
     server.run();
 
@@ -42,8 +45,9 @@ int RunMultiThreadedServer()
     Executer                executer;
     Interpreter             interpreter;
     LogFileThreadSafe       logFile("teste.txt");
+    FileDescriptorManager   fdManager;
 
-    Server server(logFile, poll, executer, interpreter);
+    Server server(logFile, poll, executer, interpreter, fdManager);
 
 
     server.run();

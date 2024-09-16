@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   ICommunicationMethods.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 13:49:28 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 13:50:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef ICOMMUNICATIONMETHODS_HPP
 
-# define LIBFTCPP_HPP
+# define ICOMMUNICATIONMETHODS_HPP
 
+class ICommunicationMethods
+{
+    public:
+        virtual ~ICommunicationMethods() {}
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
+        virtual void send() = 0;
+        virtual void receive() = 0;
 
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
-
+};
 
 #endif

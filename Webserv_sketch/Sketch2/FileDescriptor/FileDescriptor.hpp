@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/11 15:31:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 14:56:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,18 @@
     Virtual Destructor -> FileDescriptor is a base class that is expected to be derived from
 */
 
+#include <iostream>
+#include <cerrno>
 
 class FileDescriptor {
 
     public:
         FileDescriptor();
-        FileDescriptor(int fileDescriptor, bool markToClose = false);
+        FileDescriptor(int fileDescriptor);
 
         virtual ~FileDescriptor();
+
+        int     getFd() const;
 
         //      to access the fd
         int     operator()() const;
@@ -45,28 +49,20 @@ class FileDescriptor {
 
         bool    setCloseOnExec_NonBlocking();
 
-        void    close();
-
         bool    redirectTo   (const int newFd);
         bool    redirectTo   (const FileDescriptor& newFd);
 
+        void                close();
+
     protected:
         int                 _fd;
-        bool                _closeOnDestruct;
-        void                _setCloseOnDestruct(const bool markToClose);
-        bool                _getCloseOnDestruct() const ;
+        
+        // hard copy and assign is only for descendents
+        FileDescriptor(const FileDescriptor& hardCopy);
+        FileDescriptor& operator=(const FileDescriptor& hardAssign);
+
+        //helper
         bool                _addFlags(int flags);
-       
-        
-        //avoid duplicate fds, the new fd/the one that gets assigned to gets the responsibility
-        //to close it
-        FileDescriptor(const FileDescriptor& other);
-        FileDescriptor& operator=(const FileDescriptor& other);
-
-    private:
-        
-
-        //já vejo onde ponho isto
 
 };
 

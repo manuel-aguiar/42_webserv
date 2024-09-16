@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   CommunicationSocket.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 12:39:19 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/11 12:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef COMMUNICATIONSOCKET_HPP
 
-# define LIBFTCPP_HPP
+# define COMMUNICATIONGSOCKET_HPP
 
+# include "../Abstract/CommunicationSocket/ICommunicationSocket.hpp"  
+# include "../../FileDescriptor/IOnEvents.hpp"
+template <
+    typename SockAddr
+>
+class CommunicationSocket;
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
-
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
-
+# include "CommunicationSocket.tpp"
 
 #endif

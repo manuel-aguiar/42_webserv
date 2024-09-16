@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftcpp.hpp                                       :+:      :+:    :+:   */
+/*   IPollableFd.hpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 08:11:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 11:32:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 14:57:22 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 15:35:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFTCPP_HPP
+#ifndef IPOLLABLEFILEDESCRIPTOR_HPP
 
-# define LIBFTCPP_HPP
+# define IPOLLABLEFILEDESCRIPTOR_HPP
 
+# include "FileDescriptor.hpp"
+# include "IOnEvents.hpp"
 
-// unique pointers and objects
-# include "Headers/UniquePtr.hpp"
-# include "Headers/SharedPtr.hpp"
-# include "Headers/BorrowPtr.hpp"
-
-# include "Headers/UniqueObj.hpp"
-# include "Headers/SharedObj.hpp"
+class IPollableFd : public FileDescriptor, public IOnEvents
+{
+    public:
+        virtual ~IPollableFd() {}
+};
 
 
 #endif
