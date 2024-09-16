@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:49:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 09:59:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ int setupListeners()
             UniquePtr<IServerHandle> server = ServerSocketFactory::create(*cur);
             server->bind();
             server->listen();
-            server->setFileManager(&fdManager);
-            fdManager.addFileDescriptor(server.release(), true);
+            server->setFdManager(&fdManager);
+            fdManager.addFileDescriptor(server, true);
         }
         catch(const std::exception& e)
         {

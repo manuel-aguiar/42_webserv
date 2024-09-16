@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:32:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 09:58:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class IServerHandle : virtual public FileDescriptor
 
         virtual void                                                bind() = 0;
         virtual void                                                listen() = 0;
-        virtual void                                                setFileManager(IFileDescriptorManager* fdManager) = 0;
+        virtual void                                                setFdManager(IFileDescriptorManager* fdManager) = 0;
 };
 
 #endif
