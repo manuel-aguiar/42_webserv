@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:39:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 09:49:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,27 +58,11 @@ int setupListeners()
 		return (1);
 	}
     
-    UniquePtr<IServerHandle> server;
-
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         try
         {
-            switch (cur->ai_family)
-            {
-                case (AF_INET):
-                {
-                    UniquePtr<ServerSocket<IPv4Address> > ipv4 = ServerSocketFactory::create<IPv4Address>(*cur);
-                    server = ipv4.release();
-                    break;
-                }
-                case(AF_INET6):
-                {
-                    UniquePtr<ServerSocket<IPv6Address> > ipv6 = ServerSocketFactory::create<IPv6Address>(*cur);
-                    server = ipv6.release();
-                    break;
-                }
-            }
+            UniquePtr<IServerHandle> server = ServerSocketFactory::create(*cur);
             server->bind();
             server->listen();
             server->setFileManager(&fdManager);
