@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:36:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:40:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:41:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # include "../../../../LibftCpp/libftcpp.hpp"
 
 //Project headers
-# include "ISocketAddress.hpp"
+# include "../Abstract/ISocketAddress.hpp"
 
 class IPv4Address : public ISocketAddress
 {

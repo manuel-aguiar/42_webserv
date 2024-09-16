@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:06:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:45:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ class ServerSocket : public AServerSocket<SockAddr>
 };
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager = NULL) :
+ServerSocket<SockAddr>::ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager) :
     ASocket<SockAddr>(socket(addr.getAddrFamily(), type, protocol), addr),
     _fdManager(fdManager)
 {
@@ -95,7 +95,7 @@ void            ServerSocket<SockAddr>::onRead()
     
     UniquePtr<ACommunicationSocket<SockAddr> > newComm = this->accept();
     if (newComm.get() != NULL)
-        _fdManager.addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
+        _fdManager->addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
     
 }
 template <typename SockAddr>

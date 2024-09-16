@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:52:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:47:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 template <
     typename SockAddr
 >
-class AClientSocket : virtual public ASocket<SockAddr>, public ICommunicationFunctions, public IClientSocket
+class AClientSocket : virtual public ASocket<SockAddr>, public ICommunicationSocket, public IClientSocket
 {
     public:
         virtual ~AClientSocket() {}

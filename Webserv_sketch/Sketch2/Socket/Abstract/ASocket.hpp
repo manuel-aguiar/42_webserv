@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:40:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:46:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,7 @@
 template <
     typename SockAddr
 >
-class ASocket : public ISocket
-{
-    public:
-        virtual ~ASocket();
-
-        //inherited from ISocketAddress
-        struct sockaddr*                    getSockAddr();
-        socklen_t*                          getAddrLen();
-        int                                 getAddrFamily();
-        UniquePtr<ISocketAddress>           clone();
-
-    protected:
-        SockAddr     _addr;
-        
-        ASocket();
-        ASocket(const int fd, const SockAddr& addr);
-        ASocket(const ASocket& copy);
-        ASocket& operator=(const ASocket& assign);
-
-};
-
+class ASocket;
 
 # include "ASocket.tpp"
 

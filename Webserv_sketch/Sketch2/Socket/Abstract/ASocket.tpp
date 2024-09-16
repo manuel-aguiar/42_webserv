@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:14:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:40:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:48:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ template <
 class ASocket : public ISocket
 {
     public:
-        virtual ~ASocket() {};
+        virtual ~ASocket();
 
         //inherited from ISocketAddress
         struct sockaddr*                    getSockAddr();
         socklen_t*                          getAddrLen();
-        int                                 getAddrFamily();
-        UniquePtr<ISocketAddress>           clone();
+        int                                 getAddrFamily() const;
+        UniquePtr<ISocketAddress>           clone() const;
 
     protected:
         SockAddr     _addr;
@@ -73,16 +73,16 @@ ASocket<SockAddr>& ASocket<SockAddr>::operator=(const ASocket& assign)
 
         //inherited from ISocketAddress
 template <typename SockAddr>
-struct sockaddr*            ASocket<SockAddr>::getSockAddr()       {return (_addr.getSockAddr());};
+struct sockaddr*            ASocket<SockAddr>::getSockAddr()            {return (_addr.getSockAddr());};
 
 template <typename SockAddr>
-socklen_t*                  ASocket<SockAddr>::getAddrLen()        {return (_addr.getAddrLen());};
+socklen_t*                  ASocket<SockAddr>::getAddrLen()          {return (_addr.getAddrLen());};
 
 template <typename SockAddr>
-int                         ASocket<SockAddr>::getAddrFamily()     {return (_addr.getAddrFamily());};
+int                         ASocket<SockAddr>::getAddrFamily() const {return (_addr.getAddrFamily());};
 
 template <typename SockAddr>
-UniquePtr<ISocketAddress>   ASocket<SockAddr>::clone()             {return (_addr.clone());};
+UniquePtr<ISocketAddress>   ASocket<SockAddr>::clone() const       {return (_addr.clone());};
 
 
 #endif

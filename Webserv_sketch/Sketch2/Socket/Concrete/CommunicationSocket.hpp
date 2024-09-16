@@ -19,30 +19,7 @@
 template <
     typename SockAddr
 >
-class CommunicationSocket : public ACommunicationSocket<SockAddr>
-{
-    public:
-        CommunicationSocket();
-        CommunicationSocket(const int fd, const SockAddr& addr);
-        ~CommunicationSocket();
-
-        // implementation of ISocket Functions
-        void            close() {}; 
-
-        // implementation of FileDescriptor Functions
-        void            onClose();
-        void            onRead();
-        void            onWrite();        
-        void            onError(); 
-
-        // implementation  of ICommunicationFunctions
-        void            send();
-        void            receive() {};
-
-    private:
-        CommunicationSocket(const CommunicationSocket& copy);
-        CommunicationSocket& operator=(const CommunicationSocket& assign);
-};
+class CommunicationSocket;
 
 # include "CommunicationSocket.tpp"
 
