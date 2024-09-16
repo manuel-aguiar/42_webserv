@@ -36,7 +36,7 @@ class CommunicationSocket : public ACommunicationSocket<SockAddr>
         void            onClose() {};
         void            onRead() {};
         void            onWrite() {};        
-        
+        void            onError() {}; 
         // implementation  of ICommunicationFunctions
         void send()
         {

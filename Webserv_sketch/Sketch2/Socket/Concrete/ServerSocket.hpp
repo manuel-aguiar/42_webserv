@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 17:22:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 07:45:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ class ServerSocket : public AServerSocket<SockAddr>
         }
         void            onWrite() {};
 
+        void            onError() {}; 
+
         // implementation of AServerSocket
         void                                            bind()
         {
@@ -90,7 +92,7 @@ class ServerSocket : public AServerSocket<SockAddr>
             int newFd = ::accept(this->_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
             if (newFd == -1)
                 return (NULL);
-            return (UniquePtr<ACommunicationSocket<SockAddr> >(new CommunicationSocket(newFd, newAddress)));
+            return (UniquePtr<ACommunicationSocket<SockAddr> >(new CommunicationSocket<SockAddr> (newFd, newAddress)));
         }
     
     private:
