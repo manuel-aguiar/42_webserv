@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:05:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:08:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int main2(void)
 
         fdManager.addFileDescriptor(server, true);
         fdManager.addFileDescriptor(client, false);
-
 
         dynamic_cast<IPollableFileDescriptor*>(fdManager.getFileDescriptor(serverFd))->onRead();
         

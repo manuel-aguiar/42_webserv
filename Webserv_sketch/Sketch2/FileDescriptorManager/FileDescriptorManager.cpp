@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 08:04:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:06:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ FileDescriptorManager::~FileDescriptorManager()
 {
     for (std::map<int, FileDescriptor*>::iterator it = _openFds.begin(); it != _openFds.end(); it++)
     {
-        it->second->onClose();
+        it->second->close();
         delete it->second;
     }
     _openFds.clear();
