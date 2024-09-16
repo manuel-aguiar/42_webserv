@@ -6,24 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:51:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 12:11:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../Concrete/ServerSocket.hpp"
-#include "../Concrete/ClientSocket.hpp"
-#include "../Concrete/SocketAddressFactory.hpp"
-#include "../Concrete/ServerSocketFactory.hpp"
-#include "../Concrete/IPv4Address.hpp"
-#include "../Concrete/IPv6Address.hpp"
-#include "../Concrete/CommunicationSocket.hpp"
+/*
+   clear && c++ -Wall -Wextra -Werror $(find . -name "*.cpp") ../FileDescriptor/FileDescriptor.cpp ../FileDescriptorManager/FileDescriptorManager.cpp ../Exceptions/ParameterException.cpp ../EventPoll/EventManager.cpp -o sockets
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
+    valgrind --track-fds=yes ./sockets
+*/
 
-
-#include <vector>
+# include "../WebserverSockets.hpp"
 
 /*
 
@@ -48,7 +41,7 @@ int setupListeners()
     struct addrinfo *cur;
 
     hints = (struct addrinfo){};
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
 
 	int status = getaddrinfo(NULL, "8080", &hints, &res);
@@ -60,13 +53,20 @@ int setupListeners()
     
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
+        std::cout << "loop" << std::endl;
         try
         {
             UniquePtr<IServerSocket> server = ServerSocketFactory::create(*cur);
+            if (!server.get())
+            {
+                std::cerr << "ServerSocketFactory::create() failed" << std::endl;
+                continue ;
+            }
             server->bind();
             server->listen();
             server->setFdManager(&fdManager);
             fdManager.addFileDescriptor(server, true);
+            std::cout << "server added" << std::endl;   
         }
         catch(const std::exception& e)
         {

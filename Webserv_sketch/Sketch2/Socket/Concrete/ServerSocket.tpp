@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:45:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:57:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 
 // Interface Project headers
 # include "../Abstract/ServerSocket/AServerSocket.hpp"
+# include "CommunicationSocket.hpp"
 
 template <
     typename SockAddr

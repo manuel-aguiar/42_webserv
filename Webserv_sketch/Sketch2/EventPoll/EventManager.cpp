@@ -38,7 +38,7 @@ void EventManager::onWrite() {}
 EventManager::~EventManager()
 {
 	if (_fd != -1)
-		close(_fd);
+		::close(_fd);
 }
 
 void	EventManager::poll()
