@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:58:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 10:55:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include "../FileDescriptorManager/FileDescriptorManager.hpp"
 
 // Interface Project headers
-# include "../Abstract/AServerSocket.hpp"
+# include "../Abstract/ServerSocket/AServerSocket.hpp"
 
 template <
     typename SockAddr
@@ -42,72 +42,31 @@ class ServerSocket : public AServerSocket<SockAddr>
 {
     public:
         
-        ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager = NULL) :
-            ASocket<SockAddr>(socket(addr.getAddrFamily(), type, protocol), addr),
-            _fdManager(fdManager)
-        {
-            int opt = 1;
-            if (this->_fd == -1)
-                throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-            if (setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
-                throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
-        }
-
-        ~ServerSocket()
-        {
-            if (this->_fd != -1)
-                ::close(this->_fd);
-        }
+        ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager = NULL);
+        ~ServerSocket();
         
-        // implementation of FileDescriptor Functions
-        void            onClose() {};
+        void            onClose();
+        void            onRead();
+        void            onWrite();
+        void            onError(); 
 
-        void            onRead()
-        {
-            assert(_fdManager != NULL);
-            
-            UniquePtr<ACommunicationSocket<SockAddr> > newComm = this->accept();
-            if (newComm.get() != NULL)
-                _fdManager.addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
-        }
-        void            onWrite() {};
-
-        void            onError() {}; 
-
-        void            setFdManager(IFileDescriptorManager* manager) {_fdManager = manager;}
-
-        // implementation of AServerSocket
-        void                                            bind()
-        {
-            if (::bind(this->_fd, this->_addr.getSockAddr(), *(this->_addr.getAddrLen())) == -1)
-                throw ParameterException("ServerSocket::bind", "bind", std::strerror(errno));
-        }
+        void            setFdManager(IFileDescriptorManager* manager);
         
-        void                                            listen()
-        {
-            if (::listen(this->_fd, 10) == -1)
-                throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
-        }
-
-        UniquePtr<ACommunicationSocket<SockAddr> >       accept()
-        {
-            SockAddr newAddress;
-            
-            int newFd = ::accept(this->_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
-            if (newFd == -1)
-                return (NULL);
-            return (UniquePtr<ACommunicationSocket<SockAddr> >(new CommunicationSocket<SockAddr> (newFd, newAddress)));
-        }
+        void                                                bind();
+        void                                                listen();
+        UniquePtr<ACommunicationSocket<SockAddr> >          accept();
     
     private:
         IFileDescriptorManager*             _fdManager;
         
         //copy
         ServerSocket();
-        ServerSocket(const ServerSocket& copy) : ASocket<SockAddr>(copy), _fdManager(copy._fdManager) {}
-        ServerSocket& operator=(const ServerSocket& assign) {(void)assign; return (*this);}
+        ServerSocket(const ServerSocket& copy) : ASocket<SockAddr>(copy);
+        ServerSocket& operator=(const ServerSocket& assign);
 
 };
+
+# include "ServerSocket.tpp"
 
 
 #endif

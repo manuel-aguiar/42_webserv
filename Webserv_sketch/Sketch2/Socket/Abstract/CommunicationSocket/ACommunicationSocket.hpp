@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AServerSocket.hpp                                  :+:      :+:    :+:   */
+/*   ACommunicationSocket.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 09:02:16 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:18:09 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/11 13:27:25 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 10:52:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ASERVERSOCKET_HPP
+#ifndef ACOMMUNICATIONSOCKET_HPP
 
-# define ASERVERSOCKET_HPP
+# define ACOMMUNICATIONSOCKET_HPP
 
-# include "ASocket.hpp"
-# include "IFunctionsServerAccept.hpp"
-# include "IServerSocket.hpp"
+# include "../ASocket.hpp"
+# include "ICommunicationSocket.hpp"
 
 template <
     typename SockAddr
 >
-class AServerSocket : virtual public ASocket<SockAddr>, public IServerSocketAccept<SockAddr>, public IServerSocket
+class ACommunicationSocket : virtual public ASocket<SockAddr>, public ICommunicationSocket
 {
     public:
-        virtual                         ~AServerSocket() {}
-       
+        virtual ~ACommunicationSocket() {}
+
 };
+
+
 
 #endif
