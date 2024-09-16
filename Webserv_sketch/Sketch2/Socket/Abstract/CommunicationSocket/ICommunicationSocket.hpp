@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:19:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:41:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define ICOMMUNICATIONSOCKET_HPP
 
-#include "../../FileDescriptor/FileDescriptor.hpp"
+#include "../../../FileDescriptor/FileDescriptor.hpp"
 
 class ICommunicationSocket : virtual public FileDescriptor
 {

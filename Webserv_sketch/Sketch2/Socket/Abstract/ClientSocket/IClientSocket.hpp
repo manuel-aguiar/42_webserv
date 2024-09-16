@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:21:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:21:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:41:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define ICLIENTSOCKET_HPP
 
-#include "../../FileDescriptor/FileDescriptor.hpp"
+#include "../../../FileDescriptor/FileDescriptor.hpp"
 
 class IClientSocket : virtual public FileDescriptor
 {

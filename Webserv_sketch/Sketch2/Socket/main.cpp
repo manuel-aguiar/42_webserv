@@ -1,31 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IServerSocketAccept.hpp                            :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/11 12:14:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:41:16 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 11:39:16 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 11:39:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IFUNCTIONSSERVER_HPP
+#include "__socket.h"
 
-# define IFUNCTIONSSERVER_HPP
-
-# include "../CommunicationSocket/ACommunicationSocket.hpp"
-
-template <
-    typename SockAddr
->
-class IServerSocketAccept
+int main(void)
 {
-    public:
-        virtual ~IServerSocketAccept() {}
+    IPv4Address                                     ipv4(0, 8080);
 
-        virtual UniquePtr<ACommunicationSocket<SockAddr> >          accept() = 0;
-};
-
-
-#endif
+    ServerSocket<IPv4Address> server(ipv4, SOCK_STREAM, IPPROTO_TCP);
+}

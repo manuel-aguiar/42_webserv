@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:14:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:40:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 # include <stdexcept>
 
 // Concrete Project headers
-# include "../FileDescriptor/FileDescriptor.hpp"
-# include "../Exceptions/ParameterException.hpp"
-# include "../FileDescriptorManager/FileDescriptorManager.hpp"
+# include "../../FileDescriptor/FileDescriptor.hpp"
+# include "../../Exceptions/ParameterException.hpp"
+# include "../../FileDescriptorManager/FileDescriptorManager.hpp"
 
 // Interface Project headers
 # include "../Abstract/ServerSocket/AServerSocket.hpp"
@@ -58,13 +58,14 @@ class ServerSocket : public AServerSocket<SockAddr>
 
         // implementation of IServerSocketAccept Functions
         UniquePtr<ACommunicationSocket<SockAddr> >          accept();
+
     
     private:
         IFileDescriptorManager*             _fdManager;
         
         //copy
         ServerSocket();
-        ServerSocket(const ServerSocket& copy) : ASocket<SockAddr>(copy);
+        ServerSocket(const ServerSocket& copy);
         ServerSocket& operator=(const ServerSocket& assign);
 
 };

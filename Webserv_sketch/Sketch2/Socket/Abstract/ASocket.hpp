@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 09:02:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:16:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:40:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define ASOCKET_HPP
 
-# include "../../../LibftCpp/libftcpp.hpp"
+# include "../../../../LibftCpp/libftcpp.hpp"
 # include "ISocket.hpp"
 
 template <
@@ -23,7 +23,7 @@ template <
 class ASocket : public ISocket
 {
     public:
-        virtual ~ASocket() {};
+        virtual ~ASocket();
 
         //inherited from ISocketAddress
         struct sockaddr*                    getSockAddr();
