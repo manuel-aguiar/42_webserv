@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 09:27:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:13:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,13 @@ bool    FileDescriptor::redirectTo(const int newFd)
 bool   FileDescriptor::redirectTo(const FileDescriptor& newFd)
 {
     return (::dup2(_fd, newFd._fd) != -1);
+}
+
+void    FileDescriptor::close()
+{
+    if (_fd != -1)
+        ::close(_fd);
+    _fd = -1;
 }
 
 FileDescriptor::FileDescriptor(const FileDescriptor& hardCopy)  : _fd(hardCopy._fd) {(void)hardCopy;}

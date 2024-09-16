@@ -23,37 +23,27 @@ class CommunicationSocket : public ACommunicationSocket<SockAddr>
 {
     public:
         CommunicationSocket();
+        CommunicationSocket(const int fd, const SockAddr& addr);
+        ~CommunicationSocket();
 
-        CommunicationSocket(const int fd, const SockAddr& addr) :
-            ASocket<SockAddr>(fd, addr) {}
+        // implementation of ISocket Functions
+        void            close() {}; 
 
-        ~CommunicationSocket()
-        {
-            if (this->_fd != -1)
-                ::close(this->_fd);
-        }
         // implementation of FileDescriptor Functions
-        void            onClose() {};
-        void            onRead() {};
-        void            onWrite() {};        
-        void            onError() {}; 
-        // implementation  of ICommunicationFunctions
-        void send()
-        {
-            write(this->_fd, "Hello, World!", 13);
-        }
+        void            onClose();
+        void            onRead();
+        void            onWrite();        
+        void            onError(); 
 
-        void receive() {};
+        // implementation  of ICommunicationFunctions
+        void            send();
+        void            receive() {};
 
     private:
-        CommunicationSocket(const CommunicationSocket& copy) : ASocket<SockAddr>(copy) {}
-        CommunicationSocket& operator=(const CommunicationSocket& assign)
-        {
-            ASocket<SockAddr>::operator=(assign);
-            return (*this);
-        }
-
+        CommunicationSocket(const CommunicationSocket& copy);
+        CommunicationSocket& operator=(const CommunicationSocket& assign);
 };
 
+# include "CommunicationSocket.tpp"
 
 #endif

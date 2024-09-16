@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:54:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:06:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class ServerSocket : public AServerSocket<SockAddr>
         
         //copy
         ServerSocket();
-        ServerSocket(const ServerSocket& copy) : ASocket<SockAddr>(copy);
+        ServerSocket(const ServerSocket& copy);
         ServerSocket& operator=(const ServerSocket& assign);
 
 };

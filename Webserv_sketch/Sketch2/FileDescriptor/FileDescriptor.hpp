@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 07:41:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:13:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ class FileDescriptor {
         virtual void            onRead() = 0;
         virtual void            onWrite() = 0;
         virtual void            onError() = 0;
+
+        void                close();
 
     protected:
         int                 _fd;
