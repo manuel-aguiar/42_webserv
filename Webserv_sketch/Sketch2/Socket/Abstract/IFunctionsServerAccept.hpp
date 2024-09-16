@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:14:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:38:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 10:19:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 template <
     typename SockAddr
 >
-class IServerAccept
+class IServerSocketAccept
 {
     public:
-        virtual ~IServerAccept() {}
+        virtual ~IServerSocketAccept() {}
 
         virtual UniquePtr<ACommunicationSocket<SockAddr> >          accept() = 0;
 };

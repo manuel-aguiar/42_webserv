@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:01:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 10:18:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ int main(void)
         FileDescriptorManager                           fdManager;
         
         IPv4Address                                     ipv4(0, 8080);
-        UniquePtr<IServerHandle >           server = new ServerSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP, &fdManager);
-        UniquePtr<IClientHandle >           client = new ClientSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP);
+        UniquePtr<IServerSocket >           server = new ServerSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP, &fdManager);
+        UniquePtr<IClientSocket >           client = new ClientSocket<IPv4Address> (ipv4, SOCK_STREAM, IPPROTO_TCP);
         
         int serverFd = server->getFd();
         server->bind();

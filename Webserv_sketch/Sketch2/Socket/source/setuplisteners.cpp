@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:01:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 10:17:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int setupListeners()
 	{
         try
         {
-            UniquePtr<IServerHandle> server = ServerSocketFactory::create(*cur);
+            UniquePtr<IServerSocket> server = ServerSocketFactory::create(*cur);
             server->bind();
             server->listen();
             server->setFdManager(&fdManager);

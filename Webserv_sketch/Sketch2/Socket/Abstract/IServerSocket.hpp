@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IServerHandle.hpp                                  :+:      :+:    :+:   */
+/*   IServerSocket.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 09:28:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 09:58:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 10:18:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ISERVERHANDLE_HPP
+#ifndef ISERVERSOCKET_HPP
 
-# define ISERVERHANDLE_HPP
+# define ISERVERSOCKET_HPP
 
 #include "../../FileDescriptorManager/IFileDescriptorManager.hpp"
 #include "../../FileDescriptor/FileDescriptor.hpp"
 
-class IServerHandle : virtual public FileDescriptor
+class IServerSocket : virtual public FileDescriptor
 {
     public:
-        virtual ~IServerHandle() {}
+        virtual ~IServerSocket() {}
 
         virtual void                                                bind() = 0;
         virtual void                                                listen() = 0;
