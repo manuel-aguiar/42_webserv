@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:34:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:52:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,7 @@
     valgrind --track-fds=yes ./sockets
 */
 
-# include "../Concrete/IPv4Address.hpp"
-# include "../Concrete/ServerSocket.hpp"
-# include "../Concrete/ClientSocket.hpp"
-# include "../Concrete/CommunicationSocket.hpp"
-# include "../../FileDescriptorManager/FileDescriptorManager.hpp"
+# include "../WebserverSockets.hpp"
 
 
 # include <iostream>
@@ -28,7 +24,7 @@
 # include <vector>
 
 
-int main(void)
+int main2(void)
 {
     try
     {

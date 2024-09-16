@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 10:17:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 11:51:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,13 @@ int setupListeners()
         }
     }   
     freeaddrinfo(res);
+    return (0);
+}
+
+int main(void)
+{
+    setupListeners();
+    return (0);
 }
 
 
