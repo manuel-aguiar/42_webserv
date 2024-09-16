@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:04:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:11:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:35:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define CLIENTSOCKET_HPP
 
 # include "../Abstract/ClientSocket/IClientSocket.hpp"
+# include "../../FileDescriptor/IOnEvents.hpp"
 
 template <
     typename SockAddr

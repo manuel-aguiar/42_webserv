@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:07:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:59:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:34:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@
 # define COMMUNICATIONSOCKET_TPP
 
 # include "../Abstract/CommunicationSocket/ICommunicationSocket.hpp"  
+# include "../../FileDescriptor/IOnEvents.hpp"
 
 template <
     typename SockAddr
 >
-class CommunicationSocket : public ICommunicationSocket
+class CommunicationSocket : 
+    public ICommunicationSocket, 
+    public IOnEvents
 {
     public:
         CommunicationSocket() {_fd = -1;};

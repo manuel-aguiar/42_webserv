@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:59:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:35:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 # define CLIENTSOCKET_TPP
 
 # include "../Abstract/ClientSocket/IClientSocket.hpp"
-
+# include "../../FileDescriptor/IOnEvents.hpp"
 template <
     typename SockAddr
 >
-class ClientSocket : public IClientSocket
+class ClientSocket : 
+    public IClientSocket,
+    public IOnEvents
 {
     public:
         ClientSocket()
@@ -39,7 +41,7 @@ class ClientSocket : public IClientSocket
                 ::close(_fd);
         }
         
-        // implementation ofIOnEvents
+        // implementation of IOnEvents
         void            onClose() {};
         void            onRead() {};
         void            onWrite() {};  

@@ -1,28 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IOnEvents.hpp                                      :+:      :+:    :+:   */
+/*   IPollableFd.hpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/16 14:55:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:56:10 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 14:57:22 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 15:35:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IONEVENTS_HPP
+#ifndef IPOLLABLEFILEDESCRIPTOR_HPP
 
-# define IONEVENTS_HPP
+# define IPOLLABLEFILEDESCRIPTOR_HPP
 
-class IOnEvents
+# include "FileDescriptor.hpp"
+# include "IOnEvents.hpp"
+
+class IPollableFd : public FileDescriptor, public IOnEvents
 {
     public:
-        virtual ~IOnEvents() {}
-
-        virtual void onClose() = 0;
-        virtual void onRead() = 0;
-        virtual void onWrite() = 0;
-        virtual void onError() = 0;
+        virtual ~IPollableFd() {}
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:59:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:34:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 // Concrete Project headers
 
 // Interface Project headers
+# include "../../FileDescriptor/IOnEvents.hpp"
 # include "../Abstract/ServerSocket/IServerSocket.hpp"
 # include "CommunicationSocket.hpp"
 
@@ -35,7 +36,9 @@ class CommunicationSocket;
 template <
     typename SockAddr
 >
-class ServerSocket : public IServerSocket
+class ServerSocket : 
+    public IServerSocket,
+    public IOnEvents
 {
     public:
         
@@ -94,7 +97,7 @@ ServerSocket<SockAddr>::~ServerSocket()
         ::close(_fd);
 }
         
-        // implementation of FileDescriptor Functions
+        // implementation of IPollableOnEvents Functions
 template <typename SockAddr>
 void            ServerSocket<SockAddr>::onClose() {}
 

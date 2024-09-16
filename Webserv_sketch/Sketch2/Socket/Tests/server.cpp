@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:08:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/16 15:38:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 */
 
 # include "../WebserverSockets.hpp"
-
+# include "../../FileDescriptor/IPollableFileDescriptor.hpp"
 
 # include <iostream>
 # include <map>
@@ -42,7 +42,7 @@ int main2(void)
         fdManager.addFileDescriptor(server, true);
         fdManager.addFileDescriptor(client, false);
 
-        dynamic_cast<IPollableFileDescriptor*>(fdManager.getFileDescriptor(serverFd))->onRead();
+        static_cast<IPollableFd*>(fdManager.getFileDescriptor(serverFd))->onRead();
         
         return (0);
 
