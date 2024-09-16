@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   WebservSockets.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/16 11:39:16 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:39:46 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/16 11:22:32 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/16 11:49:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "__socket.h"
+#ifndef WEBSERVSOCKETS_H
 
-int main(void)
-{
-    IPv4Address                                     ipv4(0, 8080);
+# define WEBSERVSOCKETS_H
 
-    ServerSocket<IPv4Address> server(ipv4, SOCK_STREAM, IPPROTO_TCP);
-}
+# include "Concrete/ServerSocket.hpp"
+# include "Concrete/ClientSocket.hpp"
+# include "Concrete/CommunicationSocket.hpp"
+# include "Concrete/SocketAddressFactory.hpp"
+# include "Concrete/ServerSocketFactory.hpp"
+
+
+#endif
