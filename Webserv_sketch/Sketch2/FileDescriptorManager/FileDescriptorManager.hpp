@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 08:20:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 11:13:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 # define FILEDESCRIPTORMANAGER_HPP
 
 # include "IFileDescriptorManager.hpp"
-# include "../_EventPoll/EventManager.hpp"
+# include "../EventManager/EPollManager.hpp"
+# include "../EventManager/IEventManager.hpp"
+# include "../EventManager/IEventHandler.hpp"
 # include <map>
 
-class FileDescriptorManager : public IFileDescriptorManager
+class FileDescriptorManager : public IFileDescriptorManager, public IEventHandler
 {
     public:
-        FileDescriptorManager(IEventPoll* poll = NULL);
+        FileDescriptorManager(IEventManager& poll);
         ~FileDescriptorManager();
 
         
@@ -31,7 +33,7 @@ class FileDescriptorManager : public IFileDescriptorManager
         template <typename T>
         void                                    addFileDescriptor(UniquePtr<T> newFd, bool willMonitor)
         {
-            FileDescriptor* fd = dynamic_cast<FileDescriptor*>(newFd.release());
+            FileDescriptor* fd = static_cast<FileDescriptor*>(newFd.release());
             addFileDescriptor(fd, willMonitor);
         }
         
@@ -40,14 +42,10 @@ class FileDescriptorManager : public IFileDescriptorManager
 
     private:
         std::map<int, FileDescriptor*>          _openFds;
-        IEventPoll*                             _epoll;
-
-
-        
+        IEventManager&                          _epoll;
 
         FileDescriptorManager(const FileDescriptorManager& copy);
         FileDescriptorManager& operator=(const FileDescriptorManager& assign);
-
 };
 
 
