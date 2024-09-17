@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 14:56:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 14:12:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ class FileDescriptor {
         bool    redirectTo   (const int newFd);
         bool    redirectTo   (const FileDescriptor& newFd);
 
-        void                close();
+        virtual void        close(); // allow derived to override in case they have extra resources
 
     protected:
         int                 _fd;

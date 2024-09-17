@@ -6,16 +6,16 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 10:47:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 15:02:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EPollManager.hpp"
 
 EPollManager::EPollManager() :
-    FileDescriptor(epoll_create(1)),
     _waitCount(0)
 {
+    _fd = epoll_create(1);
     if (_fd == -1)
         throw ParameterException("EPollManager Constructor failed", "epoll_create", std::strerror(errno));
     setCloseOnExec_NonBlocking();
