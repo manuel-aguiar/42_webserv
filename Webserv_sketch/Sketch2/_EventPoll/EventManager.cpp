@@ -29,11 +29,6 @@ EventManager::EventManager() :
 	
 }
 
-// inherited from FileDescriptor
-void EventManager::onClose() {}
-void EventManager::onRead() {}
-void EventManager::onWrite() {}
-
 
 EventManager::~EventManager()
 {
