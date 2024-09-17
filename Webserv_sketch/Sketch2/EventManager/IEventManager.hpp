@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 08:19:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 10:37:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 10:51:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ class IEventManager
         virtual void                addEventFd(IEvent& fd);
         virtual void                modEventFd(IEvent& fd);
         virtual void                delEventFd(IEvent& fd);
-
         virtual int                 waitEvents(int timeOut) = 0;
         virtual const   IEvent&     getEvent(int index) = 0;
 };

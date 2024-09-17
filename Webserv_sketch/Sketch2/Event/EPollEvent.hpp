@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 08:56:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 10:47:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 10:51:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ class EPollEvent : public epoll_event, public IEvent
         EPollEvent(const struct epoll_event& copy);
         EPollEvent& operator=(const struct epoll_event& assign);
 
+        bool operator==(const struct epoll_event& other) const;
+
+        //inherited from IEvent
         bool            toClose() const;
         bool            toRead() const;
         bool            toWrite() const;
         bool            toError() const;
-
-        bool operator==(const struct epoll_event& other) const;
-
         int             getFd() const;
 
 };  

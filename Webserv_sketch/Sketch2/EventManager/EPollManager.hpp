@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 10:44:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/17 10:51:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ class EPollManager : public FileDescriptor, public IEventManager
         EPollManager();
         ~EPollManager();
 
+        // inherited from IEventManager
         void                addEventFd(IEvent& monitor);
         void                modEventFd(IEvent& monitor);
         void                delEventFd(IEvent& monitor);
-
         int                 waitEvents(int timeOut);
         const   IEvent&     getEvent(int index);
 
