@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 11:04:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 12:32:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class EPollManager
         EPollManager();
         ~EPollManager();
 
-        const FileDescriptor&           getFd() const;
+        const int                       getFd() const;
         void                            addEventFd(const int fd, const int eventsToMonitor);
         void                            modEventFd(const int fd, const int eventsToMonitor);
         void                            delEventFd(const int fd);
@@ -47,8 +47,7 @@ class EPollManager
         const   struct epoll_event&     getEvent(int index);
 
     private:
-    
-        FileDescriptor      _fd;
+        int                 _fd;
         struct epoll_event  _events[MAX_EPOLL_EVENTS];    
         int                 _waitCount;
 

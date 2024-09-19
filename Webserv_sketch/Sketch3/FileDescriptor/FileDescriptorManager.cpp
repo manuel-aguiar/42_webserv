@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:03:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 11:24:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 12:35:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ FileDescriptorManager::~FileDescriptorManager()
     }
     _openFds.clear();
 }
-
-
 
 void    FileDescriptorManager::addFd(const FileDescriptor& newFd)
 {

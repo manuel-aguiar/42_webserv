@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:39:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 11:23:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 12:33:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,13 @@ int main(void)
 {
     FileDescriptorManager fdManager;
     EPollManager          pollManager;
-    FileDescriptor        stdinFd(STDIN_FILENO, false);
-    FileDescriptor        stdoutFd(STDOUT_FILENO, false);
 
-    fdManager.addFd(pollManager.getFd());
-    fdManager.addFd(stdinFd);
-    fdManager.addFd(stdoutFd);
+    fdManager.addFd(FileDescriptor(pollManager.getFd(), FileDescriptor::FD_EPOLL, true));
+    fdManager.addFd(FileDescriptor(STDIN_FILENO, FileDescriptor::FD_STANDARD, false));
+    fdManager.addFd(FileDescriptor(STDOUT_FILENO, FileDescriptor::FD_STANDARD, false));
 
-    pollManager.addEventFd(stdinFd, EPollEvent::READ);
-    pollManager.addEventFd(stdoutFd, EPollEvent::WRITE);
+    pollManager.addEventFd(STDIN_FILENO, EPollEvent::READ);
+    pollManager.addEventFd(STDOUT_FILENO, EPollEvent::WRITE);
 
     int events = pollManager.waitEvents(1000);
 
