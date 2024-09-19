@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:15:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:32:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 08:13:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define SERVER_HPP
 
 # include "../FileDescriptor/FileDescriptor.hpp"
-# include "../EventPoll/IEventPoll.hpp"
+# include "../EventManager/IEventManager.hpp"
 # include "../Executer/IExecuter.hpp"
 # include "../Interpreter/IInterpreter.hpp"
 # include "../FileDescriptorManager/IFileDescriptorManager.hpp"
@@ -26,12 +26,12 @@
 class Server
 {
     public:
-        Server(ILog& logger, IEventPoll& poll, IExecuter& executer, IInterpreter& interpreter, IFileDescriptorManager& fdManager);
+        Server(ILog& logger, IEventManager& poll, IExecuter& executer, IInterpreter& interpreter, IFileDescriptorManager& fdManager);
         void run();
 
     private:
         const ILog&                           _logger;
-        const IEventPoll&                     _poll;
+        const IEventManager&                     _poll;
         const IExecuter&                      _executer;
         const IInterpreter&                   _interpreter;
         const IFileDescriptorManager&         _fdManager;
