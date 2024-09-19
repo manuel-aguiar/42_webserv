@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:39:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 16:57:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:02:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int    setupServerSockets(FileDescriptorManager& fdManager, EPollManager& poll)
         try
         {
             Socket newServerSocket = Socket::createServerSocket(*cur);
+            fdManager.addSocket(newServerSocket);
             
             FileDescriptor newServerSocketFd = FileDescriptor(newServerSocket.getFd(), FileDescriptor::FD_SOCKET_LISTENING, true);
             poll.addEventFd(fdManager.addFd(newServerSocketFd), EPollEvent::READ);

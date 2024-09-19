@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 12:37:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 16:57:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:02:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ static Socket    IPv4create(const struct addrinfo& info)
     if (sockFd == -1)
         throw ParameterException("Socket::createServerSocket", "socket", std::strerror(errno));
     Socket  serverSocket(sockFd, ipstr, port, info.ai_family);
-
     if (bind(serverSocket.getFd(), info.ai_addr, info.ai_addrlen) == -1)
         throw ParameterException("Socket::createServerSocket", "bind", std::strerror(errno));
     if (listen(serverSocket.getFd(), 10) == -1)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:03:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 14:19:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:00:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ FileDescriptor&    FileDescriptorManager::getFd(const int fd)
     return (_openFds[fd]);
 }
 
-
+void        FileDescriptorManager::addSocket(const Socket& sock)
+{
+    _sockInfo[sock.getFd()] = sock;
+}
 
 FileDescriptorManager::FileDescriptorManager(const FileDescriptorManager& copy) : _openFds(copy._openFds) {}
 FileDescriptorManager& FileDescriptorManager::operator=(const FileDescriptorManager& assign)
