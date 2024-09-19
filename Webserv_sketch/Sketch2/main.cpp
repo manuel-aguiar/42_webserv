@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:45:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int RunSingleThreadedServer()
 {
     EventManager            poll;
     Executer                executer;
-    Interpreter             interpreter;
+    HttpInterpreter             interpreter;
     LogFile                 logFile("teste.txt");
     FileDescriptorManager   fdManager;
 
@@ -43,7 +43,7 @@ int RunMultiThreadedServer()
 {
     EventManager            poll;
     Executer                executer;
-    Interpreter             interpreter;
+    HttpInterpreter             interpreter;
     LogFileThreadSafe       logFile("teste.txt");
     FileDescriptorManager   fdManager;
 

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.cpp                                    :+:      :+:    :+:   */
+/*   HttpInterpreter.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,28 +12,28 @@
 
 #include "Interpreter.hpp"
 
-Interpreter::Interpreter()
+HttpInterpreter::HttpInterpreter()
 {
 
 }
 
-Interpreter::~Interpreter()
+HttpInterpreter::~HttpInterpreter()
 {
     
 }
 
-Interpreter::Interpreter(const Interpreter& copy)
+HttpInterpreter::HttpInterpreter(const HttpInterpreter& copy)
 {
     (void)copy;    
 }
 
-Interpreter& Interpreter::operator=(const Interpreter& assign)
+HttpInterpreter& HttpInterpreter::operator=(const HttpInterpreter& assign)
 {
     (void)assign;
     return (*this);    
 }
 
-void    Interpreter::interpret()
+void    HttpInterpreter::interpret()
 {
     
 }
