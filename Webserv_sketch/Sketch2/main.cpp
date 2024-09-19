@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 11:21:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "FileDescriptor/FileDescriptor.hpp"
 #include "FileDescriptorManager/FileDescriptorManager.hpp"
 
-#include "Connection/Connection.tpp"
 
 #include <iostream>
 
@@ -28,7 +27,7 @@ int RunSingleThreadedServer()
 {
     EventManager            poll;
     Executer                executer;
-    HttpInterpreter             interpreter;
+    Interpreter             interpreter;
     LogFile                 logFile("teste.txt");
     FileDescriptorManager   fdManager;
 
@@ -43,7 +42,7 @@ int RunMultiThreadedServer()
 {
     EventManager            poll;
     Executer                executer;
-    HttpInterpreter             interpreter;
+    Interpreter             interpreter;
     LogFileThreadSafe       logFile("teste.txt");
     FileDescriptorManager   fdManager;
 

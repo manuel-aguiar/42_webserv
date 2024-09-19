@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 09:14:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 08:20:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 10:43:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ int main2(void)
         server->listen();
         client->connect();
 
-        fdManager.addFileDescriptor(server, true);
-        fdManager.addFileDescriptor(client, false);
+        fdManager.addFd(server, true);
+        fdManager.addFd(client, false);
 
-        static_cast<IPollableFd*>(fdManager.getFileDescriptor(serverFd))->onRead();
+        static_cast<IPollableFd*>(fdManager.getFd(serverFd))->onRead();
         
         return (0);
 
