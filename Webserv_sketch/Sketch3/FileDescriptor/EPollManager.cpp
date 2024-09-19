@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 12:32:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 14:19:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ const int    EPollManager::getFd() const
 {
     return (_fd);
 }
-
+/*
 void                EPollManager::addEventFd(const int fd, const int eventsToMonitor)
 {
     struct epoll_event newEvent = (struct epoll_event) {};
@@ -57,6 +57,8 @@ void                EPollManager::delEventFd(const int fd)
         throw ParameterException("EPollManager delFd failed", "epoll_ctl", std::strerror(errno));
 }
 
+*/
+
 int                 EPollManager::waitEvents(int timeOut)
 {
     _waitCount = epoll_wait(_fd, _events, MAX_EPOLL_EVENTS, timeOut);
@@ -71,6 +73,31 @@ const   struct epoll_event&     EPollManager::getEvent(int index)
     return (_events[index]);
 }
 
-void        EPollManager::addEventFd(const FileDescriptor& fd, const int eventsToMonitor) { addEventFd(fd.getFd(), eventsToMonitor); }
-void        EPollManager::modEventFd(const FileDescriptor& fd, const int eventsToMonitor) { modEventFd(fd.getFd(), eventsToMonitor); }
-void        EPollManager::delEventFd(const FileDescriptor& fd) { delEventFd(fd.getFd()); }
+void        EPollManager::addEventFd(FileDescriptor* fd, const int eventsToMonitor)
+{ 
+    assert(fd != NULL);  
+    struct epoll_event newEvent = (struct epoll_event) {};
+    
+    newEvent.data.ptr = fd;
+    newEvent.events = eventsToMonitor;
+    if (epoll_ctl(_fd, EPOLL_CTL_ADD, fd->getFd(), &newEvent) == -1)
+        throw ParameterException("EPollManager addFd failed", "epoll_ctl", std::strerror(errno));
+}
+
+void        EPollManager::modEventFd(FileDescriptor* fd, const int eventsToMonitor) 
+{
+    assert(fd != NULL);  
+    struct epoll_event newEvent = (struct epoll_event) {};
+
+    newEvent.data.ptr = fd;
+    newEvent.events = eventsToMonitor;
+    if (epoll_ctl(_fd, EPOLL_CTL_MOD, fd->getFd(), &newEvent) == -1)
+        throw ParameterException("EPollManager modFd failed", "epoll_ctl", std::strerror(errno));
+}
+
+void        EPollManager::delEventFd(FileDescriptor* fd)
+{
+    assert(fd != NULL);  
+    if (epoll_ctl(_fd, EPOLL_CTL_DEL, fd->getFd(), NULL) == -1)
+        throw ParameterException("EPollManager delFd failed", "epoll_ctl", std::strerror(errno));
+}

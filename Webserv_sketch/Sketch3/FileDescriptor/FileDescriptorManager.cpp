@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:03:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 12:35:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 14:19:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@ FileDescriptorManager::~FileDescriptorManager()
     _openFds.clear();
 }
 
-void    FileDescriptorManager::addFd(const FileDescriptor& newFd)
+FileDescriptor*    FileDescriptorManager::addFd(const FileDescriptor& newFd)
 {
     assert(_openFds.find(newFd.getFd()) == _openFds.end());
     _openFds[newFd.getFd()] = newFd;
+    return (&_openFds[newFd.getFd()]);
 }
 
-void    FileDescriptorManager::removeFd(const int fd)
+void                FileDescriptorManager::removeFd(const int fd)
 {
     assert(_openFds.find(fd) != _openFds.end());
     

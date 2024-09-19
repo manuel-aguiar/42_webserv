@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 10:02:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 12:31:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:25:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <map>
 # include <cassert>
 # include "FileDescriptor.hpp"
+# include "Socket.hpp"
 
 class FileDescriptorManager
 {
@@ -25,14 +26,14 @@ class FileDescriptorManager
         FileDescriptorManager();
         ~FileDescriptorManager();
 
-        void                     addFd(const FileDescriptor& newFd);
-        void                     addFd(const int fd, const bool closeOnDestroy);
+        FileDescriptor*          addFd(const FileDescriptor& newFd);
         void                     removeFd(const int fd);
         FileDescriptor&          getFd(const int fd);
 
     private:
         std::map<int, FileDescriptor>           _openFds;
-
+        std::map<int, Socket>                   _sockInfo;
+         
         FileDescriptorManager(const FileDescriptorManager& copy);
         FileDescriptorManager& operator=(const FileDescriptorManager& assign);
 };
