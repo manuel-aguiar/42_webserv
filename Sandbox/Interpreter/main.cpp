@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 11:08:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:43:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <set>
 # include <ctime>
 # include <algorithm>
-
+# include <cassert>
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -40,14 +40,16 @@ typedef std::string t_http_value;
 #define MAX_IO 100
 
 #define HEADER_ENDLINE "\r\n"
+#define HEADER_ENDLINE_LEN 2
 #define HEADER_FINISH "\r\n\r\n"
+#define HEADER_FINISH_LEN 4
 
-struct Clock;
-struct Session;
-struct Request;
-struct Interpreter;
-struct Connection;
-class Buffer;
+struct   Clock;
+struct   Session;
+struct   Request;
+struct   Interpreter;
+struct   Connection;
+class    Buffer;
 
 
 class Buffer
@@ -57,25 +59,26 @@ class Buffer
         // Appends a string (or buffer) of characters to the end of the deque.
         void append(const char* data, std::size_t len)
         {
+            assert(data && len > 0);
             _buffer.insert(_buffer.end(), data, data + len);
         }
 
         // Inserts a string (or buffer) of characters at the beginning of the deque.
         void insert_at_beginning(const char* data, std::size_t len)
         {
+            assert(data && len > 0);
             _buffer.insert(_buffer.begin(), data, data + len);
         }
 
-        std::deque<char>::iterator search(const std::string& seq)
+        std::deque<char>::iterator search(const char* data, std::size_t len)
         {
-            if (seq.empty())
-                return _buffer.end();
-            return std::search(_buffer.begin(), _buffer.end(), seq.begin(), seq.end());
+            assert(data && len > 0);
+            return std::search(_buffer.begin(), _buffer.end(), data, data + len);
         }
 
         bool getline(std::string& placeLine)
         {
-            std::deque<char>::iterator newline_pos = search(HEADER_ENDLINE);
+            std::deque<char>::iterator newline_pos = search(HEADER_ENDLINE, HEADER_ENDLINE_LEN);
             if (newline_pos != _buffer.end())
             {
                 placeLine.assign(_buffer.begin(), newline_pos + 1); // Extract until and including '\n'
@@ -85,6 +88,47 @@ class Buffer
             return (false); // No newline found
         }
 
+        std::deque<char>::iterator begin()
+        {
+            return _buffer.begin();
+        }
+
+        std::deque<char>::iterator end()
+        {
+            return _buffer.end();
+        }
+
+    bool extract_request(Buffer& new_buffer)
+    {
+        const char* delimiter = "\r\n\r\n";
+        std::size_t delimiter_length = 4; // Length of "\r\n\r\n"
+
+        // Search for the delimiter in the current buffer
+        
+        std::deque<char>::iterator it = search(HEADER_FINISH, HEADER_FINISH_LEN);
+
+        // If the delimiter is found
+        if (it != buffer_.end()) {
+            // Calculate the position after the delimiter
+            std::deque<char>::iterator start_of_next_request = it + delimiter_length;
+
+            // Extract the remaining part of the buffer after the delimiter
+            std::string extracted_data(start_of_next_request, buffer_.end());
+            
+            // Remove the processed part from the current buffer
+            buffer_.erase(buffer_.begin(), start_of_next_request);
+
+            // Remove any leading whitespace from extracted data (optional)
+            extracted_data.erase(0, extracted_data.find_first_not_of(" \n\r\t"));
+
+            // Populate the new buffer with the extracted data
+            new_buffer.append(extracted_data.c_str(), extracted_data.size());
+
+            return true; // Indicate that a new request was extracted
+        }
+
+        return false; // Indicate that no delimiter was found
+    }
 
     private:
         std::deque<char> _buffer;
@@ -108,6 +152,11 @@ struct Connection
 {
     Clock                               clock;
 
+    void                                setCurReadNull()
+    {
+        curReadRequest = NULL;
+    }
+
     Request*                            getCurReadConnection()
     {
         if (!curReadRequest)
@@ -125,6 +174,11 @@ struct Connection
         if (!curWriteRequest)
             curWriteRequest = &PendingRequests.front();
         return (curWriteRequest);
+    }
+
+    void                                setCurWriteNull()
+    {
+        curWriteRequest = NULL;
     }
 
     Request*                            curReadRequest;
@@ -159,12 +213,12 @@ struct Request
         return (headers.find(COOKIE) != headers.end());
     }
 
-    std::string& getRawRequest()
+    Buffer& getRawRequest()
     {
         return (raw_request);
     }
     
-    std::string      raw_request;
+    Buffer      raw_request;
 
     std::map<t_http_header, t_http_value> headers;
 };
@@ -226,14 +280,8 @@ void    Interpreter::addOpenConnection(t_fd fd)
 
 int   Interpreter::readConnection(t_fd fd)
 {
-    // open Connection associated with fd
     Connection& connection = ConnectionsOpen[fd];
-
-    // current request being read, either unfinished old or a new one
-    Request& request = *connection.getCurReadConnection();
-
-    // raw request buffer to keep adding as we read
-    std::string& raw_request = request.getRawRequest();
+    Buffer* raw_request = &connection.getCurReadConnection()->getRawRequest();
 
     connection.clock.lastActivity = std::time(0);
 
@@ -243,12 +291,19 @@ int   Interpreter::readConnection(t_fd fd)
     {
         int readBytes = read(fd, buffer, curReadMax);
         if (readBytes < 0)
-            return (1);
-        else if (readBytes < curReadMax)
+            return (1); // client disconnected
+        totalBytes += readBytes;
+        raw_request->append(buffer, readBytes);
+
+        if (raw_request->search(HEADER_FINISH, HEADER_FINISH_LEN) != raw_request->end())
         {
-            // all bytes were read
-            break;
+            // there is a complete request at hand. One must switch the current read request to a new empty one
+            // switch the current raw_request buffer to that one and keep reading.
+            connection.setCurReadNull();
+            Buffer *nextRawRequest = &connection.getCurReadConnection()->getRawRequest();
+
         }
+
     }
     return (1);
 }
@@ -276,13 +331,13 @@ int main(void)
     Interpreter interpreter;
     interpreter.clock.lastActivity = std::time(0);
     
-    int fd1 = open("request1.txt", O_RDONLY);
+    int fd1 = open("connection1.txt", O_RDONLY);
     fcntl(fd1, F_SETFL, O_NONBLOCK | O_CLOEXEC);
 
-    int fd2 = open("request2.txt", O_RDONLY);
+    int fd2 = open("connection2.txt", O_RDONLY);
     fcntl(fd2, F_SETFL, O_NONBLOCK | O_CLOEXEC);
 
-    int fd3 = open("request3.txt", O_RDONLY);
+    int fd3 = open("connection3.txt", O_RDONLY);
     fcntl(fd3, F_SETFL, O_NONBLOCK | O_CLOEXEC);
 
 
