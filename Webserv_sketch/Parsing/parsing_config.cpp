@@ -17,6 +17,18 @@ struct ServerConfig {
 };
 
 // Util Function
+size_t	__stoull(const std::string &str)
+{
+	std::stringstream	ss(str);
+	size_t				value;
+
+	ss >> value;
+    if (ss.fail() || !ss.eof())
+		throw (std::invalid_argument("Invalid value (not a number): " + str));
+	return (value);
+}
+
+// Util Function
 std::string	strtrim(const std::string &str)
 {
 	if (str.empty())
@@ -28,23 +40,25 @@ std::string	strtrim(const std::string &str)
 	return (str.substr(first, (last - first + 1)));
 }
 
-size_t	count_servers(const std::string &)
-{
-
-}
-
+// Util Function
 size_t	parse_size(const std::string &size_str)
 {
 	size_t	multiplier = 1;
+	std::reverse_iterator<std::string::const_iterator>	it;
 
-	if (size_str.back() == 'K')
+	it = size_str.rbegin();
+
+	if (*it == 'K')
 		multiplier = 1024;
-	else if (size_str.back() == 'M')
+	else if (*it == 'M')
 		multiplier = 1024 * 1024;
-	else if (size_str.back() == 'G')
+	else if (*it == 'G')
 		multiplier = 1024 * 1024 * 1024;
-
-	return (std::stoull(size_str) * multiplier);
+	else if (!isdigit(*it))
+		throw (std::invalid_argument("Invalid unit: " + *it));
+	else
+		return (__stoull(size_str) * multiplier);
+	return (__stoull(size_str.substr(0, size_str.size() - 1)) * multiplier);
 }
 
 // Debug Function
@@ -128,9 +142,9 @@ int	parse_config_line(std::string &line, ServerConfig &server_config, size_t &cu
 	}
 	else if (key == "port")
 	{
-		server_config.port.push_back(std::stoi(value)); // execption stoi
+		server_config.port.push_back(__stoull(value)); // execption __stull
 		while (iss >> value)
-			server_config.port.push_back(std::stoi(value)); // exception stoi
+			server_config.port.push_back(__stoull(value)); // exception __stoull
 	}
 	else if (key == "server_name")
 	{
@@ -148,7 +162,7 @@ int	parse_config_line(std::string &line, ServerConfig &server_config, size_t &cu
 	}
 	else if (key == "error_page")
 	{
-		int error_code = std::stoi(value); // exception stoi
+		int error_code = std::stoi(value); // exception __stoull
 		iss >> value;			
 		server_config.error_pages[error_code] = value;
 	}
@@ -156,8 +170,9 @@ int	parse_config_line(std::string &line, ServerConfig &server_config, size_t &cu
 	{
 		std::cout << "Error: config parsing: invalid argument: " << "\""
 			<< line << "\"" << " on line " << current_line << std::endl;
-		return (EXIT_FAILURE);
+		return (0);
 	}
+	return (1);
 }
 
 int	parse_config_file(const std::string &path, ServerConfig &server_config)
@@ -166,7 +181,7 @@ int	parse_config_file(const std::string &path, ServerConfig &server_config)
 
 	if (!config_file.is_open()) {
 		std::cerr << "Error: Could not open configuration file." << std::endl;
-		return (EXIT_FAILURE);
+		return (0);
 	}
 
 	std::string	line;
@@ -188,7 +203,7 @@ int	parse_config_file(const std::string &path, ServerConfig &server_config)
 			{
 				std::cerr << "Error: config parsing: server inside server on line "
 					<< current_line << std::endl;
-				return (EXIT_FAILURE);
+				return (0);
 			}
 			server_count++;
 			bracket_level++;
@@ -200,7 +215,7 @@ int	parse_config_file(const std::string &path, ServerConfig &server_config)
 			{
 				std::cerr << "Error: config parsing: stray closing bracket on line "
 					<< current_line << std::endl;
-				return (EXIT_FAILURE);
+				return (0);
 			}
 			else if (bracket_level > 1)
 				bracket_level--;
@@ -213,15 +228,16 @@ int	parse_config_file(const std::string &path, ServerConfig &server_config)
 		else
 		{
 			if (bracket_level == 1)
-				parse_config_line(line, server_config, current_line);
+				if (!parse_config_line(line, server_config, current_line))
+					return (1);
 		}
 	}
 	if (current_server)
 	{
 		std::cout << "Error: config parsing: server missing closing bracket" << std::endl;
-		return (EXIT_FAILURE);
+		return (0);
 	}
-	return (EXIT_SUCCESS);
+	return (1);
 }
 
 int main(int argc, char **argv)
@@ -236,8 +252,8 @@ int main(int argc, char **argv)
 		config_path = DEFAULT_CONFIG_PATH;
 	
 	// Parse config file
-	if (parse_config_file(config_path, server_config))
-		return	(EXIT_FAILURE);
+	if (!parse_config_file(config_path, server_config))
+		return (1);
 	else
 	{
 		std::cout << "Config parsing done! Showing stored information:" << std::endl;
