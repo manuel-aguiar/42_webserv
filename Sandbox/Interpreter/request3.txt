@@ -1,0 +1,4 @@
+GET /dashboard HTTP/1.1
+Host: helloworld.com
+Cookie: sessionid=ola
+

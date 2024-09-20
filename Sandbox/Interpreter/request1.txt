@@ -1,0 +1,4 @@
+GET /dashboard HTTP/1.1
+Host: example.com
+Cookie: sessionid=abc123456789
+
