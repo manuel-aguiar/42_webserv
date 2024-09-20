@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 11:43:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:23:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,37 +98,32 @@ class Buffer
             return _buffer.end();
         }
 
-    bool extract_request(Buffer& new_buffer)
-    {
-        const char* delimiter = "\r\n\r\n";
-        std::size_t delimiter_length = 4; // Length of "\r\n\r\n"
-
-        // Search for the delimiter in the current buffer
-        
-        std::deque<char>::iterator it = search(HEADER_FINISH, HEADER_FINISH_LEN);
-
-        // If the delimiter is found
-        if (it != buffer_.end()) {
-            // Calculate the position after the delimiter
-            std::deque<char>::iterator start_of_next_request = it + delimiter_length;
-
-            // Extract the remaining part of the buffer after the delimiter
-            std::string extracted_data(start_of_next_request, buffer_.end());
-            
-            // Remove the processed part from the current buffer
-            buffer_.erase(buffer_.begin(), start_of_next_request);
-
-            // Remove any leading whitespace from extracted data (optional)
-            extracted_data.erase(0, extracted_data.find_first_not_of(" \n\r\t"));
-
-            // Populate the new buffer with the extracted data
-            new_buffer.append(extracted_data.c_str(), extracted_data.size());
-
-            return true; // Indicate that a new request was extracted
+        std::deque<char>& getBuffer()
+        {
+            return _buffer;
         }
 
-        return false; // Indicate that no delimiter was found
-    }
+        bool extract_request(Buffer& new_buffer, const char* delimiter, std::size_t delimiter_length)
+        {
+            std::deque<char>& newBuf = new_buffer.getBuffer();
+            std::deque<char>::iterator it = search(delimiter, delimiter_length);
+
+            if (it != _buffer.end())
+            {
+                std::deque<char>::iterator start_of_next_request = it + delimiter_length;
+                newBuf.insert(newBuf.end(), start_of_next_request, _buffer.end());
+                _buffer.erase(start_of_next_request, _buffer.end());
+                return (true); // Indicate that a new request was extracted
+            }
+
+            return (false); // Indicate that no delimiter was found
+        }
+
+        void print() const
+        {
+            std::string output(_buffer.begin(), _buffer.end());
+            std::cout << output << std::endl; // Print the whole string at once
+        }
 
     private:
         std::deque<char> _buffer;
@@ -148,8 +143,50 @@ struct Session
     int                                 loggedTimes;
 };
 
+struct Request
+{
+    void    parseRequest(std::string request)
+    {
+        std::string header;
+        std::string value;
+        std::string::size_type pos = 0;
+        std::string::size_type end = 0;
+
+        while (pos != std::string::npos)
+        {
+            end = request.find(":", pos);
+            header = request.substr(pos, end - pos);
+            pos = end + 1;
+            end = request.find("\n", pos);
+            value = request.substr(pos, end - pos);
+            pos = end + 1;
+            headers[header] = value;
+        }
+    }
+
+    void process()
+    {
+        raw_request.print();
+    }
+
+    bool   hasSessionHeader()
+    {
+        return (headers.find(COOKIE) != headers.end());
+    }
+
+    Buffer& getRawRequest()
+    {
+        return (raw_request);
+    }
+    
+    Buffer      raw_request;
+    Clock       clock;
+    std::map<t_http_header, t_http_value> headers;
+};
+
 struct Connection
 {
+    Connection() : curReadRequest(NULL), curWriteRequest(NULL) {}
     Clock                               clock;
 
     void                                setCurReadNull()
@@ -187,44 +224,15 @@ struct Connection
 };
 
 
-struct Request
-{
-    void    parseRequest(std::string request)
-    {
-        std::string header;
-        std::string value;
-        std::string::size_type pos = 0;
-        std::string::size_type end = 0;
 
-        while (pos != std::string::npos)
-        {
-            end = request.find(":", pos);
-            header = request.substr(pos, end - pos);
-            pos = end + 1;
-            end = request.find("\n", pos);
-            value = request.substr(pos, end - pos);
-            pos = end + 1;
-            headers[header] = value;
-        }
-    }
-
-    bool   hasSessionHeader()
-    {
-        return (headers.find(COOKIE) != headers.end());
-    }
-
-    Buffer& getRawRequest()
-    {
-        return (raw_request);
-    }
-    
-    Buffer      raw_request;
-
-    std::map<t_http_header, t_http_value> headers;
-};
 
 struct Interpreter
 {
+    Interpreter(time_t connectionTimeOut = 100, time_t sessionTimeOut = 100000, unsigned long int maxIO = MAX_IO) : 
+        connectionTimeOut(connectionTimeOut), 
+        sessionTimeOut(sessionTimeOut),
+        maxIO(maxIO) {}
+    
     Clock                               clock;
 
     void addOpenConnection(t_fd fd);
@@ -238,13 +246,13 @@ struct Interpreter
     std::set<Session>                               SessionsUnnassigned;
 
 
-    char      buffer[BUFFER_SIZE];
-    const unsigned long int connectionTimeOut = 100;
-    const unsigned long int sessionTimeOut = 100000;
-    const unsigned long int maxIO = MAX_IO;
+    char      buffer[BUFFER_SIZE + 1];
+    const time_t connectionTimeOut;
+    const time_t sessionTimeOut;
+    const unsigned long int maxIO;
 };
 
-void Interpreter::closeTimeoutConnections()
+void Interpreter::closeTimeoutSessions()
 {
     clock.lastActivity = std::time(0);
 
@@ -280,29 +288,53 @@ void    Interpreter::addOpenConnection(t_fd fd)
 
 int   Interpreter::readConnection(t_fd fd)
 {
-    Connection& connection = ConnectionsOpen[fd];
-    Buffer* raw_request = &connection.getCurReadConnection()->getRawRequest();
+    Connection&     connection = ConnectionsOpen[fd];
+    Request*        thisRequest = connection.getCurReadConnection();
+    Buffer*         thisBuffer = &thisRequest->getRawRequest();
 
     connection.clock.lastActivity = std::time(0);
-
+    thisRequest->clock.lastActivity = connection.clock.lastActivity;
+    
     int totalBytes = 0;
-    int curReadMax = std::min(maxIO, sizeof(buffer));
-    while (1)
-    {
-        int readBytes = read(fd, buffer, curReadMax);
-        if (readBytes < 0)
-            return (1); // client disconnected
-        totalBytes += readBytes;
-        raw_request->append(buffer, readBytes);
+    
+    int curReadMax = 1;
 
-        if (raw_request->search(HEADER_FINISH, HEADER_FINISH_LEN) != raw_request->end())
+    while (curReadMax)
+    {
+        curReadMax = std::min(maxIO - totalBytes, sizeof(buffer) - 1);
+        int readBytes = read(fd, buffer, curReadMax);
+        buffer[readBytes] = '\0';
+        std::cout << "readBytes: " << readBytes << "; buffer has: '" << buffer << "'" << std::endl;
+        if (readBytes < 0)
+            return (1); // client disconnected mid reading, close connection at the next epoll round
+        totalBytes += readBytes;
+        if (readBytes)
+            thisBuffer->append(buffer, readBytes);
+
+        if (thisBuffer->search(HEADER_FINISH, HEADER_FINISH_LEN) != thisBuffer->end())
         {
             // there is a complete request at hand. One must switch the current read request to a new empty one
             // switch the current raw_request buffer to that one and keep reading.
+            
             connection.setCurReadNull();
-            Buffer *nextRawRequest = &connection.getCurReadConnection()->getRawRequest();
+            Request*    nextRequest = connection.getCurReadConnection();
+            Buffer*     nextBuffer = &nextRequest->getRawRequest();
+            
+            thisBuffer->extract_request(*nextBuffer, HEADER_FINISH, HEADER_FINISH_LEN);
+            thisRequest->process();
 
+            //switch requests and buffers to the new ones
+            thisRequest = nextRequest;
+            thisBuffer = nextBuffer;
+
+            thisRequest->clock.lastActivity = connection.clock.lastActivity; //update clock for the new request as well
         }
+        if (readBytes < curReadMax)
+        {
+            //we read less bytes than the allowance, nothing left to read
+            break;
+        }
+            
 
     }
     return (1);
@@ -323,12 +355,36 @@ void    delEvent(int epollfd, int fd, int& totalSubscribed)
     totalSubscribed--;
 }
 
+
+int main()
+{
+    Interpreter interpreter;
+
+    int fd1 = open("connection1.txt", O_RDONLY);
+    fcntl(fd1, F_SETFL, O_NONBLOCK | O_CLOEXEC);
+    interpreter.addOpenConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    interpreter.readConnection(fd1);
+    close(fd1);
+
+    return (0);
+}
+
+/*
 int main(void)
 {
     int subscribed = 0;
     int epollfd = epoll_create(1);
 
     Interpreter interpreter;
+    
     interpreter.clock.lastActivity = std::time(0);
     
     int fd1 = open("connection1.txt", O_RDONLY);
@@ -356,7 +412,7 @@ int main(void)
     while (subscribed)
     {
         int triggered = epoll_wait(epollfd, events, 100, 1000);
-
+        std::cout << "triggered: " << triggered << std::endl;   
         for(int i = 0; i < triggered; ++i)
         {
             if (events[i].events & EPOLLIN)
@@ -369,6 +425,12 @@ int main(void)
         }
     }
 
+    close(fd1);
+    close(fd2);
+    close(fd3);
+    close(epollfd);
 
     return (0);
 }
+
+*/
