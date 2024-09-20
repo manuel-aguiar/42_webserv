@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 12:23:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/20 12:39:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <ctime>
 # include <algorithm>
 # include <cassert>
+# include <cstring>
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -304,13 +305,17 @@ int   Interpreter::readConnection(t_fd fd)
         curReadMax = std::min(maxIO - totalBytes, sizeof(buffer) - 1);
         int readBytes = read(fd, buffer, curReadMax);
         buffer[readBytes] = '\0';
-        std::cout << "readBytes: " << readBytes << "; buffer has: '" << buffer << "'" << std::endl;
+        //std::cout << "readBytes: " << readBytes << "; buffer has: '" << buffer << "'" << std::endl;
         if (readBytes < 0)
             return (1); // client disconnected mid reading, close connection at the next epoll round
         totalBytes += readBytes;
         if (readBytes)
             thisBuffer->append(buffer, readBytes);
-
+            
+        //std::cout << "Buffer now is: " << std::endl << std::endl;
+        //thisBuffer->print();
+        //std::cout  << std::endl << std::endl;
+        
         if (thisBuffer->search(HEADER_FINISH, HEADER_FINISH_LEN) != thisBuffer->end())
         {
             // there is a complete request at hand. One must switch the current read request to a new empty one
@@ -355,23 +360,23 @@ void    delEvent(int epollfd, int fd, int& totalSubscribed)
     totalSubscribed--;
 }
 
+const char* requestLiteral =
+"GET /dashboard HTTP/1.1\r\nHost: exasgasge.com\r\nCookie: sessionid=alolol9\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: examplfuckthise.com\r\nCookie: sessionid=abcomg123456789\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: example.com\r\nCookie: sessionid=abc123456789\r\n\r\n";
 
 int main()
 {
     Interpreter interpreter;
 
-    int fd1 = open("connection1.txt", O_RDONLY);
+    int fd1 = open("connection1.txt", O_TRUNC | O_RDWR);
+    write(fd1, requestLiteral, strlen(requestLiteral));
+    close(fd1);
+    fd1 = open("connection1.txt", O_RDONLY);
     fcntl(fd1, F_SETFL, O_NONBLOCK | O_CLOEXEC);
     interpreter.addOpenConnection(fd1);
     interpreter.readConnection(fd1);
     interpreter.readConnection(fd1);
     interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
-    interpreter.readConnection(fd1);
+
     close(fd1);
 
     return (0);
