@@ -6,9 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 15:53:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/20 17:45:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+//https://github.com/JoeDog/siege
 
 # include <string>
 # include <iostream>
@@ -39,6 +41,7 @@ const char* requestLiteral =
 
 const char* responseLiteral = " epa foda eu so quero uma (newlines!! \n)string mesmo longa para testar IO em que as respostas sao lidas mais rapidamente do que escritas, newlines!! \n mas nao muitas que depois fica uma granda cowboyada. Bom, sem masi a dizer, \nhoje é sexta feira, o país tá a arder, boa já passámos o tamnho da outra request literal size, \nnem tudo é mau. idelamente queria que fosse o dobro ou o triplo do tamanho, o \nobjectivo é testar como é que a request class a connection reagem sob \nmultiplos requests pedidos na mesma conexão e a gestão de input \ne output. de acordo com http 1.1, a ordem de saida tem de ser igual à \nordem de entrada, por isso mesmo que alguma resposta posterior \nesteja pronta, nao pode ser enviada ainda, tem de ser em \nforma de queue \n\n\n\n\n";
 
+//https://github.com/nginx/nginx
 
 
 typedef unsigned long int t_session_id;
@@ -279,9 +282,9 @@ struct Connection
         curWriteRequest = NULL;
     }
 
-    Request*                            curReadRequest;
+    Request*                                             curReadRequest;
     Request*                                             curWriteRequest;        
-    std::queue<Request, std::list<Request> >                 PendingRequests;
+    std::queue<Request, std::list<Request> >             PendingRequests;
 };
 
 
