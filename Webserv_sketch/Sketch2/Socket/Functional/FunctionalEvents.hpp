@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   FunctionalEvents.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/18 08:14:37 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/18 08:20:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef FUNCTIONALEVENTS_HPP
 
-# define INTERPRETER_HPP
 
-# include "IInterpreter.hpp"
+# define FUNCTIONALEVENTS_HPP
 
-class HttpInterpreter : public IInterpreter
+typedef enum
 {
-    public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+    E_READ = 0,
+    E_WRITE,
+    E_ERROR,
+    E_CLOSE,
+    E_COUNT
+} e_Event;
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
-};
 
 
 

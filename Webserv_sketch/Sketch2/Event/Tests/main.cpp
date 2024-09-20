@@ -1,33 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/17 09:14:51 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/17 10:12:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+# include "../EPollEvent.hpp"
 
-# define INTERPRETER_HPP
 
-# include "IInterpreter.hpp"
-
-class HttpInterpreter : public IInterpreter
+const EPollEvent* returnEvent()
 {
-    public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+    struct epoll_event event;
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
+    event.data.ptr = &event;
+    event.events = 123;
+    return (static_cast<EPollEvent*>(&event));
+}
 
-        void    interpret();
-};
+int main1(void)
+{
+    EPollEvent          event(NULL, 0);
+    struct epoll_event  event2;
 
+    event2.data.ptr = &event2;
+    event2.events = 456;
 
+    EPollEvent          event3(event2);
 
-#endif
+    return (0);
+}

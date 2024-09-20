@@ -1,0 +1,12 @@
+GET /dashboard HTTP/1.1
+Host: exasgasge.com
+Cookie: sessionid=alolol9
+
+GET /dashboard HTTP/1.1
+Host: examplfuckthise.com
+Cookie: sessionid=abcomg123456789
+
+GET /dashboard HTTP/1.1
+Host: example.com
+Cookie: sessionid=abc123456789
+

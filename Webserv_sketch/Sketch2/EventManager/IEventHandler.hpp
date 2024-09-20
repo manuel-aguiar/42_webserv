@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   IEventHandler.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/17 11:01:25 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/17 11:13:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef IEVENTHANDLER_HPP
 
-# define INTERPRETER_HPP
+# define IEVENTHANDLER_HPP
 
-# include "IInterpreter.hpp"
-
-class HttpInterpreter : public IInterpreter
+class IEventHandler
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        virtual ~IEventHandler() {}
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
+        virtual void    onRead() = 0;
+        virtual void    onWrite() = 0;
+        virtual void    onError() = 0;
+        virtual void    onClose() = 0;
 };
-
 
 
 #endif

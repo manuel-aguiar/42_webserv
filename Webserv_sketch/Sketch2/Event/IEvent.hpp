@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   IEvent.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/17 08:00:29 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/17 10:30:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef IEVENT_HPP
 
-# define INTERPRETER_HPP
+# define IEVENT_HPP
 
-# include "IInterpreter.hpp"
+# include "../FileDescriptor/IPollableFd.hpp"
 
-class HttpInterpreter : public IInterpreter
+class IEvent
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        virtual ~IEvent() {}
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
+        virtual bool            toClose() const = 0;
+        virtual bool            toRead() const = 0;
+        virtual bool            toWrite() const = 0;
+        virtual bool            toError() const = 0;
+        virtual int             getFd() const = 0;
 };
-
 
 
 #endif

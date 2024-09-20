@@ -1,33 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   EventHandler.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/19 11:30:13 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/19 14:27:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef EVENTHANDLER_HPP
 
-# define INTERPRETER_HPP
+# define EVENTHANDLER_HPP
 
-# include "IInterpreter.hpp"
+# include "EPollEvent.hpp"
+# include "EPollManager.hpp"
 
-class HttpInterpreter : public IInterpreter
+class EventHandler
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
+        void    handleEvent(const EPollEvent& event, EPollManager& manager);
 };
-
 
 
 #endif

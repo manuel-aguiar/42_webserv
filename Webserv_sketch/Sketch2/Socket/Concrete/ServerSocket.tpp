@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:34:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 10:42:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void            ServerSocket<SockAddr>::onRead()
     
     UniquePtr<ICommunicationSocket> newComm = this->accept();
     if (newComm.get() != NULL)
-        _fdManager->addFileDescriptor(dynamic_cast<FileDescriptor*>(newComm.release()), true);
+        _fdManager->addFd(dynamic_cast<FileDescriptor*>(newComm.release()), true);
     
 }
 template <typename SockAddr>

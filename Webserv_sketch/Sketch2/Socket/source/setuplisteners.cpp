@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 07:50:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:17:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 10:42:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int setupListeners()
             serverSock->bind();
             serverSock->listen();
             serverSock->setFdManager(&fdManager);
-            fdManager.addFileDescriptor(serverSock, true);
+            fdManager.addFd(serverSock, true);
             std::cout << "server added" << std::endl;   
         }
         catch(const std::exception& e)

@@ -1,33 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/17 10:17:37 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/17 10:51:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#include "../EPollManager.hpp"
 
-# define INTERPRETER_HPP
 
-# include "IInterpreter.hpp"
-
-class HttpInterpreter : public IInterpreter
+int main(void)
 {
-    public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+    EPollManager    manager;
+    
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
-};
-
-
-
-#endif
+    manager.close();
+    return (0);
+}

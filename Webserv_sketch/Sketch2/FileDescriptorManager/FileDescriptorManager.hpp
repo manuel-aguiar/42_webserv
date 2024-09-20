@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/15 10:25:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 12:20:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 10:43:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,39 +15,36 @@
 # define FILEDESCRIPTORMANAGER_HPP
 
 # include "IFileDescriptorManager.hpp"
-# include "../EventPoll/EventManager.hpp"
+# include "../EventManager/EPollManager.hpp"
+# include "../EventManager/IEventManager.hpp"
+# include "../EventManager/IEventHandler.hpp"
 # include <map>
 
-class FileDescriptorManager : public IFileDescriptorManager
+class FileDescriptorManager : public IFileDescriptorManager, public IEventHandler
 {
     public:
-        FileDescriptorManager(IEventPoll* poll = NULL);
+        FileDescriptorManager(IEventManager& poll);
         ~FileDescriptorManager();
 
-        
         //inherited from IFileDescriptorManager
-        void                                    addFileDescriptor(FileDescriptor* newFd, bool willMonitor);
+        void                                    addFd(FileDescriptor* newFd, bool willMonitor);
         
         template <typename T>
-        void                                    addFileDescriptor(UniquePtr<T> newFd, bool willMonitor)
+        void                                    addFd(UniquePtr<T> newFd, bool willMonitor)
         {
-            FileDescriptor* fd = dynamic_cast<FileDescriptor*>(newFd.release());
-            addFileDescriptor(fd, willMonitor);
+            FileDescriptor* fd = static_cast<FileDescriptor*>(newFd.release());
+            addFd(fd, willMonitor);
         }
         
-        void                                    removeFileDescriptor(const int fd);
-        FileDescriptor*                         getFileDescriptor(const int fd);
+        void                                    removeFd(const int fd);
+        FileDescriptor*                         getFd(const int fd);
 
     private:
         std::map<int, FileDescriptor*>          _openFds;
-        IEventPoll*                             _epoll;
-
-
-        
+        IEventManager&                          _epoll;
 
         FileDescriptorManager(const FileDescriptorManager& copy);
         FileDescriptorManager& operator=(const FileDescriptorManager& assign);
-
 };
 
 

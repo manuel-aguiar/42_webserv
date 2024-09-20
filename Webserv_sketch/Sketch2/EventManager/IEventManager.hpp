@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   IEventManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/17 08:19:48 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/17 11:38:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef IEVENTMANAGER_HPP
 
-# define INTERPRETER_HPP
+# define IEVENTMANAGER_HPP
 
-# include "IInterpreter.hpp"
+# include "../FileDescriptor/FileDescriptor.hpp"
+# include "../Event/IEvent.hpp"
+# include "IEventManagerMethods.hpp"
 
-class HttpInterpreter : public IInterpreter
+class IEventManager : public FileDescriptor, public IEventManagerMethods
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        virtual ~IEventManager() {}
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
+        typedef enum {
+            READ = 1,
+            WRITE = 2,
+            ERROR = 4,
+            CLOSE = 8
+        } Event;
 };
-
 
 
 #endif

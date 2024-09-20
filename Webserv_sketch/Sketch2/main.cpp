@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/15 10:45:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/19 11:21:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "FileDescriptor/FileDescriptor.hpp"
 #include "FileDescriptorManager/FileDescriptorManager.hpp"
 
-#include "Connection/Connection.tpp"
 
 #include <iostream>
 

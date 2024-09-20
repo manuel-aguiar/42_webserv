@@ -5,7 +5,7 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
+/*   Created: 2024/09/18 08:22:56 by mmaria-d          #+#    #+#             */
 /*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -14,20 +14,15 @@
 
 # define INTERPRETER_HPP
 
-# include "IInterpreter.hpp"
-
-class HttpInterpreter : public IInterpreter
+class HttpInterpreter
 {
     public:
         HttpInterpreter();
         ~HttpInterpreter();
+    private:
+        int num;
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
-
-        void    interpret();
 };
-
 
 
 #endif

@@ -1,22 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Interpreter.hpp                                    :+:      :+:    :+:   */
+/*   HttpInterpreter.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/19 08:14:38 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/19 11:21:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INTERPRETER_HPP
+#ifndef HTTPINTERPRETER_HPP
 
-# define INTERPRETER_HPP
+# define HTTPINTERPRETER_HPP
 
-# include "IInterpreter.hpp"
-
-class HttpInterpreter : public IInterpreter
+class HttpInterpreter
 {
     public:
         HttpInterpreter();
