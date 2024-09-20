@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 12:39:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:53:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,20 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/socket.h>
+# include <netinet/in.h>
 
 # include <queue>
+# include <deque>
+# include <list>
+
+# include "ANSIColours.hpp"
+
+const char* requestLiteral =
+"GET /dashboard HTTP/1.1\r\nHost: exasgasge.com\r\nCookie: sessionid=alolol9\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: examplfuckthise.com\r\nCookie: sessionid=abcomg123456789\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: example.com\r\nCookie: sessionid=abc123456789\r\n\r\n";
+
+const char* responseLiteral = " epa foda eu so quero uma (newlines!! \n)string mesmo longa para testar IO em que as respostas sao lidas mais rapidamente do que escritas, newlines!! \n mas nao muitas que depois fica uma granda cowboyada. Bom, sem masi a dizer, \nhoje é sexta feira, o país tá a arder, boa já passámos o tamnho da outra request literal size, \nnem tudo é mau. idelamente queria que fosse o dobro ou o triplo do tamanho, o \nobjectivo é testar como é que a request class a connection reagem sob \nmultiplos requests pedidos na mesma conexão e a gestão de input \ne output. de acordo com http 1.1, a ordem de saida tem de ser igual à \nordem de entrada, por isso mesmo que alguma resposta posterior \nesteja pronta, nao pode ser enviada ainda, tem de ser em \nforma de queue \n\n\n\n\n";
+
+
 
 typedef unsigned long int t_session_id;
 typedef double t_difftime;
@@ -89,6 +101,25 @@ class Buffer
             return (false); // No newline found
         }
 
+        int write_to_fd(int fd, int numChars)
+        {
+            if (_buffer.empty() || numChars == 0)   
+                return (0); // Nothing to write
+
+            numChars = (numChars > (int)_buffer.size() ? _buffer.size() : numChars);
+
+            std::vector<char> temp_buffer(_buffer.begin(), _buffer.begin() + numChars);
+            int bytes_written = ::write(fd, &temp_buffer[0], temp_buffer.size());
+
+            if (bytes_written == -1)
+                return (-1);        // client disconnected mid writting
+            
+            if (bytes_written > 0)
+                _buffer.erase(_buffer.begin(), _buffer.begin() + bytes_written);
+
+            return (bytes_written); // Return number of bytes written, or -1 if there was an error
+        }
+
         std::deque<char>::iterator begin()
         {
             return _buffer.begin();
@@ -120,10 +151,20 @@ class Buffer
             return (false); // Indicate that no delimiter was found
         }
 
-        void print() const
+        void print(const char* fontColour, const char* backgroundColour) const
         {
             std::string output(_buffer.begin(), _buffer.end());
-            std::cout << output << std::endl; // Print the whole string at once
+            std::cout << fontColour << backgroundColour << output << COLOR_RESET << std::endl; // Print the whole string at once
+        }
+
+        void clear()
+        {
+            _buffer.clear();
+        }
+
+        size_t size() const
+        {
+            return _buffer.size();
         }
 
     private:
@@ -146,6 +187,7 @@ struct Session
 
 struct Request
 {
+    Request(int status = 0) : status(status) {}
     void    parseRequest(std::string request)
     {
         std::string header;
@@ -167,7 +209,10 @@ struct Request
 
     void process()
     {
-        raw_request.print();
+        raw_request.print(COLOR_GREEN, "");
+        raw_response.append(responseLiteral, std::strlen(responseLiteral));
+        raw_request.clear();
+        status = 1;
     }
 
     bool   hasSessionHeader()
@@ -179,7 +224,14 @@ struct Request
     {
         return (raw_request);
     }
+
+    Buffer& getRawResponse()
+    {
+        return (raw_response);
+    }
     
+    int         status;
+    Buffer      raw_response;
     Buffer      raw_request;
     Clock       clock;
     std::map<t_http_header, t_http_value> headers;
@@ -192,6 +244,7 @@ struct Connection
 
     void                                setCurReadNull()
     {
+        //std::cout << "set read null, total: " << PendingRequests.size() << std::endl;
         curReadRequest = NULL;
     }
 
@@ -203,6 +256,7 @@ struct Connection
 
             PendingRequests.push(newRequest);
             curReadRequest = &PendingRequests.back();
+            //std::cout << "new request added, total: " << PendingRequests.size() << std::endl;
         }
         return (curReadRequest);
     }
@@ -210,18 +264,24 @@ struct Connection
     Request*                            getCurWriteConnection()
     {
         if (!curWriteRequest)
+        {
+            if (PendingRequests.empty())
+                return (NULL);
             curWriteRequest = &PendingRequests.front();
+        }
+            
         return (curWriteRequest);
     }
 
     void                                setCurWriteNull()
     {
+        //std::cout << "set write null, total: " << PendingRequests.size() << std::endl;
         curWriteRequest = NULL;
     }
 
     Request*                            curReadRequest;
-    Request*                            curWriteRequest;        
-    std::queue<Request>                 PendingRequests;
+    Request*                                             curWriteRequest;        
+    std::queue<Request, std::list<Request> >                 PendingRequests;
 };
 
 
@@ -241,7 +301,8 @@ struct Interpreter
     void closeTimeoutSessions();
     
     int readConnection(t_fd fd);
-
+    int writeConnection(t_fd fd);
+    
     std::map<t_fd,          Connection>             ConnectionsOpen;
     std::map<t_session_id,  Session>                SessionsStored;
     std::set<Session>                               SessionsUnnassigned;
@@ -289,6 +350,7 @@ void    Interpreter::addOpenConnection(t_fd fd)
 
 int   Interpreter::readConnection(t_fd fd)
 {
+    //std::cout << COLOR_RED << "         reading connection" << COLOR_RESET << std::endl;
     Connection&     connection = ConnectionsOpen[fd];
     Request*        thisRequest = connection.getCurReadConnection();
     Buffer*         thisBuffer = &thisRequest->getRawRequest();
@@ -302,9 +364,8 @@ int   Interpreter::readConnection(t_fd fd)
 
     while (curReadMax)
     {
-        curReadMax = std::min(maxIO - totalBytes, sizeof(buffer) - 1);
+        curReadMax = std::min(maxIO - totalBytes, sizeof(buffer));
         int readBytes = read(fd, buffer, curReadMax);
-        buffer[readBytes] = '\0';
         //std::cout << "readBytes: " << readBytes << "; buffer has: '" << buffer << "'" << std::endl;
         if (readBytes < 0)
             return (1); // client disconnected mid reading, close connection at the next epoll round
@@ -336,13 +397,75 @@ int   Interpreter::readConnection(t_fd fd)
         }
         if (readBytes < curReadMax)
         {
-            //we read less bytes than the allowance, nothing left to read
+            //std::cout << "nothing left to read" << std::endl;
             break;
         }
             
 
     }
+    std::cout << COLOR_RED << "         FINISHED reading connection" << COLOR_RESET << std::endl;
     return (1);
+}
+
+int   Interpreter::writeConnection(t_fd fd)
+{
+    Connection& connection = ConnectionsOpen[fd];
+    //std::cout << "pending requests: " << connection.PendingRequests.size() << std::endl;
+    Request*    thisRequest = connection.getCurWriteConnection();
+    //std::cout << "thisRequest: " << thisRequest << std::endl;
+    if (!thisRequest || !thisRequest->status) //all requests have been written
+    {
+        //std::cout << "no request to write" << std::endl;
+        return (0);
+    }
+
+    Buffer*     thisBuffer = &thisRequest->getRawResponse();
+    
+    connection.clock.lastActivity = std::time(0);
+    thisRequest->clock.lastActivity = connection.clock.lastActivity;
+    
+    int totalBytes = 0;
+    
+    int curWriteMax = 1;
+
+    while (curWriteMax)
+    {
+        curWriteMax = std::min(maxIO - totalBytes, sizeof(buffer));
+
+        int writtenBytes = thisBuffer->write_to_fd(fd, curWriteMax);
+        //std::cout << "write Bytes: " << writtenBytes << "; curWriteMax: "<< curWriteMax << " ; total bytes: " << totalBytes << std::endl;
+
+        if (writtenBytes < 0)
+        {
+            //std::cout << "client disconnected mid writing" << std::endl;
+            return (0); // client disconnected mid writing, close connection at the next epoll round
+        }
+            
+            
+        totalBytes += writtenBytes;
+
+        if (writtenBytes < curWriteMax)
+        {
+            //std::cout << "written less than max" << std::endl;
+            if (thisBuffer->getBuffer().empty())
+            {
+                //std::cout << " request written, remove and swap" << std::endl;
+
+                connection.PendingRequests.pop();
+                connection.setCurWriteNull();
+                thisRequest = connection.getCurWriteConnection();
+                if (!thisRequest || !thisRequest->status) //all requests have been written
+                    break;
+                thisBuffer = &thisRequest->getRawResponse();
+            }
+            else    
+                break;      
+        }
+        //std::cout << "alive" << std::endl;
+    }
+    //std::cout << "connection finished writting this time" << std::endl;
+    return (1);
+
 }
 
 void    addEvent(int epollfd, int fd, int events, int& totalSubscribed)
@@ -360,10 +483,8 @@ void    delEvent(int epollfd, int fd, int& totalSubscribed)
     totalSubscribed--;
 }
 
-const char* requestLiteral =
-"GET /dashboard HTTP/1.1\r\nHost: exasgasge.com\r\nCookie: sessionid=alolol9\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: examplfuckthise.com\r\nCookie: sessionid=abcomg123456789\r\n\r\nGET /dashboard HTTP/1.1\r\nHost: example.com\r\nCookie: sessionid=abc123456789\r\n\r\n";
 
-int main()
+int main2()
 {
     Interpreter interpreter;
 
@@ -382,60 +503,94 @@ int main()
     return (0);
 }
 
-/*
+
 int main(void)
 {
     int subscribed = 0;
     int epollfd = epoll_create(1);
+    int sockpair[2];
 
+    char buffer[1024];
+
+    if(socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0, sockpair) == -1)
+    {
+        std::cout << "ops" << std::endl;
+        exit(1);
+    }
+    fcntl(sockpair[0], F_SETFL, O_NONBLOCK | O_CLOEXEC);
+    fcntl(sockpair[1], F_SETFL, O_NONBLOCK | O_CLOEXEC);
+    
     Interpreter interpreter;
     
     interpreter.clock.lastActivity = std::time(0);
     
-    int fd1 = open("connection1.txt", O_RDONLY);
-    fcntl(fd1, F_SETFL, O_NONBLOCK | O_CLOEXEC);
 
-    int fd2 = open("connection2.txt", O_RDONLY);
-    fcntl(fd2, F_SETFL, O_NONBLOCK | O_CLOEXEC);
-
-    int fd3 = open("connection3.txt", O_RDONLY);
-    fcntl(fd3, F_SETFL, O_NONBLOCK | O_CLOEXEC);
 
 
 
     // server accept
-    interpreter.addOpenConnection(fd1);
-    interpreter.addOpenConnection(fd2);
-    interpreter.addOpenConnection(fd3);
+    interpreter.addOpenConnection(sockpair[0]);
 
+    //std::cout << "pending requests: " << interpreter.ConnectionsOpen[sockpair[0]].PendingRequests.size() << std::endl;
+    
+    addEvent(epollfd, sockpair[0], EPOLLIN | EPOLLOUT, subscribed);
+    addEvent(epollfd, sockpair[1], EPOLLIN, subscribed);
 
-    addEvent(epollfd, fd1, EPOLLIN, subscribed);
-    addEvent(epollfd, fd2, EPOLLIN, subscribed);
-    addEvent(epollfd, fd3, EPOLLIN, subscribed);
+    //send data
+    write(sockpair[1], requestLiteral, std::strlen(requestLiteral));
+
+    int count = 0;
 
     struct epoll_event events[100];
     while (subscribed)
     {
         int triggered = epoll_wait(epollfd, events, 100, 1000);
-        std::cout << "triggered: " << triggered << std::endl;   
+        //std::cout << "triggered: " << triggered << std::endl;   
         for(int i = 0; i < triggered; ++i)
         {
             if (events[i].events & EPOLLIN)
             {
-                if (interpreter.readConnection(events[i].data.fd))
+                if (events[i].data.fd == sockpair[0])
+                    interpreter.readConnection(events[i].data.fd);
+                else
                 {
-                    delEvent(epollfd, events[i].data.fd, subscribed);
+                        //std::cout << "sockpair[1] is ready to write" << std::endl;
+                    std::memset(buffer, 0, sizeof(buffer));
+                    int bytesRead = read(sockpair[1], buffer, sizeof(buffer));
+                    buffer[bytesRead] = '\0';
+                    std::cout << COLOR_BLUE << buffer << COLOR_RESET << std::endl;
+                }
+            }
+            if (events[i].events & EPOLLOUT)
+            {
+                if (!interpreter.writeConnection(events[i].data.fd))
+                {
+                    delEvent(epollfd, sockpair[0], subscribed);
+                    close(sockpair[0]);
                 }
             }
         }
+        if (triggered == 0)
+        {
+            std::cout << " zero triggered" << std::endl;
+            break ;
+        }
+            
+        count++;
+        if (count > 30)
+        {
+            std::cout << "exceeded, exiting" << std::endl;
+            break ;
+        }
+
     }
 
-    close(fd1);
-    close(fd2);
-    close(fd3);
+    std::cout << "left: " << interpreter.ConnectionsOpen[sockpair[0]].PendingRequests.size() << std::endl;
+
+    close(sockpair[0]);
+    close(sockpair[1]);
     close(epollfd);
 
     return (0);
 }
 
-*/
