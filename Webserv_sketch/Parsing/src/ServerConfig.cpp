@@ -5,21 +5,12 @@
 // Public
 ServerConfig::ServerConfig()
 {
-	_keys["host"]				= &ServerConfig::setHost;
-	_keys["port"]				= &ServerConfig::addPort;
-	_keys["server_names"]		= &ServerConfig::addServerName;
-	_keys["client_body_size"]	= &ServerConfig::setClientBodySize;
-	_keys["root"]				= &ServerConfig::setRootPath;
-	_keys["error_pages"]		= &ServerConfig::addErrorPage;
-
 	_config["host"].insert(DEFAULT_HOST);
 	_config["port"];
 	_config["server_names"];
 	_config["client_body_size"].insert(DEFAULT_CLIENT_BODY_SIZE);
 	_config["root"];
 	_config["error_pages"];
-	// Locations
-
 }
 
 bool	ServerConfig::setHost(const std::string &value)
@@ -75,10 +66,10 @@ bool ServerConfig::addServerName(const std::string &value)
 
 bool	ServerConfig::addErrorPage(const std::string &value)
 {
-	std::stringstream	ss;
-	std::string			error_code;
-	std::string			path; 
-	size_t				separator;
+	std::stringstream ss;
+	std::string error_code;
+	std::string path; 
+	size_t separator;
 
 	ss << value;
 	separator = value.find_first_of(':', 0);
@@ -93,11 +84,13 @@ bool	ServerConfig::addErrorPage(const std::string &value)
 	return (1);
 }
 
-bool	ServerConfig::addConfigValue(const std::string &key, const std::string &value)
+bool	ServerConfig::addConfigValue(std::string &key, std::string &value)
 {
-	if (_keys.find(key) == _keys.end())
+	if (_config.find(key) == _config.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*_keys[key])(value);
+	for (int i = 0; i < KEY_AMOUNT; i++)
+		if (key == _keys[i])
+			(this->*f_addConfigValue[i])(value);
 
 	return (1);
 }

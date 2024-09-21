@@ -43,7 +43,7 @@ int		ConfigHandler::setConfigPath(std::string new_path)
 
 int		ConfigHandler::updateFile()
 {
-	_file.open(_path.c_str());
+	_file = std::ifstream(_path);
 	if (!_file.is_open()) {
 		std::cerr << "Error: Could not open configuration file." << std::endl;
 		return (0);
@@ -77,6 +77,44 @@ int		ConfigHandler::parse_config_line(std::string &line, ServerConfig &server, s
 		return (0);
 	}
 	return (1);
+
+	// if (key == "host")
+	// {
+	// 	server.setHost(value);
+	// }
+	// else if (key == "port")
+	// {
+	// 	server.addPort(value); // catch exception
+	// 	while (iss >> value)
+	// 		server.addPort(value); // catch exception
+	// }
+	// else if (key == "server_name")
+	// {
+	// 	server.addServerName(value);
+	// 	while (iss >> value)
+	// 		server.addServerName(value);
+	// }
+	// else if (key == "root")
+	// {
+	// 	server.setRootPath(value);
+	// }
+	// else if (key == "client_body_size")
+	// {
+	// 	server.setClientBodySize(value);
+	// }
+	// else if (key == "error_page")
+	// {
+	// 	int error_code = __stoull(value); // catch exception
+	// 	iss >> value;			
+	// 	server.addErrorPage(error_code, value);
+	// }
+	// else
+	// {
+	// 	std::cout << "Error: config parsing: invalid argument: " << "\""
+	// 		<< line << "\"" << " on line " << current_line << std::endl;
+	// 	return (0);
+	// }
+	// return (1);
 }
 
 int		ConfigHandler::parse_config_file()

@@ -8,10 +8,35 @@
 class ServerConfig
 {
 	private:
-		typedef bool (ServerConfig::*f_addConfigValue)(const std::string &);
-
 		std::map<std::string, std::set<std::string> > _config;
-		std::map<std::string, f_addConfigValue> _keys;
+		std::string _keys[KEY_AMOUNT] = {
+			"host",
+			"port",
+			"server_names",
+			"client_body_size",
+			"root",
+			"error_pages"
+		};
+		
+		// std::set<std::string> _default_values = {
+		// 	DEFAULT_HOST,
+		// 	"port",
+		// 	"server_names",
+		// 	DEFAULT_CLIENT_BODY_SIZE,
+		// 	"root",
+		// 	"error_pages"
+		// 	};
+
+		bool (ServerConfig::*f_addConfigValue[KEY_AMOUNT])(const std::string &) = { 
+			&ServerConfig::setHost,
+			&ServerConfig::addPort,
+			&ServerConfig::addServerName,
+			&ServerConfig::setClientBodySize,
+			&ServerConfig::setRootPath,
+			&ServerConfig::addErrorPage
+		};
+
+		// std::map<std::string, LocationConfig>	locations;
 
 	public:
 		ServerConfig();
@@ -29,7 +54,7 @@ class ServerConfig
 		std::set<std::string>	getErrorPages() const;
 		std::string				getRoot() const;
 
-		bool					addConfigValue(const std::string &key, const std::string &value);
+		bool					addConfigValue(std::string &key, std::string &value);
 };
 
 #endif
