@@ -1,12 +1,13 @@
 #include <iostream>
 #include <map>
 #include <cstddef> // For std::ptrdiff_t and std::size_t
+#include <cstring>
 
 // MemoryBlock definition for C++98 compatibility
 template <typename T>
 class MemoryBlock {
 public:
-    MemoryBlock(size_t blockSize) 
+    MemoryBlock(size_t blockSize)
         : m_next(NULL), m_data(new T[blockSize]), m_blockSize(blockSize), m_usedCount(0) {}
 
     ~MemoryBlock() {
@@ -20,26 +21,34 @@ public:
         if (m_usedCount < m_blockSize) {
             return &m_data[m_usedCount++];
         }
-        return NULL;
+        return NULL; // Block is full
     }
 
-    void deallocate(T* /* ptr */) {
-        --m_usedCount;
+    void deallocate(T* ptr) {
+        // Calculate the index of the pointer and decrement used count
+        if (ptr >= m_data && ptr < m_data + m_blockSize) {
+            size_t index = ptr - m_data;
+            if (index < m_usedCount) {
+                m_usedCount--;
+                // Move the last used element to the freed position
+                //std::memcpy(&m_data[index], &m_data[m_usedCount], sizeof(T));
+                m_data[index] = m_data[m_usedCount]; // Overwrite with the last used
+            }
+        }
     }
 
     MemoryBlock* m_next;
     T* m_data;
     size_t m_blockSize;
     size_t m_usedCount;
-    
 };
 
 // MemoryPool definition for C++98 compatibility
 template <typename T>
 class MemoryPool {
 public:
-    MemoryPool(size_t blockSize) 
-        : m_blockSize(blockSize), m_head(NULL), m_emptyBlock(NULL), m_numBlocks(0) {}
+    MemoryPool(size_t blockSize)
+        : m_blockSize(blockSize), m_head(NULL), m_numBlocks(0) {}
 
     ~MemoryPool() {
         while (m_head) {
@@ -57,12 +66,19 @@ public:
     }
 
     void deallocate(T* ptr) {
-        if (!m_head) return;
+        if (!m_head || !ptr) return;
 
-        m_head->deallocate(ptr);
-        
-        if (m_head->isEmpty()) {
-            removeEmptyBlock();
+        // Find the block that contains ptr
+        MemoryBlock<T>* current = m_head;
+        while (current) {
+            if (ptr >= current->m_data && ptr < current->m_data + current->m_blockSize) {
+                current->deallocate(ptr);
+                if (current->isEmpty()) {
+                    removeEmptyBlock();
+                }
+                return;
+            }
+            current = current->m_next;
         }
     }
 
@@ -72,26 +88,18 @@ private:
         newBlock->m_next = m_head;
         m_head = newBlock;
         ++m_numBlocks;
-
-        if (m_numBlocks > 1 && m_emptyBlock) {
-            delete m_emptyBlock;
-            m_emptyBlock = NULL;
-        }
     }
 
     void removeEmptyBlock() {
-        if (!m_emptyBlock) {
-            m_emptyBlock = m_head;
-        } else {
-            MemoryBlock<T>* temp = m_head;
-            m_head = m_head->m_next;
-            delete temp;
-        }
+        if (!m_head) return; // No blocks to remove
+
+        MemoryBlock<T>* temp = m_head;
+        m_head = m_head->m_next;
+        delete temp;
     }
 
     size_t m_blockSize;
     MemoryBlock<T>* m_head;
-    MemoryBlock<T>* m_emptyBlock;
     size_t m_numBlocks;
 };
 
@@ -183,15 +191,15 @@ bool operator!=(const PoolAllocator<T1>&, const PoolAllocator<T2>&) {
 
 int main() {
     // Shared memory pool for std::pair<const int, std::string>
-    MemoryPool<std::pair<const int, std::string> > pool(1024);
+    MemoryPool<std::pair<int, std::string> > pool(1024);
 
     // Create PoolAllocator for std::pair<const int, std::string>
-    PoolAllocator<std::pair<const int, std::string> > alloc(pool);
+    PoolAllocator<std::pair<int, std::string> > alloc(pool);
 
     std::less<int> comparator;
     // Create two std::maps using the same allocator
-    std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<const int, std::string> > > map1(comparator, alloc);
-    std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<const int, std::string> > > map2(comparator, alloc);
+    std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<int, std::string> > > map1(comparator, alloc);
+    std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<int, std::string> > > map2(comparator, alloc);
 
     // Insert values into the first map
     map1[1] = "One";
@@ -203,13 +211,13 @@ int main() {
 
     // Display contents of the first map
     std::cout << "Map 1:" << std::endl;
-    for (std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<const int, std::string> > >::iterator it = map1.begin(); it != map1.end(); ++it) {
+    for (std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<int, std::string> > >::iterator it = map1.begin(); it != map1.end(); ++it) {
         std::cout << it->first << ": " << it->second << std::endl;
     }
 
     // Display contents of the second map
     std::cout << "Map 2:" << std::endl;
-    for (std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<const int, std::string> > >::iterator it = map2.begin(); it != map2.end(); ++it) {
+    for (std::map<int, std::string, std::less<int>, PoolAllocator<std::pair<int, std::string> > >::iterator it = map2.begin(); it != map2.end(); ++it) {
         std::cout << it->first << ": " << it->second << std::endl;
     }
 
