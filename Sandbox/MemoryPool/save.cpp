@@ -83,6 +83,8 @@ class MemoryPool
     slot_pointer_ lastSlot_;
     slot_pointer_ freeSlots_;
 
+    MemoryPool<T>* thisMemoryPool;
+
     size_type padPointer(data_pointer_ p, size_type align) const throw();
     void allocateBlock();
    /*
@@ -108,6 +110,7 @@ const throw()
 template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::MemoryPool()
 throw()
+ : thisMemoryPool(this)
 {
   currentBlock_ = 0;
   currentSlot_ = 0;
@@ -120,10 +123,9 @@ throw()
 template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool& memoryPool)
 throw()
+: thisMemoryPool(memoryPool.thisMemoryPool)
 {
-    (void)memoryPool;
     MemoryPool();
-
 }
 
 
@@ -133,7 +135,6 @@ template<class U>
 MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool<U, BlockSize>& memoryPool)
 throw()
 {
-    (void)memoryPool;   
     MemoryPool();
 }
 
@@ -143,11 +144,12 @@ template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::~MemoryPool()
 throw()
 {
-  slot_pointer_ curr = currentBlock_;
+  slot_pointer_ curr = thisMemoryPool->currentBlock_;
   while (curr != 0) {
     slot_pointer_ prev = curr->next;
     operator delete(reinterpret_cast<void*>(curr));
     curr = prev;
+    prev = NULL;
   }
 }
 
@@ -181,13 +183,13 @@ MemoryPool<T, BlockSize>::allocateBlock()
   data_pointer_ newBlock = reinterpret_cast<data_pointer_>
                            (operator new(BlockSize));
     //std::memset(newBlock, 0, BlockSize);
-  reinterpret_cast<slot_pointer_>(newBlock)->next = currentBlock_;
-  currentBlock_ = reinterpret_cast<slot_pointer_>(newBlock);
+  reinterpret_cast<slot_pointer_>(newBlock)->next = thisMemoryPool->currentBlock_;
+  thisMemoryPool->currentBlock_ = reinterpret_cast<slot_pointer_>(newBlock);
   // Pad block body to staisfy the alignment requirements for elements
   data_pointer_ body = newBlock + sizeof(slot_pointer_);
   size_type bodyPadding = padPointer(body, sizeof(slot_type_));
-  currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
-  lastSlot_ = reinterpret_cast<slot_pointer_>
+  thisMemoryPool->currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
+  thisMemoryPool->lastSlot_ = reinterpret_cast<slot_pointer_>
               (newBlock + BlockSize - sizeof(slot_type_) + 1);
 }
 
@@ -197,15 +199,15 @@ template <typename T, size_t BlockSize>
 inline typename MemoryPool<T, BlockSize>::pointer
 MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 {
-  if (freeSlots_ != 0) {
-    pointer result = reinterpret_cast<pointer>(freeSlots_);
-    freeSlots_ = freeSlots_->next;
+  if (thisMemoryPool->freeSlots_ != 0) {
+    pointer result = reinterpret_cast<pointer>(thisMemoryPool->freeSlots_);
+    thisMemoryPool->freeSlots_ = thisMemoryPool->freeSlots_->next;
     return result;
   }
   else {
-    if (currentSlot_ >= lastSlot_)
+    if (thisMemoryPool->currentSlot_ >= thisMemoryPool->lastSlot_)
       allocateBlock();
-    return reinterpret_cast<pointer>(currentSlot_++);
+    return reinterpret_cast<pointer>(thisMemoryPool->currentSlot_++);
   }
 }
 
@@ -216,8 +218,8 @@ inline void
 MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
 {
   if (p != 0) {
-    reinterpret_cast<slot_pointer_>(p)->next = freeSlots_;
-    freeSlots_ = reinterpret_cast<slot_pointer_>(p);
+    reinterpret_cast<slot_pointer_>(p)->next = thisMemoryPool->freeSlots_;
+    thisMemoryPool->freeSlots_ = reinterpret_cast<slot_pointer_>(p);
   }
 }
 
@@ -258,7 +260,7 @@ template <typename T, size_t BlockSize>
 inline typename MemoryPool<T, BlockSize>::pointer
 MemoryPool<T, BlockSize>::newElement(const_reference val)
 {
-  pointer result = allocate();
+  pointer result = thisMemoryPool->allocate();
   construct(result, val);
   return result;
 }
@@ -271,110 +273,10 @@ MemoryPool<T, BlockSize>::deleteElement(pointer p)
 {
   if (p != 0) {
     p->~value_type();
-    deallocate(p);
+    thisMemoryPool->deallocate(p);
   }
 }
 
-template <typename T, size_t BlockSize = 4096>
-class SharedMemoryPool;
-
-template <typename T, size_t BlockSize >
-class SharedMemoryPool
-{
-    public:
-
-        typedef T               value_type;
-        typedef T*              pointer;
-        typedef T&              reference;
-        typedef const T*        const_pointer;
-        typedef const T&        const_reference;
-        typedef size_t          size_type;
-        typedef ptrdiff_t       difference_type;
-
-        template <typename U> struct rebind {
-          typedef SharedMemoryPool<U> other;
-        };
-
-        SharedMemoryPool(MemoryPool<T, BlockSize>* ptr = NULL) : _pool(ptr), _refCount(new int(1))
-        {
-
-        }
-
-        SharedMemoryPool(const SharedMemoryPool& other) : _pool(other._pool), _refCount(other._refCount)
-         {
-           ++(*_refCount); 
-        }
-        
-        SharedMemoryPool& operator=(const SharedMemoryPool& other)
-        {
-            if (this != &other)
-            {
-                _decrementRefCount();
-                _pool = other._pool;
-                _refCount = other._refCount;
-                ++(*_refCount);
-            }
-            return (*this);
-        }
-        template <class U> SharedMemoryPool(const SharedMemoryPool<U, BlockSize>& memoryPool) throw()
-        {
-          _pool = reinterpret_cast<MemoryPool<T, BlockSize>*>(memoryPool._pool);
-          _refCount = memoryPool._refCount;
-          ++(*_refCount); // Increment reference count
-        }
-        ~SharedMemoryPool()
-        {
-            _decrementRefCount();
-        }
-
-        pointer address(reference x) const throw() {return _pool->address(x);}
-        const_pointer address(const_reference x) const throw() {return _pool->address(x);}
-
-        // Can only allocate one object at a time. n and hint are ignored
-        pointer allocate(size_type n = 1, const_pointer hint = 0){return _pool->allocate(n, hint);}
-        void deallocate(pointer p, size_type n = 1) {return _pool->deallocate(p, n);}
-
-        size_type max_size() const throw() {return _pool->max_size();}
-
-        void construct(pointer p, const_reference val) {return _pool->construct(p, val);}
-        void destroy(pointer p) {return _pool->destroy(p);}
-
-        pointer newElement(const_reference val) {return _pool->newElement(val);}
-        void deleteElement(pointer p) {return _pool->deleteElement(p);}
-
-    //private:
-        MemoryPool<T, BlockSize>*      _pool;
-        int*                           _refCount;
-
-        void _decrementRefCount()
-        {
-            if (--(*_refCount) == 0)
-            {
-                if (_pool)
-                {
-                    delete (_pool);
-                    _pool = NULL;
-                }
-                if (_refCount)
-                {
-                    delete _refCount;
-                    _refCount = NULL;
-                }   
-            }
-        }
-};
-
-template <typename T, size_t BlockSize>
-SharedMemoryPool<T, BlockSize> make_SharedPool()
-{
-    return (SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>()));
-}
-
-template <typename T, size_t BlockSize, typename Arg1>
-SharedMemoryPool<T, BlockSize> make_SharedPool(Arg1 arg1)
-{
-    return SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>(arg1));
-}
 
 
 #endif // MEMORY_BLOCK_TCC
