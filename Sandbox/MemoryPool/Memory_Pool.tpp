@@ -339,6 +339,8 @@ class SharedMemoryPool
         {
           //std::cout << "size of T: " << sizeof(T) << " , sizeof U" << sizeof(U) << std::endl;
           // Use the rebind mechanism to create a new pool for type T
+
+          //pool allocates 72 bytes (map) for the node, but the construction (after rebind) will use the 40byts (std::pairz<int, string>>)
           _pool = reinterpret_cast<MemoryPool<T, BlockSize>*>(memoryPool._pool);
 
           // Share the reference count, ensuring both share the same pool
