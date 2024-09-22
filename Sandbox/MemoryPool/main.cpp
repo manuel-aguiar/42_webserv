@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 09:41:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/22 19:03:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/22 19:27:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 int main(void)
 {
+    std::cout << "                  listtest" << std::endl;         
 
     SharedMemoryPool<std::string, 4096> pool1 = make_SharedPool<std::string, 4096>();
     
@@ -50,7 +51,7 @@ int main(void)
         std::cout << *iter << std::endl;
 
 
-
+    std::cout << "                  map test" << std::endl; 
 
     SharedMemoryPool<std::pair<int, std::string> > pool2 = make_SharedPool<std::pair<int, std::string>, 4096 >();
     std::less<int> comparator;
@@ -63,19 +64,11 @@ int main(void)
     PoolMap map1(comparator, pool2);
     PoolMap map2(comparator, pool2);
     
-
-    map1[1] = "map1 one";
-    map1[2] = "map1 two";
-
-    map2[1] = "map2 one";
-    map2[2] = "map2 two";
-
-
-    map1[3] = "map1 three";
-    map1[4] = "map1 four";
-    map2[3] = "map2 three";
-    map2[4] = "map2 four";
-
+    for ( int i = 0; i < 200; i++)
+    {
+        map1[i] = "map1 one";
+        map2[i] = "map2 two";
+    }
 
 
     for(PoolMap_iter iter = map1.begin(); iter != map1.end(); ++iter)
@@ -84,7 +77,7 @@ int main(void)
     for(PoolMap_iter iter = map2.begin(); iter != map2.end(); ++iter)
         std::cout << iter->first << ": " << iter->second << std::endl;
 
-
+    std::cout << "                  set test" << std::endl; 
 
     SharedMemoryPool<std::string, 4096> pool4 = make_SharedPool<std::string, 4096>();
     std::less<std::string> comparator4;

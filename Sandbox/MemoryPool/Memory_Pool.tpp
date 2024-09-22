@@ -125,6 +125,7 @@ template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::MemoryPool()
 throw()
 {
+  std::cout << "memory pool constructed" << std::endl;
   currentBlock_ = 0;
   currentSlot_ = 0;
   lastSlot_ = 0;
@@ -213,6 +214,7 @@ template <typename T, size_t BlockSize>
 inline typename MemoryPool<T, BlockSize>::pointer
 MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 {
+  //std::cout << "pool allocating: " << sizeof(T) << std::endl; 
   if (freeSlots_ != 0) {
     pointer result = reinterpret_cast<pointer>(freeSlots_);
     freeSlots_ = freeSlots_->next;
@@ -254,6 +256,7 @@ template <typename T, size_t BlockSize>
 inline void
 MemoryPool<T, BlockSize>::construct(pointer p, const_reference val)
 {
+    //std::cout << "pool CONSTRUCTING: " << sizeof(T) << std::endl; 
   new (p) value_type (val);
   //std::cout << "MemoryPool::construct" << std::endl;    
 }
@@ -334,9 +337,16 @@ class SharedMemoryPool
         }
         template <class U> SharedMemoryPool(const SharedMemoryPool<U, BlockSize>& memoryPool) throw()
         {
+          //std::cout << "size of T: " << sizeof(T) << " , sizeof U" << sizeof(U) << std::endl;
+          // Use the rebind mechanism to create a new pool for type T
           _pool = reinterpret_cast<MemoryPool<T, BlockSize>*>(memoryPool._pool);
+
+          // Share the reference count, ensuring both share the same pool
           _refCount = memoryPool._refCount;
-          ++(*_refCount); // Increment reference count
+          
+          // Increment reference count since we're sharing the same pool
+          ++(*_refCount);
+          //std::cout << "rebind, refcount: " << (*_refCount) << std::endl;
         }
         ~SharedMemoryPool()
         {
