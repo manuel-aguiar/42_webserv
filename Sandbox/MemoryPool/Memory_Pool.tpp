@@ -20,6 +20,22 @@
  * IN THE SOFTWARE.
  */
 
+/*
+
+  This is the same code as defined in the license above
+
+  I took it and adapted it to create a SharedMemoryPool class that uses a reference count to manage the memory pool
+  and allow sharing between different containers. (see main)
+
+  This pool only "works" for objects without random access iterators:
+    elemets will be scattered everywhere......, so this works with std::list std::map and std::set
+
+    Anyways, vectors are arrays already, so they don't need this kind of memory pool
+
+*/
+
+
+
 #ifndef MEMORY_BLOCK_TCC
 #define MEMORY_BLOCK_TCC
 
@@ -239,7 +255,7 @@ inline void
 MemoryPool<T, BlockSize>::construct(pointer p, const_reference val)
 {
   new (p) value_type (val);
-  std::cout << "MemoryPool::construct" << std::endl;    
+  //std::cout << "MemoryPool::construct" << std::endl;    
 }
 
 
@@ -249,7 +265,7 @@ inline void
 MemoryPool<T, BlockSize>::destroy(pointer p)
 {
   p->~value_type();
-  std::cout << "MemoryPool::destroy" << std::endl;
+  //std::cout << "MemoryPool::destroy" << std::endl;
 }
 
 
