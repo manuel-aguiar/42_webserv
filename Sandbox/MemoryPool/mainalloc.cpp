@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   maindealloc.cpp                                    :+:      :+:    :+:   */
+/*   mainalloc.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 14:47:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/23 14:31:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SharedMemoryPoolDealloc.hpp" 
+#include "SharedMemoryPool.hpp" 
 
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
 #include <list>
+#include <iostream>
 
 int main(void)
 {
-    ///*
     std::cout << "                  listtest" << std::endl;         
 
     SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
@@ -52,7 +52,7 @@ int main(void)
 
 
     std::cout << "                  map test" << std::endl; 
-    //*/
+
     SharedMemoryPool<std::pair<int, std::string> > pool2 = SharedMemoryPool<std::pair<int, std::string> >::make_SharedPool();
     std::less<int> comparator;
 
@@ -76,9 +76,8 @@ int main(void)
 
     for(PoolMap_iter iter = map2.begin(); iter != map2.end(); ++iter)
         std::cout << iter->first << ": " << iter->second << std::endl;
-///*
-    std::cout << "                  set test" << std::endl; 
 
+    std::cout << "                  set test" << std::endl; 
 
     SharedMemoryPool<std::string> pool4 = SharedMemoryPool<std::string>::make_SharedPool();
     std::less<std::string> comparator4;
@@ -93,6 +92,6 @@ int main(void)
 
     for(PoolSet_iter iter = set1.begin(); iter != set1.end(); ++iter)
         std::cout << *iter << std::endl;
-//*/
+
     return (0);
 }

@@ -40,6 +40,10 @@
 #ifndef MEMORY_POOL_H
 #define MEMORY_POOL_H
 
+#include <limits.h>
+#include <stddef.h>
+#include <cstring>
+
 template <typename T, size_t BlockSize = 4096>
 class MemoryPool;
 
