@@ -20,4 +20,5 @@ for prog in "${programs[@]}"; do
     echo -n "$prog:"
     time ./$prog $times 
     echo ""
+    rm -rf $prog
 done
