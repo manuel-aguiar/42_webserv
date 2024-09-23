@@ -20,12 +20,29 @@
  * IN THE SOFTWARE.
  */
 
+/*
+
+  This is the same code as defined in the license above. Changes i applied are commented in the code
+
+    Indentation also ajusted for taste
+
+    
+  I took it and adapted it to create a SharedMemoryPool class that uses a reference count to manage the memory pool
+  and allow sharing between different containers. (see main)
+
+  This pool only "works" for objects without random access iterators:
+    elemets will be scattered everywhere......, so this works with std::list std::map and std::set
+
+    Anyways, vectors are arrays already, so they don't need this kind of memory pool
+
+*/
+
 #ifndef MEMORY_POOL_H
 #define MEMORY_POOL_H
 
 template <typename T, size_t BlockSize = 4096>
 class MemoryPool;
 
-#include "Memory_Pool.tpp"
+#include "MemoryPool.tpp"
 
 #endif // MEMORY_POOL_H

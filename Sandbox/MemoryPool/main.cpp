@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 09:41:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/22 19:27:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/23 08:02:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
-#include "Memory_Pool.hpp"
+#include "SharedMemoryPool.hpp"
 
 #include <map>
 #include <set>
@@ -23,7 +23,7 @@ int main(void)
 {
     std::cout << "                  listtest" << std::endl;         
 
-    SharedMemoryPool<std::string, 4096> pool1 = make_SharedPool<std::string, 4096>();
+    SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
     
     typedef std::list<std::string, SharedMemoryPool<std::string> >::iterator PoolList_iter;
 
@@ -53,7 +53,7 @@ int main(void)
 
     std::cout << "                  map test" << std::endl; 
 
-    SharedMemoryPool<std::pair<int, std::string> > pool2 = make_SharedPool<std::pair<int, std::string>, 4096 >();
+    SharedMemoryPool<std::pair<int, std::string> > pool2 = SharedMemoryPool<std::pair<int, std::string> >::make_SharedPool();
     std::less<int> comparator;
 
     typedef std::map<int, std::string, std::less<int>, SharedMemoryPool<std::pair<int, std::string> > >             PoolMap;
@@ -64,7 +64,7 @@ int main(void)
     PoolMap map1(comparator, pool2);
     PoolMap map2(comparator, pool2);
     
-    for ( int i = 0; i < 200; i++)
+    for ( int i = 0; i < 5; i++)
     {
         map1[i] = "map1 one";
         map2[i] = "map2 two";
@@ -79,7 +79,7 @@ int main(void)
 
     std::cout << "                  set test" << std::endl; 
 
-    SharedMemoryPool<std::string, 4096> pool4 = make_SharedPool<std::string, 4096>();
+    SharedMemoryPool<std::string> pool4 = SharedMemoryPool<std::string>::make_SharedPool();
     std::less<std::string> comparator4;
 
     typedef std::set<std::string, std::less<std::string>, SharedMemoryPool<std::string> >  PoolSet;
