@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 14:55:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/23 15:04:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cassert>
-
+#include <stdint.h>
 
 template <typename T, size_t BlockSize>
 class MemoryPool
@@ -60,10 +60,11 @@ class MemoryPool
 		struct Slot_
 		{
 			union  {
-				char          data_[sizeof(value_type)];
-				Slot_*        next;
+				char          	data_[sizeof(value_type)];
+				Slot_*        	next;
 			};
-			BlockData*		  block_location;
+			//BlockData*		  block_offset;
+			uint16_t 			block_offset;
 		};
 		
 		typedef char* data_pointer_;
@@ -174,8 +175,8 @@ MemoryPool<T, BlockSize>::allocateBlock()
     
 	data_pointer_ newBlock = static_cast<data_pointer_>(operator new(BlockSize));
 
-	std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock) 
-	<< " that ends at: " <<reinterpret_cast<void*>(newBlock + BlockSize) << std::endl;
+	//std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock) 
+	//<< " that ends at: " <<reinterpret_cast<void*>(newBlock + BlockSize) << std::endl;
 
 	BlockData* block = reinterpret_cast<BlockData*>(newBlock);
 	block->next = availableBlocks_; // Previous head block becomes the next
@@ -247,7 +248,6 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 	else
 	{
 		result = reinterpret_cast<pointer>(block->currentSlot_);
-		reinterpret_cast<slot_pointer_>(result)->block_location = block;
         block->freeSlotsCount--;
 		block->currentSlot_++;
 
@@ -266,8 +266,8 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 		}
 
 	}
-	reinterpret_cast<slot_pointer_>(result)->block_location = block;
-	std::cout << "allocating node at: " << result << std::endl;
+	reinterpret_cast<slot_pointer_>(result)->block_offset = reinterpret_cast<size_t>(result) - reinterpret_cast<size_t>(block);
+	//std::cout << "allocating node at: " << result << std::endl;
 	return (result);
 }
 
@@ -278,9 +278,9 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
     
 	if (p != 0)
 	{
-		std::cout << "deallocating node at: " << p << std::endl;
+		//std::cout << "deallocating node at: " << p << std::endl;
 		slot_pointer_ slot = reinterpret_cast<slot_pointer_>(p);
-        BlockData* block = slot->block_location;
+        BlockData* block = reinterpret_cast<BlockData*>(reinterpret_cast<size_t>(slot) - slot->block_offset);
 		
 		slot->next = block->freeSlots_;
 		block->freeSlots_ = slot;
