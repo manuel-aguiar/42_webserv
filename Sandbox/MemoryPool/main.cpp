@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 09:41:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 08:02:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/23 20:50:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 int main(void)
 {
+/*
     std::cout << "                  listtest" << std::endl;         
 
     SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
@@ -92,6 +93,37 @@ int main(void)
 
     for(PoolSet_iter iter = set1.begin(); iter != set1.end(); ++iter)
         std::cout << *iter << std::endl;
-
+*/
     return (0);
+}
+
+int main(int ac, char **av)
+{
+    /*MemoryPool<std::string> pool1;*/
+
+    if (ac != 2)
+        return (0);
+    int times = std::atoi(av[1]);
+
+    std::list<std::string> list;
+
+    for (int i = 0; i < times; i++)
+    {
+        list.push_back("one");
+        list.push_front("two");
+        list.push_back("three");
+        list.pop_front();
+        list.pop_front();
+        list.push_back("four");
+    }
+
+    //std::cout << "all allocated" << std::endl;
+    //for(std::list<std::string, SharedMemoryPool<std::string> >::iterator iter = list.begin(); iter != list.end(); ++iter)
+    //    std::cout << *iter << std::endl;
+    for (int i = 0; i < times; i++)
+    {
+        list.pop_front();
+        list.pop_back();
+    }
+    //std::cout << "all poped" << std::endl;
 }
