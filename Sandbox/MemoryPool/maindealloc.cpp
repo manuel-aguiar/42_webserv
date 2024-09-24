@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 15:03:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 16:43:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <iostream>
+#include <cstdlib>
 
 int main1(void)
 {
@@ -91,6 +93,31 @@ int main1(void)
 
     for(PoolSet_iter iter = set1.begin(); iter != set1.end(); ++iter)
         std::cout << *iter << std::endl;
+
+    return (0);
+}
+
+int main0()
+{
+    typedef SharedMemoryPool<std::string> Pool;
+    Pool pool1 = Pool::make_SharedPool();
+
+    std::list<std::string, Pool> list(pool1);
+
+    list.push_back("one");
+    list.push_back("two");
+    list.push_back("one");
+    list.push_back("two");
+
+
+    std::list<std::string, SharedMemoryPool<std::string> > list2;
+    list2.push_back("one");
+    list2.push_back("two");
+    list2.push_back("two");
+    list2.push_back("two");
+    list2.push_back("two");
+    list2.push_back("two");
+    list2.push_back("two");
 
     return (0);
 }
@@ -266,8 +293,175 @@ int main(int ac, char **av)
     }
     std::cout << std::endl;
 
-    //std::cout << "                                                              ended, now destructors"<<    std::endl;
+    typedef SharedMemoryPool<std::pair<int, std::string> > PairPool;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMemoryPool<std::string> >  PoolMap;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMemoryPool<std::string> >::iterator PoolMap_iter;
+    
+    std::less<std::string> comparator;
+    PairPool pool2 = PairPool::make_SharedPool();
+
+    PoolMap map1(comparator, pool2);
+    PoolMap map2(comparator, pool2);
+    PoolMap map3(comparator, pool2);
+
+    // Number of times to repeat the operations
+
+    for (int i = 0; i < times; i++) {
+        map1["one"] = 1;
+        map1["two"] = 2;
+        map2["three"] = 3;
+        map3["four"] = 4;
+        map2["five"] = 5;
+        map1["three"] = 3; // This will overwrite the existing "three"
+        
+        // Simulating deletion by erasing keys
+        map1.erase("two");
+        map1.erase("one");
+        map1["four"] = 4;
+
+        map3["six"] = 6;
+        map1["seven"] = 7;
+        map2["eight"] = 8;
+        map2.erase("eight");  // Removes "eight"
+        map3.erase("four");    // Removes "four"
+        map1["nine"] = 9;
+        map1.erase("four");     // Removes "four"
+        map1["ten"] = 10;
+        map2["eleven"] = 11;
+        map2.erase("eleven");   // Removes "eleven"
+        map3["twelve"] = 12;
+
+        map1["thirteen"] = 13;
+        map1.erase("thirteen"); // Removes "thirteen"
+        map3["fifteen"] = 15;
+        map3.erase("fifteen");   // Removes "fifteen"
+        map2["sixteen"] = 16;
+        map1["seventeen"] = 17;
+        map1.erase("seventeen"); // Removes "seventeen"
+        map1["eighteen"] = 18;
+        map3["nineteen"] = 19;
+        map2.erase("sixteen");   // Removes "sixteen"
+        map3["twenty"] = 20;
+
+        // Additional operations
+        map1["twenty-one"] = 21;
+        map2["twenty-two"] = 22;
+        map3["twenty-three"] = 23;
+        map1.erase("eighteen");  // Removes "eighteen"
+        map2.erase("twenty-two"); // Removes "twenty-two"
+        map3.erase("twenty-three"); // Removes "twenty-three"
+
+        map1["twenty-four"] = 24;
+        map3["twenty-five"] = 25;
+        map2["twenty-six"] = 26;
+        map1.erase("twenty-one"); // Removes "twenty-one"
+        map3.erase("nineteen");   // Removes "nineteen"
+        map2.erase("three");      // Removes "three"
+
+        map1["twenty-seven"] = 27;
+        map1["twenty-eight"] = 28;
+        map2["twenty-nine"] = 29;
+        map2.erase("twenty-six"); // Removes "twenty-six"
+        map3["thirty"] = 30;
+        map1.erase("twenty-eight"); // Removes "twenty-eight"
+
+        map3["thirty-one"] = 31;
+        map1["thirty-two"] = 32;
+        map2.erase("twenty-nine"); // Removes "twenty-nine"
+        map1["thirty-three"] = 33;
+        map2["thirty-four"] = 34;
+        map3.erase("thirty-one");  // Removes "thirty-one"
+
+        map3["thirty-five"] = 35;
+        map1.erase("thirty-two");   // Removes "thirty-two"
+        map1["thirty-six"] = 36;
+        map2["thirty-seven"] = 37;
+        map2.erase("thirty-four");  // Removes "thirty-four"
+        map1["thirty-eight"] = 38;
+
+        map2["thirty-nine"] = 39;
+        map3["forty"] = 40;
+        map2["forty-one"] = 41;
+        map3.erase("six");          // Assuming "six" was a key in map3
+        map1.erase("thirty-six");   // Removes "thirty-six"
+
+        map2["forty-two"] = 42;
+        map3["forty-three"] = 43;
+        map1.erase("thirty-eight"); // Removes "thirty-eight"
+        map1["forty-four"] = 44;
+        map2.erase("thirty-nine");  // Removes "thirty-nine"
+        map3.erase("forty");        // Removes "forty"
+
+        map2["forty-five"] = 45;
+        map1["forty-six"] = 46;
+        map3["forty-seven"] = 47;
+        map2.erase("forty-two");     // Removes "forty-two"
+        map1["forty-eight"] = 48;
+
+        map1.erase("forty-eight"); // Removes "forty-eight"
+        map1["forty-nine"] = 49;
+        map3["fifty"] = 50;
+        map2["fifty-one"] = 51;
+        map1.erase("forty-nine");   // Removes "forty-nine"
+        map2.erase("fifty-one");     // Removes "fifty-one"
+
+        map3["fifty-two"] = 52;
+        map1["fifty-three"] = 53;
+        map2["fifty-four"] = 54;
+        map1.erase("forty-six");     // Removes "forty-six"
+        map2.erase("fifty-four");     // Removes "fifty-four"
+
+        map3["fifty-five"] = 55;
+        map1["fifty-six"] = 56;
+        map2.erase("three");          // Assuming "three" was a key in map2
+        map3.erase("fifty-five");     // Removes "fifty-five"
+        map2["fifty-seven"] = 57;
+        map1.erase("fifty-three");    // Removes "fifty-three"
+
+        map1["fifty-eight"] = 58;
+        map2["fifty-nine"] = 59;
+        map3["sixty"] = 60;
+        map1.erase("fifty-eight");    // Removes "fifty-eight"
+        map3.erase("fifty");           // Removes "fifty"
+
+        map1["sixty-one"] = 61;
+        map2["sixty-two"] = 62;
+        map1.erase("fifty-six");       // Removes "fifty-six"
+        map3["sixty-three"] = 63;
+        map2.erase("fifty-nine");      // Removes "fifty-nine"
+        map3["sixty-four"] = 64;
+
+        map2["sixty-five"] = 65;
+        map3["sixty-six"] = 66;
+        map1["sixty-seven"] = 67;
+        map1.erase("sixty-one");       // Removes "sixty-one"
+        map3.erase("sixty-six");        // Removes "sixty-six"
+
+        map1["sixty-eight"] = 68;
+        map3["sixty-nine"] = 69;
+        map2.erase("sixty-two");        // Removes "sixty-two"
+        map1["seventy"] = 70;
+    }
+
+    // Display the contents of the maps
+    std::cout << "Map 1: ";
+    for (PoolMap_iter iter = map1.begin(); iter != map1.end(); ++iter) {
+        std::cout << iter->first << " -> " << iter->second << ", ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Map 2: ";
+    for (PoolMap_iter iter = map2.begin(); iter != map2.end(); ++iter) {
+        std::cout << iter->first << " -> " << iter->second << ", ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Map 3: ";
+    for (PoolMap_iter iter = map3.begin(); iter != map3.end(); ++iter) {
+        std::cout << iter->first << " -> " << iter->second << ", ";
+    }
+    std::cout << std::endl;
 
     return (0);
-    //std::cout << "all poped" << std::endl;
+
 }

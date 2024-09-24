@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 13:38:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 16:09:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ class SharedMemoryPool
 			typedef SharedMemoryPool<U> other;
 		};
 
-		SharedMemoryPool(MemoryPool<T, BlockSize>* ptr = NULL) : _pool(ptr), _refCount(new int(1))
+		SharedMemoryPool(MemoryPool<T, BlockSize>* ptr = NULL) : 
+			_pool(ptr ? ptr : new MemoryPool<T, BlockSize>()), 
+			_refCount(new int(1))
 		{
-
 		}
 
 		SharedMemoryPool(const SharedMemoryPool& other) : _pool(other._pool), _refCount(other._refCount)
