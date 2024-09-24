@@ -23,10 +23,9 @@ for prog in "${programs[@]}"; do
     echo ""
 
     if [ "$prog" != "nopool" ]; then
-        rm -rf "$prog"
         rm -rf "$prog.txt"
     fi
-
+    rm -rf "$prog"
     if [ ! -s "diff$prog.txt" ]; then
         rm -rf "diff$prog.txt"
     else
