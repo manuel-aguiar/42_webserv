@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 16:43:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 18:27:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int main0()
     return (0);
 }
 
-int main(int ac, char **av)
+int main123(int ac, char **av)
 {
     /*MemoryPool<std::string> pool1;*/
 
@@ -464,4 +464,162 @@ int main(int ac, char **av)
 
     return (0);
 
+}
+
+
+
+
+class Dummy
+{
+    public:
+        Dummy() : i(42), s("yobro") , p(&s), u (i / 4){}
+        Dummy(int i, std::string s) : i(i), s(s) , p(&s), u (i / 4){}
+        int             i;
+        std::string     s;
+        std::string*    p;
+        u_int16_t       u;
+
+        bool operator<(const Dummy& other) const
+        {
+            return (i < other.i);
+        }
+};
+
+
+int main(int ac, char **av)
+{
+    if (ac != 2)
+    {
+        std::cout << "gime time" << std::endl;
+        return (1);
+    }
+
+    typedef SharedMemoryPool<std::pair<int, Dummy> >      MapPool;
+    typedef std::map<int, Dummy, std::less<int>, MapPool> Map;
+
+    typedef SharedMemoryPool<Dummy>                       ListPool;
+    typedef std::list<Dummy, ListPool>                    List;
+
+    typedef SharedMemoryPool<Dummy>                       SetPool;
+    typedef std::set<Dummy, std::less<Dummy>, SetPool>    Set;
+
+    std::less<int>      intComp;
+    std::less<Dummy>    dummyComp;
+
+    MapPool mapPool;
+    Map     map1(intComp, mapPool);
+    Map     map2(intComp, mapPool);
+    Map     map3(intComp, mapPool);
+
+    ListPool listPool;
+    List list1(listPool);
+    List list2(listPool);
+    List list3(listPool);
+
+    SetPool setPool;
+
+    Set set1(dummyComp, setPool);
+    Set set2(dummyComp, setPool);
+    Set set3(dummyComp, setPool);
+
+    int times = std::atoi(av[1]);
+
+    for (int i = 0; i < times; ++i)
+    {
+        int multiplier = i * times;
+
+        // Insert into list1 and then perform random operations on it
+        list1.push_back(Dummy(multiplier + 1, "ListTest"));
+        if (i % 2 == 0) {
+            list1.push_front(Dummy(multiplier + 2, "ListFront"));
+        }
+        if (i % 3 == 0 && !list1.empty()) {
+            list1.pop_back();  // Random pop back
+        }
+
+        // Manipulate map2 with insertions and overwrites
+        map2[multiplier + 1] = Dummy(multiplier + 1, "MapValue");
+        if (i % 4 == 0) {
+            map2[multiplier + 2] = Dummy(multiplier + 2, "MapOverwrite");
+        }
+        if (i % 5 == 0 && map2.size() > 2) {
+            map2.erase(multiplier + 1);  // Erase some keys periodically
+        }
+
+        // Insert into set3 and then random erases to test allocation
+        set3.insert(Dummy(multiplier + 3, "SetTest"));
+        if (i % 6 == 0) {
+            set3.insert(Dummy(multiplier + 4, "SetTestInsert"));
+        }
+        if (i % 7 == 0 && !set3.empty()) {
+            set3.erase(Dummy(multiplier + 3, "SetTest"));  // Erase by key
+        }
+
+        // Cross container operations: inserting into multiple containers at once
+        if (i % 10 == 0) {
+            list2.push_back(Dummy(multiplier + 5, "CrossInsert"));
+            map3[multiplier + 6] = Dummy(multiplier + 6, "CrossInsertMap");
+            set1.insert(Dummy(multiplier + 7, "CrossInsertSet"));
+        }
+
+        // Erase or pop elements in other containers
+        if (i % 8 == 0 && !list2.empty()) {
+            list2.pop_back();  // Erase from list2 periodically
+        }
+        if (i % 9 == 0 && map3.size() > 3) {
+            map3.erase(multiplier + 6);  // Remove from map3 periodically
+        }
+        if (i % 11 == 0 && !set1.empty()) {
+            set1.erase(Dummy(multiplier + 7, "CrossInsertSet"));  // Remove from set1
+        }
+
+        // Keep adding to all containers to keep them growing
+        list3.push_back(Dummy(multiplier + 8, "ListTest3"));
+        map1[multiplier + 9] = Dummy(multiplier + 9, "MapTest1");
+        set2.insert(Dummy(multiplier + 10, "SetTest2"));
+    }
+
+# ifdef PRINTALL
+
+    typedef Set::iterator                                 Set_iter;
+    typedef List::iterator                                List_iter;
+    typedef Map::iterator                                 Map_iter; 
+
+    for(List_iter iter = list1.begin(); iter != list1.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+    for(List_iter iter = list2.begin(); iter != list2.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+    for(List_iter iter = list3.begin(); iter != list3.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+
+
+    for(Set_iter iter = set1.begin(); iter != set1.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+    for(Set_iter iter = set2.begin(); iter != set2.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+    for(Set_iter iter = set3.begin(); iter != set3.end(); ++iter)
+        std::cout << iter->s << " ";
+    std::cout << std::endl;
+
+    for(Map_iter iter = map1.begin(); iter != map1.end(); ++iter)
+        std::cout << iter->first << " -> " << iter->second.s << "|||";
+    std::cout << std::endl;
+
+    for(Map_iter iter = map2.begin(); iter != map2.end(); ++iter)
+        std::cout << iter->first << " -> " << iter->second.s << "|||";
+    std::cout << std::endl;
+
+    for(Map_iter iter = map3.begin(); iter != map3.end(); ++iter)
+        std::cout << iter->first << " -> " << iter->second.s << "|||";
+    std::cout << std::endl;
+
+#endif
+
+
+    return (0);
 }
