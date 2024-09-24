@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 09:21:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 15:09:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 # include "MemoryPoolDeallocMemAlign.hpp"
 
-template <typename T, size_t BlockSize = 16384>
+template <typename T, size_t BlockSize = 4096>
 class SharedMemoryPool;
 
 # include "SharedMemoryPoolDeallocMemAlign.tpp"

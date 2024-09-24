@@ -41,9 +41,11 @@
 #ifndef MEMORY_BLOCK_TCC
 #define MEMORY_BLOCK_TCC
 
-#include <limits.h>
+#include <limits>
+#include <stdint.h>
 #include <stddef.h>
 #include <cstring>
+#include <cassert>
 
 
 template <typename T, size_t BlockSize>
@@ -124,6 +126,9 @@ MemoryPool<T, BlockSize>::MemoryPool()
 throw()
 {
 	//std::cout << "memory pool constructed" << std::endl;
+    assert(((BlockSize & (BlockSize - 1)) == 0) && 
+			BlockSize <= std::numeric_limits<uint16_t>::max() &&
+			BlockSize >= 512); // Power of 2 check + page limits
 	currentBlock_ = 0;
 	currentSlot_ = 0;
 	lastSlot_ = 0;
