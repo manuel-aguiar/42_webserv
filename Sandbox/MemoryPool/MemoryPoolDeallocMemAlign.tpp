@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 12:27:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:28:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,11 @@ const throw()
 }
 
 template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool() throw()
-	: availableBlocks_(0), fullBlocks_(0),
-	  freeBlocksCount_(0), maxFreeBlocks_(0)  // Allow up to 5 free blocks
+MemoryPool<T, BlockSize>::MemoryPool() throw() : 
+	availableBlocks_		(NULL), 
+	fullBlocks_				(NULL),
+	freeBlocksCount_		(0), 
+	maxFreeBlocks_			(1)
 {
     assert((BlockSize & (BlockSize - 1)) == 0); // Power of 2 check
 }

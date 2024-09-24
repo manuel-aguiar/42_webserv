@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 12:27:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 13:09:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,14 @@ class MemoryPool
 		void allocateBlock();
 		
 		void deallocateBlock(BlockData* block); // Deallocate a fully free block
+
+		//helper
+		void moveToAnotherTop(
+			BlockData**	to,
+			BlockData**	from, 
+			BlockData*	node);
+		void removeBlockFromList(BlockData **list, BlockData* node);
+
 };
 
 
@@ -108,9 +116,11 @@ const throw()
 }
 
 template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool() throw()
-	: availableBlocks_(0), fullBlocks_(0),
-	  freeBlocksCount_(0), maxFreeBlocks_(0)  // Allow up to 5 free blocks
+MemoryPool<T, BlockSize>::MemoryPool() throw() : 
+	availableBlocks_(0), 
+	fullBlocks_(0),
+	freeBlocksCount_(0), 
+	maxFreeBlocks_(3)  // Allow up to 5 free blocks
 {
     assert((BlockSize & (BlockSize - 1)) == 0); // Power of 2 check
 }
@@ -136,21 +146,23 @@ template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::~MemoryPool()
 throw()
 {
-    //std::cout << "memorypool destructor" << std::endl;
-	
+    std::cout << "memorypool destructor" << std::endl;
+	int count = 0;
 	BlockData* curr = availableBlocks_;
 	while (curr != 0) {
 		BlockData* prev = curr->next;
+		count++;
 		operator delete(reinterpret_cast<void*>(curr));
 		curr = prev;
 	}
 	curr = fullBlocks_;
 	while (curr != 0) {
 		BlockData* prev = curr->next;
+		count++;
 		operator delete(reinterpret_cast<void*>(curr));
 		curr = prev;
 	}
-	
+	std::cout << "deleted " << count << " blocks" << std::endl;
 }
 
 template <typename T, size_t BlockSize>
@@ -215,6 +227,38 @@ MemoryPool<T, BlockSize>::allocateBlock()
 */
 
 }
+template <typename T, size_t BlockSize>
+void MemoryPool<T, BlockSize>::removeBlockFromList(MemoryPool<T, BlockSize>::BlockData **list, MemoryPool<T, BlockSize>::BlockData* node)
+{
+	if (node->prev)
+		node->prev->next = node->next;
+	else
+		*list = node->next;
+	if (node->next)
+		node->next->prev = node->prev;
+}
+
+template <typename T, size_t BlockSize>
+void MemoryPool<T, BlockSize>::moveToAnotherTop(
+	BlockData**	to,
+	BlockData**	from, 
+	BlockData*	node)
+{
+	removeBlockFromList(from, node);
+	if (*to)
+	{
+		node->next = *to;
+		node->prev = NULL;
+		(*to)->prev = node;
+	}
+	else
+	{
+		node->next = NULL;
+		node->prev = NULL;
+	}
+	*to = node;
+}
+
 
 template <typename T, size_t BlockSize>
 inline typename MemoryPool<T, BlockSize>::pointer
@@ -241,15 +285,7 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 	}
 	if (block->usedSlotsCount == block->slotsCapacity)
 	{
-		block->freeSlots_ = NULL;
-		if (block->next)
-			block->next->prev = NULL;
-		availableBlocks_ = block->next;
-
-		block->next = fullBlocks_;
-		if (fullBlocks_)
-			fullBlocks_->prev = block;
-		fullBlocks_ = block;
+		moveToAnotherTop(&fullBlocks_, &availableBlocks_, block);
 	}
 	std::cout << "						slotCount: " << block->usedSlotsCount << " capacity:" << block->slotsCapacity << std::endl;
 	if (block->usedSlotsCount == 1)
@@ -281,22 +317,7 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
 			return ;
 		}
 		if (block->usedSlotsCount == block->slotsCapacity - 1) // it was full, no longer now
-		{
-			if (block->prev)
-				block->prev->next = block->next;
-			else
-				fullBlocks_ = block->next;
-				
-			if (block->next)
-				block->next->prev = block->prev;
-			else
-				fullBlocks_ = NULL;
-			
-			block->next = availableBlocks_;
-			block->prev = NULL;
-			availableBlocks_ = block;
-		}
-		
+			moveToAnotherTop(&availableBlocks_, &fullBlocks_, block);
 	}
 }
 
@@ -309,17 +330,7 @@ MemoryPool<T, BlockSize>::deallocateBlock(BlockData* block)
     if (this->freeBlocksCount_ > maxFreeBlocks_)
     {
         std::cout << "						deallocating block " << reinterpret_cast<void*>(block) << std::endl;
-        if (block->prev)
-		{
-            block->prev->next = block->next;
-        }
-        else
-            availableBlocks_ = block->next;
-
-        if (block->next)
-            block->next->prev = block->prev;
-        else
-			availableBlocks_ = NULL;
+        removeBlockFromList(&availableBlocks_, block);
 
         // Deallocate the block
         operator delete(reinterpret_cast<void*>(block));

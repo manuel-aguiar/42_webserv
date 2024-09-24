@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 08:34:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:58:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,8 @@ int main(int ac, char **av)
         list2.pop_front();  // Removes "sixteen"
         list3.push_back("twenty");
     }
+
+    std::cout << "                                                              ended, now destructors"<<    std::endl;
 
     return (0);
     //std::cout << "all poped" << std::endl;
