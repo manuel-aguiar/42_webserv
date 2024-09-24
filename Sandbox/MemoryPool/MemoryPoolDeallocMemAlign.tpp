@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 15:34:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 12:26:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ class MemoryPool
 		struct BlockData {
 			BlockData* 					next;
 			BlockData* 					prev;
-			size_t 						freeSlotsCount;
+			size_t 						usedSlotsCount;
+			size_t 						slotsCapacity;
 			slot_pointer_   			currentSlot_;
 			slot_pointer_   			freeSlots_;
 		};
@@ -106,7 +107,7 @@ const throw()
 template <typename T, size_t BlockSize>
 MemoryPool<T, BlockSize>::MemoryPool() throw()
 	: availableBlocks_(0), fullBlocks_(0),
-	  freeBlocksCount_(3), maxFreeBlocks_(0)  // Allow up to 5 free blocks
+	  freeBlocksCount_(0), maxFreeBlocks_(3000)  // Allow up to 5 free blocks
 {
     assert((BlockSize & (BlockSize - 1)) == 0); // Power of 2 check
 }
@@ -133,18 +134,20 @@ MemoryPool<T, BlockSize>::~MemoryPool()
 throw()
 {
     //std::cout << "memorypool destructor" << std::endl;
+	
 	BlockData* curr = availableBlocks_;
 	while (curr != 0) {
 		BlockData* prev = curr->next;
-		operator delete(reinterpret_cast<void*>(curr));
+		free(curr);
 		curr = prev;
 	}
 	curr = fullBlocks_;
 	while (curr != 0) {
 		BlockData* prev = curr->next;
-		operator delete(reinterpret_cast<void*>(curr));
+		free(curr);
 		curr = prev;
 	}
+	
 }
 
 template <typename T, size_t BlockSize>
@@ -179,10 +182,10 @@ MemoryPool<T, BlockSize>::allocateBlock()
 	
 	data_pointer_ newBlock = static_cast<data_pointer_>(__newblock);
 
-	//std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock) 
+	//std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock) << std::endl;
 	//<< " that ends at: " <<reinterpret_cast<void*>(newBlock + BlockSize) << std::endl;
 
-	BlockData* block = reinterpret_cast<BlockData*>(newBlock);
+BlockData* block = reinterpret_cast<BlockData*>(newBlock);
 	block->next = availableBlocks_; // Previous head block becomes the next
 	block->prev = NULL; // No previous block since this is the head
 
@@ -198,11 +201,13 @@ MemoryPool<T, BlockSize>::allocateBlock()
     size_type bodyPadding = padPointer(body, sizeof(slot_type_));
     block->currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
 
-	block->freeSlotsCount = ((BlockSize - sizeof(BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->currentSlot_)) / sizeof(slot_type_)); // Initially all slots are free
-	
+	block->slotsCapacity = ((BlockSize - sizeof(BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->currentSlot_)) / sizeof(slot_type_)); // Initially all slots are free
+	block->usedSlotsCount = 0;
 	
 	//std::cout << "slotCount: " << block->freeSlotsCount << std::endl;
 	block->freeSlots_ = NULL;
+	this->freeBlocksCount_++;
+	std::cout << "						freeblocks count (allocate block)" << this->freeBlocksCount_ << std::endl;	
 
 
 /*
@@ -226,51 +231,35 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 		allocateBlock();
 	block = availableBlocks_;
 
-	if (block->freeSlots_ != 0) {
-		// Allocate from free list
+	if (block->freeSlots_ != 0)
+	{
 		result = reinterpret_cast<pointer>(block->freeSlots_);
-        
-		block->freeSlotsCount--;		
-		if (block->freeSlotsCount)
-			block->freeSlots_ = block->freeSlots_->next;
-		else
-		{
-			//first block, so prev is already NULL
-			block->freeSlots_ = NULL;
-			if (block->next)
-				block->next->prev = NULL;
-			availableBlocks_ = block->next;
-
-
-			block->next = fullBlocks_;
-			if (fullBlocks_)
-				fullBlocks_->prev = block;
-			fullBlocks_ = block;
-			
-		}
+		block->usedSlotsCount++;		
+		block->freeSlots_ = block->freeSlots_->next;
 	}
 	else
 	{
 		result = reinterpret_cast<pointer>(block->currentSlot_);
-        block->freeSlotsCount--;
+        block->usedSlotsCount++;
 		block->currentSlot_++;
-
-		if (!block->freeSlotsCount)
-		{
-			//first block, so prev is already NULL
-			if (block->next)
-				block->next->prev = NULL;
-			availableBlocks_ = block->next;
-
-
-			block->next = fullBlocks_;
-			if (fullBlocks_)
-				fullBlocks_->prev = block;
-			fullBlocks_ = block;
-		}
-
 	}
-	//std::cout << "allocating node at: " << result << std::endl;
+	if (block->usedSlotsCount == block->slotsCapacity)
+	{
+		block->freeSlots_ = NULL;
+		if (block->next)
+			block->next->prev = NULL;
+		availableBlocks_ = block->next;
+
+		block->next = fullBlocks_;
+		if (fullBlocks_)
+			fullBlocks_->prev = block;
+		fullBlocks_ = block;
+	}
+	std::cout << "						slotCount: " << block->usedSlotsCount << " capacity:" << block->slotsCapacity << std::endl;
+	if (block->usedSlotsCount == 1)
+		this->freeBlocksCount_--;
+	std::cout << "						freeblocks count (allocate element)" << this->freeBlocksCount_ << std::endl;			
+	std::cout << "allocating node at: " << result << ", at block " << block << std::endl;
 	return (result);
 }
 
@@ -283,23 +272,25 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
 	{
 		//std::cout << "deallocating node at: " << p << std::endl;
 		slot_pointer_ slot = reinterpret_cast<slot_pointer_>(p);
-        BlockData* block = reinterpret_cast<BlockData*>(slot & ~(BlockSize - 1));
+        BlockData* block = reinterpret_cast<BlockData*>(reinterpret_cast<size_t>(slot) & (~(BlockSize - 1)));
 		
+		std::cout << "deallocating node at: " << p << ", from block " << block << std::endl;
 		slot->next = block->freeSlots_;
 		block->freeSlots_ = slot;
 
-		block->freeSlotsCount++;
-		if (block->freeSlotsCount == (BlockSize - sizeof(BlockData)) / sizeof(slot_type_))
+		block->usedSlotsCount--;
+		if (!block->usedSlotsCount)
 		{
 			deallocateBlock(block);
 			return ;
 		}
-		if (block->freeSlotsCount == 1)
+		if (block->usedSlotsCount == block->slotsCapacity - 1) // it was full, no longer now
 		{
 			if (block->prev)
 				block->prev->next = block->next;
 			else
 				fullBlocks_ = block->next;
+				
 			if (block->next)
 				block->next->prev = block->prev;
 			else
@@ -317,9 +308,11 @@ template <typename T, size_t BlockSize>
 void
 MemoryPool<T, BlockSize>::deallocateBlock(BlockData* block)
 {
-    if (++freeBlocksCount_ > maxFreeBlocks_)
+	++this->freeBlocksCount_;
+	std::cout << "maxFreeBlocks: " << maxFreeBlocks_ << ", vs freeblocks (deallocate block)" << this->freeBlocksCount_<< std::endl;
+    if (this->freeBlocksCount_ > maxFreeBlocks_)
     {
-        //std::cout << "deallocating block " << reinterpret_cast<void*>(block) << std::endl;
+        std::cout << "						deallocating block " << reinterpret_cast<void*>(block) << std::endl;
         if (block->prev)
 		{
             block->prev->next = block->next;
@@ -333,7 +326,10 @@ MemoryPool<T, BlockSize>::deallocateBlock(BlockData* block)
 			availableBlocks_ = NULL;
 
         // Deallocate the block
-        operator delete(reinterpret_cast<void*>(block));
+        free(block);
+
+		this->freeBlocksCount_--;
+
         //std::cout << " deleted?" << std::endl;
 	}
 	//std::cout << "finished deleting" << std::endl;

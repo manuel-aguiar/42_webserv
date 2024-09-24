@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 09:41:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 20:50:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 08:34:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,29 +26,29 @@ int main(void)
 
     SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
     
-    typedef std::list<std::string, SharedMemoryPool<std::string> >::iterator PoolList_iter;
+    typedef std::list1<std::string, SharedMemoryPool<std::string> >::iterator PoolList_iter;
 
-    std::list<std::string, SharedMemoryPool<std::string> > list(pool1);
-    std::list<std::string, SharedMemoryPool<std::string> > list2(pool1);
-    std::list<std::string, SharedMemoryPool<std::string> > list3(pool1);
+    std::list1<std::string, SharedMemoryPool<std::string> > list1(pool1);
+    std::list1<std::string, SharedMemoryPool<std::string> > list2(pool1);
+    std::list1<std::string, SharedMemoryPool<std::string> > list3(pool1);
 
     std::cout << "heyhey" << std::endl; 
 
-    list.push_back("one");
-    list.push_back("two");
+    list1.push_back("one");
+    list1.push_back("two");
     list2.push_back("one");
     list2.push_back("two");
-    list.push_back("three");
-    list.push_back("four");
+    list1.push_back("three");
+    list1.push_back("four");
 
     list3.push_back("one");
     list3.push_back("two");
     list3.push_back("one");
     list3.push_back("two");
-    list.push_back("one");
-    list.push_back("two");
+    list1.push_back("one");
+    list1.push_back("two");
     
-    for(PoolList_iter iter = list.begin(); iter != list.end(); ++iter)
+    for(PoolList_iter iter = list1.begin(); iter != list1.end(); ++iter)
         std::cout << *iter << std::endl;
 
 
@@ -105,25 +105,59 @@ int main(int ac, char **av)
         return (0);
     int times = std::atoi(av[1]);
 
-    std::list<std::string> list;
+    std::list<std::string> list1;
+    std::list<std::string> list2;
+    std::list<std::string> list3;
 
     for (int i = 0; i < times; i++)
     {
-        list.push_back("one");
-        list.push_front("two");
-        list.push_back("three");
-        list.pop_front();
-        list.pop_front();
-        list.push_back("four");
+        list1.push_back("one");
+        list1.push_front("two");
+        list2.push_back("three");
+        list3.push_back("four");
+        list2.push_front("five");
+        list1.push_back("three");
+        list1.pop_front();  // Removes "two"
+        list1.pop_front();  // Removes "one"
+        list1.push_back("four");
+        
+        list3.push_back("six");
+        list1.push_back("seven");
+        list2.push_back("eight");
+        list2.pop_back();   // Removes "eight"
+        list3.pop_front();  // Removes "four"
+        list1.push_front("nine");
+        list1.pop_back();   // Removes "four"
+        list1.push_back("ten");
+        list2.push_front("eleven");
+        list2.pop_front();  // Removes "eleven"
+        list3.push_back("twelve");
+        
+        list1.push_front("thirteen");
+        list2.push_back("fourteen");
+        list1.pop_front();  // Removes "thirteen"
+        list3.push_back("fifteen");
+        list3.pop_back();   // Removes "fifteen"
+        list2.push_front("sixteen");
+        list1.push_back("seventeen");
+        list1.pop_back();   // Removes "seventeen"
+        list1.push_back("eighteen");
+        list3.push_front("nineteen");
+        list2.pop_front();  // Removes "sixteen"
+        list3.push_back("twenty");
     }
 
     //std::cout << "all allocated" << std::endl;
-    //for(std::list<std::string, SharedMemoryPool<std::string> >::iterator iter = list.begin(); iter != list.end(); ++iter)
+    //for(std::list1<std::string, SharedMemoryPool<std::string> >::iterator iter = list1.begin(); iter != list1.end(); ++iter)
     //    std::cout << *iter << std::endl;
     for (int i = 0; i < times; i++)
     {
-        list.pop_front();
-        list.pop_back();
+        list1.pop_front();
+        list1.pop_back();
     }
+
+
+
+
     //std::cout << "all poped" << std::endl;
 }

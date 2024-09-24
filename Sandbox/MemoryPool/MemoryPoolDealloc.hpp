@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 13:10:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 08:35:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <cstring>
 #include <iostream>
 
-template <typename T, size_t BlockSize = 4096>
+template <typename T, size_t BlockSize = 16384>
 class MemoryPool;
 
 # include "MemoryPoolDealloc.tpp"

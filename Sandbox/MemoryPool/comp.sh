@@ -9,7 +9,7 @@ times=10000
 
 # Compilation loop
 for i in "${!files[@]}"; do
-  c++ -Wall -Wextra -Werror -std=c++98 "${files[i]}" -o "${programs[i]}"
+  c++ -Wall -Wextra -Werror -std=c++98 -fsanitize=address "${files[i]}" -o "${programs[i]}"
 done
 
 # Clear the screen

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/23 20:50:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 09:12:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,25 +106,48 @@ int main(int ac, char **av)
     int times = std::atoi(av[1]);
 
     SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
-    std::list<std::string, SharedMemoryPool<std::string> > list(pool1);
+    std::list<std::string, SharedMemoryPool<std::string> > list1(pool1);
+    std::list<std::string, SharedMemoryPool<std::string> > list2(pool1);
+    std::list<std::string, SharedMemoryPool<std::string> > list3(pool1);
 
     for (int i = 0; i < times; i++)
     {
-        list.push_back("one");
-        list.push_front("two");
-        list.push_back("three");
-        list.pop_front();
-        list.pop_front();
-        list.push_back("four");
+        list1.push_back("one");
+        list1.push_front("two");
+        list2.push_back("three");
+        list3.push_back("four");
+        list2.push_front("five");
+        list1.push_back("three");
+        list1.pop_front();  // Removes "two"
+        list1.pop_front();  // Removes "one"
+        list1.push_back("four");
+        
+        list3.push_back("six");
+        list1.push_back("seven");
+        list2.push_back("eight");
+        list2.pop_back();   // Removes "eight"
+        list3.pop_front();  // Removes "four"
+        list1.push_front("nine");
+        list1.pop_back();   // Removes "four"
+        list1.push_back("ten");
+        list2.push_front("eleven");
+        list2.pop_front();  // Removes "eleven"
+        list3.push_back("twelve");
+        
+        list1.push_front("thirteen");
+        list2.push_back("fourteen");
+        list1.pop_front();  // Removes "thirteen"
+        list3.push_back("fifteen");
+        list3.pop_back();   // Removes "fifteen"
+        list2.push_front("sixteen");
+        list1.push_back("seventeen");
+        list1.pop_back();   // Removes "seventeen"
+        list1.push_back("eighteen");
+        list3.push_front("nineteen");
+        list2.pop_front();  // Removes "sixteen"
+        list3.push_back("twenty");
     }
 
-    //std::cout << "all allocated" << std::endl;
-    //for(std::list<std::string, SharedMemoryPool<std::string> >::iterator iter = list.begin(); iter != list.end(); ++iter)
-    //    std::cout << *iter << std::endl;
-    for (int i = 0; i < times; i++)
-    {
-        list.pop_front();
-        list.pop_back();
-    }
+    return (0);
     //std::cout << "all poped" << std::endl;
 }
