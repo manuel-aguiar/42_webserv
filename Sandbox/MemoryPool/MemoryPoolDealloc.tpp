@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 13:09:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/24 13:40:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,11 @@ class MemoryPool
 		pointer newElement(const_reference val);
 		void deleteElement(pointer p);
 
-		struct BlockData;
 
+	private:
+
+		struct BlockData;
+		
 		struct Slot_
 		{
 			union  {
@@ -66,7 +69,9 @@ class MemoryPool
 			//BlockData*		  block_offset;
 			uint16_t 			block_offset;
 		};
-		
+
+
+	
 		typedef char* data_pointer_;
 		typedef Slot_ slot_type_;
 		typedef Slot_* slot_pointer_;
@@ -87,19 +92,13 @@ class MemoryPool
 		size_t							maxFreeBlocks_;	
 		//size_t						slotsCapacity_;
 
-	private:
-
-		size_type padPointer(data_pointer_ p, size_type align) const throw();
-
-		void allocateBlock();
-		
-		void deallocateBlock(BlockData* block); // Deallocate a fully free block
+	
 
 		//helper
-		void moveToAnotherTop(
-			BlockData**	to,
-			BlockData**	from, 
-			BlockData*	node);
+		size_type padPointer(data_pointer_ p, size_type align) const throw();
+		void allocateBlock();
+		void deallocateBlock(BlockData* block); // Deallocate a fully free block
+		void moveToAnotherTop(BlockData**	to,BlockData**	from, BlockData*	node);
 		void removeBlockFromList(BlockData **list, BlockData* node);
 
 };
