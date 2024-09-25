@@ -44,7 +44,7 @@
 #include <stddef.h>
 #include <cstring>
 
-template <typename T, size_t BlockSize = 16384>
+template <typename T, size_t BlockSize = 4096>
 class MemoryPool_Alloc;
 
 #include "MemoryPool_Alloc.tpp"

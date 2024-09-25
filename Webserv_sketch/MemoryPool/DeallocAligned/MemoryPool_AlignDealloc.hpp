@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 10:02:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 11:58:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <cstring>
 #include <iostream>
 
-template <typename T, size_t BlockSize = 16384>
+template <typename T, size_t BlockSize = 4096, size_t StartingBlocks = 0, size_t SpareBlocks = 0>
 class MemoryPool_AlignDealloc;
 
 # include "MemoryPool_AlignDealloc.tpp"

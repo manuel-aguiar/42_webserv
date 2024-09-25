@@ -85,10 +85,8 @@ class MemoryPool_Dealloc
 		};
 
 		size_t 							blockSize_;
-
 		BlockData*						availableBlocks_;
 		BlockData*						fullBlocks_;
-
 		size_t							freeBlocksCount_;
 		size_t							maxFreeBlocks_;	
 
@@ -149,9 +147,6 @@ MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Deallo
 		allocateBlock();
 }
 
-#include <cassert>
-
-#include <typeinfo>
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 template<class U>
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool)
@@ -366,8 +361,8 @@ inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::s
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::max_size()
 const throw()
 {
-	size_type maxBlocks = -1 / BlockSize;
-	return (BlockSize - sizeof(data_pointer_)) / sizeof(slot_type_) * maxBlocks;
+	size_type maxBlocks = -1 / this->blockSize_;
+	return (blockSize_ - sizeof(data_pointer_)) / sizeof(slot_type_) * maxBlocks;
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>

@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 10:00:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:16:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MemoryPool_Alloc.tpp"
 
-template <typename T, size_t BlockSize >
+template <typename T, size_t BlockSize>
 class SharedMPool_Alloc
 {
 	public:
@@ -78,7 +78,7 @@ class SharedMPool_Alloc
 		void deleteElement(pointer p) {return _pool->deleteElement(p);}
 
 	//private:
-		MemoryPool_Alloc<T, BlockSize>*      _pool;
+		MemoryPool_Alloc<T>*      _pool;
 		int*                           _refCount;
 
 		void _decrementRefCount()
@@ -98,15 +98,9 @@ class SharedMPool_Alloc
 			}
 		}
 
-		static SharedMPool_Alloc<T, BlockSize> make_SharedPool()
+		static SharedMPool_Alloc<T> make_SharedPool()
 		{
-			return (SharedMPool_Alloc<T, BlockSize>(new MemoryPool_Alloc<T, BlockSize>()));
-		}
-
-		template <typename Arg1>
-		static SharedMPool_Alloc<T, BlockSize> make_SharedPool(Arg1 arg1)
-		{
-			return SharedMPool_Alloc<T, BlockSize>(new MemoryPool_Alloc<T, BlockSize>(arg1));
+			return (SharedMPool_Alloc<T>(new MemoryPool_Alloc<T>()));
 		}
 };
 

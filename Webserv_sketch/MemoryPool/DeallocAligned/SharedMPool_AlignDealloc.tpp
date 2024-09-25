@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 10:29:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:02:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MemoryPool_AlignDealloc.hpp"
 
-template <typename T, size_t BlockSize >
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks >
 class SharedMPool_AlignDealloc
 {
 	public:
@@ -29,16 +29,18 @@ class SharedMPool_AlignDealloc
 			typedef SharedMPool_AlignDealloc<U> other;
 		};
 
-		SharedMPool_AlignDealloc(MemoryPool_AlignDealloc<T, BlockSize>* ptr = NULL) : 
-			_pool(ptr ? ptr : new MemoryPool_AlignDealloc<T, BlockSize>()), 
+		SharedMPool_AlignDealloc(MemoryPool_AlignDealloc<T>* ptr = NULL) : 
+			_pool(ptr ? ptr : new MemoryPool_AlignDealloc<T>()), 
 			_refCount(new int(1))
 		{
 		}
+
 		SharedMPool_AlignDealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw()
 		{
-			_pool = new MemoryPool_AlignDealloc<T, BlockSize>(block_size, starting_blocks, spare_blocks);
+			_pool = new MemoryPool_AlignDealloc<T>(block_size, starting_blocks, spare_blocks);
 			_refCount = new int(1);
 		}
+
 		SharedMPool_AlignDealloc(const SharedMPool_AlignDealloc& other) : _pool(other._pool), _refCount(other._refCount)
 		{
 			++(*_refCount); 
@@ -55,9 +57,9 @@ class SharedMPool_AlignDealloc
 			}
 			return (*this);
 		}
-		template <class U> SharedMPool_AlignDealloc(const SharedMPool_AlignDealloc<U, BlockSize>& memoryPool) throw()
+		template <class U> SharedMPool_AlignDealloc(const SharedMPool_AlignDealloc<U>& memoryPool) throw()
 		{
-			_pool = reinterpret_cast<MemoryPool_AlignDealloc<T, BlockSize>*>(memoryPool._pool);
+			_pool = reinterpret_cast<MemoryPool_AlignDealloc<T>*>(memoryPool._pool);
 			_refCount = memoryPool._refCount;
 			++(*_refCount);
 		}
@@ -81,7 +83,7 @@ class SharedMPool_AlignDealloc
 		void deleteElement(pointer p) {return _pool->deleteElement(p);}
 
 	//private:
-		MemoryPool_AlignDealloc<T, BlockSize>*      _pool;
+		MemoryPool_AlignDealloc<T>*      _pool;
 		int*                           _refCount;
 
 		void _decrementRefCount()
@@ -101,15 +103,16 @@ class SharedMPool_AlignDealloc
 			}
 		}
 
-		static SharedMPool_AlignDealloc<T, BlockSize> make_SharedPool()
+		static SharedMPool_AlignDealloc<T> make_SharedPool()
 		{
-			return (SharedMPool_AlignDealloc<T, BlockSize>(new MemoryPool_AlignDealloc<T, BlockSize>()));
+			return (SharedMPool_AlignDealloc<T>(new MemoryPool_AlignDealloc<T>()));
 		}
 
-		template <typename Arg1>
-		static SharedMPool_AlignDealloc<T, BlockSize> make_SharedPool(Arg1 arg1)
+		static SharedMPool_AlignDealloc<T> make_SharedPool(size_t block_size, size_t starting_blocks, size_t spare_blocks)
 		{
-			return SharedMPool_AlignDealloc<T, BlockSize>(new MemoryPool_AlignDealloc<T, BlockSize>(arg1));
+			return SharedMPool_AlignDealloc<T>
+				(new MemoryPool_AlignDealloc<T>(block_size, starting_blocks, spare_blocks)
+			);
 		}
 };
 

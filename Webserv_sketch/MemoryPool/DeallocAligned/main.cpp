@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 11:14:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:01:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,7 +469,7 @@ int main(int ac, char **av)
         return (1);
     }
 
-    typedef SharedMPool_AlignDealloc<std::pair<int, Dummy>, 32768>      MapPool;
+    typedef SharedMPool_AlignDealloc<std::pair<int, Dummy> >      MapPool;
     typedef std::map<int, Dummy, std::less<int>, MapPool> Map;
 
     typedef SharedMPool_AlignDealloc<Dummy>                       ListPool;
