@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 09:14:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 11:33:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 11:38:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,18 @@ int main(void)
         std::list<int, SharedMPool_Dealloc<int> > list1(pool1); // this is okay
         std::list<int, SharedMPool_Dealloc<int> > list2(pool1); // this is okay
         std::list<int, SharedMPool_Dealloc<int> > list3(pool2); // this is okay
-        std::list<int, SharedMPool_Dealloc<int> > list4(pool2); // this is okay
+        std::list<int, SharedMPool_Dealloc<int> > list4(list2.get_allocator()); // this is okay
 
+        list1.push_back(123);
+        list2.push_back(345);
+        list3.push_back(567);
+        list4.push_back(789);
+        list1.push_back(123);
+        list2.push_back(345);
+        list3.push_back(567);
+        list4.push_back(789);
+
+        
         //std::list<int, SharedMPool_Dealloc<int> > list5(SharedMPool_Dealloc<int>()); // THIS IS NOT OKAY
 
         SharedMPool_Dealloc<int> pool3;
