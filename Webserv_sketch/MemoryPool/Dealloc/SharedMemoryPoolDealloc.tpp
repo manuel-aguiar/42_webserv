@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 16:09:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:00:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MemoryPoolDealloc.hpp"
 
-template <typename T, size_t BlockSize >
+template <typename T, size_t BlockSize, size_t StartingBLocks, size_t SpareBlocks>
 class SharedMemoryPool
 {
 	public:
@@ -97,15 +97,16 @@ class SharedMemoryPool
 			}
 		}
 
-		static SharedMemoryPool<T, BlockSize> make_SharedPool()
+		static SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks> make_SharedPool()
 		{
-			return (SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>()));
+			return (SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>(new MemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>()));
 		}
 
-		template <typename Arg1>
-		static SharedMemoryPool<T, BlockSize> make_SharedPool(Arg1 arg1)
+		static SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks> make_SharedPool(size_t block_size, size_t starting_blocks, size_t spare_blocks)
 		{
-			return SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>(arg1));
+			return SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>
+				(new MemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>(block_size, starting_blocks, spare_blocks)
+			);
 		}
 };
 

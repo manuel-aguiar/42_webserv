@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SharedMemoryPoolDeallocMemAlign.hpp                :+:      :+:    :+:   */
+/*   SharedMemoryPoolDealloc.hpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 18:50:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 08:53:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,18 @@
 
 # define SHARED_MEMORY_POOL_HPP
 
-# include "MemoryPoolDeallocMemAlign.hpp"
+# include "MemoryPoolDealloc.hpp"
 
-template <typename T, size_t BlockSize = 4096>
+/*
+    StartingBlocks -> when the pool opens, it will allocate this amount of blocks (each BlockSize bytes long)
+    SpareBlocks -> the pool will only start deallocating empty blocks when the number of empty blocks exceeds this number
+        -> allow the user to dealloc straight away or keep some memory for potential future allocs
+*/
+
+
+template <typename T, size_t BlockSize = 4096, size_t StartingBlocks = 0, size_t SpareBlocks = 0>
 class SharedMemoryPool;
 
-# include "SharedMemoryPoolDeallocMemAlign.tpp"
+# include "SharedMemoryPoolDealloc.tpp"
 
 #endif

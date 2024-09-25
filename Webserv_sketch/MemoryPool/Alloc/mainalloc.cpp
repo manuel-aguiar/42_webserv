@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mainalign.cpp                                      :+:      :+:    :+:   */
+/*   mainalloc.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 18:45:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 08:06:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SharedMemoryPoolDeallocMemAlign.hpp" 
+#include "SharedMemoryPool.hpp" 
 
 #include <map>
 #include <set>
@@ -18,12 +18,11 @@
 #include <vector>
 #include <list>
 #include <iostream>
+#include <cstdlib>
 
 int main1(void)
 {
     std::cout << "                  listtest" << std::endl;         
-
-    
 
     SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
     
@@ -98,8 +97,7 @@ int main1(void)
     return (0);
 }
 
-
-int main1(int ac, char **av)
+int main123(int ac, char **av)
 {
     /*MemoryPool<std::string> pool1;*/
 
@@ -444,6 +442,7 @@ int main1(int ac, char **av)
 }
 
 
+
 class Dummy
 {
     public:
@@ -465,7 +464,7 @@ int main(int ac, char **av)
 {
     if (ac != 2)
     {
-        std::cout << "gime times" << std::endl;
+        std::cout << "gime time" << std::endl;
         return (1);
     }
 
@@ -553,6 +552,73 @@ int main(int ac, char **av)
         map1[multiplier + 9] = Dummy(multiplier + 9, "MapTest1");
         set2.insert(Dummy(multiplier + 10, "SetTest2"));
     }
+
+    for (int multiplier = 0; multiplier < 10; ++multiplier)
+    {
+
+        srand(static_cast<unsigned>(time(0))); // Seed for randomness
+
+        for (int i = 0; i < multiplier * 100; ++i) {
+            int randKey = (rand() % multiplier) * 10;  // Random key, scaled by multiplier
+            int randValue = (rand() % multiplier) * 10;  // Random value for Dummy objects
+            int randIndex = rand() % (multiplier * 5);  // Random index for List operations
+
+            // --------- Map Find Tests ---------
+            map1.find(randKey);  // Attempt to find in map1
+            map2.find(randKey + 1);  // Find in map2 with some offset
+            map3.find(randKey + 2);  // Find in map3 with another offset
+
+            // Random unsuccessful find (key does not exist)
+            map1.find(randKey + multiplier * 10);
+            map2.find(randKey + multiplier * 20);
+            map3.find(randKey + multiplier * 30);
+
+            // --------- Set Find Tests ---------
+            Dummy d1(randValue, "FindSet1");
+            Dummy d2(randValue + 1, "FindSet2");
+            Dummy d3(randValue + 2, "FindSet3");
+
+            set1.find(d1);  // Find in set1
+            set2.find(d2);  // Find in set2
+            set3.find(d3);  // Find in set3
+
+            // Random unsuccessful find (Dummy object does not exist)
+            Dummy d_fail(randValue + multiplier * 10, "FailFindSet");
+            set1.find(d_fail);
+            set2.find(d_fail);
+            set3.find(d_fail);
+
+            // --------- List Find-like Tests ---------
+            // List1: simulate a "find" by iterating and checking condition
+            if (!list1.empty()) {
+                List::iterator iter1 = list1.begin();
+                std::advance(iter1, randIndex % list1.size());
+                if (iter1 != list1.end() && iter1->i == randIndex) {
+                    // Simulate a found condition
+                }
+            }
+
+            // List2: simulate a "find"
+            if (!list2.empty()) {
+                List::iterator iter2 = list2.begin();
+                std::advance(iter2, randIndex % list2.size());
+                if (iter2 != list2.end() && iter2->i == randIndex + 1) {
+                    // Simulate a found condition
+                }
+            }
+
+            // List3: simulate a "find"
+            if (!list3.empty()) {
+                List::iterator iter3 = list3.begin();
+                std::advance(iter3, randIndex % list3.size());
+                if (iter3 != list3.end() && iter3->i == randIndex + 2) {
+                    // Simulate a found condition
+                }
+            }
+        }
+    }
+
+
 
 # ifdef PRINTALL
 

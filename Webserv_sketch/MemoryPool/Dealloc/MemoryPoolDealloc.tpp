@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 18:50:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:07:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <cassert>
 #include <stdint.h>
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 class MemoryPool
 {
 	public:
@@ -37,8 +37,9 @@ class MemoryPool
 		};
 
 		MemoryPool() throw();
+		MemoryPool(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw();
 		MemoryPool(const MemoryPool& memoryPool) throw();
-		template <class U> MemoryPool(const MemoryPool<U, BlockSize>& memoryPool) throw();
+		template <class U> MemoryPool(const MemoryPool<U, BlockSize, StartingBlocks, SpareBlocks>& memoryPool) throw();
 		~MemoryPool() throw();
 
 		pointer address(reference x) const throw();
@@ -83,6 +84,8 @@ class MemoryPool
 			slot_pointer_   			freeSlots_;
 		};
 
+		size_t 							blockSize_;
+
 		BlockData*						availableBlocks_;
 		BlockData*						fullBlocks_;
 
@@ -100,46 +103,66 @@ class MemoryPool
 
 
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::size_type
-MemoryPool<T, BlockSize>::padPointer(data_pointer_ p, size_type align)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::padPointer(data_pointer_ p, size_type align)
 const throw()
 {
 	size_t result = reinterpret_cast<size_t>(p);
 	return ((align - result) % align);
 }
 
-template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool() throw() : 
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw() :
+	blockSize_(block_size),
 	availableBlocks_(0), 
 	fullBlocks_(0),
 	freeBlocksCount_(0), 
-	maxFreeBlocks_(3)  // Allow up to 5 free blocks
+	maxFreeBlocks_(spare_blocks)  // Allow up to 5 free blocks
 {
-    assert(((BlockSize & (BlockSize - 1)) == 0) && 
-			BlockSize <= std::numeric_limits<uint16_t>::max() &&
-			BlockSize >= 512); // Power of 2 check + page limits
+    assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
+			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
+			this->blockSize_ >= 512); // Power of 2 check + page limits
+	
+	for (size_t i = 0; i < starting_blocks; i++)
+		allocateBlock();
 }
 
-template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool& memoryPool)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool() throw() : 
+	blockSize_(BlockSize),
+	availableBlocks_(0), 
+	fullBlocks_(0),
+	freeBlocksCount_(0), 
+	maxFreeBlocks_(SpareBlocks)  // Allow up to 5 free blocks
+{
+    assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
+			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
+			this->blockSize_ >= 512); // Power of 2 check + page limits
+	
+	for (size_t i = 0; i < StartingBlocks; i++)
+		allocateBlock();
+}
+
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool& memoryPool)
 throw()
 {
+	std::cout << "memorypool copy constructor" << std::endl;
 	(void)memoryPool;   // avoid unused parameter warning
-	MemoryPool();
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 template<class U>
-MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool<U, BlockSize>& memoryPool)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool<U, BlockSize, StartingBlocks, SpareBlocks>& memoryPool)
 throw()
 {
+	std::cout << "memorypool copy rebind constructor" << std::endl;	
 	(void)memoryPool;   // avoid unused parameter warning
-	MemoryPool();
 }
 
-template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::~MemoryPool()
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::~MemoryPool()
 throw()
 {
     //std::cout << "memorypool destructor" << std::endl;
@@ -161,17 +184,17 @@ throw()
 	//std::cout << "deleted " << count << " blocks" << std::endl;
 }
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::address(reference x)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::address(reference x)
 const throw()
 {
 	return &x;
 }
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::const_pointer
-MemoryPool<T, BlockSize>::address(const_reference x)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::const_pointer
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::address(const_reference x)
 const throw()
 {
 	return &x;
@@ -179,12 +202,12 @@ const throw()
 
 
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void
-MemoryPool<T, BlockSize>::allocateBlock()
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocateBlock()
 {
     
-	data_pointer_ newBlock = static_cast<data_pointer_>(operator new(BlockSize));
+	data_pointer_ newBlock = static_cast<data_pointer_>(operator new(this->blockSize_));
 
 	//std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock)
 	//<< " that ends at: " <<reinterpret_cast<void*>(newBlock + BlockSize) << std::endl;
@@ -205,7 +228,7 @@ MemoryPool<T, BlockSize>::allocateBlock()
     size_type bodyPadding = padPointer(body, sizeof(slot_type_));
     block->currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
 
-	block->slotsCapacity = ((BlockSize - sizeof(BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->currentSlot_)) / sizeof(slot_type_)); // Initially all slots are free
+	block->slotsCapacity = ((this->blockSize_ - sizeof(BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->currentSlot_)) / sizeof(slot_type_)); // Initially all slots are free
 	block->usedSlotsCount = 0;
 	
 	//std::cout << "slotCount: " << block->freeSlotsCount << std::endl;
@@ -223,8 +246,8 @@ MemoryPool<T, BlockSize>::allocateBlock()
 */
 
 }
-template <typename T, size_t BlockSize>
-void MemoryPool<T, BlockSize>::removeBlockFromList(MemoryPool<T, BlockSize>::BlockData **list, MemoryPool<T, BlockSize>::BlockData* node)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData **list, MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData* node)
 {
 	if (node->prev)
 		node->prev->next = node->next;
@@ -234,8 +257,8 @@ void MemoryPool<T, BlockSize>::removeBlockFromList(MemoryPool<T, BlockSize>::Blo
 		node->next->prev = node->prev;
 }
 
-template <typename T, size_t BlockSize>
-void MemoryPool<T, BlockSize>::moveToAnotherTop(
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::moveToAnotherTop(
 	BlockData**	to,
 	BlockData**	from, 
 	BlockData*	node)
@@ -256,9 +279,9 @@ void MemoryPool<T, BlockSize>::moveToAnotherTop(
 }
 
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocate(size_type, const_pointer)
 {
 	BlockData* 	block;
 	pointer 	result;
@@ -287,9 +310,9 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 	return (result);
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocate(pointer p, size_type)
 {
     
 	if (p != 0)
@@ -312,9 +335,9 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
 	}
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void
-MemoryPool<T, BlockSize>::deallocateBlock(BlockData* block)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(BlockData* block)
 {
 	++this->freeBlocksCount_;
 	//std::cout << "maxFreeBlocks: " << maxFreeBlocks_ << ", vs freeblocks (deallocate block)" << this->freeBlocksCount_<< std::endl;
@@ -333,41 +356,41 @@ MemoryPool<T, BlockSize>::deallocateBlock(BlockData* block)
 	//std::cout << "finished deleting" << std::endl;
 }
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::size_type
-MemoryPool<T, BlockSize>::max_size()
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::max_size()
 const throw()
 {
 	size_type maxBlocks = -1 / BlockSize;
 	return (BlockSize - sizeof(data_pointer_)) / sizeof(slot_type_) * maxBlocks;
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize>::construct(pointer p, const_reference val)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::construct(pointer p, const_reference val)
 {
 	new (p) value_type(val);
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize>::destroy(pointer p)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::destroy(pointer p)
 {
 	p->~value_type();
 }
 
-template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::newElement(const_reference val)
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::newElement(const_reference val)
 {
 	pointer result = allocate();
 	construct(result, val);
 	return result;
 }
 
-template <typename T, size_t BlockSize>
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize>::deleteElement(pointer p)
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deleteElement(pointer p)
 {
 	if (p != 0) {
 		p->~value_type();

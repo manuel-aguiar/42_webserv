@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MemoryPoolDealloc.hpp                              :+:      :+:    :+:   */
+/*   SharedMemoryPoolDeallocMemAlign.hpp                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 08:35:55 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/25 08:11:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MEMORY_POOL_DEALLOC_HPP
+#ifndef SHARED_MEMORY_POOL_HPP
 
-# define MEMORY_POOL_DEALLOC_HPP
+# define SHARED_MEMORY_POOL_HPP
 
-#include <limits.h>
-#include <stddef.h>
-#include <cstring>
-#include <iostream>
+# include "MemoryPoolDeallocMemAlign.hpp"
 
-template <typename T, size_t BlockSize = 16384>
-class MemoryPool;
+template <typename T, size_t BlockSize = 32768>
+class SharedMemoryPool;
 
-# include "MemoryPoolDealloc.tpp"
+# include "SharedMemoryPoolDeallocMemAlign.tpp"
 
 #endif

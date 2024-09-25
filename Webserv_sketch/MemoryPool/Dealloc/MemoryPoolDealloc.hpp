@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SharedMemoryPoolDealloc.hpp                        :+:      :+:    :+:   */
+/*   MemoryPoolDealloc.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 18:50:13 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/25 08:53:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHARED_MEMORY_POOL_HPP
+#ifndef MEMORY_POOL_DEALLOC_HPP
 
-# define SHARED_MEMORY_POOL_HPP
+# define MEMORY_POOL_DEALLOC_HPP
 
-# include "MemoryPoolDealloc.hpp"
+#include <limits.h>
+#include <stddef.h>
+#include <cstring>
+#include <iostream>
 
-template <typename T, size_t BlockSize = 4096>
-class SharedMemoryPool;
+template <typename T, size_t BlockSize = 4096, size_t StartingBlocks = 0, size_t SpareBlocks = 0>
+class MemoryPool;
 
-# include "SharedMemoryPoolDealloc.tpp"
+# include "MemoryPoolDealloc.tpp"
 
 #endif
