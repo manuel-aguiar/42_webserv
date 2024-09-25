@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   maindealloc.cpp                                    :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 09:07:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:31:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -689,15 +689,3 @@ for (int multiplier = 0; multiplier < 10; ++multiplier)
     return (0);
 }
 
-int main(void)
-{
-    
-    SharedMemoryPool<int> pool1 = SharedMemoryPool<int>::make_SharedPool(4096, 3, 5);
-    
-    
-    std::list<int, SharedMemoryPool<int> > list(pool1);
-    list.push_back(123);
-    list.push_back(345);
-
-    return (0);
-}

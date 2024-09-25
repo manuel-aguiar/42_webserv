@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 09:00:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:17:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class SharedMemoryPool
 			typedef SharedMemoryPool<U> other;
 		};
 
-		SharedMemoryPool(MemoryPool<T, BlockSize>* ptr = NULL) : 
-			_pool(ptr ? ptr : new MemoryPool<T, BlockSize>()), 
+		SharedMemoryPool(MemoryPool<T>* ptr = NULL) : 
+			_pool(ptr ? ptr : new MemoryPool<T>()), 
 			_refCount(new int(1))
 		{
 		}
@@ -51,9 +51,9 @@ class SharedMemoryPool
 			}
 			return (*this);
 		}
-		template <class U> SharedMemoryPool(const SharedMemoryPool<U, BlockSize>& memoryPool) throw()
+		template <class U> SharedMemoryPool(const SharedMemoryPool<U>& memoryPool) throw()
 		{
-			_pool = reinterpret_cast<MemoryPool<T, BlockSize>*>(memoryPool._pool);
+			_pool = reinterpret_cast<MemoryPool<T>*>(memoryPool._pool);
 			_refCount = memoryPool._refCount;
 			++(*_refCount);
 		}
@@ -77,7 +77,7 @@ class SharedMemoryPool
 		void deleteElement(pointer p) {return _pool->deleteElement(p);}
 
 	//private:
-		MemoryPool<T, BlockSize>*      _pool;
+		MemoryPool<T>*      _pool;
 		int*                           _refCount;
 
 		void _decrementRefCount()
@@ -97,15 +97,15 @@ class SharedMemoryPool
 			}
 		}
 
-		static SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks> make_SharedPool()
+		static SharedMemoryPool<T> make_SharedPool()
 		{
-			return (SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>(new MemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>()));
+			return (SharedMemoryPool<T>(new MemoryPool<T>()));
 		}
 
-		static SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks> make_SharedPool(size_t block_size, size_t starting_blocks, size_t spare_blocks)
+		static SharedMemoryPool<T> make_SharedPool(size_t block_size, size_t starting_blocks, size_t spare_blocks)
 		{
-			return SharedMemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>
-				(new MemoryPool<T, BlockSize, StartingBLocks, SpareBlocks>(block_size, starting_blocks, spare_blocks)
+			return SharedMemoryPool<T>
+				(new MemoryPool<T>(block_size, starting_blocks, spare_blocks)
 			);
 		}
 };

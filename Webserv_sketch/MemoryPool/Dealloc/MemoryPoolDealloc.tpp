@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 09:07:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:47:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class MemoryPool
 		MemoryPool() throw();
 		MemoryPool(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw();
 		MemoryPool(const MemoryPool& memoryPool) throw();
-		template <class U> MemoryPool(const MemoryPool<U, BlockSize, StartingBlocks, SpareBlocks>& memoryPool) throw();
+		template <class U> MemoryPool(const MemoryPool<U>& memoryPool) throw();
 		~MemoryPool() throw();
 
 		pointer address(reference x) const throw();
@@ -57,7 +57,7 @@ class MemoryPool
 		void deleteElement(pointer p);
 
 
-	private:
+	//private:
 
 		struct BlockData;
 		
@@ -122,7 +122,8 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(size_t block_s
 {
     assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
 			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
-			this->blockSize_ >= 512); // Power of 2 check + page limits
+			this->blockSize_ >= 512 // Power of 2 check + page limits
+			&& starting_blocks >= 0 && maxFreeBlocks_ >= starting_blocks);
 	
 	for (size_t i = 0; i < starting_blocks; i++)
 		allocateBlock();
@@ -138,27 +139,36 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool() throw() :
 {
     assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
 			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
-			this->blockSize_ >= 512); // Power of 2 check + page limits
-	
+			this->blockSize_ >= 512 // Power of 2 check + page limits
+			&& StartingBlocks >= 0 && SpareBlocks >= StartingBlocks); // At least one block
 	for (size_t i = 0; i < StartingBlocks; i++)
 		allocateBlock();
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool& memoryPool)
-throw()
+throw() : 
+	blockSize_(memoryPool.blockSize_),
+	availableBlocks_(0), 
+	fullBlocks_(0),
+	freeBlocksCount_(0), 
+	maxFreeBlocks_(memoryPool.maxFreeBlocks_)
 {
-	std::cout << "memorypool copy constructor" << std::endl;
-	(void)memoryPool;   // avoid unused parameter warning
+
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 template<class U>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool<U, BlockSize, StartingBlocks, SpareBlocks>& memoryPool)
-throw()
+MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool<U>& memoryPool)
+throw() : 
+	blockSize_(memoryPool.blockSize_),
+	availableBlocks_(0), 
+	fullBlocks_(0),
+	freeBlocksCount_(0), 
+	maxFreeBlocks_(memoryPool.maxFreeBlocks_)
+	
 {
-	std::cout << "memorypool copy rebind constructor" << std::endl;	
-	(void)memoryPool;   // avoid unused parameter warning
+
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
