@@ -23,7 +23,7 @@ template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlock
 class MemoryPool_Dealloc
 {
 	public:
-	
+		
 		typedef T               value_type;
 		typedef T*              pointer;
 		typedef T&              reference;
@@ -31,14 +31,14 @@ class MemoryPool_Dealloc
 		typedef const T&        const_reference;
 		typedef size_t          size_type;
 		typedef ptrdiff_t       difference_type;
-
+		
 		template <typename U> struct rebind {
 			typedef MemoryPool_Dealloc<U> other;
 		};
 
 		MemoryPool_Dealloc() throw();
 		MemoryPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw();
-		MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool) throw();
+		
 		template <class U> MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool) throw();
 		~MemoryPool_Dealloc() throw();
 
@@ -99,6 +99,10 @@ class MemoryPool_Dealloc
 		void moveToAnotherTop(BlockData**	to,BlockData**	from, BlockData*	node);
 		void removeBlockFromList(BlockData **list, BlockData* node);
 
+
+		MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool) throw();
+		MemoryPool_Dealloc& operator=(const MemoryPool_Dealloc& memoryPool);
+
 };
 
 
@@ -145,18 +149,9 @@ MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Deallo
 		allocateBlock();
 }
 
-template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool)
-throw() : 
-	blockSize_(memoryPool.blockSize_),
-	availableBlocks_(0), 
-	fullBlocks_(0),
-	freeBlocksCount_(0), 
-	maxFreeBlocks_(memoryPool.maxFreeBlocks_)
-{
+#include <cassert>
 
-}
-
+#include <typeinfo>
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 template<class U>
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool)
@@ -168,7 +163,7 @@ throw() :
 	maxFreeBlocks_(memoryPool.maxFreeBlocks_)
 	
 {
-
+	//assert(typeid(T).name() == typeid(U).name());
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
@@ -406,4 +401,19 @@ MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deleteElement(poi
 		p->~value_type();
 		deallocate(p);
 	}
+}
+
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool)
+throw()
+{
+	(void)memoryPool;
+}
+
+template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
+inline MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>& 
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::operator=(const MemoryPool_Dealloc& memoryPool)
+{
+	(void)memoryPool;
+	return (*this);
 }

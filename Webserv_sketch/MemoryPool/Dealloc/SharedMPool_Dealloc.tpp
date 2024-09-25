@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 10:01:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 10:30:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ class SharedMPool_Dealloc
 			_pool(ptr ? ptr : new MemoryPool_Dealloc<T>()), 
 			_refCount(new int(1))
 		{
+		}
+
+		SharedMPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw()
+		{
+			_pool = new MemoryPool_Dealloc<T>(block_size, starting_blocks, spare_blocks);
+			_refCount = new int(1);
 		}
 
 		SharedMPool_Dealloc(const SharedMPool_Dealloc& other) : _pool(other._pool), _refCount(other._refCount)
