@@ -1,0 +1,27 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    NOTAS_NGINX                                        :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/09/25 14:31:41 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/09/25 14:31:41 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Ideias interessantes do nginx:
+
+    rb-tree (std::map<timer, Connection*>)de timers em que cada conexção tem um timer:
+
+        map.begin() será o timeout mais curto, epoll->wait até esse timeout
+        se nada acontecer, esse timeout pode ser limpo, se sim, IO
+    
+    struct sockaddr* -> usar uma union entre sockaddr_in e sockaddr_in6... sa_family no mesmo byte
+            switch AF_INET para determinar como fazer cast
+
+    tudo é alocado em memory pools, TUDO
+
+
+    ngx_cycle -> o cerebro de tudo... ao iniciar-se, inicial uma memory pool,
+    e autoaloca-se nela............
