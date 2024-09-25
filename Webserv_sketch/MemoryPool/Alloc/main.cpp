@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mainalloc.cpp                                      :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 08:06:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:59:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ int main1(void)
 {
     std::cout << "                  listtest" << std::endl;         
 
-    SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
+    SharedMPool_Alloc<std::string> pool1 = SharedMPool_Alloc<std::string>::make_SharedPool();
     
-    typedef std::list<std::string, SharedMemoryPool<std::string> >::iterator PoolList_iter;
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >::iterator PoolList_iter;
 
-    std::list<std::string, SharedMemoryPool<std::string> > list(pool1);
-    std::list<std::string, SharedMemoryPool<std::string> > list2(pool1);
-    std::list<std::string, SharedMemoryPool<std::string> > list3(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list2(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list3(pool1);
 
     std::cout << "heyhey" << std::endl; 
 
@@ -54,11 +54,11 @@ int main1(void)
 
     std::cout << "                  map test" << std::endl; 
 
-    SharedMemoryPool<std::pair<int, std::string> > pool2 = SharedMemoryPool<std::pair<int, std::string> >::make_SharedPool();
+    SharedMPool_Alloc<std::pair<int, std::string> > pool2 = SharedMPool_Alloc<std::pair<int, std::string> >::make_SharedPool();
     std::less<int> comparator;
 
-    typedef std::map<int, std::string, std::less<int>, SharedMemoryPool<std::pair<int, std::string> > >             PoolMap;
-    typedef std::map<int, std::string, std::less<int>, SharedMemoryPool<std::pair<int, std::string> > >::iterator   PoolMap_iter;
+    typedef std::map<int, std::string, std::less<int>, SharedMPool_Alloc<std::pair<int, std::string> > >             PoolMap;
+    typedef std::map<int, std::string, std::less<int>, SharedMPool_Alloc<std::pair<int, std::string> > >::iterator   PoolMap_iter;
 
     
 
@@ -80,11 +80,11 @@ int main1(void)
 
     std::cout << "                  set test" << std::endl; 
 
-    SharedMemoryPool<std::string> pool4 = SharedMemoryPool<std::string>::make_SharedPool();
+    SharedMPool_Alloc<std::string> pool4 = SharedMPool_Alloc<std::string>::make_SharedPool();
     std::less<std::string> comparator4;
 
-    typedef std::set<std::string, std::less<std::string>, SharedMemoryPool<std::string> >  PoolSet;
-    typedef std::set<std::string, std::less<std::string>, SharedMemoryPool<std::string> >::iterator  PoolSet_iter;
+    typedef std::set<std::string, std::less<std::string>, SharedMPool_Alloc<std::string> >  PoolSet;
+    typedef std::set<std::string, std::less<std::string>, SharedMPool_Alloc<std::string> >::iterator  PoolSet_iter;
 
     PoolSet set1(comparator4, pool4);
 
@@ -99,15 +99,15 @@ int main1(void)
 
 int main123(int ac, char **av)
 {
-    /*MemoryPool<std::string> pool1;*/
+    /*MemoryPool_Alloc<std::string> pool1;*/
 
     if (ac != 2)
         return (0);
     int times = std::atoi(av[1]);
 
-    SharedMemoryPool<std::string> pool1 = SharedMemoryPool<std::string>::make_SharedPool();
-    typedef std::list<std::string, SharedMemoryPool<std::string> >  PoolList;
-    typedef std::list<std::string, SharedMemoryPool<std::string> >::iterator PoolList_iter;
+    SharedMPool_Alloc<std::string> pool1 = SharedMPool_Alloc<std::string>::make_SharedPool();
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >  PoolList;
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >::iterator PoolList_iter;
     
     PoolList list1(pool1);
     PoolList list2(pool1);
@@ -268,9 +268,9 @@ int main123(int ac, char **av)
     }
     std::cout << std::endl;
 
-    typedef SharedMemoryPool<std::pair<int, std::string> > PairPool;
-    typedef std::map<std::string, int, std::less< std::string>, SharedMemoryPool<std::string> >  PoolMap;
-    typedef std::map<std::string, int, std::less< std::string>, SharedMemoryPool<std::string> >::iterator PoolMap_iter;
+    typedef SharedMPool_Alloc<std::pair<int, std::string> > PairPool;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_Alloc<std::string> >  PoolMap;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_Alloc<std::string> >::iterator PoolMap_iter;
     
     std::less<std::string> comparator;
     PairPool pool2 = PairPool::make_SharedPool();
@@ -468,13 +468,13 @@ int main(int ac, char **av)
         return (1);
     }
 
-    typedef SharedMemoryPool<std::pair<int, Dummy> >      MapPool;
+    typedef SharedMPool_Alloc<std::pair<int, Dummy> >      MapPool;
     typedef std::map<int, Dummy, std::less<int>, MapPool> Map;
 
-    typedef SharedMemoryPool<Dummy>                       ListPool;
+    typedef SharedMPool_Alloc<Dummy>                       ListPool;
     typedef std::list<Dummy, ListPool>                    List;
 
-    typedef SharedMemoryPool<Dummy>                       SetPool;
+    typedef SharedMPool_Alloc<Dummy>                       SetPool;
     typedef std::set<Dummy, std::less<Dummy>, SetPool>    Set;
 
     std::less<int>      intComp;

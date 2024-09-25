@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MemoryPoolDealloc.tpp                              :+:      :+:    :+:   */
+/*   MemoryPool_Dealloc.tpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 09:47:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:54:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-class MemoryPool
+class MemoryPool_Dealloc
 {
 	public:
 	
@@ -33,14 +33,14 @@ class MemoryPool
 		typedef ptrdiff_t       difference_type;
 
 		template <typename U> struct rebind {
-			typedef MemoryPool<U> other;
+			typedef MemoryPool_Dealloc<U> other;
 		};
 
-		MemoryPool() throw();
-		MemoryPool(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw();
-		MemoryPool(const MemoryPool& memoryPool) throw();
-		template <class U> MemoryPool(const MemoryPool<U>& memoryPool) throw();
-		~MemoryPool() throw();
+		MemoryPool_Dealloc() throw();
+		MemoryPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw();
+		MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool) throw();
+		template <class U> MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool) throw();
+		~MemoryPool_Dealloc() throw();
 
 		pointer address(reference x) const throw();
 		const_pointer address(const_reference x) const throw();
@@ -104,8 +104,8 @@ class MemoryPool
 
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::padPointer(data_pointer_ p, size_type align)
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::padPointer(data_pointer_ p, size_type align)
 const throw()
 {
 	size_t result = reinterpret_cast<size_t>(p);
@@ -113,7 +113,7 @@ const throw()
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw() :
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw() :
 	blockSize_(block_size),
 	availableBlocks_(0), 
 	fullBlocks_(0),
@@ -130,7 +130,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(size_t block_s
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool() throw() : 
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc() throw() : 
 	blockSize_(BlockSize),
 	availableBlocks_(0), 
 	fullBlocks_(0),
@@ -146,7 +146,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool() throw() :
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool& memoryPool)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool)
 throw() : 
 	blockSize_(memoryPool.blockSize_),
 	availableBlocks_(0), 
@@ -159,7 +159,7 @@ throw() :
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 template<class U>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool(const MemoryPool<U>& memoryPool)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool)
 throw() : 
 	blockSize_(memoryPool.blockSize_),
 	availableBlocks_(0), 
@@ -172,7 +172,7 @@ throw() :
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::~MemoryPool()
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::~MemoryPool_Dealloc()
 throw()
 {
     //std::cout << "memorypool destructor" << std::endl;
@@ -195,16 +195,16 @@ throw()
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::address(reference x)
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::address(reference x)
 const throw()
 {
 	return &x;
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::const_pointer
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::address(const_reference x)
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::const_pointer
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::address(const_reference x)
 const throw()
 {
 	return &x;
@@ -214,7 +214,7 @@ const throw()
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocateBlock()
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::allocateBlock()
 {
     
 	data_pointer_ newBlock = static_cast<data_pointer_>(operator new(this->blockSize_));
@@ -257,7 +257,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocateBlock()
 
 }
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData **list, MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData* node)
+void MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData **list, MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData* node)
 {
 	if (node->prev)
 		node->prev->next = node->next;
@@ -268,7 +268,7 @@ void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::moveToAnotherTop(
+void MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::moveToAnotherTop(
 	BlockData**	to,
 	BlockData**	from, 
 	BlockData*	node)
@@ -290,8 +290,8 @@ void MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::moveToAnotherTop(
 
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocate(size_type, const_pointer)
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::allocate(size_type, const_pointer)
 {
 	BlockData* 	block;
 	pointer 	result;
@@ -322,7 +322,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::allocate(size_type, const
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocate(pointer p, size_type)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deallocate(pointer p, size_type)
 {
     
 	if (p != 0)
@@ -347,7 +347,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocate(pointer p, siz
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(BlockData* block)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(BlockData* block)
 {
 	++this->freeBlocksCount_;
 	//std::cout << "maxFreeBlocks: " << maxFreeBlocks_ << ", vs freeblocks (deallocate block)" << this->freeBlocksCount_<< std::endl;
@@ -367,8 +367,8 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(BlockData
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::max_size()
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::max_size()
 const throw()
 {
 	size_type maxBlocks = -1 / BlockSize;
@@ -377,21 +377,21 @@ const throw()
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::construct(pointer p, const_reference val)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::construct(pointer p, const_reference val)
 {
 	new (p) value_type(val);
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::destroy(pointer p)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::destroy(pointer p)
 {
 	p->~value_type();
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-inline typename MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::newElement(const_reference val)
+inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::newElement(const_reference val)
 {
 	pointer result = allocate();
 	construct(result, val);
@@ -400,7 +400,7 @@ MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::newElement(const_referenc
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline void
-MemoryPool<T, BlockSize, StartingBlocks, SpareBlocks>::deleteElement(pointer p)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deleteElement(pointer p)
 {
 	if (p != 0) {
 		p->~value_type();

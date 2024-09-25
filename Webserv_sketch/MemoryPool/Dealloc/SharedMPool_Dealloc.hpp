@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MemoryPoolDealloc.hpp                              :+:      :+:    :+:   */
+/*   SharedMPool_Dealloc.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 08:53:16 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/25 10:01:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MEMORY_POOL_DEALLOC_HPP
+#ifndef SHARED_MEMORY_POOL_HPP
 
-# define MEMORY_POOL_DEALLOC_HPP
+# define SHARED_MEMORY_POOL_HPP
 
-#include <limits.h>
-#include <stddef.h>
-#include <cstring>
-#include <iostream>
+# include "MemoryPool_Dealloc.hpp"
+
+/*
+    StartingBlocks -> when the pool opens, it will allocate this amount of blocks (each BlockSize bytes long)
+    SpareBlocks -> the pool will only start deallocating empty blocks when the number of empty blocks exceeds this number
+        -> allow the user to dealloc straight away or keep some memory for potential future allocs
+*/
+
 
 template <typename T, size_t BlockSize = 4096, size_t StartingBlocks = 0, size_t SpareBlocks = 0>
-class MemoryPool;
+class SharedMPool_Dealloc;
 
-# include "MemoryPoolDealloc.tpp"
+# include "SharedMPool_Dealloc.tpp"
 
 #endif

@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SharedMemoryPoolDeallocMemAlign.tpp                :+:      :+:    :+:   */
+/*   SharedMPool_Alloc.tpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 16:45:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 10:00:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "MemoryPoolDeallocMemAlign.hpp"
+#include "MemoryPool_Alloc.tpp"
 
 template <typename T, size_t BlockSize >
-class SharedMemoryPool
+class SharedMPool_Alloc
 {
 	public:
 
@@ -26,21 +26,22 @@ class SharedMemoryPool
 		typedef ptrdiff_t       difference_type;
 
 		template <typename U> struct rebind {
-			typedef SharedMemoryPool<U> other;
+			typedef SharedMPool_Alloc<U> other;
 		};
 
-		SharedMemoryPool(MemoryPool<T, BlockSize>* ptr = NULL) : 
-			_pool(ptr ? ptr : new MemoryPool<T, BlockSize>()), 
+		SharedMPool_Alloc(MemoryPool_Alloc<T, BlockSize>* ptr = NULL) : 
+			_pool(ptr ? ptr : new MemoryPool_Alloc<T, BlockSize>()), 
 			_refCount(new int(1))
 		{
+			
 		}
 
-		SharedMemoryPool(const SharedMemoryPool& other) : _pool(other._pool), _refCount(other._refCount)
+		SharedMPool_Alloc(const SharedMPool_Alloc& other) : _pool(other._pool), _refCount(other._refCount)
 		{
 			++(*_refCount); 
 		}
 		
-		SharedMemoryPool& operator=(const SharedMemoryPool& other)
+		SharedMPool_Alloc& operator=(const SharedMPool_Alloc& other)
 		{
 			if (this != &other)
 			{
@@ -51,13 +52,13 @@ class SharedMemoryPool
 			}
 			return (*this);
 		}
-		template <class U> SharedMemoryPool(const SharedMemoryPool<U, BlockSize>& memoryPool) throw()
+		template <class U> SharedMPool_Alloc(const SharedMPool_Alloc<U, BlockSize>& memoryPool) throw()
 		{
-			_pool = reinterpret_cast<MemoryPool<T, BlockSize>*>(memoryPool._pool);
+			_pool = reinterpret_cast<MemoryPool_Alloc<T, BlockSize>*>(memoryPool._pool);
 			_refCount = memoryPool._refCount;
 			++(*_refCount);
 		}
-		~SharedMemoryPool()
+		~SharedMPool_Alloc()
 		{
 			_decrementRefCount();
 		}
@@ -77,7 +78,7 @@ class SharedMemoryPool
 		void deleteElement(pointer p) {return _pool->deleteElement(p);}
 
 	//private:
-		MemoryPool<T, BlockSize>*      _pool;
+		MemoryPool_Alloc<T, BlockSize>*      _pool;
 		int*                           _refCount;
 
 		void _decrementRefCount()
@@ -97,15 +98,15 @@ class SharedMemoryPool
 			}
 		}
 
-		static SharedMemoryPool<T, BlockSize> make_SharedPool()
+		static SharedMPool_Alloc<T, BlockSize> make_SharedPool()
 		{
-			return (SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>()));
+			return (SharedMPool_Alloc<T, BlockSize>(new MemoryPool_Alloc<T, BlockSize>()));
 		}
 
 		template <typename Arg1>
-		static SharedMemoryPool<T, BlockSize> make_SharedPool(Arg1 arg1)
+		static SharedMPool_Alloc<T, BlockSize> make_SharedPool(Arg1 arg1)
 		{
-			return SharedMemoryPool<T, BlockSize>(new MemoryPool<T, BlockSize>(arg1));
+			return SharedMPool_Alloc<T, BlockSize>(new MemoryPool_Alloc<T, BlockSize>(arg1));
 		}
 };
 

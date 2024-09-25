@@ -26,7 +26,7 @@
 
 	Indentation adjusted for taste
 
-	I took it and adapted it to create a SharedMemoryPool class that uses a reference count to manage the memory pool
+	I took it and adapted it to create a SharedMPool_Alloc class that uses a reference count to manage the memory pool
 	and allow sharing between different containers. (see main)
 
 	This pool only "works" for objects without random access iterators:
@@ -49,7 +49,7 @@
 
 
 template <typename T, size_t BlockSize>
-class MemoryPool
+class MemoryPool_Alloc
 {
 	public:
 	
@@ -62,14 +62,14 @@ class MemoryPool
 		typedef ptrdiff_t       difference_type;
 
 		template <typename U> struct rebind {
-			typedef MemoryPool<U> other;
+			typedef MemoryPool_Alloc<U> other;
 		};
 
-		MemoryPool() throw();
-		MemoryPool(const MemoryPool& memoryPool) throw();
-		template <class U> MemoryPool(const MemoryPool<U, BlockSize>& memoryPool) throw();
+		MemoryPool_Alloc() throw();
+		MemoryPool_Alloc(const MemoryPool_Alloc& memoryPool) throw();
+		template <class U> MemoryPool_Alloc(const MemoryPool_Alloc<U, BlockSize>& memoryPool) throw();
 
-		~MemoryPool() throw();
+		~MemoryPool_Alloc() throw();
 
 		pointer address(reference x) const throw();
 		const_pointer address(const_reference x) const throw();
@@ -111,8 +111,8 @@ class MemoryPool
 };
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::size_type
-MemoryPool<T, BlockSize>::padPointer(data_pointer_ p, size_type align)
+inline typename MemoryPool_Alloc<T, BlockSize>::size_type
+MemoryPool_Alloc<T, BlockSize>::padPointer(data_pointer_ p, size_type align)
 const throw()
 {
 	size_t result = reinterpret_cast<size_t>(p);
@@ -122,7 +122,7 @@ const throw()
 
 
 template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool()
+MemoryPool_Alloc<T, BlockSize>::MemoryPool_Alloc()
 throw()
 {
 	//std::cout << "memory pool constructed" << std::endl;
@@ -138,28 +138,28 @@ throw()
 
 
 template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool& memoryPool)
+MemoryPool_Alloc<T, BlockSize>::MemoryPool_Alloc(const MemoryPool_Alloc& memoryPool)
 throw()
 {
 	(void)memoryPool;   // avoid unused parameter warning
-	MemoryPool();
+	MemoryPool_Alloc();
 }
 
 
 
 template <typename T, size_t BlockSize>
 template<class U>
-MemoryPool<T, BlockSize>::MemoryPool(const MemoryPool<U, BlockSize>& memoryPool)
+MemoryPool_Alloc<T, BlockSize>::MemoryPool_Alloc(const MemoryPool_Alloc<U, BlockSize>& memoryPool)
 throw()
 {
 	(void)memoryPool;   // avoid unused parameter warning
-	MemoryPool();
+	MemoryPool_Alloc();
 }
 
 
 
 template <typename T, size_t BlockSize>
-MemoryPool<T, BlockSize>::~MemoryPool()
+MemoryPool_Alloc<T, BlockSize>::~MemoryPool_Alloc()
 throw()
 {
 	slot_pointer_ curr = currentBlock_;
@@ -173,8 +173,8 @@ throw()
 
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::address(reference x)
+inline typename MemoryPool_Alloc<T, BlockSize>::pointer
+MemoryPool_Alloc<T, BlockSize>::address(reference x)
 const throw()
 {
 	return &x;
@@ -183,8 +183,8 @@ const throw()
 
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::const_pointer
-MemoryPool<T, BlockSize>::address(const_reference x)
+inline typename MemoryPool_Alloc<T, BlockSize>::const_pointer
+MemoryPool_Alloc<T, BlockSize>::address(const_reference x)
 const throw()
 {
 	return &x;
@@ -194,7 +194,7 @@ const throw()
 
 template <typename T, size_t BlockSize>
 void
-MemoryPool<T, BlockSize>::allocateBlock()
+MemoryPool_Alloc<T, BlockSize>::allocateBlock()
 {
 	data_pointer_ newBlock = reinterpret_cast<data_pointer_>
 													 (operator new(BlockSize));
@@ -210,8 +210,8 @@ MemoryPool<T, BlockSize>::allocateBlock()
 
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
+inline typename MemoryPool_Alloc<T, BlockSize>::pointer
+MemoryPool_Alloc<T, BlockSize>::allocate(size_type, const_pointer)
 {
 	 
 	if (freeSlots_ != 0) {
@@ -232,7 +232,7 @@ MemoryPool<T, BlockSize>::allocate(size_type, const_pointer)
 
 template <typename T, size_t BlockSize>
 inline void
-MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
+MemoryPool_Alloc<T, BlockSize>::deallocate(pointer p, size_type)
 {
 	if (p != 0) {
 		reinterpret_cast<slot_pointer_>(p)->next = freeSlots_;
@@ -243,8 +243,8 @@ MemoryPool<T, BlockSize>::deallocate(pointer p, size_type)
 
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::size_type
-MemoryPool<T, BlockSize>::max_size()
+inline typename MemoryPool_Alloc<T, BlockSize>::size_type
+MemoryPool_Alloc<T, BlockSize>::max_size()
 const throw()
 {
 	size_type maxBlocks = -1 / BlockSize;
@@ -255,28 +255,28 @@ const throw()
 
 template <typename T, size_t BlockSize>
 inline void
-MemoryPool<T, BlockSize>::construct(pointer p, const_reference val)
+MemoryPool_Alloc<T, BlockSize>::construct(pointer p, const_reference val)
 {
 	//std::cout << "pool CONSTRUCTING: " << sizeof(T) << " at " << p << std::endl; 
 	new (p) value_type (val);
-	//std::cout << "MemoryPool::construct" << std::endl;    
+	//std::cout << "MemoryPool_Alloc::construct" << std::endl;    
 }
 
 
 
 template <typename T, size_t BlockSize>
 inline void
-MemoryPool<T, BlockSize>::destroy(pointer p)
+MemoryPool_Alloc<T, BlockSize>::destroy(pointer p)
 {
 	p->~value_type();
-	//std::cout << "MemoryPool::destroy" << std::endl;
+	//std::cout << "MemoryPool_Alloc::destroy" << std::endl;
 }
 
 
 
 template <typename T, size_t BlockSize>
-inline typename MemoryPool<T, BlockSize>::pointer
-MemoryPool<T, BlockSize>::newElement(const_reference val)
+inline typename MemoryPool_Alloc<T, BlockSize>::pointer
+MemoryPool_Alloc<T, BlockSize>::newElement(const_reference val)
 {
 	pointer result = allocate();
 	construct(result, val);
@@ -287,7 +287,7 @@ MemoryPool<T, BlockSize>::newElement(const_reference val)
 
 template <typename T, size_t BlockSize>
 inline void
-MemoryPool<T, BlockSize>::deleteElement(pointer p)
+MemoryPool_Alloc<T, BlockSize>::deleteElement(pointer p)
 {
 	if (p != 0) {
 		p->~value_type();

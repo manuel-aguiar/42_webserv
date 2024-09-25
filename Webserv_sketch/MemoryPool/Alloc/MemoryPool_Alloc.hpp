@@ -27,7 +27,7 @@
     Indentation also ajusted for taste
 
     
-  I took it and adapted it to create a SharedMemoryPool class that uses a reference count to manage the memory pool
+  I took it and adapted it to create a SharedMPool_Alloc class that uses a reference count to manage the memory pool
   and allow sharing between different containers. (see main)
 
   This pool only "works" for objects without random access iterators:
@@ -45,8 +45,8 @@
 #include <cstring>
 
 template <typename T, size_t BlockSize = 16384>
-class MemoryPool;
+class MemoryPool_Alloc;
 
-#include "MemoryPool.tpp"
+#include "MemoryPool_Alloc.tpp"
 
 #endif // MEMORY_POOL_H
