@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 09:41:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/24 14:20:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:19:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
-#include "SharedMemoryPool.hpp"
+#include "../Alloc/SharedMPool_Alloc.hpp"
 
 #include <map>
 #include <set>
