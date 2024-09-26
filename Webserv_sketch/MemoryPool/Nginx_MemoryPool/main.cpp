@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 13:30:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/26 13:57:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/26 15:47:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ class Nginx_MPool_Block
     public:
 
         Nginx_MPool_Block() {throw std::logic_error("Nginx_MPool_Block, can't instantiate out of the box, has to go through static .create()");}
-        ~Nginx_MPool_Block() {Nginx_MPool_Block::destroy(this);}
+        ~Nginx_MPool_Block() {}
         
         /*
         
@@ -79,16 +79,19 @@ class Nginx_MPool_Block
             return (pool);
         }
 
-        static void destroy(Nginx_MPool_Block*   pool)
+        static void destroy(Nginx_MPool_Block**   poolPlace)
         {
             Nginx_MPool_Block*          poolNext;
-            
+            Nginx_MPool_Block*          pool;
+
+            pool = *poolPlace;
             while (pool)
             {
                 poolNext = pool->_nextBlock;
                 delete [] (t_byte*)(pool);
                 pool = poolNext;
             }
+            *poolPlace = NULL;
         }
 
         
@@ -122,13 +125,20 @@ class Nginx_MPool_Block
         {
             void*                       location;
             Nginx_MPool_Block*     pool;
-            
+
             assert ((size_t)((*poolPlace)->_endOfBlock) - (size_t)((*poolPlace) - (sizeof(Nginx_MPool_Block))) >= size);
             pool = *poolPlace;
 
             // try to find a good allocation position, mehh, O(n)....
-            while (pool && pool->_freePosition + size > pool->_endOfBlock)
+            while (pool) {
+                t_byte* aligned_position = pool->_freePosition;
+                if (aligned)
+                    aligned_position = allignedAlloc(pool->_freePosition, sizeof(size_t));
+                if (aligned_position + size <= pool->_endOfBlock) {
+                    break; // Fits, so we can allocate here
+                }
                 pool = pool->_nextBlock;
+            }
             if (!pool)
             {
                 Nginx_MPool_Block* newPool = Nginx_MPool_Block::_allocateNewBlock(blockSizeAgainLol, (*poolPlace)->_blockId + 1);
@@ -242,9 +252,7 @@ class Nginx_MemoryPool
                 delete [] (t_byte*)(bigCur);
                 bigCur = bigNext;
             }
-
-            Nginx_MPool_Block::destroy(_active);
-            _active = NULL;
+            Nginx_MPool_Block::destroy(&_active);
         }
 
     private:
@@ -332,6 +340,10 @@ int main()
     
     PoolUser* user = PoolUser::create("Miguel", 25);
     std::cout << user->_name << std::endl;
+
+    Nginx_MemoryPool* pool2 = Nginx_MemoryPool::create(1024, 5);
+    pool2->destroy();
+    user->destroy();
 
     return 0;
 }
