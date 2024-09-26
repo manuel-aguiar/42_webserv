@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/25 14:31:41 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/25 14:31:41 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/26 11:48:59 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,3 +25,12 @@ Ideias interessantes do nginx:
 
     ngx_cycle -> o cerebro de tudo... ao iniciar-se, inicial uma memory pool,
     e autoaloca-se nela............
+
+
+ngx_pool_t serve tanto como pool como holding. a primeira tem toda a info incluindo um pointer para
+a primeira livre. mas as seguintes apenas guardam "ngx_pool_data_t" que guarda a disponibilidade
+daquele bloco em concreto.
+
+portanto, na realidade eu posso perfeitamente ter uma class Pool que gere blocos, alem dos big blocks
+
+se a MemoryPool for feita com create, pode ser self hosted na primeira pool que seja criada, magia
