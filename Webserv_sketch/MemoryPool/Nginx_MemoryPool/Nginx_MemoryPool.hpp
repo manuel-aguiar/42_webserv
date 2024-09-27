@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:05:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:08:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ class Nginx_MemoryPool
                 static void                 destroy(Nginx_MPool_Block**   poolPlace);
                 static void                 reset(Nginx_MPool_Block** pool, int maxBlocks = INT_MAX);
                 static void*                allocate(Nginx_MPool_Block**   poolPlace, size_t size, bool aligned, size_t blockSizeAgainLol);
-                static Nginx_MPool_Block*   _allocateNewBlock(size_t blockSize, int blockId);  
+                static Nginx_MPool_Block*   allocateNewBlock(size_t blockSize, int blockId);  
 
                 //leting variables public, whole class is private to memorypool anyways
                 void*                       _data;

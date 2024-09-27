@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:05:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:08:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ create(size_t blockSize, size_t startingBlocks)
     next = NULL;
     for (size_t i = 0; i < startingBlocks; ++i)
     {
-        pool = _allocateNewBlock(blockSize, i);
+        pool = allocateNewBlock(blockSize, i);
         pool->_nextBlock = next;
         next = pool;
     }
@@ -122,7 +122,7 @@ allocate(Nginx_MPool_Block**   poolPlace, size_t size, bool aligned, size_t bloc
     }
     if (!pool)
     {
-        Nginx_MPool_Block* newPool = Nginx_MPool_Block::_allocateNewBlock(blockSizeAgainLol, (*poolPlace)->_blockId + 1);
+        Nginx_MPool_Block* newPool = Nginx_MPool_Block::allocateNewBlock(blockSizeAgainLol, (*poolPlace)->_blockId + 1);
         newPool->_nextBlock = *poolPlace;
         
         *poolPlace = newPool;
@@ -159,7 +159,7 @@ Nginx_MemoryPool::Nginx_MPool_Block::operator=(const Nginx_MPool_Block& block)
 
 Nginx_MemoryPool::Nginx_MPool_Block*
 Nginx_MemoryPool::Nginx_MPool_Block::
-_allocateNewBlock(size_t blockSize, int blockId)
+allocateNewBlock(size_t blockSize, int blockId)
 {
     Nginx_MPool_Block* pool = (Nginx_MPool_Block*) new t_byte[blockSize];
     new (pool) Nginx_MPool_Block(0);
