@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:08:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:09:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Nginx_MemoryPool
     private:
 
         class Nginx_MPool_Block;
+
         typedef struct s_bigBlock
         {
             void*               _data;
