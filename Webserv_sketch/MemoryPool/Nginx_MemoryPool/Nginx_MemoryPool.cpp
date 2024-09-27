@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:08:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:15:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void    Nginx_MemoryPool::destroy()
         bigCur = bigNext;
     }
     Nginx_MPool_Block::destroy(&_active);
+    this->~Nginx_MemoryPool();
 }
 
 //private, no copies

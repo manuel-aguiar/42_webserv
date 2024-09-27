@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:09:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:15:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,6 @@ typedef unsigned char t_byte;
 class Nginx_MemoryPool
 {
     public:
-        Nginx_MemoryPool();
-        ~Nginx_MemoryPool();
-
         static Nginx_MemoryPool*    create(size_t blockSize, size_t startingBlocks = 1);
         void*                       allocate(size_t size, bool aligned);
         void                        reset(int maxBlocks = INT_MAX);
@@ -58,6 +55,9 @@ class Nginx_MemoryPool
         t_bigBlock*            _bigBlocks;
         size_t                 _blockSize;
 
+        // private everything, 
+        Nginx_MemoryPool();
+        ~Nginx_MemoryPool();
         Nginx_MemoryPool(size_t blockSize, size_t startingBlocks = 1);
         Nginx_MemoryPool(const Nginx_MemoryPool& pool);
         Nginx_MemoryPool& operator=(const Nginx_MemoryPool& pool);
