@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 16:45:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:49:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Connection
             _listener = NULL;
             _pool.reset();
         }
+
 
     private:
         t_socket            _sockfd;
