@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 13:30:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:06:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:12:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,13 @@ int main()
     pool->destroy();
     
     ClassThatLivesInPool* user = ClassThatLivesInPool::create("Miguel", 25);
-    std::cout << "Pooluser, name: " << user->_name << ", age: " << user->_age << std::endl;
+    std::cout << "Pool User, name: " << user->_name << ", age: " << user->_age << std::endl;
     user->destroy();
 
-    ClassThatHoldsaPool user2("Miguel", 25);
+    ClassThatHoldsaPool user2("Antonio", 23);
 
-   
+    std::cout << "Pool Holder, name: " << user2._name << ", age: " << user2._age << std::endl;
+    
     return 0;
 }
 
