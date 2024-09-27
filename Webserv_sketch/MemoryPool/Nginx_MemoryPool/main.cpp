@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 13:30:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 11:40:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:06:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@
     saves a list of
 
 */
-
-
-#ifndef NGINX_MEMORYPOOL_HPP
-
-# define NGINX_MEMORYPOOL_HPP
 
 # include <climits>
 # include <cstddef>
@@ -102,7 +97,7 @@ class ClassThatHoldsaPool
 
 
 int main()
-{  
+{ 
     Nginx_MemoryPool* pool = Nginx_MemoryPool::create(1024, 10);
 
     for (int i = 0; i < 100; i++)
@@ -118,7 +113,8 @@ int main()
     pool->allocate(10000, true); // big block
     pool->allocate(10000, true); // big block
     pool->allocate(10000, true); // big block
-    
+
+
     char *str = (char *)pool->allocate(sizeof("Hello World!"), true);
     std::memcpy(str, "Hello World!", sizeof("Hello World!"));
     
@@ -133,7 +129,7 @@ int main()
 
     ClassThatHoldsaPool user2("Miguel", 25);
 
+   
     return 0;
 }
 
-#endif

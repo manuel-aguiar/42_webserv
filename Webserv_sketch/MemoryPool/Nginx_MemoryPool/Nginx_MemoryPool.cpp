@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 11:40:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:06:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,24 @@ Nginx_MemoryPool::Nginx_MemoryPool()
 //since pool is self hosted on its first memoryblock, it is up to the user to call .destroy()    
 Nginx_MemoryPool::~Nginx_MemoryPool() {}
 
-Nginx_MemoryPool* Nginx_MemoryPool::create(size_t blockSize, size_t startingBlocks = 1)
+Nginx_MemoryPool* Nginx_MemoryPool::create(size_t blockSize, size_t startingBlocks)
 {
     Nginx_MemoryPool*           newPool;
-    Nginx_MPool_Block*          block;
+    Nginx_MPool_Block*          curBlock;
+    Nginx_MPool_Block*          prevBlock;
 
-    block = Nginx_MPool_Block::create(blockSize, startingBlocks);
-    newPool = (Nginx_MemoryPool*)Nginx_MPool_Block::allocate(&block, sizeof(Nginx_MemoryPool), true, blockSize);
-    new (newPool) Nginx_MemoryPool(blockSize, startingBlocks);   //placement new inside the pool itself
-    newPool->_active = block;
+    curBlock = Nginx_MPool_Block::create(blockSize, 1);
+    newPool = (Nginx_MemoryPool*)Nginx_MPool_Block::allocate(&curBlock, sizeof(Nginx_MemoryPool), true, blockSize);
+    new (newPool) Nginx_MemoryPool(blockSize, startingBlocks);   //placement new inside block[0] of the pool itself
+
+    for (size_t i = 1; i < startingBlocks; ++i)
+    {
+        prevBlock = Nginx_MPool_Block::_allocateNewBlock(blockSize, i);
+        prevBlock->_nextBlock = curBlock;
+        curBlock = prevBlock;
+    }
+    
+    newPool->_active = curBlock;
     newPool->_blockSize = blockSize;
     return (newPool);
 }
@@ -49,7 +58,7 @@ void*   Nginx_MemoryPool::allocate(size_t size, bool aligned)
     return (Nginx_MPool_Block::allocate(&_active, size, aligned, _blockSize));
 }
 
-void    Nginx_MemoryPool::reset(int maxBlocks = INT_MAX)
+void    Nginx_MemoryPool::reset(int maxBlocks)
 {
     assert(_active != NULL);
     Nginx_MPool_Block::reset(&_active, maxBlocks);
@@ -73,7 +82,7 @@ void    Nginx_MemoryPool::destroy()
 
 //private, no copies
 
-Nginx_MemoryPool::Nginx_MemoryPool(size_t blockSize, size_t startingBlocks = 1) : 
+Nginx_MemoryPool::Nginx_MemoryPool(size_t blockSize, size_t startingBlocks) : 
     _active(NULL), _bigBlocks(NULL), _blockSize(blockSize)
 {
     (void)startingBlocks;

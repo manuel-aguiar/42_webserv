@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 11:39:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:05:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Nginx_MemoryPool
 
     private:
 
-        typedef class Nginx_MPool_Block;
+        class Nginx_MPool_Block;
         typedef struct s_bigBlock
         {
             void*               _data;
@@ -73,19 +73,20 @@ class Nginx_MemoryPool
                 static void                 destroy(Nginx_MPool_Block**   poolPlace);
                 static void                 reset(Nginx_MPool_Block** pool, int maxBlocks = INT_MAX);
                 static void*                allocate(Nginx_MPool_Block**   poolPlace, size_t size, bool aligned, size_t blockSizeAgainLol);
-                
-            private:
+                static Nginx_MPool_Block*   _allocateNewBlock(size_t blockSize, int blockId);  
+
+                //leting variables public, whole class is private to memorypool anyways
                 void*                       _data;
                 t_byte*                     _freePosition;
                 t_byte*                     _endOfBlock;
                 Nginx_MPool_Block*          _nextBlock;
                 int                         _blockId;
 
-                Nginx_MPool_Block(size_t dummy);
-                Nginx_MPool_Block(const Nginx_MPool_Block& block) {(void)block;}
-                Nginx_MPool_Block& operator=(const Nginx_MPool_Block& block) {(void)block; return (*this);}
-                static Nginx_MPool_Block*   _allocateNewBlock(size_t blockSize, int blockId);                                            
 
+            private:
+                Nginx_MPool_Block(size_t dummy);
+                Nginx_MPool_Block(const Nginx_MPool_Block& block);
+                Nginx_MPool_Block& operator=(const Nginx_MPool_Block& block);
         };
         
 };
