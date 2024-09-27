@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:39:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:58:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 # define SERVER_HPP
 
 # include "../Webserver_Definitions.h"
+# include "../CgiHandler/CgiHandler.hpp"
+# include "../MemoryPool/MemoryPool.h"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include <vector>
 # include <map>
@@ -34,7 +36,10 @@ class Server
         
         
         std::vector<ListeningSocket>    _listeners;
+
         Nginx_MemoryPool*               _pool;
+
+        Cgi_Handler                     _cgiHandler;
 };
 
 

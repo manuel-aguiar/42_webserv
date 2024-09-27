@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CGI_Handler.hpp                                    :+:      :+:    :+:   */
+/*   CgiHandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:38:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:59:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,27 @@
 
 # define MAX_CONCURRENT_CGI 10
 
-class CGI_Handler
+class Cgi_Handler
 {
     public:
-        CGI_Handler();
-        ~CGI_Handler();
+        Cgi_Handler();
+        ~Cgi_Handler();
 
     private:
 
-        typedef struct CGI_data
+        typedef struct s_cgi_data
         {
             /**** a definir **/ 
             t_byte*     _data;
             size_t      _size;
-        }               t_CGI_data;
+        }               t_cgi_data;
 
-        typedef MemoryPool_Dealloc<CGI_data> t_CGI_pool;
-        typedef std::queue<t_CGI_data, std::list<t_CGI_data, t_CGI_pool> > CGI_Queue;
+        typedef MemoryPool_Dealloc<s_cgi_data> t_cgi_pool;
+        typedef std::queue<t_cgi_data, std::list<t_cgi_data, t_cgi_pool> > t_cgi_queue;
 
-        CGI_Queue       _queue;
-        size_t          _maxConcurrent;
-        size_t          _currentConcurrent;
+        t_cgi_queue         _queue;
+        size_t              _maxConcurrent;
+        size_t              _currentConcurrent;
 };
 
 
