@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SharedMPool_Alloc.hpp                              :+:      :+:    :+:   */
+/*   CGI_Handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:22:36 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/27 15:28:08 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/27 15:37:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHAREDMPOOL_ALLOC_HPP
+#include "CGI_Handler.hpp"
 
-# define SHAREDMPOOL_ALLOC_HPP
-
-# include "MemoryPool_Alloc.hpp"
-
-template <typename T, size_t BlockSize = 4096>
-class SharedMPool_Alloc;
-
-# include "SharedMPool_Alloc.tpp"
-
-#endif
+CGI_Handler::CGI_Handler() : 
+    _queue(MemoryPool_Dealloc<t_CGI_data>(4096, 5, 5)),
+    _maxConcurrent(MAX_CONCURRENT_CGI), 
+    _currentConcurrent(0)
+{
+    
+}

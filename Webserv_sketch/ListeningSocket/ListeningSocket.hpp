@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 14:52:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:03:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,15 @@
 
 # define LISTENINGSOCKET_HPP
 
+# include "../Webserver_Definitions.h"
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
-typedef int t_fd;
 
 class ListeningSocket
 {
     public:
-
         ListeningSocket();
         ~ListeningSocket();
 
@@ -33,9 +32,9 @@ class ListeningSocket
         void    close();
     
     private:
-        t_fd                _sockfd;
-        struct sockaddr*    _addr;
-        socklen_t           _addrlen;
+        t_socket            _sockfd;
+        t_sockaddr*         _addr;
+        t_socklen           _addrlen;
         int                 _backlog;
 };
 

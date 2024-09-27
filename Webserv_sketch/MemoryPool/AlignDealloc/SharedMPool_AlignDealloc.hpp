@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:44:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 11:58:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:23:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHARED_MEMORY_POOL_HPP
+#ifndef SHAREDMPOOL_ALIGNDEALLOC_HPP
 
-# define SHARED_MEMORY_POOL_HPP
+# define SHAREDMPOOL_ALIGNDEALLOC_HPP
 
 # include "MemoryPool_AlignDealloc.hpp"
 

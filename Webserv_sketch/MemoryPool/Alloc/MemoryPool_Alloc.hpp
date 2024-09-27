@@ -37,16 +37,16 @@
 
 */
 
-#ifndef MEMORY_POOL_H
-#define MEMORY_POOL_H
+#ifndef MEMORYPOOL_ALLOC_H
+# define MEMORYPOOL_ALLOC_H
 
-#include <limits.h>
-#include <stddef.h>
-#include <cstring>
+# include <limits.h>
+# include <stddef.h>
+# include <cstring>
 
 template <typename T, size_t BlockSize = 4096>
 class MemoryPool_Alloc;
 
-#include "MemoryPool_Alloc.tpp"
+# include "MemoryPool_Alloc.tpp"
 
 #endif // MEMORY_POOL_H
