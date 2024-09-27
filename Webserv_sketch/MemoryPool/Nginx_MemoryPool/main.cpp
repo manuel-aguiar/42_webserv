@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 13:30:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:15:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:19:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,22 +68,22 @@ class ClassThatLivesInPool
         ~ClassThatLivesInPool() {}
 };
 
-class ClassThatHoldsaPool
+class ClassThatHoldsAPool
 {
     public:
 
-        ClassThatHoldsaPool() : _name (""), _age(0), _pool(*Nginx_MemoryPool::create(1024, 5))
+        ClassThatHoldsAPool() : _name (""), _age(0), _pool(*Nginx_MemoryPool::create(1024, 5))
         {
 
         }
 
-        ~ClassThatHoldsaPool()
+        ~ClassThatHoldsAPool()
         {
             _pool.destroy();
         }
 
 
-        ClassThatHoldsaPool(std::string name, size_t age) : _name(name), _age(age), _pool(*Nginx_MemoryPool::create(1024, 5))
+        ClassThatHoldsAPool(std::string name, size_t age) : _name(name), _age(age), _pool(*Nginx_MemoryPool::create(1024, 5))
         {
         }
             
@@ -127,7 +127,7 @@ int main()
     std::cout << "Pool User, name: " << user->_name << ", age: " << user->_age << std::endl;
     user->destroy();
 
-    ClassThatHoldsaPool user2("Antonio", 23);
+    ClassThatHoldsAPool user2("Antonio", 23);
 
     std::cout << "Pool Holder, name: " << user2._name << ", age: " << user2._age << std::endl;
     
