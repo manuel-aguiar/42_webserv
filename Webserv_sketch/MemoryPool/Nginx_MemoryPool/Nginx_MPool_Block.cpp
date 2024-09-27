@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:08:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:11:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,18 +82,11 @@ reset(Nginx_MPool_Block** pool, int maxBlocks)
     {
         poolNext = poolCur->_nextBlock;
         poolCur->_freePosition = (t_byte*)poolCur + sizeof(Nginx_MPool_Block);
+
         if (poolCur->_blockId >= maxBlocks)
-        {
-            std::cout << "deleting block " << poolCur->_blockId << std::endl;   
             delete [] (t_byte*)(poolCur);
-        }
-            
         else if (poolCur->_blockId == maxBlocks - 1)
-        {
-            std::cout << "last block " << poolCur->_blockId << std::endl;
             *pool = poolCur;
-        }
-            
             
         poolCur = poolNext;
     }
