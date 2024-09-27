@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 16:43:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:44:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "Connection.hpp"
 # include "../Webserver_Definitions.h"
 # include "../MemoryPool/MemoryPool.h"
-# include "../ListeningSocket/ListeningSocket.hpp"
 
 # include <queue>
 # include <list>
@@ -30,7 +29,7 @@ class ConnectionPool
             
         }
         
-        Connection* getConnection(ListeningSocket* listener)
+        Connection* getConnection()
         {
             Connection*     connection;
 
