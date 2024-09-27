@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:15:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 12:16:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Nginx_MemoryPool
         t_bigBlock*            _bigBlocks;
         size_t                 _blockSize;
 
-        // private everything, 
+        // private everything 
         Nginx_MemoryPool();
         ~Nginx_MemoryPool();
         Nginx_MemoryPool(size_t blockSize, size_t startingBlocks = 1);
