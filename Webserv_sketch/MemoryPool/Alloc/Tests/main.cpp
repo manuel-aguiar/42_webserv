@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 12:01:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/27 14:31:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SharedMPool_AlignDealloc.hpp" 
+#include "../SharedMPool_Alloc.hpp" 
 
 #include <map>
 #include <set>
@@ -18,20 +18,19 @@
 #include <vector>
 #include <list>
 #include <iostream>
+#include <cstdlib>
 
 int main1(void)
 {
     std::cout << "                  listtest" << std::endl;         
 
+    SharedMPool_Alloc<std::string> pool1 = SharedMPool_Alloc<std::string>::make_SharedPool();
     
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >::iterator PoolList_iter;
 
-    SharedMPool_AlignDealloc<std::string> pool1 = SharedMPool_AlignDealloc<std::string>::make_SharedPool();
-    
-    typedef std::list<std::string, SharedMPool_AlignDealloc<std::string> >::iterator PoolList_iter;
-
-    std::list<std::string, SharedMPool_AlignDealloc<std::string> > list(pool1);
-    std::list<std::string, SharedMPool_AlignDealloc<std::string> > list2(pool1);
-    std::list<std::string, SharedMPool_AlignDealloc<std::string> > list3(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list2(pool1);
+    std::list<std::string, SharedMPool_Alloc<std::string> > list3(pool1);
 
     std::cout << "heyhey" << std::endl; 
 
@@ -55,11 +54,11 @@ int main1(void)
 
     std::cout << "                  map test" << std::endl; 
 
-    SharedMPool_AlignDealloc<std::pair<int, std::string> > pool2 = SharedMPool_AlignDealloc<std::pair<int, std::string> >::make_SharedPool();
+    SharedMPool_Alloc<std::pair<int, std::string> > pool2 = SharedMPool_Alloc<std::pair<int, std::string> >::make_SharedPool();
     std::less<int> comparator;
 
-    typedef std::map<int, std::string, std::less<int>, SharedMPool_AlignDealloc<std::pair<int, std::string> > >             PoolMap;
-    typedef std::map<int, std::string, std::less<int>, SharedMPool_AlignDealloc<std::pair<int, std::string> > >::iterator   PoolMap_iter;
+    typedef std::map<int, std::string, std::less<int>, SharedMPool_Alloc<std::pair<int, std::string> > >             PoolMap;
+    typedef std::map<int, std::string, std::less<int>, SharedMPool_Alloc<std::pair<int, std::string> > >::iterator   PoolMap_iter;
 
     
 
@@ -81,11 +80,11 @@ int main1(void)
 
     std::cout << "                  set test" << std::endl; 
 
-    SharedMPool_AlignDealloc<std::string> pool4 = SharedMPool_AlignDealloc<std::string>::make_SharedPool();
+    SharedMPool_Alloc<std::string> pool4 = SharedMPool_Alloc<std::string>::make_SharedPool();
     std::less<std::string> comparator4;
 
-    typedef std::set<std::string, std::less<std::string>, SharedMPool_AlignDealloc<std::string> >  PoolSet;
-    typedef std::set<std::string, std::less<std::string>, SharedMPool_AlignDealloc<std::string> >::iterator  PoolSet_iter;
+    typedef std::set<std::string, std::less<std::string>, SharedMPool_Alloc<std::string> >  PoolSet;
+    typedef std::set<std::string, std::less<std::string>, SharedMPool_Alloc<std::string> >::iterator  PoolSet_iter;
 
     PoolSet set1(comparator4, pool4);
 
@@ -98,18 +97,17 @@ int main1(void)
     return (0);
 }
 
-
-int main1(int ac, char **av)
+int main123(int ac, char **av)
 {
-    /*MemoryPool_AlignDealloc<std::string> pool1;*/
+    /*MemoryPool_Alloc<std::string> pool1;*/
 
     if (ac != 2)
         return (0);
     int times = std::atoi(av[1]);
 
-    SharedMPool_AlignDealloc<std::string> pool1 = SharedMPool_AlignDealloc<std::string>::make_SharedPool();
-    typedef std::list<std::string, SharedMPool_AlignDealloc<std::string> >  PoolList;
-    typedef std::list<std::string, SharedMPool_AlignDealloc<std::string> >::iterator PoolList_iter;
+    SharedMPool_Alloc<std::string> pool1 = SharedMPool_Alloc<std::string>::make_SharedPool();
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >  PoolList;
+    typedef std::list<std::string, SharedMPool_Alloc<std::string> >::iterator PoolList_iter;
     
     PoolList list1(pool1);
     PoolList list2(pool1);
@@ -270,9 +268,9 @@ int main1(int ac, char **av)
     }
     std::cout << std::endl;
 
-    typedef SharedMPool_AlignDealloc<std::pair<int, std::string> > PairPool;
-    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_AlignDealloc<std::string> >  PoolMap;
-    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_AlignDealloc<std::string> >::iterator PoolMap_iter;
+    typedef SharedMPool_Alloc<std::pair<int, std::string> > PairPool;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_Alloc<std::string> >  PoolMap;
+    typedef std::map<std::string, int, std::less< std::string>, SharedMPool_Alloc<std::string> >::iterator PoolMap_iter;
     
     std::less<std::string> comparator;
     PairPool pool2 = PairPool::make_SharedPool();
@@ -444,6 +442,7 @@ int main1(int ac, char **av)
 }
 
 
+
 class Dummy
 {
     public:
@@ -465,17 +464,17 @@ int main(int ac, char **av)
 {
     if (ac != 2)
     {
-        std::cout << "gime times" << std::endl;
+        std::cout << "gime time" << std::endl;
         return (1);
     }
 
-    typedef SharedMPool_AlignDealloc<std::pair<int, Dummy> >      MapPool;
+    typedef SharedMPool_Alloc<std::pair<int, Dummy> >      MapPool;
     typedef std::map<int, Dummy, std::less<int>, MapPool> Map;
 
-    typedef SharedMPool_AlignDealloc<Dummy>                       ListPool;
+    typedef SharedMPool_Alloc<Dummy>                       ListPool;
     typedef std::list<Dummy, ListPool>                    List;
 
-    typedef SharedMPool_AlignDealloc<Dummy>                       SetPool;
+    typedef SharedMPool_Alloc<Dummy>                       SetPool;
     typedef std::set<Dummy, std::less<Dummy>, SetPool>    Set;
 
     std::less<int>      intComp;
@@ -554,7 +553,7 @@ int main(int ac, char **av)
         set2.insert(Dummy(multiplier + 10, "SetTest2"));
     }
 
-for (int multiplier = 0; multiplier < 10; ++multiplier)
+    for (int multiplier = 0; multiplier < 10; ++multiplier)
     {
 
         srand(static_cast<unsigned>(time(0))); // Seed for randomness
@@ -618,6 +617,8 @@ for (int multiplier = 0; multiplier < 10; ++multiplier)
             }
         }
     }
+
+
 
 # ifdef PRINTALL
 

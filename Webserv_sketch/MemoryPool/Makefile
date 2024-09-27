@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/27 14:24:22 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/27 14:26:23 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,14 +48,17 @@ OTHER_INCS			= 	$(ALIGNDEALLOC_PATH)/MemoryPool_AlignDealloc.hpp			\
 						$(ALIGNDEALLOC_PATH)/MemoryPool_AlignDealloc.tpp			\
 						$(ALIGNDEALLOC_PATH)/SharedMPool_AlignDealloc.hpp			\
 						$(ALIGNDEALLOC_PATH)/SharedMPool_AlignDealloc.tpp			\
+						\
 						$(DEALLOC_PATH)/MemoryPool_Dealloc.hpp						\
 						$(DEALLOC_PATH)/MemoryPool_Dealloc.tpp						\
 						$(DEALLOC_PATH)/SharedMPool_Dealloc.hpp						\
 						$(DEALLOC_PATH)/SharedMPool_Dealloc.tpp						\
+						\
 						$(ONLYALLOC_PATH)/MemoryPool_Alloc.hpp						\
 						$(ONLYALLOC_PATH)/MemoryPool_Alloc.tpp						\
 						$(ONLYALLOC_PATH)/SharedMPool_Alloc.hpp						\
 						$(ONLYALLOC_PATH)/SharedMPool_Alloc.tpp						\
+						\
 						$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.hpp						
 
 SRCS				=	$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.cpp			\
