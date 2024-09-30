@@ -14,11 +14,13 @@
 
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
-int main(int ac, char **av)
+int main(int ac, char **av, char **env)
 {
+	(void)ac; (void)av; (void)env;
 	std::cout << "Halow Woldr" << std::endl;
 	return (GRET_SUCKCESS);
 }

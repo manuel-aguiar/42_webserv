@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:58:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 08:08:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,15 @@
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include <vector>
 # include <map>
+# include <iostream>
 
 class Server
 {
     public:
         Server();
         ~Server();
-
+        
+        int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog); 
     
     private:
         //typedef MemoryPool_Alloc<std::pair<int, ListeningSocket> > ListeningSocketPool;
@@ -35,7 +37,7 @@ class Server
         
         
         
-        std::vector<ListeningSocket>    _listeners;
+        std::vector<ListeningSocket*>    _listeners;
 
         Nginx_MemoryPool*               _pool;
 

@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:16:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 11:58:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 08:13:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MEMORY_POOL_DEALLOC_HPP
+#ifndef MEMORY_POOL_ALIGNDEALLOC_HPP
 
-# define MEMORY_POOL_DEALLOC_HPP
+# define MEMORY_POOL_ALIGNDEALLOC_HPP
 
 #include <limits.h>
 #include <stddef.h>

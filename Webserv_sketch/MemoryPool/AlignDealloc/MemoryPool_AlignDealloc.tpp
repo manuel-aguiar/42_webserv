@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:47:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 12:08:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 08:15:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ void MemoryPool_AlignDealloc<T, BlockSize, StartingBlocks, SpareBlocks>::moveToA
 	*to = node;
 }
 
-void* requestaligned(size_t align, size_t size)
+static void* requestaligned(size_t align, size_t size)
 {
 	void *result;
 	if (posix_memalign(&result, align, size) != 0)
