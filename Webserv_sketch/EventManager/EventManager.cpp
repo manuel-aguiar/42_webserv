@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 12:19:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:21:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ const   t_epoll_event&     EventManager::getEvent(int index)
     return (_events[index]);
 }
 
-static void teste(EventManager* manager)
+void EventManager::teste(EventManager* manager)
 {
-    int i = manager->waitEvents(1000);
-    for (int i = 0; i < manager->_waitCount; i++)
+    int wait = manager->waitEvents(1000);
+    for (int i = wait; i < manager->_waitCount; i++)
     {
         Event* event = (Event*)manager->_events[i].data.ptr;
         event->handle();

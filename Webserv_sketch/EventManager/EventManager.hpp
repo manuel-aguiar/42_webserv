@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 12:17:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:21:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class EventManager
         t_epoll_event       _events[MAX_EPOLL_EVENTS];    
         int                 _waitCount;
 
-
+        void    teste(EventManager* manager);
 
         EventManager(const EventManager& copy);
         EventManager& operator=(const EventManager& assign);
