@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:22:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:05:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,12 @@ Connection* ConnectionPool::getConnection()
         _spareConnections.pop_front();
     }
     else
-        connection = _pool.allocate();
+    {
+        connection = _connectionAlloc.allocate();
+        connection->_readEvent = _eventAlloc.allocate();
+        connection->_writeEvent = _eventAlloc.allocate();
+    }
+        
     return (connection);
 }
 
@@ -41,7 +46,7 @@ void ConnectionPool::returnConnection(Connection* connection)
 
 void ConnectionPool::destroyConnection(Connection* connection)
 {
-    _pool.deallocate(connection);
+    _connectionAlloc.deallocate(connection);
 }
 
 //private, as usual

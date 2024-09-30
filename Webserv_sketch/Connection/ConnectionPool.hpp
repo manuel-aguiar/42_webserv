@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:22:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:10:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ class ConnectionPool
         ConnectionPool();
         ~ConnectionPool();
         
-        Connection* getConnection();
-        void returnConnection(Connection* connection);
+        Connection*     getConnection();
+        void            returnConnection(Connection* connection);
 
     private:
         std::list<Connection*, MemoryPool_Dealloc<Connection*> >       _spareConnections;
-        MemoryPool_Dealloc<Connection>                                 _pool;
-
+        MemoryPool_Dealloc<Connection>                                 _connectionAlloc;
+        MemoryPool_Dealloc<Event>                                      _eventAlloc;
         void destroyConnection(Connection* connection);
 
         ConnectionPool(const ConnectionPool& copy);

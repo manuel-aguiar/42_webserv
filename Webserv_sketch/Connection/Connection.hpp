@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 12:09:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:05:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,10 @@ class Connection
 
         //will be spawned via static create.()
         
-        Event               _event;         //pointer cause it may be reused
+        Event*              _readEvent;         //pointer cause it may be reused
+        Event*              _writeEvent;
         ListeningSocket*    _listener;      //pointer cause it may be reused
-        Nginx_MemoryPool&   _pool;          //will have its own pool
+        Nginx_MemoryPool&   _connectionAlloc;          //will have its own pool
     
 
 

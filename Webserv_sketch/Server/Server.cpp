@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:58:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:06:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,14 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->_addr = (t_sockaddr *)_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->_addr, cur->ai_addr, cur->ai_addrlen);
 
+        listener->_myConnection = _connectionPool.getConnection();
         listener->_socktype = cur->ai_socktype;
         listener->_proto = cur->ai_protocol;
         listener->_addrlen = cur->ai_addrlen;
         listener->_backlog = backlog;
+        listener->_myConnection->_listener = listener;
+        listener->_myConnection->_readEvent->setHandler(&Event::accept);
+        listener->_myConnection->_writeEvent->setHandler(NULL);
         listener->open();
         _listeners.push_back(listener);
 

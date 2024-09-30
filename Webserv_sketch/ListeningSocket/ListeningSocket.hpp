@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:20:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 14:44:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ class ListeningSocket
         t_sockaddr*                 _addr;
         t_socklen                   _addrlen;
         int                         _backlog;
-        ConnectionPool&       _connectionPool;
+        
+        Connection*                 _myConnection;    
+        ConnectionPool&             _connectionPool;
 };
 
 
