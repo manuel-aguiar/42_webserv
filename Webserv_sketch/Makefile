@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 09:53:34 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 10:04:37 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ BUILD 							=
 										BUILD = $(BUILD_FLAGS)
 									endif
 
-all: $(NAME)
+
 
 $(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
@@ -73,6 +73,8 @@ $(NAME): $(OBJS)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -c $< -o $@
+
+all: $(NAME)
 
 debug: $(NAME)
 	
@@ -95,6 +97,9 @@ fclean: clean
         $(RM) $(MEMORYPOOL_PATH)/$(MEMORYPOOL_LIB); \
     fi
 
+run: $(NAME)
+	./$(NAME)
+
 re: fclean all
 
 git: fclean
@@ -102,4 +107,4 @@ git: fclean
 	git commit -m "update"
 	git push
 
-.PHONY: debug clean fclean re git
+.PHONY: debug clean fclean re git run

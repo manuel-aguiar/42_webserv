@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 09:54:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 10:01:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     hints.ai_socktype = socktype;
 
 	int status = getaddrinfo(node, port, &hints, &res);
+    
 	if (status != 0)
 	{
 		std::cerr << "getaddrinfo(): " + std::string(gai_strerror(status)) << std::endl;

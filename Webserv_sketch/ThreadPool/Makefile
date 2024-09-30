@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 09:41:00 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 10:05:20 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -110,10 +110,12 @@ fclean: clean
         $(RM) $(NAME); \
     fi
 
+run:
+
 re: fclean all
 
 git: fclean
 	git add * && git commit -m "commiting" && git push
 
-.PHONY: clean fclean re git debug
+.PHONY: clean fclean re git debug run
 

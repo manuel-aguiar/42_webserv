@@ -18,7 +18,11 @@
 int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
+
+	
 	Server server;
 
-	server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 10);
+	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
+
+	std::cout << server._listeners.size() << std::endl;	
 }
