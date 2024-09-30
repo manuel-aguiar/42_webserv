@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/06 14:25:36 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 09:35:32 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,8 @@ LIB 				= 	ar rcs
 RM					=	rm
 MAKE				=	make
 
+DEBUG_FLAGS 		= 	-g
+BUILD_FLAGS 		= 	-DNDEBUG 
 
 ## FOLDERS
 
@@ -74,7 +76,12 @@ SRCS				=	$(addprefix $(SRC_ABST_PATH)/, $(SRC_ABST_FILES))	\
 
 OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
 
-
+BUILD 							= 
+									ifeq ($(MAKECMDGOALS),debug)
+										BUILD = $(DEBUG_FLAGS)
+									else
+										BUILD = $(BUILD_FLAGS)
+									endif
 
 ## Compile
 
@@ -83,13 +90,15 @@ $(NAME): $(OBJS)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS)
 	@mkdir -p $(dir $@)
-	$(COMP) $(FLAGS) -I$(INC_PATH) -c $< -o $@
+	$(COMP) $(FLAGS) $(BUILD) -I$(INC_PATH) -c $< -o $@
+	
 
 
 ## Rules
 
 all: $(NAME)
 
+debug: fclean $(NAME)
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
@@ -106,5 +115,5 @@ re: fclean all
 git: fclean
 	git add * && git commit -m "commiting" && git push
 
-.PHONY: clean fclean re git
+.PHONY: clean fclean re git debug
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:16:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 09:06:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@ typedef struct addrinfo     t_addrinfo;
 
 //own headers
 # include "MemoryPool/MemoryPool.h"
-
+# include "ThreadPool/ThreadPool.h"
 
 #endif

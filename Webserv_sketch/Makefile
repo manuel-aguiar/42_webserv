@@ -6,13 +6,15 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 08:54:00 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 09:36:54 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 							= 	webserv		
 COMP 							= 	c++ -std=c++98
-FLAGS 							= 	-Wall -Wextra -Werror -g
+FLAGS 							= 	-Wall -Wextra -Werror
+EXTERN_LINKER 					= 	-lpthread
+DEBUG_FLAGS 					= 	-g
 BUILD_FLAGS 					= 	-DNDEBUG
 
 THREADPOOL_PATH 				= 	ThreadPool
@@ -45,7 +47,7 @@ LIB_THREADPOOL 					= 	-L./$(THREADPOOL_PATH) $(THREADPOOL_LINKER)
 LIB_MEMORYPOOL 					= 	-L./$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
 
 
-LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL)
+LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL) $(EXTERN_LINKER)
 
 
 OBJS 							= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
@@ -53,23 +55,26 @@ OBJS 							= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 
 BUILD 							= 
 									ifeq ($(MAKECMDGOALS),debug)
-										BUILD = 
+										BUILD = $(DEBUG_FLAGS)
 									else
 										BUILD = $(BUILD_FLAGS)
 									endif
 
-all: 	$(NAME)
+all: fclean	$(NAME)
 
 $(NAME): $(OBJS)
-	@$(MAKE) -C $(THREADPOOL_PATH)
-	@$(MAKE) -C $(MEMORYPOOL_PATH)
-	$(COMP) $(FLAGS) $(BUILD) $(LIBS) -o $(NAME) main.cpp
+	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
+	ranlib $(THREADPOOL_PATH)/$(THREADPOOL_LIB)
+	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
+	ranlib $(MEMORYPOOL_PATH)/$(MEMORYPOOL_LIB)
+	$(COMP) $(FLAGS) $(LIBS) -o $(NAME) main.cpp
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -c $< -o $@
 
-debug: 	$(NAME)
+debug: fclean $(NAME)
+	
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
