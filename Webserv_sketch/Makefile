@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 10:04:37 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 10:23:30 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,9 +64,7 @@ BUILD 							=
 
 $(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
-	ranlib $(THREADPOOL_PATH)/$(THREADPOOL_LIB)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
-	ranlib $(MEMORYPOOL_PATH)/$(MEMORYPOOL_LIB)
 	
 	$(COMP) $(FLAGS) $(OBJS) $(LIBS) -o $(NAME)
 

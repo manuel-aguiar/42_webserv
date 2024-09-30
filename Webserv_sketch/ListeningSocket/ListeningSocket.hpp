@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:13:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 10:16:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ class ListeningSocket
         ~ListeningSocket();
 
         int     open();
-        void    bind();
-        void    listen();
+        int     bind();
+        int     listen();
         void    accept();
         void    close();
 
