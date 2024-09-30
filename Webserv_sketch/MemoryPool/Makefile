@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/27 14:26:23 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 10:05:16 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,11 +25,13 @@ LIB 				= 	ar rcs
 RM					=	rm
 MAKE				=	make
 
+DEBUG_FLAGS 		= 	-g
+BUILD_FLAGS 		= 	-DNDEBUG
 
 ## FOLDERS
 
-INC_PATH			=	include
-SRC_PATH			=	source
+INC_PATH			=	.
+SRC_PATH			=	.
 OBJ_PATH			=	objs
 
 
@@ -61,12 +63,18 @@ OTHER_INCS			= 	$(ALIGNDEALLOC_PATH)/MemoryPool_AlignDealloc.hpp			\
 						\
 						$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.hpp						
 
-SRCS				=	$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.cpp			\
-						$(NGINXMEMPOOL_PATH)/Nginx_MPool_Block.cpp	
+SRCS				=	$(SRC_PATH)/$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.cpp			\
+						$(SRC_PATH)/$(NGINXMEMPOOL_PATH)/Nginx_MPool_Block.cpp	
 
 OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
 
 
+BUILD 							= 
+									ifeq ($(MAKECMDGOALS),debug)
+										BUILD = $(DEBUG_FLAGS)
+									else
+										BUILD = $(BUILD_FLAGS)
+									endif
 
 ## Compile
 
@@ -75,13 +83,13 @@ $(NAME): $(OBJS)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS) $(OTHER_INCS)
 	@mkdir -p $(dir $@)
-	$(COMP) $(FLAGS) -I$(INC_PATH) -c $< -o $@
-
+	$(COMP) $(FLAGS) $(BUILD) -I$(INC_PATH) -c $< -o $@
 
 ## Rules
 
 all: $(NAME)
 
+debug: $(NAME)
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
@@ -93,10 +101,12 @@ fclean: clean
         $(RM) $(NAME); \
     fi
 
+run:
+
 re: fclean all
 
 git: fclean
 	git add * && git commit -m "commiting" && git push
 
-.PHONY: clean fclean re git
+.PHONY: clean fclean re git debug run
 

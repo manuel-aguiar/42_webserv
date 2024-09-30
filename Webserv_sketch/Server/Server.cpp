@@ -6,34 +6,40 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:34:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 10:24:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 Server::Server() :
-    _pool(Nginx_MemoryPool::create(1024, 5))
+    _pool(Nginx_MemoryPool::create(4096, 1))
 {
-    
+    #ifdef SO_REUSEPORT
+        _multithreadListen = true;
+    #else
+        _multithreadListen = false;
+    #endif
 }
 
-
-/*
-
-
-int setupListeners()
+Server::~Server()
 {
+    _pool->destroy();
+}
 
-    struct addrinfo hints;
-    struct addrinfo *res;
-    struct addrinfo *cur;
+int Server::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
+{
+    ListeningSocket*    listener;
+    t_addrinfo          hints;
+    t_addrinfo          *res;
+    t_addrinfo          *cur;
 
     hints = (struct addrinfo){};
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = addrFamily;
+    hints.ai_socktype = socktype;
 
-	int status = getaddrinfo(NULL, "8080", &hints, &res);
+	int status = getaddrinfo(node, port, &hints, &res);
+    
 	if (status != 0)
 	{
 		std::cerr << "getaddrinfo(): " + std::string(gai_strerror(status)) << std::endl;
@@ -42,51 +48,21 @@ int setupListeners()
     
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
-        try
-        {
-            UniquePtr<IServerSocket> serverSock = ServerSocketFactory::create(*cur);
-            if (!serverSock.get())
-            {
-                std::cerr << "server not added" << std::endl;
-                continue ;
-            }
-            serverSock->bind();
-            serverSock->listen();
-            serverSock->setFdManager(&fdManager);
-            fdManager.addFd(serverSock, true);
-            std::cout << "server added" << std::endl;   
-        }
-        catch(const std::exception& e)
-        {
-            //alloc failed, non critical...?
-            std::cerr << e.what() << '\n';
-        }
+        listener = (ListeningSocket *)_pool->allocate(sizeof(ListeningSocket), true);
+        new (listener) ListeningSocket();
+        listener->_addr = (t_sockaddr *)_pool->allocate(cur->ai_addrlen, true);
+        std::memcpy(listener->_addr, cur->ai_addr, cur->ai_addrlen);
+
+        listener->_socktype = cur->ai_socktype;
+        listener->_proto = cur->ai_protocol;
+        listener->_addrlen = cur->ai_addrlen;
+        listener->_backlog = backlog;
+        listener->open();
+        _listeners.push_back(listener);
+
     }   
     freeaddrinfo(res);
     return (0);
 }
 
-int main(void)
-{
-    setupListeners();
-    return (0);
-}
 
-int main4(void)
-{
-    IPv4Address addr(0, 8080);
-    UniquePtr<IServerSocket> server = new ServerSocket<IPv4Address>(addr, SOCK_STREAM, IPPROTO_TCP);    
-    if (!server.get())
-        std::cerr << "ServerSocketFactory::create() failed" << std::endl;
-    return (0);
-}
-
-
-
-
-
-
-
-
-
-*/

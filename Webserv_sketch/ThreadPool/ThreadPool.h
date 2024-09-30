@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiHandler.cpp                                     :+:      :+:    :+:   */
+/*   ThreadPool.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:28:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 09:54:34 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/30 09:06:37 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/30 09:07:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CgiHandler.hpp"
+#ifndef THREADPOOL_H
 
-Cgi_Handler::Cgi_Handler()// : 
-    //_queue(MemoryPool_Dealloc<t_cgi_data>(4096, 5, 5)),
-   // _maxConcurrent(MAX_CONCURRENT_CGI), 
-    //_currentConcurrent(0)
-{
-    
-}
+# define THREADPOOL_H
 
-Cgi_Handler::~Cgi_Handler()
-{
-    
-}
+# include "include/Concrete/ThreadPool.hpp"
+
+#endif
