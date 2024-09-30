@@ -1,37 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ILog.hpp                                           :+:      :+:    :+:   */
+/*   EventManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 10:22:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:27:17 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/09/30 11:15:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ILOG_HPP
+#include "EventManager.hpp"
 
-# define ILOG_HPP
-
-# include <string>
-
-/*
-
-    Log interface.
-    Two implementations: with threads + without threads
-
-    Dependency injection pattern: server will be built with this in mind.
-
-*/
-
-class ILog
+EventManager::EventManager()
 {
-    public:
-        virtual ~ILog() {}
-        virtual void record(const std::string& entry) = 0;
-        virtual void record(const char* entry) = 0;
-};
+
+}
+
+EventManager::~EventManager()
+{
+    
+}
 
 
-#endif
+
+//private
+
+EventManager::EventManager(const EventManager& copy)
+{
+    (void)copy;
+}
+
+EventManager& EventManager::operator=(const EventManager& assign)
+{
+    (void)assign;
+    return (*this);
+}

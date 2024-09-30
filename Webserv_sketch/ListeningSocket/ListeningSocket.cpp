@@ -6,13 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:22:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 11:20:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
+#include "../Connection/ConnectionPool.hpp"
 
-ListeningSocket::ListeningSocket()
+ListeningSocket::ListeningSocket(ConnectionPool& connPool) :
+    _connectionPool(connPool)
 {
 }
 
@@ -31,6 +33,10 @@ int    ListeningSocket::open()
         std::cerr << "socket(): " + std::string(strerror(errno)) << std::endl;
         return (0);
     }
+
+    /*
+        TODO: fcntl set nonblocking
+    */
     
     #ifdef SO_REUSEPORT
         options = SO_REUSEADDR | SO_REUSEPORT;
@@ -71,6 +77,30 @@ int    ListeningSocket::listen()
 
 void    ListeningSocket::accept()
 {
+    Connection* connection;
+    u_sockaddr  addr;
+    t_socklen   addrlen;
+
+    
+    connection = _connectionPool.getConnection();
+    connection->_listener = this;
+    addrlen = sizeof(addr);
+    connection->_sockfd = ::accept(_sockfd, &addr.sockaddr, &addrlen);
+    
+    if (connection->_sockfd == -1)
+    {
+        std::cerr << "accept(): " + std::string(strerror(errno)) << std::endl;
+        throw std::runtime_error("accept() failed");        //meh, later
+    }
+
+
+    /*
+        TODO: set nonblocking
+    */
+
+    connection->_addr = (t_sockaddr*)connection->_pool.allocate(addrlen, true);
+    std::memcpy(connection->_addr, &addr, addrlen);
+    connection->_addrlen = addrlen;
 }
 
 void    ListeningSocket::close()

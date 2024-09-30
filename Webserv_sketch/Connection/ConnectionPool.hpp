@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 16:44:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 11:21:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,10 @@
 class ConnectionPool
 {
     public: 
-        ConnectionPool() : _spareConnections(NULL)
-        {
-            
-        }
+        ConnectionPool();
+        ~ConnectionPool();
         
-        Connection* getConnection()
-        {
-            Connection*     connection;
-
-            if (_spareConnections.size())
-            {
-                connection = _spareConnections.front();
-                _spareConnections.pop_front();
-            }
-            else
-                connection = _pool.allocate();
-            return (connection);
-        }
+        Connection* getConnection();
 
         void returnConnection(Connection* connection)
         {
@@ -63,6 +49,11 @@ class ConnectionPool
         {
             _pool.deallocate(connection);
         }
+
+
+
+        ConnectionPool(const ConnectionPool& copy);
+        ConnectionPool& operator=(const ConnectionPool& assign);
 };
 
 

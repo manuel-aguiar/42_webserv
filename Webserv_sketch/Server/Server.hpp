@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:18:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 10:50:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../Webserver_Definitions.h"
 # include "../CgiHandler/CgiHandler.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
+# include "../Connection/ConnectionPool.hpp"
 # include <vector>
 # include <map>
 # include <iostream>
@@ -36,11 +37,13 @@ class Server
         
         bool                            _multithreadListen;
         
-        std::vector<ListeningSocket*>    _listeners;
+        std::vector<ListeningSocket*>   _listeners;
 
         Nginx_MemoryPool*               _pool;
 
         Cgi_Handler                     _cgiHandler;
+
+        ConnectionPool                  _connectionPool;
 };
 
 
