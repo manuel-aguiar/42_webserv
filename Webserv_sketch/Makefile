@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 09:36:54 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 09:37:19 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -96,7 +96,7 @@ fclean: clean
 
 re: fclean all
 
-git:
+git: fclean
 	git add .
 	git commit -m "update"
 	git push
