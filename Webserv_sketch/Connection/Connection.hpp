@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:16:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:09:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 
 # include "../Webserver_Definitions.h"
 # include "../MemoryPool/MemoryPool.h"
+# include "../Event/Event.hpp"
 
 class ListeningSocket;
+class Event;
 
 class Connection
 {
@@ -26,6 +28,9 @@ class Connection
         ~Connection();
 
         void    reset();
+        void    read();
+        void    write();
+        void    close();
 
 
     //private:
@@ -35,6 +40,7 @@ class Connection
 
         //will be spawned via static create.()
         
+        Event               _event;         //pointer cause it may be reused
         ListeningSocket*    _listener;      //pointer cause it may be reused
         Nginx_MemoryPool&   _pool;          //will have its own pool
     

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:44:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 11:35:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ typedef struct sockaddr_un  t_sockaddr_un;
 typedef socklen_t           t_socklen;
 typedef struct addrinfo     t_addrinfo;
 
+typedef struct epoll_event  t_epoll_event;
+
 typedef union
 {
     t_sockaddr         sockaddr;
@@ -43,7 +45,7 @@ typedef union
     t_sockaddr_un      sockaddr_un;
 }   u_sockaddr;
 
-
+# define MAX_EPOLL_EVENTS 64
 
 //own headers
 # include "MemoryPool/MemoryPool.h"
