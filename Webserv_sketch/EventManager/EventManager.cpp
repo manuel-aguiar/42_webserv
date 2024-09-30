@@ -6,16 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 12:14:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:19:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventManager.hpp"
-#include "Event.hpp"
+#include "../Event/Event.hpp"
 #include "../Connection/Connection.hpp"
 
 EventManager::EventManager() :
-    _epollfd(epoll_create(1))
+    _epollfd(epoll_create(1)),
+    _waitCount(0)
 {
     if (_epollfd == -1)
         throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
@@ -44,21 +45,6 @@ EventManager& EventManager::operator=(const EventManager& assign)
 
 
 
-EventManager::EventManager() :
-    _waitCount(0)
-{
-    if (_epollfd == -1)
-        throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
-        
-    /*
-        TODO: set nonblocking
-    */
-}
-
-EventManager::~EventManager()
-{
-    
-}
 
 void                EventManager::addEvent(Event& monitor)
 {
@@ -100,4 +86,14 @@ const   t_epoll_event&     EventManager::getEvent(int index)
 {
     assert(index >= 0 && index < _waitCount);
     return (_events[index]);
+}
+
+static void teste(EventManager* manager)
+{
+    int i = manager->waitEvents(1000);
+    for (int i = 0; i < manager->_waitCount; i++)
+    {
+        Event* event = (Event*)manager->_events[i].data.ptr;
+        event->handle();
+    }
 }

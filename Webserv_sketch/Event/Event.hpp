@@ -6,13 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 12:12:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:18:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EVENT_HPP
 
 # define EVENT_HPP
+
+#include <cassert>
 
 class Connection;
 
@@ -29,6 +31,9 @@ class Event
         void    accept();
         void    read();
         void    write();
+
+
+        void    handle();
 
 
     //private:

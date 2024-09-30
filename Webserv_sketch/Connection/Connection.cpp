@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:13:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 12:20:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void    Connection::reset()
     _pool.reset();
 }
 
+void    Connection::read() {}
+void    Connection::write() {}
 
 // no copies, as usual
 Connection::Connection(const Connection& other) :
