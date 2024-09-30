@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 09:37:19 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 09:53:34 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,17 +26,17 @@ MEMORYPOOL_LIB					= 	libmemorypool.a
 RM 								= 	rm -rf
 MAKE 							= 	make
 
-SRC_PATH = .
-OBJ_PATH = objs
+SRC_PATH 						= 	.
+OBJ_PATH 						= 	_objs
 
-SRCS = 							$(SRC_PATH)/main.cpp										\
-								$(SRC_PATH)/Server/Server.cpp								\
-								$(SRC_PATH)/ListeningSocket/ListeningSocket.cpp			\
+SRCS =							$(SRC_PATH)/main.cpp										\
+								$(SRC_PATH)/ListeningSocket/ListeningSocket.cpp				\
 								$(SRC_PATH)/CgiHandler/CgiHandler.cpp						\
 								$(SRC_PATH)/Connection/Connection.cpp						\
 								$(SRC_PATH)/Connection/ConnectionPool.cpp					\
-								$(SRC_PATH)/Event/Event.cpp								\
-								$(SRC_PATH)/Request/Request.cpp										
+								$(SRC_PATH)/Event/Event.cpp									\
+								$(SRC_PATH)/Request/Request.cpp								\
+								$(SRC_PATH)/Server/Server.cpp																			
 
 
 
@@ -60,20 +60,21 @@ BUILD 							=
 										BUILD = $(BUILD_FLAGS)
 									endif
 
-all: fclean	$(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
 	ranlib $(THREADPOOL_PATH)/$(THREADPOOL_LIB)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
 	ranlib $(MEMORYPOOL_PATH)/$(MEMORYPOOL_LIB)
-	$(COMP) $(FLAGS) $(LIBS) -o $(NAME) main.cpp
+	
+	$(COMP) $(FLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -c $< -o $@
 
-debug: fclean $(NAME)
+debug: $(NAME)
 	
 
 clean:

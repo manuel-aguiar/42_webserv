@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 08:08:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 09:40:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 # include "../Webserver_Definitions.h"
 # include "../CgiHandler/CgiHandler.hpp"
-# include "../MemoryPool/MemoryPool.h"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include <vector>
 # include <map>

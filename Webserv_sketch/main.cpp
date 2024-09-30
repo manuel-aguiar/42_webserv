@@ -10,17 +10,15 @@
 /*																			*/
 /* ************************************************************************** */
 
-
-
-#include <iostream>
-#include <string>
-#include <cstdlib>
+#include "Webserver_Definitions.h"
+#include "Server/Server.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
 int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
-	std::cout << "Halow Woldr" << std::endl;
-	return (GRET_SUCKCESS);
+	Server server;
+
+	server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 10);
 }

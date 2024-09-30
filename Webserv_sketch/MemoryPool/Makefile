@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 09:35:41 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/09/30 09:52:24 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,7 +89,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS) $(OTHER_INCS)
 
 all: $(NAME)
 
-debug: fclean $(NAME)
+debug: $(NAME)
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 08:15:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 09:54:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ Server::Server() :
     
 }
 
+Server::~Server()
+{
+    _pool->destroy();
+}
 
 int Server::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
 {
@@ -50,8 +54,4 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     return (0);
 }
 
-int main()
-{
-    Server server;
-    server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 10);
-}
+
