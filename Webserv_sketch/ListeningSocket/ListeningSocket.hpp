@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 14:40:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:40:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ class ListeningSocket
         ListeningSocket(ConnectionPool& connPool, ILog* logFile);
         ~ListeningSocket();
 
-        int     open();
-        int     bind();
-        int     listen();
-        void    accept();
-        void    close();
+        int                         open();
+        int                         bind();
+        int                         listen();
+        void                        accept();
+        void                        close();
 
         ILog*                       _logFile;
         int                         _socktype;    
