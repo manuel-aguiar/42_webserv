@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 08:47:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:40:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,24 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     
 	if (status != 0)
 	{
-		std::cerr << "getaddrinfo(): " + std::string(gai_strerror(status)) << std::endl;
+        _logFile->record("getaddrinfo(): " + std::string(gai_strerror(status)));
 		return (1);
 	}
     
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(_connectionPool);
+        new (listener) ListeningSocket(_connectionPool, _logFile);
         
         listener->_addr = (t_sockaddr *)_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->_addr, cur->ai_addr, cur->ai_addrlen);
 
         listener->_myConnection = _connectionPool.getConnection();
+        if (!listener->_myConnection)
+        {
+            _logFile->record("ConnectionPool exhausted");
+            continue ;
+        }
         listener->_socktype = cur->ai_socktype;
         listener->_proto = cur->ai_protocol;
         listener->_addrlen = cur->ai_addrlen;
@@ -64,9 +69,10 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->_myConnection->_listener = listener;
         listener->_myConnection->_readEvent->setHandler(&Event::accept);
         listener->_myConnection->_writeEvent->setHandler(NULL);
-        listener->open();
-        _listeners.push_back(listener);
-
+        if (listener->open())
+            _listeners.push_back(listener);
+        else
+            listener->~ListeningSocket();
     }   
     freeaddrinfo(res);
     return (0);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 14:44:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 14:40:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define LISTENINGSOCKET_HPP
 
 # include "../Webserver_Definitions.h"
-
+# include "../Logs/Logs.h"
 
 # include <sys/socket.h>
 # include <netinet/in.h>
@@ -29,7 +29,7 @@ class ConnectionPool;
 class ListeningSocket
 {
     public:
-        ListeningSocket(ConnectionPool& connPool);
+        ListeningSocket(ConnectionPool& connPool, ILog* logFile);
         ~ListeningSocket();
 
         int     open();
@@ -38,6 +38,7 @@ class ListeningSocket
         void    accept();
         void    close();
 
+        ILog*                       _logFile;
         int                         _socktype;    
         t_socket                    _sockfd;
         int                         _proto;
