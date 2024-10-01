@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 07:51:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 08:09:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,30 @@
 
 # include <queue>
 # include <list>
+# include <vector>
+
+# define MAX_CONNECTIONS 100
 
 class ConnectionPool
 {
     public: 
-        ConnectionPool(ILog* logFile);
+        ConnectionPool(ILog* logFile, int maxConnections = MAX_CONNECTIONS);
         ~ConnectionPool();
         
         Connection*     getConnection();
         void            returnConnection(Connection* connection);
 
     private:
+        
+
+        std::vector<Connection>                                        _connections;
+        std::vector<Event>                                             _readEvents;
+        std::vector<Event>                                             _writeEvents;
         std::list<Connection*, MemoryPool_Dealloc<Connection*> >       _spareConnections;
-        MemoryPool_Dealloc<Connection>                                 _connectionAlloc;
-        MemoryPool_Dealloc<Event>                                      _eventAlloc;
         ILog*                                                          _logFile;
 
-
+        size_t                                                         _maxConnections;
+        
         void destroyConnection(Connection* connection);
 
         ConnectionPool();
