@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 07:53:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 19:51:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 
 Connection::Connection(ILog* logFile) :
-    _connectionAlloc(*Nginx_MemoryPool::create(4096, 1)),
+    _connectionAlloc(NULL),
     _logFile(logFile)
 {
     _logFile = logFile;
@@ -22,13 +22,18 @@ Connection::Connection(ILog* logFile) :
 
 Connection::~Connection()
 {
-    _connectionAlloc.destroy();
+
+}
+
+void    Connection::init()
+{
+    _connectionAlloc = Nginx_MemoryPool::create(4096, 10);
 }
 
 void    Connection::reset()
 {
     _listener = NULL;
-    _connectionAlloc.reset();
+    _connectionAlloc->reset();
 }
 
 void    Connection::read() {}
@@ -42,11 +47,8 @@ Connection::Connection(const Connection& other) :
 }
 Connection& Connection::operator=(const Connection& other)
 {
-    (void)other;
+    if (this == &other)
+        return (*this);
+    _connectionAlloc = other._connectionAlloc;
     return (*this);
-}
-
-Connection::Connection() : _connectionAlloc(*Nginx_MemoryPool::create(4096, 1))
-{
-
 }

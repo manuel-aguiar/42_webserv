@@ -12,6 +12,7 @@
 
 #include "Webserver_Definitions.h"
 #include "Server/Server.hpp"
+#include "Clock/Clock.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -23,6 +24,12 @@ int main(int ac, char **av, char **env)
 	Server server(&log);
 
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
+
+	Clock clock;
+
+	clock.start();
+
+	std::cout << clock.get_FormatedTime() << std::endl;
 
 	std::cout << server._listeners.size() << std::endl;	
 }

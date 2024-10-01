@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/01 18:47:22 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/01 19:41:26 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME 							= 	webserv
 COMP 							= 	c++ -std=c++98
 FLAGS 							= 	-Wall -Wextra -Werror
 EXTERN_LINKER 					= 	-lpthread
-DEBUG_FLAGS 					= 	-g
+DEBUG_FLAGS 					= 	-g #-fsanitize=address
 BUILD_FLAGS 					= 	-DNDEBUG
 
 THREADPOOL_PATH 				= 	ThreadPool

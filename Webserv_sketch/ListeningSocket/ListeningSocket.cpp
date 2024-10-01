@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 14:33:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 19:25:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void    ListeningSocket::accept()
         TODO: set nonblocking
     */
 
-    connection->_addr = (t_sockaddr*)connection->_connectionAlloc.allocate(addrlen, true);
+    connection->_addr = (t_sockaddr*)connection->_connectionAlloc->allocate(addrlen, true);
     std::memcpy(connection->_addr, &addr, addrlen);
     connection->_addrlen = addrlen;
 }
