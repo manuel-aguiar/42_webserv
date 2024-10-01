@@ -86,7 +86,6 @@ MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
 	_freeSlot(NULL)
 
 {
-	
 }
 
 
