@@ -13,6 +13,15 @@
 
 #include <vector>
 
+/*
+	Template to get the element size aligned at compile time for correct vector allocation
+*/
+template <size_t Size, size_t Alignment>
+struct AlignedSize
+{
+    static const size_t value = (Size + Alignment - 1) & ~(Alignment - 1);
+};
+
 
 template <typename T>
 class MPool_FixedElem
@@ -31,7 +40,7 @@ class MPool_FixedElem
 			typedef MPool_FixedElem<U> other;
 		};
 
-		MPool_FixedElem(size_t numElems) throw();
+		MPool_FixedElem(size_t numElems = 0) throw();
 
 		MPool_FixedElem(const MPool_FixedElem& memoryPool) throw();
 		template <class U> MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw();
@@ -54,7 +63,7 @@ class MPool_FixedElem
 
 		union Slot_
 		{
-			char		  data_[sizeof(value_type)];                      
+			char		  data_[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];                      
 			Slot_*        next;
 		};
 
@@ -63,6 +72,7 @@ class MPool_FixedElem
 		typedef Slot_* slot_pointer_;
 
 		std::vector<Slot_> 	_elements;
+		size_t 				_elemCount;
 		size_t 				_maxElems;
 		slot_pointer_ 		_freeSlot;
 
@@ -71,31 +81,36 @@ class MPool_FixedElem
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
+	_elemCount(0),
 	_maxElems(numElems),
 	_freeSlot(NULL)
 
 {
-	_elements.reserve(_maxElems);
+	
 }
 
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& memoryPool) throw() :
-	_maxElems(memoryPool._maxElems)
-
+	_elements(memoryPool._elements),
+	_elemCount(memoryPool._elemCount),
+	_maxElems(memoryPool._maxElems),
+	_freeSlot(memoryPool._freeSlot)
 {
-	//_elements.reserve(_maxElems);
+	(void)memoryPool;
+	//_elements.resize(_maxElems);
 }
 
 
 
 template <typename T>
 template<class U>
-MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw()
-//:
-//	_maxElems(memoryPool._maxElems)
+MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw() :
+	_elemCount(0),
+	_maxElems(memoryPool._maxElems),
+	_freeSlot(NULL)
 {
-	//_elements.reserve(_maxElems);
+	//_elements.resize(_maxElems);
 }
 
 
@@ -106,7 +121,6 @@ throw()
 {
 
 }
-
 
 
 template <typename T>
@@ -133,7 +147,7 @@ template <typename T>
 inline typename MPool_FixedElem<T>::pointer
 MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
-	assert(_elements.size() < _maxElems && sizeof(value_type) <= sizeof(Slot_*));
+	assert(_elemCount < _maxElems);
 	
 	if (_freeSlot != 0)
 	{
@@ -142,7 +156,11 @@ MPool_FixedElem<T>::allocate(size_type, const_pointer)
 		return (result);
 	}
 	else
-		return reinterpret_cast<pointer>(&_elements[_elements.size()]);
+	{
+		_elements.resize(_maxElems);
+		return reinterpret_cast<pointer>(&_elements[_elemCount++]);
+	}
+		
 }
 
 
@@ -155,6 +173,7 @@ MPool_FixedElem<T>::deallocate(pointer p, size_type)
 	{
 		reinterpret_cast<slot_pointer_>(p)->next = _freeSlot;
 		_freeSlot = reinterpret_cast<slot_pointer_>(p);
+		--_elemCount;
 	}
 }
 

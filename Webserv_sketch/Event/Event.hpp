@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 08:03:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 08:41:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Connection;
 class Event
 {
     public:
-        Event();
+        Event(ILog* logFile);
         ~Event();
 
         void    setHandler(void (Event::*handler)());

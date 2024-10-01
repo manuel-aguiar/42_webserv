@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 08:09:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 08:46:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 class ConnectionPool
 {
     public: 
-        ConnectionPool(ILog* logFile, int maxConnections = MAX_CONNECTIONS);
+        ConnectionPool(ILog* logFile, size_t maxConnections = MAX_CONNECTIONS);
         ~ConnectionPool();
         
         Connection*     getConnection();
@@ -36,14 +36,15 @@ class ConnectionPool
 
     private:
         
-
+        ILog*                                                          _logFile;
+        size_t                                                         _maxConnections;
+        
         std::vector<Connection>                                        _connections;
         std::vector<Event>                                             _readEvents;
         std::vector<Event>                                             _writeEvents;
-        std::list<Connection*, MemoryPool_Dealloc<Connection*> >       _spareConnections;
-        ILog*                                                          _logFile;
+        MPool_FixedElem<Connection*>                                   _spareConnMemPool;
+        std::list<Connection*, MPool_FixedElem<Connection*> >          _spareConnections;
 
-        size_t                                                         _maxConnections;
         
         void destroyConnection(Connection* connection);
 

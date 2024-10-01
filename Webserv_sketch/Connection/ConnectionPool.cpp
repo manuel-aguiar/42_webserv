@@ -6,19 +6,23 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 08:07:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 08:44:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ConnectionPool.hpp"
 
-ConnectionPool::ConnectionPool() {}
+
 ConnectionPool::~ConnectionPool() 
 {
 
 }
 
-ConnectionPool::ConnectionPool(ILog* logFile, int maxConnections) : _logFile(logFile), _maxConnections(maxConnections)
+ConnectionPool::ConnectionPool(ILog* logFile, size_t maxConnections) : 
+    _logFile(logFile), 
+    _maxConnections(maxConnections),
+    _spareConnMemPool(maxConnections),
+    _spareConnections(_spareConnMemPool)
 {
     _connections.reserve(maxConnections);
     _readEvents.reserve(maxConnections);
@@ -54,10 +58,15 @@ void ConnectionPool::returnConnection(Connection* connection)
 
 
 //private, as usual
-ConnectionPool::ConnectionPool(const ConnectionPool& copy)
+
+ConnectionPool::ConnectionPool() 
+    : _spareConnMemPool(3){}
+    
+ConnectionPool::ConnectionPool(const ConnectionPool& copy) : _spareConnMemPool(3)
 {
     (void)copy;
 }
+
 
 ConnectionPool& ConnectionPool::operator=(const ConnectionPool& assign)
 {
