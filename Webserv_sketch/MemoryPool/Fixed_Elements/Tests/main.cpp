@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 09:34:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 09:37:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 int main(void)
 {
-    MPool_FixedElem<int>    pool(10);
-    std::list<int, MPool_FixedElem<int> > list1(pool);
+    std::list<int, MPool_FixedElem<int> > list1(MPool_FixedElem<int>(10));
 
     list1.push_back(1);
     list1.push_back(2);
