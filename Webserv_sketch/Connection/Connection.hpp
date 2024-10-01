@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 15:05:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 07:52:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../Webserver_Definitions.h"
 # include "../MemoryPool/MemoryPool.h"
 # include "../Event/Event.hpp"
+# include "../Logs/Logs.h"
 
 class ListeningSocket;
 class Event;
@@ -24,7 +25,7 @@ class Event;
 class Connection
 {
     public:
-        Connection();
+        Connection(ILog* logFile);
         ~Connection();
 
         void    reset();
@@ -44,9 +45,9 @@ class Connection
         Event*              _writeEvent;
         ListeningSocket*    _listener;      //pointer cause it may be reused
         Nginx_MemoryPool&   _connectionAlloc;          //will have its own pool
-    
-
-
+        ILog*               _logFile;
+        
+        Connection();
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);
 

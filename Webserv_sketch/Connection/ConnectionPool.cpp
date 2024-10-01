@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 15:05:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 07:51:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 ConnectionPool::ConnectionPool() {}
 ConnectionPool::~ConnectionPool() {}
 
-
+ConnectionPool::ConnectionPool(ILog* logFile) : _logFile(logFile) {}
 
 
 Connection* ConnectionPool::getConnection()
