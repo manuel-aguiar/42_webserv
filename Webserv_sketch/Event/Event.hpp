@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 15:08:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 07:45:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@ class Event
 
         void    handle();
 
+/*
         typedef enum
         {
             ACCEPT = 1 << 0,
             WRITE = 1 << 1,
             READ = 1 << 2
         };
-
+*/
     //private:
         typedef void (Event::*EventHandler)();
 

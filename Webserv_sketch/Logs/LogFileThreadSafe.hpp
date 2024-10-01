@@ -25,6 +25,7 @@
 # include <stdexcept>
 # include <cstring>
 # include <string>
+# include <cerrno>
 
 class LogFileThreadSafe : public ILog
 {

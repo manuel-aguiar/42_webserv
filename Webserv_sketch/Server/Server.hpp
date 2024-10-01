@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 10:50:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 07:44:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "../CgiHandler/CgiHandler.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../Connection/ConnectionPool.hpp"
+# include "../Logs/Logs.h"
 # include <vector>
 # include <map>
 # include <iostream>
