@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerClock.hpp                                    :+:      :+:    :+:   */
+/*   Clock.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:52:49 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/01 14:44:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERCLOCK_HPP
+#include "Clock.hpp"
 
-# define SERVERCLOCK_HPP
-
-class ServerClock
+Clock::Clock() : _time (0)
 {
-    public:
-        ServerClock();
-        ~ServerClock();
+}
 
-    private:
-        int     _time;
-};
+Clock::~Clock()
+{
+}
 
+Clock::Clock(const Clock& copy)
+{
+    _time = copy._time;
+}
 
-#endif
+Clock& Clock::operator=(const Clock& assign)
+{
+    _time = assign._time;
+    return (*this);
+}

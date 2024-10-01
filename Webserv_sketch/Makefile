@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/01 07:45:30 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/01 14:45:58 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/Request/Request.cpp								\
 								$(SRC_PATH)/Server/Server.cpp								\
 								$(SRC_PATH)/EventManager/EventManager.cpp					\
+								$(SRC_PATH)/Clock/Clock.cpp									\
 								$(SRC_PATH)/Logs/LogFile.cpp								\
 								$(SRC_PATH)/Logs/LogFileThreadSafe.cpp						\
 								$(SRC_PATH)/Logs/LogStream.cpp								\
