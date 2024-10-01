@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "LogFile.hpp"
+#include "../Globals/Globals.hpp"
 
-LogFile::LogFile(const char* filename)
+LogFile::LogFile(const char* filename, Globals* globals) : _globals(globals)
 {
     _fd = open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_RDWR, 777);
     if (_fd == -1)
@@ -24,12 +25,19 @@ LogFile::~LogFile()
     close(_fd);
 }
 
+void    LogFile::setGlobals(Globals& globals)
+{
+    _globals = &globals;
+}
+
 void    LogFile::record(const std::string& entry)
 {
+    //get the time with the clock
     write(_fd, entry.c_str(), entry.size() + 1);
 }
 
 void    LogFile::record(const char* entry)
 {
+    //get the time with the clock
     write(_fd, entry, std::strlen(entry));
 }
