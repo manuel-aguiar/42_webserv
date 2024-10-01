@@ -6,14 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 15:06:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/01 07:50:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-Server::Server() :
-    _pool(Nginx_MemoryPool::create(4096, 1))
+Server::Server(ILog* logFile) : 
+    _pool(Nginx_MemoryPool::create(4096, 1)),
+    _logFile(logFile)
 {
     #ifdef SO_REUSEPORT
         _multithreadListen = true;

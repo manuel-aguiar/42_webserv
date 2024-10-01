@@ -19,8 +19,8 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
 
-	
-	Server server;
+	LogFile log("log.txt");
+	Server server(&log);
 
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
 
