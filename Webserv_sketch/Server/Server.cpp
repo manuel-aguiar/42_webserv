@@ -6,16 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 14:40:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:45:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+# include "Server.hpp"
+# include "../Globals/Globals.hpp"
 
-Server::Server(ILog* logFile) : 
+Server::Server(Globals* _globals) : 
     _pool(Nginx_MemoryPool::create(4096, 1)),
-    _connectionPool(logFile),
-    _logFile(logFile)
+    _connectionPool(_globals),
+    _globals(_globals)
 {
     #ifdef SO_REUSEPORT
         _multithreadListen = true;
@@ -44,14 +45,14 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     
 	if (status != 0)
 	{
-        _logFile->record("getaddrinfo(): " + std::string(gai_strerror(status)));
+        _globals->_logFile->record("getaddrinfo(): " + std::string(gai_strerror(status)));
 		return (1);
 	}
     
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(_connectionPool, _logFile);
+        new (listener) ListeningSocket(_connectionPool, _globals);
         
         listener->_addr = (t_sockaddr *)_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->_addr, cur->ai_addr, cur->ai_addrlen);
@@ -59,7 +60,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->_myConnection = _connectionPool.getConnection();
         if (!listener->_myConnection)
         {
-            _logFile->record("ConnectionPool exhausted");
+            _globals->_logFile->record("ConnectionPool exhausted");
             continue ;
         }
         listener->_socktype = cur->ai_socktype;

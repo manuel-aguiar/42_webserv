@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 14:40:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:12:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,12 @@
 class Server;
 class Connection;
 class ConnectionPool;
+class Globals;
 
 class ListeningSocket
 {
     public:
-        ListeningSocket(ConnectionPool& connPool, ILog* logFile);
+        ListeningSocket(ConnectionPool& connPool, Globals* globals = NULL);
         ~ListeningSocket();
 
         int                         open();
@@ -38,7 +39,7 @@ class ListeningSocket
         void                        accept();
         void                        close();
 
-        ILog*                       _logFile;
+        Globals*                    _globals;
         int                         _socktype;    
         t_socket                    _sockfd;
         int                         _proto;
@@ -48,6 +49,12 @@ class ListeningSocket
         
         Connection*                 _myConnection;    
         ConnectionPool&             _connectionPool;
+    
+
+    private:
+        ListeningSocket();
+        ListeningSocket(const ListeningSocket& copy);
+        ListeningSocket& operator=(const ListeningSocket& assign);
 };
 
 

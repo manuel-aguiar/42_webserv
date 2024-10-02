@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:50:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:44:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ ConnectionPool::~ConnectionPool()
         _connections[i]._connectionAlloc->destroy();
 }
 
-ConnectionPool::ConnectionPool(ILog* logFile, size_t maxConnections) : 
-    _logFile(logFile), 
+ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 
+    _globals(globals), 
     _maxConnections(maxConnections),
     _spareConnections(MPool_FixedElem<Connection*>(maxConnections))
 {
@@ -30,9 +30,9 @@ ConnectionPool::ConnectionPool(ILog* logFile, size_t maxConnections) :
 
     for (size_t i = 0; i < maxConnections; i++)
     {
-        _connections.push_back(Connection(logFile));
-        _readEvents.push_back(Event(logFile));
-        _writeEvents.push_back(Event(logFile));
+        _connections.push_back(Connection(_globals));
+        _readEvents.push_back(Event(_globals));
+        _writeEvents.push_back(Event(_globals));
         _connections[i].init();
         _connections[i]._readEvent = &_readEvents[i];
         _connections[i]._writeEvent = &_writeEvents[i];

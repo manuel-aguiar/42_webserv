@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:45:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:22:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Connection;
 class Event
 {
     public:
-        Event(ILog* logFile = NULL);
+        Event(Globals* _globals = NULL);
         ~Event();
 
         void    setHandler(void (Event::*handler)());
@@ -51,7 +51,7 @@ class Event
         Connection*     _connection;
         EventHandler    _handler;
         int             _flags;
-        ILog*           _logFile;
+        Globals*        _globals;
 
         Event(const Event& copy);
         Event& operator=(const Event& assign);

@@ -13,6 +13,7 @@
 #include "Webserver_Definitions.h"
 #include "Server/Server.hpp"
 #include "Clock/Clock.hpp"
+#include "Globals/Globals.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -20,16 +21,21 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
 
-	LogFile log("log.txt");
-	Server server(&log);
+	LogFile 	log("log.txt");
+	LogFile 	debug("debug.txt");
+	Clock   	clock;
+	Globals 	globals(&clock, &log, &debug);
+
+	Server 		server(&globals);
 
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
 
-	Clock clock;
 
 	clock.start();
 
 	std::cout << clock.get_FormatedTime() << std::endl;
 
 	std::cout << server._listeners.size() << std::endl;	
+
+	return (GRET_SUCKCESS);
 }

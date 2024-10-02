@@ -6,24 +6,41 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:25:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:19:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
 #include "../Connection/ConnectionPool.hpp"
+#include "../Globals/Globals.hpp"
 
-ListeningSocket::ListeningSocket(ConnectionPool& connPool, ILog* logFile) :
-    _logFile(logFile),
+
+ListeningSocket::ListeningSocket(ConnectionPool& connPool, Globals* globals) :
+    _globals(globals),
     _connectionPool(connPool)
 {
-
+    #if !defined(NDEBUG) && defined(DEBUG_CTOR)
+        #include <iostream>
+        if (globals)
+            _globals->_debugFile->record("ListeningSocket Constructor Called");
+        else
+            std::cout << "ListeningSocket Constructor Called" << std::endl;
+    #endif
 }
 
 ListeningSocket::~ListeningSocket()
 {
     _connectionPool.returnConnection(_myConnection);
     close();
+
+#if !defined(NDEBUG) && defined(DEBUG_CTOR)
+    #include <iostream>
+    if (globals)
+        _globals->_debugFile->record("ListeningSocket Destructor Called");
+    else
+        std::cout << "ListeningSocket Destructor Called" << std::endl;
+#endif
+
 }
 
 int    ListeningSocket::open()
@@ -34,7 +51,7 @@ int    ListeningSocket::open()
     
     if (_sockfd == -1)
     {
-        _logFile->record("socket(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("socket(): " + std::string(strerror(errno)));
         return (0);
     }
 
@@ -50,7 +67,7 @@ int    ListeningSocket::open()
 
     if (::setsockopt(_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
     {
-        _logFile->record("setsockopt(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("setsockopt(): " + std::string(strerror(errno)));
         return (0);
     }   
 
@@ -63,7 +80,7 @@ int    ListeningSocket::bind()
 {
     if (::bind(_sockfd, _addr, _addrlen) == -1)
     {
-        _logFile->record("bind(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("bind(): " + std::string(strerror(errno)));
         return (0);
     }
     return (1);
@@ -73,7 +90,7 @@ int    ListeningSocket::listen()
 {
     if (::listen(_sockfd, _backlog) == -1)
     {
-        _logFile->record("listen(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("listen(): " + std::string(strerror(errno)));
         return (0);
     }
     return (1);
@@ -89,7 +106,7 @@ void    ListeningSocket::accept()
     connection = _connectionPool.getConnection();
     if (!connection)
     {
-        _logFile->record("ConnectionPool exhausted");
+        _globals->_logFile->record("ConnectionPool exhausted");
         return ;
     }
     connection->_listener = this;
@@ -98,7 +115,7 @@ void    ListeningSocket::accept()
     
     if (connection->_sockfd == -1)
     {
-        _logFile->record("accept(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("accept(): " + std::string(strerror(errno)));
         throw std::runtime_error("accept() failed");        //meh, later
     }
 
@@ -115,6 +132,21 @@ void    ListeningSocket::accept()
 void    ListeningSocket::close()
 {
     if (::close(_sockfd) == -1)
-        _logFile->record("close(): " + std::string(strerror(errno)));
+        _globals->_logFile->record("close(): " + std::string(strerror(errno)));
 }
 
+
+ListeningSocket::ListeningSocket() : 
+    _globals(NULL),
+    _connectionPool(*((ConnectionPool*)NULL))
+{
+
+#if !defined(NDEBUG) && defined(DEBUG_CTOR)
+    #include <iostream>
+    if (globals)
+        _globals->_debugFile->record("ListeningSocket Destructor Called");
+    else
+        std::cout << "ListeningSocket Destructor Called" << std::endl;
+#endif
+
+}

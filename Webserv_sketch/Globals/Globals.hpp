@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:10:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 18:43:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:09:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class Globals
         LogFile*            _debugFile;
 
     private:
-        Globals();
 
         void            setGlobals();
 

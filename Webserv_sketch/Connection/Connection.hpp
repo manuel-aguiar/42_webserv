@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:48:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:21:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Event;
 class Connection
 {
     public:
-        Connection(ILog* logFile = NULL);
+        Connection(Globals* globals = NULL);
         ~Connection();
 
         void    init();
@@ -47,7 +47,7 @@ class Connection
         Event*              _writeEvent;
         ListeningSocket*    _listener;      //pointer cause it may be reused
         Nginx_MemoryPool*   _connectionAlloc;          //will have its own pool
-        ILog*               _logFile;
+        Globals*            _globals;
         
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);
