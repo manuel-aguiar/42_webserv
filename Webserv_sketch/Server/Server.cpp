@@ -6,14 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:45:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 09:08:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Server.hpp"
 # include "../Globals/Globals.hpp"
 
-Server::Server(Globals* _globals) : 
+Server::Server(size_t serverID, Globals* _globals) :
+    _myID(serverID),
     _pool(Nginx_MemoryPool::create(4096, 1)),
     _connectionPool(_globals),
     _globals(_globals)
@@ -80,3 +81,12 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
 }
 
 
+
+//private
+Server::Server() :
+    _connectionPool(NULL, 0) {} 
+
+Server::Server(const Server& copy) :
+    _connectionPool(NULL, 0)  {(void)copy;}
+
+Server& Server::operator=(const Server& assign) { (void)assign; return (*this);}

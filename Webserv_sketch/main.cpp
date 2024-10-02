@@ -26,7 +26,7 @@ int main(int ac, char **av, char **env)
 	Clock   	clock;
 	Globals 	globals(&clock, &log, &debug);
 
-	Server 		server(&globals);
+	Server 		server(0, &globals);
 
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
 
