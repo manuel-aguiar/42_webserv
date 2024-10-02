@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 20:05:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/02 08:01:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ int Clock::_get_time()
 }
 
 
-static char	*inPlacePutDateParameter(unsigned int nb, char* buffer, int totalPlaces)
+static char	*inPlacePutDateParameter(unsigned int nb, char* buffer, int totalCharacters)
 {
 	char	print;
 	int		i;
 
-	i = totalPlaces;
+	i = totalCharacters;
 
 	while (nb != 0 && i >= 0)
 	{
@@ -71,7 +71,7 @@ static char	*inPlacePutDateParameter(unsigned int nb, char* buffer, int totalPla
 	while (i > 0)
 		buffer[--i] = '0';
 		
-	return (&buffer[totalPlaces]);
+	return (&buffer[totalCharacters]);
 }
 
 const char* Clock::get_FormatedTime()
