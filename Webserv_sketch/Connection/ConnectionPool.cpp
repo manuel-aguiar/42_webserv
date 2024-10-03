@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:44:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:51:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ConnectionPool::~ConnectionPool() 
 {
     for (size_t i = 0; i < _connections.size(); i++)
-        _connections[i]._connectionAlloc->destroy();
+        _connections[i]._memPool->destroy();
 }
 
 ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 

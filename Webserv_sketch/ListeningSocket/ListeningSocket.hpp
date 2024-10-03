@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:12:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:38:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ class ListeningSocket
         ListeningSocket();
         ListeningSocket(const ListeningSocket& copy);
         ListeningSocket& operator=(const ListeningSocket& assign);
+
+
+        void    _close_accepted_connection(Connection* connection);
+
 };
 
 

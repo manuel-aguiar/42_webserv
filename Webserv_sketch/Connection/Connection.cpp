@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:21:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:51:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 
 Connection::Connection(Globals* globals) :
-    _connectionAlloc(NULL),
+    _memPool(NULL),
     _globals(globals)
 {
     
@@ -27,13 +27,13 @@ Connection::~Connection()
 
 void    Connection::init()
 {
-    _connectionAlloc = Nginx_MemoryPool::create(4096, 10);
+    _memPool = Nginx_MemoryPool::create(4096, 10);
 }
 
 void    Connection::reset()
 {
     _listener = NULL;
-    _connectionAlloc->reset();
+    _memPool->reset();
 }
 
 void    Connection::read() {}
@@ -43,7 +43,7 @@ void    Connection::write() {}
 
 // no copies, as usual
 Connection::Connection(const Connection& other) :
-    _connectionAlloc(other._connectionAlloc),
+    _memPool(other._memPool),
     _globals(other._globals)
 {
     (void)other;
@@ -52,7 +52,7 @@ Connection& Connection::operator=(const Connection& other)
 {
     if (this == &other)
         return (*this);
-    _connectionAlloc = other._connectionAlloc;
+    _memPool = other._memPool;
     _globals = other._globals;
     return (*this);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:22:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:00:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,11 @@ class Event
         Event(Globals* _globals = NULL);
         ~Event();
 
-        void    setHandler(void (Event::*handler)());
+        typedef void (*EventHandler)(Event& event);
+
+        void    setHandler(EventHandler handler);
         void    setConnection(Connection* connection);
         void    setFlags(int flags);
-
-        void    accept();
-        void    read();
-        void    write();
-
 
         void    handle();
 
@@ -46,7 +43,7 @@ class Event
         };
 */
     //private:
-        typedef void (Event::*EventHandler)();
+        
 
         Connection*     _connection;
         EventHandler    _handler;

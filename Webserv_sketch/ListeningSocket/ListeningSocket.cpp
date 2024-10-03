@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:06:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:51:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,29 +105,47 @@ void    ListeningSocket::accept()
 
     
     connection = _connectionPool.getConnection();
+    
     if (!connection)
     {
         _globals->_logFile->record("ConnectionPool exhausted");
         return ;
     }
+
     connection->_listener = this;
     addrlen = sizeof(addr);
     connection->_sockfd = ::accept(_sockfd, &addr.sockaddr, &addrlen);
     
     if (connection->_sockfd == -1)
-    {
-        _globals->_logFile->record("accept(): " + std::string(strerror(errno)));
-        throw std::runtime_error("accept() failed");        //meh, later
-    }
+        goto NewConnection_Failure;
 
-    if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->_sockfd, _globals))
-    {
-        throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
-    }   
+    if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->_sockfd))
+        goto NewConnection_Failure;
 
-    connection->_addr = (t_sockaddr*)connection->_connectionAlloc->allocate(addrlen, true);
+    connection->_addr = (t_sockaddr*)connection->_memPool->allocate(addrlen, true);
+    
+    if (!connection->_addr)
+        goto NewConnection_Failure;
+
     std::memcpy(connection->_addr, &addr, addrlen);
     connection->_addrlen = addrlen;
+
+
+NewConnection_Success:
+    return ;
+
+NewConnection_Failure:
+    _globals->_logFile->record("ListeningSocket::accept(): " + std::string(strerror(errno)));
+    _close_accepted_connection(connection);
+    
+}
+
+void    ListeningSocket::_close_accepted_connection(Connection* connection)
+{
+    if (connection->_sockfd != -1 && ::close(connection->_sockfd) == -1)
+        _globals->_logFile->record("close(): " + std::string(strerror(errno)));
+    connection->reset();
+    _connectionPool.returnConnection(connection);
 }
 
 void    ListeningSocket::close()

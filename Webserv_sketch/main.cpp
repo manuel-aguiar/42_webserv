@@ -35,11 +35,5 @@ int main(int ac, char **av, char **env)
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
 
 
-	clock.start();
-
-	std::cout << clock.get_FormatedTime() << std::endl;
-
-	std::cout << server._listeners.size() << std::endl;	
-
 	return (GRET_SUCKCESS);
 }
