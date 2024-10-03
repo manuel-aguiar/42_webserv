@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 08:01:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:32:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ const char* Clock::get_FormatedTime()
 	bufPosi = inPlacePutDateParameter(timeinfo->tm_min, bufPosi, 2);
 	*bufPosi++ = ':';
 	bufPosi = inPlacePutDateParameter(timeinfo->tm_sec, bufPosi, 2);
-	*bufPosi++ = ':';
+	*bufPosi++ = '_';
+	*bufPosi++ = '_';
 	bufPosi = inPlacePutDateParameter(_now.tv_usec, bufPosi, 6);
 	*bufPosi++ = '\0';
 

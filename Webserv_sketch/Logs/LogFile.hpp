@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:24:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 18:41:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:25:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 # define LOGFILE_HPP
 
+# include "../Webserver_Definitions.h"
+
 # include "ILog.hpp"
-
-
 # include <unistd.h>
-# include <fcntl.h>
-
-
 # include <exception>
 # include <stdexcept>
 # include <cstring>
@@ -43,7 +40,7 @@ class LogFile : public ILog
 
 
     private:
-        int         _fd;
+        t_fd        _fd;
         Globals*    _globals;
 
 

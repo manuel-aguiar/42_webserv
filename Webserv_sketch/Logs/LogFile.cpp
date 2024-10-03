@@ -32,12 +32,20 @@ void    LogFile::setGlobals(Globals& globals)
 
 void    LogFile::record(const std::string& entry)
 {
-    //get the time with the clock
-    write(_fd, entry.c_str(), entry.size() + 1);
+    _globals->_clock->update();
+    const char* clockBuf = _globals->_clock->get_FormatedTime();
+    write(_fd, clockBuf, std::strlen(clockBuf));
+    write(_fd, ": ", 2);
+    write(_fd, entry.c_str(), entry.size());
+    write(_fd, "\n", 1);
 }
 
 void    LogFile::record(const char* entry)
 {
-    //get the time with the clock
+    _globals->_clock->update();
+    const char* clockBuf = _globals->_clock->get_FormatedTime();
+    write(_fd, clockBuf, std::strlen(clockBuf));
+    write(_fd, ": ", 2);
     write(_fd, entry, std::strlen(entry));
+    write(_fd, "\n", 1);
 }
