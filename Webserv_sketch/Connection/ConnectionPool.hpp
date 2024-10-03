@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 17:03:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 17:33:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <list>
 # include <vector>
 
-# define MAX_CONNECTIONS 1000
+# define MAX_CONNECTIONS 3
 
 class ConnectionPool
 {

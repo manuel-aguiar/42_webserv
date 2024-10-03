@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 17:05:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 18:13:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,10 @@ int                 EventManager::delEvent(t_fd fd)
 }
 
 int                 EventManager::waitEvents(int timeOut)
-{
+{   
+    std::cout << "                waiting for events" << std::endl; 
     _waitCount = epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut);
+     std::cout << "                         events arrived: " << _waitCount << std::endl; 
     return (_waitCount);
 }
 
@@ -124,9 +126,11 @@ void    EventManager::distributeEvents()
 
         if (_events[i].events & EPOLLIN || _events[i].events & EPOLLOUT)
             event->handle();
-        if (_events[i].events & EPOLLHUP || _events[i].events & EPOLLERR)
+        if (_events[i].events & EPOLLHUP || _events[i].events & EPOLLERR || _events[i].events & EPOLLRDHUP)
         {
             Connection* connection = (Connection*)event->_data;
+            if (connection->_sockfd == -1)
+                continue ;
             delEvent(connection->_sockfd);
             ::close(connection->_sockfd);
             std::cout <<"       returning connection via epoll" << std::endl;

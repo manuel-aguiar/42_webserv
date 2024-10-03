@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 16:36:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 18:17:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void    ListeningSocket::accept()
     
     if (!connection)
     {
-        //_globals->_logFile->record("ConnectionPool exhausted");
+        //std::cout << "       connection pool empty" << std::endl;
         return ;
     }
 
@@ -134,7 +134,9 @@ void    ListeningSocket::accept()
 
     if (!_eventManager.addEvent(connection->_sockfd, *connection->_readEvent))
         goto NewConnection_Failure;
-        
+
+
+
     return ;
 
 NewConnection_Failure:

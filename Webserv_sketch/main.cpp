@@ -32,7 +32,7 @@ int main(int ac, char **av, char **env)
 
 	Server 		server(0, &globals);
 
-	server.createListeners(NULL, "8081", SOCK_STREAM, AF_UNSPEC, 10);
+	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
 	server.setup_mySignalHandler();
 	
 	globals._logFile->record("server starting");
