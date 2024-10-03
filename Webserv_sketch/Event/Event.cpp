@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:31:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 13:32:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,20 @@
 # include "../Connection/Connection.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 
-Event::Event(Globals* globals) : _globals(globals)
+Event::Event(Globals* globals) //: _globals(globals)
 {
-    
+    (void)globals;
 }
 
 
 Event::~Event()
 {
     
+}
+
+void    Event::setFlags(int flags)
+{
+    _flags = flags;
 }
 
 void Event::setHandler_Function_and_Data(HandlerFunction handler, HandlerData data)

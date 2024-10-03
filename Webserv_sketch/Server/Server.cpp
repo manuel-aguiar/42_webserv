@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:47:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 13:33:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,16 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->_addrlen = cur->ai_addrlen;
         listener->_backlog = backlog;
         listener->_myEvent.setHandler_Function_and_Data(&HandlerFunction::listener_Accept, listener);
+        listener->_myEvent.setFlags(EPOLLIN);
+        
         if (listener->open())
             _listeners.push_back(listener);
         else
+        {
             listener->~ListeningSocket();
+            continue ;
+        }
+            
         _eventManager.addEvent(listener->_sockfd, listener->_myEvent);
     }   
     freeaddrinfo(res);
@@ -82,7 +88,18 @@ int Server::setup_mySignalHandler()
 
     pipeRead = SignalHandler::PipeRead(_myID);
     _mySignalEvent.setHandler_Function_and_Data(&HandlerFunction::signal_Read, this);
+    _mySignalEvent.setFlags(EPOLLIN);
     _eventManager.addEvent(pipeRead, _mySignalEvent);
+    return (1);
+}
+
+int Server::run()
+{
+    while (_isRunning)
+    {
+        _eventManager.waitEvents(-1);
+        _eventManager.distributeEvents();
+    }
     return (1);
 }
 

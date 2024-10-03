@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:56:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 13:14:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ EventManager& EventManager::operator=(const EventManager& assign)
 
 int                EventManager::addEvent(t_fd fd, Event& monitor)
 {
-    t_epoll_event event;
+    t_epoll_event event = (t_epoll_event){};
 
     event.events = monitor._flags;
     event.data.ptr = &monitor;
@@ -75,7 +75,7 @@ int                EventManager::addEvent(t_fd fd, Event& monitor)
 
 int                EventManager::modEvent(t_fd fd, Event& monitor)
 {
-    t_epoll_event event;
+    t_epoll_event event = (t_epoll_event){};
 
     event.events = monitor._flags;
     event.data.ptr = &monitor;
@@ -100,7 +100,8 @@ int                 EventManager::delEvent(t_fd fd)
 
 int                 EventManager::waitEvents(int timeOut)
 {
-    return (epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut));
+    _waitCount = epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut);
+    return (_waitCount);
 }
 
 const   t_epoll_event&     EventManager::getEvent(int index)
