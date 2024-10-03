@@ -1,13 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerClock.cpp                                    :+:      :+:    :+:   */
+/*   Logs.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:53:02 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/01 07:43:23 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/01 07:44:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerClock.hpp"
+#ifndef LOGS_H
+
+# define LOGS_H
+
+# include "LogFile.hpp"
+# include "LogFileThreadSafe.hpp"
+
+
+# include "LogStream.hpp"
+# include "LogStreamThreadSafe.hpp"
+
+
+
+#endif

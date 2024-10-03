@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 16:44:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 17:33:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,52 +17,39 @@
 # include "Connection.hpp"
 # include "../Webserver_Definitions.h"
 # include "../MemoryPool/MemoryPool.h"
+# include "../Logs/Logs.h"
 
 # include <queue>
 # include <list>
+# include <vector>
+
+# define MAX_CONNECTIONS 3
 
 class ConnectionPool
 {
     public: 
-        ConnectionPool() : _spareConnections(NULL)
-        {
-            
-        }
+        ConnectionPool(Globals* _globals, size_t maxConnections = MAX_CONNECTIONS);
+        ~ConnectionPool();
         
-        Connection* getConnection()
-        {
-            Connection*     connection;
+        Connection*     getConnection();
+        void            returnConnection(Connection* connection);
 
-            if (_spareConnections.size())
-            {
-                connection = _spareConnections.front();
-                _spareConnections.pop_front();
-            }
-            else
-                connection = _pool.allocate();
-            return (connection);
-        }
-
-        void returnConnection(Connection* connection)
-        {
-            connection->reset();
-            _spareConnections.push_front(connection);
-        }
-
-
-
-
-    
     private:
+        
+        Globals*                                                       _globals;
+        size_t                                                         _maxConnections;
+        
+        std::vector<Connection>                                        _connections;
+        std::vector<Event>                                             _readEvents;
+        std::vector<Event>                                             _writeEvents;
+        std::list<Connection*, MPool_FixedElem<Connection*> >          _spareConnections;
 
+        
+        void destroyConnection(Connection* connection);
 
-        std::list<Connection*, MemoryPool_Dealloc<Connection*> >       _spareConnections;
-        MemoryPool_Dealloc<Connection>                                 _pool;
-
-        void destroyConnection(Connection* connection)
-        {
-            _pool.deallocate(connection);
-        }
+        ConnectionPool();
+        ConnectionPool(const ConnectionPool& copy);
+        ConnectionPool& operator=(const ConnectionPool& assign);
 };
 
 

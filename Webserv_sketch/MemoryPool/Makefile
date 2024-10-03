@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 10:05:16 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/01 19:39:39 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ LIB 				= 	ar rcs
 RM					=	rm
 MAKE				=	make
 
-DEBUG_FLAGS 		= 	-g
+DEBUG_FLAGS 		= 	-g #-fsanitize=address
 BUILD_FLAGS 		= 	-DNDEBUG
 
 ## FOLDERS

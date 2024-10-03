@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerClock.hpp                                    :+:      :+:    :+:   */
+/*   HandlerFunction.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 15:52:49 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/03 10:54:03 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/03 11:04:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERCLOCK_HPP
+#ifndef EVENTHANDLER_HPP
 
-# define SERVERCLOCK_HPP
+# define EVENTHANDLER_HPP
 
-class ServerClock
+class Event;
+class HandlerFunction
 {
     public:
-        ServerClock();
-        ~ServerClock();
-
-    private:
-        int     _time;
+        static void listener_Accept(Event& event);
+        static void connection_Read(Event& event);
+        static void connection_Write(Event& event);
+        static void Cgi_Read(Event& event);
+        static void Cgi_Write(Event& event);
+        static void signal_Read(Event& event);
 };
 
 

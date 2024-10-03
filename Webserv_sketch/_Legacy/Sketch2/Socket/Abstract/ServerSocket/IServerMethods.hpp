@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 13:53:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:14:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:46:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class IServerMethods
 
         virtual void                                    bind() = 0;
         virtual void                                    listen() = 0;
-        virtual UniquePtr<ICommunicationSocket>         accept() = 0;
+        virtual UniquePtr<ICommunicationSocket>         listenerAccept() = 0;
         virtual void                                    setFdManager(IFileDescriptorManager* fdManager) = 0;
 };
 

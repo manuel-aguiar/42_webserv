@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/09/30 10:23:30 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/03 12:53:30 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME 							= 	webserv
 COMP 							= 	c++ -std=c++98
 FLAGS 							= 	-Wall -Wextra -Werror
 EXTERN_LINKER 					= 	-lpthread
-DEBUG_FLAGS 					= 	-g
+DEBUG_FLAGS 					= 	-g #-fsanitize=address
 BUILD_FLAGS 					= 	-DNDEBUG
 
 THREADPOOL_PATH 				= 	ThreadPool
@@ -35,9 +35,18 @@ SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/Connection/Connection.cpp						\
 								$(SRC_PATH)/Connection/ConnectionPool.cpp					\
 								$(SRC_PATH)/Event/Event.cpp									\
+								$(SRC_PATH)/Event/HandlerFunction.cpp						\
 								$(SRC_PATH)/Request/Request.cpp								\
-								$(SRC_PATH)/Server/Server.cpp																			
-
+								$(SRC_PATH)/Server/Server.cpp								\
+								$(SRC_PATH)/EventManager/EventManager.cpp					\
+								$(SRC_PATH)/Globals/Globals.cpp								\
+								$(SRC_PATH)/Clock/Clock.cpp									\
+								$(SRC_PATH)/SignalHandler/SignalHandler.cpp					\
+								$(SRC_PATH)/FileDescriptor/FileDescriptor.cpp				\
+								$(SRC_PATH)/Logs/LogFile.cpp								\
+								$(SRC_PATH)/Logs/LogFileThreadSafe.cpp						\
+								$(SRC_PATH)/Logs/LogStream.cpp								\
+								$(SRC_PATH)/Logs/LogStreamThreadSafe.cpp					
 
 
 THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))

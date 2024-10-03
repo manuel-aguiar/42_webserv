@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 09:05:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:16:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,14 @@
 # define CGI_HANDLER_HPP
 
 # include "../Webserver_Definitions.h"
+# include "../Event/Event.hpp"
 
 # include <queue>
 # include <list>
 
 # define MAX_CONCURRENT_CGI 10
+
+class Event;
 
 class Cgi_Handler
 {
@@ -32,6 +35,7 @@ class Cgi_Handler
         typedef struct s_cgi_data
         {
             /**** a definir **/ 
+            Event*      _event;
             t_byte*     _data;
             size_t      _size;
         }               t_cgi_data;

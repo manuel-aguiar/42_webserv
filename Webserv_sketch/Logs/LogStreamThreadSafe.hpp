@@ -1,35 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LogStream.hpp                                      :+:      :+:    :+:   */
+/*   LogStreamThreadSafe.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/09 10:55:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/09 12:51:06 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/09 10:58:07 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/01 07:46:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOGSTREAM_HPP
+#ifndef LOGSTREAMTHREADSAFE_HPP
 
-# define LOGSTREAM_HPP
+# define LOGSTREAMTHREADSAFE_HPP
 
 # include "ILog.hpp"
 
-# include <iostream>
 
-class LogStream : public ILog
+# include <pthread.h>
+
+# include <iostream>
+# include <exception>
+# include <stdexcept>
+# include <cstring>
+# include <cerrno>
+
+class LogStreamThreadSafe : public ILog
 {
     public:
-        LogStream(std::ostream& stream);
-        ~LogStream();
+        LogStreamThreadSafe(std::ostream& stream);
+        ~LogStreamThreadSafe();
 
-        void    record (const std::string& entry);
+        void    record(const std::string& entry);
         void    record(const char* entry);
     private:
-        std::ostream&   _stream;
+        std::ostream&       _stream;
+        pthread_mutex_t     _writeLock;
 };
-
-
 
 #endif
