@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:14:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:00:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 #include "../Connection/ConnectionPool.hpp"
 #include "../Globals/Globals.hpp"
 #include "../FileDescriptor/FileDescriptor.hpp"
+#include "../EventManager/EventManager.hpp"
 
 
-ListeningSocket::ListeningSocket(ConnectionPool& connPool, Globals* globals) :
+ListeningSocket::ListeningSocket(ConnectionPool& connPool, EventManager& eventManager, Globals* globals) :
     _globals(globals),
-    _connectionPool(connPool)
+    _connectionPool(connPool),
+    _eventManager(eventManager)
 {
     #if !defined(NDEBUG) && defined(DEBUG_CTOR)
         #include <iostream>
@@ -130,6 +132,9 @@ void    ListeningSocket::accept()
     std::memcpy(connection->_addr, &addr, addrlen);
     connection->_addrlen = addrlen;
 
+    if (!_eventManager.addEvent(*connection->_readEvent))
+        goto NewConnection_Failure;
+        
     return ;
 
 NewConnection_Failure:
@@ -157,7 +162,8 @@ void    ListeningSocket::close()
 //private
 ListeningSocket::ListeningSocket() : 
     _globals(NULL),
-    _connectionPool(*((ConnectionPool*)NULL))
+    _connectionPool(*((ConnectionPool*)NULL)),  //never do this, for real
+    _eventManager(*((EventManager*)NULL))       //never do this, for real
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)

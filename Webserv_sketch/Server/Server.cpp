@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:13:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:57:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(_connectionPool, _globals);
+        new (listener) ListeningSocket(_connectionPool, _eventManager, _globals);
         
         listener->_addr = (t_sockaddr *)_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->_addr, cur->ai_addr, cur->ai_addrlen);
@@ -76,6 +76,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
             _listeners.push_back(listener);
         else
             listener->~ListeningSocket();
+        _eventManager.addEvent(*listener->_myConnection->_readEvent);
     }   
     freeaddrinfo(res);
     return (0);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:48:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:59:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ EventManager& EventManager::operator=(const EventManager& assign)
 }
 
 
-void                EventManager::addEvent(Event& monitor)
+int                EventManager::addEvent(Event& monitor)
 {
     t_epoll_event event;
 
@@ -68,12 +68,12 @@ void                EventManager::addEvent(Event& monitor)
     if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, monitor._connection->_sockfd, &event) == -1)
     {
         _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
-        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+        return (0);
     }
-        
+    return (1);        
 }
 
-void                EventManager::modEvent(Event& monitor)
+int                EventManager::modEvent(Event& monitor)
 {
     t_epoll_event event;
 
@@ -83,17 +83,19 @@ void                EventManager::modEvent(Event& monitor)
     if (epoll_ctl(_epollfd, EPOLL_CTL_MOD, monitor._connection->_sockfd, &event) == -1)
     {
         _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
-        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+        return (0);
     }
+    return (1); 
 }
 
-void                EventManager::delEvent(Event& monitor)
+int                 EventManager::delEvent(Event& monitor)
 {
     if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, monitor._connection->_sockfd, NULL) == -1)
     {
         _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
-        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+        return (0);
     }
+    return (1); 
 }
 
 int                 EventManager::waitEvents(int timeOut)

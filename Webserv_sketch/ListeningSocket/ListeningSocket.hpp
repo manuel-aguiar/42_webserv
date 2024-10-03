@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:38:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:55:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@
 class Server;
 class Connection;
 class ConnectionPool;
+class EventManager;
 class Globals;
 
 class ListeningSocket
 {
     public:
-        ListeningSocket(ConnectionPool& connPool, Globals* globals = NULL);
+        ListeningSocket(ConnectionPool& connPool, EventManager& _eventManager, Globals* globals);
         ~ListeningSocket();
 
         int                         open();
@@ -49,6 +50,7 @@ class ListeningSocket
         
         Connection*                 _myConnection;    
         ConnectionPool&             _connectionPool;
+        EventManager&               _eventManager;
     
 
     private:

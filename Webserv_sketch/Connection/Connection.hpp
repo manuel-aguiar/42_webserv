@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:51:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:54:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ class Connection
         
         Event*              _readEvent;         //pointer cause it may be reused
         Event*              _writeEvent;
-        ListeningSocket*    _listener;      //pointer cause it may be reused
-        Nginx_MemoryPool*   _memPool;          //will have its own pool
+        ListeningSocket*    _listener;          //pointer cause it may be reused
+        Nginx_MemoryPool*   _memPool;           //will have its own pool
         Globals*            _globals;
         
         Connection(const Connection& other);
