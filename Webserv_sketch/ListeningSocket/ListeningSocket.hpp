@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:54:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:21:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class ListeningSocket
         int                         listen();
         void                        accept();
         void                        close();
+
+        void                        closeConnection(Connection* connection);
 
         Globals*                    _globals;
         int                         _socktype;    

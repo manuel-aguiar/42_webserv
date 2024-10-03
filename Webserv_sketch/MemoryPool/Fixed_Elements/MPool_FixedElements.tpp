@@ -146,12 +146,14 @@ template <typename T>
 inline typename MPool_FixedElem<T>::pointer
 MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
+	//std::cout << "elements in pool" << _elemCount << std::endl;
 	assert(_elemCount < _maxElems);
 	
 	if (_freeSlot != 0)
 	{
 		pointer result = reinterpret_cast<pointer>(_freeSlot);
 		_freeSlot = _freeSlot->next;
+		_elemCount++;
 		return (result);
 	}
 	else

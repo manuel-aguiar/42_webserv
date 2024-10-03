@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 13:14:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 17:05:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 # include "../Connection/Connection.hpp"
 # include "../Globals/Globals.hpp"
 # include "../FileDescriptor/FileDescriptor.hpp"
+# include "../ListeningSocket/ListeningSocket.hpp"
+# include "../Connection/ConnectionPool.hpp"
 
 EventManager::EventManager(Globals* globals) :
     _waitCount      (0),
@@ -110,12 +112,27 @@ const   t_epoll_event&     EventManager::getEvent(int index)
     return (_events[index]);
 }
 
+#include <cstdio>
+
 void    EventManager::distributeEvents()
 {
+    Event* event;
+    
     for (int i = 0; i < _waitCount; i++)
     {
-        Event* event = (Event*)_events[i].data.ptr;
-        event->handle();
+        event = (Event*)_events[i].data.ptr;
+
+        if (_events[i].events & EPOLLIN || _events[i].events & EPOLLOUT)
+            event->handle();
+        if (_events[i].events & EPOLLHUP || _events[i].events & EPOLLERR)
+        {
+            Connection* connection = (Connection*)event->_data;
+            delEvent(connection->_sockfd);
+            ::close(connection->_sockfd);
+            std::cout <<"       returning connection via epoll" << std::endl;
+            connection->_listener->_connectionPool.returnConnection(connection);
+            connection->reset();
+        }
     }
 }
 

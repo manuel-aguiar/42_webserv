@@ -6,12 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 13:40:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 16:36:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
 #include "../Globals/Globals.hpp"
+#include "../ListeningSocket/ListeningSocket.hpp"
 
 Connection::Connection(Globals* globals) :
     _memPool(NULL),
@@ -32,34 +33,38 @@ void    Connection::init()
 
 void    Connection::reset()
 {
+    _sockfd = -1;
     _listener = NULL;
     _memPool->reset();
 }
 
 void    Connection::read()
 {
-    _globals->_logFile->record("RUUUUUAD");
+    //_globals->_logFile->record("RUUUUUAD");
 
     char buf[1024];
-    while (1)
+
+    int bytes = ::read(_sockfd, buf, 1024);
+    if (bytes == -1)
     {
-        int bytes = recv(_sockfd, buf, 1024, 0);
-        if (bytes == -1)
-        {
-            _globals->_logFile->record("recv(): " + std::string(std::strerror(errno)));
-            return ;
-        }
-        if (bytes == 0)
-        {
-            _globals->_logFile->record("Connection closed by client");
-            return ;
-        }
-        buf[bytes] = '\0';
-        _globals->_logFile->record("Received: " + std::string(buf));
-    }   
+        //_globals->_logFile->record("read(): " + std::string(std::strerror(errno)));
+        _listener->closeConnection(this);
+        return ;
+    }
+    if (bytes == 0)
+    {
+        _listener->closeConnection(this);
+        //_globals->_logFile->record("connection gracefully closed by the client");
+        return ;
+    }
+    buf[bytes] = '\0';
+    //_globals->_logFile->record("Received: " + std::string(buf));
+
+    write();
+
 }
 
-void    Connection::write() {}
+void    Connection::write() { ::write(_sockfd, "Hello Client!", sizeof("Hello Client!")); }
 
 
 
