@@ -6,13 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 09:30:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 09:34:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "SignalHandler.hpp"
 # include "../Globals/Globals.hpp"
 
+Globals*                                SignalHandler::_g_globals = NULL;   
 int		                                SignalHandler::_g_signal = 0;
 std::vector<std::pair<int, int> >       SignalHandler::_g_pipes;
 
