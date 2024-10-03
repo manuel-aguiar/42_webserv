@@ -1,4 +1,19 @@
-2024-10-03__13:36:03__614085: server starting
-2024-10-03__13:36:06__431982: server closing
-2024-10-03__13:36:15__085066: server starting
-2024-10-03__13:36:21__030746: server closing
+2024-10-03__13:41:19__463164: server starting
+2024-10-03__13:41:30__325965: RUUUUUAD
+2024-10-03__13:41:30__332185: Received: GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+2024-10-03__13:41:30__341032: recv(): Resource temporarily unavailable
+2024-10-03__13:42:33__297290: server closing

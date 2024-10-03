@@ -26,7 +26,10 @@ void HandlerFunction::listener_Accept(Event& event)
 
 void HandlerFunction::connection_Read(Event& event)
 {
-    (void)event;
+    Connection *connection;
+
+    connection = reinterpret_cast<Connection*>(event._data);
+    connection->read();
 }
 
 void HandlerFunction::connection_Write(Event& event)
