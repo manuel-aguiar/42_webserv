@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 11:35:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 09:24:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 # define WEBSERVER_DEFINITIONS_H
 
-#include <stdint.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <netdb.h>
-#include <sys/epoll.h>
-#include <cerrno>
+# include <stdint.h>
+# include <sys/types.h> 
+# include <sys/socket.h>
+# include <sys/un.h>
+# include <netdb.h>
+# include <sys/epoll.h>
+# include <cerrno>
+# include <signal.h>
+# include <cassert>
 
 // definitions for everyone to use
 typedef unsigned char       t_byte;
@@ -36,6 +38,9 @@ typedef socklen_t           t_socklen;
 typedef struct addrinfo     t_addrinfo;
 
 typedef struct epoll_event  t_epoll_event;
+
+typedef struct sigaction    t_sigaction;
+typedef sigset_t            t_sigset;
 
 typedef union
 {
