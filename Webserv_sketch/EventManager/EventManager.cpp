@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:15:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:48:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ EventManager::EventManager(Globals* globals) :
     
     if (!FileDescriptor::setCloseOnExec_NonBlocking(_epollfd))
     {
+        _globals->_logFile->record("fcntl(): " + std::string(strerror(errno)));
         throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
     }
 }
@@ -55,9 +56,6 @@ EventManager& EventManager::operator=(const EventManager& assign)
     (void)assign;
     return (*this);
 }
-
-
-
 
 
 void                EventManager::addEvent(Event& monitor)
