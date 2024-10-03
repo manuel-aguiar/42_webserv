@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 10:45:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:04:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:14:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,25 @@ void EventHandler::accept(Event& event)
 
 void EventHandler::read(Event& event)
 {
-
+    (void)event;
 }
 
 void EventHandler::write(Event& event)
 {
-
+    (void)event;
 }
 
 void EventHandler::Cgi_write(Event& event)
 {
-
+    (void)event;
 }
 
 void EventHandler::Cgi_read(Event& event)
 {
-
+    (void)event;
 }
 
 void EventHandler::signalRead(Event& event)
 {
-
+    (void)event;
 }

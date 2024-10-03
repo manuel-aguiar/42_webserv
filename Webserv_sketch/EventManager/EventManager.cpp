@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:03:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 11:15:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ EventManager::EventManager(Globals* globals) :
         throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
     }
     
-    if (!FileDescriptor::setCloseOnExec_NonBlocking(_epollfd, _globals))
+    if (!FileDescriptor::setCloseOnExec_NonBlocking(_epollfd))
     {
         throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
     }
