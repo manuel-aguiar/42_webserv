@@ -15,14 +15,14 @@
 
 LogFile::LogFile(const char* filename, Globals* globals) : _globals(globals)
 {
-    _fd = open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_RDWR, 777);
+    _fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 777);
     if (_fd == -1)
         throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
 }
 
 LogFile::~LogFile()
 {
-    close(_fd);
+    ::close(_fd);
 }
 
 void    LogFile::setGlobals(Globals& globals)

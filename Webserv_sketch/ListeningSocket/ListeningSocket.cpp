@@ -6,13 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 09:24:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:06:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
 #include "../Connection/ConnectionPool.hpp"
 #include "../Globals/Globals.hpp"
+#include "../FileDescriptor/FileDescriptor.hpp"
 
 
 ListeningSocket::ListeningSocket(ConnectionPool& connPool, Globals* globals) :
@@ -119,10 +120,10 @@ void    ListeningSocket::accept()
         throw std::runtime_error("accept() failed");        //meh, later
     }
 
-
-    /*
-        TODO: set nonblocking
-    */
+    if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->_sockfd, _globals))
+    {
+        throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
+    }   
 
     connection->_addr = (t_sockaddr*)connection->_connectionAlloc->allocate(addrlen, true);
     std::memcpy(connection->_addr, &addr, addrlen);

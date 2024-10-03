@@ -6,27 +6,34 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 09:48:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 10:03:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "EventManager.hpp"
-#include "../Event/Event.hpp"
-#include "../Connection/Connection.hpp"
-#include "../Globals/Globals.hpp"
+# include "EventManager.hpp"
+# include "../Event/Event.hpp"
+# include "../Connection/Connection.hpp"
+# include "../Globals/Globals.hpp"
+# include "../FileDescriptor/FileDescriptor.hpp"
 
 EventManager::EventManager(Globals* globals) :
-    _epollfd        (epoll_create(1)),
     _waitCount      (0),
     _globals        (globals)
 {
 
     assert(globals != NULL);
 
+    _epollfd = epoll_create(1);
+
     if (_epollfd == -1)
     {
         _globals->_logFile->record("epoll_create(): " + std::string(strerror(errno)));
         throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
+    }
+    
+    if (!FileDescriptor::setCloseOnExec_NonBlocking(_epollfd, _globals))
+    {
+        throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
     }
 }
 
@@ -34,7 +41,6 @@ EventManager::~EventManager()
 {
     
 }
-
 
 
 //private
