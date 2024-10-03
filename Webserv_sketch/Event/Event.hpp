@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:00:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:31:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ class Event
         Event(Globals* _globals = NULL);
         ~Event();
 
-        typedef void (*EventHandler)(Event& event);
+        typedef void    (*HandlerFunction)(Event& event);
+        typedef void*   HandlerData;
 
-        void    setHandler(EventHandler handler);
-        void    setConnection(Connection* connection);
+        void    setHandler_Function_and_Data(HandlerFunction function, HandlerData data);
+        void    setDataHandled(void* DataHandled);
         void    setFlags(int flags);
 
         void    handle();
@@ -45,10 +46,11 @@ class Event
     //private:
         
 
-        Connection*     _connection;
-        EventHandler    _handler;
-        int             _flags;
-        Globals*        _globals;
+        
+        HandlerFunction    _function;
+        HandlerData        _data;
+        int                _flags;
+        Globals*           _globals;
 
         Event(const Event& copy);
         Event& operator=(const Event& assign);

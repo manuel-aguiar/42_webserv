@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventHandler.hpp                                   :+:      :+:    :+:   */
+/*   HandlerFunction.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,15 +15,15 @@
 # define EVENTHANDLER_HPP
 
 class Event;
-class EventHandler
+class HandlerFunction
 {
     public:
-        static void accept(Event& event);
-        static void read(Event& event);
-        static void write(Event& event);
-        static void Cgi_write(Event& event);
-        static void Cgi_read(Event& event);
-        static void signalRead(Event& event);
+        static void listener_Accept(Event& event);
+        static void connection_Read(Event& event);
+        static void connection_Write(Event& event);
+        static void Cgi_Read(Event& event);
+        static void Cgi_Write(Event& event);
+        static void signal_Read(Event& event);
 };
 
 

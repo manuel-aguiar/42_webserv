@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventHandler.hpp                                   :+:      :+:    :+:   */
+/*   HandlerFunction.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,7 +17,7 @@
 # include "EPollEvent.hpp"
 # include "EPollManager.hpp"
 
-class EventHandler
+class HandlerFunction
 {
     public:
 

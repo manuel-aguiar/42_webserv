@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 10:42:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:46:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class ServerSocket :
         
         void                                                bind();
         void                                                listen();
-        UniquePtr<ICommunicationSocket>                     accept();
+        UniquePtr<ICommunicationSocket>                     listenerAccept();
 
 
         //ISocketAddress methods
@@ -106,7 +106,7 @@ void            ServerSocket<SockAddr>::onRead()
 {
     assert(_fdManager != NULL);
     
-    UniquePtr<ICommunicationSocket> newComm = this->accept();
+    UniquePtr<ICommunicationSocket> newComm = this->listenerAccept();
     if (newComm.get() != NULL)
         _fdManager->addFd(dynamic_cast<FileDescriptor*>(newComm.release()), true);
     
@@ -134,11 +134,11 @@ void            ServerSocket<SockAddr>::listen()
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 template <typename SockAddr>
-UniquePtr<ICommunicationSocket>      ServerSocket<SockAddr>::accept()
+UniquePtr<ICommunicationSocket>      ServerSocket<SockAddr>::listenerAccept()
 {
     SockAddr newAddress;
     
-    int newFd = ::accept(_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
+    int newFd = ::listenerAccept(_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
     if (newFd == -1)
         return (NULL);
     return (UniquePtr<ICommunicationSocket>(new CommunicationSocket<SockAddr> (newFd, newAddress)));

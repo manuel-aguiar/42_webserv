@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:13:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:54:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 # include "../Connection/ConnectionPool.hpp"
 # include "../Logs/Logs.h"
 # include "../EventManager/EventManager.hpp"
-# include "../Event/EventHandler.hpp"
+# include "../Event/HandlerFunction.hpp"
+# include "../SignalHandler/SignalHandler.hpp"
 
 # include <vector>
 # include <map>
@@ -35,7 +36,8 @@ class Server
         ~Server();
         
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog); 
-    
+
+        int setup_mySignalHandler();
     //private:
         //typedef MemoryPool_Alloc<std::pair<int, ListeningSocket> > ListeningSocketPool;
         //typedef std::map<int, ListeningSocket, std::less<int>, MemoryPool_Alloc<std::pair<int, ListeningSocket> > > ListeningSocketMap;
@@ -49,6 +51,9 @@ class Server
         ConnectionPool                  _connectionPool;
         EventManager                    _eventManager;
         Globals*                        _globals;
+        Event                           _mySignalEvent;
+
+        bool                            _isRunning;
         
     
 

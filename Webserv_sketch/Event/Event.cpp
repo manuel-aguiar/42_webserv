@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:00:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:31:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,18 @@ Event::~Event()
     
 }
 
-void Event::setHandler(EventHandler handler)
+void Event::setHandler_Function_and_Data(HandlerFunction handler, HandlerData data)
 {
-    _handler = handler;
+    _function = handler;
+    _data = data;
 }
+
 
 void Event::handle()
 {
-    assert(this->_handler != NULL);
+    assert(this->_function != NULL);
     
-    (this->_handler)(*this);
+    (this->_function)(*this);
 }
 
 

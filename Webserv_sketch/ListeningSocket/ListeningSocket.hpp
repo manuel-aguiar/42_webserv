@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:55:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:54:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 # include "../Webserver_Definitions.h"
 # include "../Logs/Logs.h"
+# include "../Event/Event.hpp"
 
 # include <sys/socket.h>
 # include <netinet/in.h>
@@ -48,7 +49,7 @@ class ListeningSocket
         t_socklen                   _addrlen;
         int                         _backlog;
         
-        Connection*                 _myConnection;    
+        Event                       _myEvent;    
         ConnectionPool&             _connectionPool;
         EventManager&               _eventManager;
     

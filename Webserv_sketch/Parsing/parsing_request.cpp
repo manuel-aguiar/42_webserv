@@ -12,7 +12,7 @@ struct request_data
 	int				request_type;
 	// some_struct	host;
 	float			http_version;
-	std::string		accept;
+	std::string		listenerAccept;
 	std::string		message;
 
 }

@@ -1,46 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventHandler.cpp                                   :+:      :+:    :+:   */
+/*   HandlerFunction.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 10:45:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:14:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:20:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "EventHandler.hpp"
+#include "HandlerFunction.hpp"
 #include "Event.hpp"
 #include "../Connection/Connection.hpp"
 #include "../ListeningSocket/ListeningSocket.hpp"
+#include "../Server/Server.hpp"
 
-void EventHandler::accept(Event& event)
+void HandlerFunction::listener_Accept(Event& event)
 {
-    event._connection->_listener->accept();
+    ListeningSocket* listener;
+
+    listener = reinterpret_cast<ListeningSocket*>(event._data);
+    listener->accept();
 }
 
-void EventHandler::read(Event& event)
+void HandlerFunction::connection_Read(Event& event)
 {
     (void)event;
 }
 
-void EventHandler::write(Event& event)
+void HandlerFunction::connection_Write(Event& event)
 {
     (void)event;
 }
 
-void EventHandler::Cgi_write(Event& event)
+void HandlerFunction::Cgi_Read(Event& event)
 {
     (void)event;
 }
 
-void EventHandler::Cgi_read(Event& event)
+void HandlerFunction::Cgi_Write(Event& event)
 {
     (void)event;
 }
 
-void EventHandler::signalRead(Event& event)
+void HandlerFunction::signal_Read(Event& event)
 {
-    (void)event;
+    Server* server;
+
+    server = reinterpret_cast<Server*>(event._data);
+    server->_isRunning = false;
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:00:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:54:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../Globals/Globals.hpp"
 #include "../FileDescriptor/FileDescriptor.hpp"
 #include "../EventManager/EventManager.hpp"
+#include "../Event/HandlerFunction.hpp"
 
 
 ListeningSocket::ListeningSocket(ConnectionPool& connPool, EventManager& eventManager, Globals* globals) :
@@ -33,7 +34,6 @@ ListeningSocket::ListeningSocket(ConnectionPool& connPool, EventManager& eventMa
 
 ListeningSocket::~ListeningSocket()
 {
-    _connectionPool.returnConnection(_myConnection);
     close();
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)
@@ -132,13 +132,13 @@ void    ListeningSocket::accept()
     std::memcpy(connection->_addr, &addr, addrlen);
     connection->_addrlen = addrlen;
 
-    if (!_eventManager.addEvent(*connection->_readEvent))
+    if (!_eventManager.addEvent(connection->_sockfd, *connection->_readEvent))
         goto NewConnection_Failure;
         
     return ;
 
 NewConnection_Failure:
-    _globals->_logFile->record("ListeningSocket::accept(): " + std::string(strerror(errno)));
+    _globals->_logFile->record("ListeningSocket::listener_Accept(): " + std::string(strerror(errno)));
     _close_accepted_connection(connection);
     
 }

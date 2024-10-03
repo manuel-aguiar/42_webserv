@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:51:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:55:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ConnectionPool.hpp"
-
+#include "../Event/HandlerFunction.hpp"
 
 ConnectionPool::~ConnectionPool() 
 {
@@ -36,6 +36,8 @@ ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) :
         _connections[i].init();
         _connections[i]._readEvent = &_readEvents[i];
         _connections[i]._writeEvent = &_writeEvents[i];
+        _readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &_connections[i]);
+        _readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &_connections[i]);
         _spareConnections.push_back(&_connections[i]);
     }
 }
