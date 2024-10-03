@@ -6,20 +6,28 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/30 15:10:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 09:48:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventManager.hpp"
 #include "../Event/Event.hpp"
 #include "../Connection/Connection.hpp"
+#include "../Globals/Globals.hpp"
 
-EventManager::EventManager() :
-    _epollfd(epoll_create(1)),
-    _waitCount(0)
+EventManager::EventManager(Globals* globals) :
+    _epollfd        (epoll_create(1)),
+    _waitCount      (0),
+    _globals        (globals)
 {
+
+    assert(globals != NULL);
+
     if (_epollfd == -1)
+    {
+        _globals->_logFile->record("epoll_create(): " + std::string(strerror(errno)));
         throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
+    }
 }
 
 EventManager::~EventManager()
@@ -54,7 +62,11 @@ void                EventManager::addEvent(Event& monitor)
     event.data.ptr = &monitor;
     
     if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, monitor._connection->_sockfd, &event) == -1)
-        throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
+    {
+        _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+    }
+        
 }
 
 void                EventManager::modEvent(Event& monitor)
@@ -65,21 +77,24 @@ void                EventManager::modEvent(Event& monitor)
     event.data.ptr = &monitor;
     
     if (epoll_ctl(_epollfd, EPOLL_CTL_MOD, monitor._connection->_sockfd, &event) == -1)
-        throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
+    {
+        _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+    }
 }
 
 void                EventManager::delEvent(Event& monitor)
 {
     if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, monitor._connection->_sockfd, NULL) == -1)
-        throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
+    {
+        _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        throw std::runtime_error("epoll_ctl(), critical error: " + std::string(strerror(errno)));
+    }
 }
 
 int                 EventManager::waitEvents(int timeOut)
 {
-    _waitCount = epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut);
-    if (_waitCount == -1)
-        throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
-    return (_waitCount);
+    return (epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut));
 }
 
 const   t_epoll_event&     EventManager::getEvent(int index)

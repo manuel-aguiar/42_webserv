@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/02 09:08:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/03 09:47:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Server::Server(size_t serverID, Globals* _globals) :
     _myID(serverID),
     _pool(Nginx_MemoryPool::create(4096, 1)),
     _connectionPool(_globals),
+    _eventManager(_globals),
     _globals(_globals)
 {
     #ifdef SO_REUSEPORT
