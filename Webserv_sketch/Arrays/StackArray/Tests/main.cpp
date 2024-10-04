@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:55:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 12:02:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,16 @@
 class Dummy
 {
     public:
-        Dummy() : _someref(*(int *)NULL), _value(0)  {std::cout << " default constructor" << std::endl;};;
-        Dummy(int value) : _someref(*(int *)NULL), _value(value) {std::cout << "constructor" << std::endl;};
-        ~Dummy() {std::cout << "destructor" << std::endl;};;
-        Dummy(const Dummy& other) : _someref(other._someref), _value(other._value) {std::cout << "copy" << std::endl;};;
+        Dummy() : _someref(*(int *)NULL), _value(0), _arr(new int [4])  {std::cout << " default constructor" << std::endl;};;
+        Dummy(int value) : _someref(*(int *)NULL), _value(value), _arr(new int [4])  {std::cout << "constructor" << std::endl;};
+        ~Dummy()
+        {
+            if (_arr)
+                delete [] _arr;            
+            std::cout << "destructor" << std::endl;
+        };
+        
+        Dummy(const Dummy& other) : _someref(other._someref), _value(other._value), _arr(new int [4])  {std::cout << "copy" << std::endl;};;
         Dummy& operator=(const Dummy& other)
         {
             {std::cout << "assign" << std::endl;};
@@ -27,6 +33,13 @@ class Dummy
                 return (*this);
             _value = other._value;
             _someref = other._someref;
+            if (_arr)
+                delete [] _arr;
+            _arr = new int [4];
+            for (size_t i = 0; i < 4; i++)
+            {
+                _arr[i] = other._arr[i];
+            }
             return (*this);
         }
 
@@ -48,6 +61,7 @@ class Dummy
     private:
         int&    _someref;
         int     _value;
+        int*    _arr;
 };
 
 std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
