@@ -21,8 +21,8 @@ template <typename T>
 class HeapArrayProxy
 {
     public:
+    
         HeapArrayProxy(T* element) : element(element) {}
-
         HeapArrayProxy& operator=(const T& value)
         {
             new (element) T(value);
@@ -41,7 +41,7 @@ class HeapArrayProxy
 
         T* operator->()
         {
-            return (element);  // Allows calls to T's member functions directly
+            return (element);
         }
 
     private:

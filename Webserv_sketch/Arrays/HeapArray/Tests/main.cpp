@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:13:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:26:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,18 @@ int main(void)
     {
         array2[i]->present();
         array2[i]->~Dummy();
+    }
+
+    HeapArray<int> arr(10);
+
+    for(size_t i = 0; i < arr.size(); i++)
+    {
+        arr[i] = i;
+    }
+
+    for(size_t i = 0; i < arr.size(); i++)
+    {
+        std::cout << arr[i] << std::endl;
     }
 
     return (0);

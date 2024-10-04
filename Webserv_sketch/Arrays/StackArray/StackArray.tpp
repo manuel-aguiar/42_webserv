@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:11:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:16:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,12 @@ class StackArrayProxy
 
         T* operator&()
         {
-            return element;
+            return (element);
+        }
+
+        T* operator->()
+        {
+            return (element);
         }
 
     private:

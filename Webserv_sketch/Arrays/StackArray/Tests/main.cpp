@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 09:35:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:27:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ class Dummy
             return (_value);
         }
 
+        void present() const
+        {
+            std::cout << "yoyo " << _value << std::endl;
+        }
+
         void setValue(int value)
         {
             _value = value;
@@ -53,14 +58,14 @@ std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
 
 int main(void)
 {
-    StackArray<Dummy, 10> stackArray;
+    StackArray<Dummy, 10> array1;
 
-    for (size_t i = 0; i < stackArray.size(); i++)
+    for (size_t i = 0; i < array1.size(); i++)
     {
-        new (&stackArray[i]) Dummy(i);
+        new (&array1[i]) Dummy(i);
     }
 
-    Dummy cenas = stackArray[3];
+    Dummy cenas = array1[3];
     std::cout << "dummy cenas : " << cenas << std::endl;
 
     Dummy tretas = cenas;
@@ -69,12 +74,30 @@ int main(void)
     Dummy& ref = tretas;
     std::cout << "dummy ref : " << ref << std::endl;
 
-    Dummy* ptr = &stackArray[4];
+    Dummy* ptr = &array1[4];
     std::cout << "dummy ptr : " << *ptr << std::endl;
 
-    for (size_t i = 0; i < stackArray.size(); i++)
+    StackArray<Dummy, 10> array3 = array1;
+    
+    StackArray<Dummy, 10> array2;
+    array2 = array3;
+
+    for (size_t i = 0; i < array2.size(); i++)
     {
-        std::cout << stackArray[i] << std::endl;
+        array2[i]->present();
+        array2[i]->~Dummy();
+    }
+
+    StackArray<int, 10> arr;
+
+    for(size_t i = 0; i < arr.size(); i++)
+    {
+        arr[i] = i;
+    }
+
+    for(size_t i = 0; i < arr.size(); i++)
+    {
+        std::cout << arr[i] << std::endl;
     }
 
     return (0);
