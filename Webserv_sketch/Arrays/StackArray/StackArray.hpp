@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:58:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 08:58:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 09:09:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define STACKARRAY_HPP
 
-template <typename T, typename ElemCount>
+template <typename T, size_t ElemCount>
 class StackArray;
 
 # include "StackArray.tpp"

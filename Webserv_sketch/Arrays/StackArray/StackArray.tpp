@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 09:07:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 09:35:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,33 @@
 #include <cstring>
 #include <cassert>
 
-template <typename T, typename ElemCount>
+template <typename T>
+class StackArrayProxy
+{
+    public:
+        StackArrayProxy(T* element) : element(element) {}
+
+        StackArrayProxy& operator=(const T& value)
+        {
+            new (element) T(value);
+            return (*this);
+        }
+
+        operator T&() const
+        {
+            return (*element);
+        }
+
+        T* operator&()
+        {
+            return element;
+        }
+
+    private:
+        T* element;
+};
+
+template <typename T, size_t ElemCount>
 class StackArray
 {
     public:
@@ -36,13 +62,13 @@ class StackArray
             return (*this);
         };
 
-        T& operator[]  (const size_t index)
+        StackArrayProxy<T> operator[](const size_t index)
         {
             assert(index < ElemCount);
-
-            return (reinterpret_cast<T*>(array)[index]);
+            return StackArrayProxy<T>(reinterpret_cast<T*>(&array[index * sizeof(T)]));
         }
 
+        
         size_t size() const
         {
             return (ElemCount);
