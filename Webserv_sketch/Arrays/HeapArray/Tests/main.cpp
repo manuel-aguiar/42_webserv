@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 09:52:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:06:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ class Dummy
         int getValue() const
         {
             return (_value);
+        }
+
+        void present() const
+        {
+            std::cout << "yoyo " << _value << std::endl;
         }
 
         void setValue(int value)
@@ -74,7 +79,8 @@ int main(void)
 
     for (size_t i = 0; i < HeapArray.size(); i++)
     {
-        std::cout << HeapArray[i] << std::endl;
+        HeapArray[i]->present();
+        HeapArray[i]->~Dummy();
     }
 
     return (0);

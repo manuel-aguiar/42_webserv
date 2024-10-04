@@ -36,7 +36,12 @@ class HeapArrayProxy
 
         T* operator&()
         {
-            return element;
+            return (element);
+        }
+
+        T* operator->()
+        {
+            return (element);  // Allows calls to T's member functions directly
         }
 
     private:
@@ -54,25 +59,25 @@ class HeapArray
 
         ~HeapArray()
         {
-            delete [] (_array);
+            delete [] (reinterpret_cast<t_byte*>(_array));
         };
 
         HeapArray(const HeapArray &other) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other._size])), _size(other._size)
         {
-            std::memcpy(_array, other.array, sizeof(T) * size);
+            std::memcpy(_array, other.array, sizeof(T) * _size);
         };
 
         HeapArray &operator=(const HeapArray &other)
         {
             if (this == &other)
                 return (*this);
-            if (_size != other.size())
+            if (_size != other._size)
             {
-                delete [] (_array);
-                _size = other.size();
+                delete [] (reinterpret_cast<t_byte*>(_array));
+                _size = other._size;
                 _array = reinterpret_cast<T*>(new t_byte [sizeof(T) * _size]);
             }
-            std::memcpy(_array, other.array, sizeof(T) * size);
+            std::memcpy(_array, other.array, sizeof(T) * _size);
             return (*this);
         };
 
