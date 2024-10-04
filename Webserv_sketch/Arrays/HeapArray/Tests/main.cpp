@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:26:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:32:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,15 @@ int main(void)
         arr[i] = i;
     }
 
-    for(size_t i = 0; i < arr.size(); i++)
+
+
+    HeapArray<int> arr2;
+
+    arr2 = arr;
+
+    for(size_t i = 0; i < arr2.size(); i++)
     {
-        std::cout << arr[i] << std::endl;
+        std::cout << arr2[i] << std::endl;
     }
 
     return (0);

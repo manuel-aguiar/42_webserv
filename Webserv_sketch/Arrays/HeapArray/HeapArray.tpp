@@ -53,7 +53,12 @@ template <typename T>
 class HeapArray
 {
     public:
-        HeapArray(size_t size = 0) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), _size(size)
+
+        HeapArray() : _array(NULL), _size(0)
+        {
+        };
+
+        HeapArray(size_t size) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), _size(size)
         {
         };
 
@@ -75,7 +80,8 @@ class HeapArray
                 return (*this);
             if (_size != other._size)
             {
-                delete [] (reinterpret_cast<t_byte*>(_array));
+                if (_array)
+                    delete [] (reinterpret_cast<t_byte*>(_array));
                 _size = other._size;
                 _array = reinterpret_cast<T*>(new t_byte [sizeof(T) * _size]);
             }
