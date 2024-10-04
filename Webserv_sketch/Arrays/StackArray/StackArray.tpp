@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 09:35:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:11:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,21 @@ class StackArray
         ~StackArray() {};
         StackArray(const StackArray &other)
         {
-            std::memcpy(array, other.array, sizeof(T) * ElemCount);
+            std::memcpy(_array, other._array, sizeof(T) * ElemCount);
         };
 
         StackArray &operator=(const StackArray &other)
         {
             if (this == &other)
                 return (*this);
-            std::memcpy(array, other.array, sizeof(T) * ElemCount);
+            std::memcpy(_array, other._array, sizeof(T) * ElemCount);
             return (*this);
         };
 
         StackArrayProxy<T> operator[](const size_t index)
         {
             assert(index < ElemCount);
-            return StackArrayProxy<T>(reinterpret_cast<T*>(&array[index * sizeof(T)]));
+            return StackArrayProxy<T>(reinterpret_cast<T*>(&_array[index * sizeof(T)]));
         }
 
         
@@ -76,7 +76,7 @@ class StackArray
         
     private:
         typedef unsigned char t_byte;
-        t_byte  array[sizeof(T) * ElemCount];
+        t_byte  _array[sizeof(T) * ElemCount];
 };
 
 

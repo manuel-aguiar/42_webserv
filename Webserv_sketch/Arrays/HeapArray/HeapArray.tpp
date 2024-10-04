@@ -64,7 +64,9 @@ class HeapArray
 
         HeapArray(const HeapArray &other) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other._size])), _size(other._size)
         {
-            std::memcpy(_array, other.array, sizeof(T) * _size);
+            std::memcpy(reinterpret_cast<t_byte*>(_array), 
+                        reinterpret_cast<t_byte*>(other._array), 
+                        sizeof(T) * _size);
         };
 
         HeapArray &operator=(const HeapArray &other)
@@ -77,7 +79,9 @@ class HeapArray
                 _size = other._size;
                 _array = reinterpret_cast<T*>(new t_byte [sizeof(T) * _size]);
             }
-            std::memcpy(_array, other.array, sizeof(T) * _size);
+            std::memcpy(reinterpret_cast<t_byte*>(_array), 
+                        reinterpret_cast<t_byte*>(other._array), 
+                        sizeof(T) * _size);
             return (*this);
         };
 

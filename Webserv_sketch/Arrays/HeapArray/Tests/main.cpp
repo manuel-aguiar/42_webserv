@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:06:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:13:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,14 @@ std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
 
 int main(void)
 {
-    HeapArray<Dummy> HeapArray(10);
+    HeapArray<Dummy> array1(10);
 
-    for (size_t i = 0; i < HeapArray.size(); i++)
+    for (size_t i = 0; i < array1.size(); i++)
     {
-        new (&HeapArray[i]) Dummy(i);
+        new (&array1[i]) Dummy(i);
     }
 
-    Dummy cenas = HeapArray[3];
+    Dummy cenas = array1[3];
     std::cout << "dummy cenas : " << cenas << std::endl;
 
     Dummy tretas = cenas;
@@ -74,13 +74,18 @@ int main(void)
     Dummy& ref = tretas;
     std::cout << "dummy ref : " << ref << std::endl;
 
-    Dummy* ptr = &HeapArray[4];
+    Dummy* ptr = &array1[4];
     std::cout << "dummy ptr : " << *ptr << std::endl;
 
-    for (size_t i = 0; i < HeapArray.size(); i++)
+    HeapArray<Dummy> array3 = array1;
+    
+    HeapArray<Dummy> array2(10);
+    array2 = array3;
+
+    for (size_t i = 0; i < array2.size(); i++)
     {
-        HeapArray[i]->present();
-        HeapArray[i]->~Dummy();
+        array2[i]->present();
+        array2[i]->~Dummy();
     }
 
     return (0);
