@@ -12,6 +12,7 @@
 #include <cassert>
 
 #include <vector>
+#include "../../Arrays/Arrays.h"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
@@ -71,7 +72,7 @@ class MPool_FixedElem
 		typedef Slot_ slot_type_;
 		typedef Slot_* slot_pointer_;
 
-		std::vector<Slot_> 	_elements;
+		HeapArray<Slot_> 	_elements;
 		size_t 				_elemCount;
 		size_t 				_maxElems;
 		slot_pointer_ 		_freeSlot;
@@ -81,23 +82,21 @@ class MPool_FixedElem
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
+	_elements(numElems),
 	_elemCount(0),
 	_maxElems(numElems),
 	_freeSlot(NULL)
-
 {
 }
 
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& memoryPool) throw() :
-	_elements(memoryPool._elements),
 	_elemCount(memoryPool._elemCount),
 	_maxElems(memoryPool._maxElems),
 	_freeSlot(memoryPool._freeSlot)
 {
-	(void)memoryPool;
-	//_elements.resize(_maxElems);
+	_elements = HeapArray<Slot_>(memoryPool._maxElems);
 }
 
 
@@ -109,7 +108,7 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw(
 	_maxElems(memoryPool._maxElems),
 	_freeSlot(NULL)
 {
-	//_elements.resize(_maxElems);
+	
 }
 
 
@@ -146,7 +145,6 @@ template <typename T>
 inline typename MPool_FixedElem<T>::pointer
 MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
-	//std::cout << "elements in pool" << _elemCount << std::endl;
 	assert(_elemCount < _maxElems);
 	
 	if (_freeSlot != 0)
@@ -158,7 +156,6 @@ MPool_FixedElem<T>::allocate(size_type, const_pointer)
 	}
 	else
 	{
-		_elements.resize(_maxElems);
 		return reinterpret_cast<pointer>(&_elements[_elemCount++]);
 	}
 		

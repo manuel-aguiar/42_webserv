@@ -1,28 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MPool_FixedElements.hpp                            :+:      :+:    :+:   */
+/*   Arrays.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:21:43 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/04 09:07:46 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/04 09:08:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef ARRAYS_H
 
+# define ARRAYS_H
 
-#ifndef MPOOL_FIXEDELEMENTS_H
-# define MPOOL_FIXEDELEMENTS_H
+# include "StackArray/StackArray.hpp"
+# include "HeapArray/HeapArray.hpp"
 
-# include <limits.h>
-# include <stddef.h>
-# include <cstring>
-# include <iostream>
-
-template <typename T>
-class MPool_FixedElem;
-
-# include "MPool_FixedElements.tpp"
 
 #endif

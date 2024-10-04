@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MPool_FixedElements.hpp                            :+:      :+:    :+:   */
+/*   StackArray.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:21:43 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/04 08:58:11 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/04 09:09:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef STACKARRAY_HPP
 
+# define STACKARRAY_HPP
 
-#ifndef MPOOL_FIXEDELEMENTS_H
-# define MPOOL_FIXEDELEMENTS_H
+template <typename T, size_t ElemCount>
+class StackArray;
 
-# include <limits.h>
-# include <stddef.h>
-# include <cstring>
-# include <iostream>
-
-template <typename T>
-class MPool_FixedElem;
-
-# include "MPool_FixedElements.tpp"
+# include "StackArray.tpp"
 
 #endif

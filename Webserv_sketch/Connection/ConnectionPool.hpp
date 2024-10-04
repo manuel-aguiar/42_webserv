@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 17:33:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 10:33:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ class ConnectionPool
         Globals*                                                       _globals;
         size_t                                                         _maxConnections;
         
-        std::vector<Connection>                                        _connections;
-        std::vector<Event>                                             _readEvents;
-        std::vector<Event>                                             _writeEvents;
+        HeapArray<Connection>                                          _connections;
+        HeapArray<Event>                                               _readEvents;
+        HeapArray<Event>                                               _writeEvents;
         std::list<Connection*, MPool_FixedElem<Connection*> >          _spareConnections;
 
         
