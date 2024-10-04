@@ -33,7 +33,8 @@ class HeapArray
 
         ~HeapArray()
         {
-            delete [] (reinterpret_cast<t_byte*>(_array));
+            if (_array)
+                delete [] (reinterpret_cast<t_byte*>(_array));
         };
 
         HeapArray(const HeapArray &other) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other._size])), _size(other._size)

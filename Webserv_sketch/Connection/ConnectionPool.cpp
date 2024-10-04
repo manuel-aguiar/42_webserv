@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:07:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 15:40:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ Connection* ConnectionPool::getConnection()
         return (NULL);
     connection = _spareConnections.front();
     _spareConnections.pop_front();
-    std::cout << "connection sent away" << _spareConnections.size() <<  std::endl;
+    std::cout << "connection sent away: " << _spareConnections.size() <<  std::endl;
     return (connection);
 }
 

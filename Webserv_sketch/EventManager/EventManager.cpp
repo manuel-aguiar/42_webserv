@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 18:13:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 15:36:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,13 @@ int                EventManager::addEvent(t_fd fd, Event& monitor)
     event.events = monitor._flags;
     event.data.ptr = &monitor;
     
+    if (monitor._fd == 0)
+    {
+        std::cout << "subscribing 0, fd? " << fd << std::endl; throw std::runtime_error("subscribing 0, fd? ");
+        _globals->_logFile->record("EventManager::addEvent(): fd == 0");
+        return (0);
+    }
+
     if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &event) == -1)
     {
         _globals->_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
@@ -104,7 +111,12 @@ int                 EventManager::waitEvents(int timeOut)
 {   
     std::cout << "                waiting for events" << std::endl; 
     _waitCount = epoll_wait(_epollfd, _events, MAX_EPOLL_EVENTS, timeOut);
-     std::cout << "                         events arrived: " << _waitCount << std::endl; 
+     std::cout << "                         events arrived, fds: " << _waitCount << std::endl;
+     for (int i = 0; i < _waitCount; i++)
+     {
+         std::cout << " " << ((Event*)_events[i].data.ptr)->_fd;
+     }
+     std::cout << std::endl;
     return (_waitCount);
 }
 
@@ -125,9 +137,14 @@ void    EventManager::distributeEvents()
         event = (Event*)_events[i].data.ptr;
 
         if (_events[i].events & EPOLLIN || _events[i].events & EPOLLOUT)
+        {
+            std::cout << "              handling event " << event->_fd << std::endl;
             event->handle();
+        }
+            
         if (_events[i].events & EPOLLHUP || _events[i].events & EPOLLERR || _events[i].events & EPOLLRDHUP)
         {
+            std::cout << "              deleting event " << event->_fd << std::endl;
             Connection* connection = (Connection*)event->_data;
             if (connection->_sockfd == -1)
                 continue ;

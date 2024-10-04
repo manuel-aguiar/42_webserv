@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 16:36:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 16:29:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,22 @@ void    Connection::reset()
     _memPool->reset();
 }
 
+const char* response = 
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Length: 127\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        "<html>\r\n"
+        "  <head>\r\n"
+        "    <title>Welcome</title>\r\n"
+        "  </head>\r\n"
+        "  <body>\r\n"
+        "    <h1>Welcome to My Server!</h1>\r\n"
+        "    <p>This is a simple HTTP response.</p>\r\n"
+        "  </body>\r\n"
+        "</html>\r\n";
+
 void    Connection::read()
 {
     //_globals->_logFile->record("RUUUUUAD");
@@ -47,24 +63,30 @@ void    Connection::read()
     int bytes = ::read(_sockfd, buf, 1024);
     if (bytes == -1)
     {
-        //_globals->_logFile->record("read(): " + std::string(std::strerror(errno)));
+        std::cout << "                  read(): " + std::string(std::strerror(errno)) << std::endl;
         _listener->closeConnection(this);
         return ;
     }
     if (bytes == 0)
     {
         _listener->closeConnection(this);
-        //_globals->_logFile->record("connection gracefully closed by the client");
+        std::cout << "                  read(): gracefullexit" << std::endl;
         return ;
     }
     buf[bytes] = '\0';
-    //_globals->_logFile->record("Received: " + std::string(buf));
+    std::cout << "                  read(): " + std::string(buf) << std::endl;
 
     write();
 
 }
 
-void    Connection::write() { ::write(_sockfd, "Hello Client!", sizeof("Hello Client!")); }
+void    Connection::write()
+{ 
+    std::cout << "conenction fd " << _sockfd << " writing" << std::endl;
+    ::write(_sockfd, response, std::strlen(response)); 
+    std::cout << "conenction fd " << _sockfd << " finished writing" << std::endl;
+    //_listener->closeConnection(this);
+}
 
 
 

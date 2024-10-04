@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 13:33:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 15:13:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->_myEvent.setHandler_Function_and_Data(&HandlerFunction::listener_Accept, listener);
         listener->_myEvent.setFlags(EPOLLIN);
         
+        
         if (listener->open())
             _listeners.push_back(listener);
         else
@@ -75,8 +76,10 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
             listener->~ListeningSocket();
             continue ;
         }
-            
+        listener->_myEvent._fd = listener->_sockfd;
+        //std::cout << "added listener: " << listener->_sockfd << "and event fd " << listener->_myEvent._fd << std::endl;  
         _eventManager.addEvent(listener->_sockfd, listener->_myEvent);
+        
     }   
     freeaddrinfo(res);
     return (0);
@@ -89,7 +92,10 @@ int Server::setup_mySignalHandler()
     pipeRead = SignalHandler::PipeRead(_myID);
     _mySignalEvent.setHandler_Function_and_Data(&HandlerFunction::signal_Read, this);
     _mySignalEvent.setFlags(EPOLLIN);
+    _mySignalEvent._fd = pipeRead;
+    //std::cout << "added pipoe" << std::endl;
     _eventManager.addEvent(pipeRead, _mySignalEvent);
+    
     return (1);
 }
 
