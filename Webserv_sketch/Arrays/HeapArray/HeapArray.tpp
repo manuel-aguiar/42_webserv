@@ -16,7 +16,7 @@
 
 #include <cstring>
 #include <cassert>
-
+#include <iostream>
 
 template <typename T>
 class HeapArray

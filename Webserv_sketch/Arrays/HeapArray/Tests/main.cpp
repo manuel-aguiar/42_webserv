@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:20:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:44:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ int main(void)
     for (size_t i = 0; i < array1.size(); i++)
     {
         array0[i] = &array1[i];
-        new (&array1[i]) Dummy(i, array4[i]);
-        array1[i] = Dummy();
+        new (&(*array0[i])) Dummy(i, array4[i]);
     }
 
     Dummy cenas = array1[3];
