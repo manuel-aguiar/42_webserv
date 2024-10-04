@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:37:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:07:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ConnectionPool::~ConnectionPool() 
 {
     for (size_t i = 0; i < _connections.size(); i++)
-        _connections[i]->_memPool->destroy();
+        _connections[i]._memPool->destroy();
 }
 
 ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 
@@ -35,13 +35,13 @@ ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) :
         new (&_readEvents[i]) Event(_globals);
         new (&_writeEvents[i]) Event(_globals);
         
-        _connections[i]->init();
-        _connections[i]->_readEvent = &_readEvents[i];
-        _connections[i]->_writeEvent = &_writeEvents[i];
-        _readEvents[i]->setHandler_Function_and_Data(&HandlerFunction::connection_Read, &_connections[i]);
-        _readEvents[i]->setFlags(EPOLLIN);
-        _writeEvents[i]->setHandler_Function_and_Data(&HandlerFunction::connection_Write, &_connections[i]);
-        _writeEvents[i]->setFlags(EPOLLOUT);
+        _connections[i].init();
+        _connections[i]._readEvent = &_readEvents[i];
+        _connections[i]._writeEvent = &_writeEvents[i];
+        _readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &_connections[i]);
+        _readEvents[i].setFlags(EPOLLIN);
+        _writeEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &_connections[i]);
+        _writeEvents[i].setFlags(EPOLLOUT);
         _spareConnections.push_back(&_connections[i]);
     }
 }

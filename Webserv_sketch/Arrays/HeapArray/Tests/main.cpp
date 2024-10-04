@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:05:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:20:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 class Dummy
 {
     public:
-        Dummy() : _someref(*(int *)NULL), _value(0)  {std::cout << " default constructor" << std::endl;};;
+        Dummy() : _someref(*(int *)NULL), _value(0) {std::cout << "constructor" << std::endl;};
+        Dummy(int value, int& someref) : _someref(someref), _value(value) {std::cout << "constructor" << std::endl;};
         Dummy(int value) : _someref(*(int *)NULL), _value(value) {std::cout << "constructor" << std::endl;};
         ~Dummy() {std::cout << "destructor" << std::endl;};;
         Dummy(const Dummy& other) : _someref(other._someref), _value(other._value) {std::cout << "copy" << std::endl;};;
+        
         Dummy& operator=(const Dummy& other)
         {
             {std::cout << "assign" << std::endl;};
@@ -61,10 +63,13 @@ int main(void)
     HeapArray<Dummy*>   array0(10);
     HeapArray<Dummy>    array1(10);
 
+    HeapArray<int>      array4(10);
+
     for (size_t i = 0; i < array1.size(); i++)
     {
         array0[i] = &array1[i];
-        new (&(*array0[i])) Dummy(i);
+        new (&array1[i]) Dummy(i, array4[i]);
+        array1[i] = Dummy();
     }
 
     Dummy cenas = array1[3];
