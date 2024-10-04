@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:06:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:55:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
 int main(void)
 {
     StackArray<Dummy, 10> array1;
+    StackArray<Dummy*, 10> array0;
 
     for (size_t i = 0; i < array1.size(); i++)
     {
-        new (&array1[i]) Dummy(i);
+        array0[i] = &array1[i];
+        new (&(*array0[i])) Dummy(i);
     }
 
     Dummy cenas = array1[3];
@@ -84,7 +86,7 @@ int main(void)
 
     for (size_t i = 0; i < array2.size(); i++)
     {
-        array2[i].present();
+        array0[i]->present();
         array2[i].~Dummy();
     }
 
