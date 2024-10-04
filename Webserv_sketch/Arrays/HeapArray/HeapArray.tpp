@@ -17,37 +17,6 @@
 #include <cstring>
 #include <cassert>
 
-template <typename T>
-class HeapArrayProxy
-{
-    public:
-    
-        HeapArrayProxy(T* element) : element(element) {}
-        HeapArrayProxy& operator=(const T& value)
-        {
-            new (element) T(value);
-            return (*this);
-        }
-
-        operator T&() const
-        {
-            return (*element);
-        }
-
-        T* operator&()
-        {
-            return (element);
-        }
-
-        T* operator->()
-        {
-            return (element);
-        }
-
-    private:
-        T* element;
-};
-
 
 template <typename T>
 class HeapArray
@@ -91,10 +60,10 @@ class HeapArray
             return (*this);
         };
 
-        HeapArrayProxy<T> operator[](const size_t index)
+        T& operator[](const size_t index)
         {
             assert(index < _size);
-            return HeapArrayProxy<T>(reinterpret_cast<T*>(&_array[index]));
+            return *(reinterpret_cast<T*>(&_array[index]));
         }
 
         

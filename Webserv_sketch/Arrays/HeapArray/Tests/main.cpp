@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:32:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:05:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,14 @@ std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
 }
 
 int main(void)
-{
-    HeapArray<Dummy> array1(10);
+{   
+    HeapArray<Dummy*>   array0(10);
+    HeapArray<Dummy>    array1(10);
 
     for (size_t i = 0; i < array1.size(); i++)
     {
-        new (&array1[i]) Dummy(i);
+        array0[i] = &array1[i];
+        new (&(*array0[i])) Dummy(i);
     }
 
     Dummy cenas = array1[3];
@@ -82,10 +84,15 @@ int main(void)
     HeapArray<Dummy> array2(10);
     array2 = array3;
 
+    for (size_t i = 0; i < array0.size(); i++)
+    {
+        array0[i]->present();
+    }
+
     for (size_t i = 0; i < array2.size(); i++)
     {
-        array2[i]->present();
-        array2[i]->~Dummy();
+        array2[i].present();
+        array2[i].~Dummy();
     }
 
     HeapArray<int> arr(10);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:27:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:06:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ int main(void)
 
     for (size_t i = 0; i < array2.size(); i++)
     {
-        array2[i]->present();
-        array2[i]->~Dummy();
+        array2[i].present();
+        array2[i].~Dummy();
     }
 
     StackArray<int, 10> arr;
