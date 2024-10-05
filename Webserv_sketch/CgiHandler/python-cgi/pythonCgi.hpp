@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 13:07:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:13:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ class PythonCgi
             PY_CGIENV_COUNT           
         } PyCgiEnv;
 
-        Nginx_MemoryPool*   _memPool;
+        Nginx_MemoryPool*   _localDataPool;
+        Nginx_MemoryPool*   _requestDataPool;
         t_byte*             _alloc;
         char*               _baseEnv[PY_CGIENV_COUNT];
         char*               _RequestEnv[PY_CGIENV_COUNT];
