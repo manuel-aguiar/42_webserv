@@ -1,0 +1,65 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    TODO.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/05 11:39:03 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/10/05 11:49:56 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#CGI Handler
+
+    -> interacções com php-CGI
+    -> interacções com python-CGI
+    -> interacções com php-fpm
+
+    -> mais tarde, interligação com conexões em concreto
+
+    -> talvez abstrair os pipes já que tanto o signal handler como o CGI vao precisar de pipes
+
+    -> quando o piperead é fechado já poderemos fazer waitpid
+    -> não faremos o servidor esperar até que o CGI seja feito
+
+#ListeningSocket
+    -> Marcar accept events, dar prioridade a accept events em vez de todos os outros,
+        aceitar conexões novas o mais rapido possível
+    -> usar EPOLLET, se não houver conexões livres, marcar listening socket em espera, retirar do EPOLL 
+    (já sabemos que ha quem espera conectar-se)
+    -> quando uma conexão é fechada, verificar se existem conection sockets em espera
+        para accept, e dar accept directamente
+    
+    -> loop accept enquanto houver conexões e enquanto o accept der nova socket
+        se o accept falhar, não há novas conexões, retirar listeningsocket de espera e voltar a marcá-la no epoll
+
+#buffers de conexões
+
+#clocks e timeouts
+    -> std::map de timeouts para o epoll para definir quanto tempo estamos dispostos a esperar
+    -> impedir loops desnecessários
+
+    -> accept waiting, sem problema porque para isso acontecer, a conexão tem de escrever e fechar, e para isso
+    sairá um alerta no epoll
+
+#HTTP
+    -> tudo, essencialmente
+    -> gerar um mapa dos headers mais comuns e basear tudo daí
+    -> redirections, o que é..?
+    -> chuncked requests
+    -> vários metodos........
+
+#SignalHandler
+    -> tornar os pipes nonblocking
+
+#FileDescriptor em geral:
+    -> para além de non-blocking, aplicar cloexec flags a praticamente todos
+    -> poupa cleanup no traditional CGI e evita fd leaks
+
+# Ver nginx, se http são function pointers ou conexões têm um interpretador que chamam
+(parecem function pointers)
+
+
+#cleanup substancial do projecto, neste momento ta uma bagunça
+
