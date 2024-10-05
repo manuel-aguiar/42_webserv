@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 16:24:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:26:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,13 @@ int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int
             _g_globals->_logFile->record("pipe(): " + std::string(std::strerror(errno)));
             throw std::runtime_error("CRITICAL: pipe() failed");
         }
-        if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0]))
+        if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0])
+        || !FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
         {
             _g_globals->_logFile->record("fcntl(): " + std::string(std::strerror(errno)));
             throw std::runtime_error("CRITICAL: fcntl() failed");
         }
-        if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
-        {
-            _g_globals->_logFile->record("fcntl(): " + std::string(std::strerror(errno)));
-            throw std::runtime_error("CRITICAL: fcntl() failed");
-        }
+       
         _g_pipes.push_back(std::make_pair(pipefd[0], pipefd[1]));
     }
     return (1);

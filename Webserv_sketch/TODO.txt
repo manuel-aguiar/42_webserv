@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/05 11:39:03 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/05 11:50:13 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/05 16:24:56 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,8 +50,6 @@
     -> chuncked requests
     -> vários metodos........
 
-#SignalHandler
-    -> tornar os pipes nonblocking
 
 #FileDescriptor em geral:
     -> para além de non-blocking, aplicar cloexec flags a praticamente todos
