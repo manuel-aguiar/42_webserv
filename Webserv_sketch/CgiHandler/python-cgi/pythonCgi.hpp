@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 16:19:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:26:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ class PythonCgi
 
         typedef std::map<char*, PyCgiEnv, std::less<char *>, MPool_FixedElem<std::pair<char*, PyCgiEnv> > >   mapHeaderToEnum;
         typedef mapHeaderToEnum::iterator                                                                     mapHeaderToEnum_Iter;
-        typedef std::map<PyCgiEnv, char*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, char*> > >   mapEnumToHeader;
+        typedef std::map<PyCgiEnv, char*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, char*> > > mapEnumToHeader;
         typedef mapHeaderToEnum::iterator                                                                     mapEnumToHeader_Iter;
 
 
         mapHeaderToEnum             _headersToEnum;
-        mapEnumToHeader            _enumToHeaders;
+        mapEnumToHeader             _enumToHeaders;
         char*                       _RequestEnv[PY_CGIENV_COUNT];
 
         void    setupMapEntry(const char *entry, PyCgiEnv enumerator);
