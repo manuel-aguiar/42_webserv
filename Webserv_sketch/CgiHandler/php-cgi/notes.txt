@@ -1,0 +1,87 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    notes.txt                                          :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/05 12:49:39 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/10/05 12:49:43 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#chatgpt:
+
+
+Environment Variables for PHP-CGI:
+
+For PHP-CGI, the environment variables used are very similar to those in Python-CGI, with a few differences or additions that PHP-specific configurations may rely on:
+
+    REQUEST_METHOD:
+        Specifies the HTTP request method (GET, POST, HEAD, etc.).
+
+    QUERY_STRING:
+        Contains the URL-encoded query string sent via a GET request.
+
+    CONTENT_TYPE:
+        Describes the type of data in the body of the request (e.g., application/x-www-form-urlencoded or multipart/form-data).
+
+    CONTENT_LENGTH:
+        Specifies the length of the request body (especially for POST requests).
+
+    SCRIPT_NAME:
+        The virtual path to the PHP script being executed.
+
+    PATH_INFO:
+        Extra path information following the script name in the URL.
+
+    PATH_TRANSLATED:
+        The physical path that corresponds to the virtual path in PATH_INFO.
+
+    HTTP_COOKIE:
+        The cookie data sent by the client, often used for sessions in PHP.
+
+    REMOTE_ADDR:
+        The IP address of the client making the request.
+
+    REMOTE_HOST:
+        The hostname of the client (if available).
+
+    REMOTE_USER:
+        The username sent in an HTTP authentication request, if applicable.
+
+    AUTH_TYPE:
+        The authentication type used by the server (e.g., Basic).
+
+    SERVER_NAME:
+        The server's hostname or IP address.
+
+    SERVER_PORT:
+        The port number on which the server is running (e.g., 80 for HTTP or 443 for HTTPS).
+
+    SERVER_PROTOCOL:
+        The HTTP protocol version used in the request (e.g., HTTP/1.1).
+
+    SERVER_SOFTWARE:
+        The server software (e.g., Apache/2.4.41 or nginx/1.18.0).
+
+    HTTP_USER_AGENT:
+        The user-agent string from the client's browser or application.
+
+    HTTP_REFERER:
+        The URL of the page that referred the request, if applicable.
+
+    PHP_SELF:
+        The filename of the currently executing script, relative to the document root.
+
+    GATEWAY_INTERFACE:
+        The CGI specification version (e.g., CGI/1.1).
+
+    DOCUMENT_ROOT:
+        The document root directory from which the script is being executed.
+
+    SCRIPT_FILENAME:
+        The absolute path to the current script.
+
+    REDIRECT_STATUS:
+        Sometimes used by PHP-CGI to indicate the status after a redirection.
