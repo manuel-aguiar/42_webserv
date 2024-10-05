@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 12:17:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:42:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ class Nginx_MemoryPool
         void                        reset(int maxBlocks = INT_MAX);
         void                        destroy();
 
+        static char*        strdup(Nginx_MemoryPool& pool, const char* str);
+        static char*        strjoin(Nginx_MemoryPool& pool, const char* str1, const char* str2);
+
     private:
 
         class Nginx_MPool_Block;
@@ -48,7 +51,6 @@ class Nginx_MemoryPool
             void*               _data;
             struct s_bigBlock*  _nextBlock;
         }   t_bigBlock;
-
 
         Nginx_MPool_Block*     _active;
         t_bigBlock*            _bigBlocks;
@@ -61,6 +63,7 @@ class Nginx_MemoryPool
         Nginx_MemoryPool(const Nginx_MemoryPool& pool);
         Nginx_MemoryPool& operator=(const Nginx_MemoryPool& pool);
         
+
 
         //block class of which the pool is made, private to pool
         class Nginx_MPool_Block
