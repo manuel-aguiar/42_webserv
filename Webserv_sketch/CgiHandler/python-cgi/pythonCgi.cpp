@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 16:20:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/05 16:27:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ PythonCgi::PythonCgi() :
 
 void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
 {
-    char* mapEntry = Nginx_MemoryPool::strdup(*_localDataPool, entry);
+    char* mapEntry;
+    
+    mapEntry = Nginx_MemoryPool::strdup(*_localDataPool, entry);
     _headersToEnum[mapEntry] = enumerator;
     _enumToHeaders[enumerator] = mapEntry;
 }
