@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 10:24:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 11:13:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:02:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class StringAllocator
 
         pointer allocate(size_type n)
         {
-            std::cout << "allocated called" << std::endl;
+            //std::cout << "allocated called" << std::endl;
             if (n == 0)
                 return 0;
             if (n > std::numeric_limits<size_type>::max() / sizeof(T))

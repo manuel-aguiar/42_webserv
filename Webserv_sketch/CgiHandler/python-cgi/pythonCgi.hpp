@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 11:10:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 12:58:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,21 @@
 # include "../../MemoryPool/MemoryPool.h"
 # include <map>
 
+
+
+class CgiRequest;
+
 class PythonCgi
 {
     public:
-        PythonCgi();
+        PythonCgi(const char* pythonBin);
         ~PythonCgi();
     
 
         void    init();
         void    reset();
 
-        void    prepareCgi();
+        CgiRequest    prepareCgi(const char* scriptPath);
 
         void    printVariables();
         void    printEnumerators();
@@ -59,7 +63,8 @@ class PythonCgi
 
         Nginx_MemoryPool*           _localDataPool;
         Nginx_MemoryPool*           _requestDataPool;
-        StringAllocator<char>       _stringAllocator;
+        StringAllocator<char>       _localAllocator;
+        StringAllocator<char>       _requestAllocator;
 
         typedef std::basic_string<char, std::char_traits<char>, StringAllocator<char> > t_poolString;
 
@@ -71,7 +76,10 @@ class PythonCgi
 
         mapHeaderToEnum             _headersToEnum;
         mapEnumToHeader             _enumToHeaders;
-        char*                       _RequestEnv[PY_CGIENV_COUNT];
+        const t_poolString          _pyBin;
+
+        char**                      _RequestArgv;
+        char*                       _RequestEnvp[PY_CGIENV_COUNT];
 
         void    setupMapEntry(const char *entry, PyCgiEnv enumerator);
 

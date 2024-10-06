@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/05 13:57:33 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/06 11:52:16 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/CgiHandler/python-cgi/pythonCgi.cpp				\
 								$(SRC_PATH)/CgiHandler/php-cgi/phpCgi.cpp					\
 								$(SRC_PATH)/CgiHandler/php-fpm/phpFastCgi_Fpm.cpp			\
+								$(SRC_PATH)/CgiHandler/CgiRequest/CgiRequest.cpp			\
 								$(SRC_PATH)/Connection/Connection.cpp						\
 								$(SRC_PATH)/Connection/ConnectionPool.cpp					\
 								$(SRC_PATH)/Event/Event.cpp									\

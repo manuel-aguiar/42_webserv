@@ -16,6 +16,7 @@
 #include "Globals/Globals.hpp"
 #include "SignalHandler/SignalHandler.hpp"
 #include "CgiHandler/python-cgi/pythonCgi.hpp"
+#include "CgiHandler/CgiRequest/CgiRequest.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -42,10 +43,16 @@ int main(int ac, char **av, char **env)
 
 	globals._logFile->record("server closing");
 
-	PythonCgi cgi;
+	PythonCgi cgi ("/usr/bin/python3");
 
-	cgi.printVariables();
-	cgi.printEnumerators();
+	//cgi.printVariables();
+	//cgi.printEnumerators();
+
+	CgiRequest req = cgi.prepareCgi("VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+
+	//req.debugPrintInputs();
+
+	req.execute();
 
 	return (GRET_SUCKCESS);
 }
