@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 12:54:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:29:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,24 +28,32 @@
 #include <cstdlib>
 #include <cerrno>
 
+# include "../../MemoryPool/MemoryPool.h"
+
+class PythonCgi;
 
 class CgiRequest
 {
     public:
-        CgiRequest(const char** argv, const char** envp, const char* stdinData);
+        CgiRequest();
         ~CgiRequest();
         CgiRequest(const CgiRequest &other);
         CgiRequest &operator=(const CgiRequest &other);
 
+        void    reset();
+
+        void    initPython(PythonCgi& pythonCgi, const char* scriptPath);
         void    execute();
         void    debugPrintInputs();
         
-        char**    _argv;
-        char**    _envp;
-        char*     _stdinData;
-    
-    private:
-        CgiRequest();
+        Nginx_MemoryPool*       _requestDataPool;
+        StringAllocator<char>   _strAlloc;
+        
+        const char*       _scriptPath;
+        char**            _argv;
+        char**            _envp;
+        const char*       _stdinData;
+
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 13:04:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:35:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 
 PythonCgi::PythonCgi(const char* pythonBin) : 
     _localDataPool(Nginx_MemoryPool::create(1024)), 
-    _requestDataPool(Nginx_MemoryPool::create(4096)),
     _localAllocator(*_localDataPool),
-    _requestAllocator(*_requestDataPool),
     _headersToEnum(std::less<t_poolString>(), PY_CGIENV_COUNT),
     _enumToHeaders(std::less<PyCgiEnv>(), PY_CGIENV_COUNT),
     _pyBin(pythonBin, _localAllocator)
@@ -42,8 +40,6 @@ PythonCgi::PythonCgi(const char* pythonBin) :
     setupMapEntry("HTTP_USER_AGENT=", PY_HTTP_USER_AGENT);
     setupMapEntry("HTTP_REFERER=", PY_HTTP_REFERER);
     setupMapEntry("PYTHONPATH=", PY_PYTHON_PATH);
-
-    _RequestEnvp[PY_CGIENV_COUNT] = NULL;
 }
 
 void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
@@ -72,30 +68,27 @@ void    PythonCgi::printEnumerators()
     }
 }
 
-CgiRequest PythonCgi::prepareCgi(const char* scriptPath)
+void PythonCgi::prepareCgi(CgiRequest& req, const char* scriptPath)
 {
-
-    //_requestDataPool->reset(); // not workiiiiiiiing
+    req._envp = (char**) req._requestDataPool->allocate((PY_CGIENV_COUNT + 1) * sizeof(char*), true);
+    req._envp[PY_CGIENV_COUNT] = NULL;
     
     for (mapHeaderToEnum_Iter it = _headersToEnum.begin(); it != _headersToEnum.end(); ++it)
     {
-        t_poolString* str = (t_poolString*)_requestDataPool->allocate(sizeof(t_poolString), true);
-        new (str) t_poolString(it->first.c_str(), _requestAllocator);
-        _RequestEnvp[it->second] = const_cast<char*>(str->c_str());
+        t_poolString* str = (t_poolString*)req._requestDataPool->allocate(sizeof(t_poolString), true);
+        new (str) t_poolString(it->first.c_str(), req._strAlloc);
+        req._envp[it->second] = const_cast<char*>(str->c_str());
     }
     
-    _RequestArgv = (char **) _requestDataPool->allocate(3 * sizeof(char*), true);
-    _RequestArgv[0] = const_cast<char*>(_pyBin.c_str());
-    _RequestArgv[1] = const_cast<char*>(scriptPath);
-    _RequestArgv[2] = NULL;
-
-    return (CgiRequest((const char**)_RequestArgv, (const char**)_RequestEnvp, (const char*)NULL));
+    req._argv = (char**) req._requestDataPool->allocate(3 * sizeof(char*), true);
+    req._argv[0] = const_cast<char*>(_pyBin.c_str());
+    req._argv[1] = const_cast<char*>(scriptPath);
+    req._argv[2] = NULL;
 }
 
 PythonCgi::~PythonCgi()
 {
     _localDataPool->destroy();
-    _requestDataPool->destroy();
 }
 
 void   PythonCgi::init()
@@ -103,10 +96,6 @@ void   PythonCgi::init()
 
 }
 
-void   PythonCgi::reset()
-{
-    _requestDataPool->reset();
-}
 
 
 
@@ -115,9 +104,7 @@ void   PythonCgi::reset()
 
 PythonCgi::PythonCgi(const PythonCgi &other) : 
     _localDataPool(other._localDataPool), 
-    _requestDataPool(other._requestDataPool),
     _localAllocator(other._localAllocator),
-    _requestAllocator(other._requestAllocator),
     _headersToEnum(other._headersToEnum),
     _enumToHeaders(other._enumToHeaders),
     _pyBin(other._pyBin)

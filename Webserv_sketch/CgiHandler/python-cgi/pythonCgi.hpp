@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 12:58:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:28:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class PythonCgi
         void    init();
         void    reset();
 
-        CgiRequest    prepareCgi(const char* scriptPath);
+        void    prepareCgi(CgiRequest& req, const char* scriptPath);
 
         void    printVariables();
         void    printEnumerators();
@@ -62,9 +62,7 @@ class PythonCgi
         } PyCgiEnv;
 
         Nginx_MemoryPool*           _localDataPool;
-        Nginx_MemoryPool*           _requestDataPool;
         StringAllocator<char>       _localAllocator;
-        StringAllocator<char>       _requestAllocator;
 
         typedef std::basic_string<char, std::char_traits<char>, StringAllocator<char> > t_poolString;
 
@@ -77,9 +75,6 @@ class PythonCgi
         mapHeaderToEnum             _headersToEnum;
         mapEnumToHeader             _enumToHeaders;
         const t_poolString          _pyBin;
-
-        char**                      _RequestArgv;
-        char*                       _RequestEnvp[PY_CGIENV_COUNT];
 
         void    setupMapEntry(const char *entry, PyCgiEnv enumerator);
 

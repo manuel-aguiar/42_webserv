@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:36:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:20:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Nginx_MemoryPool.hpp"
 
-Nginx_MemoryPool::Nginx_MemoryPool()
+Nginx_MemoryPool::Nginx_MemoryPool() : _active(NULL), _bigBlocks(NULL), _blockSize(0)
 {throw std::logic_error("Nginx_MemoryPool, can't instantiate out of the box, has to go through static .create()");}
 
 //since pool is self hosted on its first memoryblock, it is up to the user to call .destroy()    
@@ -25,6 +25,7 @@ Nginx_MemoryPool* Nginx_MemoryPool::create(size_t blockSize, size_t startingBloc
     Nginx_MPool_Block*          prevBlock;
 
     curBlock = Nginx_MPool_Block::create(blockSize, 1);
+    //std::cout << " pool created at block " << curBlock << std::endl;
     newPool = (Nginx_MemoryPool*)Nginx_MPool_Block::allocate(&curBlock, sizeof(Nginx_MemoryPool), true, blockSize);
     new (newPool) Nginx_MemoryPool(blockSize, startingBlocks);   //placement new inside block[0] of the pool itself
 
@@ -48,6 +49,7 @@ void*   Nginx_MemoryPool::allocate(size_t size, bool aligned)
     
     if (size > _blockSize  - sizeof(*_active))  //for sure doesn't fit
     {
+        //std::cout << "big alloc " << std::endl;
         //big blocks don't need alignment, new already allocates according to the system alignment
         newBig = (t_bigBlock*) new t_byte[sizeof(t_bigBlock) + size];
         newBig->_data = (t_byte*)newBig + sizeof(t_bigBlock);           
@@ -61,7 +63,22 @@ void*   Nginx_MemoryPool::allocate(size_t size, bool aligned)
 void    Nginx_MemoryPool::reset(int maxBlocks)
 {
     assert(_active != NULL);
+    t_bigBlock*                 bigCur;
+    t_bigBlock*                 bigNext;
+
+    bigCur = _bigBlocks;
+    //std::cout << &_bigBlocks << std::endl;
+    //std::cout << "blocksize " << _blockSize << std::endl;
+    while (bigCur)
+    {
+        bigNext = bigCur->_nextBlock;
+        delete [] (t_byte*)(bigCur);
+        bigCur = bigNext;
+    }
+    //std::cout << "prev active: " << _active << std::endl;
     Nginx_MPool_Block::reset(&_active, maxBlocks);
+    //std::cout << "new active: " << _active << std::endl;
+    //std::cout << _bigBlocks << std::endl;
 }
 
 void    Nginx_MemoryPool::destroy()
@@ -71,6 +88,8 @@ void    Nginx_MemoryPool::destroy()
 
     assert(_active != NULL);
     bigCur = _bigBlocks;
+    //std::cout << &_bigBlocks << std::endl;
+    //std::cout << "blocksize " << _blockSize << std::endl;
     while (bigCur)
     {
         bigNext = bigCur->_nextBlock;

@@ -43,15 +43,22 @@ int main(int ac, char **av, char **env)
 
 	globals._logFile->record("server closing");
 
+
 	PythonCgi cgi ("/usr/bin/python3");
 
-	//cgi.printVariables();
-	//cgi.printEnumerators();
+	cgi.printVariables();
+	cgi.printEnumerators();
+	CgiRequest req;
 
-	CgiRequest req = cgi.prepareCgi("VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	
 
 	//req.debugPrintInputs();
+	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	req.execute();
 
+	req.reset();
+
+	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
 	req.execute();
 
 	return (GRET_SUCKCESS);

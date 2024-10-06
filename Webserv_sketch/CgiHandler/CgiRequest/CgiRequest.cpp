@@ -6,23 +6,41 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:44:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 12:58:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:21:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiRequest.hpp"
 
-CgiRequest::CgiRequest(const char** argv, const char** envp, const char* stdinData) :
-    _argv(const_cast<char**>(argv)),
-    _envp(const_cast<char**>(envp)),
-    _stdinData(const_cast<char *>(stdinData))
+#include "../python-cgi/pythonCgi.hpp"
+
+CgiRequest::CgiRequest() :
+    _requestDataPool(Nginx_MemoryPool::create(4096)),
+    _strAlloc(*_requestDataPool),
+    _argv(NULL),
+    _envp(NULL),
+    _stdinData(NULL)
 {
     
 }
 
 CgiRequest::~CgiRequest()
 {
-    
+    _requestDataPool->destroy();
+}
+
+void    CgiRequest::reset()
+{
+    _requestDataPool->reset();
+    _argv = NULL;
+    _envp = NULL;
+    _stdinData = NULL;
+    _scriptPath = NULL;
+}
+
+void CgiRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
+{
+    pythonCgi.prepareCgi(*this, scriptPath);
 }
 
 void CgiRequest::debugPrintInputs()
@@ -81,6 +99,8 @@ void   CgiRequest::execute()
 }
 
 CgiRequest::CgiRequest(const CgiRequest &other) : 
+    _requestDataPool(other._requestDataPool),
+    _strAlloc(other._strAlloc),
     _argv(other._argv),
     _envp(other._envp),
     _stdinData(other._stdinData)
@@ -93,12 +113,4 @@ CgiRequest &CgiRequest::operator=(const CgiRequest &other)
     if (this == &other)
         return (*this);
     return (*this);
-}
-
-CgiRequest::CgiRequest() :
-    _argv(NULL),
-    _envp(NULL),
-    _stdinData(NULL)
-{
-    
 }
