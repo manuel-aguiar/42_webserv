@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 16:27:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 10:58:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 PythonCgi::PythonCgi() : 
     _localDataPool(NULL), 
     _requestDataPool(NULL),
-    _headersToEnum(std::less<char*>(), PY_CGIENV_COUNT),
+    _stringAllocator(*_localDataPool),
+    _headersToEnum(std::less<t_poolString>(), PY_CGIENV_COUNT),
     _enumToHeaders(std::less<PyCgiEnv>(), PY_CGIENV_COUNT)
 {
     _localDataPool = Nginx_MemoryPool::create(1024);
@@ -48,11 +49,12 @@ PythonCgi::PythonCgi() :
 
 void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
 {
-    char* mapEntry;
+    std::pair<mapHeaderToEnum_Iter, bool> result;
+    t_poolString* poolStrPtr;
     
-    mapEntry = Nginx_MemoryPool::strdup(*_localDataPool, entry);
-    _headersToEnum[mapEntry] = enumerator;
-    _enumToHeaders[enumerator] = mapEntry;
+    result = _headersToEnum.insert(std::make_pair(t_poolString(entry, _stringAllocator), enumerator));
+    poolStrPtr = const_cast<t_poolString*>(&result.first->first);
+    _enumToHeaders.insert(std::make_pair(enumerator, poolStrPtr));
 }
 
 void    PythonCgi::prepareCgi()
@@ -76,10 +78,21 @@ void   PythonCgi::reset()
     _requestDataPool->reset();
 }
 
-PythonCgi::PythonCgi(const PythonCgi &other)
+
+
+
+//private
+
+PythonCgi::PythonCgi(const PythonCgi &other) : 
+    _localDataPool(other._localDataPool), 
+    _requestDataPool(other._requestDataPool),
+    _stringAllocator(other._stringAllocator),
+    _headersToEnum(other._headersToEnum),
+    _enumToHeaders(other._enumToHeaders)
 {
     *this = other;
 }
+
 
 PythonCgi &PythonCgi::operator=(const PythonCgi &other)
 {

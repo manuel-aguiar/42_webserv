@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 10:13:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 10:58:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class SharedMPool_Alloc
 
 	//private:
 		MemoryPool_Alloc<T>*      _pool;
-		int*                           _refCount;
+		int*                      _refCount;
 
 		void _decrementRefCount()
 		{
