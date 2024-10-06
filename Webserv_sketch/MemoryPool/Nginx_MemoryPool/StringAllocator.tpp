@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   String_Allocator.tpp                               :+:      :+:    :+:   */
+/*   StringAllocator.tpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 10:24:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:13:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,59 +17,56 @@
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 
 template <typename T>
-class StringAllocator {
-public:
-    typedef T value_type;
+class StringAllocator
+{
+    public:
 
-    // Pointer types
-    typedef T* pointer;
-    typedef const T* const_pointer;
-    typedef T& reference;
-    typedef const T& const_reference;
-    
-    // Size types
-    typedef std::size_t size_type;
-    typedef std::ptrdiff_t difference_type;
+        typedef T value_type;
+        typedef T* pointer;
+        typedef const T* const_pointer;
+        typedef T& reference;
+        typedef const T& const_reference;
+        typedef std::size_t size_type;
+        typedef std::ptrdiff_t difference_type;
 
-    // Rebind allocator to another type
-    template <typename U>
-    struct rebind {
-        typedef StringAllocator<U> other;
-    };
+        template <typename U>
+        struct rebind
+        {
+            typedef StringAllocator<U> other;
+        };
 
-    StringAllocator(Nginx_MemoryPool& pool) : memoryPool(pool) {}
+        StringAllocator(Nginx_MemoryPool& pool) : memoryPool(pool) {}
 
-    template <typename U>
-    StringAllocator(const StringAllocator<U>& other) : memoryPool(other.memoryPool) {}
+        template <typename U>
+        StringAllocator(const StringAllocator<U>& other) : memoryPool(other.memoryPool) {}
 
-    pointer allocate(size_type n) {
-        std::cout << "allocate called" << std::endl;
-        if (n == 0)
-            return 0;
-        if (n > std::numeric_limits<size_type>::max() / sizeof(T))
-            throw std::bad_alloc();
-        return static_cast<pointer>(memoryPool.allocate(n * sizeof(T), false));
-    }
+        pointer allocate(size_type n)
+        {
+            std::cout << "allocated called" << std::endl;
+            if (n == 0)
+                return 0;
+            if (n > std::numeric_limits<size_type>::max() / sizeof(T))
+                throw std::bad_alloc();
+            return static_cast<pointer>(memoryPool.allocate(n * sizeof(T), false));
+        }
 
-    void deallocate(pointer p, size_type n)
-    {
-        (void)p;
-        (void)n;
-    }
+        void deallocate(pointer p, size_type n)
+        {
+            (void)p;
+            (void)n;
+        }
 
-    bool operator==(const StringAllocator& other) const { return &memoryPool == &other.memoryPool; }
-    bool operator!=(const StringAllocator& other) const { return &memoryPool != &other.memoryPool; }
+        bool operator==(const StringAllocator& other) const { return &memoryPool == &other.memoryPool; }
+        bool operator!=(const StringAllocator& other) const { return &memoryPool != &other.memoryPool; }
 
-    size_type max_size() const
-    {
-        return std::numeric_limits<size_type>::max() / sizeof(T);
-    }
+        size_type max_size() const
+        {
+            return std::numeric_limits<size_type>::max() / sizeof(T);
+        }
 
-private:
-    Nginx_MemoryPool& memoryPool;  // Reference to the memory pool
+    private:
+        Nginx_MemoryPool& memoryPool;
 };
-
-
 
 
 

@@ -15,6 +15,7 @@
 #include "Clock/Clock.hpp"
 #include "Globals/Globals.hpp"
 #include "SignalHandler/SignalHandler.hpp"
+#include "CgiHandler/python-cgi/pythonCgi.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -37,9 +38,14 @@ int main(int ac, char **av, char **env)
 	
 	globals._logFile->record("server starting");
 
-	server.run();
+	//server.run();
 
 	globals._logFile->record("server closing");
+
+	PythonCgi cgi;
+
+	cgi.printVariables();
+	cgi.printEnumerators();
 
 	return (GRET_SUCKCESS);
 }

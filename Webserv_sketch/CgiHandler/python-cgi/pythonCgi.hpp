@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 10:58:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:10:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ class PythonCgi
         void    reset();
 
         void    prepareCgi();
+
+        void    printVariables();
+        void    printEnumerators();
 
     private:
 
@@ -63,7 +66,7 @@ class PythonCgi
         typedef std::map<t_poolString, PyCgiEnv, std::less<t_poolString>, MPool_FixedElem<std::pair<t_poolString, PyCgiEnv> > >   mapHeaderToEnum;
         typedef mapHeaderToEnum::iterator                                                                     mapHeaderToEnum_Iter;
         typedef std::map<PyCgiEnv, t_poolString*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, t_poolString*> > > mapEnumToHeader;
-        typedef mapHeaderToEnum::iterator                                                                     mapEnumToHeader_Iter;
+        typedef mapEnumToHeader ::iterator                                                                     mapEnumToHeader_Iter;
 
 
         mapHeaderToEnum             _headersToEnum;

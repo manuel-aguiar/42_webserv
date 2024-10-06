@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 10:58:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:10:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,12 @@
 
 
 PythonCgi::PythonCgi() : 
-    _localDataPool(NULL), 
-    _requestDataPool(NULL),
+    _localDataPool(Nginx_MemoryPool::create(1024)), 
+    _requestDataPool(Nginx_MemoryPool::create(4096)),
     _stringAllocator(*_localDataPool),
     _headersToEnum(std::less<t_poolString>(), PY_CGIENV_COUNT),
     _enumToHeaders(std::less<PyCgiEnv>(), PY_CGIENV_COUNT)
 {
-    _localDataPool = Nginx_MemoryPool::create(1024);
 
     setupMapEntry("REQUEST_METHOD=", PY_REQUEST_METHOD);
     setupMapEntry("QUERY_STRING=", PY_QUERY_STRING);
@@ -43,8 +42,6 @@ PythonCgi::PythonCgi() :
     setupMapEntry("HTTP_REFERER=", PY_HTTP_REFERER);
     setupMapEntry("PYTHONPATH=", PY_PYTHON_PATH);
 
-
-    _requestDataPool = Nginx_MemoryPool::create(4096);
 }
 
 void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
@@ -55,6 +52,28 @@ void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
     result = _headersToEnum.insert(std::make_pair(t_poolString(entry, _stringAllocator), enumerator));
     poolStrPtr = const_cast<t_poolString*>(&result.first->first);
     _enumToHeaders.insert(std::make_pair(enumerator, poolStrPtr));
+}
+
+void    PythonCgi::printVariables()
+{
+    mapHeaderToEnum_Iter it = _headersToEnum.begin();
+    mapHeaderToEnum_Iter ite = _headersToEnum.end();
+
+    for (; it != ite; ++it)
+    {
+        std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
+    }
+}
+
+void    PythonCgi::printEnumerators()
+{
+    mapEnumToHeader_Iter it = _enumToHeaders.begin();
+    mapEnumToHeader_Iter ite = _enumToHeaders.end();
+
+    for (; it != ite; ++it)
+    {
+        std::cout << "Key: " << it->first << " Value: " << *it->second << std::endl;
+    }
 }
 
 void    PythonCgi::prepareCgi()
