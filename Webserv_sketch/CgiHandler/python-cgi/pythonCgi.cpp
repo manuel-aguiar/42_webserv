@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 11:10:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/06 11:19:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,7 @@ void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
 
 void    PythonCgi::printVariables()
 {
-    mapHeaderToEnum_Iter it = _headersToEnum.begin();
-    mapHeaderToEnum_Iter ite = _headersToEnum.end();
-
-    for (; it != ite; ++it)
+    for (mapHeaderToEnum_Iter it = _headersToEnum.begin(); it != _headersToEnum.end(); ++it)
     {
         std::cout << "Key: " << it->first << " Value: " << it->second << std::endl;
     }
@@ -67,10 +64,7 @@ void    PythonCgi::printVariables()
 
 void    PythonCgi::printEnumerators()
 {
-    mapEnumToHeader_Iter it = _enumToHeaders.begin();
-    mapEnumToHeader_Iter ite = _enumToHeaders.end();
-
-    for (; it != ite; ++it)
+    for (mapEnumToHeader_Iter it = _enumToHeaders.begin(); it != _enumToHeaders.end(); ++it)
     {
         std::cout << "Key: " << it->first << " Value: " << *it->second << std::endl;
     }
