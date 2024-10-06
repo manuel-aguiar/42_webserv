@@ -29,8 +29,14 @@ int main() {
 
     std::cout << "getting c_str" << std::endl;
     const char* ptr = str3.c_str();
-
+    StringWithPoolAllocator str4("asfasffffffffffffffffffffffffffffffffffffffffffffff!", alloc);
+    StringWithPoolAllocator str5("asfasffffffffffffffffffffffffffffffffffffffffffffff!", alloc);
+    StringWithPoolAllocator str6("asfasffffffffffffffffffffffffffffffffffffffffffffff!", alloc);
     std::cout << "String: " << ptr << std::endl;
+
+    std::cout << "String4: " << str4 << std::endl;
+    std::cout << "String5: " << str5 << std::endl;
+    std::cout << "String6: " << str6 << std::endl;
 
     pool->destroy();
 
