@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MemoryPool.h                                       :+:      :+:    :+:   */
+/*   String_Allocator.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 12:20:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/06 10:29:11 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/06 10:28:30 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/06 10:31:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MEMORYPOOL_H
+#ifndef STRING_ALLOCATOR_HPP
 
-# define MEMORYPOOL_H
+# define STRING_ALLOCATOR_HPP
 
-# include "Alloc/SharedMPool_Alloc.hpp"
-# include "Dealloc/SharedMPool_Dealloc.hpp"
-# include "AlignDealloc/SharedMPool_AlignDealloc.hpp"
-# include "Nginx_MemoryPool/Nginx_MemoryPool.hpp"
-# include "Nginx_MemoryPool/String_Allocator.hpp"
-# include "Fixed_Elements/MPool_FixedElements.hpp"
+template <typename T>
+class StringAllocator;
+
+# include "String_Allocator.tpp"
 
 #endif
