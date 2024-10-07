@@ -7,13 +7,11 @@
 class ConfigHandler
 {
 	private:
-		std::string		_path;
-		std::ifstream	_file;
-		size_t			_serverCount;
-		ServerConfig	*_servers;				/* 'servers' address would be shared with
-															 * another class that will be the sv manager?
-															 * same for server_count	*/						
-		int countServers();
+		std::string					_path;
+		std::ifstream				_file;
+		size_t						_serverCount;
+		std::vector<ServerConfig>	_servers;
+		
 
 	public:
 		ConfigHandler();

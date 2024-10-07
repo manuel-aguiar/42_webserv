@@ -1,27 +1,10 @@
 #include "ConfigHandler.hpp"
 
-// Private
-
-int	ConfigHandler::countServers()
-{
-	// TODO: count servers on current file
-	_serverCount = SERVER_AMOUNT;
-	return (1);
-}
-
 // Public
 
-ConfigHandler::ConfigHandler(): _path(std::string(DEFAULT_CONFIG_PATH)),
-	_serverCount(SERVER_AMOUNT), _servers(NULL)
-{
-	// Servers address would come from somewhere else?
-	_servers = new ServerConfig[_serverCount];
-}
+ConfigHandler::ConfigHandler(): _path(std::string(DEFAULT_CONFIG_PATH)), _serverCount(0) {}
 
-ConfigHandler::~ConfigHandler()
-{
-	delete[] _servers;
-}
+ConfigHandler::~ConfigHandler() {}
 
 // Getters & Setters
 
@@ -48,7 +31,6 @@ int		ConfigHandler::updateFile()
 		std::cerr << "Error: Could not open configuration file." << std::endl;
 		return (0);
 	}
-	countServers();
 	return (1);
 }
 
@@ -81,14 +63,14 @@ int		ConfigHandler::parse_config_line(std::string &line, ServerConfig &server, s
 
 int		ConfigHandler::parse_config_file()
 {
-	updateFile();
 
 	std::string	line;
 	size_t		current_line	= 0;
 	size_t		current_server	= 0;
-	size_t		server_count	= 0;
 	size_t		bracket_level	= 0;
 
+	if (!updateFile())
+		return (0);
 	while (std::getline(_file, line))
 	{
 		current_line++;
@@ -103,9 +85,11 @@ int		ConfigHandler::parse_config_file()
 					<< current_line << std::endl;
 				return (0);
 			}
-			server_count++;
+			ServerConfig Server;
+			_serverCount++;
+			_servers[_serverCount] = Server;
 			bracket_level++;
-			current_server = server_count;
+			current_server = _serverCount;
 		}
 		else if (line == "}")
 		{
@@ -126,7 +110,7 @@ int		ConfigHandler::parse_config_file()
 		else
 		{
 			if (bracket_level == 1)
-				if (!parse_config_line(line, _servers[server_count - 1], current_line))
+				if (!parse_config_line(line, _servers[_serverCount - 1], current_line))
 					return (0);
 		}
 	}
