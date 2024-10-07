@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 09:34:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:52:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void		SignalHandler::signal_handler(int sigNum)
     }
 }
 
-int SignalHandler::prepare_signal(t_sigaction *ms, void (*handler)(int), int numServers, Globals* globals)
+int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals)
 {
     int pipefd[2];
 
@@ -51,25 +51,25 @@ int SignalHandler::prepare_signal(t_sigaction *ms, void (*handler)(int), int num
     _g_globals = globals;
     _g_pipes.reserve(numServers);
     
-    ms->sa_flags = 0;
-    ms->sa_handler = handler;
+    sigact->sa_flags = SA_RESTART;
+    sigact->sa_handler = handler;
 
-    if (sigemptyset(&(ms->sa_mask)) == -1)
+    if (sigemptyset(&(sigact->sa_mask)) == -1)
     {
         _g_globals->_logFile->record("sigemptyset(): " + std::string(std::strerror(errno)));
         throw std::runtime_error("CRITICAL: sigemptyset() failed");
     }
 
-    if (sigaction(SIGINT, ms, NULL) == -1)
+    if (sigaction(SIGINT, sigact, NULL) == -1)
     {
-        _g_globals->_logFile->record("sigaction(): " + std::string(std::strerror(errno)));
-        throw std::runtime_error("CRITICAL: sigaction() failed");
+        _g_globals->_logFile->record("sigact(): " + std::string(std::strerror(errno)));
+        throw std::runtime_error("CRITICAL: sigact() failed");
     }
 
-    if (sigaction(SIGQUIT, ms, NULL) == -1)
+    if (sigaction(SIGQUIT, sigact, NULL) == -1)
     {
-        _g_globals->_logFile->record("sigaction(): " + std::string(std::strerror(errno)));
-        throw std::runtime_error("CRITICAL: sigaction() failed");
+        _g_globals->_logFile->record("sigact(): " + std::string(std::strerror(errno)));
+        throw std::runtime_error("CRITICAL: sigact() failed");
     }
 
     for (int i = 0; i < numServers; ++i)
@@ -85,9 +85,9 @@ int SignalHandler::prepare_signal(t_sigaction *ms, void (*handler)(int), int num
     return (1);
 }
 
-void SignalHandler::destroy_signal(t_sigaction *ms)
+void SignalHandler::destroy_signal(t_sigaction *sigact)
 {
-    (void)ms;
+    (void)sigact;
 
     for (size_t i = 0; i < _g_pipes.size(); ++i)
     {

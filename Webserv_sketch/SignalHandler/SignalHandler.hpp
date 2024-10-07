@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 09:24:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:51:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class SignalHandler
 		static int 			PipeWrite(int serverID);
 		static int 			getSignal();
 		static void			signal_handler(int sigNum);
-		static int 			prepare_signal(t_sigaction *ms, void (*handler)(int), int numServers, Globals* globals);
-		static void 		destroy_signal(t_sigaction *ms);
+		static int 			prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
+		static void 		destroy_signal(t_sigaction *sigact);
 
 	private:
 		static Globals*						        _g_globals;

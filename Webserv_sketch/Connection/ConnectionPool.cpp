@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 17:01:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/04 11:07:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,19 @@ ConnectionPool::~ConnectionPool()
 ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 
     _globals(globals), 
     _maxConnections(maxConnections),
+    _connections(maxConnections),
+    _readEvents(maxConnections),
+    _writeEvents(maxConnections),
     _spareConnections(MPool_FixedElem<Connection*>(maxConnections))
 {
-    _connections.reserve(maxConnections);
-    _readEvents.reserve(maxConnections);
-    _writeEvents.reserve(maxConnections);
+
 
     for (size_t i = 0; i < maxConnections; i++)
     {
-        _connections.push_back(Connection(_globals));
-        _readEvents.push_back(Event(_globals));
-        _writeEvents.push_back(Event(_globals));
+        new (&_connections[i]) Connection(_globals);
+        new (&_readEvents[i]) Event(_globals);
+        new (&_writeEvents[i]) Event(_globals);
+        
         _connections[i].init();
         _connections[i]._readEvent = &_readEvents[i];
         _connections[i]._writeEvent = &_writeEvents[i];
