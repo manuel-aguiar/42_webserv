@@ -1,35 +1,10 @@
 #include "ConfigHandler.hpp"
 
-<<<<<<< HEAD
 // Public
 
 ConfigHandler::ConfigHandler(): _path(std::string(DEFAULT_CONFIG_PATH)), _serverCount(0) {}
 
 ConfigHandler::~ConfigHandler() {}
-=======
-// Private
-
-int	ConfigHandler::countServers()
-{
-	// TODO: count servers on current file
-	_serverCount = SERVER_AMOUNT;
-	return (1);
-}
-
-// Public
-
-ConfigHandler::ConfigHandler(): _path(std::string(DEFAULT_CONFIG_PATH)),
-	_serverCount(SERVER_AMOUNT), _servers(NULL)
-{
-	// Servers address would come from somewhere else?
-	_servers = new ServerConfig[_serverCount];
-}
-
-ConfigHandler::~ConfigHandler()
-{
-	delete[] _servers;
-}
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 
 // Getters & Setters
 
@@ -56,10 +31,6 @@ int		ConfigHandler::updateFile()
 		std::cerr << "Error: Could not open configuration file." << std::endl;
 		return (0);
 	}
-<<<<<<< HEAD
-=======
-	countServers();
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 	return (1);
 }
 
@@ -92,24 +63,14 @@ int		ConfigHandler::parse_config_line(std::string &line, ServerConfig &server, s
 
 int		ConfigHandler::parse_config_file()
 {
-<<<<<<< HEAD
-=======
-	updateFile();
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 
 	std::string	line;
 	size_t		current_line	= 0;
 	size_t		current_server	= 0;
-<<<<<<< HEAD
 	size_t		bracket_level	= 0;
 
 	if (!updateFile())
 		return (0);
-=======
-	size_t		server_count	= 0;
-	size_t		bracket_level	= 0;
-
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 	while (std::getline(_file, line))
 	{
 		current_line++;
@@ -124,17 +85,11 @@ int		ConfigHandler::parse_config_file()
 					<< current_line << std::endl;
 				return (0);
 			}
-<<<<<<< HEAD
 			ServerConfig Server;
 			_serverCount++;
 			_servers[_serverCount] = Server;
 			bracket_level++;
 			current_server = _serverCount;
-=======
-			server_count++;
-			bracket_level++;
-			current_server = server_count;
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 		}
 		else if (line == "}")
 		{
@@ -155,11 +110,7 @@ int		ConfigHandler::parse_config_file()
 		else
 		{
 			if (bracket_level == 1)
-<<<<<<< HEAD
 				if (!parse_config_line(line, _servers[_serverCount - 1], current_line))
-=======
-				if (!parse_config_line(line, _servers[server_count - 1], current_line))
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 					return (0);
 		}
 	}

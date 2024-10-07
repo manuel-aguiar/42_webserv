@@ -39,11 +39,7 @@ size_t	parse_size(const std::string &size_str)
 	else if (*it == 'G')
 		multiplier = 1024 * 1024 * 1024;
 	else if (!isdigit(*it))
-<<<<<<< HEAD
 		throw (std::invalid_argument("Invalid unit "));
-=======
-		throw (std::invalid_argument("Invalid unit: " + *it));
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 	else
 		return (__stoull(size_str) * multiplier);
 	return (__stoull(value) * multiplier);
@@ -61,20 +57,12 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 	return (tokens);
 }
 
-<<<<<<< HEAD
 bool	is_number(const std::string &str)
-=======
-int	is_number(const std::string &str)
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 {
 	return (!str.empty() && (str.find_first_not_of("[0123456789]") == std::string::npos));
 }
 
-<<<<<<< HEAD
 bool	validate_ipv4(const std::string &str)
-=======
-int	validate_ipv4(const std::string &str)
->>>>>>> 07d7f4329404fa3ff0401817dcf7747980e9879d
 {
 	std::vector<std::string> values = split(str, '.');
 
