@@ -25,7 +25,7 @@ ServerConfig::ServerConfig()
 bool	ServerConfig::setHost(const std::string &value)
 {
 	if (!validate_ipv4(value))
-		return (0);
+		throw (std::invalid_argument("not an ipv4 address"));
 	_config["host"].clear();
 	_config["host"].insert(value);
 	return (1);
