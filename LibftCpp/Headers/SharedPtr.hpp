@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 15:48:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:55:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,40 +142,52 @@ class SharedPtr
         }
 };
 
-template <typename T>
-SharedPtr<T> make_SharedPtr()
-{
-    return (SharedPtr<T>(new T()));
+// Function to create a SharedPtr with no arguments
+template <typename T, typename Allocator>
+SharedPtr<T> make_SharedPtr(Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(); // Default constructor
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1>
-SharedPtr<T> make_SharedPtr(Arg1 arg1)
-{
-    return SharedPtr<T>(new T(arg1));
+// Function to create a SharedPtr with one argument
+template <typename T, typename Arg1, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1); // Constructor with one argument
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2)
-{
-    return SharedPtr<T>(new T(arg1, arg2));
+// Function to create a SharedPtr with two arguments
+template <typename T, typename Arg1, typename Arg2, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2); // Constructor with two arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3));
+// Function to create a SharedPtr with three arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3); // Constructor with three arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4));
+// Function to create a SharedPtr with four arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3, arg4); // Constructor with four arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4, arg5));
+// Function to create a SharedPtr with five arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3, arg4, arg5); // Constructor with five arguments
+    return SharedPtr<T>(ptr);
 }
 
 // Template specialization for arrays
