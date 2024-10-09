@@ -32,11 +32,11 @@ class ThreadPoolWorker : public AThread
 		void	run();
 		
 	private:
-		IThreadTaskQueue&		_queue;
-		IThreadTask*		 	_curTask;
-		pthread_mutex_t&		_statusLock;
-		pthread_cond_t&			_exitSignal;
-		bool					_exited;
+		IThreadTaskQueue&		m_queue;
+		IThreadTask*		 	m_curTask;
+		pthread_mutex_t&		m_statusLock;
+		pthread_cond_t&			m_exitSignal;
+		bool					m_exited;
 
 
 		ThreadPoolWorker(const ThreadPoolWorker& copy);

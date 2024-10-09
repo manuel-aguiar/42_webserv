@@ -35,17 +35,17 @@ template <
 
 	public:
 		Socket() :
-			_fd(socket(TransportLayer::addressFamily, 
+			m_fd(socket(TransportLayer::addressFamily, 
 						TransportLayer::socketType,
 						TransportLayer::protocol))
 		{
 		}
 		~Socket() 
 		{
-			close(_fd);
+			close(m_fd);
 		}
 	private:
-		const int _fd;
+		const int m_fd;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 10:32:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:09:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../Globals/Globals.hpp"
 
 
-Clock::Clock(Globals* globals) : _globals(globals), _elapsed_ms(0)
+Clock::Clock(Globals* globals) : m_globals(globals), _elapsed_ms(0)
 {
 	std::memset(_buffer, 0, sizeof(_buffer));
 }
@@ -26,7 +26,7 @@ Clock::~Clock()
 
 void    Clock::setGlobals(Globals& globals)
 {
-	_globals = &globals;
+	m_globals = &globals;
 }
 
 void   Clock::start()
@@ -47,7 +47,7 @@ int Clock::_get_time()
 {
 	if (::gettimeofday(&_now, NULL) == -1)
 	{
-		_globals->_logFile->record("gettimeofday(): " + std::string(std::strerror(errno)));
+		m_globals->m_logFile->record("gettimeofday(): " + std::string(std::strerror(errno)));
 		return (0);
 	}
 	return (1);    
@@ -82,7 +82,7 @@ const char* Clock::get_FormatedTime()
 	timeinfo = std::localtime(&_now.tv_sec);
 	if (timeinfo == NULL)
 	{
-		_globals->_logFile->record("localtime(): " + std::string(std::strerror(errno)));
+		m_globals->m_logFile->record("localtime(): " + std::string(std::strerror(errno)));
 		return (NULL);
 	}
 	bufPosi = _buffer;

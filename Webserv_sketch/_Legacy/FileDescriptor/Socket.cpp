@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 12:37:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 17:02:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:10:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 
 
 Socket::Socket(int fd, char ip[INET6_ADDRSTRLEN], int port, int family) :
-    _fd(fd), _port(port), _addrFamily(family)
+    m_fd(fd), _port(port), _addrFamily(family)
 {
     std::memcpy(_ip, ip, INET6_ADDRSTRLEN);
 }
 
-Socket::Socket() : _fd(-1), _port(-1), _addrFamily(-1) {}
+Socket::Socket() : m_fd(-1), _port(-1), _addrFamily(-1) {}
 Socket::~Socket() {}
-Socket::Socket(const Socket& copy) : _fd(copy._fd), _port(copy._port),_addrFamily(copy._addrFamily)
+Socket::Socket(const Socket& copy) : m_fd(copy.m_fd), _port(copy._port),_addrFamily(copy._addrFamily)
  
  {
     std::memcpy(_ip, copy._ip, INET6_ADDRSTRLEN);
@@ -33,14 +33,14 @@ Socket& Socket::operator=(const Socket& assign)
     if (this == &assign)
         return (*this);
 
-    _fd = assign._fd;
+    m_fd = assign.m_fd;
     std::memcpy(_ip, assign._ip, INET6_ADDRSTRLEN);
     _port = assign._port;
     _addrFamily = assign._addrFamily;
     return (*this);
 }
 
-int             Socket::getFd() const { return (_fd); }
+int             Socket::getFd() const { return (m_fd); }
 const char*     Socket::getIp() const { return (_ip); }
 int             Socket::getPort() const { return (_port); }
 

@@ -106,13 +106,13 @@ class WebServerSignalHandler
 		static int PipeRead(int numServer) {return _pipes[numServer].first;}
 		static int PipeWrite(int numServer) {return _pipes[numServer].second;}
 
-		static int getSignal() {return (WebServerSignalHandler::_g_signal);};
+		static int getSignal() {return (WebServerSignalHandler::gm_signal);};
 
 		static void		signal_handler(int sigNum)
 		{
 			if (sigNum == SIGINT || sigNum == SIGQUIT)
 			{
-				_g_signal = sigNum;
+				gm_signal = sigNum;
 				for (size_t i = 0; i < _pipes.size(); ++i)
 				{
 					write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
@@ -149,10 +149,10 @@ class WebServerSignalHandler
 		}
 	private:
 		static	std::vector<std::pair<int, int> >	_pipes;
-		static int 						_g_signal;
+		static int 						gm_signal;
 };
 
-int		WebServerSignalHandler::_g_signal = 0;
+int		WebServerSignalHandler::gm_signal = 0;
 std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
 
 
@@ -161,17 +161,17 @@ std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
 class RemoteClient
 {
 	public:
-		RemoteClient() : _fd(-1), _event((struct epoll_event) {}) {}
-		RemoteClient(const int fd) : _fd(fd), _event((struct epoll_event) {}) {}
-		RemoteClient(const int fd, const struct epoll_event event) : _fd(fd), _event(event) {}
+		RemoteClient() : m_fd(-1), _event((struct epoll_event) {}) {}
+		RemoteClient(const int fd) : m_fd(fd), _event((struct epoll_event) {}) {}
+		RemoteClient(const int fd, const struct epoll_event event) : m_fd(fd), _event(event) {}
 		~RemoteClient() {};
-		RemoteClient(const RemoteClient& copy) : _fd(copy._fd) {(void)copy;}
-		RemoteClient& operator=(const RemoteClient& assign) {if (this == &assign) return (*this); _fd = assign._fd; _event = assign._event; return (*this);}
+		RemoteClient(const RemoteClient& copy) : m_fd(copy.m_fd) {(void)copy;}
+		RemoteClient& operator=(const RemoteClient& assign) {if (this == &assign) return (*this); m_fd = assign.m_fd; _event = assign._event; return (*this);}
 
 		void setEvent(const struct epoll_event event) {_event = event;}
 		struct epoll_event& getEvent() {return (_event);}
 	private:
-		int		 			_fd;
+		int		 			m_fd;
 		struct epoll_event	_event;
 };
 

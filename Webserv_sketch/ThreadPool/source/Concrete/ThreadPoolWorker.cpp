@@ -14,10 +14,10 @@
 
 ThreadPoolWorker::ThreadPoolWorker(IThreadTaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal) :
 	AThread(),
-	_queue(queue),
-	_curTask(NULL),
-	_statusLock(statusLock),
-	_exitSignal(exitSignal)
+	m_queue(queue),
+	m_curTask(NULL),
+	m_statusLock(statusLock),
+	m_exitSignal(exitSignal)
 {
 	#ifdef DEBUG_CONSTRUCTOR
 		std::cout << "ThreadPoolWorker Constructor Called" << std::endl;
@@ -33,35 +33,35 @@ ThreadPoolWorker::~ThreadPoolWorker()
 
 void	ThreadPoolWorker::run()
 {   
-	pthread_mutex_lock(&_statusLock);
-	_exited = false;
-	pthread_mutex_unlock(&_statusLock);
+	pthread_mutex_lock(&m_statusLock);
+	m_exited = false;
+	pthread_mutex_unlock(&m_statusLock);
 
-	while ((_curTask = _queue.getTask()))
+	while ((m_curTask = m_queue.getTask()))
 	{
-		_curTask->execute();
-		_queue.finishTask(_curTask);
+		m_curTask->execute();
+		m_queue.finishTask(m_curTask);
 	}
 
-	pthread_mutex_lock(&_statusLock);
-	_exited = true;
-	pthread_cond_signal(&_exitSignal);
-	pthread_mutex_unlock(&_statusLock);
+	pthread_mutex_lock(&m_statusLock);
+	m_exited = true;
+	pthread_cond_signal(&m_exitSignal);
+	pthread_mutex_unlock(&m_statusLock);
 
 }
 
 bool	ThreadPoolWorker::exitedQueue()
 {
-	return (_exited);
+	return (m_exited);
 }
 
 ThreadPoolWorker::ThreadPoolWorker(const ThreadPoolWorker& copy) : 
 	AThread(copy),
-	_queue(copy._queue),
-	_curTask(NULL),
-	_statusLock(copy._statusLock),
-	_exitSignal(copy._exitSignal),
-	_exited(false) {}
+	m_queue(copy.m_queue),
+	m_curTask(NULL),
+	m_statusLock(copy.m_statusLock),
+	m_exitSignal(copy.m_exitSignal),
+	m_exited(false) {}
 	
 ThreadPoolWorker& ThreadPoolWorker::operator=(const ThreadPoolWorker& assign)  {(void)assign; return (*this);}
 

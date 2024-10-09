@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 11:07:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/17 14:18:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@ class CommunicationSocket :
     public IOnEvents
 {
     public:
-        CommunicationSocket() {_fd = -1;};
+        CommunicationSocket() {m_fd = -1;};
 
         CommunicationSocket(const int fd, const SockAddr& addr) :
             
-            _addr(addr) {_fd = fd;}
+            m_addr(addr) {m_fd = fd;}
 
         ~CommunicationSocket()
         {
-            if (_fd != -1)
-                ::close(_fd);
+            if (m_fd != -1)
+                ::close(m_fd);
         }
 
         // implementation of IOnEvents
@@ -46,29 +46,29 @@ class CommunicationSocket :
         // implementation  of ICommunicationFunctions
         void send()
         {
-            write(this->_fd, "Hello, World!", 13);
+            write(this->m_fd, "Hello, World!", 13);
         }
 
         void receive() {};
 
         // implementation of ISocketAddress methods
-        struct sockaddr*                    getSockAddr() { return (this->_addr.getSockAddr()); }
-        socklen_t*                          getAddrLen() { return (this->_addr.getAddrLen()); };
-        int                                 getAddrFamily() const { return (this->_addr.getAddrFamily()); }
-        UniquePtr<ISocketAddress>           clone() const { return (this->_addr.clone()); }  
+        struct sockaddr*                    getSockAddr() { return (this->m_addr.getSockAddr()); }
+        socklen_t*                          getAddrLen() { return (this->m_addr.getAddrLen()); };
+        int                                 getAddrFamily() const { return (this->m_addr.getAddrFamily()); }
+        UniquePtr<ISocketAddress>           clone() const { return (this->m_addr.clone()); }  
 
     private:
-        SockAddr                            _addr;
+        SockAddr                            m_addr;
 
 
         
-        CommunicationSocket(const CommunicationSocket& copy) : _addr(copy._addr) {_fd = copy._fd;}
+        CommunicationSocket(const CommunicationSocket& copy) : m_addr(copy.m_addr) {m_fd = copy.m_fd;}
         CommunicationSocket& operator=(const CommunicationSocket& assign)
         {   
             if (this == &assign)
                 return (*this);
-            _fd = assign._fd;
-            _addr = assign._addr;
+            m_fd = assign.m_fd;
+            m_addr = assign.m_addr;
             return (*this);
         }
 

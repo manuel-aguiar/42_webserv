@@ -6,38 +6,39 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:52:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:44:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "SignalHandler.hpp"
 # include "../Globals/Globals.hpp"
+# include "../FileDescriptor/FileDescriptor.hpp"
 
-Globals*                                SignalHandler::_g_globals = NULL;   
-int		                                SignalHandler::_g_signal = 0;
-std::vector<std::pair<int, int> >       SignalHandler::_g_pipes;
+Globals*                                SignalHandler::gm_globals = NULL;   
+int		                                SignalHandler::gm_signal = 0;
+std::vector<std::pair<int, int> >       SignalHandler::gm_pipes;
 
 int SignalHandler::PipeRead(int serverID)
 {
-    return (_g_pipes[serverID].first);
+    return (gm_pipes[serverID].first);
 }
 
 int SignalHandler::PipeWrite(int serverID)
 {
-    return (_g_pipes[serverID].second);
+    return (gm_pipes[serverID].second);
 }
 
 int SignalHandler::getSignal()
 {
-    return (SignalHandler::_g_signal);
+    return (SignalHandler::gm_signal);
 };
 
 void		SignalHandler::signal_handler(int sigNum)
 {
     if (sigNum == SIGINT || sigNum == SIGQUIT)
     {
-        _g_signal = sigNum;
-        for (size_t i = 0; i < _g_pipes.size(); ++i)
+        gm_signal = sigNum;
+        for (size_t i = 0; i < gm_pipes.size(); ++i)
             write(PipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
     }
 }
@@ -48,27 +49,27 @@ int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int
 
     assert(globals != NULL);
 
-    _g_globals = globals;
-    _g_pipes.reserve(numServers);
+    gm_globals = globals;
+    gm_pipes.reserve(numServers);
     
     sigact->sa_flags = SA_RESTART;
     sigact->sa_handler = handler;
 
     if (sigemptyset(&(sigact->sa_mask)) == -1)
     {
-        _g_globals->_logFile->record("sigemptyset(): " + std::string(std::strerror(errno)));
+        gm_globals->m_logFile->record("sigemptyset(): " + std::string(std::strerror(errno)));
         throw std::runtime_error("CRITICAL: sigemptyset() failed");
     }
 
     if (sigaction(SIGINT, sigact, NULL) == -1)
     {
-        _g_globals->_logFile->record("sigact(): " + std::string(std::strerror(errno)));
+        gm_globals->m_logFile->record("sigact(): " + std::string(std::strerror(errno)));
         throw std::runtime_error("CRITICAL: sigact() failed");
     }
 
     if (sigaction(SIGQUIT, sigact, NULL) == -1)
     {
-        _g_globals->_logFile->record("sigact(): " + std::string(std::strerror(errno)));
+        gm_globals->m_logFile->record("sigact(): " + std::string(std::strerror(errno)));
         throw std::runtime_error("CRITICAL: sigact() failed");
     }
 
@@ -76,11 +77,17 @@ int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int
     {
         if (pipe(pipefd) == -1)
         {
-            _g_globals->_logFile->record("pipe(): " + std::string(std::strerror(errno)));
+            gm_globals->m_logFile->record("pipe(): " + std::string(std::strerror(errno)));
             throw std::runtime_error("CRITICAL: pipe() failed");
         }
-        
-        _g_pipes.push_back(std::make_pair(pipefd[0], pipefd[1]));
+        if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0])
+        || !FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
+        {
+            gm_globals->m_logFile->record("fcntl(): " + std::string(std::strerror(errno)));
+            throw std::runtime_error("CRITICAL: fcntl() failed");
+        }
+       
+        gm_pipes.push_back(std::make_pair(pipefd[0], pipefd[1]));
     }
     return (1);
 }
@@ -89,13 +96,13 @@ void SignalHandler::destroy_signal(t_sigaction *sigact)
 {
     (void)sigact;
 
-    for (size_t i = 0; i < _g_pipes.size(); ++i)
+    for (size_t i = 0; i < gm_pipes.size(); ++i)
     {
         if (close(PipeRead(i)) == -1)
-            _g_globals->_logFile->record("close(): " + std::string(std::strerror(errno)));
+            gm_globals->m_logFile->record("close(): " + std::string(std::strerror(errno)));
         if (close(PipeWrite(i)) == -1)
-            _g_globals->_logFile->record("close(): " + std::string(std::strerror(errno)));
+            gm_globals->m_logFile->record("close(): " + std::string(std::strerror(errno)));
     }
-    _g_pipes.clear();
+    gm_pipes.clear();
 }
 

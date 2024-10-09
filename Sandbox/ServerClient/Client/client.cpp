@@ -52,7 +52,7 @@ int main()
             if (errno != EINPROGRESS) {
                 std::cerr << "Failed to connect" << std::endl;
                 close(connections[i]);
-                continue; // Skip to the next iteration
+                continue; // Skip to the m_next iteration
             }
         }
 
@@ -61,7 +61,7 @@ int main()
         if (epoll_ctl(epollfd, EPOLL_CTL_ADD, connections[i], &single) == -1) {
             std::cerr << "Failed to add socket to epoll" << std::endl;
             close(connections[i]);
-            continue; // Skip to the next iteration
+            continue; // Skip to the m_next iteration
         }
     }
 

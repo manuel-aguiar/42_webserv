@@ -89,30 +89,30 @@ class MemoryPool_Alloc
 
 		// small change to allow non-trivial objects to be constructed, instead of value_type, char[sizeof(value_type)] is used
 		// unions in c++98 don't allow non-trivial objects
-		// char          data_[sizeof(value_type)]; is solved at compile time, so no overhead
+		// char          m_data[sizeof(value_type)]; is solved at compile time, so no overhead
 		
-		union Slot_ {
+		union s_Slot {
 			//value_type   element;                      
-			char          data_[sizeof(value_type)];
-			Slot_*        next;
+			char          m_data[sizeof(value_type)];
+			s_Slot*        m_next;
 		};
 
-		typedef char* data_pointer_;
-		typedef Slot_ slot_type_;
-		typedef Slot_* slot_pointer_;
+		typedef char* t_data_pointer;
+		typedef s_Slot t_slot_type;
+		typedef s_Slot* t_slot_pointer;
 
-		slot_pointer_ currentBlock_;
-		slot_pointer_ currentSlot_;
-		slot_pointer_ lastSlot_;
-		slot_pointer_ freeSlots_;
+		t_slot_pointer m_currentBlock;
+		t_slot_pointer m_currentSlot;
+		t_slot_pointer m_lastSlot;
+		t_slot_pointer m_freeSlots;
 
-		size_type padPointer(data_pointer_ p, size_type align) const throw();
+		size_type padPointer(t_data_pointer p, size_type align) const throw();
 		void allocateBlock();
 };
 
 template <typename T, size_t BlockSize>
 inline typename MemoryPool_Alloc<T, BlockSize>::size_type
-MemoryPool_Alloc<T, BlockSize>::padPointer(data_pointer_ p, size_type align)
+MemoryPool_Alloc<T, BlockSize>::padPointer(t_data_pointer p, size_type align)
 const throw()
 {
 	size_t result = reinterpret_cast<size_t>(p);
@@ -129,10 +129,10 @@ throw()
     assert(((BlockSize & (BlockSize - 1)) == 0) && 
 			BlockSize <= std::numeric_limits<uint16_t>::max() &&
 			BlockSize >= 512); // Power of 2 check + page limits
-	currentBlock_ = 0;
-	currentSlot_ = 0;
-	lastSlot_ = 0;
-	freeSlots_ = 0;
+	m_currentBlock = 0;
+	m_currentSlot = 0;
+	m_lastSlot = 0;
+	m_freeSlots = 0;
 }
 
 
@@ -162,11 +162,11 @@ template <typename T, size_t BlockSize>
 MemoryPool_Alloc<T, BlockSize>::~MemoryPool_Alloc()
 throw()
 {
-	slot_pointer_ curr = currentBlock_;
+	t_slot_pointer curr = m_currentBlock;
 	while (curr != 0) {
-		slot_pointer_ prev = curr->next;
+		t_slot_pointer m_prev = curr->m_next;
 		operator delete(reinterpret_cast<void*>(curr));
-		curr = prev;
+		curr = m_prev;
 	}
 }
 
@@ -196,15 +196,15 @@ template <typename T, size_t BlockSize>
 void
 MemoryPool_Alloc<T, BlockSize>::allocateBlock()
 {
-	data_pointer_ newBlock = reinterpret_cast<data_pointer_>
+	t_data_pointer newBlock = reinterpret_cast<t_data_pointer>
 													 (operator new(BlockSize));
-	reinterpret_cast<slot_pointer_>(newBlock)->next = currentBlock_;
-	currentBlock_ = reinterpret_cast<slot_pointer_>(newBlock);
-	data_pointer_ body = newBlock + sizeof(slot_pointer_);
-	size_type bodyPadding = padPointer(body, sizeof(slot_type_));
-	currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
-	lastSlot_ = reinterpret_cast<slot_pointer_>
-							(newBlock + BlockSize - sizeof(slot_type_) + 1);
+	reinterpret_cast<t_slot_pointer>(newBlock)->m_next = m_currentBlock;
+	m_currentBlock = reinterpret_cast<t_slot_pointer>(newBlock);
+	t_data_pointer body = newBlock + sizeof(t_slot_pointer);
+	size_type bodyPadding = padPointer(body, sizeof(t_slot_type));
+	m_currentSlot = reinterpret_cast<t_slot_pointer>(body + bodyPadding);
+	m_lastSlot = reinterpret_cast<t_slot_pointer>
+							(newBlock + BlockSize - sizeof(t_slot_type) + 1);
 }
 
 
@@ -214,17 +214,17 @@ inline typename MemoryPool_Alloc<T, BlockSize>::pointer
 MemoryPool_Alloc<T, BlockSize>::allocate(size_type, const_pointer)
 {
 	 
-	if (freeSlots_ != 0) {
-		pointer result = reinterpret_cast<pointer>(freeSlots_);
-		freeSlots_ = freeSlots_->next;
+	if (m_freeSlots != 0) {
+		pointer result = reinterpret_cast<pointer>(m_freeSlots);
+		m_freeSlots = m_freeSlots->m_next;
 		//std::cout << "pool allocating: " << sizeof(T) << " at " << result << std::endl;
 		return result;
 	}
 	else {
-		if (currentSlot_ >= lastSlot_)
+		if (m_currentSlot >= m_lastSlot)
 			allocateBlock();
-		//std::cout << "pool allocating: " << sizeof(T) << " at " << currentSlot_ << std::endl;
-		return reinterpret_cast<pointer>(currentSlot_++);
+		//std::cout << "pool allocating: " << sizeof(T) << " at " << m_currentSlot << std::endl;
+		return reinterpret_cast<pointer>(m_currentSlot++);
 	}
 }
 
@@ -235,8 +235,8 @@ inline void
 MemoryPool_Alloc<T, BlockSize>::deallocate(pointer p, size_type)
 {
 	if (p != 0) {
-		reinterpret_cast<slot_pointer_>(p)->next = freeSlots_;
-		freeSlots_ = reinterpret_cast<slot_pointer_>(p);
+		reinterpret_cast<t_slot_pointer>(p)->m_next = m_freeSlots;
+		m_freeSlots = reinterpret_cast<t_slot_pointer>(p);
 	}
 }
 
@@ -248,7 +248,7 @@ MemoryPool_Alloc<T, BlockSize>::max_size()
 const throw()
 {
 	size_type maxBlocks = -1 / BlockSize;
-	return (BlockSize - sizeof(data_pointer_)) / sizeof(slot_type_) * maxBlocks;
+	return (BlockSize - sizeof(t_data_pointer)) / sizeof(t_slot_type) * maxBlocks;
 }
 
 

@@ -48,8 +48,8 @@ class AThread
 
 		static void*   ThreadFunction(void* args);
 
-		EThreadState	_state;
-		pthread_t	   _thread;
+		EThreadState	m_state;
+		pthread_t	   m_thread;
 
 		
 		AThread& operator=(const AThread& assign);

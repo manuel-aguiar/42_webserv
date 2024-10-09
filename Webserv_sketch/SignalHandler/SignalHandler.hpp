@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:51:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:44:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ class SignalHandler
 		static void 		destroy_signal(t_sigaction *sigact);
 
 	private:
-		static Globals*						        _g_globals;
-		static std::vector<std::pair<int, int> >	_g_pipes;
-		static int 						            _g_signal;
+		static Globals*						        gm_globals;
+		static std::vector<std::pair<int, int> >	gm_pipes;
+		static int 						            gm_signal;
 
 };
 

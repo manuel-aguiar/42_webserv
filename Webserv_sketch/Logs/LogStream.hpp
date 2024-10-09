@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:55:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 07:46:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:15:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class LogStream : public ILog
         void    record (const std::string& entry);
         void    record(const char* entry);
     private:
-        std::ostream&   _stream;
+        std::ostream&   m_stream;
 };
 
 

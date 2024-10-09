@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 18:44:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:09:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,35 +15,35 @@
 #include "../Logs/ILog.hpp"
 
 Globals::Globals(Clock* clock, LogFile* logFile, LogFile* debugFile) : 
-    _clock(clock), 
-    _logFile(logFile), 
-    _debugFile(debugFile)
+    m_clock(clock), 
+    m_logFile(logFile), 
+    m_debugFile(debugFile)
 {
-    if (_clock && _logFile && _debugFile)
+    if (m_clock && m_logFile && m_debugFile)
     {
-        _clock->setGlobals(*this);
-        _logFile->setGlobals(*this);
-        _debugFile->setGlobals(*this);
+        m_clock->setGlobals(*this);
+        m_logFile->setGlobals(*this);
+        m_debugFile->setGlobals(*this);
     }
 }
 
 void    Globals::setClockAndLogs(Clock& clock, LogFile& logFile, LogFile& debugFile)
 {
-    _clock = &clock;
-    _logFile = &logFile;
-    _debugFile = &debugFile;
+    m_clock = &clock;
+    m_logFile = &logFile;
+    m_debugFile = &debugFile;
 
-    _clock->setGlobals(*this);
-    _logFile->setGlobals(*this);
-    _debugFile->setGlobals(*this);
+    m_clock->setGlobals(*this);
+    m_logFile->setGlobals(*this);
+    m_debugFile->setGlobals(*this);
 }
 
 inline
 void    Globals::setGlobals()
 {
-    _clock->setGlobals(*this);
-    _logFile->setGlobals(*this);
-    _debugFile->setGlobals(*this);
+    m_clock->setGlobals(*this);
+    m_logFile->setGlobals(*this);
+    m_debugFile->setGlobals(*this);
 }
 
 Globals::~Globals()

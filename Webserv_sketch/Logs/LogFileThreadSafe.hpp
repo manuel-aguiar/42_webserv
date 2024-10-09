@@ -39,8 +39,8 @@ class LogFileThreadSafe : public ILog
 
 
     private:
-        int                 _fd;
-        pthread_mutex_t     _writeLock;
+        int                 m_fd;
+        pthread_mutex_t     m_writeLock;
 
         //Log();
         //Log(const Log& copy);

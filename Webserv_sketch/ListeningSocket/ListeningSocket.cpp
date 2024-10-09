@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 18:17:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:32:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@
 
 
 ListeningSocket::ListeningSocket(ConnectionPool& connPool, EventManager& eventManager, Globals* globals) :
-    _globals(globals),
-    _connectionPool(connPool),
-    _eventManager(eventManager)
+    m_globals(globals),
+    m_connectionPool(connPool),
+    m_eventManager(eventManager)
 {
     #if !defined(NDEBUG) && defined(DEBUG_CTOR)
         #include <iostream>
         if (globals)
-            _globals->_debugFile->record("ListeningSocket Constructor Called");
+            m_globals->m_debugFile->record("ListeningSocket Constructor Called");
         else
             std::cout << "ListeningSocket Constructor Called" << std::endl;
     #endif
@@ -39,7 +39,7 @@ ListeningSocket::~ListeningSocket()
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)
     #include <iostream>
     if (globals)
-        _globals->_debugFile->record("ListeningSocket Destructor Called");
+        m_globals->m_debugFile->record("ListeningSocket Destructor Called");
     else
         std::cout << "ListeningSocket Destructor Called" << std::endl;
 #endif
@@ -50,11 +50,11 @@ int    ListeningSocket::open()
 {
     int options;
 
-    _sockfd = ::socket(_addr->sa_family, _socktype, _proto);
-    
-    if (_sockfd == -1)
+    m_sockfd = ::socket(m_addr->sa_family, m_socktype, m_proto);
+    //std::cout << "listener sockfd " << m_sockfd << std::endl;
+    if (m_sockfd == -1)
     {
-        _globals->_logFile->record("socket(): " + std::string(strerror(errno)));
+        m_globals->m_logFile->record("socket(): " + std::string(strerror(errno)));
         return (0);
     }
 
@@ -68,9 +68,9 @@ int    ListeningSocket::open()
         options = SO_REUSEADDR;
     #endif
 
-    if (::setsockopt(_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
+    if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
     {
-        _globals->_logFile->record("setsockopt(): " + std::string(strerror(errno)));
+        m_globals->m_logFile->record("setsockopt(): " + std::string(strerror(errno)));
         return (0);
     }   
 
@@ -81,9 +81,9 @@ int    ListeningSocket::open()
 
 int    ListeningSocket::bind()
 {
-    if (::bind(_sockfd, _addr, _addrlen) == -1)
+    if (::bind(m_sockfd, m_addr, m_addrlen) == -1)
     {
-        _globals->_logFile->record("bind(): " + std::string(strerror(errno)));
+        m_globals->m_logFile->record("bind(): " + std::string(strerror(errno)));
         return (0);
     }
     return (1);
@@ -91,9 +91,9 @@ int    ListeningSocket::bind()
 
 int    ListeningSocket::listen()
 {
-    if (::listen(_sockfd, _backlog) == -1)
+    if (::listen(m_sockfd, m_backlog) == -1)
     {
-        _globals->_logFile->record("listen(): " + std::string(strerror(errno)));
+        m_globals->m_logFile->record("listen(): " + std::string(strerror(errno)));
         return (0);
     }
     return (1);
@@ -106,57 +106,58 @@ void    ListeningSocket::accept()
     t_socklen   addrlen;
 
     
-    connection = _connectionPool.getConnection();
+    connection = m_connectionPool.getConnection();
     
     if (!connection)
     {
-        //std::cout << "       connection pool empty" << std::endl;
+        std::cout << "       connection pool empty" << std::endl;
         return ;
     }
 
-    connection->_listener = this;
+    connection->m_listener = this;
     addrlen = sizeof(addr);
-    connection->_sockfd = ::accept(_sockfd, &addr.sockaddr, &addrlen);
+    connection->m_sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
     
-    if (connection->_sockfd == -1)
+    if (connection->m_sockfd == -1)
         goto NewConnection_Failure;
 
-    if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->_sockfd))
+    if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->m_sockfd))
         goto NewConnection_Failure;
-
-    connection->_addr = (t_sockaddr*)connection->_memPool->allocate(addrlen, true);
+    connection->m_readEvent->m_fd = connection->m_sockfd;
+    connection->m_writeEvent->m_fd = connection->m_sockfd;
+    connection->m_addr = (t_sockaddr*)connection->m_memPool->allocate(addrlen, true);
     
-    if (!connection->_addr)
+    if (!connection->m_addr)
         goto NewConnection_Failure;
 
-    std::memcpy(connection->_addr, &addr, addrlen);
-    connection->_addrlen = addrlen;
-
-    if (!_eventManager.addEvent(connection->_sockfd, *connection->_readEvent))
+    std::memcpy(connection->m_addr, &addr, addrlen);
+    connection->m_addrlen = addrlen;
+ //std::cout << "added conenction" << std::endl;
+    if (!m_eventManager.addEvent(connection->m_sockfd, *connection->m_readEvent))
         goto NewConnection_Failure;
-
+   
 
 
     return ;
 
 NewConnection_Failure:
-    _globals->_logFile->record("ListeningSocket::listener_Accept(): " + std::string(strerror(errno)));
+    m_globals->m_logFile->record("ListeningSocket::listener_Accept(): " + std::string(strerror(errno)));
     _close_accepted_connection(connection);
     
 }
 
 void    ListeningSocket::_close_accepted_connection(Connection* connection)
 {
-    if (connection->_sockfd != -1 && ::close(connection->_sockfd) == -1)
-        _globals->_logFile->record("close(): " + std::string(strerror(errno)));
-    connection->_sockfd = -1;
+    if (connection->m_sockfd != -1 && ::close(connection->m_sockfd) == -1)
+        m_globals->m_logFile->record("close(): " + std::string(strerror(errno)));
+    connection->m_sockfd = -1;
     connection->reset();
-    _connectionPool.returnConnection(connection);
+    m_connectionPool.returnConnection(connection);
 }
 
 void    ListeningSocket::closeConnection(Connection* connection)
 {
-    _eventManager.delEvent(connection->_sockfd);
+    m_eventManager.delEvent(connection->m_sockfd);
     _close_accepted_connection(connection);
     
 }
@@ -164,23 +165,23 @@ void    ListeningSocket::closeConnection(Connection* connection)
 
 void    ListeningSocket::close()
 {
-    if (::close(_sockfd) == -1)
-        _globals->_logFile->record("close(): " + std::string(strerror(errno)));
+    if (::close(m_sockfd) == -1)
+        m_globals->m_logFile->record("close(): " + std::string(strerror(errno)));
 }
 
 
 
 //private
 ListeningSocket::ListeningSocket() : 
-    _globals(NULL),
-    _connectionPool(*((ConnectionPool*)NULL)),  //never do this, for real
-    _eventManager(*((EventManager*)NULL))       //never do this, for real
+    m_globals(NULL),
+    m_connectionPool(*((ConnectionPool*)NULL)),  //never do this, for real
+    m_eventManager(*((EventManager*)NULL))       //never do this, for real
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)
     #include <iostream>
     if (globals)
-        _globals->_debugFile->record("ListeningSocket Destructor Called");
+        m_globals->m_debugFile->record("ListeningSocket Destructor Called");
     else
         std::cout << "ListeningSocket Destructor Called" << std::endl;
 #endif

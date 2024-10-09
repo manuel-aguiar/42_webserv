@@ -12,7 +12,7 @@
 
 #include "LogStream.hpp"
 
-LogStream::LogStream(std::ostream& stream) : _stream(stream)
+LogStream::LogStream(std::ostream& stream) : m_stream(stream)
 {
 
 }
@@ -24,10 +24,10 @@ LogStream::~LogStream()
 
 void    LogStream::record(const std::string& entry)
 {
-    _stream << entry;
+    m_stream << entry;
 }
 
 void    LogStream::record(const char* entry)
 {
-    _stream << entry;
+    m_stream << entry;
 }

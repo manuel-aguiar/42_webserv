@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:07:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:13:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,34 @@
 
 ConnectionPool::~ConnectionPool() 
 {
-    for (size_t i = 0; i < _connections.size(); i++)
-        _connections[i]._memPool->destroy();
+    for (size_t i = 0; i < m_connections.size(); i++)
+        m_connections[i].m_memPool->destroy();
 }
 
 ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 
-    _globals(globals), 
-    _maxConnections(maxConnections),
-    _connections(maxConnections),
-    _readEvents(maxConnections),
-    _writeEvents(maxConnections),
-    _spareConnections(MPool_FixedElem<Connection*>(maxConnections))
+    m_globals(globals), 
+    m_maxConnections(maxConnections),
+    m_connections(maxConnections),
+    m_readEvents(maxConnections),
+    m_writeEvents(maxConnections),
+    m_spareConnections(MPool_FixedElem<Connection*>(maxConnections))
 {
 
 
     for (size_t i = 0; i < maxConnections; i++)
     {
-        new (&_connections[i]) Connection(_globals);
-        new (&_readEvents[i]) Event(_globals);
-        new (&_writeEvents[i]) Event(_globals);
+        new (&m_connections[i]) Connection(m_globals);
+        new (&m_readEvents[i]) Event(m_globals);
+        new (&m_writeEvents[i]) Event(m_globals);
         
-        _connections[i].init();
-        _connections[i]._readEvent = &_readEvents[i];
-        _connections[i]._writeEvent = &_writeEvents[i];
-        _readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &_connections[i]);
-        _readEvents[i].setFlags(EPOLLIN);
-        _writeEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &_connections[i]);
-        _writeEvents[i].setFlags(EPOLLOUT);
-        _spareConnections.push_back(&_connections[i]);
+        m_connections[i].init();
+        m_connections[i].m_readEvent = &m_readEvents[i];
+        m_connections[i].m_writeEvent = &m_writeEvents[i];
+        m_readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
+        m_readEvents[i].setFlags(EPOLLIN);
+        m_writeEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
+        m_writeEvents[i].setFlags(EPOLLOUT);
+        m_spareConnections.push_back(&m_connections[i]);
     }
 }
 
@@ -50,19 +50,19 @@ Connection* ConnectionPool::getConnection()
 {
     Connection*     connection;
 
-    if (!_spareConnections.size())
+    if (!m_spareConnections.size())
         return (NULL);
-    connection = _spareConnections.front();
-    _spareConnections.pop_front();
-    std::cout << "connection sent away" << _spareConnections.size() <<  std::endl;
+    connection = m_spareConnections.front();
+    m_spareConnections.pop_front();
+    std::cout << "connection sent away: " << m_spareConnections.size() <<  std::endl;
     return (connection);
 }
 
 void ConnectionPool::returnConnection(Connection* connection)
 {
     connection->reset();
-    _spareConnections.push_front(connection);
-    std::cout << "connection returned: " << _spareConnections.size() <<  std::endl;
+    m_spareConnections.push_front(connection);
+    std::cout << "connection returned: " << m_spareConnections.size() <<  std::endl;
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 18:51:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:08:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Clock
         const char*         get_FormatedTime();
 
     private:
-        Globals*            _globals;
+        Globals*            m_globals;
         struct timeval      _start;
         struct timeval      _now;
         time_t              _elapsed_ms;

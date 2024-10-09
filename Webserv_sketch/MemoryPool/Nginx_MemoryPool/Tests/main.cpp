@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 13:30:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 14:32:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:52:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class ClassThatLivesInPool
             pool = Nginx_MemoryPool::create(1024, 5);
             user = (ClassThatLivesInPool*)pool->allocate(sizeof(ClassThatLivesInPool), true);
             new (user) ClassThatLivesInPool(name, age);
-            user->_pool = pool;
+            user->m_pool = pool;
             return (user);
         }
 
@@ -47,7 +47,7 @@ class ClassThatLivesInPool
         void destroy()
         {
             this->~ClassThatLivesInPool();
-            _pool->destroy();
+            m_pool->destroy();
         }
 
 
@@ -64,7 +64,7 @@ class ClassThatLivesInPool
         size_t              _age;
         
     private:
-        Nginx_MemoryPool*   _pool;
+        Nginx_MemoryPool*   m_pool;
         ~ClassThatLivesInPool() {}
 };
 
@@ -72,18 +72,18 @@ class ClassThatHoldsAPool
 {
     public:
 
-        ClassThatHoldsAPool() : _name (""), _age(0), _pool(*Nginx_MemoryPool::create(1024, 5))
+        ClassThatHoldsAPool() : _name (""), _age(0), m_pool(*Nginx_MemoryPool::create(1024, 5))
         {
 
         }
 
         ~ClassThatHoldsAPool()
         {
-            _pool.destroy();
+            m_pool.destroy();
         }
 
 
-        ClassThatHoldsAPool(std::string name, size_t age) : _name(name), _age(age), _pool(*Nginx_MemoryPool::create(1024, 5))
+        ClassThatHoldsAPool(std::string name, size_t age) : _name(name), _age(age), m_pool(*Nginx_MemoryPool::create(1024, 5))
         {
         }
             
@@ -91,14 +91,32 @@ class ClassThatHoldsAPool
         size_t              _age;
         
     private:
-        Nginx_MemoryPool&   _pool;
+        Nginx_MemoryPool&   m_pool;
         
 };
 
+/*
+int main()
+{ 
+    Nginx_MemoryPool* pool = Nginx_MemoryPool::create(1024, 1);
+
+    std::string& aString = *(std::string *)pool->allocate((sizeof(std::string)), true);
+    new (&aString) std::string("bananas"); // placement new, construct the string on the location given
+    std::cout << aString << std::endl;
+
+    pool->reset(1);
+
+    std::string& aString2 = *(std::string *)pool->allocate((sizeof(std::string)), true);
+    new (&aString2) std::string("bananas"); // placement new, construct the string on the location given
+    std::cout << aString2 << std::endl;
+
+    pool->destroy();
+}
+*/
 
 int main()
 { 
-    Nginx_MemoryPool* pool = Nginx_MemoryPool::create(1024, 10);
+    Nginx_MemoryPool* pool = Nginx_MemoryPool::create(1024, 1);
 
     for (int i = 0; i < 100; i++)
     {
@@ -107,7 +125,7 @@ int main()
         std::cout << aString << std::endl;
     }
     
-    pool->reset(7);
+    pool->reset(1);
     pool->allocate(10000, true); // big block
     pool->allocate(10000, true); // big block
     pool->allocate(10000, true); // big block

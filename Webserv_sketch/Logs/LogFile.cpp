@@ -13,39 +13,39 @@
 #include "LogFile.hpp"
 #include "../Globals/Globals.hpp"
 
-LogFile::LogFile(const char* filename, Globals* globals) : _globals(globals)
+LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {
-    _fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
-    if (_fd == -1)
+    m_fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
+    if (m_fd == -1)
         throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
 }
 
 LogFile::~LogFile()
 {
-    ::close(_fd);
+    ::close(m_fd);
 }
 
 void    LogFile::setGlobals(Globals& globals)
 {
-    _globals = &globals;
+    m_globals = &globals;
 }
 
 void    LogFile::record(const std::string& entry)
 {
-    _globals->_clock->update();
-    const char* clockBuf = _globals->_clock->get_FormatedTime();
-    write(_fd, clockBuf, std::strlen(clockBuf));
-    write(_fd, ": ", 2);
-    write(_fd, entry.c_str(), entry.size());
-    write(_fd, "\n", 1);
+    m_globals->m_clock->update();
+    const char* clockBuf = m_globals->m_clock->get_FormatedTime();
+    write(m_fd, clockBuf, std::strlen(clockBuf));
+    write(m_fd, ": ", 2);
+    write(m_fd, entry.c_str(), entry.size());
+    write(m_fd, "\n", 1);
 }
 
 void    LogFile::record(const char* entry)
 {
-    _globals->_clock->update();
-    const char* clockBuf = _globals->_clock->get_FormatedTime();
-    write(_fd, clockBuf, std::strlen(clockBuf));
-    write(_fd, ": ", 2);
-    write(_fd, entry, std::strlen(entry));
-    write(_fd, "\n", 1);
+    m_globals->m_clock->update();
+    const char* clockBuf = m_globals->m_clock->get_FormatedTime();
+    write(m_fd, clockBuf, std::strlen(clockBuf));
+    write(m_fd, ": ", 2);
+    write(m_fd, entry, std::strlen(entry));
+    write(m_fd, "\n", 1);
 }

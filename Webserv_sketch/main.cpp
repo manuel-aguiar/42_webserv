@@ -15,6 +15,8 @@
 #include "Clock/Clock.hpp"
 #include "Globals/Globals.hpp"
 #include "SignalHandler/SignalHandler.hpp"
+#include "CgiHandler/python-cgi/pythonCgi.hpp"
+#include "CgiHandler/CgiRequest/CgiRequest.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -22,24 +24,42 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
 
-	LogFile 	log("log.txt");
-	LogFile 	debug("debug.txt");
-	Clock   	clock;
-	Globals 	globals(&clock, &log, &debug);
-	t_sigaction	sigaction = (t_sigaction){};
+	LogFile 		log("log.txt");
+	LogFile 		debug("debug.txt");
+	Clock   		clock;
+	Globals 		globals(&clock, &log, &debug);
+	t_sigaction		sigaction = (t_sigaction){};
 
 	SignalHandler::prepare_signal(&sigaction, SignalHandler::signal_handler, 1, &globals);
 
 	Server 		server(0, &globals);
 
-	server.createListeners(NULL, "8080", SOCK_STREAM, AF_UNSPEC, 10);
+	server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 1000);
 	server.setup_mySignalHandler();
-	
-	globals._logFile->record("server starting");
+
+	globals.m_logFile->record("server starting");
 
 	server.run();
 
-	globals._logFile->record("server closing");
+	globals.m_logFile->record("server closing");
+
+
+	PythonCgi cgi ("/usr/bin/python3");
+
+	cgi.printVariables();
+	cgi.printEnumerators();
+	CgiRequest req;
+
+
+
+	//req.debugPrintInputs();
+	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	req.execute();
+
+	req.reset();
+
+	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	req.execute();
 
 	return (GRET_SUCKCESS);
 }

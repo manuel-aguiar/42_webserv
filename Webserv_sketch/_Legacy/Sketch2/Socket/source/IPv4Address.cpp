@@ -6,47 +6,47 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:40:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:55:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Concrete/IPv4Address.hpp"
 
-IPv4Address::IPv4Address(const struct sockaddr_in& addr) : _addr(addr), _addrLen(sizeof(_addr)) {}
+IPv4Address::IPv4Address(const struct sockaddr_in& addr) : m_addr(addr), _addrLen(sizeof(m_addr)) {}
 
 IPv4Address::IPv4Address(const std::string& ip, uint16_t port)
 {
-    _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(port);
-    if (inet_pton(_addr.sin_family, ip.c_str(), &_addr.sin_addr) != 1)
+    m_addr.sin_family = AF_INET;
+    m_addr.sin_port = htons(port);
+    if (inet_pton(m_addr.sin_family, ip.c_str(), &m_addr.sin_addr) != 1)
         throw std::runtime_error(std::string("IPv4Address construction failed, inet_pton(): ") + std::strerror(errno));
 }
 
 IPv4Address::IPv4Address(uint32_t ip, uint16_t port)
 {
-    _addr.sin_family = AF_INET;
-    _addr.sin_port = htons(port);
-    _addr.sin_addr.s_addr = htonl(ip);
+    m_addr.sin_family = AF_INET;
+    m_addr.sin_port = htons(port);
+    m_addr.sin_addr.s_addr = htonl(ip);
 }
 
 int IPv4Address::getAddrFamily() const
 {
-    return (_addr.sin_family);
+    return (m_addr.sin_family);
 }
 
-IPv4Address::IPv4Address(const IPv4Address& copy) : _addr(copy._addr), _addrLen(sizeof(copy._addr)) {}
+IPv4Address::IPv4Address(const IPv4Address& copy) : m_addr(copy.m_addr), _addrLen(sizeof(copy.m_addr)) {}
 
 IPv4Address& IPv4Address::operator=(const IPv4Address& assign)
 {
     if (this != &assign)
-        _addr = assign._addr;
+        m_addr = assign.m_addr;
     return *this;
 }
 
 IPv4Address& IPv4Address::operator=(const struct sockaddr_in& assign)
 {
-    if (&_addr != &assign)
-        _addr = assign;
+    if (&m_addr != &assign)
+        m_addr = assign;
     return *this;
 }
 
@@ -57,7 +57,7 @@ IPv4Address::~IPv4Address()
 
 struct sockaddr*    IPv4Address::getSockAddr()
 {
-    return (reinterpret_cast<struct sockaddr*>(&_addr));
+    return (reinterpret_cast<struct sockaddr*>(&m_addr));
 }
 
 socklen_t*          IPv4Address::getAddrLen()
@@ -72,4 +72,4 @@ UniquePtr<ISocketAddress>     IPv4Address::clone() const
 
 
 // private default constructor
-IPv4Address::IPv4Address() : _addr((struct sockaddr_in) {}), _addrLen(sizeof(_addr)) {}
+IPv4Address::IPv4Address() : m_addr((struct sockaddr_in) {}), _addrLen(sizeof(m_addr)) {}

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:38:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:42:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class IPv6Address : public ISocketAddress
         socklen_t           getSize() const;
         
     private:
-        struct sockaddr_in6 _addr;
+        struct sockaddr_in6 m_addr;
 };
 
 

@@ -43,7 +43,7 @@ class WebservFileDescriptor
         void        close();
         
     protected:
-        int                 _fd;
+        int                 m_fd;
         
         // hard copy and assign is only for descendents
         WebservFileDescriptor(const WebservFileDescriptor& hardCopy);

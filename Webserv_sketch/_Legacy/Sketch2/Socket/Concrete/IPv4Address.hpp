@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 10:36:19 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 11:41:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class IPv4Address : public ISocketAddress
         UniquePtr<ISocketAddress>       clone() const;
         
     private:
-        struct sockaddr_in              _addr;
+        struct sockaddr_in              m_addr;
         socklen_t                       _addrLen;   
 };
 

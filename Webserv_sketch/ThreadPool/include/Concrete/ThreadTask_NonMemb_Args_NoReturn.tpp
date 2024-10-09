@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 14:07:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:31:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,28 +40,28 @@ class ThreadTask<void (*)(Args)> : public IThreadTask
 {
 public:
     ThreadTask(void (*function)(Args), Args arguments) :
-        _function(function),
-        _args(arguments)
+        m_function(function),
+        m_args(arguments)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _function(copy._function),
-        _args(copy._args)
+        m_function(copy.m_function),
+        m_args(copy.m_args)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _function = assign._function;
-        _args = assign._args;
+        m_function = assign.m_function;
+        m_args = assign.m_args;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        (*_function)(_args);
+        (*m_function)(m_args);
     }
 
     IThreadTask* clone() const
@@ -70,8 +70,8 @@ public:
     }
 
 private:
-    void (*_function)(Args);
-    Args _args;
+    void (*m_function)(Args);
+    Args m_args;
 };
 
 
@@ -82,31 +82,31 @@ class ThreadTask<void (*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
     ThreadTask(void (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2) :
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2)
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2)
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        (*_function)(_arg1, _arg2);
+        (*m_function)(m_arg1, m_arg2);
     }
 
     IThreadTask* clone() const
@@ -115,9 +115,9 @@ public:
     }
 
 private:
-    void (*_function)(Arg1, Arg2);
-    Arg1 _arg1;
-    Arg2 _arg2;
+    void (*m_function)(Arg1, Arg2);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
 };
 
 
@@ -127,34 +127,34 @@ class ThreadTask<void (*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
     ThreadTask(void (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3) :
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3)
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3)
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        (*_function)(_arg1, _arg2, _arg3);
+        (*m_function)(m_arg1, m_arg2, m_arg3);
     }
 
     IThreadTask* clone() const
@@ -163,10 +163,10 @@ public:
     }
 
 private:
-    void (*_function)(Arg1, Arg2, Arg3);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
+    void (*m_function)(Arg1, Arg2, Arg3);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
 };
 
 
@@ -176,37 +176,37 @@ class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
     ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) :
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3),
-        _arg4(arg4)
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3),
+        m_arg4(arg4)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3),
-        _arg4(copy._arg4)
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3),
+        m_arg4(copy.m_arg4)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
-        _arg4 = assign._arg4;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
+        m_arg4 = assign.m_arg4;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        (*_function)(_arg1, _arg2, _arg3, _arg4);
+        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
     }
 
     IThreadTask* clone() const
@@ -215,11 +215,11 @@ public:
     }
 
 private:
-    void (*_function)(Arg1, Arg2, Arg3, Arg4);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
-    Arg4 _arg4;
+    void (*m_function)(Arg1, Arg2, Arg3, Arg4);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
+    Arg4 m_arg4;
 };
 
 
@@ -229,40 +229,40 @@ class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
 {
 public:
     ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5) :
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3),
-        _arg4(arg4),
-        _arg5(arg5)
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3),
+        m_arg4(arg4),
+        m_arg5(arg5)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3),
-        _arg4(copy._arg4),
-        _arg5(copy._arg5)
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3),
+        m_arg4(copy.m_arg4),
+        m_arg5(copy.m_arg5)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
-        _arg4 = assign._arg4;
-        _arg5 = assign._arg5;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
+        m_arg4 = assign.m_arg4;
+        m_arg5 = assign.m_arg5;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        (*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
+        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
     }
 
     IThreadTask* clone() const
@@ -271,12 +271,12 @@ public:
     }
 
 private:
-    void (*_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
-    Arg4 _arg4;
-    Arg5 _arg5;
+    void (*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
+    Arg4 m_arg4;
+    Arg5 m_arg5;
 };
 
 

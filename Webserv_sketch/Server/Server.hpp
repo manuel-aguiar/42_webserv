@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 14:19:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:09:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,19 @@ class Server
     //private:
         //typedef MemoryPool_Alloc<std::pair<int, ListeningSocket> > ListeningSocketPool;
         //typedef std::map<int, ListeningSocket, std::less<int>, MemoryPool_Alloc<std::pair<int, ListeningSocket> > > ListeningSocketMap;
-        //ListeningSocketMap              _listeners;
+        //ListeningSocketMap              m_listeners;
         
-        size_t                          _myID;
-        bool                            _multithreadListen;
-        std::vector<ListeningSocket*>   _listeners;
-        Nginx_MemoryPool*               _pool;
-        Cgi_Handler                     _cgiHandler;
-        ConnectionPool                  _connectionPool;
-        EventManager                    _eventManager;
-        Globals*                        _globals;
-        Event                           _mySignalEvent;
+        size_t                          m_myID;
+        bool                            m_multithreadListen;
+        std::vector<ListeningSocket*>   m_listeners;
+        Nginx_MemoryPool*               m_pool;
+        Cgi_Handler                     m_cgiHandler;
+        ConnectionPool                  m_connectionPool;
+        EventManager                    m_eventManager;
+        Globals*                        m_globals;
+        Event                           m_mySignalEvent;
 
-        bool                            _isRunning;
+        bool                            m_isRunning;
         
     
 

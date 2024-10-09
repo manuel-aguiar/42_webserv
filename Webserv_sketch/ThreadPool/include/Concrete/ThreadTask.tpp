@@ -57,13 +57,13 @@ class ThreadTask<Return (*)(void)> : public IThreadTask
 {
 	public:
 		ThreadTask(Return (*function)(void), Return* placeReturn = NULL) :
-			_function(function),
-			_placeReturn(placeReturn)
+			m_function(function),
+			m_placeReturn(placeReturn)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_function(copy._function),
-			_placeReturn(copy._placeReturn)
+			m_function(copy.m_function),
+			m_placeReturn(copy.m_placeReturn)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -75,12 +75,12 @@ class ThreadTask<Return (*)(void)> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			if (_placeReturn)
-				*_placeReturn = (*_function)();
+			if (m_placeReturn)
+				*m_placeReturn = (*m_function)();
 			else
-				(*_function)();
+				(*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -88,8 +88,8 @@ class ThreadTask<Return (*)(void)> : public IThreadTask
 		};
 
 	private:
-		Return		  (*_function)(void);
-		Return*		 _placeReturn;
+		Return		  (*m_function)(void);
+		Return*		 m_placeReturn;
 };
 
 
@@ -100,11 +100,11 @@ class ThreadTask<void (*)(void)> : public IThreadTask
 {
 	public:
 		ThreadTask(void (*function)(void)) :
-			_function(function)
+			m_function(function)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_function(copy._function)
+			m_function(copy.m_function)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -116,9 +116,9 @@ class ThreadTask<void (*)(void)> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			(*_function)();
+			(*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -126,7 +126,7 @@ class ThreadTask<void (*)(void)> : public IThreadTask
 		};
 
 	private:
-		void		  (*_function)(void);
+		void		  (*m_function)(void);
 };
 
 
@@ -146,15 +146,15 @@ class ThreadTask<Return (Class::*)(void)> : public IThreadTask
 {
 	public:
 		ThreadTask(Class& instance, Return (Class::*function)(void), Return* placeReturn = NULL) :
-			_instance(instance),
-			_function(function),
-			_placeReturn(placeReturn)
+			m_instance(instance),
+			m_function(function),
+			m_placeReturn(placeReturn)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_instance(copy._instance),
-			_function(copy._function),
-			_placeReturn(copy._placeReturn)
+			m_instance(copy.m_instance),
+			m_function(copy.m_function),
+			m_placeReturn(copy.m_placeReturn)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -166,12 +166,12 @@ class ThreadTask<Return (Class::*)(void)> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			if (_placeReturn)
-				*_placeReturn = (_instance.*_function)();
+			if (m_placeReturn)
+				*m_placeReturn = (m_instance.*m_function)();
 			else
-				(_instance.*_function)();
+				(m_instance.*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -179,9 +179,9 @@ class ThreadTask<Return (Class::*)(void)> : public IThreadTask
 		};
 
 	private:
-		Class&		  _instance;
-		Return		  (Class::*_function)(void);
-		Return*		 _placeReturn;
+		Class&		  m_instance;
+		Return		  (Class::*m_function)(void);
+		Return*		 m_placeReturn;
 };
 
 // Specialization for a member function, with no argument and no return
@@ -192,13 +192,13 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
 {
 	public:
 		ThreadTask(Class& instance, void (Class::*function)(void)) :
-			_instance(instance),
-			_function(function)
+			m_instance(instance),
+			m_function(function)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_instance(copy._instance),
-			_function(copy._function)
+			m_instance(copy.m_instance),
+			m_function(copy.m_function)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -210,9 +210,9 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			(_instance.*_function)();
+			(m_instance.*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -220,8 +220,8 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
 		};
 
 	private:
-		Class&		  _instance;
-		void			(Class::*_function)();
+		Class&		  m_instance;
+		void			(Class::*m_function)();
 };
 
 
@@ -250,15 +250,15 @@ class ThreadTask<Return (Class::*)(void) const> : public IThreadTask
 {
 	public:
 		ThreadTask(const Class& instance, Return (Class::*function)(void) const, Return* placeReturn = NULL) :
-			_instance(instance),
-			_function(function),
-			_placeReturn(placeReturn)
+			m_instance(instance),
+			m_function(function),
+			m_placeReturn(placeReturn)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_instance(copy._instance),
-			_function(copy._function),
-			_placeReturn(copy._placeReturn)
+			m_instance(copy.m_instance),
+			m_function(copy.m_function),
+			m_placeReturn(copy.m_placeReturn)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -270,12 +270,12 @@ class ThreadTask<Return (Class::*)(void) const> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			if (_placeReturn)
-				*_placeReturn = (_instance.*_function)();
+			if (m_placeReturn)
+				*m_placeReturn = (m_instance.*m_function)();
 			else
-				(_instance.*_function)();
+				(m_instance.*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -283,9 +283,9 @@ class ThreadTask<Return (Class::*)(void) const> : public IThreadTask
 		};
 
 	private:
-		const Class&		  _instance;
-		Return		  (Class::*_function)(void) const;
-		Return*		 _placeReturn;
+		const Class&		  m_instance;
+		Return		  (Class::*m_function)(void) const;
+		Return*		 m_placeReturn;
 };
 
 // Specialization for a member function, with no argument and no return
@@ -296,13 +296,13 @@ class ThreadTask<void (Class::*)(void) const> : public IThreadTask
 {
 	public:
 		ThreadTask(const Class& instance, void (Class::*function)(void) const) :
-			_instance(instance),
-			_function(function)
+			m_instance(instance),
+			m_function(function)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_instance(copy._instance),
-			_function(copy._function)
+			m_instance(copy.m_instance),
+			m_function(copy.m_function)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -314,9 +314,9 @@ class ThreadTask<void (Class::*)(void) const> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			(_instance.*_function)();
+			(m_instance.*m_function)();
 		};
 		IThreadTask*	clone() const
 		{
@@ -324,8 +324,8 @@ class ThreadTask<void (Class::*)(void) const> : public IThreadTask
 		};
 
 	private:
-		const Class&	_instance;
-		void			(Class::*_function)(void) const;
+		const Class&	m_instance;
+		void			(Class::*m_function)(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/01 19:36:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:00:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ Nginx_MemoryPool::Nginx_MPool_Block::
 create(size_t blockSize, size_t startingBlocks)
 {
     Nginx_MPool_Block* pool;
-    Nginx_MPool_Block* next;
+    Nginx_MPool_Block* m_next;
 
-    next = NULL;
+    m_next = NULL;
     for (size_t i = 0; i < startingBlocks; ++i)
     {
         pool = allocateNewBlock(blockSize, i);
-        pool->_nextBlock = next;
-        next = pool;
+        pool->m_nextBlock = m_next;
+        m_next = pool;
     }
     return (pool);
 }
@@ -57,7 +57,7 @@ destroy(Nginx_MPool_Block**   poolPlace)
     pool = *poolPlace;
     while (pool)
     {
-        poolNext = pool->_nextBlock;
+        poolNext = pool->m_nextBlock;
         delete [] (t_byte*)(pool);
         pool = poolNext;
     }
@@ -66,7 +66,7 @@ destroy(Nginx_MPool_Block**   poolPlace)
 /*
 
     When resetting, delete the big blocks, we don't really know their size of use
-    let the next pool user to take care of it
+    let the m_next pool user to take care of it
 
 */
 void
@@ -80,14 +80,14 @@ reset(Nginx_MPool_Block** pool, int maxBlocks)
     poolCur = (*pool);
     while (poolCur)
     {
-        poolNext = poolCur->_nextBlock;
+        poolNext = poolCur->m_nextBlock;
         poolCur->_freePosition = (t_byte*)poolCur + sizeof(Nginx_MPool_Block);
-
+        if (poolCur->_blockId == 0)
+            poolCur->_freePosition += sizeof(Nginx_MemoryPool);
         if (poolCur->_blockId >= maxBlocks)
             delete [] (t_byte*)(poolCur);
         else if (poolCur->_blockId == maxBlocks - 1)
             *pool = poolCur;
-            
         poolCur = poolNext;
     }
 }
@@ -95,7 +95,7 @@ reset(Nginx_MPool_Block** pool, int maxBlocks)
 
 void *
 Nginx_MemoryPool::Nginx_MPool_Block::
-allocate(Nginx_MPool_Block**   poolPlace, size_t size, bool aligned, size_t blockSizeAgainLol)
+allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t blockSizeAgainLol)
 {
     void*                       location;
     Nginx_MPool_Block*     pool;
@@ -107,23 +107,21 @@ allocate(Nginx_MPool_Block**   poolPlace, size_t size, bool aligned, size_t bloc
     while (pool)
     {
         t_byte* aligned_position = pool->_freePosition;
-        if (aligned)
-            aligned_position = allignedAlloc(pool->_freePosition, sizeof(size_t));
+        aligned_position = allignedAlloc(pool->_freePosition, alignment);
         if (aligned_position + size <= pool->_endOfBlock)
             break;
-        pool = pool->_nextBlock;
+        pool = pool->m_nextBlock;
     }
     if (!pool)
     {
         Nginx_MPool_Block* newPool = Nginx_MPool_Block::allocateNewBlock(blockSizeAgainLol, (*poolPlace)->_blockId + 1);
-        newPool->_nextBlock = *poolPlace;
+        newPool->m_nextBlock = *poolPlace;
         
         *poolPlace = newPool;
         pool = newPool;
     }
     location = pool->_freePosition;
-    if (aligned)
-        location = allignedAlloc(pool->_freePosition, sizeof(size_t));
+    location = allignedAlloc(pool->_freePosition, alignment);
     pool->_freePosition = (t_byte*)((size_t)location + size);
     return (location);
 }
@@ -158,8 +156,8 @@ allocateNewBlock(size_t blockSize, int blockId)
     new (pool) Nginx_MPool_Block(0);
     pool->_freePosition = (t_byte*)pool + sizeof(Nginx_MPool_Block);
     pool->_endOfBlock = (t_byte*)pool + blockSize;
-    pool->_data = pool;
-    pool->_nextBlock = NULL;
+    pool->m_data = pool;
+    pool->m_nextBlock = NULL;
     pool->_blockId = blockId;
     return (pool);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/06 14:07:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:31:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,17 @@ class ThreadTask<Return (Class::*)(Args)> : public IThreadTask
 {
 	public:
 		ThreadTask(Class& instance, Return (Class::*function)(Args), Args arguments, Return* placeReturn = NULL) :
-			_instance(instance),
-			_function(function),
-			_args(arguments),
-			_placeReturn(placeReturn)
+			m_instance(instance),
+			m_function(function),
+			m_args(arguments),
+			m_placeReturn(placeReturn)
 		{};
 		~ThreadTask() {};
 		ThreadTask(const ThreadTask& copy) :
-			_instance(copy._instance),
-			_function(copy._function),
-			_args(copy._args),
-			_placeReturn(copy._placeReturn)
+			m_instance(copy.m_instance),
+			m_function(copy.m_function),
+			m_args(copy.m_args),
+			m_placeReturn(copy.m_placeReturn)
 		{};
 		ThreadTask& operator=(const ThreadTask& assign)
 		{
@@ -65,12 +65,12 @@ class ThreadTask<Return (Class::*)(Args)> : public IThreadTask
 
 		void			execute() const
 		{
-			if (!_function)
+			if (!m_function)
 				return ;
-			if (_placeReturn)
-				*_placeReturn = (_instance.*_function)(_args);
+			if (m_placeReturn)
+				*m_placeReturn = (m_instance.*m_function)(m_args);
 			else
-				(_instance.*_function)(_args);
+				(m_instance.*m_function)(m_args);
 		};
 		IThreadTask*	clone() const
 		{
@@ -78,10 +78,10 @@ class ThreadTask<Return (Class::*)(Args)> : public IThreadTask
 		};
 
 	private:
-		Class&		  _instance;
-		Return		  (Class::*_function)(Args);
-		Args			_args;
-		Return*		 _placeReturn;
+		Class&		  m_instance;
+		Return		  (Class::*m_function)(Args);
+		Args			m_args;
+		Return*		 m_placeReturn;
 };
 
 
@@ -91,40 +91,40 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
     ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL) :
-        _instance(instance),
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _placeReturn(placeReturn)
+        m_instance(instance),
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_placeReturn(placeReturn)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _instance(copy._instance),
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _placeReturn(copy._placeReturn)
+        m_instance(copy.m_instance),
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_placeReturn(copy.m_placeReturn)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _instance = assign._instance;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _placeReturn = assign._placeReturn;
+        m_instance = assign.m_instance;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        if (_placeReturn)
-            *_placeReturn = (_instance.*_function)(_arg1, _arg2);
+        if (m_placeReturn)
+            *m_placeReturn = (m_instance.*m_function)(m_arg1, m_arg2);
         else
-            (_instance.*_function)(_arg1, _arg2);
+            (m_instance.*m_function)(m_arg1, m_arg2);
     }
 
     IThreadTask* clone() const
@@ -133,11 +133,11 @@ public:
     }
 
 private:
-    Class& _instance;
-    Return (Class::*_function)(Arg1, Arg2);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Return* _placeReturn;
+    Class& m_instance;
+    Return (Class::*m_function)(Arg1, Arg2);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Return* m_placeReturn;
 };
 
 
@@ -146,43 +146,43 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
     ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL) :
-        _instance(instance),
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3),
-        _placeReturn(placeReturn)
+        m_instance(instance),
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3),
+        m_placeReturn(placeReturn)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _instance(copy._instance),
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3),
-        _placeReturn(copy._placeReturn)
+        m_instance(copy.m_instance),
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3),
+        m_placeReturn(copy.m_placeReturn)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _instance = assign._instance;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
-        _placeReturn = assign._placeReturn;
+        m_instance = assign.m_instance;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
+        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        if (_placeReturn)
-            *_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3);
+        if (m_placeReturn)
+            *m_placeReturn = (m_instance.*m_function)(m_arg1, m_arg2, m_arg3);
         else
-            (_instance.*_function)(_arg1, _arg2, _arg3);
+            (m_instance.*m_function)(m_arg1, m_arg2, m_arg3);
     }
 
     IThreadTask* clone() const
@@ -191,12 +191,12 @@ public:
     }
 
 private:
-    Class& _instance;
-    Return (Class::*_function)(Arg1, Arg2, Arg3);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
-    Return* _placeReturn;
+    Class& m_instance;
+    Return (Class::*m_function)(Arg1, Arg2, Arg3);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
+    Return* m_placeReturn;
 };
 
 
@@ -206,46 +206,46 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
     ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL) :
-        _instance(instance),
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3),
-        _arg4(arg4),
-        _placeReturn(placeReturn)
+        m_instance(instance),
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3),
+        m_arg4(arg4),
+        m_placeReturn(placeReturn)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _instance(copy._instance),
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3),
-        _arg4(copy._arg4),
-        _placeReturn(copy._placeReturn)
+        m_instance(copy.m_instance),
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3),
+        m_arg4(copy.m_arg4),
+        m_placeReturn(copy.m_placeReturn)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _instance = assign._instance;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
-        _arg4 = assign._arg4;
-        _placeReturn = assign._placeReturn;
+        m_instance = assign.m_instance;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
+        m_arg4 = assign.m_arg4;
+        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        if (_placeReturn)
-            *_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3, _arg4);
+        if (m_placeReturn)
+            *m_placeReturn = (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
         else
-            (_instance.*_function)(_arg1, _arg2, _arg3, _arg4);
+            (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
     }
 
     IThreadTask* clone() const
@@ -254,13 +254,13 @@ public:
     }
 
 private:
-    Class& _instance;
-    Return (Class::*_function)(Arg1, Arg2, Arg3, Arg4);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
-    Arg4 _arg4;
-    Return* _placeReturn;
+    Class& m_instance;
+    Return (Class::*m_function)(Arg1, Arg2, Arg3, Arg4);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
+    Arg4 m_arg4;
+    Return* m_placeReturn;
 };
 
 
@@ -269,49 +269,49 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThre
 {
 public:
     ThreadTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL) :
-        _instance(instance),
-        _function(function),
-        _arg1(arg1),
-        _arg2(arg2),
-        _arg3(arg3),
-        _arg4(arg4),
-        _arg5(arg5),
-        _placeReturn(placeReturn)
+        m_instance(instance),
+        m_function(function),
+        m_arg1(arg1),
+        m_arg2(arg2),
+        m_arg3(arg3),
+        m_arg4(arg4),
+        m_arg5(arg5),
+        m_placeReturn(placeReturn)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
-        _instance(copy._instance),
-        _function(copy._function),
-        _arg1(copy._arg1),
-        _arg2(copy._arg2),
-        _arg3(copy._arg3),
-        _arg4(copy._arg4),
-        _arg5(copy._arg5),
-        _placeReturn(copy._placeReturn)
+        m_instance(copy.m_instance),
+        m_function(copy.m_function),
+        m_arg1(copy.m_arg1),
+        m_arg2(copy.m_arg2),
+        m_arg3(copy.m_arg3),
+        m_arg4(copy.m_arg4),
+        m_arg5(copy.m_arg5),
+        m_placeReturn(copy.m_placeReturn)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
         if (this == &assign)
             return *this;
-        _instance = assign._instance;
-        _function = assign._function;
-        _arg1 = assign._arg1;
-        _arg2 = assign._arg2;
-        _arg3 = assign._arg3;
-        _arg4 = assign._arg4;
-        _arg5 = assign._arg5;
-        _placeReturn = assign._placeReturn;
+        m_instance = assign.m_instance;
+        m_function = assign.m_function;
+        m_arg1 = assign.m_arg1;
+        m_arg2 = assign.m_arg2;
+        m_arg3 = assign.m_arg3;
+        m_arg4 = assign.m_arg4;
+        m_arg5 = assign.m_arg5;
+        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
     void execute() const
     {
-        if (!_function)
+        if (!m_function)
             return;
-        if (_placeReturn)
-            *_placeReturn = (_instance.*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
+        if (m_placeReturn)
+            *m_placeReturn = (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
         else
-            (_instance.*_function)(_arg1, _arg2, _arg3, _arg4, _arg5);
+            (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
     }
 
     IThreadTask* clone() const
@@ -320,14 +320,14 @@ public:
     }
 
 private:
-    Class& _instance;
-    Return (Class::*_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
-    Arg1 _arg1;
-    Arg2 _arg2;
-    Arg3 _arg3;
-    Arg4 _arg4;
-    Arg5 _arg5;
-    Return* _placeReturn;
+    Class& m_instance;
+    Return (Class::*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
+    Arg1 m_arg1;
+    Arg2 m_arg2;
+    Arg3 m_arg3;
+    Arg4 m_arg4;
+    Arg5 m_arg5;
+    Return* m_placeReturn;
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 10:28:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 12:46:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ class ServerSocket :
 
 
         //ISocketAddress methods
-        struct sockaddr*                    getSockAddr() { return (this->_addr.getSockAddr()); }
-        socklen_t*                          getAddrLen() { return (this->_addr.getAddrLen()); };
-        int                                 getAddrFamily() const { return (this->_addr.getAddrFamily()); }
-        UniquePtr<ISocketAddress>           clone() const { return (this->_addr.clone()); }  
+        struct sockaddr*                    getSockAddr() { return (this->m_addr.getSockAddr()); }
+        socklen_t*                          getAddrLen() { return (this->m_addr.getAddrLen()); };
+        int                                 getAddrFamily() const { return (this->m_addr.getAddrFamily()); }
+        UniquePtr<ISocketAddress>           clone() const { return (this->m_addr.clone()); }  
 
 
     private:
-        SockAddr                            _addr;
+        SockAddr                            m_addr;
         IFileDescriptorManager*             _fdManager;
         
         //copy
@@ -79,22 +79,22 @@ class ServerSocket :
 
 template <typename SockAddr>
 ServerSocket<SockAddr>::ServerSocket(const SockAddr& addr, int type, int protocol, IFileDescriptorManager* fdManager) :
-    _addr(addr),
+    m_addr(addr),
     _fdManager(fdManager)
 {
     int opt = 1;
-    _fd = ::socket(addr.getAddrFamily(), type, protocol);   
-    if (_fd == -1)
+    m_fd = ::socket(addr.getAddrFamily(), type, protocol);   
+    if (m_fd == -1)
         throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
-    if (::setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    if (::setsockopt(m_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
         throw ParameterException("SocketServer constructor failed", "setsockopt", std::strerror(errno));
 }
 
 template <typename SockAddr>
 ServerSocket<SockAddr>::~ServerSocket()
 {
-    if (_fd != -1)
-        ::close(_fd);
+    if (m_fd != -1)
+        ::close(m_fd);
 }
         
         // implementation of IPollableOnEvents Functions
@@ -124,13 +124,13 @@ void            ServerSocket<SockAddr>::setFdManager(IFileDescriptorManager* man
 template <typename SockAddr>
 void            ServerSocket<SockAddr>::bind()
 {
-    if (::bind(this->_fd, this->_addr.getSockAddr(), *(this->_addr.getAddrLen())) == -1)
+    if (::bind(this->m_fd, this->m_addr.getSockAddr(), *(this->m_addr.getAddrLen())) == -1)
         throw ParameterException("ServerSocket::bind", "bind", std::strerror(errno));
 }
 template <typename SockAddr>
 void            ServerSocket<SockAddr>::listen()
 {
-    if (::listen(this->_fd, 10) == -1)
+    if (::listen(this->m_fd, 10) == -1)
         throw ParameterException("ServerSocket::listen", "listen", std::strerror(errno));
 }
 template <typename SockAddr>
@@ -138,7 +138,7 @@ UniquePtr<ICommunicationSocket>      ServerSocket<SockAddr>::listenerAccept()
 {
     SockAddr newAddress;
     
-    int newFd = ::listenerAccept(_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
+    int newFd = ::listenerAccept(m_fd, newAddress.getSockAddr(), newAddress.getAddrLen());
     if (newFd == -1)
         return (NULL);
     return (UniquePtr<ICommunicationSocket>(new CommunicationSocket<SockAddr> (newFd, newAddress)));
@@ -146,10 +146,10 @@ UniquePtr<ICommunicationSocket>      ServerSocket<SockAddr>::listenerAccept()
 
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket()  {_fd = -1;};
+ServerSocket<SockAddr>::ServerSocket()  {m_fd = -1;};
 
 template <typename SockAddr>
-ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : _addr(copy._addr), _fdManager(copy._fdManager) {_fd = copy._fd;}
+ServerSocket<SockAddr>::ServerSocket(const ServerSocket<SockAddr>& copy) : m_addr(copy.m_addr), _fdManager(copy._fdManager) {m_fd = copy.m_fd;}
 
 template <typename SockAddr>
 ServerSocket<SockAddr>& ServerSocket<SockAddr>::operator=(const ServerSocket<SockAddr>& assign) {(void)assign; return (*this);}

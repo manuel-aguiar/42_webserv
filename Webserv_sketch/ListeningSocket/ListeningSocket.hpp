@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 15:21:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:32:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Globals;
 class ListeningSocket
 {
     public:
-        ListeningSocket(ConnectionPool& connPool, EventManager& _eventManager, Globals* globals);
+        ListeningSocket(ConnectionPool& connPool, EventManager& m_eventManager, Globals* globals);
         ~ListeningSocket();
 
         int                         open();
@@ -43,17 +43,17 @@ class ListeningSocket
 
         void                        closeConnection(Connection* connection);
 
-        Globals*                    _globals;
-        int                         _socktype;    
-        t_socket                    _sockfd;
-        int                         _proto;
-        t_sockaddr*                 _addr;
-        t_socklen                   _addrlen;
-        int                         _backlog;
+        Globals*                    m_globals;
+        int                         m_socktype;    
+        t_socket                    m_sockfd;
+        int                         m_proto;
+        t_sockaddr*                 m_addr;
+        t_socklen                   m_addrlen;
+        int                         m_backlog;
         
-        Event                       _myEvent;    
-        ConnectionPool&             _connectionPool;
-        EventManager&               _eventManager;
+        Event                       m_myEvent;    
+        ConnectionPool&             m_connectionPool;
+        EventManager&               m_eventManager;
     
 
     private:

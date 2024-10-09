@@ -20,7 +20,7 @@ void HandlerFunction::listener_Accept(Event& event)
 {
     ListeningSocket* listener;
 
-    listener = reinterpret_cast<ListeningSocket*>(event._data);
+    listener = reinterpret_cast<ListeningSocket*>(event.m_data);
     listener->accept();
 }
 
@@ -28,7 +28,7 @@ void HandlerFunction::connection_Read(Event& event)
 {
     Connection *connection;
 
-    connection = reinterpret_cast<Connection*>(event._data);
+    connection = reinterpret_cast<Connection*>(event.m_data);
     connection->read();
 }
 
@@ -51,6 +51,6 @@ void HandlerFunction::signal_Read(Event& event)
 {
     Server* server;
 
-    server = reinterpret_cast<Server*>(event._data);
-    server->_isRunning = false;
+    server = reinterpret_cast<Server*>(event.m_data);
+    server->m_isRunning = false;
 }

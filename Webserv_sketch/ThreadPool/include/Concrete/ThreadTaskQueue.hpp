@@ -40,11 +40,11 @@ class ThreadTaskQueue : public IThreadTaskQueue
 	private:
 		IThreadTask*		cloneTask(const IThreadTask* base);
 		
-		std::list<IThreadTask*>							 _tasks;
-		unsigned int										_tasksExecuting;
-		pthread_mutex_t									 _taskAccess;
-		pthread_cond_t									  _newTaskSignal;								   
-		pthread_cond_t									  _allTasksDone;										 
+		std::list<IThreadTask*>							m_tasks;
+		unsigned int									m_tasksExecuting;
+		pthread_mutex_t									m_taskAccess;
+		pthread_cond_t									m_newTaskSignal;								   
+		pthread_cond_t									m_allTasksDone;										 
 
 		ThreadTaskQueue(const ThreadTaskQueue& copy);
 		ThreadTaskQueue& operator=(const ThreadTaskQueue& assign);

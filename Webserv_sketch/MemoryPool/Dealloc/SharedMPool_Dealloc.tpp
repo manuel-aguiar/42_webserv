@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 10:30:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:52:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,20 @@ class SharedMPool_Dealloc
 		};
 
 		SharedMPool_Dealloc(MemoryPool_Dealloc<T>* ptr = NULL) : 
-			_pool(ptr ? ptr : new MemoryPool_Dealloc<T>()), 
-			_refCount(new int(1))
+			m_pool(ptr ? ptr : new MemoryPool_Dealloc<T>()), 
+			m_refCount(new int(1))
 		{
 		}
 
 		SharedMPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw()
 		{
-			_pool = new MemoryPool_Dealloc<T>(block_size, starting_blocks, spare_blocks);
-			_refCount = new int(1);
+			m_pool = new MemoryPool_Dealloc<T>(block_size, starting_blocks, spare_blocks);
+			m_refCount = new int(1);
 		}
 
-		SharedMPool_Dealloc(const SharedMPool_Dealloc& other) : _pool(other._pool), _refCount(other._refCount)
+		SharedMPool_Dealloc(const SharedMPool_Dealloc& other) : m_pool(other.m_pool), m_refCount(other.m_refCount)
 		{
-			++(*_refCount); 
+			++(*m_refCount); 
 		}
 		
 		SharedMPool_Dealloc& operator=(const SharedMPool_Dealloc& other)
@@ -51,54 +51,54 @@ class SharedMPool_Dealloc
 			if (this != &other)
 			{
 				_decrementRefCount();
-				_pool = other._pool;
-				_refCount = other._refCount;
-				++(*_refCount);
+				m_pool = other.m_pool;
+				m_refCount = other.m_refCount;
+				++(*m_refCount);
 			}
 			return (*this);
 		}
 		template <class U> SharedMPool_Dealloc(const SharedMPool_Dealloc<U>& memoryPool) throw()
 		{
-			_pool = reinterpret_cast<MemoryPool_Dealloc<T>*>(memoryPool._pool);
-			_refCount = memoryPool._refCount;
-			++(*_refCount);
+			m_pool = reinterpret_cast<MemoryPool_Dealloc<T>*>(memoryPool.m_pool);
+			m_refCount = memoryPool.m_refCount;
+			++(*m_refCount);
 		}
 		~SharedMPool_Dealloc()
 		{
 			_decrementRefCount();
 		}
 
-		pointer address(reference x) const throw() {return _pool->address(x);}
-		const_pointer address(const_reference x) const throw() {return _pool->address(x);}
+		pointer address(reference x) const throw() {return m_pool->address(x);}
+		const_pointer address(const_reference x) const throw() {return m_pool->address(x);}
 
-		pointer allocate(size_type n = 1, const_pointer hint = 0){return _pool->allocate(n, hint);}
-		void deallocate(pointer p, size_type n = 1) {return _pool->deallocate(p, n);}
+		pointer allocate(size_type n = 1, const_pointer hint = 0){return m_pool->allocate(n, hint);}
+		void deallocate(pointer p, size_type n = 1) {return m_pool->deallocate(p, n);}
 
-		size_type max_size() const throw() {return _pool->max_size();}
+		size_type max_size() const throw() {return m_pool->max_size();}
 
-		void construct(pointer p, const_reference val) {return _pool->construct(p, val);}
-		void destroy(pointer p) {return _pool->destroy(p);}
+		void construct(pointer p, const_reference val) {return m_pool->construct(p, val);}
+		void destroy(pointer p) {return m_pool->destroy(p);}
 
-		pointer newElement(const_reference val) {return _pool->newElement(val);}
-		void deleteElement(pointer p) {return _pool->deleteElement(p);}
+		pointer newElement(const_reference val) {return m_pool->newElement(val);}
+		void deleteElement(pointer p) {return m_pool->deleteElement(p);}
 
 	//private:
-		MemoryPool_Dealloc<T>*      _pool;
-		int*                           _refCount;
+		MemoryPool_Dealloc<T>*      m_pool;
+		int*                           m_refCount;
 
 		void _decrementRefCount()
 		{
-			if (--(*_refCount) == 0)
+			if (--(*m_refCount) == 0)
 			{
-				if (_pool)
+				if (m_pool)
 				{
-					delete (_pool);
-					_pool = NULL;
+					delete (m_pool);
+					m_pool = NULL;
 				}
-				if (_refCount)
+				if (m_refCount)
 				{
-					delete _refCount;
-					_refCount = NULL;
+					delete m_refCount;
+					m_refCount = NULL;
 				}   
 			}
 		}

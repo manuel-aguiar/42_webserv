@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 14:20:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:33:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ class EPollManager
         const   struct epoll_event&     getEvent(int index);
 
     private:
-        int                 _fd;
-        struct epoll_event  _events[MAX_EPOLL_EVENTS];    
-        int                 _waitCount;
+        int                 m_fd;
+        struct epoll_event  m_events[MAX_EPOLL_EVENTS];    
+        int                 m_waitCount;
 
 
         EPollManager(const EPollManager& copy);

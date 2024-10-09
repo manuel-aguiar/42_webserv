@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 07:45:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/25 12:16:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:53:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@ class SharedMPool_Alloc
 		};
 
 		SharedMPool_Alloc(MemoryPool_Alloc<T, BlockSize>* ptr = NULL) : 
-			_pool(ptr ? ptr : new MemoryPool_Alloc<T, BlockSize>()), 
-			_refCount(new int(1))
+			m_pool(ptr ? ptr : new MemoryPool_Alloc<T, BlockSize>()), 
+			m_refCount(new int(1))
 		{
 			
 		}
 
-		SharedMPool_Alloc(const SharedMPool_Alloc& other) : _pool(other._pool), _refCount(other._refCount)
+		SharedMPool_Alloc(const SharedMPool_Alloc& other) : m_pool(other.m_pool), m_refCount(other.m_refCount)
 		{
-			++(*_refCount); 
+			++(*m_refCount); 
 		}
 		
 		SharedMPool_Alloc& operator=(const SharedMPool_Alloc& other)
@@ -46,54 +46,54 @@ class SharedMPool_Alloc
 			if (this != &other)
 			{
 				_decrementRefCount();
-				_pool = other._pool;
-				_refCount = other._refCount;
-				++(*_refCount);
+				m_pool = other.m_pool;
+				m_refCount = other.m_refCount;
+				++(*m_refCount);
 			}
 			return (*this);
 		}
 		template <class U> SharedMPool_Alloc(const SharedMPool_Alloc<U, BlockSize>& memoryPool) throw()
 		{
-			_pool = reinterpret_cast<MemoryPool_Alloc<T, BlockSize>*>(memoryPool._pool);
-			_refCount = memoryPool._refCount;
-			++(*_refCount);
+			m_pool = reinterpret_cast<MemoryPool_Alloc<T, BlockSize>*>(memoryPool.m_pool);
+			m_refCount = memoryPool.m_refCount;
+			++(*m_refCount);
 		}
 		~SharedMPool_Alloc()
 		{
 			_decrementRefCount();
 		}
 
-		pointer address(reference x) const throw() {return _pool->address(x);}
-		const_pointer address(const_reference x) const throw() {return _pool->address(x);}
+		pointer address(reference x) const throw() {return m_pool->address(x);}
+		const_pointer address(const_reference x) const throw() {return m_pool->address(x);}
 
-		pointer allocate(size_type n = 1, const_pointer hint = 0){return _pool->allocate(n, hint);}
-		void deallocate(pointer p, size_type n = 1) {return _pool->deallocate(p, n);}
+		pointer allocate(size_type n = 1, const_pointer hint = 0){return m_pool->allocate(n, hint);}
+		void deallocate(pointer p, size_type n = 1) {return m_pool->deallocate(p, n);}
 
-		size_type max_size() const throw() {return _pool->max_size();}
+		size_type max_size() const throw() {return m_pool->max_size();}
 
-		void construct(pointer p, const_reference val) {return _pool->construct(p, val);}
-		void destroy(pointer p) {return _pool->destroy(p);}
+		void construct(pointer p, const_reference val) {return m_pool->construct(p, val);}
+		void destroy(pointer p) {return m_pool->destroy(p);}
 
-		pointer newElement(const_reference val) {return _pool->newElement(val);}
-		void deleteElement(pointer p) {return _pool->deleteElement(p);}
+		pointer newElement(const_reference val) {return m_pool->newElement(val);}
+		void deleteElement(pointer p) {return m_pool->deleteElement(p);}
 
 	//private:
-		MemoryPool_Alloc<T>*      _pool;
-		int*                           _refCount;
+		MemoryPool_Alloc<T>*      m_pool;
+		int*                      m_refCount;
 
 		void _decrementRefCount()
 		{
-			if (--(*_refCount) == 0)
+			if (--(*m_refCount) == 0)
 			{
-				if (_pool)
+				if (m_pool)
 				{
-					delete (_pool);
-					_pool = NULL;
+					delete (m_pool);
+					m_pool = NULL;
 				}
-				if (_refCount)
+				if (m_refCount)
 				{
-					delete _refCount;
-					_refCount = NULL;
+					delete m_refCount;
+					m_refCount = NULL;
 				}   
 			}
 		}

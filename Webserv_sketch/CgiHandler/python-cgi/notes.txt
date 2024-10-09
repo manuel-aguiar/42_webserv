@@ -1,0 +1,86 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    notes.txt                                          :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/05 12:49:54 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/10/05 12:50:08 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#chatgpt
+
+
+REQUEST_METHOD:
+
+    Describes the method used to make the request (GET, POST, HEAD, etc.).
+
+QUERY_STRING:
+
+    Contains the URL-encoded query string (the part after ? in the URL) for GET requests.
+
+CONTENT_TYPE:
+
+    Describes the MIME type of the body of the request (e.g., application/x-www-form-urlencoded for POST data or multipart/form-data for file uploads).
+
+CONTENT_LENGTH:
+
+    Contains the length (in bytes) of the data sent by the client (usually in POST requests).
+
+SCRIPT_NAME:
+
+    The path to the script being executed (relative to the root of the server).
+
+PATH_INFO:
+
+    Additional path information after the script name, often used for passing arguments to the script.
+
+PATH_TRANSLATED:
+
+    The translated path of the script, mapping the URL path to the server file system.
+
+HTTP_COOKIE:
+
+    Contains the cookie data sent by the client, used for session management.
+
+REMOTE_ADDR:
+
+    The IP address of the client making the request.
+
+REMOTE_HOST:
+
+    The hostname of the client, if available.
+
+REMOTE_USER:
+
+    The username of the client if HTTP authentication is being used.
+
+AUTH_TYPE:
+
+    The authentication method used to verify the user, if any.
+
+SERVER_NAME:
+
+    The hostname or IP address of the server handling the request.
+
+SERVER_PORT:
+
+    The port number on which the server is listening (e.g., 80 for HTTP or 443 for HTTPS).
+
+SERVER_PROTOCOL:
+
+    The HTTP version being used by the request (e.g., HTTP/1.1 or HTTP/2).
+
+SERVER_SOFTWARE:
+
+    The server software name and version (e.g., Apache/2.4.41).
+
+HTTP_USER_AGENT:
+
+    The user-agent string sent by the client's browser.
+
+HTTP_REFERER:
+
+    The URL of the referring page, if available.

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 09:59:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:10:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class FileDescriptor {
         virtual void        close(); // allow derived to override in case they have extra resources
 
     protected:
-        int                 _fd;
+        int                 m_fd;
         
         // hard copy and assign is only for descendents
         FileDescriptor(const FileDescriptor& hardCopy);

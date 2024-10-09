@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 08:11:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:33:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ class EPollManager : public IEventManager
         const   IEvent&     getEvent(int index);
 
     private:
-        EPollEvent          _events[MAX_EPOLL_EVENTS];    
-        int                 _waitCount;
+        EPollEvent          m_events[MAX_EPOLL_EVENTS];    
+        int                 m_waitCount;
 
 
         EPollManager(const EPollManager& copy);

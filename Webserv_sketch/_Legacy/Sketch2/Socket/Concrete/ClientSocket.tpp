@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 13:44:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/16 15:35:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:12:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,20 @@ class ClientSocket :
 {
     public:
         ClientSocket()
-            {_fd = -1;}
+            {m_fd = -1;}
         
         ClientSocket(const SockAddr& addr, int type, int protocol) :
-            _addr(addr)
+            m_addr(addr)
         {
-            _fd = ::socket(addr.getAddrFamily(), type, protocol);
-            if (_fd == -1)
+            m_fd = ::socket(addr.getAddrFamily(), type, protocol);
+            if (m_fd == -1)
                 throw ParameterException("SocketServer constructor failed", "socket", std::strerror(errno));
         }
 
         ~ClientSocket()
         {
-            if (_fd != -1)
-                ::close(_fd);
+            if (m_fd != -1)
+                ::close(m_fd);
         }
         
         // implementation of IOnEvents
@@ -50,7 +50,7 @@ class ClientSocket :
         //implementation of IClientMethods
         void connect()
         {
-            if (::connect(_fd, _addr.getSockAddr(), *(_addr.getAddrLen())) == -1)
+            if (::connect(m_fd, m_addr.getSockAddr(), *(m_addr.getAddrLen())) == -1)
                 throw ParameterException("ClientSocket::connect", "connect", std::strerror(errno));
         }
         void disconnect() {};
@@ -61,7 +61,7 @@ class ClientSocket :
         {
             char buffer[1024];
 
-            int bytesReceived = read(_fd, buffer, sizeof(buffer) - 1);
+            int bytesReceived = read(m_fd, buffer, sizeof(buffer) - 1);
             if (bytesReceived == -1)
                 throw ParameterException("ClientSocket::receive", "read", std::strerror(errno));
             buffer[bytesReceived] = '\0';
@@ -69,22 +69,22 @@ class ClientSocket :
         }
 
         // implementation of ISocketAddress methods
-        struct sockaddr*                    getSockAddr() { return (_addr.getSockAddr()); }
-        socklen_t*                          getAddrLen() { return (_addr.getAddrLen()); };
-        int                                 getAddrFamily() const { return (_addr.getAddrFamily()); }
-        UniquePtr<ISocketAddress>           clone() const { return (_addr.clone()); }      
+        struct sockaddr*                    getSockAddr() { return (m_addr.getSockAddr()); }
+        socklen_t*                          getAddrLen() { return (m_addr.getAddrLen()); };
+        int                                 getAddrFamily() const { return (m_addr.getAddrFamily()); }
+        UniquePtr<ISocketAddress>           clone() const { return (m_addr.clone()); }      
 
     private:
-        SockAddr             _addr;
+        SockAddr             m_addr;
 
 
-        ClientSocket(const ClientSocket& copy) : _addr(copy._addr) {_fd = copy._fd;}
+        ClientSocket(const ClientSocket& copy) : m_addr(copy.m_addr) {m_fd = copy.m_fd;}
         ClientSocket& operator=(const ClientSocket& assign)
         {
             if(this == &assign)
                 return (*this);
-            _fd = assign._fd;
-            _addr(assign._addr);
+            m_fd = assign.m_fd;
+            m_addr(assign.m_addr);
             return (*this);
         }
 };

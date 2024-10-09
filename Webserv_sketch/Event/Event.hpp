@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 13:33:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:11:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Connection;
 class Event
 {
     public:
-        Event(Globals* _globals = NULL);
+        Event(Globals* m_globals = NULL);
         ~Event();
 
         typedef void    (*HandlerFunction)(Event& event);
@@ -47,10 +47,11 @@ class Event
         
 
         
-        HandlerFunction    _function;
-        HandlerData        _data;
-        int                _flags;
-        //Globals*           _globals;
+        HandlerFunction    m_function;
+        HandlerData        m_data;
+        t_fd               m_fd;
+        int                m_flags;
+        //Globals*           m_globals;
 
         Event(const Event& copy);
         Event& operator=(const Event& assign);

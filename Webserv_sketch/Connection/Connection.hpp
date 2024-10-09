@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:54:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:13:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@ class Connection
 
 
     //private:
-        t_socket            _sockfd;
-        t_sockaddr*         _addr;
-        t_socklen           _addrlen;
+        t_socket            m_sockfd;
+        t_sockaddr*         m_addr;
+        t_socklen           m_addrlen;
 
         //will be spawned via static create.()
         
-        Event*              _readEvent;         //pointer cause it may be reused
-        Event*              _writeEvent;
-        ListeningSocket*    _listener;          //pointer cause it may be reused
-        Nginx_MemoryPool*   _memPool;           //will have its own pool
-        Globals*            _globals;
+        Event*              m_readEvent;         //pointer cause it may be reused
+        Event*              m_writeEvent;
+        ListeningSocket*    m_listener;          //pointer cause it may be reused
+        Nginx_MemoryPool*   m_memPool;           //will have its own pool
+        Globals*            m_globals;
         
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);

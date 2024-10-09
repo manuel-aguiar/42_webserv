@@ -13,8 +13,8 @@
 #include "../../include/Abstract/AThread.hpp"
 
 AThread::AThread() : 
-	_state(EThread_Unitialized),
-	_thread(0)
+	m_state(EThread_Unitialized),
+	m_thread(0)
 {
 	#ifdef DEBUG_CONSTRUCTOR
 		std::cout << "AThread Constructor Called" << std::endl;
@@ -29,8 +29,8 @@ AThread::~AThread()
 }
 
 AThread::AThread(const AThread& copy) : 
-	_state(copy._state),
-	_thread(copy._thread)
+	m_state(copy.m_state),
+	m_thread(copy.m_thread)
 {
 	#ifdef DEBUG_CONSTRUCTOR
 		std::cout << "AThread Copy Constructor Called" << std::endl;
@@ -47,23 +47,23 @@ AThread& AThread::operator=(const AThread& assign)
 
 void	AThread::start()
 {
-	if (_state == EThread_Initialized)
+	if (m_state == EThread_Initialized)
 	{
 		std::cerr << "Thread already initialized" << std::endl;
 		return ;
 	}
-	if (pthread_create(&_thread, NULL, ThreadFunction, this))
+	if (pthread_create(&m_thread, NULL, ThreadFunction, this))
 	{
 		std::cerr << "Thread failed to create" << std::endl;
 		return ;
 	}
-	_state = EThread_Initialized;
+	m_state = EThread_Initialized;
 }
 
 void	AThread::join()
 {
-	pthread_join(_thread, NULL);
-	_state = EThread_Joined;
+	pthread_join(m_thread, NULL);
+	m_state = EThread_Joined;
 }
 
 void*   AThread::ThreadFunction(void* args)

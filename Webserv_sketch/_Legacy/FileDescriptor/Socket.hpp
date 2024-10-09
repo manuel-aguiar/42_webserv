@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 12:37:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 16:57:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:10:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Socket
 
     private:
     
-        int                                 _fd;
+        int                                 m_fd;
         char                                _ip[INET6_ADDRSTRLEN];
         int                                 _port;
         int                                 _addrFamily;

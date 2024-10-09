@@ -6,19 +6,19 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 09:57:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 14:19:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:33:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EPollManager.hpp"
 
 EPollManager::EPollManager() :
-    _fd(epoll_create(1)),
-    _waitCount(0)
+    m_fd(epoll_create(1)),
+    m_waitCount(0)
 {
-    if (_fd == -1)
+    if (m_fd == -1)
         throw ParameterException("EPollManager Constructor failed", "epoll_create", std::strerror(errno));
-    _waitCount = 0;
+    m_waitCount = 0;
 }
 
 EPollManager::~EPollManager()
@@ -28,7 +28,7 @@ EPollManager::~EPollManager()
 
 const int    EPollManager::getFd() const
 {
-    return (_fd);
+    return (m_fd);
 }
 /*
 void                EPollManager::addEventFd(const int fd, const int eventsToMonitor)
@@ -37,7 +37,7 @@ void                EPollManager::addEventFd(const int fd, const int eventsToMon
     
     newEvent.data.fd = fd;
     newEvent.events = eventsToMonitor;
-    if (epoll_ctl(_fd, EPOLL_CTL_ADD, fd, &newEvent) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_ADD, fd, &newEvent) == -1)
         throw ParameterException("EPollManager addFd failed", "epoll_ctl", std::strerror(errno));
 }
 
@@ -47,13 +47,13 @@ void                EPollManager::modEventFd(const int fd, const int eventsToMon
 
     newEvent.data.fd = fd;
     newEvent.events = eventsToMonitor;
-    if (epoll_ctl(_fd, EPOLL_CTL_MOD, fd, &newEvent) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_MOD, fd, &newEvent) == -1)
         throw ParameterException("EPollManager modFd failed", "epoll_ctl", std::strerror(errno));
 }
 
 void                EPollManager::delEventFd(const int fd)
 {
-    if (epoll_ctl(_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, NULL) == -1)
         throw ParameterException("EPollManager delFd failed", "epoll_ctl", std::strerror(errno));
 }
 
@@ -61,16 +61,16 @@ void                EPollManager::delEventFd(const int fd)
 
 int                 EPollManager::waitEvents(int timeOut)
 {
-    _waitCount = epoll_wait(_fd, _events, MAX_EPOLL_EVENTS, timeOut);
-    if (_waitCount == -1)
+    m_waitCount = epoll_wait(m_fd, m_events, MAX_EPOLL_EVENTS, timeOut);
+    if (m_waitCount == -1)
         throw ParameterException("EPollManager waitEvents failed", "epoll_wait", std::strerror(errno));
-    return (_waitCount);
+    return (m_waitCount);
 }
 
 const   struct epoll_event&     EPollManager::getEvent(int index)
 {
-    assert(index >= 0 && index < _waitCount);
-    return (_events[index]);
+    assert(index >= 0 && index < m_waitCount);
+    return (m_events[index]);
 }
 
 void        EPollManager::addEventFd(FileDescriptor* fd, const int eventsToMonitor)
@@ -80,7 +80,7 @@ void        EPollManager::addEventFd(FileDescriptor* fd, const int eventsToMonit
     
     newEvent.data.ptr = fd;
     newEvent.events = eventsToMonitor;
-    if (epoll_ctl(_fd, EPOLL_CTL_ADD, fd->getFd(), &newEvent) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_ADD, fd->getFd(), &newEvent) == -1)
         throw ParameterException("EPollManager addFd failed", "epoll_ctl", std::strerror(errno));
 }
 
@@ -91,13 +91,13 @@ void        EPollManager::modEventFd(FileDescriptor* fd, const int eventsToMonit
 
     newEvent.data.ptr = fd;
     newEvent.events = eventsToMonitor;
-    if (epoll_ctl(_fd, EPOLL_CTL_MOD, fd->getFd(), &newEvent) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_MOD, fd->getFd(), &newEvent) == -1)
         throw ParameterException("EPollManager modFd failed", "epoll_ctl", std::strerror(errno));
 }
 
 void        EPollManager::delEventFd(FileDescriptor* fd)
 {
     assert(fd != NULL);  
-    if (epoll_ctl(_fd, EPOLL_CTL_DEL, fd->getFd(), NULL) == -1)
+    if (epoll_ctl(m_fd, EPOLL_CTL_DEL, fd->getFd(), NULL) == -1)
         throw ParameterException("EPollManager delFd failed", "epoll_ctl", std::strerror(errno));
 }

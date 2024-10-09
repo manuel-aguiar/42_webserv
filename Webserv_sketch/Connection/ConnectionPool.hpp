@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 10:33:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:13:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 class ConnectionPool
 {
     public: 
-        ConnectionPool(Globals* _globals, size_t maxConnections = MAX_CONNECTIONS);
+        ConnectionPool(Globals* m_globals, size_t maxConnections = MAX_CONNECTIONS);
         ~ConnectionPool();
         
         Connection*     getConnection();
@@ -36,13 +36,13 @@ class ConnectionPool
 
     private:
         
-        Globals*                                                       _globals;
-        size_t                                                         _maxConnections;
+        Globals*                                                       m_globals;
+        size_t                                                         m_maxConnections;
         
-        HeapArray<Connection>                                          _connections;
-        HeapArray<Event>                                               _readEvents;
-        HeapArray<Event>                                               _writeEvents;
-        std::list<Connection*, MPool_FixedElem<Connection*> >          _spareConnections;
+        HeapArray<Connection>                                          m_connections;
+        HeapArray<Event>                                               m_readEvents;
+        HeapArray<Event>                                               m_writeEvents;
+        std::list<Connection*, MPool_FixedElem<Connection*> >          m_spareConnections;
 
         
         void destroyConnection(Connection* connection);

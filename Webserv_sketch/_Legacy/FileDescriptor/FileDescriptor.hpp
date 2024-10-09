@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 08:25:09 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 12:35:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 09:10:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class FileDescriptor {
         static void setCloseOnExec_NonBlocking(int fd);
 
     protected:
-        int                 _fd;
+        int                 m_fd;
         FdTag               _tag;
         bool                _closeOnDestroy;
         

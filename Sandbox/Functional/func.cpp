@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 07:43:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 12:08:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:24:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,14 @@ class HttpInterpreter
 {
     public:
 
-        HttpInterpreter() : _state(404) {}
-        void setState(int state) { _state = state; }
-        int getState() { return _state; }
+        HttpInterpreter() : m_state(404) {}
+        void setState(int state) { m_state = state; }
+        int getState() { return m_state; }
 
-        void    onRead(const Socket& me) {std::cout << "Http onRead: "  << _state << " socket sockVar: " << me._sockVar << std::endl;}
+        void    onRead(const Socket& me) {std::cout << "Http onRead: "  << m_state << " socket sockVar: " << me._sockVar << std::endl;}
 
     private:
-        int _state;
+        int m_state;
 };
 
 class HttpInterpreteronRead
@@ -82,15 +82,15 @@ class HttpInterpreteronRead
 class FtpInterpreter
 {
     public:
-        FtpInterpreter() : _state(212) {}
+        FtpInterpreter() : m_state(212) {}
         
-        void    setState(int state) { _state = state; }
-        int     getState() { return _state; }
+        void    setState(int state) { m_state = state; }
+        int     getState() { return m_state; }
 
-        void    onRead(const Socket& me) {std::cout << "Ftp onRead: "  << _state  << " socket sockVar: " << me._sockVar << std::endl;}
+        void    onRead(const Socket& me) {std::cout << "Ftp onRead: "  << m_state  << " socket sockVar: " << me._sockVar << std::endl;}
 
     private:
-        int _state;
+        int m_state;
 };
 
 class FtpInterpreterGetter

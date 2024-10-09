@@ -21,62 +21,63 @@
 template <typename T>
 class HeapArray
 {
-    public:
+	public:
 
-        HeapArray() : _array(NULL), _size(0)
-        {
-        };
+		HeapArray() : m_array(NULL), m_size(0)
+		{
+		};
 
-        HeapArray(size_t size) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), _size(size)
-        {
-        };
+		HeapArray(size_t size) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), m_size(size)
+		{
+		};
 
-        ~HeapArray()
-        {
-            delete [] (reinterpret_cast<t_byte*>(_array));
-        };
+		~HeapArray()
+		{
+			if (m_array)
+				delete [] (reinterpret_cast<t_byte*>(m_array));
+		};
 
-        HeapArray(const HeapArray &other) : _array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other._size])), _size(other._size)
-        {
-            std::memcpy(reinterpret_cast<t_byte*>(_array), 
-                        reinterpret_cast<t_byte*>(other._array), 
-                        sizeof(T) * _size);
-        };
+		HeapArray(const HeapArray &other) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other.m_size])), m_size(other.m_size)
+		{
+			std::memcpy(reinterpret_cast<t_byte*>(m_array), 
+						reinterpret_cast<t_byte*>(other.m_array), 
+						sizeof(T) * m_size);
+		};
 
-        HeapArray &operator=(const HeapArray &other)
-        {
-            if (this == &other)
-                return (*this);
-            if (_size != other._size)
-            {
-                if (_array)
-                    delete [] (reinterpret_cast<t_byte*>(_array));
-                _size = other._size;
-                _array = reinterpret_cast<T*>(new t_byte [sizeof(T) * _size]);
-            }
-            std::memcpy(reinterpret_cast<t_byte*>(_array), 
-                        reinterpret_cast<t_byte*>(other._array), 
-                        sizeof(T) * _size);
-            return (*this);
-        };
+		HeapArray &operator=(const HeapArray &other)
+		{
+			if (this == &other)
+				return (*this);
+			if (m_size != other.m_size)
+			{
+				if (m_array)
+					delete [] (reinterpret_cast<t_byte*>(m_array));
+				m_size = other.m_size;
+				m_array = reinterpret_cast<T*>(new t_byte [sizeof(T) * m_size]);
+			}
+			std::memcpy(reinterpret_cast<t_byte*>(m_array), 
+						reinterpret_cast<t_byte*>(other.m_array), 
+						sizeof(T) * m_size);
+			return (*this);
+		};
 
-        T& operator[](const size_t index)
-        {
-            assert(index < _size);
-            return *(reinterpret_cast<T*>(&_array[index]));
-        }
+		T& operator[](const size_t index)
+		{
+			assert(index < m_size);
+			return *(reinterpret_cast<T*>(&m_array[index]));
+		}
 
-        
-        size_t size() const
-        {
-            return (_size);
-        }
-        
-    private:
+		
+		size_t size() const
+		{
+			return (m_size);
+		}
+		
+	private:
 
-        typedef unsigned char   t_byte;
-        T*          _array;
-        size_t      _size;
+		typedef unsigned char   t_byte;
+		T*						m_array;
+		size_t					m_size;
 };
 
 

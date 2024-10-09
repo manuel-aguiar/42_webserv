@@ -59,43 +59,42 @@ class MemoryPool_Dealloc
 
 	//private:
 
-		struct BlockData;
+		struct s_BlockData;
 		
-		struct Slot_
+		struct s_Slot
 		{
 			union  {
-				char          	data_[sizeof(value_type)];
-				Slot_*        	next;
+				char          	m_data[sizeof(value_type)];
+				s_Slot*        	m_next;
 			};
-			//BlockData*		  block_offset;
-			uint16_t 			block_offset;
+			uint16_t 			m_blockOffset;
 		};
 
-		typedef char* data_pointer_;
-		typedef Slot_ slot_type_;
-		typedef Slot_* slot_pointer_;
+		typedef char* 		t_data_pointer;
+		typedef s_Slot 		t_slot_type;
+		typedef s_Slot* 	t_slot_pointer;
 
-		struct BlockData {
-			BlockData* 					next;
-			BlockData* 					prev;
-			size_t 						usedSlotsCount;
-			size_t						slotsCapacity;
-			slot_pointer_   			currentSlot_;
-			slot_pointer_   			freeSlots_;
+		struct s_BlockData {
+			s_BlockData* 					m_next;
+			s_BlockData* 					m_prev;
+			size_t 							m_usedSlotsCount;
+			size_t							m_slotsCapacity;
+			t_slot_pointer   				m_currentSlot;
+			t_slot_pointer   				m_freeSlots;
 		};
 
-		size_t 							blockSize_;
-		BlockData*						availableBlocks_;
-		BlockData*						fullBlocks_;
-		size_t							freeBlocksCount_;
-		size_t							maxFreeBlocks_;	
+		size_t 							m_blockSize;
+		s_BlockData*					m_availableBlocks;
+		s_BlockData*					m_fullBlocks;
+		size_t							m_freeBlocksCount;
+		size_t							m_maxFreeBlocks;	
 
 		//helper functions
-		size_type padPointer(data_pointer_ p, size_type align) const throw();
+		size_type padPointer(t_data_pointer p, size_type align) const throw();
 		void allocateBlock();
-		void deallocateBlock(BlockData* block); // Deallocate a fully free block
-		void moveToAnotherTop(BlockData**	to,BlockData**	from, BlockData*	node);
-		void removeBlockFromList(BlockData **list, BlockData* node);
+		void deallocateBlock(s_BlockData* block); // Deallocate a fully free block
+		void moveToAnotherTop(s_BlockData**	to,s_BlockData**	from, s_BlockData*	node);
+		void removeBlockFromList(s_BlockData **list, s_BlockData* node);
 
 
 		MemoryPool_Dealloc(const MemoryPool_Dealloc& memoryPool) throw();
@@ -107,7 +106,7 @@ class MemoryPool_Dealloc
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::size_type
-MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::padPointer(data_pointer_ p, size_type align)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::padPointer(t_data_pointer p, size_type align)
 const throw()
 {
 	size_t result = reinterpret_cast<size_t>(p);
@@ -116,16 +115,16 @@ const throw()
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(size_t block_size, size_t starting_blocks, size_t spare_blocks) throw() :
-	blockSize_(block_size),
-	availableBlocks_(0), 
-	fullBlocks_(0),
-	freeBlocksCount_(0), 
-	maxFreeBlocks_(spare_blocks)  // Allow up to 5 free blocks
+	m_blockSize(block_size),
+	m_availableBlocks(0), 
+	m_fullBlocks(0),
+	m_freeBlocksCount(0), 
+	m_maxFreeBlocks(spare_blocks)  // Allow up to 5 free blocks
 {
-    assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
-			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
-			this->blockSize_ >= 512 // Power of 2 check + page limits
-			&& starting_blocks >= 0 && maxFreeBlocks_ >= starting_blocks);
+    assert(((this->m_blockSize & (this->m_blockSize - 1)) == 0) && 
+			this->m_blockSize <= std::numeric_limits<uint16_t>::max() &&
+			this->m_blockSize >= 512 // Power of 2 check + page limits
+			&& starting_blocks >= 0 && m_maxFreeBlocks >= starting_blocks);
 	
 	for (size_t i = 0; i < starting_blocks; i++)
 		allocateBlock();
@@ -133,15 +132,15 @@ MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Deallo
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc() throw() : 
-	blockSize_(BlockSize),
-	availableBlocks_(0), 
-	fullBlocks_(0),
-	freeBlocksCount_(0), 
-	maxFreeBlocks_(SpareBlocks)  // Allow up to 5 free blocks
+	m_blockSize(BlockSize),
+	m_availableBlocks(0), 
+	m_fullBlocks(0),
+	m_freeBlocksCount(0), 
+	m_maxFreeBlocks(SpareBlocks)  // Allow up to 5 free blocks
 {
-    assert(((this->blockSize_ & (this->blockSize_ - 1)) == 0) && 
-			this->blockSize_ <= std::numeric_limits<uint16_t>::max() &&
-			this->blockSize_ >= 512 // Power of 2 check + page limits
+    assert(((this->m_blockSize & (this->m_blockSize - 1)) == 0) && 
+			this->m_blockSize <= std::numeric_limits<uint16_t>::max() &&
+			this->m_blockSize >= 512 // Power of 2 check + page limits
 			&& StartingBlocks >= 0 && SpareBlocks >= StartingBlocks); // At least one block
 	for (size_t i = 0; i < StartingBlocks; i++)
 		allocateBlock();
@@ -151,11 +150,11 @@ template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlock
 template<class U>
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::MemoryPool_Dealloc(const MemoryPool_Dealloc<U>& memoryPool)
 throw() : 
-	blockSize_(memoryPool.blockSize_),
-	availableBlocks_(0), 
-	fullBlocks_(0),
-	freeBlocksCount_(0), 
-	maxFreeBlocks_(memoryPool.maxFreeBlocks_)
+	m_blockSize(memoryPool.m_blockSize),
+	m_availableBlocks(0), 
+	m_fullBlocks(0),
+	m_freeBlocksCount(0), 
+	m_maxFreeBlocks(memoryPool.m_maxFreeBlocks)
 	
 {
 	//assert(typeid(T).name() == typeid(U).name());
@@ -167,19 +166,19 @@ throw()
 {
     //std::cout << "memorypool destructor" << std::endl;
 	int count = 0;
-	BlockData* curr = availableBlocks_;
+	s_BlockData* curr = m_availableBlocks;
 	while (curr != 0) {
-		BlockData* prev = curr->next;
+		s_BlockData* m_prev = curr->m_next;
 		count++;
 		operator delete(reinterpret_cast<void*>(curr));
-		curr = prev;
+		curr = m_prev;
 	}
-	curr = fullBlocks_;
+	curr = m_fullBlocks;
 	while (curr != 0) {
-		BlockData* prev = curr->next;
+		s_BlockData* m_prev = curr->m_next;
 		count++;
 		operator delete(reinterpret_cast<void*>(curr));
-		curr = prev;
+		curr = m_prev;
 	}
 	//std::cout << "deleted " << count << " blocks" << std::endl;
 }
@@ -207,73 +206,73 @@ void
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::allocateBlock()
 {
     
-	data_pointer_ newBlock = static_cast<data_pointer_>(operator new(this->blockSize_));
+	t_data_pointer newBlock = static_cast<t_data_pointer>(operator new(this->m_blockSize));
 
 	//std::cout << "allocating block at " << reinterpret_cast<void*>(newBlock)
 	//<< " that ends at: " <<reinterpret_cast<void*>(newBlock + BlockSize) << std::endl;
 
-	BlockData* block = reinterpret_cast<BlockData*>(newBlock);
-	block->next = availableBlocks_; // Previous head block becomes the next
-	block->prev = NULL; // No previous block since this is the head
+	s_BlockData* block = reinterpret_cast<s_BlockData*>(newBlock);
+	block->m_next = m_availableBlocks; // Previous head block becomes the m_next
+	block->m_prev = NULL; // No previous block since this is the head
 
 
-	if (availableBlocks_)
-		availableBlocks_->prev = block; // Update previous block's link
+	if (m_availableBlocks)
+		m_availableBlocks->m_prev = block; // Update previous block's link
 
-	availableBlocks_ = block; // Update head block to the new one
+	m_availableBlocks = block; // Update head block to the new one
 
 
 
-    data_pointer_ body = reinterpret_cast<data_pointer_>(block + 1);
-    size_type bodyPadding = padPointer(body, sizeof(slot_type_));
-    block->currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
+    t_data_pointer body = reinterpret_cast<t_data_pointer>(block + 1);
+    size_type bodyPadding = padPointer(body, sizeof(t_slot_type));
+    block->m_currentSlot = reinterpret_cast<t_slot_pointer>(body + bodyPadding);
 
-	block->slotsCapacity = ((this->blockSize_ - sizeof(BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->currentSlot_)) / sizeof(slot_type_)); // Initially all slots are free
-	block->usedSlotsCount = 0;
+	block->m_slotsCapacity = ((this->m_blockSize - sizeof(s_BlockData) + reinterpret_cast<size_t>(block) - reinterpret_cast<size_t>(block->m_currentSlot)) / sizeof(t_slot_type)); // Initially all slots are free
+	block->m_usedSlotsCount = 0;
 	
 	//std::cout << "slotCount: " << block->freeSlotsCount << std::endl;
-	block->freeSlots_ = NULL;
-	this->freeBlocksCount_++;
-	//std::cout << "						freeblocks count (allocate block)" << this->freeBlocksCount_ << std::endl;	
+	block->m_freeSlots = NULL;
+	this->m_freeBlocksCount++;
+	//std::cout << "						freeblocks count (allocate block)" << this->m_freeBlocksCount << std::endl;	
 
 
 /*
-	data_pointer_ body = newBlock + sizeof(slot_pointer_);
-	size_type bodyPadding = padPointer(body, sizeof(slot_type_));
-	currentSlot_ = reinterpret_cast<slot_pointer_>(body + bodyPadding);
-	lastSlot_ = reinterpret_cast<slot_pointer_>
-	(newBlock + BlockSize - sizeof(slot_type_) + 1);
+	t_data_pointer body = newBlock + sizeof(m_slot_pointer);
+	size_type bodyPadding = padPointer(body, sizeof(t_slot_type));
+	m_currentSlot = reinterpret_cast<m_slot_pointer>(body + bodyPadding);
+	m_lastSlot = reinterpret_cast<m_slot_pointer>
+	(newBlock + BlockSize - sizeof(t_slot_type) + 1);
 */
 
 }
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
-void MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData **list, MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::BlockData* node)
+void MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::removeBlockFromList(MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::s_BlockData **list, MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::s_BlockData* node)
 {
-	if (node->prev)
-		node->prev->next = node->next;
+	if (node->m_prev)
+		node->m_prev->m_next = node->m_next;
 	else
-		*list = node->next;
-	if (node->next)
-		node->next->prev = node->prev;
+		*list = node->m_next;
+	if (node->m_next)
+		node->m_next->m_prev = node->m_prev;
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::moveToAnotherTop(
-	BlockData**	to,
-	BlockData**	from, 
-	BlockData*	node)
+	s_BlockData**	to,
+	s_BlockData**	from, 
+	s_BlockData*	node)
 {
 	removeBlockFromList(from, node);
 	if (*to)
 	{
-		node->next = *to;
-		node->prev = NULL;
-		(*to)->prev = node;
+		node->m_next = *to;
+		node->m_prev = NULL;
+		(*to)->m_prev = node;
 	}
 	else
 	{
-		node->next = NULL;
-		node->prev = NULL;
+		node->m_next = NULL;
+		node->m_prev = NULL;
 	}
 	*to = node;
 }
@@ -283,29 +282,29 @@ template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlock
 inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::pointer
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::allocate(size_type, const_pointer)
 {
-	BlockData* 	block;
+	s_BlockData* 	block;
 	pointer 	result;
 
-	if (!availableBlocks_)
+	if (!m_availableBlocks)
 		allocateBlock();
-	block = availableBlocks_;
+	block = m_availableBlocks;
 
-	if (block->freeSlots_ != 0)
+	if (block->m_freeSlots != 0)
 	{
-		result = reinterpret_cast<pointer>(block->freeSlots_);
-		block->freeSlots_ = block->freeSlots_->next;
+		result = reinterpret_cast<pointer>(block->m_freeSlots);
+		block->m_freeSlots = block->m_freeSlots->m_next;
 	}
 	else
 	{
-		result = reinterpret_cast<pointer>(block->currentSlot_);
-		block->currentSlot_++;
+		result = reinterpret_cast<pointer>(block->m_currentSlot);
+		block->m_currentSlot++;
 	}
-	if (++block->usedSlotsCount == block->slotsCapacity)
-		moveToAnotherTop(&fullBlocks_, &availableBlocks_, block);
-	this->freeBlocksCount_ -= (block->usedSlotsCount == 1);
-	//std::cout << "						slotCount: " << block->usedSlotsCount << " capacity:" << block->slotsCapacity << std::endl;
-	//std::cout << "						freeblocks count (allocate element)" << this->freeBlocksCount_ << std::endl;			
-	reinterpret_cast<slot_pointer_>(result)->block_offset = reinterpret_cast<size_t>(result) - reinterpret_cast<size_t>(block);
+	if (++block->m_usedSlotsCount == block->m_slotsCapacity)
+		moveToAnotherTop(&m_fullBlocks, &m_availableBlocks, block);
+	this->m_freeBlocksCount -= (block->m_usedSlotsCount == 1);
+	//std::cout << "						slotCount: " << block->m_usedSlotsCount << " capacity:" << block->m_slotsCapacity << std::endl;
+	//std::cout << "						freeblocks count (allocate element)" << this->m_freeBlocksCount << std::endl;			
+	reinterpret_cast<t_slot_pointer>(result)->m_blockOffset = reinterpret_cast<size_t>(result) - reinterpret_cast<size_t>(block);
 	//std::cout << "allocating node at: " << result << ", at block " << block << std::endl;
 	return (result);
 }
@@ -318,38 +317,38 @@ MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deallocate(pointe
 	if (p != 0)
 	{
 		
-		slot_pointer_ slot = reinterpret_cast<slot_pointer_>(p);
-        BlockData* block = reinterpret_cast<BlockData*>(reinterpret_cast<size_t>(slot) - slot->block_offset);
+		t_slot_pointer slot = reinterpret_cast<t_slot_pointer>(p);
+        s_BlockData* block = reinterpret_cast<s_BlockData*>(reinterpret_cast<size_t>(slot) - slot->m_blockOffset);
 		//std::cout << "deallocating node at: " << p << ", from block " << block << std::endl;
-		slot->next = block->freeSlots_;
-		block->freeSlots_ = slot;
+		slot->m_next = block->m_freeSlots;
+		block->m_freeSlots = slot;
 
-		block->usedSlotsCount--;
-		if (!block->usedSlotsCount)
+		block->m_usedSlotsCount--;
+		if (!block->m_usedSlotsCount)
 		{
 			deallocateBlock(block);
 			return ;
 		}
-		if (block->usedSlotsCount == block->slotsCapacity - 1) // it was full, no longer now
-			moveToAnotherTop(&availableBlocks_, &fullBlocks_, block);
+		if (block->m_usedSlotsCount == block->m_slotsCapacity - 1) // it was full, no longer now
+			moveToAnotherTop(&m_availableBlocks, &m_fullBlocks, block);
 	}
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>
 void
-MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(BlockData* block)
+MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::deallocateBlock(s_BlockData* block)
 {
-	++this->freeBlocksCount_;
-	//std::cout << "maxFreeBlocks: " << maxFreeBlocks_ << ", vs freeblocks (deallocate block)" << this->freeBlocksCount_<< std::endl;
-    if (this->freeBlocksCount_ > maxFreeBlocks_)
+	++this->m_freeBlocksCount;
+	//std::cout << "maxFreeBlocks: " << m_maxFreeBlocks << ", vs freeblocks (deallocate block)" << this->m_freeBlocksCount<< std::endl;
+    if (this->m_freeBlocksCount > m_maxFreeBlocks)
     {
         //std::cout << "						deallocating block " << reinterpret_cast<void*>(block) << std::endl;
-        removeBlockFromList(&availableBlocks_, block);
+        removeBlockFromList(&m_availableBlocks, block);
 
         // Deallocate the block
         operator delete(reinterpret_cast<void*>(block));
 
-		this->freeBlocksCount_--;
+		this->m_freeBlocksCount--;
 
         //std::cout << " deleted?" << std::endl;
 	}
@@ -361,8 +360,8 @@ inline typename MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::s
 MemoryPool_Dealloc<T, BlockSize, StartingBlocks, SpareBlocks>::max_size()
 const throw()
 {
-	size_type maxBlocks = -1 / this->blockSize_;
-	return (blockSize_ - sizeof(data_pointer_)) / sizeof(slot_type_) * maxBlocks;
+	size_type maxBlocks = -1 / this->m_blockSize;
+	return (m_blockSize - sizeof(t_data_pointer)) / sizeof(t_slot_type) * maxBlocks;
 }
 
 template <typename T, size_t BlockSize, size_t StartingBlocks, size_t SpareBlocks>

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/20 17:56:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 08:48:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ int   Interpreter::readConnection(t_fd fd)
         int readBytes = read(fd, buffer, curReadMax);
         //std::cout << "readBytes: " << readBytes << "; buffer has: '" << buffer << "'" << std::endl;
         if (readBytes < 0)
-            return (1); // client disconnected mid reading, close connection at the next epoll round
+            return (1); // client disconnected mid reading, close connection at the m_next epoll round
         totalBytes += readBytes;
         if (readBytes)
             thisBuffer->append(buffer, readBytes);
@@ -441,7 +441,7 @@ int   Interpreter::writeConnection(t_fd fd)
         if (writtenBytes < 0)
         {
             //std::cout << "client disconnected mid writing" << std::endl;
-            return (0); // client disconnected mid writing, close connection at the next epoll round
+            return (0); // client disconnected mid writing, close connection at the m_next epoll round
         }
             
             
