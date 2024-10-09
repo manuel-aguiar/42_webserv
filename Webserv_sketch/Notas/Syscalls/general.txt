@@ -1,0 +1,8 @@
+
+
+CGI will resut in fork + execve
+so ALL fds must set the flag CLOEXEC to make sure they are closed when fork is
+called and avoid fd leaks
+
+epoll_create1(EPOLL_CLOEXEC) -> ou fcntl.... dois calls.... not sure if legal
+socket (.., .., SOCK_STREAM | SOCK_CLOEXEC)

@@ -1,0 +1,29 @@
+
+getaddrinfo
+
+
+NOT REALLY A SYSTEMCALL
+
+https://jameshfisher.com/2018/02/03/what-does-getaddrinfo-do/
+
+
+it is a DNS lookup, tries to fetch the possible addresses to communicate with the node through a port
+
+In the example from the website, when connecting to google.com, the function uses a lot of system calls
+to liunk libraries that hold the files in the file system that have the DNS servers place
+
+contacts the DNS to get the address via socket, then verifies the conenction by opening another socket
+for each relevant address and returns a linked list to all the relevant addresses
+
+
+not thread-safe
+
+as a server listening, via a single set of addresses (IPv4) for connections from anywhere (0.0.0.0)
+theere is only one set of addresses that is relevant and we can place those inputs in the sockaddr_in struct
+
+The client however, should use getaddrinfo to see what sort of ways does the webserver allow to communciate through
+
+For us, not really relevant
+
+
+In any case, getaddrinfo should only be used to setup the listening sockets for our viirtual hosts and nothing else
