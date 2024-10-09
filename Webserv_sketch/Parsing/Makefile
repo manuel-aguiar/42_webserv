@@ -1,7 +1,7 @@
 .SILENT:
 NAME =			a.out
 CXX =			c++
-CXXFLAGS =		-Wall -Wextra -Werror -g #-std=c++98
+CXXFLAGS =		-Wall -Wextra -Werror -g -std=c++98 #-fsanitize=address
 SRC =			./src/main.cpp ./src/ConfigHandler.cpp ./src/ServerConfig.cpp ./src/utils.cpp
 INCLUDE_DIR =	./inc/
 

@@ -71,6 +71,11 @@ int		ConfigHandler::parse_config_file()
 
 	if (!updateFile())
 		return (0);
+	if (_serverCount)
+	{
+		std::cerr << "Error: re-parsing not implemented" << std::endl;
+		return (0);
+	}
 	while (std::getline(_file, line))
 	{
 		current_line++;
@@ -87,7 +92,7 @@ int		ConfigHandler::parse_config_file()
 			}
 			ServerConfig Server;
 			_serverCount++;
-			_servers[_serverCount] = Server;
+			_servers.push_back(Server);
 			bracket_level++;
 			current_server = _serverCount;
 		}
@@ -103,6 +108,7 @@ int		ConfigHandler::parse_config_file()
 				bracket_level--;
 			else
 			{
+				_servers[_serverCount - 1].set_defaults();
 				current_server = 0;
 				bracket_level--;
 			}
@@ -162,7 +168,7 @@ void	ConfigHandler::print_server_config(const ServerConfig &server)
 
 void	ConfigHandler::print_servers_config()
 {
-	for (size_t i = 0; i < _serverCount; i++)
+	for (size_t i = 0; i < _servers.size(); i++)
 	{
 		std::cout << "=== Server " << i << " parameters ===" << std::endl;
 		print_server_config(_servers[i]);

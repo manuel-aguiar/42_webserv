@@ -10,6 +10,7 @@
 
 # define DEFAULT_CONFIG_PATH "webserv.conf"
 # define DEFAULT_HOST "127.0.0.1"
+# define DEFAULT_PORT "8080"
 # define DEFAULT_CLIENT_BODY_SIZE "1M" // 1MB
 
 // Conversion
