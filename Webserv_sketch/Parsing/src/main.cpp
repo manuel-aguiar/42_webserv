@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	ConfigHandler	configHandler;
 
 	// Set config-file path
-	if (argc > 1)
+	if (argc == 2)
 		configHandler.setConfigPath(argv[1]);
 	else
 		configHandler.setConfigPath(DEFAULT_CONFIG_PATH);

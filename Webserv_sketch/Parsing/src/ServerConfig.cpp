@@ -12,18 +12,20 @@ ServerConfig::ServerConfig()
 	_keys["root"]				= &ServerConfig::setRootPath;
 	_keys["error_pages"]		= &ServerConfig::addErrorPage;
 
-	_config["host"].insert(DEFAULT_HOST);
+	_config["host"];
 	_config["port"];
 	_config["server_names"];
-	_config["client_body_size"].insert(DEFAULT_CLIENT_BODY_SIZE);
+	_config["client_body_size"];
 	_config["root"];
 	_config["error_pages"];
 	// Locations
 
 }
 
-bool	ServerConfig::setHost(const std::string &value)
+bool	ServerConfig::setHost(const std::string &value, const int &flag)
 {
+	if (!flag && !_config["host"].empty())
+		throw (std::invalid_argument("host already set"));
 	if (!validate_ipv4(value))
 		throw (std::invalid_argument("not an ipv4 address"));
 	_config["host"].clear();
@@ -31,16 +33,20 @@ bool	ServerConfig::setHost(const std::string &value)
 	return (1);
 }
 
-bool	ServerConfig::setRootPath(const std::string &value)
+bool	ServerConfig::setRootPath(const std::string &value, const int &flag)
 {
+	if (!flag && !_config["root"].empty())
+		throw (std::invalid_argument("root path already set"));
 	// is there any check to do here?
 	_config["root"].clear();
 	_config["root"].insert(value);
 	return (1);
 }
 
-bool	ServerConfig::setClientBodySize(const std::string &value)
+bool	ServerConfig::setClientBodySize(const std::string &value, const int &flag)
 {
+	if (!flag && !_config["client_body_size"].empty())
+		throw (std::invalid_argument("client body size already set"));
 	try {
 		parse_size(value);
 	}
@@ -54,8 +60,9 @@ bool	ServerConfig::setClientBodySize(const std::string &value)
 	return (1);
 }
 
-bool ServerConfig::addPort(const std::string &value)
+bool ServerConfig::addPort(const std::string &value, const int &flag)
 {
+	(void)flag;
 	if (!is_number(value) || (_config["port"].find(value) != _config["port"].end()))
 		return (0);
 	_config["port"].insert(value);
@@ -63,8 +70,9 @@ bool ServerConfig::addPort(const std::string &value)
 	return (1);
 }
 
-bool ServerConfig::addServerName(const std::string &value)
+bool ServerConfig::addServerName(const std::string &value, const int &flag)
 {
+	(void)flag;
 	// are there any more checks to do here?
 	if ((_config["server_names"].find(value) != _config["server_names"].end()))
 		return (0);
@@ -73,8 +81,9 @@ bool ServerConfig::addServerName(const std::string &value)
 	return (1);
 }
 
-bool	ServerConfig::addErrorPage(const std::string &value)
+bool	ServerConfig::addErrorPage(const std::string &value, const int &flag)
 {
+	(void)flag;
 	std::stringstream	ss;
 	std::string			error_code;
 	std::string			path; 
@@ -97,7 +106,7 @@ bool	ServerConfig::addConfigValue(const std::string &key, const std::string &val
 {
 	if (_keys.find(key) == _keys.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*_keys[key])(value);
+	(this->*_keys[key])(value, 0);
 
 	return (1);
 }
@@ -160,4 +169,18 @@ std::string	ServerConfig::getRoot() const
 		return (*it->second.begin());
 	else
 		throw std::out_of_range("Key not found");
+}
+
+void	ServerConfig::set_defaults(const int &flag)
+{
+	try {
+		setHost(DEFAULT_HOST, flag);
+	}
+	catch (std::exception &e) {}
+	try {
+		setClientBodySize(DEFAULT_CLIENT_BODY_SIZE, flag);
+	}
+	catch (std::exception &e) {}
+	if (_config["port"].empty())
+		_config["port"].insert(DEFAULT_PORT);
 }
