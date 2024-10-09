@@ -1,5 +1,0 @@
-bind(): Address already in use
-
-
-there can only be one socket listening for an IP at a specific Port
-run server, close, rerun -> get this error, have to wait until the kernel clears resources
