@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:00:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:49:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <cstring>
 #include <string>
-#include "../DynArray.hpp"
+#include "../DynArraySVO.hpp"
 #include <vector>
 
 #include "../../../MemoryPool/MemoryPool.h"
@@ -53,9 +53,9 @@ class Dummy
 			return (*this);
 		};
 
-        const char* print()
+        void print()
         {
-            return("dummy: hey there ");
+            std::cout << "              Dummy: " << value << std::endl;
         }
 
 	private:
@@ -197,7 +197,7 @@ int main()
     {
         std::cout << "          myvector:" << std::endl;
 
-        DynArraySVO<Dummy> vec;
+        DynArraySVO<Dummy, 10> vec;
         vec.emplace_back(5);
         vec.emplace_back(5);
         vec.emplace_back(5);
@@ -214,8 +214,8 @@ int main()
         Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
 
         Nginx_PoolAllocator<Dummy> alloc(pool);
-        MyVectorInPool<Dummy>::type* vec = (MyVectorInPool<Dummy>::type*)pool->allocate(sizeof(MyVectorSVOInPool<Dummy>::type), sizeof(MyVectorSVOInPool<Dummy>::type));
-        new (vec) MyVectorSVOInPool<Dummy>::type(alloc);
+        MyVectorSVOInPool<Dummy, 1>::type* vec = (MyVectorSVOInPool<Dummy, 1>::type*)pool->allocate(sizeof(MyVectorSVOInPool<Dummy, 1>::type), sizeof(MyVectorSVOInPool<Dummy, 1>::type));
+        new (vec) MyVectorSVOInPool<Dummy, 1>::type(alloc);
 
         vec->emplace_back(5);
         vec->emplace_back(5);
@@ -226,7 +226,7 @@ int main()
         vec->emplace_back(5);
         vec->emplace_back(5);
 
-        vec->~DynArray();
+        vec->~DynArraySVO();
         pool->destroy();
     }
 
@@ -239,8 +239,14 @@ int main()
         Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
 
         Nginx_PoolAllocator<Base*> alloc(pool);
-        MyVectorInPool<Base*>::type* vec = (MyVectorInPool<Base*>::type*)pool->allocate(sizeof(MyVectorSVOInPool<Base*>::type), sizeof(MyVectorSVOInPool<Base*>::type));
-        new (vec) MyVectorSVOInPool<Base*>::type(alloc);
+
+        MyVectorSVOInPool<Base*, 1>::type* 
+        vec =  (MyVectorSVOInPool<Base*, 1>::type*)
+            pool->allocate(
+                    sizeof(MyVectorSVOInPool<Base*, 1>::type), 
+                    sizeof(MyVectorSVOInPool<Base*, 1>::type)
+        );
+        new (vec) MyVectorSVOInPool<Base*, 1>::type(alloc);
 
         vec->emplace_front(new Base(5));
         vec->emplace_front(new Base(6));
@@ -251,23 +257,50 @@ int main()
 
         std::cout << "              printing vector, expecting: Der3, Der2, Der1, Base7, Base6, Base5" << std::endl;
 
-        for (MyVectorSVOInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
+        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
         {
             (*iter)->print();
         }
 
-        for (MyVectorSVOInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
+        std::cout << "              remove back, insert front" << std::endl;
+
+        delete (vec->back());
+        vec->pop_back();
+        delete (vec->back());
+        vec->pop_back();
+        vec->emplace_front(new Base(8));
+        vec->emplace_front(new Base(9));
+
+        std::cout << "              printing vector, expecting: Bse9, Bse8 Der3, Der2, Der1, Base7" << std::endl;
+
+        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
+        {
+            (*iter)->print();
+        }
+
+        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
         {
             delete (*iter);
         }
 
-        vec->~DynArray();
+        vec->~DynArraySVO();
         pool->destroy();
     }
 
     
     std::cout << "              destroyed my memoryPool vector" << std::endl << std::endl;
 
+
+    return (0);
+}
+
+int main1()
+{
+    DynArraySVO<Dummy, 2> vec;
+
+    vec.push_front(5);
+    vec.push_front(6);
+    vec.push_front(7);
 
     return (0);
 }
