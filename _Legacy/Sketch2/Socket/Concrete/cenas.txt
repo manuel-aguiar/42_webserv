@@ -1,0 +1,39 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    cenas.txt                                          :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/09/18 14:55:57 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/09/18 15:02:16 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Commum: onClose/onClose event is equal for everyone:
+    unsubscribe from epoll
+    interpreter releases pending resources associated with that fd
+    remove from openFd list
+    close(fd)
+
+
+Server, listen and bind, i mean..... two calls done at the beginning, no one cares
+could be an onOpen event, at best
+
+Client, connect, same, done at the beginning, could be an onOpen event
+
+Read and Write, that's what all file descriptors do
+
+
+fd's are just fds, could be just a std::set
+
+
+FileDescriptorManager doesn't care what they do
+
+EventManager doesn't need to store those that are at the epoll
+just store all
+
+EventManager can save an array of events and share pointers to that
+
+
+We can 
