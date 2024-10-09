@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 12:53:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 13:13:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,22 +54,34 @@ class DynArraySVO
 		{
 			if (this == &other)
 				return *this;
+
 			if (m_heapArray)
 			{
 				for (int i = 0; i < m_size; i++)
 					m_allocator.destroy(m_heapArray + i);
 				m_allocator.deallocate(m_heapArray, m_capacity);
+				m_heapArray = NULL;
+			}
+			else
+			{
+				for (int i = 0; i < m_size; i++)
+					m_stackArray[i].~T();
+			}
+
+			
+			if (other.m_heapArray)
+			{
 				m_heapArray = m_allocator.allocate(other.m_capacity);
 				for (int i = 0; i < other.m_size; i++)
 					m_allocator.construct(m_heapArray + i, other.m_heapArray[i]);
 			}
 			else
 			{
-				for (int i = 0; i < m_size; i++)
-					m_stackArray[i].~T();
 				for (int i = 0; i < other.m_size; i++)
-					m_allocator.construct(&m_stackArray[i], other.m_stackArray[i]);
+					new (&m_stackArray[i]) T(other.m_stackArray[i]);
 			}
+
+
 			m_size = other.m_size;
 			m_capacity = other.m_capacity;
 
