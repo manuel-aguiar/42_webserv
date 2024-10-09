@@ -61,10 +61,10 @@ struct MyVectorInPool
     typedef DynArray<T, Nginx_PoolAllocator<T> > type;
 };
 
-template <typename T, typename stackBuf, typename Allocator>
+template <typename T, size_t stackBuf, typename Allocator>
 class DynArraySVO;
 
-template <typename T, typename stackBuf >
+template <typename T, size_t stackBuf >
 struct MyVectorSVOInPool
 {
     typedef DynArraySVO<T, stackBuf, Nginx_PoolAllocator<T> > type;

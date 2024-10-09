@@ -15,9 +15,9 @@
 # define WEBSERVER_VECTOR_HPP
 
 #include <memory>
-template <typename T, typename Allocator = std::allocator<T> >
+template <typename T, size_t stackBuf = 10, typename Allocator = std::allocator<T> >
 class DynArraySVO;
 
-# include "DynArray.tpp"
+# include "DynArraySVO.tpp"
 
 #endif
