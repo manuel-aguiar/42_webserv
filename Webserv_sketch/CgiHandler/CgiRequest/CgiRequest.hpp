@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/07 11:12:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:20:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ class CgiRequest
         void    execute();
         void    debugPrintInputs();
         
-        Nginx_MemoryPool*       _requestDataPool;
-        Nginx_PoolAllocator<char>   _strAlloc;
+        Nginx_MemoryPool*           m_requestDataPool;
+        Nginx_PoolAllocator<char>   m_strAlloc;
         
-        const char*       _scriptPath;
-        char**            _argv;
-        char**            _envp;
-        const char*       _stdinData;
+        const char*                 m_scriptPath;
+        char**                      m_argv;
+        char**                      m_envp;
+        const char*                 m_stdinData;
 
 };
 
