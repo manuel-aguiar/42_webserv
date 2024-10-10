@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SharedPtr.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/12 07:45:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 15:48:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/10 09:46:24 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,19 @@
 # define SHAREDPTR_HPP
 
 # include <cstdlib>
-# include <stdexcept>   
+# include <stdexcept>
 
 #include "UniquePtr.hpp"
 #include "DefaultDeleters.hpp"
 
 
-template <typename T, typename Del = DefaultDeleter<T> >
+template <typename T, typename Allocator = std::allocator<T> >
 class SharedPtr
 {
     public:
-        SharedPtr(T* ptr = NULL, Del deleter = Del()) : _ptr(ptr), _refCount(new int(1)), _deleter(deleter) {}
-        SharedPtr (UniquePtr<T>& unique) : _ptr(unique.release()), _refCount(new int(1)), _deleter(unique.getDeleter()) {}
-        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _deleter(other._deleter) { ++(*_refCount); }
-        
+        SharedPtr(T* ptr = NULL, Allocator alloc = Allocator()) : _ptr(ptr), _refCount(new int(1)), _allocator(alloc) {}
+        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _allocator(other._allocator) { ++(*_refCount); }
+
         SharedPtr& operator=(const SharedPtr& other)
         {
             if (this != &other)
@@ -84,16 +83,15 @@ class SharedPtr
             return temp;
         }
 
-        Del getDeleter() const { return (_deleter); }
 
         // Reset the managed resource to a new one
-        void reset(T* newPtr = NULL, Del deleter = Del())
+        void reset(T* newPtr = NULL, Allocator alloc = Allocator())
         {
             if (_ptr != newPtr)
             {
                 _decrementRefCount();
                 _ptr = newPtr;
-                _deleter = deleter;
+                _allocator = alloc;
                 _refCount = new int(1);
             }
         }
@@ -120,9 +118,9 @@ class SharedPtr
         }
 
     private:
-        T*      _ptr;
-        int*    _refCount;
-        Del     _deleter;
+        T*     			_ptr;
+        int*    		_refCount;
+        Allocator     	_allocator;
 
         void _decrementRefCount()
         {
@@ -130,52 +128,65 @@ class SharedPtr
             {
                 if (_ptr)
                 {
-                    _deleter(_ptr);
+                    _allocator.destroy(_ptr);
+					_allocator.deallocate(_ptr, 1);
                     _ptr = NULL;
                 }
                 if (_refCount)
                 {
                     delete _refCount;
                     _refCount = NULL;
-                }   
+                }
             }
         }
 };
 
-template <typename T>
-SharedPtr<T> make_SharedPtr()
-{
-    return (SharedPtr<T>(new T()));
+// Function to create a SharedPtr with no arguments
+template <typename T, typename Allocator>
+SharedPtr<T> make_SharedPtr(Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(); // Default constructor
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1>
-SharedPtr<T> make_SharedPtr(Arg1 arg1)
-{
-    return SharedPtr<T>(new T(arg1));
+// Function to create a SharedPtr with one argument
+template <typename T, typename Arg1, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1); // Constructor with one argument
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2)
-{
-    return SharedPtr<T>(new T(arg1, arg2));
+// Function to create a SharedPtr with two arguments
+template <typename T, typename Arg1, typename Arg2, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2); // Constructor with two arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3));
+// Function to create a SharedPtr with three arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3); // Constructor with three arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4));
+// Function to create a SharedPtr with four arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3, arg4); // Constructor with four arguments
+    return SharedPtr<T>(ptr);
 }
 
-template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
-{
-    return SharedPtr<T>(new T(arg1, arg2, arg3, arg4, arg5));
+// Function to create a SharedPtr with five arguments
+template <typename T, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Allocator>
+SharedPtr<T> make_SharedPtr(Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Allocator alloc = std::allocator<T>()) {
+    T* ptr = alloc.allocate(1);
+    new (ptr) T(arg1, arg2, arg3, arg4, arg5); // Constructor with five arguments
+    return SharedPtr<T>(ptr);
 }
 
 // Template specialization for arrays
@@ -183,10 +194,10 @@ template <typename T, typename Del>
 class SharedPtr<T[], Del>
 {
     public:
-        SharedPtr(T* ptr = NULL, Del deleter = Del()) : _ptr(ptr), _refCount(new int(1)), _deleter(deleter) {}
-        SharedPtr (UniquePtr<T[]>& unique) : _ptr(unique.release()), _refCount(new int(1)), _deleter(unique.getDeleter()) {}
-        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _deleter(other._deleter) { ++(*_refCount); }
-        
+        SharedPtr(T* ptr = NULL, Del deleter = Del()) : _ptr(ptr), _refCount(new int(1)), _allocator(deleter) {}
+        SharedPtr (UniquePtr<T[]>& unique) : _ptr(unique.release()), _refCount(new int(1)), _allocator(unique.getDeleter()) {}
+        SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _refCount(other._refCount), _allocator(other._allocator) { ++(*_refCount); }
+
         SharedPtr& operator=(const SharedPtr& other)
         {
             if (this != &other)
@@ -225,7 +236,7 @@ class SharedPtr<T[], Del>
                 _decrementRefCount();
                 _ptr = other.release();
                 _refCount = new int(1);
-                _deleter = other.getDeleter();
+                _allocator = other.getDeleter();
                 ++(*_refCount);
             }
         }
@@ -238,7 +249,7 @@ class SharedPtr<T[], Del>
             return temp;
         }
 
-        Del getDeleter() const { return (_deleter); }
+        Del getDeleter() const { return (_allocator); }
 
         // Reset the managed resource to a new one
         void reset(T* newPtr = NULL, Del deleter = Del())
@@ -247,7 +258,7 @@ class SharedPtr<T[], Del>
             {
                 _decrementRefCount();
                 _ptr = newPtr;
-                _deleter = deleter;
+                _allocator = deleter;
                 _refCount = new int(1);
             }
         }
@@ -269,7 +280,7 @@ class SharedPtr<T[], Del>
     private:
         T*      _ptr;
         int*    _refCount;
-        Del     _deleter;
+        Del     _allocator;
 
         void _decrementRefCount()
         {
@@ -284,7 +295,7 @@ class SharedPtr<T[], Del>
                 {
                     delete _refCount;
                     _refCount = NULL;
-                }   
+                }
             }
         }
 };

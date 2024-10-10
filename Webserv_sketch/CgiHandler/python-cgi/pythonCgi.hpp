@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/07 11:12:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:26:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,20 @@ class PythonCgi
             PY_CGIENV_COUNT           
         } PyCgiEnv;
 
-        Nginx_MemoryPool*           _localDataPool;
-        Nginx_PoolAllocator<char>       _localAllocator;
+        Nginx_MemoryPool*               m_localDataPool;
+        Nginx_PoolAllocator<char>       m_localAllocator;
 
         typedef std::basic_string<char, std::char_traits<char>, Nginx_PoolAllocator<char> > t_poolString;
-
+        
         typedef std::map<t_poolString, PyCgiEnv, std::less<t_poolString>, MPool_FixedElem<std::pair<t_poolString, PyCgiEnv> > >   mapHeaderToEnum;
         typedef mapHeaderToEnum::iterator                                                                     mapHeaderToEnum_Iter;
         typedef std::map<PyCgiEnv, t_poolString*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, t_poolString*> > > mapEnumToHeader;
         typedef mapEnumToHeader ::iterator                                                                     mapEnumToHeader_Iter;
 
 
-        mapHeaderToEnum             _headersToEnum;
-        mapEnumToHeader             _enumToHeaders;
-        const t_poolString          _pyBin;
+        mapHeaderToEnum             m_headersToEnum;
+        mapEnumToHeader             m_enumToHeaders;
+        const t_poolString          m_pyBin;
 
         void    setupMapEntry(const char *entry, PyCgiEnv enumerator);
 

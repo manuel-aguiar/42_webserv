@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:44:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/07 11:46:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/09 14:20:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,27 @@
 #include "../python-cgi/pythonCgi.hpp"
 
 CgiRequest::CgiRequest() :
-    _requestDataPool(Nginx_MemoryPool::create(4096)),
-    _strAlloc(_requestDataPool),
-    _argv(NULL),
-    _envp(NULL),
-    _stdinData(NULL)
+    m_requestDataPool(Nginx_MemoryPool::create(4096)),
+    m_strAlloc(m_requestDataPool),
+    m_argv(NULL),
+    m_envp(NULL),
+    m_stdinData(NULL)
 {
     
 }
 
 CgiRequest::~CgiRequest()
 {
-    _requestDataPool->destroy();
+    m_requestDataPool->destroy();
 }
 
 void    CgiRequest::reset()
 {
-    _requestDataPool->reset();
-    _argv = NULL;
-    _envp = NULL;
-    _stdinData = NULL;
-    _scriptPath = NULL;
+    m_requestDataPool->reset();
+    m_argv = NULL;
+    m_envp = NULL;
+    m_stdinData = NULL;
+    m_scriptPath = NULL;
 }
 
 void CgiRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
@@ -46,12 +46,12 @@ void CgiRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
 void CgiRequest::debugPrintInputs()
 {
     std::cout << "argv: " << std::endl;
-    for (int i = 0; _argv[i]; i++)
-        std::cout << _argv[i] << std::endl;
+    for (int i = 0; m_argv[i]; i++)
+        std::cout << m_argv[i] << std::endl;
     std::cout << "envp: " << std::endl;
-    for (int i = 0; _envp[i]; i++)
-        std::cout << _envp[i] << std::endl;
-    std::cout << "stdinData: " << _stdinData << std::endl;
+    for (int i = 0; m_envp[i]; i++)
+        std::cout << m_envp[i] << std::endl;
+    std::cout << "stdinData: " << m_stdinData << std::endl;
 }
 
 void   CgiRequest::execute()
@@ -76,7 +76,7 @@ void   CgiRequest::execute()
         close(pipefd[1]); // Close the output side of the pipe in the child
 
         // Execute the CGI script
-        execve(_argv[0], _argv, _envp);
+        execve(m_argv[0], m_argv, m_envp);
 
         // If execve fails
         std::cerr << "Exec failed: " << strerror(errno) << std::endl;
@@ -99,11 +99,11 @@ void   CgiRequest::execute()
 }
 
 CgiRequest::CgiRequest(const CgiRequest &other) : 
-    _requestDataPool(other._requestDataPool),
-    _strAlloc(other._strAlloc),
-    _argv(other._argv),
-    _envp(other._envp),
-    _stdinData(other._stdinData)
+    m_requestDataPool(other.m_requestDataPool),
+    m_strAlloc(other.m_strAlloc),
+    m_argv(other.m_argv),
+    m_envp(other.m_envp),
+    m_stdinData(other.m_stdinData)
 {
     *this = other;
 }

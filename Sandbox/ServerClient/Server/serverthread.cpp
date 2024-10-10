@@ -161,18 +161,18 @@ std::vector<std::pair<int, int> > WebServerSignalHandler::_pipes;
 class RemoteClient
 {
 	public:
-		RemoteClient() : m_fd(-1), _event((struct epoll_event) {}) {}
-		RemoteClient(const int fd) : m_fd(fd), _event((struct epoll_event) {}) {}
-		RemoteClient(const int fd, const struct epoll_event event) : m_fd(fd), _event(event) {}
+		RemoteClient() : m_fd(-1), m_event((struct epoll_event) {}) {}
+		RemoteClient(const int fd) : m_fd(fd), m_event((struct epoll_event) {}) {}
+		RemoteClient(const int fd, const struct epoll_event event) : m_fd(fd), m_event(event) {}
 		~RemoteClient() {};
 		RemoteClient(const RemoteClient& copy) : m_fd(copy.m_fd) {(void)copy;}
-		RemoteClient& operator=(const RemoteClient& assign) {if (this == &assign) return (*this); m_fd = assign.m_fd; _event = assign._event; return (*this);}
+		RemoteClient& operator=(const RemoteClient& assign) {if (this == &assign) return (*this); m_fd = assign.m_fd; m_event = assign.m_event; return (*this);}
 
-		void setEvent(const struct epoll_event event) {_event = event;}
-		struct epoll_event& getEvent() {return (_event);}
+		void setEvent(const struct epoll_event event) {m_event = event;}
+		struct epoll_event& getEvent() {return (m_event);}
 	private:
 		int		 			m_fd;
-		struct epoll_event	_event;
+		struct epoll_event	m_event;
 };
 
 void closeconnections(std::map<int, RemoteClient>& connfds, int epollfd)

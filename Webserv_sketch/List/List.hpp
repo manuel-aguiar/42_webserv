@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                       :+:      :+:    :+:   */
+/*   List.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/08 09:55:41 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/10 10:41:30 by manuel            #+#    #+#             */
+/*   Updated: 2024/10/10 11:12:58 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERVER_DYNARRAY_SVO_HPP
+#ifndef LIST_HPP
 
-# define WEBSERVER_DYNARRAY_SVO_HPP
+# define LIST_HPP
 
 #include <memory>
-template <typename T, size_t stackBuf = 10, typename Allocator = std::allocator<T> >
-class DynArraySVO;
 
-# include "DynArraySVO.tpp"
+template <typename T, typename Allocator = std::allocator<T> >
+class List;
+
+# include "List.tpp"
 
 #endif
