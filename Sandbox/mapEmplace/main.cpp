@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:27:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 10:39:48 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 17:53:51 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,24 +175,10 @@ int main3()
 
 int main(void)
 {
-    Nginx_MemoryPool*                   pool = Nginx_MemoryPool::create(4096);
-    Nginx_PoolAllocator<char>           allocChar(pool);
-    Nginx_PoolAllocator<StringInPool>   allocString(pool);
+    std::map<int, int> map1;
+	std::map<std::string, std::string> map2;
 
-
-
-
-
-    std::cout  << "              testing map insert, just pair" << std::endl;
-    {
-        std::map<int, StringInPool, std::less<int>,  Nginx_PoolAllocator<StringInPool>  > map(std::less<int>(), allocString);
-		StringInPool str("super long string that happens to be bigger than internal buffer", allocChar);
-
-        map.insert(std::pair<int, StringInPool>(1, str));
-    }
-
-
-	pool->destroy();
+	std::cout << "map1 sizeof: " << sizeof(map1) << "map2 sizeof: " << sizeof(map2) << std::endl;
 
     return (0);
 }

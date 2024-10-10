@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 16:09:03 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 16:50:54 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,50 +14,53 @@
 
 # define LIST_TPP
 
-template <typename T>
-class Node
-{
-	public:
-		Node(const T& data) : m_data(data), m_next(NULL), m_prev(NULL) {}
 
-		Node() : m_data (), m_next(NULL), m_prev(NULL) {}
-
-		template<typename Arg1>
-		Node(const Arg1& arg1) : m_data(arg1), m_next(NULL), m_prev(NULL) {}
-
-		template<typename Arg1, typename Arg2>
-		Node(const Arg1& arg1, const Arg2& arg2) : m_data(arg1, arg2), m_next(NULL), m_prev(NULL) {}
-
-		template<typename Arg1, typename Arg2, typename Arg3>
-		Node(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : m_data(arg1, arg2, arg3), m_next(NULL), m_prev(NULL) {}
-
-		Node(const Node& other) : m_data(other.m_data), m_next(other.m_next), m_prev(other.m_prev) {}
-		Node& operator=(const Node& other)
-		{
-			if (this == &other)
-				return (*this);
-			m_data = other.m_data;
-			m_next = other.m_next;
-			m_prev = other.m_prev;
-			return (*this);
-		}
-		~Node()
-		{
-
-		}
-
-		T 		m_data;
-		Node* 	m_next;
-		Node* 	m_prev;
-};
 
 template <typename T, typename Allocator>
 class List
 {
-	typedef typename Allocator::template rebind<Node<T> >::other NodeAllocator;
 
+	private:
+
+		struct Node
+		{
+			Node(const T& data) : m_data(data), m_next(NULL), m_prev(NULL) {}
+
+			Node() : m_data (), m_next(NULL), m_prev(NULL) {}
+
+			template<typename Arg1>
+			Node(const Arg1& arg1) : m_data(arg1), m_next(NULL), m_prev(NULL) {}
+
+			template<typename Arg1, typename Arg2>
+			Node(const Arg1& arg1, const Arg2& arg2) : m_data(arg1, arg2), m_next(NULL), m_prev(NULL) {}
+
+			template<typename Arg1, typename Arg2, typename Arg3>
+			Node(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : m_data(arg1, arg2, arg3), m_next(NULL), m_prev(NULL) {}
+
+			Node(const Node& other) : m_data(other.m_data), m_next(other.m_next), m_prev(other.m_prev) {}
+			Node& operator=(const Node& other)
+			{
+				if (this == &other)
+					return (*this);
+				m_data = other.m_data;
+				m_next = other.m_next;
+				m_prev = other.m_prev;
+				return (*this);
+			}
+			~Node()
+			{
+
+			}
+
+			T 		m_data;
+			Node* 	m_next;
+			Node* 	m_prev;
+		};
+
+	typedef typename Allocator::template rebind<Node >::other NodeAllocator;
 
 	public:
+
 		List(Allocator alloc = Allocator())
 			: m_size(0), m_head(NULL), m_tail(NULL), m_nodeAllocator(NodeAllocator(alloc)) {}
 
@@ -72,7 +75,7 @@ class List
 			if (this == &other)
 				return (*this);
 			clear();
-			Node<T>* current = other.m_head;
+			Node* current = other.m_head;
 			while (current)
 			{
 				push_back(current->m_data);
@@ -90,8 +93,8 @@ class List
 
 		void	clear()
 		{
-			Node<T>* cur;
-			Node<T>* next;
+			Node* cur;
+			Node* next;
 
 			cur = m_head;
 			while (cur)
@@ -108,23 +111,23 @@ class List
 
 		void	push_back(const T& data)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(data);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(data);
 			_insertTail(node);
 			++m_size;
 		}
 
 		void	push_front(const T& data)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(data);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(data);
 			_insertHead(node);
 			++m_size;
 		}
 
 		void	pop_back()
 		{
-			Node<T>* node;
+			Node* node;
 
 			if (!m_tail)
 				return ;
@@ -141,7 +144,7 @@ class List
 
 		void	pop_front()
 		{
-			Node<T>* node;
+			Node* node;
 
 			if (!m_head)
 				return ;
@@ -158,8 +161,8 @@ class List
 
 		void 	emplace_back()
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>();
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node();
 			_insertTail(node);
 			++m_size;
 		}
@@ -167,8 +170,8 @@ class List
 		template <typename Arg1 >
 		void	emplace_back(const Arg1& arg1)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1);
 			_insertTail(node);
 			++m_size;
 		}
@@ -176,8 +179,8 @@ class List
 		template <typename Arg1, typename Arg2 >
 		void	emplace_back(const Arg1& arg1, const Arg2& arg2)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1, arg2);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1, arg2);
 			_insertTail(node);
 			++m_size;
 		}
@@ -185,16 +188,16 @@ class List
 		template <typename Arg1, typename Arg2, typename Arg3 >
 		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1, arg2, arg3);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1, arg2, arg3);
 			_insertTail(node);
 			++m_size;
 		}
 
 		void 	emplace_front()
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>();
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node();
 			_insertHead(node);
 			++m_size;
 		}
@@ -202,8 +205,8 @@ class List
 		template <typename Arg1 >
 		void	emplace_front(const Arg1& arg1)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1);
 			_insertHead(node);
 			++m_size;
 		}
@@ -211,8 +214,8 @@ class List
 		template <typename Arg1, typename Arg2 >
 		void	emplace_front(const Arg1& arg1, const Arg2& arg2)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1, arg2);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1, arg2);
 			_insertHead(node);
 			++m_size;
 		}
@@ -220,8 +223,8 @@ class List
 		template <typename Arg1, typename Arg2, typename Arg3 >
 		void	emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
 		{
-			Node<T>* node = m_nodeAllocator.allocate(1);
-			new (node) Node<T>(arg1, arg2, arg3);
+			Node* node = m_nodeAllocator.allocate(1);
+			new (node) Node(arg1, arg2, arg3);
 			_insertHead(node);
 			++m_size;
 		}
@@ -230,9 +233,9 @@ class List
         class iterator
         {
             public:
-                typedef Node<T>                                   value_type;
-                typedef Node<T>*                                  pointer;
-                typedef Node<T>&                                  reference;
+                typedef Node                                   value_type;
+                typedef Node*                                  pointer;
+                typedef Node&                                  reference;
 
                 iterator(pointer ptr) : m_ptr(ptr) {}
                 iterator(const iterator& other) : m_ptr(other.m_ptr) {}
@@ -279,11 +282,11 @@ class List
 
 	private:
 		size_t					m_size;
-		Node<T>* 				m_head;
-		Node<T>* 				m_tail;
+		Node* 				m_head;
+		Node* 				m_tail;
 		NodeAllocator			m_nodeAllocator;
 
-		void 	_insertTail(Node<T>* node)
+		void 	_insertTail(Node* node)
 		{
 			if (!m_head)
 			{
@@ -298,7 +301,7 @@ class List
 			}
 		}
 
-		void	_insertHead(Node<T>* node)
+		void	_insertHead(Node* node)
 		{
 			if (!m_head)
 			{
