@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 12:38:23 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 13:58:35 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ class List
 
 	public:
 		List(Allocator alloc = Allocator())
-			: m_head(NULL), m_tail(NULL), m_nodeAllocator(NodeAllocator(alloc)) {}
+			: m_size(0), m_head(NULL), m_tail(NULL), m_nodeAllocator(NodeAllocator(alloc)) {}
 
 		List(const List& other)
-			: m_head(NULL), m_tail(NULL), m_nodeAllocator(other.m_nodeAllocator)
+			: m_size(0), m_head(NULL), m_tail(NULL), m_nodeAllocator(other.m_nodeAllocator)
 		{
 			*this = other;
 		}
@@ -86,6 +86,8 @@ class List
 			clear();
 		}
 
+		size_t	size() const { return (m_size); }
+
 		void	clear()
 		{
 			Node<T>* cur;
@@ -99,6 +101,7 @@ class List
 				m_nodeAllocator.deallocate(cur, 1);
 				cur = next;
 			}
+			m_size = 0;
 			m_head = NULL;
 			m_tail = NULL;
 		}
@@ -108,6 +111,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(data);
 			_insertTail(node);
+			++m_size;
 		}
 
 		void	push_front(const T& data)
@@ -115,6 +119,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(data);
 			_insertHead(node);
+			++m_size;
 		}
 
 		void	pop_back()
@@ -131,6 +136,7 @@ class List
 				m_head = NULL;
 			m_nodeAllocator.destroy(node);
 			m_nodeAllocator.deallocate(node, 1);
+			--m_size;
 		}
 
 		void	pop_front()
@@ -147,6 +153,7 @@ class List
 				m_tail = NULL;
 			m_nodeAllocator.destroy(node);
 			m_nodeAllocator.deallocate(node, 1);
+			--m_size;
 		}
 
 		void 	emplace_back()
@@ -154,6 +161,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>();
 			_insertTail(node);
+			++m_size;
 		}
 
 		template <typename Arg1 >
@@ -162,6 +170,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1);
 			_insertTail(node);
+			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2 >
@@ -170,6 +179,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1, arg2);
 			_insertTail(node);
+			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
@@ -178,6 +188,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1, arg2, arg3);
 			_insertTail(node);
+			++m_size;
 		}
 
 		void 	emplace_front()
@@ -185,6 +196,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>();
 			_insertHead(node);
+			++m_size;
 		}
 
 		template <typename Arg1 >
@@ -193,6 +205,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1);
 			_insertHead(node);
+			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2 >
@@ -201,6 +214,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1, arg2);
 			_insertHead(node);
+			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
@@ -209,6 +223,7 @@ class List
 			Node<T>* node = m_nodeAllocator.allocate(1);
 			new (node) Node<T>(arg1, arg2, arg3);
 			_insertHead(node);
+			++m_size;
 		}
 
 
@@ -263,7 +278,7 @@ class List
 		iterator end() { return iterator(NULL); }
 
 	private:
-
+		size_t					m_size;
 		Node<T>* 				m_head;
 		Node<T>* 				m_tail;
 		NodeAllocator			m_nodeAllocator;
