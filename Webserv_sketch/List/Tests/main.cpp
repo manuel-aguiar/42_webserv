@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 11:56:16 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 12:42:21 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,11 @@ class Dummy
         std::string _name;
 };
 
+#include "../../MemoryPool/MemoryPool.h"
+
 int main(void)
 {
-
+/*
 	{
 		std::cout << "			my list: " << std::endl;
 		List<Dummy> list;
@@ -88,12 +90,68 @@ int main(void)
 		List<Dummy> list;
 
 		list.emplace_back(1);
+		list.emplace_back(1);
+		list.emplace_back(1);
+		list.emplace_back(1);
+
+		List<Dummy>::iterator it = list.begin();
+		(void)it;
+
 
 
 		std::cout << "			finished" << std::endl;
 	}
+*/
 
+	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
+
+/*
+	{
+		std::cout << "			my list EMNPLACE BACK: " << std::endl;
+		Nginx_PoolAllocator<Dummy> alloc(pool);
+		List<Dummy, Nginx_PoolAllocator<Dummy> > list(alloc);
+
+		list.emplace_back(1);
+		list.emplace_back(1);
+		list.emplace_back(1);
+		list.emplace_back(1);
+
+		List<Dummy, Nginx_PoolAllocator<Dummy> >::iterator it = list.begin();
+		(void)it;
+
+		std::cout << "			finished" << std::endl;
+	}
+*/
+    Nginx_PoolAllocator<char>           allocChar(pool);	//pool allocator for std::string character arrays
+    Nginx_PoolAllocator<StringInPool>   allocString(pool);	//pool allocator for the std::string iself
+
+
+    std::cout  << "              List of string mempool" << std::endl;
+    {
+        List<StringInPool, Nginx_PoolAllocator<StringInPool> > list(allocString);
+		list.emplace_front("super long string that happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super long sasga happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super long string that happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super longsgasg string that happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super long string that happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super long string that happens to be bigger than internal buffer", allocChar);
+		list.emplace_front("super long string thatasgasgigger than internal buffer", allocChar);
+		list.emplace_front("super long asg be bigger than internal buffer", allocChar);
+		list.emplace_front("super long stasggaagsgasgaagagto be bigger than internal buffer", allocChar);
+
+		for (List<StringInPool, Nginx_PoolAllocator<StringInPool> >::iterator it = list.begin(); it != list.end(); ++it)
+		{
+			std::cout << "              " << it->c_str() << std::endl;
+		}
+	}
+
+	std::cout << "			finished" << std::endl;
+	pool->destroy();
 
 
 	return (0);
 }
+
+/*
+    c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && ./main
+*/

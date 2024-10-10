@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 11:55:38 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 12:38:23 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,27 @@ template <typename T>
 class Node
 {
 	public:
-		Node(const T& data) : data(data), next(NULL), prev(NULL) {}
+		Node(const T& data) : m_data(data), m_next(NULL), m_prev(NULL) {}
 
-		Node() : data (), next(NULL), prev(NULL) {}
+		Node() : m_data (), m_next(NULL), m_prev(NULL) {}
 
 		template<typename Arg1>
-		Node(const Arg1& arg1) : data(arg1), next(NULL), prev(NULL) {}
+		Node(const Arg1& arg1) : m_data(arg1), m_next(NULL), m_prev(NULL) {}
 
 		template<typename Arg1, typename Arg2>
-		Node(const Arg1& arg1, const Arg2& arg2) : data(arg1, arg2), next(NULL), prev(NULL) {}
+		Node(const Arg1& arg1, const Arg2& arg2) : m_data(arg1, arg2), m_next(NULL), m_prev(NULL) {}
 
 		template<typename Arg1, typename Arg2, typename Arg3>
-		Node(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : data(arg1, arg2, arg3), next(NULL), prev(NULL) {}
+		Node(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : m_data(arg1, arg2, arg3), m_next(NULL), m_prev(NULL) {}
 
-		Node(const Node& other) : data(other.data), next(other.next), prev(other.prev) {}
+		Node(const Node& other) : m_data(other.m_data), m_next(other.m_next), m_prev(other.m_prev) {}
 		Node& operator=(const Node& other)
 		{
 			if (this == &other)
 				return (*this);
-			data = other.data;
-			next = other.next;
-			prev = other.prev;
+			m_data = other.m_data;
+			m_next = other.m_next;
+			m_prev = other.m_prev;
 			return (*this);
 		}
 		~Node()
@@ -46,9 +46,9 @@ class Node
 
 		}
 
-		T data;
-		Node* next;
-		Node* prev;
+		T 		m_data;
+		Node* 	m_next;
+		Node* 	m_prev;
 };
 
 template <typename T, typename Allocator>
@@ -75,8 +75,8 @@ class List
 			Node<T>* current = other.m_head;
 			while (current)
 			{
-				push_back(current->data);
-				current = current->next;
+				push_back(current->m_data);
+				current = current->m_next;
 			}
 			return (*this);
 		}
@@ -94,7 +94,7 @@ class List
 			cur = m_head;
 			while (cur)
 			{
-				next = cur->next;
+				next = cur->m_next;
 				m_nodeAllocator.destroy(cur);
 				m_nodeAllocator.deallocate(cur, 1);
 				cur = next;
@@ -124,9 +124,9 @@ class List
 			if (!m_tail)
 				return ;
 			node = m_tail;
-			m_tail = m_tail->prev;
+			m_tail = m_tail->m_prev;
 			if (m_tail)
-				m_tail->next = NULL;
+				m_tail->m_next = NULL;
 			else
 				m_head = NULL;
 			m_nodeAllocator.destroy(node);
@@ -140,9 +140,9 @@ class List
 			if (!m_head)
 				return ;
 			node = m_head;
-			m_head = m_head->next;
+			m_head = m_head->m_next;
 			if (m_head)
-				m_head->prev = NULL;
+				m_head->m_prev = NULL;
 			else
 				m_tail = NULL;
 			m_nodeAllocator.destroy(node);
@@ -211,7 +211,62 @@ class List
 			_insertHead(node);
 		}
 
+
+        class iterator
+        {
+            public:
+                typedef Node<T>                                   value_type;
+                typedef Node<T>*                                  pointer;
+                typedef Node<T>&                                  reference;
+
+                iterator(pointer ptr) : m_ptr(ptr) {}
+                iterator(const iterator& other) : m_ptr(other.m_ptr) {}
+                ~iterator() {}
+
+
+                T& operator*() const { return m_ptr->m_data; }
+                T* operator->() const { return &m_ptr->m_data; }
+
+				bool operator==(const iterator& other) const { return m_ptr == other.m_ptr; }
+				bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
+
+                iterator& operator++()
+                {
+                    m_ptr = m_ptr->m_next;
+                    return *this;
+                }
+
+                iterator operator++(int)
+                {
+                    iterator tmp = *this;
+                    m_ptr = m_ptr->m_next;
+                    return tmp;
+                }
+
+                iterator& operator--()
+                {
+                    m_ptr = m_ptr->m_prev;
+                    return *this;
+                }
+
+                iterator operator--(int)
+                {
+                    iterator tmp = *this;
+                    m_ptr = m_ptr->m_prev;
+                    return tmp;
+                }
+            private:
+                pointer m_ptr;
+        };
+
+		iterator begin() { return iterator(m_head); }
+		iterator end() { return iterator(NULL); }
+
 	private:
+
+		Node<T>* 				m_head;
+		Node<T>* 				m_tail;
+		NodeAllocator			m_nodeAllocator;
 
 		void 	_insertTail(Node<T>* node)
 		{
@@ -222,8 +277,8 @@ class List
 			}
 			else
 			{
-				m_tail->next = node;
-				node->prev = m_tail;
+				m_tail->m_next = node;
+				node->m_prev = m_tail;
 				m_tail = node;
 			}
 		}
@@ -237,15 +292,14 @@ class List
 			}
 			else
 			{
-				m_head->prev = node;
-				node->next = m_head;
+				m_head->m_prev = node;
+				node->m_next = m_head;
 				m_head = node;
 			}
 		}
 
-		Node<T>* 				m_head;
-		Node<T>* 				m_tail;
-		NodeAllocator			m_nodeAllocator;
+
+
 };
 
 
