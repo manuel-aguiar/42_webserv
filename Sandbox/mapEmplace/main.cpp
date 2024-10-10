@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:27:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 10:12:26 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 10:39:48 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,30 +191,6 @@ int main(void)
         map.insert(std::pair<int, StringInPool>(1, str));
     }
 
-
-    std::cout  << "              testing map insert, just pair" << std::endl;
-    {
-        std::map<int, SharedPtr<Dummy> > map;
-        map.insert(std::pair<int, SharedPtr<Dummy> >(1, make_SharedPtr<Dummy, int, std::allocator<Dummy> >(1)));
-    }
-
-    std::cout  << "              testing map insert make pair" << std::endl;
-    {
-        std::map<int, Dummy> map;
-        map.insert(std::make_pair(1, Dummy(1)));
-    }
-
-    std::cout  << "              testing map insert via index" << std::endl;
-    {
-        std::map<int, Dummy> map;
-        map[1] = Dummy(1);
-    }
-
-    std::cout  << "              testing LIST" << std::endl;
-    {
-        std::list<Dummy> list;
-        list.push_back(Dummy(1));
-    }
 
 	pool->destroy();
 
