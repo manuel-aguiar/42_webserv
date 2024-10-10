@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 14:31:36 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/10 14:35:24 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,6 +349,7 @@ int main(void)
 
 
 		}
+
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 

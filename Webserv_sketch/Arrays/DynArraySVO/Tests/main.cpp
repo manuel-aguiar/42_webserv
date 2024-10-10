@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 12:54:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:00:18 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,43 +23,44 @@ class Dummy
 	public:
 		Dummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
 		{
-			std::cout << "dummy constructor" << std::endl;
+			//std::cout << "dummy constructor" << std::endl;
 		};
 
         Dummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
         {
-            std::cout << "dummy parameter constructor" << std::endl;
+            //std::cout << "dummy parameter constructor" << std::endl;
             this->value = value;
         }
 		~Dummy()
 		{
-			std::cout << "dummy destroy" << std::endl; 
-			if (m_data)  delete [] m_data; 
+			//std::cout << "dummy destroy" << std::endl;
+			if (m_data)  delete [] m_data;
 				m_data = NULL;
 		};
 		Dummy(const Dummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
 		{
-			std::cout << "dummy copy" << std::endl; 
+			//std::cout << "dummy copy" << std::endl;
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 		};
 		Dummy& operator=(const Dummy& other)
 		{
 			if (!m_data)
 				m_data = new int [4];
-			std::cout << " dummy copy assignment" << std::endl;
+			//std::cout << " dummy copy assignment" << std::endl;
             value = other.value;
             _name = other._name;
-			std::memcpy(m_data, other.m_data, 4 * sizeof(int)); 
+			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 			return (*this);
 		};
-
-        void print()
+		bool operator==(const Dummy& other) {return (value == other.value && _name == other._name);};
+		bool operator!=(const Dummy& other) {return !(value == other.value && _name == other._name);};
+        const char* print()
         {
-            std::cout << "              Dummy: " << value << std::endl;
+            return("dummy: hey there ");
         }
 
 	private:
-        
+
         int value;
 		int* m_data;
         std::string _name;
@@ -67,16 +68,18 @@ class Dummy
 
 class Base {
 public:
-    Base() : m_data(new int[4]), value(0), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
-        std::cout << "Base constructor" << std::endl;
+    Base() : m_data(new int[4]), value(0), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
+        //std::cout << "Base constructor" << std::endl;
     }
 
-    Base(int value) : m_data(new int[4]), value(value), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
-        std::cout << "Base parameter constructor" << std::endl;
+    Base(int value) : m_data(new int[4]), value(value), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
+        //std::cout << "Base parameter constructor" << std::endl;
     }
 
+	bool operator==(const Base& other) {return (value == other.value && _name == other._name);};
+	bool operator!=(const Base& other) {return !(value == other.value && _name == other._name);};
     virtual ~Base() {
-        std::cout << "Base destroy" << std::endl;
+        //std::cout << "Base destroy" << std::endl;
         if (m_data)
         {
             delete[] m_data;
@@ -85,13 +88,13 @@ public:
     }
 
     Base(const Base& other) : m_data(new int[4]), value(other.value), _name(other._name) {
-        std::cout << "Base copy" << std::endl;
+        //std::cout << "Base copy" << std::endl;
         std::memcpy(m_data, other.m_data, 4 * sizeof(int));
     }
 
     Base& operator=(const Base& other) {
         if (this != &other) {
-            std::cout << "Base copy assignment" << std::endl;
+            //std::cout << "Base copy assignment" << std::endl;
             if (m_data) {
                 delete[] m_data; // Clean up existing data
             }
@@ -109,38 +112,43 @@ public:
     }
 
 protected:
-    int* m_data;
-    int value;
-    std::string _name;
-    
+    int* 			m_data;
+    int 			value;
+    std::string 	_name;
+
 };
 
 // Derived class
 class Derived : public Base {
 public:
     Derived() : Base() {
-        std::cout << "Derived constructor" << std::endl;
+        //std::cout << "Derived constructor" << std::endl;
+		_name = "Derived i am a string so long that deffinitely allocates memory on the heap myself";
     }
 
     Derived(int value) : Base(value) {
-        std::cout << "Derived parameter constructor" << std::endl;
+        //std::cout << "Derived parameter constructor" << std::endl;
+		_name = "Derived i am a string so long that deffinitely allocates memory on the heap myself";
     }
 
     ~Derived() {
-        std::cout << "Derived destroy" << std::endl;
+        //std::cout << "Derived destroy" << std::endl;
     }
 
     Derived(const Derived& other) : Base(other) {
-        std::cout << "Derived copy" << std::endl;
+        //std::cout << "Derived copy" << std::endl;
     }
 
     Derived& operator=(const Derived& other) {
         if (this != &other) {
-            std::cout << "Derived copy assignment" << std::endl;
+            //std::cout << "Derived copy assignment" << std::endl;
             Base::operator=(other);
         }
         return *this;
     }
+
+	bool operator==(const Derived& other) {return (value == other.value && _name == other._name);};
+	bool operator!=(const Derived& other) {return !(value == other.value && _name == other._name);};
 
     void print()
     {
@@ -148,105 +156,201 @@ public:
     }
 };
 
+
+# include <vector>
+
 int main()
 {
-    /*
-    {
-        DynArray<Dummy> vec;
-        vec.reserve(5);
-        std::cout << " reserved 5 (allocated but didn't construct anything)" << std::endl;
-        std::cout << "      pushin back" << std::endl;
-        vec.push_back(Dummy());
 
-        std::cout << "      pushed back (copied, constructed, destroy the copy)" << std::endl;
-        
-    }
-    std::cout << "destroyed first vector" << std::endl << std::endl;
+	/******************* TEST 1 ************************/
+
+	try
+	{
+		std::cout << "TEST 1: ";
+		std::vector<int> 		std;
+		DynArraySVO<int> 			array;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			array.push_back(i);
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		DynArraySVO<int>::iterator it = array.begin();
+		std::vector<int>::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 2 ************************/
+
+	try
+	{
+		std::cout << "TEST 2: ";
+		std::vector<Dummy> 		std;
+		DynArraySVO<Dummy> 			array;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			array.push_back(i);
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		DynArraySVO<Dummy>::iterator it = array.begin();
+		std::vector<Dummy>::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 3 ************************/
+
+	try
+	{
+		std::cout << "TEST 3: ";
+		std::vector<Dummy> 		std;
+		DynArraySVO<Dummy> 		array;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			array.push_back(i);
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		DynArraySVO<Dummy>::iterator it = array.begin();
+		std::vector<Dummy>::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
 
-    {
-        std::cout << "                  new vector, no reserve" << std::endl;
-        DynArray<Dummy> vec2;
-        std::cout << "                  new vector, done" << std::endl;
-        vec2.push_back(Dummy());
-        std::cout << "                  pushed back (allocate, copied, constructed, destroy the copy)" << std::endl;
-    }
+	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
 
-    std::cout << "destroyed second vector" << std::endl << std::endl;
+	/******************* TEST 4 ************************/
 
-    {
-        std::cout << "                  new vector, reserve 5" << std::endl;    
-        DynArray<Dummy> vec3;
-        vec3.reserve(5);
-        std::cout << "                  new vector, done, allocated for 5, constructed nothing" << std::endl;
-        std::cout << "                  emplacing back, default constructor" << std::endl;
-        vec3.emplace_back();
-        std::cout << "                  emplaced back (constructed, destroyed, no copies)" << std::endl;
-    }
+	try
+	{
+		std::cout << "TEST 4: ";
+		Nginx_PoolAllocator<Dummy> alloc(pool);
+		std::vector<Dummy, Nginx_PoolAllocator<Dummy> > 		std(alloc);
+		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> > 		array(alloc);
 
-    std::cout << "destroyed third vector" << std::endl;
-     */  
-    
-    {
-        std::cout << "          std::vector:" << std::endl;
+		std.reserve(23);
+		array.reserve(23);
 
-        std::vector<Dummy> vec;
-        vec.push_back(5);
-    }
-    std::cout << "              destroyed standard vector" << std::endl << std::endl;
-    {
-        std::cout << "          myvector:" << std::endl;
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			array.push_back(i);
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
 
-        DynArraySVO<Dummy, 10> vec;
-        vec.emplace_back(5);
-        vec.emplace_back(5);
-        vec.emplace_back(5);
-        vec.emplace_back(5);
-        vec.emplace_back(5);
-        vec.emplace_back(5);
-        
-    }
-    std::cout << "              destroyed myvector" << std::endl << std::endl;
+		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> >::iterator it = array.begin();
+		std::vector<Dummy, Nginx_PoolAllocator<Dummy> >::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
-    {
-        std::cout << "          my memoryPool vector:" << std::endl;
+/******************* TEST 5 ************************/
 
-        Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
+	try
+	{
+		std::cout << "TEST 5: ";
+		Nginx_PoolAllocator<Base*> alloc(pool);
+		std::vector<Base*, Nginx_PoolAllocator<Base*> > 		std(alloc);
+		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> > 			array(alloc);
 
-        Nginx_PoolAllocator<Dummy> alloc(pool);
-        MyVectorSVOInPool<Dummy, 1>::type* vec = (MyVectorSVOInPool<Dummy, 1>::type*)pool->allocate(sizeof(MyVectorSVOInPool<Dummy, 1>::type), sizeof(MyVectorSVOInPool<Dummy, 1>::type));
-        new (vec) MyVectorSVOInPool<Dummy, 1>::type(alloc);
+		std.reserve(23);
+		array.reserve(23);
 
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
-        vec->emplace_back(5);
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(new Base(i));
+			array.push_back(new Base(i));
 
-        vec->~DynArraySVO();
-        pool->destroy();
-    }
+			std.push_back(new Derived(i));
+			array.push_back(new Derived(i));
 
-    
+			std.push_back(new Derived(i));
+			array.push_back(new Derived(i));
+
+			std.pop_back();
+			array.pop_back();
+			std.push_back(new Base(i));
+			array.push_back(new Base(i));
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
+		std::vector<Base*, Nginx_PoolAllocator<Base*> >::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (**it != **iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+
+
+	pool->destroy();
+
+/*
+
+	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
     std::cout << "              destroyed my memoryPool vector" << std::endl << std::endl;
 
     {
         std::cout << "          my memoryPool vector of polymorphic objects:" << std::endl;
 
-        Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
+
 
         Nginx_PoolAllocator<Base*> alloc(pool);
-
-        MyVectorSVOInPool<Base*, 1>::type* 
-        vec =  (MyVectorSVOInPool<Base*, 1>::type*)
-            pool->allocate(
-                    sizeof(MyVectorSVOInPool<Base*, 1>::type), 
-                    sizeof(MyVectorSVOInPool<Base*, 1>::type)
-        );
-        new (vec) MyVectorSVOInPool<Base*, 1>::type(alloc);
+        MyVectorInPool<Base*>::type* vec = (MyVectorInPool<Base*>::type*)pool->allocate(sizeof(MyVectorInPool<Base*>::type), sizeof(MyVectorInPool<Base*>::type));
+        new (vec) MyVectorInPool<Base*>::type(alloc);
 
         vec->emplace_front(new Base(5));
         vec->emplace_front(new Base(6));
@@ -257,52 +361,24 @@ int main()
 
         std::cout << "              printing vector, expecting: Der3, Der2, Der1, Base7, Base6, Base5" << std::endl;
 
-        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
+        for (MyVectorInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
         {
             (*iter)->print();
         }
 
-        std::cout << "              remove back, insert front" << std::endl;
-
-        delete (vec->back());
-        vec->pop_back();
-        delete (vec->back());
-        vec->pop_back();
-        
-        vec->emplace_front(new Base(8));
-        vec->emplace_front(new Base(9));
-
-        std::cout << "              printing vector, expecting: Bse9, Bse8 Der3, Der2, Der1, Base7" << std::endl;
-
-        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
-        {
-            (*iter)->print();
-        }
-
-        for (MyVectorSVOInPool<Base*, 1>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
+        for (MyVectorInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
         {
             delete (*iter);
         }
 
         vec->~DynArraySVO();
-        pool->destroy();
+		std::cout << "vec ouyt" << std::endl;
     }
+	pool->destroy();
 
-    
     std::cout << "              destroyed my memoryPool vector" << std::endl << std::endl;
 
-
-    return (0);
-}
-
-int main1()
-{
-    DynArraySVO<Dummy, 2> vec;
-
-    vec.push_front(5);
-    vec.push_front(6);
-    vec.push_front(7);
-
+  */
     return (0);
 }
 

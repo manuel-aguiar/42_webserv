@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DynArraySVO.tpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 13:17:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:59:24 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ class DynArraySVO
 					m_stackArray[i].~T();
 			}
 
-			
+
 			if (other.m_heapArray)
 			{
 				m_heapArray = m_allocator.allocate(other.m_capacity);
@@ -94,7 +94,7 @@ class DynArraySVO
 				return (m_heapArray[index]);
 			return (m_stackArray[index]);
 		}
-		
+
 		size_t size()
 		{
 			return (m_size);
@@ -125,7 +125,7 @@ class DynArraySVO
 				std::memmove((void*)(m_heapArray + 1), (void*)m_heapArray, m_size * sizeof(T));
 				m_allocator.construct(m_heapArray, value);
 			}
-			else 
+			else
 			{
 				if (m_size > 0)
 					std::memmove((void*)(&m_stackArray[1]), (void*)&m_stackArray[0], m_size * sizeof(T));
@@ -148,7 +148,7 @@ class DynArraySVO
 			if (m_heapArray)
 				return (m_heapArray[0]);
 			return (m_stackArray[0]);
-		}   
+		}
 
 		T& back()
 		{
@@ -160,7 +160,7 @@ class DynArraySVO
 
 
 		void pop_back()
-		{	
+		{
 			if (!m_size)
 				return ;
 			if (m_heapArray)
@@ -177,7 +177,7 @@ class DynArraySVO
 			{
 				m_allocator.destroy(m_heapArray);
 				std::memmove((void*)m_heapArray, (void*)(m_heapArray + 1), m_size * sizeof(T));
-				
+
 			}
 			else
 			{
@@ -211,7 +211,7 @@ class DynArraySVO
 			if (size <= m_capacity)
 				return;
 			T* new_array = m_allocator.allocate(size);
-			
+
 			//std::cout << "                  moved to: " << new_array << std::endl;
 
 			if (!m_heapArray)
@@ -224,14 +224,15 @@ class DynArraySVO
 			m_heapArray = new_array;
 			m_capacity = size;
 		}
+/*
+		//NOT IMPLEMENTED CORRECTLY YET
 
 		void emplace_back()
 		{
 			if (m_size == m_capacity)
-			{
 				reserve(m_capacity ? m_capacity * 2 : 1);
+			if (m_heapArray)
 				new (m_heapArray + m_size++) T();
-			}
 			else
 				new (&m_stackArray[m_size++]) T();
 		}
@@ -280,7 +281,7 @@ class DynArraySVO
 				new (m_heapArray) T();
 			}
 			else
-			{	
+			{
 				if (m_size > 0)
 					std::memmove((void*)(&m_stackArray[1]), (void*)&m_stackArray[0], m_size * sizeof(T));
 				new (&m_stackArray[0]) T();
@@ -300,7 +301,7 @@ class DynArraySVO
 				new (m_heapArray) T(arg1);
 			}
 			else
-			{	
+			{
 				if (m_size > 0)
 					std::memmove((void*)(&m_stackArray[1]), (void*)&m_stackArray[0], m_size * sizeof(T));
 				new (&m_stackArray[0]) T(arg1);
@@ -320,7 +321,7 @@ class DynArraySVO
 				new (m_heapArray) T(arg1, arg2);
 			}
 			else
-			{	
+			{
 				if (m_size > 0)
 					std::memmove((void*)(&m_stackArray[1]), (void*)&m_stackArray[0], m_size * sizeof(T));
 				new (&m_stackArray[0]) T(arg1, arg2);
@@ -339,13 +340,14 @@ class DynArraySVO
 				new (m_heapArray) T(arg1, arg2, arg3);
 			}
 			else
-			{	
+			{
 				if (m_size > 0)
 					std::memmove((void*)(&m_stackArray[1]), (void*)&m_stackArray[0], m_size * sizeof(T));
 				new (&m_stackArray[0]) T(arg1, arg2, arg3);
 			}
 			m_size++;
 		}
+*/
 		class iterator
 		{
 			public:
@@ -414,17 +416,17 @@ class DynArraySVO
 				pointer m_ptr;
 		};
 
-	iterator begin() 
-	{ 
+	iterator begin()
+	{
 		if (m_heapArray)
 			return iterator(m_heapArray);
-		return iterator(&m_stackArray[0]); 
+		return iterator(&m_stackArray[0]);
 	}
-	iterator end() 
-	{ 
+	iterator end()
+	{
 		if (m_heapArray)
 			return iterator(m_heapArray + m_size);
-		return iterator(&m_stackArray[m_size]); 
+		return iterator(&m_stackArray[m_size]);
 	}
 
 	private:
