@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:27:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 15:42:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/10 10:12:26 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ class Dummy
         }
 		~Dummy()
 		{
-			std::cout << "dummy destroy" << std::endl; 
-			if (m_data)  delete [] m_data; 
+			std::cout << "dummy destroy" << std::endl;
+			if (m_data)  delete [] m_data;
 				m_data = NULL;
 		};
 		Dummy(const Dummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
 		{
-			std::cout << "dummy copy" << std::endl; 
+			std::cout << "dummy copy" << std::endl;
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 		};
 		Dummy& operator=(const Dummy& other)
@@ -45,7 +45,7 @@ class Dummy
 			std::cout << " dummy copy assignment" << std::endl;
             value = other.value;
             _name = other._name;
-			std::memcpy(m_data, other.m_data, 4 * sizeof(int)); 
+			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 			return (*this);
 		};
 
@@ -55,7 +55,7 @@ class Dummy
         }
 
 	private:
-        
+
         int value;
 		int* m_data;
         std::string _name;
@@ -108,7 +108,7 @@ protected:
     int* m_data;
     int value;
     std::string _name;
-    
+
 };
 
 // Derived class
@@ -147,6 +147,31 @@ public:
 #include "../../Webserv_sketch/MemoryPool/MemoryPool.h"
 #include "../../LibftCpp/libftcpp.hpp"
 #include <map>
+#include <list>
+
+int main4()
+{
+	std::map<int, SharedPtr<Dummy> > map;
+
+	for (int i = 0; i < 10000;++i)
+		map.insert(std::pair<int, SharedPtr<Dummy> >(i, make_SharedPtr<Dummy, int, std::allocator<Dummy> >(i)));
+
+	return (0);
+}
+
+int main3()
+{
+
+	//super copying is faster than shared pointer
+
+	std::map<int, Dummy> map;
+
+	for (int i = 0; i < 10000;++i)
+		map.insert(std::pair<int, Dummy>(i, Dummy(i)));
+
+	return (0);
+}
+
 
 int main(void)
 {
@@ -154,15 +179,20 @@ int main(void)
     Nginx_PoolAllocator<char>           allocChar(pool);
     Nginx_PoolAllocator<StringInPool>   allocString(pool);
 
-    std::cout  << "              testing map insert, just pair" << std::endl;     
+
+
+
+
+    std::cout  << "              testing map insert, just pair" << std::endl;
     {
-        std::map<int, SharedPtr<StringInPool> > map;
-        map.insert(std::pair<int, SharedPtr<StringInPool> >(1, make_SharedPtr<StringInPool, const char* , 
-                    Nginx_PoolAllocator<StringInPool> >("super long string that happens to be bigger than internal buffer", allocChar, allocString)));
+        std::map<int, StringInPool, std::less<int>,  Nginx_PoolAllocator<StringInPool>  > map(std::less<int>(), allocString);
+		StringInPool str("super long string that happens to be bigger than internal buffer", allocChar);
+
+        map.insert(std::pair<int, StringInPool>(1, str));
     }
 
 
-    std::cout  << "              testing map insert, just pair" << std::endl;     
+    std::cout  << "              testing map insert, just pair" << std::endl;
     {
         std::map<int, SharedPtr<Dummy> > map;
         map.insert(std::pair<int, SharedPtr<Dummy> >(1, make_SharedPtr<Dummy, int, std::allocator<Dummy> >(1)));
@@ -180,10 +210,18 @@ int main(void)
         map[1] = Dummy(1);
     }
 
+    std::cout  << "              testing LIST" << std::endl;
+    {
+        std::list<Dummy> list;
+        list.push_back(Dummy(1));
+    }
+
+	pool->destroy();
+
     return (0);
 }
 
 /*
 
-$ c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../Webserv_sketch/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../Webserv_sketch/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main
+  c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../Webserv_sketch/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../Webserv_sketch/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main
 */

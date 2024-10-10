@@ -42,7 +42,6 @@ class Nginx_PoolAllocator
 
 		pointer allocate(size_type n)
 		{
-			//std::cout << "allocate called" << std::endl;
 			if (n == 0)
 				return 0;
 			if (n > std::numeric_limits<size_type>::max() / sizeof(T))
