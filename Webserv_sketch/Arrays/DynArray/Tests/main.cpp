@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 08:35:55 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 10:27:19 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -396,31 +396,31 @@ int main()
 
 		for (int i = 0; i < 100; ++i)
 		{
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						base = (Base *)pool->allocate(sizeof(Base));
 						new (base) Base(i);
 			std.push_back(base);
 
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						base = (Base *)pool->allocate(sizeof(Base));
 						new (base) Base(i);
 
 			array.emplace_back(base);
 
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						base = (Derived *)pool->allocate(sizeof(Derived));
 						new (base) Derived(i);
 
 			std.push_back(base);
 
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						base = (Derived *)pool->allocate(sizeof(Derived));
 						new (base) Derived(i);
 
 			array.emplace_back(base);
 
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						base = (Derived *)pool->allocate(sizeof(Derived));
 						new (base) Derived(i);
 
 			std.push_back(base);
 
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						base = (Derived *)pool->allocate(sizeof(Derived));
 						new (base) Derived(i);
 
 			array.emplace_back(base);
@@ -432,11 +432,11 @@ int main()
 
 			array.pop_back();
 
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						base = (Base *)pool->allocate(sizeof(Base));
 						new (base) Base(i);
 			std.push_back(base);
 
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						base = (Base *)pool->allocate(sizeof(Base));
 						new (base) Base(i);
 
 			array.emplace_back(base);
