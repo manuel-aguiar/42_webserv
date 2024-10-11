@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 16:50:54 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 10:14:33 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,50 +22,77 @@ class List
 
 	private:
 
-		struct Node
+		struct BaseNode
 		{
-			Node(const T& data) : m_data(data), m_next(NULL), m_prev(NULL) {}
-
-			Node() : m_data (), m_next(NULL), m_prev(NULL) {}
-
-			template<typename Arg1>
-			Node(const Arg1& arg1) : m_data(arg1), m_next(NULL), m_prev(NULL) {}
-
-			template<typename Arg1, typename Arg2>
-			Node(const Arg1& arg1, const Arg2& arg2) : m_data(arg1, arg2), m_next(NULL), m_prev(NULL) {}
-
-			template<typename Arg1, typename Arg2, typename Arg3>
-			Node(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : m_data(arg1, arg2, arg3), m_next(NULL), m_prev(NULL) {}
-
-			Node(const Node& other) : m_data(other.m_data), m_next(other.m_next), m_prev(other.m_prev) {}
-			Node& operator=(const Node& other)
+			BaseNode() : m_next(NULL), m_prev(NULL) {}
+			BaseNode(BaseNode* next, BaseNode* prev) : m_next(next), m_prev(prev) {}
+			BaseNode(const BaseNode& other) : m_next(other.m_next), m_prev(other.m_prev) {}
+			BaseNode& operator=(const BaseNode& other)
 			{
 				if (this == &other)
 					return (*this);
-				m_data = other.m_data;
 				m_next = other.m_next;
 				m_prev = other.m_prev;
 				return (*this);
 			}
-			~Node()
-			{
+			~BaseNode() {}
 
-			}
-
-			T 		m_data;
-			Node* 	m_next;
-			Node* 	m_prev;
+			BaseNode* m_next;
+			BaseNode* m_prev;
 		};
 
-	typedef typename Allocator::template rebind<Node >::other NodeAllocator;
+		struct HeaderNode : public BaseNode
+		{
+			HeaderNode() : BaseNode(static_cast<BaseNode*>(this), static_cast<BaseNode*>(this)) {}
+			HeaderNode(const HeaderNode& other) : BaseNode(other) {}
+			HeaderNode& operator=(const HeaderNode& other)
+			{
+				if (this == &other)
+					return (*this);
+				BaseNode::operator=(other);
+				return (*this);
+			}
+			~HeaderNode() {}
+		};
+
+		struct DataNode : public BaseNode
+		{
+			DataNode(const T& data) : BaseNode(), m_data(data) {}
+
+			DataNode() : BaseNode(), m_data () {}
+
+			template<typename Arg1>
+			DataNode(const Arg1& arg1) : BaseNode(), m_data (arg1) {}
+
+			template<typename Arg1, typename Arg2>
+			DataNode(const Arg1& arg1, const Arg2& arg2) : BaseNode(), m_data (arg1, arg2) {}
+
+			template<typename Arg1, typename Arg2, typename Arg3>
+			DataNode(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : BaseNode(), m_data(arg1, arg2, arg3) {}
+
+			DataNode(const DataNode& other) : BaseNode(other), m_data(other.m_data) {}
+			DataNode& operator=(const DataNode& other)
+			{
+				if (this == &other)
+					return (*this);
+				BaseNode::operator=(other);
+				m_data = other.m_data;
+				return (*this);
+			}
+			~DataNode() {}
+
+			T 		m_data;
+		};
+
+	typedef typename Allocator::template rebind<DataNode>::other NodeAllocator;
 
 	public:
 
 		List(Allocator alloc = Allocator())
-			: m_size(0), m_head(NULL), m_tail(NULL), m_nodeAllocator(NodeAllocator(alloc)) {}
+			: m_size(0), m_header(), m_nodeAllocator(NodeAllocator(alloc)) {}
 
 		List(const List& other)
-			: m_size(0), m_head(NULL), m_tail(NULL), m_nodeAllocator(other.m_nodeAllocator)
+			: m_size(0), m_header(), m_nodeAllocator(other.m_nodeAllocator)
 		{
 			*this = other;
 		}
@@ -75,10 +102,10 @@ class List
 			if (this == &other)
 				return (*this);
 			clear();
-			Node* current = other.m_head;
-			while (current)
+			BaseNode* current = other.m_header.m_next;
+			while (current != &other.m_header)
 			{
-				push_back(current->m_data);
+				emplace_back(current->m_data);
 				current = current->m_next;
 			}
 			return (*this);
@@ -93,139 +120,135 @@ class List
 
 		void	clear()
 		{
-			Node* cur;
-			Node* next;
+			BaseNode* cur;
+			BaseNode* next;
+			DataNode* data;
 
-			cur = m_head;
-			while (cur)
+			cur = m_header.m_next;
+			while (cur != &m_header)
 			{
 				next = cur->m_next;
-				m_nodeAllocator.destroy(cur);
-				m_nodeAllocator.deallocate(cur, 1);
+				data = static_cast<DataNode*>(cur);
+				m_nodeAllocator.destroy(data);
+				m_nodeAllocator.deallocate(data, 1);
 				cur = next;
 			}
 			m_size = 0;
-			m_head = NULL;
-			m_tail = NULL;
+			m_header.m_next = &m_header;
+			m_header.m_prev = &m_header;
 		}
 
 		void	push_back(const T& data)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(data);
-			_insertTail(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(data);
+			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		void	push_front(const T& data)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(data);
-			_insertHead(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(data);
+			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		void	pop_back()
 		{
-			Node* node;
+			BaseNode* node;
+			DataNode* data;
 
-			if (!m_tail)
-				return ;
-			node = m_tail;
-			m_tail = m_tail->m_prev;
-			if (m_tail)
-				m_tail->m_next = NULL;
-			else
-				m_head = NULL;
-			m_nodeAllocator.destroy(node);
-			m_nodeAllocator.deallocate(node, 1);
+			node = m_header.m_prev;
+			_removeTarget(m_header.m_prev);
+
+			data = static_cast<DataNode*>(node);
+			m_nodeAllocator.destroy(data);
+			m_nodeAllocator.deallocate(data, 1);
 			--m_size;
 		}
 
 		void	pop_front()
 		{
-			Node* node;
+			BaseNode* node;
+			DataNode* data;
 
-			if (!m_head)
-				return ;
-			node = m_head;
-			m_head = m_head->m_next;
-			if (m_head)
-				m_head->m_prev = NULL;
-			else
-				m_tail = NULL;
-			m_nodeAllocator.destroy(node);
-			m_nodeAllocator.deallocate(node, 1);
+			node = m_header.m_next;
+			_removeTarget(m_header.m_next);
+
+			data = static_cast<DataNode*>(node);
+			m_nodeAllocator.destroy(data);
+			m_nodeAllocator.deallocate(data, 1);
 			--m_size;
 		}
 
 		void 	emplace_back()
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node();
-			_insertTail(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode();
+			_insertAfter(node);
 			++m_size;
 		}
 
 		template <typename Arg1 >
 		void	emplace_back(const Arg1& arg1)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1);
-			_insertTail(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1);
+			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2 >
 		void	emplace_back(const Arg1& arg1, const Arg2& arg2)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1, arg2);
-			_insertTail(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2);
+			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
 		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1, arg2, arg3);
-			_insertTail(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3);
+			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		void 	emplace_front()
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node();
-			_insertHead(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode();
+			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		template <typename Arg1 >
 		void	emplace_front(const Arg1& arg1)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1);
-			_insertHead(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1);
+			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2 >
 		void	emplace_front(const Arg1& arg1, const Arg2& arg2)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1, arg2);
-			_insertHead(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2);
+			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
 		void	emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
 		{
-			Node* node = m_nodeAllocator.allocate(1);
-			new (node) Node(arg1, arg2, arg3);
-			_insertHead(node);
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3);
+			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -233,17 +256,17 @@ class List
         class iterator
         {
             public:
-                typedef Node                                   value_type;
-                typedef Node*                                  pointer;
-                typedef Node&                                  reference;
+                typedef BaseNode                                   value_type;
+                typedef BaseNode*                                  pointer;
+                typedef BaseNode&                                  reference;
 
                 iterator(pointer ptr) : m_ptr(ptr) {}
                 iterator(const iterator& other) : m_ptr(other.m_ptr) {}
                 ~iterator() {}
 
 
-                T& operator*() const { return m_ptr->m_data; }
-                T* operator->() const { return &m_ptr->m_data; }
+                T& operator*() const { return static_cast<DataNode*>(m_ptr)->m_data; }
+                T* operator->() const { return &static_cast<DataNode*>(m_ptr)->m_data; }
 
 				bool operator==(const iterator& other) const { return m_ptr == other.m_ptr; }
 				bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
@@ -277,46 +300,35 @@ class List
                 pointer m_ptr;
         };
 
-		iterator begin() { return iterator(m_head); }
-		iterator end() { return iterator(NULL); }
+		iterator begin() { return iterator(m_header.m_next); }
+		iterator end() { return iterator(&m_header); }
 
 	private:
 		size_t					m_size;
-		Node* 				m_head;
-		Node* 				m_tail;
+		HeaderNode 				m_header;
 		NodeAllocator			m_nodeAllocator;
 
-		void 	_insertTail(Node* node)
+		void 	_insertAfter(BaseNode* target, BaseNode* node)
 		{
-			if (!m_head)
-			{
-				m_head = node;
-				m_tail = node;
-			}
-			else
-			{
-				m_tail->m_next = node;
-				node->m_prev = m_tail;
-				m_tail = node;
-			}
+			node->m_prev = target;
+			node->m_next = target->m_next;
+			node->m_prev->m_next = node;
+			node->m_next->m_prev = node;
 		}
 
-		void	_insertHead(Node* node)
+		void	_insertBefore(BaseNode* target, BaseNode* node)
 		{
-			if (!m_head)
-			{
-				m_head = node;
-				m_tail = node;
-			}
-			else
-			{
-				m_head->m_prev = node;
-				node->m_next = m_head;
-				m_head = node;
-			}
+			node->m_next = target;
+			node->m_prev = target->m_prev;
+			node->m_prev->m_next = node;
+			node->m_next->m_prev = node;
 		}
 
-
+		void	_removeTarget(BaseNode* target)
+		{
+			target->m_next->m_prev = target->m_prev;
+			target->m_prev->m_next = target->m_next;
+		}
 
 };
 

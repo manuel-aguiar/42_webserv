@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 16:33:51 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 17:18:53 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 09:48:23 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ class Map
 			Value		second;
 		};
 
-		struct Node
+		struct DataNode
 		{
-			Node(const Pair& pair) : m_pair(pair), m_left(NULL), m_right(NULL), m_parent(NULL), m_red(true) {}
+			DataNode(const Pair& pair) : m_pair(pair), m_left(NULL), m_right(NULL), m_parent(NULL), m_red(true) {}
 
-			Node* 		m_left;
-			Node* 		m_right;
-			Node* 		m_parent;
+			DataNode* 		m_left;
+			DataNode* 		m_right;
+			DataNode* 		m_parent;
 			Pair		m_pair;
 			bool		m_red;
 		};
@@ -83,12 +83,12 @@ class Map
 		}
 
 	private:
-		Node*			m_root;
+		DataNode*			m_root;
 		size_t			m_size;
 		Compare			m_compare;
 		NodeAllocator	m_nodeAllocator;
 
-		Node*	mf_insert(Node* node, const Key& key, const Value& value)
+		DataNode*	mf_insert(DataNode* node, const Key& key, const Value& value)
 		{
 			if (!node)
 			{
