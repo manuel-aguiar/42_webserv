@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 15:54:24 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 08:35:55 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,6 +312,9 @@ int main()
 			std.push_back(new Derived(i));
 			array.emplace_back(new Derived(i));
 
+			delete std.back();
+			delete array.back();
+
 			std.pop_back();
 			array.pop_back();
 			std.push_back(new Base(i));
@@ -327,6 +330,16 @@ int main()
 			if (**it != **iter)
 				throw std::logic_error("value mismatch");
 		}
+
+		it = array.begin();
+		iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			delete (*it);
+			delete (*iter);
+		}
+
+
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -367,6 +380,92 @@ int main()
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+
+/******************* TEST 7 ************************/
+
+	try
+	{
+		std::cout << "TEST 7: ";
+		Nginx_PoolAllocator<Base*> alloc(pool);
+		std::vector<Base*, Nginx_PoolAllocator<Base*> > 		std(alloc);
+		DynArray<Base*, Nginx_PoolAllocator<Base*> > 			array(alloc);
+
+		std.reserve(23);
+		array.reserve(23);
+		Base* base;
+
+		for (int i = 0; i < 100; ++i)
+		{
+						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						new (base) Base(i);
+			std.push_back(base);
+
+						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						new (base) Base(i);
+
+			array.emplace_back(base);
+
+						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						new (base) Derived(i);
+
+			std.push_back(base);
+
+						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						new (base) Derived(i);
+
+			array.emplace_back(base);
+
+						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						new (base) Derived(i);
+
+			std.push_back(base);
+
+						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
+						new (base) Derived(i);
+
+			array.emplace_back(base);
+
+			std.back()->~Base();
+			array.back()->~Base();
+
+			std.pop_back();
+
+			array.pop_back();
+
+						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						new (base) Base(i);
+			std.push_back(base);
+
+						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
+						new (base) Base(i);
+
+			array.emplace_back(base);
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		DynArray<Base*, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
+		std::vector<Base*, Nginx_PoolAllocator<Base*> >::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (**it != **iter)
+				throw std::logic_error("value mismatch");
+		}
+
+		it = array.begin();
+		iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			(*it)->~Base();
+			(*iter)->~Base();
+		}
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
 
 
