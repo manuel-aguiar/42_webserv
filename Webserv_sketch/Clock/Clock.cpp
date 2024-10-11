@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Clock.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:09:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Clock::Clock(Globals* globals) : m_globals(globals), _elapsed_ms(0)
 
 Clock::~Clock()
 {
-	
+
 }
 
 void    Clock::setGlobals(Globals& globals)
@@ -47,10 +47,10 @@ int Clock::_get_time()
 {
 	if (::gettimeofday(&_now, NULL) == -1)
 	{
-		m_globals->m_logFile->record("gettimeofday(): " + std::string(std::strerror(errno)));
+		m_globals->logStatus("gettimeofday(): " + std::string(std::strerror(errno)));
 		return (0);
 	}
-	return (1);    
+	return (1);
 }
 
 
@@ -70,7 +70,7 @@ static char	*inPlacePutDateParameter(unsigned int nb, char* buffer, int totalCha
 
 	while (i > 0)
 		buffer[--i] = '0';
-		
+
 	return (&buffer[totalCharacters]);
 }
 
@@ -82,7 +82,7 @@ const char* Clock::get_FormatedTime()
 	timeinfo = std::localtime(&_now.tv_sec);
 	if (timeinfo == NULL)
 	{
-		m_globals->m_logFile->record("localtime(): " + std::string(std::strerror(errno)));
+		m_globals->logStatus("localtime(): " + std::string(std::strerror(errno)));
 		return (NULL);
 	}
 	bufPosi = _buffer;

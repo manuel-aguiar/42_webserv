@@ -27,7 +27,7 @@ int main(int ac, char **av, char **env)
 	LogFile 		log("log.txt");
 	LogFile 		debug("debug.txt");
 	Clock   		clock;
-	Globals 		globals(&clock, &log, &debug);
+	Globals 		globals(&clock, &log, &log, &debug);
 	t_sigaction		sigaction = (t_sigaction){};
 
 	SignalHandler::prepare_signal(&sigaction, SignalHandler::signal_handler, 1, &globals);
@@ -37,11 +37,11 @@ int main(int ac, char **av, char **env)
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 1000);
 	server.setup_mySignalHandler();
 
-	globals.m_logFile->record("server starting");
+	globals.logStatus("server starting");
 
 	server.run();
 
-	globals.m_logFile->record("server closing");
+	globals.logStatus("server closing");
 
 
 	PythonCgi cgi ("/usr/bin/python3");

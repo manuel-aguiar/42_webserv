@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:33:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,20 @@ EventManager::EventManager(Globals* globals) :
 
     if (m_epollfd == -1)
     {
-        m_globals->m_logFile->record("epoll_create(): " + std::string(strerror(errno)));
+        m_globals->logStatus("epoll_create(): " + std::string(strerror(errno)));
         throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
     }
-    
+
     if (!FileDescriptor::setCloseOnExec_NonBlocking(m_epollfd))
     {
-        m_globals->m_logFile->record("fcntl(): " + std::string(strerror(errno)));
+        m_globals->logStatus("fcntl(): " + std::string(strerror(errno)));
         throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
     }
 }
 
 EventManager::~EventManager()
 {
-    
+
 }
 
 
@@ -66,20 +66,20 @@ int                EventManager::addEvent(t_fd fd, Event& monitor)
 
     event.events = monitor.m_flags;
     event.data.ptr = &monitor;
-    
+
     if (monitor.m_fd == 0)
     {
         std::cout << "subscribing 0, fd? " << fd << std::endl; throw std::runtime_error("subscribing 0, fd? ");
-        m_globals->m_logFile->record("EventManager::addEvent(): fd == 0");
+        m_globals->logStatus("EventManager::addEvent(): fd == 0");
         return (0);
     }
 
     if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &event) == -1)
     {
-        m_globals->m_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
         return (0);
     }
-    return (1);        
+    return (1);
 }
 
 int                EventManager::modEvent(t_fd fd, Event& monitor)
@@ -88,28 +88,28 @@ int                EventManager::modEvent(t_fd fd, Event& monitor)
 
     event.events = monitor.m_flags;
     event.data.ptr = &monitor;
-    
+
     if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &event) == -1)
     {
-        m_globals->m_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
         return (0);
     }
-    return (1); 
+    return (1);
 }
 
 int                 EventManager::delEvent(t_fd fd)
 {
     if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
     {
-        m_globals->m_logFile->record("epoll_ctl(): " + std::string(strerror(errno)));
+        m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
         return (0);
     }
-    return (1); 
+    return (1);
 }
 
 int                 EventManager::waitEvents(int timeOut)
-{   
-    std::cout << "                waiting for events" << std::endl; 
+{
+    std::cout << "                waiting for events" << std::endl;
     m_waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
      std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
      for (int i = 0; i < m_waitCount; i++)
@@ -131,7 +131,7 @@ const   t_epoll_event&     EventManager::getEvent(int index)
 void    EventManager::distributeEvents()
 {
     Event* event;
-    
+
     for (int i = 0; i < m_waitCount; i++)
     {
         event = (Event*)m_events[i].data.ptr;
@@ -141,7 +141,7 @@ void    EventManager::distributeEvents()
             std::cout << "              handling event " << event->m_fd << std::endl;
             event->handle();
         }
-            
+
         if (m_events[i].events & EPOLLHUP || m_events[i].events & EPOLLERR || m_events[i].events & EPOLLRDHUP)
         {
             std::cout << "              deleting event " << event->m_fd << std::endl;

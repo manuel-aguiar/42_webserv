@@ -15,6 +15,8 @@
 
 LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {
+	assert(filename != NULL);
+
     m_fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
     if (m_fd == -1)
         throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
@@ -32,8 +34,11 @@ void    LogFile::setGlobals(Globals& globals)
 
 void    LogFile::record(const std::string& entry)
 {
-    m_globals->m_clock->update();
-    const char* clockBuf = m_globals->m_clock->get_FormatedTime();
+	assert(m_globals != NULL);
+    m_globals->getClock()->update();
+
+    const char* clockBuf = m_globals->getClock()->get_FormatedTime();
+
     write(m_fd, clockBuf, std::strlen(clockBuf));
     write(m_fd, ": ", 2);
     write(m_fd, entry.c_str(), entry.size());
@@ -42,8 +47,11 @@ void    LogFile::record(const std::string& entry)
 
 void    LogFile::record(const char* entry)
 {
-    m_globals->m_clock->update();
-    const char* clockBuf = m_globals->m_clock->get_FormatedTime();
+	assert(m_globals != NULL);
+    m_globals->getClock()->update();
+
+    const char* clockBuf = m_globals->getClock()->get_FormatedTime();
+
     write(m_fd, clockBuf, std::strlen(clockBuf));
     write(m_fd, ": ", 2);
     write(m_fd, entry, std::strlen(entry));
