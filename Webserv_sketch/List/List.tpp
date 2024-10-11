@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/11 10:14:33 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 10:21:31 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,15 +122,12 @@ class List
 		{
 			BaseNode* cur;
 			BaseNode* next;
-			DataNode* data;
 
 			cur = m_header.m_next;
 			while (cur != &m_header)
 			{
 				next = cur->m_next;
-				data = static_cast<DataNode*>(cur);
-				m_nodeAllocator.destroy(data);
-				m_nodeAllocator.deallocate(data, 1);
+				_deallocate(cur);
 				cur = next;
 			}
 			m_size = 0;
@@ -157,28 +154,20 @@ class List
 		void	pop_back()
 		{
 			BaseNode* node;
-			DataNode* data;
 
 			node = m_header.m_prev;
 			_removeTarget(m_header.m_prev);
-
-			data = static_cast<DataNode*>(node);
-			m_nodeAllocator.destroy(data);
-			m_nodeAllocator.deallocate(data, 1);
+			_deallocate(node);
 			--m_size;
 		}
 
 		void	pop_front()
 		{
 			BaseNode* node;
-			DataNode* data;
 
 			node = m_header.m_next;
 			_removeTarget(m_header.m_next);
-
-			data = static_cast<DataNode*>(node);
-			m_nodeAllocator.destroy(data);
-			m_nodeAllocator.deallocate(data, 1);
+			_deallocate(node);
 			--m_size;
 		}
 
@@ -328,6 +317,13 @@ class List
 		{
 			target->m_next->m_prev = target->m_prev;
 			target->m_prev->m_next = target->m_next;
+		}
+
+		void	_deallocate(BaseNode* node)
+		{
+			DataNode* data = static_cast<DataNode*>(node);
+			m_nodeAllocator.destroy(data);
+			m_nodeAllocator.deallocate(data, 1);
 		}
 
 };
