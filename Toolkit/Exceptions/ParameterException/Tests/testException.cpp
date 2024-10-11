@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   testException.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 10:07:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:54:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 16:55:06 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../LibftCpp/libftcpp.hpp"
-#include "ParameterException.hpp"   
+#include "../ParameterException.hpp"
 
 #include <iostream>
 
@@ -23,7 +22,7 @@ int main()
         ptr[1] = 42;
         std::cout << ptr[1] << std::endl;
 
-        
+
         throw ParameterException("main", "socket", "Invalid parameter");
     }
     catch (std::exception& e)

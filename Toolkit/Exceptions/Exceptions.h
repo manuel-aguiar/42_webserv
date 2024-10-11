@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SharedObj.hpp                                      :+:      :+:    :+:   */
+/*   Exceptions.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/12 07:45:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/12 07:45:45 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/11 16:54:39 by manuel            #+#    #+#             */
+/*   Updated: 2024/10/11 16:54:59 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHAREDOBJ_HPP
+#ifndef EXCEPTIONS_H
 
-# define SHAREDOBJ_HPP
+# define EXCEPTIONS_H
 
-
+# include "ParameterException/ParameterException.hpp"
 
 
 #endif

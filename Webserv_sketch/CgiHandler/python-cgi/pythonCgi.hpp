@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pythonCgi.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 14:26:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:01:21 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define PYTHONCGI_HPP
 
-# include "../../MemoryPool/MemoryPool.h"
+# include "../../Webserver_Definitions.h"
 # include <map>
 
 
@@ -26,7 +26,7 @@ class PythonCgi
     public:
         PythonCgi(const char* pythonBin);
         ~PythonCgi();
-    
+
 
         void    init();
         void    reset();
@@ -39,33 +39,33 @@ class PythonCgi
     private:
 
         typedef enum {
-            PY_REQUEST_METHOD,       
-            PY_QUERY_STRING,         
-            PY_CONTENT_TYPE,         
-            PY_CONTENT_LENGTH,       
-            PY_SCRIPT_NAME,          
-            PY_PATH_INFO,            
-            PY_PATH_TRANSLATED,      
-            PY_HTTP_COOKIE,          
-            PY_REMOTE_ADDR,          
-            PY_REMOTE_HOST,          
-            PY_REMOTE_USER,          
-            PY_AUTH_TYPE,            
-            PY_SERVER_NAME,          
-            PY_SERVER_PORT,          
-            PY_SERVER_PROTOCOL,      
-            PY_SERVER_SOFTWARE,      
-            PY_HTTP_USER_AGENT,      
-            PY_HTTP_REFERER,         
-            PY_PYTHON_PATH,           
-            PY_CGIENV_COUNT           
+            PY_REQUEST_METHOD,
+            PY_QUERY_STRING,
+            PY_CONTENT_TYPE,
+            PY_CONTENT_LENGTH,
+            PY_SCRIPT_NAME,
+            PY_PATH_INFO,
+            PY_PATH_TRANSLATED,
+            PY_HTTP_COOKIE,
+            PY_REMOTE_ADDR,
+            PY_REMOTE_HOST,
+            PY_REMOTE_USER,
+            PY_AUTH_TYPE,
+            PY_SERVER_NAME,
+            PY_SERVER_PORT,
+            PY_SERVER_PROTOCOL,
+            PY_SERVER_SOFTWARE,
+            PY_HTTP_USER_AGENT,
+            PY_HTTP_REFERER,
+            PY_PYTHON_PATH,
+            PY_CGIENV_COUNT
         } PyCgiEnv;
 
         Nginx_MemoryPool*               m_localDataPool;
         Nginx_PoolAllocator<char>       m_localAllocator;
 
         typedef std::basic_string<char, std::char_traits<char>, Nginx_PoolAllocator<char> > t_poolString;
-        
+
         typedef std::map<t_poolString, PyCgiEnv, std::less<t_poolString>, MPool_FixedElem<std::pair<t_poolString, PyCgiEnv> > >   mapHeaderToEnum;
         typedef mapHeaderToEnum::iterator                                                                     mapHeaderToEnum_Iter;
         typedef std::map<PyCgiEnv, t_poolString*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, t_poolString*> > > mapEnumToHeader;

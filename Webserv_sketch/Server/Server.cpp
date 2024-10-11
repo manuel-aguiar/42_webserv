@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:32:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:10:56 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,18 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     hints.ai_socktype = socktype;
 
 	int status = getaddrinfo(node, port, &hints, &res);
-    
+
 	if (status != 0)
 	{
-        m_globals->m_logFile->record("getaddrinfo(): " + std::string(gai_strerror(status)));
+        m_globals->logStatus("getaddrinfo(): " + std::string(gai_strerror(status)));
 		return (1);
 	}
-    
+
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)m_pool->allocate(sizeof(ListeningSocket), true);
         new (listener) ListeningSocket(m_connectionPool, m_eventManager, m_globals);
-        
+
         listener->m_addr = (t_sockaddr *)m_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
 
@@ -67,8 +67,8 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
         listener->m_backlog = backlog;
         listener->m_myEvent.setHandler_Function_and_Data(&HandlerFunction::listener_Accept, listener);
         listener->m_myEvent.setFlags(EPOLLIN);
-        
-        
+
+
         if (listener->open())
             m_listeners.push_back(listener);
         else
@@ -77,10 +77,10 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
             continue ;
         }
         listener->m_myEvent.m_fd = listener->m_sockfd;
-        //std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;  
+        //std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
         m_eventManager.addEvent(listener->m_sockfd, listener->m_myEvent);
-        
-    }   
+
+    }
     freeaddrinfo(res);
     return (0);
 }
@@ -95,7 +95,7 @@ int Server::setup_mySignalHandler()
     m_mySignalEvent.m_fd = pipeRead;
     //std::cout << "added pipoe" << std::endl;
     m_eventManager.addEvent(pipeRead, m_mySignalEvent);
-    
+
     return (1);
 }
 
@@ -111,7 +111,7 @@ int Server::run()
 
 //private
 Server::Server() :
-    m_connectionPool(NULL, 0) {} 
+    m_connectionPool(NULL, 0) {}
 
 Server::Server(const Server& copy) :
     m_connectionPool(NULL, 0)  {(void)copy;}

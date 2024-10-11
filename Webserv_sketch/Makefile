@@ -3,24 +3,24 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/06 11:52:16 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/10/11 17:00:33 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 							= 	webserv		
+NAME 							= 	webserv
 COMP 							= 	c++ -std=c++98
 FLAGS 							= 	-Wall -Wextra -Werror
 EXTERN_LINKER 					= 	-lpthread
 DEBUG_FLAGS 					= 	-g #-fsanitize=address
 BUILD_FLAGS 					= 	-DNDEBUG
 
-THREADPOOL_PATH 				= 	ThreadPool
+THREADPOOL_PATH 				= 	../Toolkit/ThreadPool
 THREADPOOL_LIB					= 	libthreadpool.a
 
-MEMORYPOOL_PATH					= 	MemoryPool
+MEMORYPOOL_PATH					= 	../Toolkit/MemoryPool
 MEMORYPOOL_LIB					= 	libmemorypool.a
 
 RM 								= 	rm -rf
@@ -50,7 +50,7 @@ SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/Logs/LogFile.cpp								\
 								$(SRC_PATH)/Logs/LogFileThreadSafe.cpp						\
 								$(SRC_PATH)/Logs/LogStream.cpp								\
-								$(SRC_PATH)/Logs/LogStreamThreadSafe.cpp					
+								$(SRC_PATH)/Logs/LogStreamThreadSafe.cpp
 
 
 THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
@@ -66,7 +66,7 @@ LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL) $(EXTERN_LINKER)
 OBJS 							= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 
 
-BUILD 							= 
+BUILD 							=
 									ifeq ($(MAKECMDGOALS),debug)
 										BUILD = $(DEBUG_FLAGS)
 									else
@@ -78,7 +78,7 @@ BUILD 							=
 $(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
-	
+
 	$(COMP) $(FLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
@@ -88,7 +88,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 debug: $(NAME)
-	
+
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
@@ -96,7 +96,7 @@ clean:
     fi
 	@$(MAKE) clean -C $(THREADPOOL_PATH)
 	@$(MAKE) clean -C $(MEMORYPOOL_PATH)
-	
+
 fclean: clean
 	@if [ -n "$(wildcard  $(NAME))" ]; then \
         $(RM) $(NAME); \

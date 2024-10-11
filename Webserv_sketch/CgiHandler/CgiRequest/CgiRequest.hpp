@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiRequest.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 14:20:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:01:48 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #include <cstdlib>
 #include <cerrno>
 
-# include "../../MemoryPool/MemoryPool.h"
+# include "../../Webserver_Definitions.h"
 
 class PythonCgi;
 
@@ -45,10 +45,10 @@ class CgiRequest
         void    initPython(PythonCgi& pythonCgi, const char* scriptPath);
         void    execute();
         void    debugPrintInputs();
-        
+
         Nginx_MemoryPool*           m_requestDataPool;
         Nginx_PoolAllocator<char>   m_strAlloc;
-        
+
         const char*                 m_scriptPath;
         char**                      m_argv;
         char**                      m_envp;

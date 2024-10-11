@@ -6,14 +6,14 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 08:35:55 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/11 10:27:54 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <cstring>
 #include <string>
-#include "../DynArray.hpp"
+#include "../DynArraySVO.hpp"
 #include <vector>
 
 #include "../../../MemoryPool/MemoryPool.h"
@@ -168,17 +168,17 @@ int main()
 	{
 		std::cout << "TEST 1: ";
 		std::vector<int> 		std;
-		DynArray<int> 			array;
+		DynArraySVO<int> 			array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			array.push_back(i);
 		}
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<int>::iterator it = array.begin();
+		DynArraySVO<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -198,7 +198,7 @@ int main()
 	{
 		std::cout << "TEST 2: ";
 		std::vector<Dummy> 		std;
-		DynArray<Dummy> 			array;
+		DynArraySVO<Dummy> 			array;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -208,7 +208,7 @@ int main()
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<Dummy>::iterator it = array.begin();
+		DynArraySVO<Dummy>::iterator it = array.begin();
 		std::vector<Dummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -228,17 +228,17 @@ int main()
 	{
 		std::cout << "TEST 3: ";
 		std::vector<Dummy> 		std;
-		DynArray<Dummy> 			array;
+		DynArraySVO<Dummy> 		array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			array.push_back(i);
 		}
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<Dummy>::iterator it = array.begin();
+		DynArraySVO<Dummy>::iterator it = array.begin();
 		std::vector<Dummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -262,7 +262,7 @@ int main()
 		std::cout << "TEST 4: ";
 		Nginx_PoolAllocator<Dummy> alloc(pool);
 		std::vector<Dummy, Nginx_PoolAllocator<Dummy> > 		std(alloc);
-		DynArray<Dummy, Nginx_PoolAllocator<Dummy> > 			array(alloc);
+		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> > 		array(alloc);
 
 		std.reserve(23);
 		array.reserve(23);
@@ -270,12 +270,12 @@ int main()
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			array.push_back(i);
 		}
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<Dummy, Nginx_PoolAllocator<Dummy> >::iterator it = array.begin();
+		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> >::iterator it = array.begin();
 		std::vector<Dummy, Nginx_PoolAllocator<Dummy> >::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -296,7 +296,7 @@ int main()
 		std::cout << "TEST 5: ";
 		Nginx_PoolAllocator<Base*> alloc(pool);
 		std::vector<Base*, Nginx_PoolAllocator<Base*> > 		std(alloc);
-		DynArray<Base*, Nginx_PoolAllocator<Base*> > 			array(alloc);
+		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> > 			array(alloc);
 
 		std.reserve(23);
 		array.reserve(23);
@@ -304,16 +304,13 @@ int main()
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(new Base(i));
-			array.emplace_back(new Base(i));
+			array.push_back(new Base(i));
 
 			std.push_back(new Derived(i));
-			array.emplace_back(new Derived(i));
+			array.push_back(new Derived(i));
 
 			std.push_back(new Derived(i));
-			array.emplace_back(new Derived(i));
-
-			delete std.back();
-			delete array.back();
+			array.push_back(new Derived(i));
 
 			std.pop_back();
 			array.pop_back();
@@ -323,143 +320,13 @@ int main()
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<Base*, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
+		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
 		std::vector<Base*, Nginx_PoolAllocator<Base*> >::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (**it != **iter)
 				throw std::logic_error("value mismatch");
 		}
-
-		it = array.begin();
-		iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			delete (*it);
-			delete (*iter);
-		}
-
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
-
-/******************* TEST 6 ************************/
-
-	try
-	{
-		std::cout << "TEST 6: ";
-		std::vector<Dummy> 		std;
-		DynArray<Dummy> 			array;
-
-		for (int i = 0; i < 100; ++i)
-		{
-			std.push_back(i);
-			std.push_back(std[0]);
-			array.emplace_back(i);
-			array.emplace_back(array[0]);
-		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
-
-		DynArray<Dummy>::iterator it = array.begin();
-		std::vector<Dummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
-
-/******************* TEST 7 ************************/
-
-	try
-	{
-		std::cout << "TEST 7: ";
-		Nginx_PoolAllocator<Base*> alloc(pool);
-		std::vector<Base*, Nginx_PoolAllocator<Base*> > 		std(alloc);
-		DynArray<Base*, Nginx_PoolAllocator<Base*> > 			array(alloc);
-
-		std.reserve(23);
-		array.reserve(23);
-		Base* base;
-
-		for (int i = 0; i < 100; ++i)
-		{
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
-						new (base) Base(i);
-			std.push_back(base);
-
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
-						new (base) Base(i);
-
-			array.emplace_back(base);
-
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
-						new (base) Derived(i);
-
-			std.push_back(base);
-
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
-						new (base) Derived(i);
-
-			array.emplace_back(base);
-
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
-						new (base) Derived(i);
-
-			std.push_back(base);
-
-						base = (Derived *)pool->allocate(sizeof(Derived), sizeof(Derived));
-						new (base) Derived(i);
-
-			array.emplace_back(base);
-
-			std.back()->~Base();
-			array.back()->~Base();
-
-			std.pop_back();
-
-			array.pop_back();
-
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
-						new (base) Base(i);
-			std.push_back(base);
-
-						base = (Base *)pool->allocate(sizeof(Base), sizeof(Base));
-						new (base) Base(i);
-
-			array.emplace_back(base);
-		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
-
-		DynArray<Base*, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
-		std::vector<Base*, Nginx_PoolAllocator<Base*> >::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (**it != **iter)
-				throw std::logic_error("value mismatch");
-		}
-
-		it = array.begin();
-		iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			(*it)->~Base();
-			(*iter)->~Base();
-		}
-
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -504,7 +371,7 @@ int main()
             delete (*iter);
         }
 
-        vec->~DynArray();
+        vec->~DynArraySVO();
 		std::cout << "vec ouyt" << std::endl;
     }
 	pool->destroy();

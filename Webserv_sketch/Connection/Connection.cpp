@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:13:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Connection::Connection(Globals* globals) :
     m_memPool(NULL),
     m_globals(globals)
 {
-    
+
 }
 
 Connection::~Connection()
@@ -38,7 +38,7 @@ void    Connection::reset()
     m_memPool->reset();
 }
 
-const char* response = 
+const char* response =
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
         "Content-Length: 127\r\n"
@@ -56,7 +56,7 @@ const char* response =
 
 void    Connection::read()
 {
-    //m_globals->m_logFile->record("RUUUUUAD");
+    //m_globals->logStatus("RUUUUUAD");
 
     char buf[1024];
 
@@ -81,9 +81,9 @@ void    Connection::read()
 }
 
 void    Connection::write()
-{ 
+{
     std::cout << "conenction fd " << m_sockfd << " writing" << std::endl;
-    ::write(m_sockfd, response, std::strlen(response)); 
+    ::write(m_sockfd, response, std::strlen(response));
     std::cout << "conenction fd " << m_sockfd << " finished writing" << std::endl;
     //m_listener->closeConnection(this);
 }
