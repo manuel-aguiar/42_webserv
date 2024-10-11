@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/07 13:04:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/11 17:00:06 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define WEBSERVER_DEFINITIONS_H
 
 # include <stdint.h>
-# include <sys/types.h> 
+# include <sys/types.h>
 # include <sys/socket.h>
 # include <sys/un.h>
 # include <netdb.h>
@@ -23,6 +23,9 @@
 # include <cerrno>
 # include <signal.h>
 # include <cassert>
+
+//own headers
+# include "../Toolkit/Toolkit.h"
 
 // definitions for everyone to use
 typedef unsigned char       t_byte;
@@ -52,9 +55,6 @@ typedef union
 
 # define MAX_EPOLL_EVENTS 64
 
-//own headers
-# include "MemoryPool/MemoryPool.h"
-# include "ThreadPool/ThreadPool.h"
-# include "Arrays/Arrays.h"
+
 
 #endif

@@ -1,4 +1,0 @@
-URI -> Uniform Resource Identifier
-URL -> Uniform Resource Locator
-
-URL is a subtype of a URI
