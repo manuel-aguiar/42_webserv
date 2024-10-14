@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/14 14:12:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:14:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ class ConnectionPool
 		void            returnConnection(Connection* connection);
 
 	private:
-
 		Globals*                                                       m_globals;
 		size_t                                                         m_maxConnections;
 
@@ -42,7 +41,6 @@ class ConnectionPool
 		HeapArray<Event>                                               m_readEvents;
 		HeapArray<Event>                                               m_writeEvents;
 		List<Connection*, MPool_FixedElem<Connection*> >               m_spareConnections;
-
 
 		void destroyConnection(Connection* connection);
 
