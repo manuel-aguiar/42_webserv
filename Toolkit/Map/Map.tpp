@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Map.tpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 16:33:51 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/11 17:23:47 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/14 09:09:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_TPP
 
 # define MAP_TPP
-
-
 
 
 template <

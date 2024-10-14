@@ -6,14 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 09:07:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 09:09:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIST_TPP
 
 # define LIST_TPP
-
 
 
 template <typename T, typename Allocator>
