@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/10 14:35:24 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/14 09:06:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,11 +367,196 @@ int main(void)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+	/******************* TEST 9 ************************/
+
+	try
+	{
+		std::cout << "TEST 9: ";
+		List<Dummy> 		list;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(i);
+		}
+
+		List<Dummy> copy;
+
+		copy = list;
+		List<Dummy>::iterator iter = copy.begin();
+		List<Dummy>::iterator it = list.begin();
+		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 10 ************************/
+
+	try
+	{
+		std::cout << "TEST 10: ";
+		List<Dummy> 		copy;
+		List<Dummy> 		list;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(i);
+			copy.push_back(i + 1);
+		}
+
+		copy.push_back(1000);
+		copy.push_back(1000);
+		copy.push_back(1000);
+		copy.push_back(1000);
+
+		copy = list;
+		List<Dummy>::iterator iter = copy.begin();
+		List<Dummy>::iterator it = list.begin();
+		
+		if (list.size() != copy.size())
+		{
+			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
+
+			throw std::logic_error("size mismatch");
+		}
+			
+			
+		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 11 ************************/
+
+	try
+	{
+		std::cout << "TEST 11: ";
+		
+		List<Dummy> 		list;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(i);
+		}
+
+		List<Dummy> 		copy(list);
+		List<Dummy>::iterator iter = copy.begin();
+		List<Dummy>::iterator it = list.begin();
+		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 12 ************************/
+
+	try
+	{
+		std::cout << "TEST 12: ";
+		List<Dummy> 		copy;
+		List<Dummy> 		list;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(i);
+			copy.push_back(i + 1);
+		}
+
+		copy.pop_front();
+		copy.pop_front();
+		copy.pop_front();
+		copy.pop_front();
+
+		copy = list;
+		List<Dummy>::iterator iter = copy.begin();
+		List<Dummy>::iterator it = list.begin();
+		
+		if (list.size() != copy.size())
+		{
+			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
+
+			throw std::logic_error("size mismatch");
+		}
+			
+			
+		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 13 ************************/
+
+	try
+	{
+		std::cout << "TEST 13: ";
+
+		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
+		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
+
+		List<StringInPool, Nginx_PoolAllocator<StringInPool> > 		list(allocString);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(StringInPool("cenas e coisas", allocChar));
+			list.push_back(StringInPool(" coisas", allocChar));
+			list.pop_front();
+			list.push_front(StringInPool(" tretas coisas", allocChar));
+			list.pop_back();
+			list.push_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
+			list.push_back(StringInPool(" tretas coisas", allocChar));
+			list.pop_front();
+		}
+
+		List<StringInPool, Nginx_PoolAllocator<StringInPool> > copy(list);
+
+		if (copy.size() != list.size())
+			throw std::logic_error("size mismatch");
+
+		List<StringInPool, Nginx_PoolAllocator<StringInPool> >::iterator it = list.begin();
+		List<StringInPool, Nginx_PoolAllocator<StringInPool> >::iterator iter = copy.begin();
+		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
 	memoryPool->destroy();
 
 	return (0);
 }
 
 /*
-    c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && ./main
+    c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && valgrind ./main
 */
