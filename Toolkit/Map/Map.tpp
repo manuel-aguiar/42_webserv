@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Map.tpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 16:33:51 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 09:09:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 19:08:28 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,11 +99,12 @@ class Map
 	typedef typename Allocator::template rebind<Pair>::other NodeAllocator;
 
 	public:
-		Map(Compare compare = Compare(), Allocator allocator = Allocator()) :
+		Map(Compare compare = Compare(), const NodeAllocator& allocator = NodeAllocator()) :
 			m_header(), m_root(static_cast<BaseNode*>(&m_header)),
 			m_size(0), m_compare(compare),
-			m_nodeAllocator(NodeAllocator(allocator)) {}
-		Map(const Map& other) {*this = other;}			//later
+			m_nodeAllocator(allocator) {}
+		Map(const Map& other) : m_nodeAllocator(other.m_nodeAllocator)
+							{*this = other;}			//later
 		~Map() {}										//later
 		Map& operator=(const Map& other)
 		{
