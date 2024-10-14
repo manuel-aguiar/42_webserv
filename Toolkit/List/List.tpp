@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   List.tpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 15:29:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 19:07:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class List
 
 	private:
 
-		
+
 
 		struct BaseNode
 		{
@@ -93,7 +93,7 @@ class List
 		List(const NodeAllocator& alloc = NodeAllocator())
 			: m_size(0), m_header(), m_nodeAllocator(alloc)
 			{
-				
+
 			}
 
 
@@ -107,7 +107,7 @@ class List
 		{
 			if (this == &other)
 				return (*this);
-			
+
 			BaseNode* thisCur = m_header.m_next;
 			BaseNode* otherCur = other.m_header.m_next;
 
@@ -349,7 +349,9 @@ class List
 			BaseNode* thisTgt = pos.getPtr();
 			BaseNode* otherTgt = itOther.getPtr();
 
-			assert(mf_iterIsInList(thisTgt) && other.mf_iterIsInList(otherTgt));
+			assert(mf_iterIsInList(thisTgt));
+			assert(other.mf_iterIsInList(otherTgt));
+
 			if (other.m_size == 0)
 				return ;
 
@@ -367,10 +369,10 @@ class List
 			BaseNode* end = otherEnd.getPtr();
 
 			assert(mf_iterIsInList(thisTgt));
-			assert(other.mf_iterIsInList(start)); 
+			assert(other.mf_iterIsInList(start));
 			assert(other.mf_iterIsInList(end));
 			assert(other.mf_canReach(start, end));
-			
+
 			if (other.m_size == 0)
 				return ;
 
