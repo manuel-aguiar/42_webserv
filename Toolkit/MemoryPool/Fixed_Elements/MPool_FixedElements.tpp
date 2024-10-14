@@ -28,7 +28,7 @@ template <typename T>
 class MPool_FixedElem
 {
 	public:
-	
+
 		typedef T               value_type;
 		typedef T*              pointer;
 		typedef T&              reference;
@@ -64,7 +64,7 @@ class MPool_FixedElem
 
 		union s_Slot
 		{
-			char		  	m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];                      
+			char		  	m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
 			s_Slot*        m_next;
 		};
 
@@ -110,7 +110,6 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw(
 	m_maxElems(memoryPool.m_maxElems),
 	m_freeSlot(NULL)
 {
-	std::cout << "rebind: " << sizeof(T) << std::endl;
 }
 
 
@@ -147,9 +146,9 @@ template <typename T>
 inline typename MPool_FixedElem<T>::pointer
 MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
-	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl; 
+	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
 	assert(m_elemCount < m_maxElems);
-	
+
 	if (m_freeSlot != 0)
 	{
 		pointer result = reinterpret_cast<pointer>(m_freeSlot);
@@ -189,7 +188,7 @@ template <typename T>
 inline void
 MPool_FixedElem<T>::construct(pointer p, const_reference val)
 {
-	//std::cout << "construct called sizeofT" << sizeof(T) << std::endl; 
+	//std::cout << "construct called sizeofT" << sizeof(T) << std::endl;
 	new (p) value_type (val);
 }
 

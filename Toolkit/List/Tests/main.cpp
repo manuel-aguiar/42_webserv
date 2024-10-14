@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 09:45:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 19:13:28 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,15 +418,15 @@ int main(void)
 		copy = list;
 		List<Dummy>::iterator iter = copy.begin();
 		List<Dummy>::iterator it = list.begin();
-		
+
 		if (list.size() != copy.size())
 		{
 			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
 
 			throw std::logic_error("size mismatch");
 		}
-			
-			
+
+
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -444,7 +444,7 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 11: ";
-		
+
 		List<Dummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
@@ -489,15 +489,15 @@ int main(void)
 		copy = list;
 		List<Dummy>::iterator iter = copy.begin();
 		List<Dummy>::iterator it = list.begin();
-		
+
 		if (list.size() != copy.size())
 		{
 			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
 
 			throw std::logic_error("size mismatch");
 		}
-			
-			
+
+
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -560,8 +560,8 @@ int main(void)
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
-		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(MPool_FixedElem<StringInPool>(200));
-		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(MPool_FixedElem<StringInPool>(200));
+		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(MPool_FixedElem<StringInPool>(500));
+		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(MPool_FixedElem<StringInPool>(500));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -609,11 +609,47 @@ int main(void)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+/******************* TEST 15 ************************/
+
+	try
+	{
+		std::cout << "TEST 15: ";
+
+		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
+
+
+		MPool_FixedElem<StringInPool> alloc(200);
+		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(alloc);
+		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(alloc);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(StringInPool("cenas e coisas", allocChar));
+			list.push_back(StringInPool("cenas e coisas", allocChar));
+		}
+
+		if (std.size() != list.size())
+			throw std::logic_error("size mismatch");
+
+		std::list<StringInPool, MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
+		List<StringInPool, MPool_FixedElem<StringInPool> >::iterator it = list.begin();
+		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
 	memoryPool->destroy();
 
 	return (0);
 }
 
 /*
-    c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && valgrind ./main
+c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && valgrind ./main
 */
