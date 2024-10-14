@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DynArraySVO.tpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 15:59:24 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/14 14:09:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ template <typename T, size_t stackBuf, typename Allocator>
 class DynArraySVO
 {
 	public:
-		DynArraySVO(Allocator allocator = Allocator()) : m_heapArray(NULL), m_size(0), m_capacity(stackBuf), m_allocator(allocator)
+		DynArraySVO(const Allocator& allocator = Allocator()) : m_heapArray(NULL), m_size(0), m_capacity(stackBuf), m_allocator(allocator)
 		{
 			//std::cout << "m_size: " << m_size << " m_capacity: " << m_capacity << std::endl;
 		};

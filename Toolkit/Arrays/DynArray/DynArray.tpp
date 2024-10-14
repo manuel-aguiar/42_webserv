@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DynArray.tpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 15:26:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/14 14:09:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ template <typename T, typename Allocator>
 class DynArray
 {
     public:
-        DynArray(Allocator allocator = Allocator()) : m_array(NULL), m_size(0), m_capacity(0), m_allocator(allocator) {};
-        DynArray(int size, Allocator allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
+        DynArray(const Allocator& allocator = Allocator()) : m_array(NULL), m_size(0), m_capacity(0), m_allocator(allocator) {};
+        DynArray(int size, Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
         {
             m_array = m_allocator.allocate(size, NULL);
             for (int i = 0; i < size; i++)

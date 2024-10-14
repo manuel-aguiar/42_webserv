@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 09:06:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 09:45:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -541,6 +541,63 @@ int main(void)
 		List<StringInPool, Nginx_PoolAllocator<StringInPool> >::iterator it = list.begin();
 		List<StringInPool, Nginx_PoolAllocator<StringInPool> >::iterator iter = copy.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+/******************* TEST 8 ************************/
+
+	try
+	{
+		std::cout << "TEST 14: ";
+
+		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
+
+		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(MPool_FixedElem<StringInPool>(200));
+		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(MPool_FixedElem<StringInPool>(200));
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(StringInPool("cenas e coisas", allocChar));
+			list.push_back(StringInPool("cenas e coisas", allocChar));
+
+			std.push_back(StringInPool(" coisas", allocChar));
+			list.push_back(StringInPool(" coisas", allocChar));
+
+			std.pop_front();
+			list.pop_front();
+
+			std.push_front(StringInPool(" tretas coisas", allocChar));
+			list.push_front(StringInPool(" tretas coisas", allocChar));
+
+			std.pop_back();
+			list.pop_back();
+
+			std.push_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
+			list.push_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
+
+			std.push_back(StringInPool(" tretas coisas", allocChar));
+			list.push_back(StringInPool(" tretas coisas", allocChar));
+
+			std.pop_front();
+			list.pop_front();
+
+
+		}
+
+		if (std.size() != list.size())
+			throw std::logic_error("size mismatch");
+
+		std::list<StringInPool, MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
+		List<StringInPool, MPool_FixedElem<StringInPool> >::iterator it = list.begin();
+		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");

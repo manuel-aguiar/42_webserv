@@ -87,6 +87,7 @@ MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
 	m_maxElems(numElems),
 	m_freeSlot(NULL)
 {
+	//std::cout << "mem pool constructed: " << sizeof(T) << " array is size: " << m_elements.size() << std::endl;
 }
 
 
@@ -97,6 +98,7 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& memoryPool) throw() :
 	m_freeSlot(memoryPool.m_freeSlot)
 {
 	m_elements = HeapArray<s_Slot>(memoryPool.m_maxElems);
+	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
 
 
@@ -108,7 +110,7 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw(
 	m_maxElems(memoryPool.m_maxElems),
 	m_freeSlot(NULL)
 {
-	
+	std::cout << "rebind: " << sizeof(T) << std::endl;
 }
 
 
@@ -117,7 +119,7 @@ template <typename T>
 MPool_FixedElem<T>::~MPool_FixedElem()
 throw()
 {
-
+	//std::cout <<  " destructoed "<< std::endl;
 }
 
 
@@ -145,6 +147,7 @@ template <typename T>
 inline typename MPool_FixedElem<T>::pointer
 MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
+	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl; 
 	assert(m_elemCount < m_maxElems);
 	
 	if (m_freeSlot != 0)
@@ -155,10 +158,7 @@ MPool_FixedElem<T>::allocate(size_type, const_pointer)
 		return (result);
 	}
 	else
-	{
 		return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
-	}
-		
 }
 
 
@@ -189,6 +189,7 @@ template <typename T>
 inline void
 MPool_FixedElem<T>::construct(pointer p, const_reference val)
 {
+	//std::cout << "construct called sizeofT" << sizeof(T) << std::endl; 
 	new (p) value_type (val);
 }
 

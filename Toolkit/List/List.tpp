@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/14 09:09:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:08:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # define LIST_TPP
 
+#include <cassert>
 
 template <typename T, typename Allocator>
 class List
@@ -87,8 +88,12 @@ class List
 
 	public:
 
-		List(Allocator alloc = Allocator())
-			: m_size(0), m_header(), m_nodeAllocator(NodeAllocator(alloc)) {}
+		List(const NodeAllocator& alloc = NodeAllocator())
+			: m_size(0), m_header(), m_nodeAllocator(alloc)
+			{
+				
+			}
+
 
 		List(const List& other)
 			: m_size(0), m_header(), m_nodeAllocator(other.m_nodeAllocator)
@@ -149,6 +154,9 @@ class List
 			m_header.m_next = &m_header;
 			m_header.m_prev = &m_header;
 		}
+
+		T&		front() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_next)->m_data; }
+		T&		back() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_prev)->m_data; }
 
 		void	push_back(const T& data)
 		{
