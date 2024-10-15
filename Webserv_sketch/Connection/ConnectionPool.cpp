@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:13:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/14 09:39:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,15 @@ ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) :
         m_connections[i].init();
         m_connections[i].m_readEvent = &m_readEvents[i];
         m_connections[i].m_writeEvent = &m_writeEvents[i];
+
         m_readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
         m_readEvents[i].setFlags(EPOLLIN);
+
         m_writeEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
         m_writeEvents[i].setFlags(EPOLLOUT);
+        
         m_spareConnections.push_back(&m_connections[i]);
+        
     }
 }
 

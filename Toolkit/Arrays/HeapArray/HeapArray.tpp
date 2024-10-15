@@ -25,27 +25,34 @@ class HeapArray
 
 		HeapArray() : m_array(NULL), m_size(0)
 		{
+			//std::cout <<" heaparray constructed" << std::endl;
 		};
 
 		HeapArray(size_t size) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), m_size(size)
 		{
+			//std::cout << "heaparray constructed parameter" << std::endl;
 		};
 
 		~HeapArray()
 		{
+			//std::cout << "heap array destroyed" << std::endl;
 			if (m_array)
 				delete [] (reinterpret_cast<t_byte*>(m_array));
 		};
 
 		HeapArray(const HeapArray &other) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other.m_size])), m_size(other.m_size)
 		{
+			//std::cout << "heaparray copied" << std::endl;
+
 			std::memcpy(reinterpret_cast<t_byte*>(m_array), 
 						reinterpret_cast<t_byte*>(other.m_array), 
 						sizeof(T) * m_size);
+			
 		};
 
 		HeapArray &operator=(const HeapArray &other)
 		{
+			//std::cout << "heaparray assigned" << std::endl;
 			if (this == &other)
 				return (*this);
 			if (m_size != other.m_size)
@@ -63,6 +70,7 @@ class HeapArray
 
 		T& operator[](const size_t index)
 		{
+			//std::cout << "index: " << index << "; size: " << m_size << std::endl;
 			assert(index < m_size);
 			return *(reinterpret_cast<T*>(&m_array[index]));
 		}

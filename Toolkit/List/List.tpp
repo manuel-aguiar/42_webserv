@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/11 10:21:31 by manuel           ###   ########.fr       */
+/*   Updated: 2024/10/14 19:07:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 # define LIST_TPP
 
-
+#include <cassert>
 
 template <typename T, typename Allocator>
 class List
 {
 
 	private:
+
+
 
 		struct BaseNode
 		{
@@ -88,8 +90,12 @@ class List
 
 	public:
 
-		List(Allocator alloc = Allocator())
-			: m_size(0), m_header(), m_nodeAllocator(NodeAllocator(alloc)) {}
+		List(const NodeAllocator& alloc = NodeAllocator())
+			: m_size(0), m_header(), m_nodeAllocator(alloc)
+			{
+
+			}
+
 
 		List(const List& other)
 			: m_size(0), m_header(), m_nodeAllocator(other.m_nodeAllocator)
@@ -101,12 +107,28 @@ class List
 		{
 			if (this == &other)
 				return (*this);
-			clear();
-			BaseNode* current = other.m_header.m_next;
-			while (current != &other.m_header)
+
+			BaseNode* thisCur = m_header.m_next;
+			BaseNode* otherCur = other.m_header.m_next;
+
+			while (thisCur != &m_header && otherCur != &other.m_header)
 			{
-				emplace_back(current->m_data);
-				current = current->m_next;
+				static_cast<DataNode*>(thisCur)->m_data = static_cast<DataNode*>(otherCur)->m_data;
+				otherCur = otherCur->m_next;
+				thisCur = thisCur->m_next;
+			}
+			while (thisCur != &m_header)
+			{
+				BaseNode* next = thisCur->m_next;
+				mf_removeTarget(thisCur);
+				mf_deallocate(thisCur);
+				thisCur = next;
+				--m_size;
+			}
+			while (otherCur != &other.m_header)
+			{
+				push_back(static_cast<DataNode*>(otherCur)->m_data);
+				otherCur = otherCur->m_next;
 			}
 			return (*this);
 		}
@@ -127,7 +149,7 @@ class List
 			while (cur != &m_header)
 			{
 				next = cur->m_next;
-				_deallocate(cur);
+				mf_deallocate(cur);
 				cur = next;
 			}
 			m_size = 0;
@@ -135,11 +157,14 @@ class List
 			m_header.m_prev = &m_header;
 		}
 
+		T&		front() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_next)->m_data; }
+		T&		back() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_prev)->m_data; }
+
 		void	push_back(const T& data)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(data);
-			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -147,17 +172,19 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(data);
-			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
+
+
 
 		void	pop_back()
 		{
 			BaseNode* node;
 
 			node = m_header.m_prev;
-			_removeTarget(m_header.m_prev);
-			_deallocate(node);
+			mf_removeTarget(m_header.m_prev);
+			mf_deallocate(node);
 			--m_size;
 		}
 
@@ -166,8 +193,8 @@ class List
 			BaseNode* node;
 
 			node = m_header.m_next;
-			_removeTarget(m_header.m_next);
-			_deallocate(node);
+			mf_removeTarget(m_header.m_next);
+			mf_deallocate(node);
 			--m_size;
 		}
 
@@ -175,7 +202,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode();
-			_insertAfter(node);
+			mf_insertAfter(node);
 			++m_size;
 		}
 
@@ -184,7 +211,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1);
-			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -193,7 +220,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2);
-			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -202,7 +229,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
-			_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -210,7 +237,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode();
-			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -219,7 +246,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1);
-			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -228,7 +255,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2);
-			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -237,7 +264,7 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
-			_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
@@ -285,6 +312,8 @@ class List
                     m_ptr = m_ptr->m_prev;
                     return tmp;
                 }
+
+				pointer getPtr () const { return m_ptr; }
             private:
                 pointer m_ptr;
         };
@@ -292,12 +321,78 @@ class List
 		iterator begin() { return iterator(m_header.m_next); }
 		iterator end() { return iterator(&m_header); }
 
+		void	splice(iterator pos, List& other)
+		{
+			BaseNode* target = pos.getPtr();
+			BaseNode* otherCur;
+
+			assert(mf_iterIsInList(target));
+			if (other.m_size == 0)
+				return ;
+
+			otherCur = other.m_header.m_next;
+			target->m_prev->m_next = otherCur;
+			otherCur->m_prev = target->m_prev;
+
+			otherCur = other.m_header.m_prev;
+			target->m_prev = otherCur;
+			otherCur->m_next = target;
+
+			m_size += other.m_size;
+			other.m_size = 0;
+			other.m_header.m_next = &other.m_header;
+			other.m_header.m_prev = &other.m_header;
+		}
+
+		void	splice(iterator pos, List& other, iterator itOther)
+		{
+			BaseNode* thisTgt = pos.getPtr();
+			BaseNode* otherTgt = itOther.getPtr();
+
+			assert(mf_iterIsInList(thisTgt));
+			assert(other.mf_iterIsInList(otherTgt));
+
+			if (other.m_size == 0)
+				return ;
+
+			other.mf_removeTarget(otherTgt);
+			this->mf_insertBefore(thisTgt, otherTgt);
+
+			m_size += 1;
+			other.m_size -= 1;
+		}
+
+		void	splice(iterator pos, List& other, iterator otherStart, iterator otherEnd)
+		{
+			BaseNode* thisTgt = pos.getPtr();
+			BaseNode* start = otherStart.getPtr();
+			BaseNode* end = otherEnd.getPtr();
+
+			assert(mf_iterIsInList(thisTgt));
+			assert(other.mf_iterIsInList(start));
+			assert(other.mf_iterIsInList(end));
+			assert(other.mf_canReach(start, end));
+
+			if (other.m_size == 0)
+				return ;
+
+			while (start != end)
+			{
+				BaseNode* next = start->m_next;
+				other.mf_removeTarget(start);
+				this->mf_insertBefore(thisTgt, start);
+				start = next;
+				++m_size;
+				--other.m_size;
+			}
+		}
+
 	private:
 		size_t					m_size;
 		HeaderNode 				m_header;
 		NodeAllocator			m_nodeAllocator;
 
-		void 	_insertAfter(BaseNode* target, BaseNode* node)
+		void 	mf_insertAfter(BaseNode* target, BaseNode* node)
 		{
 			node->m_prev = target;
 			node->m_next = target->m_next;
@@ -305,7 +400,7 @@ class List
 			node->m_next->m_prev = node;
 		}
 
-		void	_insertBefore(BaseNode* target, BaseNode* node)
+		void	mf_insertBefore(BaseNode* target, BaseNode* node)
 		{
 			node->m_next = target;
 			node->m_prev = target->m_prev;
@@ -313,17 +408,45 @@ class List
 			node->m_next->m_prev = node;
 		}
 
-		void	_removeTarget(BaseNode* target)
+		void	mf_removeTarget(BaseNode* target)
 		{
 			target->m_next->m_prev = target->m_prev;
 			target->m_prev->m_next = target->m_next;
 		}
 
-		void	_deallocate(BaseNode* node)
+		void	mf_deallocate(BaseNode* node)
 		{
 			DataNode* data = static_cast<DataNode*>(node);
 			m_nodeAllocator.destroy(data);
 			m_nodeAllocator.deallocate(data, 1);
+		}
+
+		bool	mf_iterIsInList(BaseNode* node)
+		{
+			BaseNode* cur = m_header.m_next;
+
+			while (cur != &m_header)
+			{
+				if (cur == node)
+					return (true);
+				cur = cur->m_next;
+			}
+			if (cur == node)
+				return (true);
+			return (false);
+		}
+
+		bool	mf_canReach(BaseNode* start, BaseNode* end)
+		{
+			while (start != &m_header)
+			{
+				if (start == end)
+					return (true);
+				start = start->m_next;
+			}
+			if (start == end)
+				return (true);
+			return (false);
 		}
 
 };
