@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:32:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/15 20:33:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,16 @@ class ListeningSocket
         void                        closeConnection(Connection* connection);
 
         Globals*                    m_globals;
+
+        
         int                         m_socktype;    
         t_socket                    m_sockfd;
         int                         m_proto;
         t_sockaddr*                 m_addr;
         t_socklen                   m_addrlen;
         int                         m_backlog;
+        
+
         
         Event                       m_myEvent;    
         ConnectionPool&             m_connectionPool;

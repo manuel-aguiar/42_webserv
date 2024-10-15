@@ -14,6 +14,8 @@
 #include <sys/wait.h>
 #include <iostream>
 #include <cstring>
+#include <cerrno>
+#include <cstdlib>
 
 void closePipes(int pipefds[2])
 {

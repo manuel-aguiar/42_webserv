@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MPool_Block.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 10:51:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/10/15 20:12:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ Nginx_MemoryPool::Nginx_MPool_Block*
 Nginx_MemoryPool::Nginx_MPool_Block::
 create(size_t blockSize, size_t startingBlocks)
 {
-    Nginx_MPool_Block* pool;
+    Nginx_MPool_Block* pool = NULL;
     Nginx_MPool_Block* m_next;
 
     m_next = NULL;

@@ -60,6 +60,8 @@
 # define MAX_CONNECTIONS 10
 # define RESPONSE "Hello Client!"
 
+#include <cerrno>
+#include <cstdlib>
 
 /*
 struct sockaddr_in {
@@ -175,7 +177,7 @@ int main()
 	#ifdef SO_REUSEPORT
 		int sockopt = SO_REUSEPORT | SO_REUSEADDR;
 	#else
-		int sockopt = SO_REUSEADDR
+		int sockopt = SO_REUSEADDR;
 	#endif
 
 

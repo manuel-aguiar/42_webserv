@@ -16,6 +16,8 @@
 #include <sys/wait.h>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
+#include <cerrno>
 
 void closeSocketPair(int socketPair[2])
 {
