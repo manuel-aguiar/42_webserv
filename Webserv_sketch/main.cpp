@@ -30,6 +30,7 @@ int main(int ac, char **av, char **env)
 	Globals 		globals(&clock, &log, &log, &debug);
 	t_sigaction		sigaction = (t_sigaction){};
 
+
 	SignalHandler::prepare_signal(&sigaction, SignalHandler::signal_handler, 1, &globals);
 
 	Server 		server(0, &globals);
@@ -43,6 +44,7 @@ int main(int ac, char **av, char **env)
 
 	globals.logStatus("server closing");
 
+/*
 
 	PythonCgi cgi ("/usr/bin/python3");
 
@@ -60,6 +62,7 @@ int main(int ac, char **av, char **env)
 
 	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
 	req.execute();
-
+	
+*/
 	return (GRET_SUCKCESS);
 }
