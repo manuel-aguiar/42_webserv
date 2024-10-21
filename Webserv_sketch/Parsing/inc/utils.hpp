@@ -8,10 +8,13 @@
 # include <vector>
 # include <set>
 
-# define DEFAULT_CONFIG_PATH "webserv.conf"
-# define DEFAULT_HOST "127.0.0.1"
-# define DEFAULT_PORT "8080"
-# define DEFAULT_CLIENT_BODY_SIZE "1M" // 1MB
+# define DEFAULT_CONFIG_PATH        "webserv.conf"
+# define DEFAULT_HOST               "127.0.0.1"
+# define DEFAULT_PORT               "8080"
+# define DEFAULT_CLIENT_BODY_SIZE   "1M" // 1MB
+# define DEFAULT_HEADER_SIZE        "1M"
+# define DEFAULT_MAX_CONNECTIONS    "1024"
+# define DEFAULT_MAX_CONCURRENT_CGI "10"
 
 // Conversion
 size_t		__stoull(const std::string &str);

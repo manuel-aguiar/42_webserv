@@ -9,6 +9,9 @@ ServerConfig::ServerConfig()
 	_keys["port"]				= &ServerConfig::addPort;
 	_keys["server_names"]		= &ServerConfig::addServerName;
 	_keys["client_body_size"]	= &ServerConfig::setClientBodySize;
+	_keys["client_header_size"]	= &ServerConfig::setClientHeaderSize;
+	_keys["max_connections"]	= &ServerConfig::setMaxConnections;
+	_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCGI;
 	_keys["root"]				= &ServerConfig::setRootPath;
 	_keys["error_pages"]		= &ServerConfig::addErrorPage;
 
@@ -16,10 +19,12 @@ ServerConfig::ServerConfig()
 	_config["port"];
 	_config["server_names"];
 	_config["client_body_size"];
+	_config["client_header_size"];
+	_config["max_connections"];
+	_config["max_concurrent_cgi"];
 	_config["root"];
 	_config["error_pages"];
 	// Locations
-
 }
 
 bool	ServerConfig::setHost(const std::string &value, const int &flag)
@@ -37,7 +42,9 @@ bool	ServerConfig::setRootPath(const std::string &value, const int &flag)
 {
 	if (!flag && !_config["root"].empty())
 		throw (std::invalid_argument("root path already set"));
+
 	// is there any check to do here?
+	
 	_config["root"].clear();
 	_config["root"].insert(value);
 	return (1);
@@ -60,7 +67,52 @@ bool	ServerConfig::setClientBodySize(const std::string &value, const int &flag)
 	return (1);
 }
 
-bool ServerConfig::addPort(const std::string &value, const int &flag)
+bool	ServerConfig::setClientHeaderSize(const std::string &value, const int &flag)
+{
+	if (!flag && !_config["client_header_size"].empty())
+		throw (std::invalid_argument("client header size already set"));
+	try {
+		parse_size(value);
+	}
+	catch (std::exception &e) {
+		std::cerr << e.what();
+		return (0);
+	}
+	_config["client_header_size"].clear();
+	_config["client_header_size"].insert(value);
+
+	return (1);
+}
+
+bool	ServerConfig::setMaxConnections(const std::string &value, const int &flag)
+{
+	if (!flag && !_config["max_connections"].empty())
+		throw (std::invalid_argument("max connections already set"));
+	if (!is_number(value))
+		throw (std::invalid_argument("value not a number"));
+	_config["max_connections"].clear();
+	_config["max_connections"].insert(value);
+
+
+	return (1);
+
+}
+
+bool	ServerConfig::setMaxConcurrentCGI(const std::string &value, const int &flag)
+{
+	if (!flag && !_config["max_concurrent_cgi"].empty())
+		throw (std::invalid_argument("max concurrent cgi already set"));
+	if (!is_number(value))
+		throw (std::invalid_argument("value not a number"));
+	_config["max_concurrent_cgi"].clear();
+	_config["max_concurrent_cgi"].insert(value);
+
+	return (1);
+}
+
+
+
+bool	ServerConfig::addPort(const std::string &value, const int &flag)
 {
 	(void)flag;
 	if (!is_number(value) || (_config["port"].find(value) != _config["port"].end()))
@@ -70,7 +122,7 @@ bool ServerConfig::addPort(const std::string &value, const int &flag)
 	return (1);
 }
 
-bool ServerConfig::addServerName(const std::string &value, const int &flag)
+bool	ServerConfig::addServerName(const std::string &value, const int &flag)
 {
 	(void)flag;
 	// are there any more checks to do here?
@@ -151,6 +203,38 @@ std::string	ServerConfig::getClientBodySize() const
 		throw std::out_of_range("Key not found");
 }
 
+std::string	ServerConfig::getClientHeaderSize() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("client_header_size");
+
+	if (it != _config.end())
+		return (*it->second.begin());
+	else
+		throw std::out_of_range("Key not found");
+}
+
+std::string	ServerConfig::getMaxConnections() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("max_connections");
+
+	if (it != _config.end())
+		return (*it->second.begin());
+	else
+		throw std::out_of_range("Key not found");
+}
+
+std::string	ServerConfig::getMaxConcurrentCGI() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("max_concurrent_cgi");
+	
+
+	if (it != _config.end())
+		return (*it->second.begin());
+	else
+		throw std::out_of_range("Key not found");
+}
+
+
 std::set<std::string>	ServerConfig::getErrorPages() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("error_pages");
@@ -177,10 +261,22 @@ void	ServerConfig::set_defaults(const int &flag)
 		setHost(DEFAULT_HOST, flag);
 	}
 	catch (std::exception &e) {}
+	if (_config["port"].empty())
+		_config["port"].insert(DEFAULT_PORT);
 	try {
 		setClientBodySize(DEFAULT_CLIENT_BODY_SIZE, flag);
 	}
 	catch (std::exception &e) {}
-	if (_config["port"].empty())
-		_config["port"].insert(DEFAULT_PORT);
+	try {
+		setClientHeaderSize(DEFAULT_HEADER_SIZE, flag);
+	}
+	catch (std::exception &e) {}
+	try {
+		setMaxConnections(DEFAULT_MAX_CONNECTIONS, flag);
+	}
+	catch (std::exception &e) {}
+	try {
+		setMaxConcurrentCGI(DEFAULT_MAX_CONCURRENT_CGI, flag);
+	}
+	catch (std::exception &e) {}
 }
