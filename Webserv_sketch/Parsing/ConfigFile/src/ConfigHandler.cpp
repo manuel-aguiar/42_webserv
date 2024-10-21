@@ -40,11 +40,13 @@ int		ConfigHandler::parse_config_line(std::string &line, ServerConfig &server, s
 	std::string key, value;
 	iss >> key;
 	
-	// if (*value.rbegin() == ';')
-	// 	value = value.substr(0, value.size() - 1);
 	
+	if (key[0] == '#')
+		return (2);
 	while (iss >> value)
 	{
+		if (*value.rbegin() == ';')
+			value = value.substr(0, value.size() - 1);
 		try {
 			server.addConfigValue(key, value);
 		}
@@ -115,9 +117,17 @@ int		ConfigHandler::parse_config_file()
 		}
 		else
 		{
-			if (bracket_level == 1)
+			if (current_server)
+			{
 				if (!parse_config_line(line, _servers[_serverCount - 1], current_line))
 					return (0);
+			}
+			else
+			{
+				std::cerr << "Error: config parsing: invalid line on line "
+					<< current_line << std::endl;
+				return (0);
+			}
 		}
 	}
 	if (current_server)
@@ -155,6 +165,10 @@ void	ConfigHandler::print_server_config(const ServerConfig &server)
 	std::cout << std::endl;
 	
 	std::cout << "Client Body Size: " << server.getClientBodySize() << std::endl;
+	std::cout << "Client Header Size: " << server.getClientHeaderSize() << std::endl;
+	std::cout << "Max Connections: " << server.getMaxConnections() << std::endl;
+	std::cout << "Max Concurrent CGI: " << server.getMaxConcurrentCGI() << std::endl;
+
 	std::cout << "Root: " << server.getRoot() << std::endl;
 
 	std::cout << "Error_pages: ";
@@ -171,6 +185,11 @@ void	ConfigHandler::print_servers_config()
 	for (size_t i = 0; i < _servers.size(); i++)
 	{
 		std::cout << "=== Server " << i << " parameters ===" << std::endl;
-		print_server_config(_servers[i]);
+		try {
+			print_server_config(_servers[i]);
+		}
+		catch (std::exception &e) {
+			std::cerr << e.what() << std::endl;
+		}
 	}
 }

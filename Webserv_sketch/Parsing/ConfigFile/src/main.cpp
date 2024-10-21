@@ -21,5 +21,4 @@ int main(int argc, char **argv)
 		std::cout << "Config parsing done! Showing stored information:" << std::endl;
 		configHandler.print_servers_config();
 	}
-	// delete[] servers;
 }
