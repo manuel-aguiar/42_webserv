@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:00:52 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/08 10:38:15 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,14 @@ class Connection
         t_sockaddr*         m_addr;
         t_socklen           m_addrlen;
 
-        //will be spawned via static create.()
 
-        Event*              m_readEvent;         //pointer cause it may be reused
+        Event*              m_readEvent;
         Event*              m_writeEvent;
-        ListeningSocket*    m_listener;          //pointer cause it may be reused
-        Nginx_MemoryPool*   m_memPool;           //will have its own pool
+        ListeningSocket*    m_listener;
+        Nginx_MemoryPool*   m_memPool;
         Globals*            m_globals;
+
+		void*				m_proto_connection;				// <- the http connection
 
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);
