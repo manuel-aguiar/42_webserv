@@ -1,13 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpSession.cpp                                    :+:      :+:    :+:   */
+/*   HttpConnection.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 10:18:35 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:18:40 by codespace        ###   ########.fr       */
+/*   Created: 2024/11/11 10:14:12 by codespace         #+#    #+#             */
+/*   Updated: 2024/11/11 10:14:15 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpSession.hpp"
+# include "HttpConnection.hpp"

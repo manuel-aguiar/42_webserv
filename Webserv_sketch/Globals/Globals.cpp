@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Globals.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/15 19:41:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/11 09:26:39 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	Globals::logError(const std::string& message)
 void	Globals::logStatus(const char* message)
 {
 	assert(m_statusFile != NULL);
-	CUSTOM_ASSERT(message != NULL, "SKILL ISSUE");
+	//CUSTOM_ASSERT(message != NULL, "SKILL ISSUE");
 	m_statusFile->record(message);
 }
 
