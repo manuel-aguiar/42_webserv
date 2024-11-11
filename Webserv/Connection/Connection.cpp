@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/11 13:48:37 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/11 15:11:40 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,64 @@ void    Connection::read()
 
 }
 
+#include <sys/stat.h>
+
+std::string int_to_string(int value) {
+    // Handle zero case
+    if (value == 0) {
+        return "0";
+    }
+
+    bool isNegative = value < 0;
+    std::string result;
+
+    // Process each digit and prepend to the result string
+    while (value != 0) {
+        int digit = (isNegative ? -(value % 10) : (value % 10));
+        result = static_cast<char>('0' + digit) + result;
+        value /= 10;
+    }
+
+    // Add negative sign if needed
+    if (isNegative) {
+        result = "-" + result;
+    }
+
+    return result;
+}
+
 void    Connection::write()
 {
-    std::cout << "conenction fd " << m_sockfd << " writing" << std::endl;
+	char buffer [100];
+
+	const char* path = "/workspaces/42_webserv/Websites/Website1/index.html";
+	const char* response = 	"HTTP/1.1 200 OK\r\n"
+        					"Content-Type: text/html\r\n"
+							"Connection: close\r\n";
     ::write(m_sockfd, response, std::strlen(response));
+
+	int fd = ::open(path, O_RDONLY);
+	struct stat fileStat;
+	if (stat(path, &fileStat) != 0)
+	{
+		std::cout << "couldnt reach file" << std::endl;
+		return ;
+	}
+
+	int size = fileStat.st_size;
+	std::string cenas = "Content-Length: " + int_to_string(size) + "\r\n\r\n";
+	::write(m_sockfd, cenas.c_str(), cenas.size());
+	std::cout << "conenction fd " << m_sockfd << " started writing" << std::endl;
+
+	while (1)
+	{
+		int bytes = ::read(fd, buffer, 100);
+
+		::write(m_sockfd, buffer, bytes);
+		if (bytes < 100)
+			break;
+	}
+
     std::cout << "conenction fd " << m_sockfd << " finished writing" << std::endl;
     //m_listener->closeConnection(this);
 }
