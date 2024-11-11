@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/07 10:56:21 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,24 @@ void    ListeningSocket::accept()
 
     std::memcpy(connection->m_addr, &addr, addrlen);
     connection->m_addrlen = addrlen;
+
+/*
+	Here the listening socket determines, based on configuration that the protocol
+	interpreter that should handle the event is http or something else
+	it asks the http interpreter to create a new http connection, associate it with this
+	connection and replace this connection's event's function pointers to those of the http
+	connection interpreter.
+
+	Then, when reading, the http connection will look for headers, ask the interpreter for
+	sessions, set timeouts, etc.
+
+
+
+
+*/
+
+
+
  //std::cout << "added conenction" << std::endl;
     if (!m_eventManager.addEvent(connection->m_sockfd, *connection->m_readEvent))
         goto NewConnection_Failure;

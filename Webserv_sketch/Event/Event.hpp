@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:11:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/08 10:38:16 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,6 @@ class Event
 
         void    handle();
 
-/*
-        typedef enum
-        {
-            ACCEPT = 1 << 0,
-            WRITE = 1 << 1,
-            READ = 1 << 2
-        };
-*/
-    //private:
-        
-
-        
         HandlerFunction    m_function;
         HandlerData        m_data;
         t_fd               m_fd;

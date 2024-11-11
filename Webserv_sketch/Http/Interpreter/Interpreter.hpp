@@ -25,14 +25,14 @@ class HttpSession
 
     private:
 
-        int         session_id; 
+        int         session_id;
         size_t      logged_times;
 };
 
 typedef std::string Headers;
 typedef std::string Value;
 
-class Response;
+class HttpResponse;
 
 class HttpConnection
 {
@@ -40,7 +40,7 @@ class HttpConnection
     HttpInterpreter&            interpreter;
 
     std::queue<HttpRequest>     requests;
-    std::queue<Response>        responses;
+    std::queue<HttpResponse>        responses;
 };
 
 class HttpRequest
@@ -62,7 +62,7 @@ class HttpRequest
 
 class HttpInterpreter
 {
-    
+
     public:
         typedef int t_sessionId;
 
@@ -78,8 +78,6 @@ class HttpInterpreter
 int main (void)
 {
     std::string request("GET BGAASGASGAS");
-
-    HttpRequest
 
 }
 
