@@ -55,12 +55,12 @@ int main(int ac, char **av, char **env)
 
 
 	//req.debugPrintInputs();
-	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	req.initPython(cgi, "../Websites/Website1/cgi-bin/hello.py");
 	req.execute();
 
 	req.reset();
 
-	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
+	req.initPython(cgi, "../Websites/Website2/cgi-bin/hello.py");
 	req.execute();
 
 
