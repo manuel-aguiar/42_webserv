@@ -44,7 +44,7 @@ int main(int ac, char **av, char **env)
 
 	globals.logStatus("server closing");
 
-/*
+
 
 	PythonCgi cgi ("/usr/bin/python3");
 
@@ -62,7 +62,7 @@ int main(int ac, char **av, char **env)
 
 	req.initPython(cgi, "VirtualHosts/VirtualHost1/cgi-bin/hello.py");
 	req.execute();
-	
-*/
+
+
 	return (GRET_SUCKCESS);
 }
