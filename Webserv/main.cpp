@@ -24,8 +24,8 @@ int main(int ac, char **av, char **env)
 {
 	(void)ac; (void)av; (void)env;
 
-	LogFile 		log("log.txt");
-	LogFile 		debug("debug.txt");
+	LogFile 		log("../log.txt");
+	LogFile 		debug("../debug.txt");
 	Clock   		clock;
 	Globals 		globals(&clock, &log, &log, &debug);
 	t_sigaction		sigaction = (t_sigaction){};

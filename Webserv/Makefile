@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/11 17:00:33 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/11 15:22:22 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,6 @@ SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/Connection/ConnectionPool.cpp					\
 								$(SRC_PATH)/Event/Event.cpp									\
 								$(SRC_PATH)/Event/HandlerFunction.cpp						\
-								$(SRC_PATH)/Request/Request.cpp								\
 								$(SRC_PATH)/Server/Server.cpp								\
 								$(SRC_PATH)/EventManager/EventManager.cpp					\
 								$(SRC_PATH)/Globals/Globals.cpp								\
