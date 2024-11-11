@@ -8,8 +8,8 @@ class ServerConfig
 	private:
 		typedef bool (ServerConfig::*f_addConfigValue)(const std::string &, const int &);
 
-		std::map<std::string, std::set<std::string> > _config;
-		std::map<std::string, f_addConfigValue> _keys;
+		std::map<std::string, std::set<std::string> > 	m_config;
+		std::map<std::string, f_addConfigValue> 		m_keys;
 
 	public:
 		ServerConfig();

@@ -2,7 +2,7 @@
 
 // Public
 
-ConfigHandler::ConfigHandler(): _path(std::string(DEFAULT_CONFIG_PATH)), _serverCount(0) {}
+ConfigHandler::ConfigHandler(): m_path(std::string(DEFAULT_CONFIG_PATH)), m_serverCount(0) {}
 
 ConfigHandler::~ConfigHandler() {}
 
@@ -10,24 +10,24 @@ ConfigHandler::~ConfigHandler() {}
 
 int	ConfigHandler::getServerCount() const
 {
-	return (_serverCount);
+	return (m_serverCount);
 }
 
-std::string	ConfigHandler::getConfigPath() const
+const std::string&	ConfigHandler::getConfigPath() const
 {
-	return (_path);
+	return (m_path);
 }
 
 int		ConfigHandler::setConfigPath(std::string new_path)
 {
-	this->_path = new_path;
+	this->m_path = new_path;
 	return (1);
 }
 
 int		ConfigHandler::updateFile()
 {
-	_file.open(_path.c_str());
-	if (!_file.is_open()) {
+	m_file.open(m_path.c_str());
+	if (!m_file.is_open()) {
 		std::cerr << "Error: Could not open configuration file." << std::endl;
 		return (0);
 	}
@@ -39,8 +39,8 @@ int		ConfigHandler::parse_config_line(std::string &line, ServerConfig &server, s
 	std::istringstream iss(line);
 	std::string key, value;
 	iss >> key;
-	
-	
+
+
 	if (key[0] == '#')
 		return (2);
 	while (iss >> value)
@@ -73,12 +73,12 @@ int		ConfigHandler::parse_config_file()
 
 	if (!updateFile())
 		return (0);
-	if (_serverCount)
+	if (m_serverCount)
 	{
 		std::cerr << "Error: re-parsing not implemented" << std::endl;
 		return (0);
 	}
-	while (std::getline(_file, line))
+	while (std::getline(m_file, line))
 	{
 		current_line++;
 		line = strtrim(line);
@@ -93,10 +93,10 @@ int		ConfigHandler::parse_config_file()
 				return (0);
 			}
 			ServerConfig Server;
-			_serverCount++;
-			_servers.push_back(Server);
+			m_serverCount++;
+			m_servers.push_back(Server);
 			bracket_level++;
-			current_server = _serverCount;
+			current_server = m_serverCount;
 		}
 		else if (line == "}")
 		{
@@ -110,7 +110,7 @@ int		ConfigHandler::parse_config_file()
 				bracket_level--;
 			else
 			{
-				_servers[_serverCount - 1].set_defaults();
+				m_servers[m_serverCount - 1].set_defaults();
 				current_server = 0;
 				bracket_level--;
 			}
@@ -119,7 +119,7 @@ int		ConfigHandler::parse_config_file()
 		{
 			if (current_server)
 			{
-				if (!parse_config_line(line, _servers[_serverCount - 1], current_line))
+				if (!parse_config_line(line, m_servers[m_serverCount - 1], current_line))
 					return (0);
 			}
 			else
@@ -137,7 +137,7 @@ int		ConfigHandler::parse_config_file()
 	}
 	return (1);
 }
-		
+
 // Debug functions
 
 void	ConfigHandler::print_server_config(const ServerConfig &server)
@@ -147,7 +147,7 @@ void	ConfigHandler::print_server_config(const ServerConfig &server)
 	std::set<std::string>	error_pages = server.getErrorPages();
 
 	std::cout << "Host: " << server.getHost() << std::endl;
-	
+
 	std::cout << "Ports: ";
 	if (!ports.size())
 		std::cout << "(empty)";
@@ -163,11 +163,11 @@ void	ConfigHandler::print_server_config(const ServerConfig &server)
 		for (std::set<std::string>::const_iterator it = server_names.begin(); it != server_names.end(); it++)
 			std::cout << *it << " ";
 	std::cout << std::endl;
-	
-	std::cout << "Client Body Size: " << server.getClientBodySize() << std::endl;
-	std::cout << "Client Header Size: " << server.getClientHeaderSize() << std::endl;
-	std::cout << "Max Connections: " << server.getMaxConnections() << std::endl;
-	std::cout << "Max Concurrent CGI: " << server.getMaxConcurrentCGI() << std::endl;
+
+	std::cout << "Client Body Size: " << server.getClientBodySize() << '\n';
+	std::cout << "Client Header Size: " << server.getClientHeaderSize() << '\n';
+	std::cout << "Max Connections: " << server.getMaxConnections() << '\n';
+	std::cout << "Max Concurrent CGI: " << server.getMaxConcurrentCGI() << '\n';
 
 	std::cout << "Root: " << server.getRoot() << std::endl;
 
@@ -182,11 +182,11 @@ void	ConfigHandler::print_server_config(const ServerConfig &server)
 
 void	ConfigHandler::print_servers_config()
 {
-	for (size_t i = 0; i < _servers.size(); i++)
+	for (size_t i = 0; i < m_servers.size(); i++)
 	{
 		std::cout << "=== Server " << i << " parameters ===" << std::endl;
 		try {
-			print_server_config(_servers[i]);
+			print_server_config(m_servers[i]);
 		}
 		catch (std::exception &e) {
 			std::cerr << e.what() << std::endl;
