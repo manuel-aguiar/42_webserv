@@ -2,8 +2,8 @@
 NAME =			a.out
 CXX =			c++
 CXXFLAGS =		-Wall -Wextra -Werror -g -std=c++98 #-fsanitize=address
-SRC =			./src/main.cpp ./src/ConfigHandler.cpp ./src/ServerConfig.cpp ./src/utils.cpp
-INCLUDE_DIR =	./inc/
+SRC =			./ConfigFile/src/main.cpp ./ConfigFile/src/ConfigHandler.cpp ./ConfigFile/src/ServerConfig.cpp ./ConfigFile/src/utils.cpp
+INCLUDE_DIR =	./ConfigFile/inc/
 
 
 #=== COLORS ===#
@@ -29,7 +29,7 @@ $(NAME): $(SRC)
 clean:
 
 fclean: clean
-	@echo "$(TAG) Full clean." 
+	@echo "$(TAG) Full clean."
 	@rm -f $(NAME)
 
 re: fclean all

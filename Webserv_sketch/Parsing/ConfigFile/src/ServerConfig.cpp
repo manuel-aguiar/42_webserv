@@ -44,7 +44,7 @@ bool	ServerConfig::setRootPath(const std::string &value, const int &flag)
 		throw (std::invalid_argument("root path already set"));
 
 	// is there any check to do here?
-	
+
 	_config["root"].clear();
 	_config["root"].insert(value);
 	return (1);
@@ -138,7 +138,7 @@ bool	ServerConfig::addErrorPage(const std::string &value, const int &flag)
 	(void)flag;
 	std::stringstream	ss;
 	std::string			error_code;
-	std::string			path; 
+	std::string			path;
 	size_t				separator;
 
 	ss << value;
@@ -163,7 +163,7 @@ bool	ServerConfig::addConfigValue(const std::string &key, const std::string &val
 	return (1);
 }
 
-std::string	ServerConfig::getHost() const
+const std::string&	ServerConfig::getHost() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("host");
 
@@ -173,7 +173,7 @@ std::string	ServerConfig::getHost() const
 		throw std::out_of_range("Key not found");
 }
 
-std::set<std::string>	ServerConfig::getPorts() const
+const std::set<std::string>&	ServerConfig::getPorts() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("port");
 
@@ -183,7 +183,7 @@ std::set<std::string>	ServerConfig::getPorts() const
 		throw std::out_of_range("Key not found");
 }
 
-std::set<std::string>	ServerConfig::getServerNames() const
+const std::set<std::string>&	ServerConfig::getServerNames() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("server_names");
 
@@ -193,7 +193,7 @@ std::set<std::string>	ServerConfig::getServerNames() const
 		throw std::out_of_range("Key not found");
 }
 
-std::string	ServerConfig::getClientBodySize() const
+const std::string&	ServerConfig::getClientBodySize() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("client_body_size");
 
@@ -203,7 +203,7 @@ std::string	ServerConfig::getClientBodySize() const
 		throw std::out_of_range("Key not found");
 }
 
-std::string	ServerConfig::getClientHeaderSize() const
+const std::string&	ServerConfig::getClientHeaderSize() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("client_header_size");
 
@@ -213,7 +213,7 @@ std::string	ServerConfig::getClientHeaderSize() const
 		throw std::out_of_range("Key not found");
 }
 
-std::string	ServerConfig::getMaxConnections() const
+const std::string&	ServerConfig::getMaxConnections() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("max_connections");
 
@@ -223,10 +223,10 @@ std::string	ServerConfig::getMaxConnections() const
 		throw std::out_of_range("Key not found");
 }
 
-std::string	ServerConfig::getMaxConcurrentCGI() const
+const std::string&	ServerConfig::getMaxConcurrentCGI() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("max_concurrent_cgi");
-	
+
 
 	if (it != _config.end())
 		return (*it->second.begin());
@@ -235,7 +235,7 @@ std::string	ServerConfig::getMaxConcurrentCGI() const
 }
 
 
-std::set<std::string>	ServerConfig::getErrorPages() const
+const std::set<std::string>&	ServerConfig::getErrorPages() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("error_pages");
 
@@ -245,7 +245,7 @@ std::set<std::string>	ServerConfig::getErrorPages() const
 		throw std::out_of_range("Key not found");
 }
 
-std::string	ServerConfig::getRoot() const
+const std::string&	ServerConfig::getRoot() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = _config.find("root");
 

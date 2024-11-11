@@ -14,25 +14,25 @@ class ServerConfig
 	public:
 		ServerConfig();
 
-		bool					setHost(const std::string &value, const int &flag = 0);
-		bool					setRootPath(const std::string &value, const int &flag = 0);
-		bool					setClientBodySize(const std::string &value, const int &flag = 0);
-		bool					setClientHeaderSize(const std::string &value, const int &flag = 0);
-		bool					setMaxConnections(const std::string &value, const int &flag = 0);
-		bool					setMaxConcurrentCGI(const std::string &value, const int &flag = 0);
-		bool					addPort(const std::string &value, const int &flag = 0);
-		bool					addServerName(const std::string &value, const int &flag = 0);
-		bool					addErrorPage(const std::string &value, const int &flag = 0);
-		bool					addConfigValue(const std::string &key, const std::string &value);
-        std::string				getHost() const;
-		std::set<std::string>	getPorts() const;
-		std::set<std::string>	getServerNames() const;
-		std::string				getClientBodySize() const;
-		std::string				getClientHeaderSize() const;
-		std::string				getMaxConnections() const;
-		std::string				getMaxConcurrentCGI() const;
-		std::set<std::string>	getErrorPages() const;
-		std::string				getRoot() const;
+		bool							setHost(const std::string &value, const int &flag = 0);
+		bool							setRootPath(const std::string &value, const int &flag = 0);
+		bool							setClientBodySize(const std::string &value, const int &flag = 0);
+		bool							setClientHeaderSize(const std::string &value, const int &flag = 0);
+		bool							setMaxConnections(const std::string &value, const int &flag = 0);
+		bool							setMaxConcurrentCGI(const std::string &value, const int &flag = 0);
+		bool							addPort(const std::string &value, const int &flag = 0);
+		bool							addServerName(const std::string &value, const int &flag = 0);
+		bool							addErrorPage(const std::string &value, const int &flag = 0);
+		bool							addConfigValue(const std::string &key, const std::string &value);
+        const std::string&				getHost() const;
+		const std::set<std::string>&	getPorts() const;
+		const std::set<std::string>&	getServerNames() const;
+		const std::string&				getClientBodySize() const;
+		const std::string&				getClientHeaderSize() const;
+		const std::string&				getMaxConnections() const;
+		const std::string&				getMaxConcurrentCGI() const;
+		const std::set<std::string>&	getErrorPages() const;
+		const std::string&				getRoot() const;
 
 		void					set_defaults(const int &flag = 0);
 
