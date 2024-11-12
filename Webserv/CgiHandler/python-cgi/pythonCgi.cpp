@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   pythonCgi.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:44:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 14:19:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/12 10:50:50 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pythonCgi.hpp"
-#include "../CgiRequest/CgiRequest.hpp"
+#include "../CgiLiveRequest/CgiLiveRequest.hpp"
 
-PythonCgi::PythonCgi(const char* pythonBin) : 
-    m_localDataPool(Nginx_MemoryPool::create(1024)), 
+PythonCgi::PythonCgi(const char* pythonBin) :
+    m_localDataPool(Nginx_MemoryPool::create(1024)),
     m_localAllocator(m_localDataPool),
     m_headersToEnum(std::less<t_poolString>(), PY_CGIENV_COUNT),
     m_enumToHeaders(std::less<PyCgiEnv>(), PY_CGIENV_COUNT),
@@ -46,7 +46,7 @@ void PythonCgi::setupMapEntry(const char *entry, PyCgiEnv enumerator)
 {
     std::pair<mapHeaderToEnum_Iter, bool> result;
     t_poolString* poolStrPtr;
-    
+
     result = m_headersToEnum.insert(std::make_pair(t_poolString(entry, m_localAllocator), enumerator));
     poolStrPtr = const_cast<t_poolString*>(&result.first->first);
     m_enumToHeaders.insert(std::make_pair(enumerator, poolStrPtr));
@@ -68,18 +68,18 @@ void    PythonCgi::printEnumerators()
     }
 }
 
-void PythonCgi::prepareCgi(CgiRequest& req, const char* scriptPath)
+void PythonCgi::prepareCgi(CgiLiveRequest& req, const char* scriptPath)
 {
     req.m_envp = (char**) req.m_requestDataPool->allocate((PY_CGIENV_COUNT + 1) * sizeof(char*), true);
     req.m_envp[PY_CGIENV_COUNT] = NULL;
-    
+
     for (mapHeaderToEnum_Iter it = m_headersToEnum.begin(); it != m_headersToEnum.end(); ++it)
     {
         t_poolString* str = (t_poolString*)req.m_requestDataPool->allocate(sizeof(t_poolString), true);
         new (str) t_poolString(it->first.c_str(), req.m_strAlloc);
         req.m_envp[it->second] = const_cast<char*>(str->c_str());
     }
-    
+
     req.m_argv = (char**) req.m_requestDataPool->allocate(3 * sizeof(char*), true);
     req.m_argv[0] = const_cast<char*>(m_pyBin.c_str());
     req.m_argv[1] = const_cast<char*>(scriptPath);
@@ -102,8 +102,8 @@ void   PythonCgi::init()
 
 //private
 
-PythonCgi::PythonCgi(const PythonCgi &other) : 
-    m_localDataPool(other.m_localDataPool), 
+PythonCgi::PythonCgi(const PythonCgi &other) :
+    m_localDataPool(other.m_localDataPool),
     m_localAllocator(other.m_localAllocator),
     m_headersToEnum(other.m_headersToEnum),
     m_enumToHeaders(other.m_enumToHeaders),

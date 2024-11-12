@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:30:00 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 10:46:41 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@
 
 class PythonCgi;
 
-class CgiRequest
+class CgiLiveRequest
 {
     public:
-        CgiRequest();
-        ~CgiRequest();
-        CgiRequest(const CgiRequest &other);
-        CgiRequest &operator=(const CgiRequest &other);
+        CgiLiveRequest();
+        ~CgiLiveRequest();
+        CgiLiveRequest(const CgiLiveRequest &other);
+        CgiLiveRequest &operator=(const CgiLiveRequest &other);
 
         void    reset();
 

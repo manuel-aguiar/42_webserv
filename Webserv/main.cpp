@@ -50,7 +50,7 @@ int main(int ac, char **av, char **env)
 
 	cgi.printVariables();
 	cgi.printEnumerators();
-	CgiRequest req;
+	CgiLiveRequest req;
 
 
 

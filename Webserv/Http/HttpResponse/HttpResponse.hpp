@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:41 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:17:50 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 10:44:04 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 # define HTTPRESPONSE_HPP
 
+class HttpResponse
+{
 
+};
 
 
 

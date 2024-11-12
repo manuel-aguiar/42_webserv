@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiPool.hpp                                        :+:      :+:    :+:   */
+/*   CgiManager.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:35:38 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 10:50:16 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 # define MAX_CONCURRENT_CGI 10
 
 class Event;
-
-class CgiRequest;
+class CgiLiveRequest;
+class CgiPendingRequest;
 
 class CgiManager
 {
@@ -34,9 +34,12 @@ class CgiManager
 
     private:
 
-		HeapArray<CgiRequest>	m_LiveRequests;
-        size_t              	m_maxConcurrent;
-        size_t              	m_currentConcurrent;
+        size_t              			m_maxConcurrent;
+        size_t              			m_currentConcurrent;
+		HeapArray<CgiLiveRequest>		m_LiveRequests;
+		HeapArray<Event>				m_readEvents;
+
+		std::queue<CgiPendingRequest>	m_pendingRequests;
 };
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pythonCgi.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/15 19:26:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/12 10:46:41 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 
 
-class CgiRequest;
+class CgiLiveRequest;
 
 class PythonCgi
 {
@@ -31,7 +31,7 @@ class PythonCgi
         void    init();
         void    reset();
 
-        void    prepareCgi(CgiRequest& req, const char* scriptPath);
+        void    prepareCgi(CgiLiveRequest& req, const char* scriptPath);
 
         void    printVariables();
         void    printEnumerators();

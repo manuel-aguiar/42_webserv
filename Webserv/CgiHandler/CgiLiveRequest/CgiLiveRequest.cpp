@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiRequest.cpp                                     :+:      :+:    :+:   */
+/*   CgiLiveRequest.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:44:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:31:53 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 10:41:04 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CgiRequest.hpp"
+#include "CgiLiveRequest.hpp"
 
 #include "../python-cgi/pythonCgi.hpp"
 
-CgiRequest::CgiRequest() :
+CgiLiveRequest::CgiLiveRequest() :
     m_requestDataPool(Nginx_MemoryPool::create(4096)),
     m_strAlloc(m_requestDataPool),
     m_argv(NULL),
@@ -27,12 +27,12 @@ CgiRequest::CgiRequest() :
 	m_ChildToParent[1] = -1;
 }
 
-CgiRequest::~CgiRequest()
+CgiLiveRequest::~CgiLiveRequest()
 {
     m_requestDataPool->destroy();
 }
 
-void    CgiRequest::reset()
+void    CgiLiveRequest::reset()
 {
     m_requestDataPool->reset();
     m_argv = NULL;
@@ -41,12 +41,12 @@ void    CgiRequest::reset()
     m_scriptPath = NULL;
 }
 
-void CgiRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
+void CgiLiveRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
 {
     pythonCgi.prepareCgi(*this, scriptPath);
 }
 
-void CgiRequest::debugPrintInputs()
+void CgiLiveRequest::debugPrintInputs()
 {
     std::cout << "argv: " << std::endl;
     for (int i = 0; m_argv[i]; i++)
@@ -57,7 +57,7 @@ void CgiRequest::debugPrintInputs()
     std::cout << "stdinData: " << m_stdinData << std::endl;
 }
 
-void   CgiRequest::execute()
+void   CgiLiveRequest::execute()
 {
     if (pipe(m_ParentToChild) == -1)
 	{
@@ -124,13 +124,16 @@ void   CgiRequest::execute()
         write(m_ParentToChild[1], postData, strlen(postData));
         close(m_ParentToChild[1]);
 
-        // Wait for the child process to complete
+		/**************************/
+		// subscribe pipe read to epoll
+		/***************************/
+
         int status;
         waitpid(m_pid, &status, 0);
     }
 }
 
-void CgiRequest::closeAllPipes()
+void CgiLiveRequest::closeAllPipes()
 {
 	if (m_ParentToChild[0] != -1 && close(m_ParentToChild[0]) == -1);
 		//write log
@@ -142,7 +145,7 @@ void CgiRequest::closeAllPipes()
 		//write log
 }
 
-CgiRequest::CgiRequest(const CgiRequest &other) :
+CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
     m_requestDataPool(other.m_requestDataPool),
     m_strAlloc(other.m_strAlloc),
     m_argv(other.m_argv),
@@ -152,7 +155,7 @@ CgiRequest::CgiRequest(const CgiRequest &other) :
     *this = other;
 }
 
-CgiRequest &CgiRequest::operator=(const CgiRequest &other)
+CgiLiveRequest &CgiLiveRequest::operator=(const CgiLiveRequest &other)
 {
     if (this == &other)
         return (*this);
