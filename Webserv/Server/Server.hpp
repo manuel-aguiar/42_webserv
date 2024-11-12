@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:54:52 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 14:10:20 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define SERVER_HPP
 
 # include "../Webserver_Definitions.h"
-# include "../CgiHandler/CgiManager.hpp"
+# include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../Connection/ConnectionPool.hpp"
 # include "../Logs/Logs.h"

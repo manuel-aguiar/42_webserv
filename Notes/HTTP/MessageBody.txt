@@ -1,0 +1,24 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    MessageBody.txt                                    :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/12 12:10:39 by codespace         #+#    #+#              #
+#    Updated: 2024/11/12 12:14:28 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Nginx doesn't do anything with the message body other than unchunking and
+decompressing. if the message body is a JSON it passes that to the backend to process (php script with an interpreter)
+or the query strings themselves, it just passes them to the interpreters
+
+for long query strings, rather use POST. also:
+
+<form action="/search" method="POST">
+    <input type="text" name="query">
+    <button type="submit">Search</button>
+</form>
+
+the form itself indicates to the browser that the method to send the form is via POST

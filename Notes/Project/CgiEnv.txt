@@ -1,0 +1,38 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    CgiEnv.txt                                         :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/12 15:18:18 by codespace         #+#    #+#              #
+#    Updated: 2024/11/12 15:24:39 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+https://www.rfc-editor.org/rfc/rfc3875.html
+
+The CGI specificication outlines responsibilities for both the server and the scripts
+themselves.
+
+CGI inputs come from two sources: environment variables and message body
+environment variables passed as execve
+message body read via stdin
+
+
+
+https://www.rfc-editor.org/rfc/rfc3875.html#section-3.1
+
+
+							"AUTH_TYPE" | "CONTENT_LENGTH" |
+                           "CONTENT_TYPE" | "GATEWAY_INTERFACE" |
+                           "PATH_INFO" | "PATH_TRANSLATED" |
+                           "QUERY_STRING" | "REMOTE_ADDR" |
+                           "REMOTE_HOST" | "REMOTE_IDENT" |
+                           "REMOTE_USER" | "REQUEST_METHOD" |
+                           "SCRIPT_NAME" | "SERVER_NAME" |
+                           "SERVER_PORT" | "SERVER_PROTOCOL" |
+                           "SERVER_SOFTWARE"
+
+
+these are the base environment variables
