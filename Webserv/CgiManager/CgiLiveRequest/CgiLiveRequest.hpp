@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiRequest.hpp                                     :+:      :+:    :+:   */
+/*   CgiLiveRequest.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:46:41 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 16:24:07 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,19 @@
 #include <cstdlib>
 #include <cerrno>
 
+# include "../CgiDefaults.h"
 # include "../../Webserver_Definitions.h"
 # include "../FileDescriptor/FileDescriptor.hpp"
 
 
 class PythonCgi;
 
+class CgiManager;
+
 class CgiLiveRequest
 {
     public:
-        CgiLiveRequest();
+        CgiLiveRequest(CgiManager& manager);
         ~CgiLiveRequest();
         CgiLiveRequest(const CgiLiveRequest &other);
         CgiLiveRequest &operator=(const CgiLiveRequest &other);
@@ -57,6 +60,14 @@ class CgiLiveRequest
         char**                      m_argv;
         char**                      m_envp;
         const char*                 m_stdinData;
+
+
+		char*						m_CgiEnv[ENV_CGI_VAR_COUNT];
+
+
+		CgiManager&					m_manager;
+
+	private:
 
 		t_fd						m_ParentToChild[2];
 		t_fd						m_ChildToParent[2];

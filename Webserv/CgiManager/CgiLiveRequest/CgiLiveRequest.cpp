@@ -14,12 +14,13 @@
 
 #include "../python-cgi/pythonCgi.hpp"
 
-CgiLiveRequest::CgiLiveRequest() :
+CgiLiveRequest::CgiLiveRequest(CgiManager& manager) :
     m_requestDataPool(Nginx_MemoryPool::create(4096)),
     m_strAlloc(m_requestDataPool),
     m_argv(NULL),
     m_envp(NULL),
-    m_stdinData(NULL)
+    m_stdinData(NULL),
+	m_manager(manager)
 {
 	m_ParentToChild[0] = -1;
 	m_ParentToChild[1] = -1;
@@ -150,7 +151,8 @@ CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
     m_strAlloc(other.m_strAlloc),
     m_argv(other.m_argv),
     m_envp(other.m_envp),
-    m_stdinData(other.m_stdinData)
+    m_stdinData(other.m_stdinData),
+	m_manager(other.m_manager)
 {
     *this = other;
 }

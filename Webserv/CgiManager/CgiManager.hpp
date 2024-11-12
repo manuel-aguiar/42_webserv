@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:50:16 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/12 16:21:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 # define CGI_HANDLER_HPP
 
+# include "CgiDefaults.h"
 # include "../Webserver_Definitions.h"
 # include "../Event/Event.hpp"
 
@@ -32,6 +33,10 @@ class CgiManager
         CgiManager(const size_t maxConcurrent = 1);
         ~CgiManager();
 
+		const char* const* getDefaultEnvp() const;
+
+
+
     private:
 
         size_t              			m_maxConcurrent;
@@ -40,6 +45,8 @@ class CgiManager
 		HeapArray<Event>				m_readEvents;
 
 		std::queue<CgiPendingRequest>	m_pendingRequests;
+
+		static const char*	const		m_defaultEnvp[ENV_CGI_VAR_COUNT];
 };
 
 
