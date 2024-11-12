@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiHandler.hpp                                     :+:      :+:    :+:   */
+/*   CgiPool.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 14:20:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/12 10:35:38 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,28 +24,19 @@
 
 class Event;
 
-class Cgi_Handler
+class CgiRequest;
+
+class CgiManager
 {
     public:
-        Cgi_Handler();
-        ~Cgi_Handler();
+        CgiManager(const size_t maxConcurrent = 1);
+        ~CgiManager();
 
     private:
 
-        typedef struct s_cgi_data
-        {
-            /**** a definir **/ 
-            Event*      m_event;
-            t_byte*     m_data;
-            size_t      m_size;
-        }               t_cgi_data;
-
-        //typedef MemoryPool_Dealloc<s_cgi_data> t_cgi_pool;
-        //typedef std::queue<t_cgi_data, std::list<t_cgi_data, t_cgi_pool> > t_cgi_queue;
-//
-        //t_cgi_queue         m_queue;
-        //size_t              _maxConcurrent;
-        //size_t              _currentConcurrent;
+		HeapArray<CgiRequest>	m_LiveRequests;
+        size_t              	m_maxConcurrent;
+        size_t              	m_currentConcurrent;
 };
 
 

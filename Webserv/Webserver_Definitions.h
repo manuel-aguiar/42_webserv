@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:00:06 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/12 10:10:31 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 typedef unsigned char       t_byte;
 typedef uint16_t            t_port;
 typedef int                 t_fd;
+typedef pid_t			   	t_pid;
 typedef int                 t_socket;
 
 typedef struct sockaddr     t_sockaddr;

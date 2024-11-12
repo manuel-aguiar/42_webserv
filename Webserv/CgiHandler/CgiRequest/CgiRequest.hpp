@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiRequest.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:01:48 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/12 10:30:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 #include <cerrno>
 
 # include "../../Webserver_Definitions.h"
+# include "../FileDescriptor/FileDescriptor.hpp"
+
 
 class PythonCgi;
 
@@ -46,6 +48,8 @@ class CgiRequest
         void    execute();
         void    debugPrintInputs();
 
+		void	closeAllPipes();
+
         Nginx_MemoryPool*           m_requestDataPool;
         Nginx_PoolAllocator<char>   m_strAlloc;
 
@@ -53,6 +57,10 @@ class CgiRequest
         char**                      m_argv;
         char**                      m_envp;
         const char*                 m_stdinData;
+
+		t_fd						m_ParentToChild[2];
+		t_fd						m_ChildToParent[2];
+		t_pid						m_pid;
 
 };
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiRequest.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:44:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 14:20:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/12 10:31:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ CgiRequest::CgiRequest() :
     m_envp(NULL),
     m_stdinData(NULL)
 {
-    
+	m_ParentToChild[0] = -1;
+	m_ParentToChild[1] = -1;
+	m_ChildToParent[0] = -1;
+	m_ChildToParent[1] = -1;
 }
 
 CgiRequest::~CgiRequest()
@@ -56,49 +59,90 @@ void CgiRequest::debugPrintInputs()
 
 void   CgiRequest::execute()
 {
-     // Use pipe for passing data through stdin (if necessary)
-    int pipefd[2];
-    if (pipe(pipefd) == -1) {
+    if (pipe(m_ParentToChild) == -1)
+	{
+		//write to log
         std::cerr << "Pipe failed: " << strerror(errno) << std::endl;
+		closeAllPipes();
         return;
     }
+	if (pipe(m_ChildToParent) == -1)
+	{
+		//write to log
+		std::cerr << "Pipe failed: " << strerror(errno) << std::endl;
+		closeAllPipes();
+		return;
+	}
+	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
+		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
+		!FileDescriptor::setNonBlocking(m_ChildToParent[0]) ||
+		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
+	{
+		//write to log, fcntl failed, not really critical
+	}
 
-    // Fork process to execute the script
-    pid_t pid = fork();
-    if (pid == -1) {
+    m_pid = fork();
+    if (m_pid == -1)
+	{
+		//write to log
         std::cerr << "Fork failed: " << strerror(errno) << std::endl;
+		closeAllPipes();
         return;
     }
 
-    if (pid == 0) { // Child process
-        // Redirect stdin to the input side of the pipe
-        dup2(pipefd[0], STDIN_FILENO);
-        close(pipefd[1]); // Close the output side of the pipe in the child
+    if (m_pid == 0)
+	{
 
-        // Execute the CGI script
+        if (dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
+		{
+			//write to log
+			std::cerr << "Dup2 failed: " << strerror(errno) << std::endl;
+			closeAllPipes();
+        	exit(EXIT_FAILURE);
+		}
+        if (close(m_ParentToChild[1]) == -1)
+		{
+			//write to log, non critical
+		}
+
         execve(m_argv[0], m_argv, m_envp);
 
-        // If execve fails
+        // write log, exec failed
         std::cerr << "Exec failed: " << strerror(errno) << std::endl;
-        _exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
 
-    } else { // Parent process
+    }
+	else
+	{
 
-        close(pipefd[0]); // Close the input side of the pipe in the parent
+        if (close(m_ParentToChild[0]) == -1)
+		{
+			// write to log, non critical
+		}
 
-        // If there is data to pass to stdin (e.g., POST data), write to the pipe
-        // In your case, it could be something like _RequestEnvp[PY_CONTENT_LENGTH], etc.
-        const char* postData = "sample data for POST request"; // Replace with actual data
-        write(pipefd[1], postData, strlen(postData)); // Write data to stdin of child
-        close(pipefd[1]); // Close the pipe after writing
+        const char* postData = "sample data for POST request";
+        write(m_ParentToChild[1], postData, strlen(postData));
+        close(m_ParentToChild[1]);
 
         // Wait for the child process to complete
         int status;
-        waitpid(pid, &status, 0);
-    }   
+        waitpid(m_pid, &status, 0);
+    }
 }
 
-CgiRequest::CgiRequest(const CgiRequest &other) : 
+void CgiRequest::closeAllPipes()
+{
+	if (m_ParentToChild[0] != -1 && close(m_ParentToChild[0]) == -1);
+		//write log
+	if (m_ParentToChild[1] != -1 && close(m_ParentToChild[1]) == -1);
+		//write log
+	if (m_ChildToParent[0] != -1 && close(m_ChildToParent[0]) == -1);
+		//write log
+	if (m_ChildToParent[1] != -1 && close(m_ChildToParent[1]) == -1);
+		//write log
+}
+
+CgiRequest::CgiRequest(const CgiRequest &other) :
     m_requestDataPool(other.m_requestDataPool),
     m_strAlloc(other.m_strAlloc),
     m_argv(other.m_argv),
