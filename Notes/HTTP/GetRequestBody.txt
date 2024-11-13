@@ -1,18 +1,20 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Headers.txt                                        :+:      :+:    :+:    #
+#    GetRequestBody.txt                                 :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/11 09:15:22 by codespace         #+#    #+#              #
-#    Updated: 2024/11/11 09:24:07 by codespace        ###   ########.fr        #
+#    Created: 2024/11/12 11:48:17 by codespace         #+#    #+#              #
+#    Updated: 2024/11/12 12:05:22 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+https://www.baeldung.com/cs/http-get-with-body
 
+RFC 9110
 
+by default, nginx ignores message bodies in a GET request
 
-
-
-nginx uses Huffman enconding to compress responses -> gzip deflate
+if one wants too retrieve data and the query string is too long, rather use
+a post request and a body with the data, for instance in JSON format

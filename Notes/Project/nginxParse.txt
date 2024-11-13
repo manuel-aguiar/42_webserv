@@ -1,18 +1,15 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Headers.txt                                        :+:      :+:    :+:    #
+#    nginxParse.txt                                     :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/11 09:15:22 by codespace         #+#    #+#              #
-#    Updated: 2024/11/11 09:24:07 by codespace        ###   ########.fr        #
+#    Created: 2024/11/13 11:38:54 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 11:39:30 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+parse_request_line -> the first line of the http request with the method, URI and http version
 
-
-
-
-
-nginx uses Huffman enconding to compress responses -> gzip deflate
+parse_header_line -> lines after request and before message body

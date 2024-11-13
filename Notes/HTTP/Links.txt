@@ -3,12 +3,11 @@
 HTML RFC
 https://www.rfc-editor.org/rfc/rfc9110.html
 
-9110
-9111
-9112
-3986
-5234
-2045
+9110 -> http semantics
+9111 -> http caching
+9112 -> http 1.1
+9113 -> http 2
+9114 -> http 3
 
 
 Beej's Guide to Network Programming
@@ -16,3 +15,11 @@ https://www.beej.us/guide/bgnet/html/
 
 What does getaddrinfo do?
 https://jameshfisher.com/2018/02/03/what-does-getaddrinfo-do/
+
+
+CGI 1.1 specification
+https://www.rfc-editor.org/rfc/rfc3875.html
+
+
+FastCgi specification
+https://fastcgi-archives.github.io/FastCGI_Specification.html

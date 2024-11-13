@@ -1,0 +1,39 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    vsURL_URI_URN.txt                                  :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/13 10:16:10 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 10:47:30 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+URI -> Uniform Resource Identifier
+URL -> Uniform Resource Locator
+URN -> Uniform Resource Name
+
+URI can either be the resource itself or the location where it can be found.
+Actually, a URI can be a URL or a URN
+
+
+		URL (location)					URN (name)
+	http://example.com/resource 	urn:isbn:0451450523
+
+ISBN -> international standard book number
+
+
+the URL identifies the means to locate a resource:
+	the protocol (or "scheme") -> http,
+	host (or "domain") (example.com),
+	path (/resource),
+	port (:443, implicit in this case)
+	query: ?abc=cde (optional)
+	fragment: #section2 (optional)
+
+
+	fragment is a reference to a specific place within the resource -> like a section in html
+		-> as we move in the RFC and have links to sections
+
+https://example.com:8080/path/to/resource?query=abc#section1
