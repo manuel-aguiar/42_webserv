@@ -6,7 +6,7 @@
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 15:18:18 by codespace         #+#    #+#              #
-#    Updated: 2024/11/13 10:14:17 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/13 15:59:35 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,3 +47,4 @@ https://www.rfc-editor.org/rfc/rfc3875.html#section-3.1
 
 
 these are the base environment variables
+PATH_INFO is NOT URL-encoded and CANNOT contain reserved characters
