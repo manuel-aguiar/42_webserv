@@ -1,0 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    vsProtocolScheme.txt                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/13 10:32:20 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 10:33:47 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Protocol is the set of rules by which parties abide for effective communication
+http/ftp etc
+
+Scheme is the particular part of the URL/URI, at the beginning, where said protocol
+is referenced

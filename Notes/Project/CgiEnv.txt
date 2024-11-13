@@ -6,7 +6,7 @@
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 15:18:18 by codespace         #+#    #+#              #
-#    Updated: 2024/11/12 15:24:50 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/13 10:14:17 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,16 +23,27 @@ message body read via stdin
 
 https://www.rfc-editor.org/rfc/rfc3875.html#section-3.1
 
-
-							"AUTH_TYPE" | "CONTENT_LENGTH" |
-                           "CONTENT_TYPE" | "GATEWAY_INTERFACE" |
-                           "PATH_INFO" | "PATH_TRANSLATED" |
-                           "QUERY_STRING" | "REMOTE_ADDR" |
-                           "REMOTE_HOST" | "REMOTE_IDENT" |
-                           "REMOTE_USER" | "REQUEST_METHOD" |
-                           "SCRIPT_NAME" | "SERVER_NAME" |
-                           "SERVER_PORT" | "SERVER_PROTOCOL" |
-                           "SERVER_SOFTWARE"
+		typedef enum e_CgiEnv
+		{
+			ENV_CGI_AUTH_TYPE, -> Authentication header of http
+			ENV_CGI_CONTENT_LENGTH, -> length of the message body (EOF can be used as the end)
+			ENV_CGI_CONTENT_TYPE, -> forward http content type (from MIME)
+			ENV_CGI_GATEWAY_INTERFACE, -> CGI/1.1 (always the same)
+			ENV_CGI_PATH_INFO,
+			ENV_CGI_PATH_TRANSLATED,
+			ENV_CGI_QUERY_STRING,
+			ENV_CGI_REMOTE_ADDR,
+			ENV_CGI_REMOTE_HOST,
+			ENV_CGI_REMOTE_IDENT,
+			ENV_CGI_REMOTE_USER,
+			ENV_CGI_REQUEST_METHOD,
+			ENV_CGI_SCRIPT_NAME,
+			ENV_CGI_SERVER_NAME,
+			ENV_CGI_SERVER_PORT,
+			ENV_CGI_SERVER_PROTOCOL,
+			ENV_CGI_SERVER_SOFTWARE,
+			ENV_CGI_VAR_COUNT
+        }	t_CgiEnv;
 
 
 these are the base environment variables

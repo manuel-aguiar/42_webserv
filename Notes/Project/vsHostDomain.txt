@@ -1,0 +1,17 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    HostDomain.txt                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/13 10:30:07 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 10:31:52 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Host refers to the machine where a resource is located, can by an IP address or a hostname
+(that then gets resolved to an IP address /etc/resolv.conf)
+
+Domain is the same but implies that the IP/Hostname is registered at the
+Domain Name System level (and then resolved at a Domain Name Server, so implies external access)
