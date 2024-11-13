@@ -6,7 +6,7 @@
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/13 10:48:17 by codespace         #+#    #+#              #
-#    Updated: 2024/11/13 11:01:43 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/13 11:13:42 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,4 +38,7 @@ it is essential extra info that a script might need
 
 	ok so child process uses "chdir" to move to the script location to make sure
 	that any relative paths placed in the script remain valid.
+
+
+
 
