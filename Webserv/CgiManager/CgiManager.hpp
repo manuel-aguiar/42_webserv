@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiManager.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 16:21:46 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/15 08:21:26 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ class CgiManager
 		HeapArray<CgiLiveRequest>		m_LiveRequests;
 		HeapArray<Event>				m_readEvents;
 
-		std::queue<CgiPendingRequest>	m_pendingRequests;
 
 		static const char*	const		m_defaultEnvp[ENV_CGI_VAR_COUNT];
 };

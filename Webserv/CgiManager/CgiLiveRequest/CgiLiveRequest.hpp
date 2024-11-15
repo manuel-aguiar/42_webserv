@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiLiveRequest.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 16:24:07 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/15 08:17:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 # include "../CgiDefaults.h"
 # include "../../Webserver_Definitions.h"
-# include "../FileDescriptor/FileDescriptor.hpp"
+# include "../../FileDescriptor/FileDescriptor.hpp"
 
 
 class PythonCgi;

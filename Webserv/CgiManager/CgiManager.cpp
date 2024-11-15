@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   CgiManager.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 16:20:42 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/15 08:20:36 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiManager.hpp"
+#include "CgiLiveRequest/CgiLiveRequest.hpp"
+#include "CgiPendingRequest/CgiPendingRequest.hpp"
 
 CgiManager::CgiManager(const size_t maxConcurrent) :
 	m_maxConcurrent(maxConcurrent),

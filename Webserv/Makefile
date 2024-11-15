@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/11 15:22:22 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/15 08:18:40 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,11 +31,9 @@ OBJ_PATH 						= 	_objs
 
 SRCS =							$(SRC_PATH)/main.cpp										\
 								$(SRC_PATH)/ListeningSocket/ListeningSocket.cpp				\
-								$(SRC_PATH)/CgiHandler/CgiHandler.cpp						\
-								$(SRC_PATH)/CgiHandler/python-cgi/pythonCgi.cpp				\
-								$(SRC_PATH)/CgiHandler/php-cgi/phpCgi.cpp					\
-								$(SRC_PATH)/CgiHandler/php-fpm/phpFastCgi_Fpm.cpp			\
-								$(SRC_PATH)/CgiHandler/CgiRequest/CgiRequest.cpp			\
+								$(SRC_PATH)/CgiManager/CgiManager.cpp						\
+								$(SRC_PATH)/CgiManager/python-cgi/pythonCgi.cpp				\
+								$(SRC_PATH)/CgiManager/CgiLiveRequest/CgiLiveRequest.cpp			\
 								$(SRC_PATH)/Connection/Connection.cpp						\
 								$(SRC_PATH)/Connection/ConnectionPool.cpp					\
 								$(SRC_PATH)/Event/Event.cpp									\
