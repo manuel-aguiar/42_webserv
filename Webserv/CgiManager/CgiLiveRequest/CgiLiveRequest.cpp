@@ -136,14 +136,14 @@ void   CgiLiveRequest::execute()
 
 void CgiLiveRequest::closeAllPipes()
 {
-	if (m_ParentToChild[0] != -1 && close(m_ParentToChild[0]) == -1);
-		//write log
-	if (m_ParentToChild[1] != -1 && close(m_ParentToChild[1]) == -1);
-		//write log
-	if (m_ChildToParent[0] != -1 && close(m_ChildToParent[0]) == -1);
-		//write log
-	if (m_ChildToParent[1] != -1 && close(m_ChildToParent[1]) == -1);
-		//write log
+	//if (m_ParentToChild[0] != -1 && close(m_ParentToChild[0]) == -1)
+	//	write log
+	//if (m_ParentToChild[1] != -1 && close(m_ParentToChild[1]) == -1)
+	//	write log
+	//if (m_ChildToParent[0] != -1 && close(m_ChildToParent[0]) == -1)
+	//	write log
+	//if (m_ChildToParent[1] != -1 && close(m_ChildToParent[1]) == -1)
+	//	write log
 }
 
 CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :

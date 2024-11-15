@@ -15,8 +15,8 @@
 #include "Clock/Clock.hpp"
 #include "Globals/Globals.hpp"
 #include "SignalHandler/SignalHandler.hpp"
-#include "CgiHandler/python-cgi/pythonCgi.hpp"
-#include "CgiHandler/CgiRequest/CgiRequest.hpp"
+#include "CgiManager/python-cgi/pythonCgi.hpp"
+#include "CgiManager/CgiLiveRequest/CgiLiveRequest.hpp"
 
 #define GRET_SUCKCESS EXIT_SUCCESS
 
@@ -50,7 +50,8 @@ int main(int ac, char **av, char **env)
 
 	cgi.printVariables();
 	cgi.printEnumerators();
-	CgiLiveRequest req;
+	CgiManager manager;
+	CgiLiveRequest req(manager);
 
 
 
