@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/16 15:44:46 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #include "../Globals/Globals.hpp"
 
 
-Clock::Clock(Globals* globals) : m_globals(globals), _elapsed_ms(0)
+Clock::Clock(Globals* globals) : m_globals(globals), m_elapsed_ms(0)
 {
-	std::memset(_buffer, 0, sizeof(_buffer));
+	std::memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 Clock::~Clock()
@@ -39,13 +39,13 @@ void    Clock::update()
 {
 	if (!_get_time())
 		return ;
-	_elapsed_ms = (_now.tv_sec - _start.tv_sec) * 1000 + (_now.tv_usec - _start.tv_usec) / 1000;
+	m_elapsed_ms = (m_now.tv_sec - m_start.tv_sec) * 1000 + (m_now.tv_usec - m_start.tv_usec) / 1000;
 }
 
 inline
 int Clock::_get_time()
 {
-	if (::gettimeofday(&_now, NULL) == -1)
+	if (::gettimeofday(&m_now, NULL) == -1)
 	{
 		m_globals->logStatus("gettimeofday(): " + std::string(std::strerror(errno)));
 		return (0);
@@ -79,13 +79,13 @@ const char* Clock::get_FormatedTime()
 	struct tm*   timeinfo;
 	char*        bufPosi;
 
-	timeinfo = std::localtime(&_now.tv_sec);
+	timeinfo = std::localtime(&m_now.tv_sec);
 	if (timeinfo == NULL)
 	{
 		m_globals->logStatus("localtime(): " + std::string(std::strerror(errno)));
 		return (NULL);
 	}
-	bufPosi = _buffer;
+	bufPosi = m_buffer;
 	bufPosi = inPlacePutDateParameter(timeinfo->tm_year + 1900, bufPosi, 4);
 	*bufPosi++ = '-';
 	bufPosi = inPlacePutDateParameter(timeinfo->tm_mon + 1, bufPosi, 2);
@@ -100,7 +100,7 @@ const char* Clock::get_FormatedTime()
 	bufPosi = inPlacePutDateParameter(timeinfo->tm_sec, bufPosi, 2);
 	*bufPosi++ = '_';
 	*bufPosi++ = '_';
-	bufPosi = inPlacePutDateParameter(_now.tv_usec, bufPosi, 6);
+	bufPosi = inPlacePutDateParameter(m_now.tv_usec, bufPosi, 6);
 	*bufPosi++ = '\0';
 
 	/*
@@ -114,11 +114,11 @@ const char* Clock::get_FormatedTime()
 			timeinfo->tm_hour,
 			timeinfo->tm_min,
 			timeinfo->tm_sec,
-			_now.tv_usec
+			m_now.tv_usec
 		);
 
 		hey, dunno, subject requirements... "no C stuff"...?
 	*/
 
-	return (_buffer);
+	return (m_buffer);
 }

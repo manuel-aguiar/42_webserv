@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Clock.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:08:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/16 15:44:47 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <ctime>
 # include <sys/time.h>
 # include <cerrno>
-# include <cstring> 
+# include <cstring>
 # include <cassert>
 
 class Globals;
@@ -31,16 +31,16 @@ class Clock
         Clock& operator=(const Clock& assign);
 
         void                setGlobals(Globals& logFile);
-        void                start();    
+        void                start();
         void                update();
         const char*         get_FormatedTime();
 
     private:
         Globals*            m_globals;
-        struct timeval      _start;
-        struct timeval      _now;
-        time_t              _elapsed_ms;
-        char                _buffer[32];
+        struct timeval      m_start;
+        struct timeval      m_now;
+        time_t              m_elapsed_ms;
+        char                m_buffer[32];
 
 
         //helpers
