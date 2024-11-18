@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "LogFile.hpp"
-#include "../Globals/Globals.hpp"
+#include "../Globals.hpp"
 
 LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {

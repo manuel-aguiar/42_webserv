@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Clock.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/16 15:44:46 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/18 08:59:00 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Clock.hpp"
-#include "../Globals/Globals.hpp"
+#include "../Globals.hpp"
 
 
 Clock::Clock(Globals* globals) : m_globals(globals), m_elapsed_ms(0)

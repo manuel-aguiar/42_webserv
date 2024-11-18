@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Globals.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:10:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:17:36 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/18 09:00:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 # define GLOBALS_HPP
 
-
 # include "../Webserver_Definitions.h"
-# include "../Logs/Logs.h"
-# include "../Clock/Clock.hpp"
+# include "LogFile/LogFile.hpp"
+# include "Clock/Clock.hpp"
 
 class Globals
 {

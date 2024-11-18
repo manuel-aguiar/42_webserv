@@ -1,0 +1,63 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    CodingGuidelines.txt                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
+#    Updated: 2024/11/18 09:17:48 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+general:
+	stick more or less to norminette in terms of formatting, no limits on function sizes
+	but be reasonable
+
+	Use stl instead of toolkit (toolkit is not complete or tested thoroughly)
+
+	use assert() instead of null-checks (responsibility of the caller to not pass null)
+	let the program crash, in production we compile with NDEBUG (see Webserv/Makefile)
+
+	if you dont really need to use an exception, don't use an exception
+
+c++:
+	if you know the size of something, use std::vector::reserve(size) or std::string::reserve(size)
+		don't pushback one by one, triggers unnecessary reallocations in this case
+
+hpp files:
+
+	for classes
+	- Each file includes all header dependencies
+	Please separate C headers from C++ headers, and maybe add a comment like:
+
+	// C headers
+	# include <unistd.h>
+	# include <fcntl.h>
+
+	// C++ Headers
+	# include <exception>
+	# include <stdexcept>
+	# include <cstring>
+	# include <string>
+	# include <cerrno>
+
+	- When including files other than std libraries, specify the actual path in the filesystem:
+		#include "../Globals/Globals.hpp"
+		- don't rely on the compiler to link correctly
+
+	- camel case variable names
+	- private variables prefix with "m_"
+
+				private:
+					std::string m_name;
+
+	- private functions prefix with "mf_"
+
+				private:
+					void mf_doSomething();
+
+	- object canonical form for classes
+
+h files:
+	for non-class includes
