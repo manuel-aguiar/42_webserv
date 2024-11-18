@@ -2,6 +2,7 @@
 
 The main folder structure here is as follows:
 
+
 ServerManager:
 	- All things related to management of TCP, listening sockets, connections, IO, Events
 
@@ -24,8 +25,18 @@ HTTP:
 Cgi:
 	- All things related to the CGI protocol implementation
 
-Utils:
+GenericUtils:
 	- Files that are used throughout but are not actually globals. For instance: FileDescriptor class -> public static functions
 		to interact with file descriptors that will probably be needed throughout
+	- Typedefs that will be used throughout, almost as globally
+		- we could make a namespace out of this....?
+
+
+main.cpp
+	- the entry point of our program
+Makefile
+
+Webserver_Definitions.h -> for now thy are general definitions but we could include here some default values
+like number of workers and http limitations, and then load those settings into the servermanager
 
 _Legacy, some old files

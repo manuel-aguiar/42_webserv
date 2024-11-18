@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Webserver_DefaultSettings.h                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:33:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:40:29 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/11/18 10:39:30 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/11/18 10:41:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef WEBSERVER_DEFAULTSETTINGS_H
+
+# define WEBSERVER_DEFAULTSETTINGS_H
 
 
-int main(int ac, char** av, char** env)
-{
-    (void)ac;
-    (void)av;
-    (void)env;
-
-    return (0);
-}
+#endif
