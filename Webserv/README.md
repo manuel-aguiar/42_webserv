@@ -31,6 +31,8 @@ GenericUtils:
 	- Typedefs that will be used throughout, almost as globally
 		- we could make a namespace out of this....?
 
+StaticAssets:
+	- Files that are not compiled in the program but will be needed at runtime: errorPages
 
 main.cpp
 	- the entry point of our program
