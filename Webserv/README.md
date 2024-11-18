@@ -19,10 +19,10 @@ Globals:
 	such as log files, clocks
 
 
-HTTP:
+HttpModule:
 	- All things related to the HTTP protocol implementation: http connections/sessions/requests/responses
 
-Cgi:
+CgiModule:
 	- All things related to the CGI protocol implementation
 
 GenericUtils:
