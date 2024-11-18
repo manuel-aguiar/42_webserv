@@ -6,50 +6,56 @@
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
-#    Updated: 2024/11/18 09:32:46 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/18 10:07:40 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 general:
-	stick more or less to norminette in terms of formatting, no limits on function sizes
+	- stick more or less to norminette in terms of formatting, no limits on function sizes
 	but be reasonable
 
-	Use stl instead of toolkit (toolkit is not complete or tested thoroughly)
+	- Use stl instead of toolkit (toolkit is not complete or tested thoroughly)
 
-	use assert() instead of null-checks (responsibility of the caller to not pass null)
+	- use assert() instead of null-checks (responsibility of the caller to not pass null)
 	let the program crash, in production we compile with NDEBUG (see Webserv/Makefile)
 
-	if you dont really need to use an exception, don't use an exception
+	- if you dont really need to use an exception, don't use an exception
 
-	NO IMPLEMENTATIONS IN HEADER FILES EXCEPT FOR TEMPLATES
+	- NO IMPLEMENTATIONS IN HEADER FILES EXCEPT FOR TEMPLATES
 		-> avoids include mess
 
-	global variables as in norminette: prefix with "g_" for clarity (nginx has a lot of globals and you need to check manually that they are...)
+	- global variables as in norminette: prefix with "g_" for clarity (nginx has a lot of globals and you need to check manually that they are...)
 	(think if they are really necessary. If the are needed across the project, consider adding them the "Globals" class)
 
-	Use a single folder for a class: .hpp, .cpp, .tpp, helpers....
+	- enums, prefix with "e_", typedefs prefix with "t_" etc, norminette style
 
-	Separating incs from srcs means i need to check the declaration in one place and jump around
-	somewhere else to find the implementation -> no, keep it together as in:
+	- use your 42 header, looks nice
 
-		/Class/Class.hpp					// Class declaration
-		/Class/Class.cpp 					// class implementation
-		/Class/ClassHelperFunctions.cpp		// some helper function you may need
-		/Class/ClassSomeOtherStuff.cpp		// some other functions you may need
-		/Class/ClassGetterSetters.cpp		// getters and setters bloat easily....
+	- {
+		Use a single folder for a class: .hpp, .cpp, .tpp, helpers....
 
-		- doesn't have to be like the above, what matters is all files related to a class belong
-		to a folder named after that class
-		- Class nesting is also okay for composition, like:
+		Separating incs from srcs means i need to check the declaration in one place and jump around
+		somewhere else to find the implementation -> no, keep it together as in:
 
-		/ServerManager/ConnectionManager/ConnectionManager.hpp
-		/ServerManager/ConnectionManager/ConnectionManager.cpp
-		/ServerManager/ServerManager.hpp
-		/ServerManager/ServerManager.cpp
+			/Class/Class.hpp					// Class declaration
+			/Class/Class.cpp 					// class implementation
+			/Class/ClassHelperFunctions.cpp		// some helper function you may need
+			/Class/ClassSomeOtherStuff.cpp		// some other functions you may need
+			/Class/ClassGetterSetters.cpp		// getters and setters bloat easily....
+
+			- doesn't have to be like the above, what matters is all files related to a class belong
+			to a folder named after that class
+			- Class nesting is also okay for composition, like:
+
+			/ServerManager/ConnectionManager/ConnectionManager.hpp
+			/ServerManager/ConnectionManager/ConnectionManager.cpp
+			/ServerManager/ServerManager.hpp
+			/ServerManager/ServerManager.cpp
+	}
 
 
 c++:
-	if you know the size of something, use std::vector::reserve(size) or std::string::reserve(size)
+	- if you know the size of something, use std::vector::reserve(size) or std::string::reserve(size)
 		don't pushback one by one, triggers unnecessary reallocations in this case
 
 .hpp files (class declarations):
