@@ -6,7 +6,7 @@
 #    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
-#    Updated: 2024/11/18 09:17:48 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/18 09:32:46 by codespace        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,13 +21,39 @@ general:
 
 	if you dont really need to use an exception, don't use an exception
 
+	NO IMPLEMENTATIONS IN HEADER FILES EXCEPT FOR TEMPLATES
+		-> avoids include mess
+
+	global variables as in norminette: prefix with "g_" for clarity (nginx has a lot of globals and you need to check manually that they are...)
+	(think if they are really necessary. If the are needed across the project, consider adding them the "Globals" class)
+
+	Use a single folder for a class: .hpp, .cpp, .tpp, helpers....
+
+	Separating incs from srcs means i need to check the declaration in one place and jump around
+	somewhere else to find the implementation -> no, keep it together as in:
+
+		/Class/Class.hpp					// Class declaration
+		/Class/Class.cpp 					// class implementation
+		/Class/ClassHelperFunctions.cpp		// some helper function you may need
+		/Class/ClassSomeOtherStuff.cpp		// some other functions you may need
+		/Class/ClassGetterSetters.cpp		// getters and setters bloat easily....
+
+		- doesn't have to be like the above, what matters is all files related to a class belong
+		to a folder named after that class
+		- Class nesting is also okay for composition, like:
+
+		/ServerManager/ConnectionManager/ConnectionManager.hpp
+		/ServerManager/ConnectionManager/ConnectionManager.cpp
+		/ServerManager/ServerManager.hpp
+		/ServerManager/ServerManager.cpp
+
+
 c++:
 	if you know the size of something, use std::vector::reserve(size) or std::string::reserve(size)
 		don't pushback one by one, triggers unnecessary reallocations in this case
 
-hpp files:
+.hpp files (class declarations):
 
-	for classes
 	- Each file includes all header dependencies
 	Please separate C headers from C++ headers, and maybe add a comment like:
 
@@ -59,5 +85,16 @@ hpp files:
 
 	- object canonical form for classes
 
-h files:
+
+	global class private member: prefix with "gm_"
+	global class private function: prefix with "gmf_"
+		you get the idea:
+			scope | privacy | variable 		<- IN THIS ORDER
+
+.cpp (class implementations)
+	NO ONE LINERS except for getters and setters, maybe constructor/destructors, let's be reasonable
+
+
+.h files:
 	for non-class includes
+	- clearly separates class files and non-class files
