@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    CodingGuidelines.txt                               :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
-#    Updated: 2024/11/18 10:07:40 by codespace        ###   ########.fr        #
+#    Updated: 2024/11/18 11:00:58 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ general:
 	- global variables as in norminette: prefix with "g_" for clarity (nginx has a lot of globals and you need to check manually that they are...)
 	(think if they are really necessary. If the are needed across the project, consider adding them the "Globals" class)
 
-	- enums, prefix with "e_", typedefs prefix with "t_" etc, norminette style
+	- enums, prefix with "e_", typedefs prefix with "t_" etc, unions wiith "u_", norminette style
 
 	- use your 42 header, looks nice
 

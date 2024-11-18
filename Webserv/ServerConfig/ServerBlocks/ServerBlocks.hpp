@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:28:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:56:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,22 @@
 
 # define SERVERBLOCKS_HPP
 
+// C++ headers
+# include <string>
+# include <set>
+
+class ServerLocation;
 
 class ServerBlocks
 {
+    public:
+        //constructor destructors
+
+    private:
+        std::string                             m_domainName;
+        std::string                             m_port;
+        std::string                             m_root;
+        std::set<std::string, ServerLocation>   m_locations;
 
 };
 
