@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/15 08:18:40 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/18 10:36:52 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -72,7 +72,7 @@ BUILD 							=
 
 
 
-$(NAME): $(OBJS)
+$(NAME): OBJS
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
 
@@ -86,6 +86,7 @@ all: $(NAME)
 
 debug: $(NAME)
 
+objs: $(OBJS)
 
 clean:
 	@if [ -d "$(OBJ_PATH)" ]; then \
@@ -115,4 +116,4 @@ git: fclean
 	git commit -m "update"
 	git push
 
-.PHONY: debug clean fclean re git run
+.PHONY: debug clean fclean objs re git run
