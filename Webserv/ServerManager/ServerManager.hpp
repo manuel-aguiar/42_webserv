@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/18 11:32:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 # define SERVER_HPP
 
-# include "../Webserver_Definitions.h"
-# include "../CgiManager/CgiManager.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
-# include "../Connection/ConnectionPool.hpp"
-# include "../Logs/Logs.h"
+# include "../Utils/Webserver_Definitions.h"
+# include "CgiManager/CgiManager.hpp"
+# include "ListeningSocket/ListeningSocket.hpp"
+# include "Connection/ConnectionPool.hpp"
+# include "../Globals/LogFile/LogFile.hpp"
 # include "../EventManager/EventManager.hpp"
 # include "../Event/HandlerFunction.hpp"
 # include "../SignalHandler/SignalHandler.hpp"

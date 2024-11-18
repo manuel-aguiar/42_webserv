@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
-#    Updated: 2024/11/18 11:00:58 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/18 11:22:31 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,14 @@ general:
 			/ServerManager/ConnectionManager/ConnectionManager.cpp
 			/ServerManager/ServerManager.hpp
 			/ServerManager/ServerManager.cpp
+
+
+
+			Potentially, add a text file explaining important concepts/decisions you took when implementing
+			class methods.
+			Not sure of a naming convention but something like _ServerManager.docs (_ just to place it away from 
+			actual code). We will check later how to compile documentation.
+			You can also document the functions with @ and stuff for intelisense in vscode
 	}
 
 
