@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 11:20:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 11:21:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int RunSingleThreadedServer()
     LogFile                 logFile("teste.txt");
     FileDescriptorManager   fdManager;
 
-    Server server(logFile, poll, executer, interpreter, fdManager);
+    ServerManager server(logFile, poll, executer, interpreter, fdManager);
 
     server.run();
 
@@ -46,7 +46,7 @@ int RunMultiThreadedServer()
     LogFileThreadSafe       logFile("teste.txt");
     FileDescriptorManager   fdManager;
 
-    Server server(logFile, poll, executer, interpreter, fdManager);
+    ServerManager server(logFile, poll, executer, interpreter, fdManager);
 
 
     server.run();

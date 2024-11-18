@@ -33,7 +33,7 @@ int main(int ac, char **av, char **env)
 
 	SignalHandler::prepare_signal(&sigaction, SignalHandler::signal_handler, 1, &globals);
 
-	Server 		server(0, &globals);
+	ServerManager 		server(0, &globals);
 
 	server.createListeners(NULL, "8080", SOCK_STREAM, AF_INET, 1000);
 	server.setup_mySignalHandler();

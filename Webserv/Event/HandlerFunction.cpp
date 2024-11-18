@@ -49,8 +49,8 @@ void HandlerFunction::Cgi_Write(Event& event)
 
 void HandlerFunction::signal_Read(Event& event)
 {
-    Server* server;
+    ServerManager* server;
 
-    server = reinterpret_cast<Server*>(event.m_data);
+    server = reinterpret_cast<ServerManager*>(event.m_data);
     server->m_isRunning = false;
 }

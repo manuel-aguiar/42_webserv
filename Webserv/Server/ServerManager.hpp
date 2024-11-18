@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 14:10:20 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@
 
 class Globals;
 
-class Server
+class ServerManager
 {
     public:
-        Server(size_t serverID, Globals* globals);
-        ~Server();
+        ServerManager(size_t serverID, Globals* globals);
+        ~ServerManager();
 
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
 
@@ -50,7 +50,7 @@ class Server
         bool                            m_multithreadListen;
         std::vector<ListeningSocket*>   m_listeners;
         Nginx_MemoryPool*               m_pool;
-        CgiManager                     m_cgiHandler;
+        CgiManager                     	m_cgiHandler;
         ConnectionPool                  m_connectionPool;
         EventManager                    m_eventManager;
         Globals*                        m_globals;
@@ -61,9 +61,9 @@ class Server
 
 
     private:
-        Server();
-        Server(const Server& copy);
-        Server& operator=(const Server& assign);
+        ServerManager();
+        ServerManager(const ServerManager& copy);
+        ServerManager& operator=(const ServerManager& assign);
 };
 
 

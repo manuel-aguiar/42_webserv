@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/11 15:11:40 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ const char* response =
         "    <title>Welcome</title>\r\n"
         "  </head>\r\n"
         "  <body>\r\n"
-        "    <h1>Welcome to My Server!</h1>\r\n"
+        "    <h1>Welcome to My ServerManager!</h1>\r\n"
         "    <p>This is a simple HTTP response.</p>\r\n"
         "  </body>\r\n"
         "</html>\r\n";

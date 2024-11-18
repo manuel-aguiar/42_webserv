@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   ServerManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:10:56 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/18 08:52:04 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "Server.hpp"
+# include "ServerManager.hpp"
 # include "../Globals/Globals.hpp"
 
-Server::Server(size_t serverID, Globals* _globals) :
+ServerManager::ServerManager(size_t serverID, Globals* _globals) :
     m_myID(serverID),
     m_pool(Nginx_MemoryPool::create(4096, 1)),
     m_connectionPool(_globals),
@@ -28,12 +28,12 @@ Server::Server(size_t serverID, Globals* _globals) :
     #endif
 }
 
-Server::~Server()
+ServerManager::~ServerManager()
 {
     m_pool->destroy();
 }
 
-int Server::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
+int ServerManager::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
 {
     ListeningSocket*    listener;
     t_addrinfo          hints;
@@ -85,7 +85,7 @@ int Server::createListeners(const char* node, const char* port, int socktype, in
     return (0);
 }
 
-int Server::setup_mySignalHandler()
+int ServerManager::setup_mySignalHandler()
 {
     int pipeRead;
 
@@ -99,7 +99,7 @@ int Server::setup_mySignalHandler()
     return (1);
 }
 
-int Server::run()
+int ServerManager::run()
 {
     while (m_isRunning)
     {
@@ -110,10 +110,10 @@ int Server::run()
 }
 
 //private
-Server::Server() :
+ServerManager::ServerManager() :
     m_connectionPool(NULL, 0) {}
 
-Server::Server(const Server& copy) :
+ServerManager::ServerManager(const ServerManager& copy) :
     m_connectionPool(NULL, 0)  {(void)copy;}
 
-Server& Server::operator=(const Server& assign) { (void)assign; return (*this);}
+ServerManager& ServerManager::operator=(const ServerManager& assign) { (void)assign; return (*this);}
