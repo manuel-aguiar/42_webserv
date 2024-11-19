@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:56:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/19 14:53:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ class ServerBlocks
 {
     public:
         //constructor destructors
+        
+        
 
     private:
         std::string                             m_domainName;

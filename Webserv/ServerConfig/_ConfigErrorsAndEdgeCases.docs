@@ -1,0 +1,38 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _ConfigErrorsAndEdgeCases.docs                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/11/19 14:53:36 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Ok so we need to check errors at config files. A tricky one i found, consider this configuration:
+
+server {
+    listen 0.0.0.0:80;
+    server_name example.com;
+}
+
+server {
+    listen 192.168.1.100:80;
+    server_name example.com;
+}
+
+0.0.0.0 is a wildcard IP address, both blocks point to the same host. Now, individual blocks
+could have different access levels depending on where the connection is comming from
+(maybe you can access some previleged location if it comes from your local network).
+
+So this is not really an error. 
+
+In fact, the operating system (and nginx) will route the connection
+to THE MOST SPECIFIC SOCKET ADDRESS THAT MATCHES.
+
+So, Incoming connection to 192.168.1.100:80:
+    OS will ring the listening socket for 192.168.1.100:80 and not 0.0.0.0:80 because THE FIRST ONE is
+    the most specific!!
+
+
