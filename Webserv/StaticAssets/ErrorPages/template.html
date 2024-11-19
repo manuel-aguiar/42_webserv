@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>404 Not Found</title>
+    <title>{{STATUS_CODE}} {{STATUS_TEXT}}</title>
     <style>
         body {
             font-family: system-ui, sans-serif;
@@ -35,11 +35,11 @@
 </head>
 
 <body>
-    <div class="server">Webserv/1.0</div>
+    <div class="server">{{SERVER_NAME}}/{{SERVER_VERSION}}</div>
     <hr>
-    <div class="status-code">404</div>
-    <h1>Not Found</h1>
-    <p>The requested resource was not found on this server.</p>
+    <div class="status-code">{{STATUS_CODE}}</div>
+    <h1>{{STATUS_TEXT}}</h1>
+    <p>{{ERROR_MESSAGE}}</p>
 </body>
 
 </html>
