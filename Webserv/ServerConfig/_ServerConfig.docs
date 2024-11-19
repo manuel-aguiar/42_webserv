@@ -1,0 +1,56 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _ServerConfig.docs                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/19 12:00:50 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/11/19 12:58:15 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+
+This class will be used by ServerManager to initialize the infrastructure
+to serve the webserver, as in:
+    ServerManager(const ServerConfig& config).
+
+
+
+Configuration:
+
+General, program level:
+    max workers (this would apply in a multithreading context which we may not implement)
+            default value = 1;
+    max concurrent CGI: we need to limit at the application level to make sure
+    we don't blow up the system
+            could be done per server block....?
+            default value = ... 10 (some number)
+
+server block:
+    [listen] [IP address= 0.0.0.0]:port  -> no default value for PORT, lack of directive is ERROR
+        we do default the IP address to be 0.0.0.0 : we listen to connections on that port, comming from any IP address
+    domain names (server names) -> no default value, lack of directive is ERROR
+    max connections (max connections per server block would be the de facto limiter)
+        -> we will have 1 ConnectionManager per server block
+        -> we could set a default value of say, 10
+    
+    errorpages: we can default these to the Webserv/StaticAssets corresponding pages.
+        ommition is NOT AN ERROR
+
+
+
+location:
+
+
+
+##########################
+
+WebservDefaultConfig
+
+    Here we have #define that will have the default values to be used by the server
+    in case the user doesn't supply an alternative.
+
+    These values will then be loaded in the DefaultConfig class,
+    which will then be used on the ServerConfig class to fulfill values not supplied
+    by the configuration file
