@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 12:00:50 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/19 12:58:15 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/19 13:18:51 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,15 +38,20 @@ server block:
     errorpages: we can default these to the Webserv/StaticAssets corresponding pages.
         ommition is NOT AN ERROR
 
+location: (if client asks for some specific resource, what do we do)
 
+    methods: we can have a default such as GET and HEAD
 
-location:
+    return 404;
+
+    cgi:
+        - path;
 
 
 
 ##########################
 
-WebservDefaultConfig
+WebservDefaultConfig.h
 
     Here we have #define that will have the default values to be used by the server
     in case the user doesn't supply an alternative.
