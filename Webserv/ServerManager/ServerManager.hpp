@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 11:32:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/19 14:27:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define SERVER_HPP
 
-# include "../Utils/Webserver_Definitions.h"
+# include "../GenericUtils/Webserver_Definitions.h"
 # include "CgiManager/CgiManager.hpp"
 # include "ListeningSocket/ListeningSocket.hpp"
 # include "Connection/ConnectionPool.hpp"

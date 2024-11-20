@@ -1,18 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Webserver_DefaultSettings.h                        :+:      :+:    :+:   */
+/*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:39:30 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:41:12 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/11/19 13:10:21 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/11/19 13:10:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERVER_DEFAULTSETTINGS_H
-
-# define WEBSERVER_DEFAULTSETTINGS_H
-
-
-#endif
+# include "ServerConfig.hpp"

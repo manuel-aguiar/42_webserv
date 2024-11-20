@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   LogFile.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:24:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 09:01:28 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/20 10:04:28 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define LOGFILE_HPP
 
-# include "../Webserver_Definitions.h"
+# include "../../GenericUtils/Webserver_Definitions.h"
 
 // C headers
 # include <unistd.h>

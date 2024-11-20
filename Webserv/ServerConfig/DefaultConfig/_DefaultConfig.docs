@@ -1,0 +1,21 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _DefaultConfig.docs                                :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/19 12:20:36 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/11/19 12:41:24 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+The server configuration will load default values that can then be overriden
+by the configuration file passed to the server upon initialization.
+
+The reason for having a class for this:
+    - we can load #macros to the DefaultConfig class. If we want to change them,
+    recompilation will only recompile the DefaultConfig class and then 
+    relink
+
+
