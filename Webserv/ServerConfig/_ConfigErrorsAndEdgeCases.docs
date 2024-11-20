@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    _ConfigErrorsAndEdgeCases.docs                     :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/19 16:12:02 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/20 08:38:02 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ server {
 could have different access levels depending on where the connection is comming from
 (maybe you can access some previleged location if it comes from your local network).
 
-So this is not really an error. 
+So this is not really an error.
 
 In fact, the operating system (and nginx) will route the connection
 to THE MOST SPECIFIC SOCKET ADDRESS THAT MATCHES.
@@ -61,3 +61,16 @@ IP:PORT:server_name.
 there can be no two server blocks with the exact same combination of these three, we throw an error in that case
 
 (we, internally, will do the distribution from the most specific (non 0.0.0.0) to the least specific (0.0.0.0))
+
+
+###############################
+
+
+Nginx DOES NOT check path validity (root, locations), it defers that for runtime.
+if a file asked by a request is not found or doesn't exist, it answers 404 NOT FOUND.
+
+Suppose the file system changes due to scripts triggering etc, new paths may not yet
+be available during configuration load.
+(for instance, a POST request to upload a new file to the filesystem during runtime)
+
+However, syntax must be correct.
