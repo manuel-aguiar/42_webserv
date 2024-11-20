@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/20 09:53:43 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/20 14:36:38 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,7 +77,6 @@ However, syntax must be correct.
 
 ################################
 
-FORBID multiple "root" directives in a single server block (should be ERROR)
 ALLOW multiple "listen" directives per server block (should not be an error)
 
 ###############################
