@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/20 08:38:02 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/20 08:50:09 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,3 +74,8 @@ be available during configuration load.
 (for instance, a POST request to upload a new file to the filesystem during runtime)
 
 However, syntax must be correct.
+
+################################
+
+FORBID multiple "root" directives in a single server block (should be ERROR)
+ALLOW multiple "listen" directives per server block (should not be an error)
