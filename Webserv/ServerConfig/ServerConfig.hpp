@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:50:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 10:13:49 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/20 10:19:55 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <string>
 # include <map>
 
+//forward declarations
 class DefaultConfig;
 class ServerBlocks;
 class Globals;
@@ -43,6 +44,8 @@ class ServerConfig
 		size_t									m_maxCgi;
 
 
+		// mostly for logs and debuging, see Globals class
+		Globals*								m_globals;
 };
 
 
