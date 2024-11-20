@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 14:29:16 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/20 14:32:31 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class ServerBlocks
     public:
         //constructor destructors
 
-		typedef std::pair<std::string, std::string>			t_listeners;
+		typedef std::pair<std::string, std::string>			t_listeners; // a pair of IP and PORT
 
 
         const std::set<std::string>&						getDomainNames() const;
