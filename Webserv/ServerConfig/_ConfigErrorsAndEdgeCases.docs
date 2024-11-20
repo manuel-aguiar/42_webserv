@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/20 08:50:09 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/20 09:53:43 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,3 +79,20 @@ However, syntax must be correct.
 
 FORBID multiple "root" directives in a single server block (should be ERROR)
 ALLOW multiple "listen" directives per server block (should not be an error)
+
+###############################
+
+Roots:
+
+if you have two roots at the same scope level, as in:
+
+server {
+	root /somefolder
+	root /otherfolder
+}
+
+/otherfolder will override the /somefolder. in any case there can only be one single root
+
+
+You can handle it as you wish so as long as there is only one final root per server block
+You can either override or return an error

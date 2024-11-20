@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerLocations.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:56:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 11:00:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/20 10:18:01 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 # define SERVERLOCATIONS_HPP
 
+#include <string>
+#include <set>
 
 class ServerBlock;
 
@@ -30,12 +32,24 @@ class ServerLocations
 
         ServerLocations(ServerBlock& block, t_locationType type);    //non-const, very likely location will have to update the block...?
 
-
-
+		const ServerBlock& 			getServerBlock() const;
+		t_locationType 				getLocationType() const;
+		const std::string&			getPath() const;
+		const std::string&			getRoot() const;
 
     private:
-        ServerBlock&        m_block;
-        t_locationType      m_type;
+        ServerBlock&        		m_block;
+        t_locationType      		m_type;
+
+		std::string         		m_path;
+		std::string					m_root;
+		std::set<std::string> 		m_methods;
+
+		// some cgi stuff with path and extension here
+
+		// some redirection stuff with URL to follow here
+
+		bool						m_autoindex = false;
 
 
 };

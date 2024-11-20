@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 12:00:50 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/20 09:22:40 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/20 10:12:39 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,10 +45,14 @@ Configuration:
 		[listen] [IP address= 0.0.0.0]:port  -> no default value for PORT, lack of directive is ERROR
 			we do default the IP address to be 0.0.0.0 : we listen to connections on that port, comming from any IP address
 		domain names (server names) -> no default value, lack of directive is ERROR
-
+			-> it would be easier to identify each block if this directive only accepted a single name...
+			-> do as you see fit
 
 		errorpages: we can default these to the Webserv/StaticAssets corresponding pages.
 			ommition is NOT AN ERROR
+
+		root:
+			-> no
 
 	location: (if client asks for some specific resource, what do we do)
 
@@ -76,12 +80,20 @@ Configuration:
 		methods: we can have a default such as GET and HEAD
 
 		autoindex: on | off
+
 			-> default value: OFF
 			-> this is what is referred to as "directory listing"
 			-> if the URL in a request resolves to a folder, and the location specified
 			allows directory listing (autoindex on) we will send the client the folder structure (like an ls -a)
 			within that folder
-			-> if autoindex is off (or not )
+			-> if autoindex is off and there is no file in that folder called "index.html", nginx sends
+			HTTP 403 FORBIDDEN
+				(i won't let you see the directory structure)
+
+		root:
+			-> same principle as the above root at the server level.
+			-> default value is the server block's root
+			-> if defined, overrides the server block's root
 
 
 
