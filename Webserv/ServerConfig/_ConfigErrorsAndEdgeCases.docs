@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 14:48:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/19 14:53:36 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/19 16:12:02 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,4 +35,29 @@ So, Incoming connection to 192.168.1.100:80:
     OS will ring the listening socket for 192.168.1.100:80 and not 0.0.0.0:80 because THE FIRST ONE is
     the most specific!!
 
+##############################
 
+for nginx, this is not an error, it simply ignores the second block
+
+server {
+    listen 0.0.0.0:80;
+    server_name example.com;
+}
+
+server {
+    listen 0.0.0.0:80;
+    server_name example.com;
+}
+
+for us, for simplicity, WE MARK AS AN INVALID CONFIG, we have two server blocks
+for the same domain, listening on the same port from the same IP combination.
+
+################################
+
+So, for managing the servers, we need to do this check, using 3 variables:
+
+IP:PORT:server_name.
+
+there can be no two server blocks with the exact same combination of these three, we throw an error in that case
+
+(we, internally, will do the distribution from the most specific (non 0.0.0.0) to the least specific (0.0.0.0))
