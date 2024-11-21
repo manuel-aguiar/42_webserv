@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:10:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:31:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ class ServerWorker
         ServerWorker(size_t serverID, Globals* globals);
         ~ServerWorker();
 
+        int run();
+
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
         int setup_mySignalHandler();
-        int run();
+        
 
 
     

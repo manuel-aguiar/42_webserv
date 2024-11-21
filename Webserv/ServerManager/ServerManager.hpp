@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:09:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:31:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,25 @@
 # include <vector>
 
 class ServerConfig;
+class Globals;
+class ThreadPool;
 
 class ServerManager
 {
     public:
         ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
-        void    runSingleThreaded();
-        void    runMultiThreaded();
-
+        void    run();
 
     private:
 
         std::vector<ServerWorker>       m_workers;
         ThreadPool*                     m_threadPool;              
+        Globals*                        m_globals;
 
+
+        void    mf_runSingleThreaded();
+        void    mf_runMultiThreaded();
 };
 
 
