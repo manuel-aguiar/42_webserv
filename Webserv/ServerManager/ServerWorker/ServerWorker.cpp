@@ -21,11 +21,6 @@ ServerWorker::ServerWorker(size_t serverID, Globals* _globals) :
     m_globals(_globals),
     m_isRunning(true)
 {
-    #ifdef SO_REUSEPORT
-        m_multithreadListen = true;
-    #else
-        m_multithreadListen = false;
-    #endif
 }
 
 ServerWorker::~ServerWorker()
