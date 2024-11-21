@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:33:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:06:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define EVENTMANAGER_HPP
 
-# include "../Webserver_Definitions.h"
+# include "../../GenericUtils/Webserver_Definitions.h"
 
 class Globals;
 class Event;

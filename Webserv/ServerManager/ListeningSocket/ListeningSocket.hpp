@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 10:53:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:04:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 # define LISTENINGSOCKET_HPP
 
-# include "../Webserver_Definitions.h"
-# include "../Logs/Logs.h"
-# include "../Event/Event.hpp"
+# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Globals/LogFile/LogFile.hpp"
+# include "../EventManager/Event/Event.hpp"
 
 # include <sys/socket.h>
 # include <netinet/in.h>

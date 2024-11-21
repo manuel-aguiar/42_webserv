@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 10:55:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:03:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 # define CONNECTION_HPP
 
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../EventManager/Event/Event.hpp"
-# include "../Logs/Logs.h"
+# include "../../EventManager/Event/Event.hpp"
+# include "../../../Globals/LogFile/LogFile.hpp"
 
 class ListeningSocket;
 class Event;

@@ -3,20 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   EventManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 17:11:43 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/21 11:07:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "EventManager.hpp"
-# include "../Event/Event.hpp"
+# include "Event/Event.hpp"
 # include "../Connection/Connection.hpp"
-# include "../Globals/Globals.hpp"
-# include "../FileDescriptor/FileDescriptor.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
-# include "../Connection/ConnectionPool.hpp"
+# include "../ConnectionManager/ConnectionManager.hpp"
+
+# include "../../Globals/Globals.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 EventManager::EventManager(Globals* globals) :
     m_waitCount      (0),
