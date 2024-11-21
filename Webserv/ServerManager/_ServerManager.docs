@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 11:19:25 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/21 10:58:24 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/21 12:14:55 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ Server Manager is the brain of the infrastructure of our server.~
 It will take the configuration file and use it to setup:
 
     All ServerWorkers
-        CgiManager
+
         HttpInterpreter
     
 
@@ -29,9 +29,11 @@ may not implement.
 
     It has its own:
         ConnectionManager
+        CgiManager
         EventManager (and epoll)
         ListeningSockets (SO_REUSEPORT) for ALL listeners asked in configuration.
 
 
 
-    
+In terms of folder structure, ServerWorker is the holder of the managers (ex ServerManager)
+but the folder nesting would be unnecessarily... deep.
