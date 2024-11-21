@@ -20,15 +20,15 @@
 # include <set>
 # include <vector>
 
+// Own headers
+# include "../../GenericUtils/Webserver_Definitions.h"
+
 class ServerLocations;
 
 class ServerBlocks
 {
     public:
         //constructor destructors
-
-		typedef std::pair<std::string, std::string>			t_listeners; // a pair of IP and PORT
-
 
         const std::set<std::string>&						getDomainNames() const;
 		const std::vector<t_listeners>&						getListeners() const;
@@ -37,10 +37,10 @@ class ServerBlocks
 
     private:
 
-        std::set<std::string>                   			m_ServerName;		//would eb easier to only accept one name per serverblock
+        std::set<std::string>                   			m_ServerName;		// would be easier to only accept one name per serverblock
 		std::vector<t_listeners>							m_listeners;
         std::string                             			m_root;
-        std::map<std::string, ServerLocations>   			m_locations;		//std::string would be the path of the location
+        std::map<t_path, ServerLocations>   			    m_locations;
 
 };
 

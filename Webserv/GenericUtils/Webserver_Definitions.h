@@ -28,23 +28,28 @@
 # include "../Toolkit/Toolkit.h"
 
 // definitions for everyone to use
-typedef unsigned char       t_byte;
-typedef uint16_t            t_port;
-typedef int                 t_fd;
-typedef pid_t			   	t_pid;
-typedef int                 t_socket;
+typedef unsigned char								t_byte;
+typedef uint16_t									t_port;
+typedef int											t_fd;
+typedef pid_t										t_pid;
+typedef int											t_socket;
 
-typedef struct sockaddr     t_sockaddr;
-typedef struct sockaddr_in  t_sockaddr_in;
-typedef struct sockaddr_in6 t_sockaddr_in6;
-typedef struct sockaddr_un  t_sockaddr_un;
-typedef socklen_t           t_socklen;
-typedef struct addrinfo     t_addrinfo;
+typedef std::string									t_port_str;
+typedef std::string									t_ip_str;
+typedef std::string									t_path;
+typedef std::pair<t_ip_str, t_port_str>				t_listeners;
 
-typedef struct epoll_event  t_epoll_event;
+typedef struct sockaddr								t_sockaddr;
+typedef struct sockaddr_in							t_sockaddr_in;
+typedef struct sockaddr_in6							t_sockaddr_in6;
+typedef struct sockaddr_un							t_sockaddr_un;
+typedef socklen_t									t_socklen;
+typedef struct addrinfo								t_addrinfo;
 
-typedef struct sigaction    t_sigaction;
-typedef sigset_t            t_sigset;
+typedef struct epoll_event							t_epoll_event;
+
+typedef struct sigaction							t_sigaction;
+typedef sigset_t									t_sigset;
 
 typedef union
 {
@@ -55,7 +60,6 @@ typedef union
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
-
 
 
 #endif
