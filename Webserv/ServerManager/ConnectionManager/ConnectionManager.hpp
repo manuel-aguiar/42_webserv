@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConnectionPool.hpp                                 :+:      :+:    :+:   */
+/*   ConnectionManager.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef CONNECTIONPOOL_HPP
+# ifndef CONNECTIONMANAGER_HPP
 
-# define CONNECTIONPOOL_HPP
+# define CONNECTIONMANAGER_HPP
 
 # include "Connection.hpp"
 # include "../Webserver_Definitions.h"
@@ -24,11 +24,11 @@
 
 # define MAX_CONNECTIONS 3
 
-class ConnectionPool
+class ConnectionManager
 {
 	public:
-		ConnectionPool(Globals* m_globals, size_t maxConnections = MAX_CONNECTIONS);
-		~ConnectionPool();
+		ConnectionManager(Globals* m_globals, size_t maxConnections = MAX_CONNECTIONS);
+		~ConnectionManager();
 
 		Connection*     getConnection();
 		void            returnConnection(Connection* connection);
@@ -44,9 +44,9 @@ class ConnectionPool
 
 		void destroyConnection(Connection* connection);
 
-		ConnectionPool();
-		ConnectionPool(const ConnectionPool& copy);
-		ConnectionPool& operator=(const ConnectionPool& assign);
+		ConnectionManager();
+		ConnectionManager(const ConnectionManager& copy);
+		ConnectionManager& operator=(const ConnectionManager& assign);
 };
 
 

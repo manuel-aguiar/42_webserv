@@ -6,7 +6,32 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 11:19:25 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/18 11:23:55 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/21 10:58:24 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+Server Manager is the brain of the infrastructure of our server.~
+It will take the configuration file and use it to setup:
+
+    All ServerWorkers
+        CgiManager
+        HttpInterpreter
+    
+
+
+ServerWorker is essentially the old class "Server".
+In our setup, this class is only needed in preparation for multithreading which 
+may not implement.
+    We leave it like this to allow for that feature potentially in the future
+    Multithreading cannot take place via fork because threads will have to communicate
+    with shared resources, namely the http interpreter
+
+
+    It has its own:
+        ConnectionManager
+        EventManager (and epoll)
+        ListeningSockets (SO_REUSEPORT) for ALL listeners asked in configuration.
+
+
+
+    

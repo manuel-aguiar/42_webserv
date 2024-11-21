@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/08 10:38:15 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/21 10:55:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 # define CONNECTION_HPP
 
-# include "../Webserver_Definitions.h"
-# include "../Event/Event.hpp"
+# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../EventManager/Event/Event.hpp"
 # include "../Logs/Logs.h"
 
 class ListeningSocket;

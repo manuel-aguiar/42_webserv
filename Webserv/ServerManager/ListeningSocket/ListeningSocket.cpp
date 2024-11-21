@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/11 10:24:44 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/21 10:53:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "../Event/HandlerFunction.hpp"
 
 
-ListeningSocket::ListeningSocket(ConnectionPool& connPool, EventManager& eventManager, Globals* globals) :
+ListeningSocket::ListeningSocket(ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
     m_globals(globals),
     m_connectionPool(connPool),
     m_eventManager(eventManager)
@@ -156,11 +156,11 @@ void    ListeningSocket::accept()
 
 NewConnection_Failure:
     m_globals->logStatus("ListeningSocket::listener_Accept(): " + std::string(strerror(errno)));
-    _close_accepted_connection(connection);
+    mf_close_accepted_connection(connection);
 
 }
 
-void    ListeningSocket::_close_accepted_connection(Connection* connection)
+void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 {
     if (connection->m_sockfd != -1 && ::close(connection->m_sockfd) == -1)
         m_globals->logStatus("close(): " + std::string(strerror(errno)));
@@ -172,7 +172,7 @@ void    ListeningSocket::_close_accepted_connection(Connection* connection)
 void    ListeningSocket::closeConnection(Connection* connection)
 {
     m_eventManager.delEvent(connection->m_sockfd);
-    _close_accepted_connection(connection);
+    mf_close_accepted_connection(connection);
 
 }
 
@@ -188,7 +188,7 @@ void    ListeningSocket::close()
 //private
 ListeningSocket::ListeningSocket() :
     m_globals(NULL),
-    m_connectionPool(*((ConnectionPool*)NULL)),  //never do this, for real
+    m_connectionPool(*((ConnectionManager*)NULL)),  //never do this, for real
     m_eventManager(*((EventManager*)NULL))       //never do this, for real
 {
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/19 14:27:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 10:59:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,12 @@ class ServerManager
 
         int run();
 
-    //private:
-        //typedef MemoryPool_Alloc<std::pair<int, ListeningSocket> > ListeningSocketPool;
-        //typedef std::map<int, ListeningSocket, std::less<int>, MemoryPool_Alloc<std::pair<int, ListeningSocket> > > ListeningSocketMap;
-        //ListeningSocketMap              m_listeners;
-
         size_t                          m_myID;
         bool                            m_multithreadListen;
         std::vector<ListeningSocket*>   m_listeners;
         Nginx_MemoryPool*               m_pool;
         CgiManager                     	m_cgiHandler;
-        ConnectionPool                  m_connectionPool;
+        ConnectionManager               m_connectionPool;
         EventManager                    m_eventManager;
         Globals*                        m_globals;
         Event                           m_mySignalEvent;

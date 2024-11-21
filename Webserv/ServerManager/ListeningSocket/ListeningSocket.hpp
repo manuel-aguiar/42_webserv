@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/21 10:53:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@
 
 class ServerManager;
 class Connection;
-class ConnectionPool;
+class ConnectionManager;
 class EventManager;
 class Globals;
 
 class ListeningSocket
 {
     public:
-        ListeningSocket(ConnectionPool& connPool, EventManager& m_eventManager, Globals* globals);
+        ListeningSocket(ConnectionManager& connPool, EventManager& m_eventManager, Globals* globals);
         ~ListeningSocket();
 
         int                         open();
@@ -56,7 +56,7 @@ class ListeningSocket
 
 
         Event                       m_myEvent;
-        ConnectionPool&             m_connectionPool;
+        ConnectionManager&             m_connectionPool;
         EventManager&               m_eventManager;
 
 
@@ -66,7 +66,7 @@ class ListeningSocket
         ListeningSocket& operator=(const ListeningSocket& assign);
 
 
-        void    _close_accepted_connection(Connection* connection);
+        void    mf_close_accepted_connection(Connection* connection);
 
 };
 

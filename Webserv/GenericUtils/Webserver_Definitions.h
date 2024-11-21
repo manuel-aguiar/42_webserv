@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 14:10:19 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/21 11:00:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <cassert>
 
 //own headers
-# include "../Toolkit/Toolkit.h"
+# include "../../Toolkit/Toolkit.h"
 
 // definitions for everyone to use
 typedef unsigned char       t_byte;
@@ -55,7 +55,6 @@ typedef union
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
-
 
 
 #endif

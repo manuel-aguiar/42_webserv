@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConnectionPool.cpp                                 :+:      :+:    :+:   */
+/*   ConnectionManager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,16 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ConnectionPool.hpp"
+#include "ConnectionManager.hpp"
 #include "../Event/HandlerFunction.hpp"
 
-ConnectionPool::~ConnectionPool() 
+ConnectionManager::~ConnectionManager() 
 {
     for (size_t i = 0; i < m_connections.size(); i++)
         m_connections[i].m_memPool->destroy();
 }
 
-ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) : 
+ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) : 
     m_globals(globals), 
     m_maxConnections(maxConnections),
     m_connections(maxConnections),
@@ -50,7 +50,7 @@ ConnectionPool::ConnectionPool(Globals* globals, size_t maxConnections) :
     }
 }
 
-Connection* ConnectionPool::getConnection()
+Connection* ConnectionManager::getConnection()
 {
     Connection*     connection;
 
@@ -62,7 +62,7 @@ Connection* ConnectionPool::getConnection()
     return (connection);
 }
 
-void ConnectionPool::returnConnection(Connection* connection)
+void ConnectionManager::returnConnection(Connection* connection)
 {
     connection->reset();
     m_spareConnections.push_front(connection);
@@ -72,15 +72,15 @@ void ConnectionPool::returnConnection(Connection* connection)
 
 //private, as usual
 
-ConnectionPool::ConnectionPool() {}
+ConnectionManager::ConnectionManager() {}
     
-ConnectionPool::ConnectionPool(const ConnectionPool& copy)
+ConnectionManager::ConnectionManager(const ConnectionManager& copy)
 {
     (void)copy;
 }
 
 
-ConnectionPool& ConnectionPool::operator=(const ConnectionPool& assign)
+ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign)
 {
     (void)assign;
     return (*this);
