@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 11:04:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:43:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <arpa/inet.h>
 
 
-class ServerManager;
+class ServerWorker;
 class Connection;
 class ConnectionManager;
 class EventManager;
@@ -56,7 +56,7 @@ class ListeningSocket
 
 
         Event                       m_myEvent;
-        ConnectionManager&             m_connectionPool;
+        ConnectionManager&          m_connectionPool;
         EventManager&               m_eventManager;
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:44:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/21 12:08:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define SIGNALHANDLER_HPP
 
-# include "../Webserver_Definitions.h"
+# include "../../GenericUtils/Webserver_Definitions.h"
 # include <signal.h>
 # include <vector>
 # include <unistd.h>

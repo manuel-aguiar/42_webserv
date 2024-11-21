@@ -15,6 +15,7 @@
 # define EVENTHANDLER_HPP
 
 class Event;
+
 class HandlerFunction
 {
     public:

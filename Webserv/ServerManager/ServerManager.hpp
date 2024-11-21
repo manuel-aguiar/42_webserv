@@ -5,63 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 10:59:09 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/11/21 12:09:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
+#ifndef SERVERMANAGER_HPP
 
-# define SERVER_HPP
+# define SERVERMANAGER_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
-# include "CgiManager/CgiManager.hpp"
-# include "ListeningSocket/ListeningSocket.hpp"
-# include "Connection/ConnectionPool.hpp"
-# include "../Globals/LogFile/LogFile.hpp"
-# include "../EventManager/EventManager.hpp"
-# include "../Event/HandlerFunction.hpp"
-# include "../SignalHandler/SignalHandler.hpp"
+// Project Headers
+# include "ServerWorker/ServerWorker.hpp"
 
+// C++ headers
 # include <vector>
-# include <map>
-# include <iostream>
 
-class Globals;
+class ServerConfig;
 
 class ServerManager
 {
     public:
-        ServerManager(size_t serverID, Globals* globals);
-        ~ServerManager();
+        ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
-        int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
-
-        int setup_mySignalHandler();
-
-        int run();
-
-        size_t                          m_myID;
-        bool                            m_multithreadListen;
-        std::vector<ListeningSocket*>   m_listeners;
-        Nginx_MemoryPool*               m_pool;
-        CgiManager                     	m_cgiHandler;
-        ConnectionManager               m_connectionPool;
-        EventManager                    m_eventManager;
-        Globals*                        m_globals;
-        Event                           m_mySignalEvent;
-
-        bool                            m_isRunning;
-
+        void    runSingleThreaded();
+        void    runMultiThreaded();
 
 
     private:
-        ServerManager();
-        ServerManager(const ServerManager& copy);
-        ServerManager& operator=(const ServerManager& assign);
+
+        std::vector<ServerWorker>       m_workers;
+        ThreadPool*                     m_threadPool;              
+
 };
-
-
 
 
 

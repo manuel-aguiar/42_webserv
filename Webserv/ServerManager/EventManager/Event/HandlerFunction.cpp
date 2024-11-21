@@ -14,7 +14,7 @@
 #include "Event.hpp"
 #include "../Connection/Connection.hpp"
 #include "../ListeningSocket/ListeningSocket.hpp"
-#include "../Server/Server.hpp"
+#include "../ServerManager/ServerWorker/ServerWorker.hpp"
 
 void HandlerFunction::listener_Accept(Event& event)
 {
@@ -49,8 +49,8 @@ void HandlerFunction::Cgi_Write(Event& event)
 
 void HandlerFunction::signal_Read(Event& event)
 {
-    ServerManager* server;
+    ServerWorker* server;
 
-    server = reinterpret_cast<ServerManager*>(event.m_data);
+    server = reinterpret_cast<ServerWorker*>(event.m_data);
     server->m_isRunning = false;
 }

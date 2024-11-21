@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiManager.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/15 08:21:26 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/21 12:04:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 # define CGI_HANDLER_HPP
 
 # include "CgiDefaults.h"
-# include "../Webserver_Definitions.h"
-# include "../Event/Event.hpp"
+# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../EventManager/Event/Event.hpp"
 
 # include <queue>
 # include <list>
