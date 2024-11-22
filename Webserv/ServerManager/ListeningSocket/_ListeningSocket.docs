@@ -1,0 +1,21 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _ListeningSocket.docs                              :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
+#    Updated: 2024/11/22 10:50:26 by manuel           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+The purpose of ListeningSocket is to accept incoming connections from clients.
+It will ask the ConnectionManager for a free connection to use, setting its
+handler function and contact the ServerManager to place it in the EventManager for incoming
+traffic.
+
+Given our server is a single purpose HTTP server, we know that any traffic comming from the connection
+will be handled by the http interpreter, so the handler function for reading traffic
+will be provided by the http interpreter.
+

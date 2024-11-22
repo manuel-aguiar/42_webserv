@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorker.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:31:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/22 10:47:24 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,21 @@ class ServerWorker
 
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
         int setup_mySignalHandler();
-        
 
 
-    
+
+
         size_t                          m_myID;
         std::vector<ListeningSocket*>   m_listeners;
         Nginx_MemoryPool*               m_pool;
         CgiManager                     	m_cgiHandler;
         ConnectionManager               m_connectionPool;
         EventManager                    m_eventManager;
+
         Globals*                        m_globals;
         Event                           m_mySignalEvent;
+
+		ServerManager&					m_serverManager;
 
         bool                            m_isRunning;
 

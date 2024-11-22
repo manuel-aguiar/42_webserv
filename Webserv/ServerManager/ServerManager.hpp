@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/22 10:45:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/22 10:47:52 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class ServerManager
     public:
         ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
+		void	prepareWorkers();
         void    run();
 
     private:
