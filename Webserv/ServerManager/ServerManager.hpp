@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:31:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/22 08:59:58 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ class ServerManager
     private:
 
         std::vector<ServerWorker>       m_workers;
-        ThreadPool*                     m_threadPool;              
+		const ServerConfig&             m_config;
+        ThreadPool*                     m_threadPool;
         Globals*                        m_globals;
 
 
