@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
-#    Updated: 2024/11/22 11:04:54 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/22 14:07:43 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,10 +15,10 @@ These buffers (pointed to by FileDescriptors) relate to, specifically:
 
 	- ListeningSockets
 		sockets ready to accept connections
-	- Connection Sockets Reads
+	- Connection Sockets Http Reads
 		we will have to be notified of when a client is sending traffic via a connection
 		and be ready to read it
-	- Connection Socket Writes
+	- Connection Socket Http Writes
 		we will need to respond to our client. the event manager will notify us when
 		the client is ready to receive incoming data as we write it
 	- SignalHandler Pipe
@@ -31,6 +31,12 @@ These buffers (pointed to by FileDescriptors) relate to, specifically:
 	- Cgi Pipe Reads
 		The cgi interpreter will write a message to the http connections in order for responses
 		to be generated and sent to our client.
+
+That means that there will be AT LEAST 6 Event Handler Functions, 1 per event-type subscribed to the EventManager.
+Because they will be function pointers, we don't have to go with enums and switches to call the right handler.
+
+Nginx has multiple eventhandlers within http_request.c. it up+dates the handlers to next stage as it parses
+(it may happen that data is still being read and we need to wait, it can jump right to where it left off)
 
 All the event manager deals with is Event class instances and nothing else.
 Each user of the event manager will have to provide handler functions to reinterpret the Event
