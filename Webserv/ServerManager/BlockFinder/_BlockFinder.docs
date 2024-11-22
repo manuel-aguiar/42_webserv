@@ -1,40 +1,25 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   BlockFinder.hpp                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/22 10:34:19 by manuel           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _BlockFinder.docs                                  :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/22 09:56:59 by manuel            #+#    #+#              #
+#    Updated: 2024/11/22 10:35:30 by manuel           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-#ifndef BLOCKFINDER_HPP
+BlockFinder
 
-# define BLOCKFINDER_HPP
+This class's purpose is to match a given combination of IP, PORT and server name
+with the relevant server block.
+When we receive an HTTP request, we know for sure that:
+	- there is at least an IP:Port combination that matches since, otherwise
+	the client wouldn't have been able to connect to one of our listening sockets.
 
-// our headers
-# include "../../GenericUtils/Webserver_Definitions.h"
-
-// C++ headers
-# include <string>
-
-class ServerConfig;
-class ServerBlocks;
-
-class BlockFinder
-{
-	public:
-		BlockFinder(const ServerConfig& config);
-		~BlockFinder();
-
-		void			addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name);
-		ServerBlocks*	findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
-
-		void    findBlocks();
-
-	private:
+The ServerManager will fill this structure by calling BlockFinder::addServerBlock().
+The http interpreter will try to get the correct server block by calling BlockFinder::findServerBlock().
 
 		/*
 			// here is some structure to map ip/port/host to serverblock
@@ -73,6 +58,3 @@ class BlockFinder
 
 			If the http interpreter is not able to find a server block, it should return a 404 error.
 	*/
-};
-
-#endif

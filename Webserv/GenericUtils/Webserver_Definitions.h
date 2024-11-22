@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 14:10:19 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/22 10:28:33 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef int											t_socket;
 typedef std::string									t_port_str;
 typedef std::string									t_ip_str;
 typedef std::string									t_path;
+typedef std::string									t_server_name;
 typedef std::pair<t_ip_str, t_port_str>				t_listeners;
 
 typedef struct sockaddr								t_sockaddr;
