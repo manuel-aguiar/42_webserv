@@ -6,7 +6,7 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 09:56:59 by manuel            #+#    #+#              #
-#    Updated: 2024/11/22 10:35:30 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/22 10:37:34 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,5 +56,5 @@ The http interpreter will try to get the correct server block by calling BlockFi
 					return (NULL) -> no server block was found.
 
 
-			If the http interpreter is not able to find a server block, it should return a 404 error.
+			If the http interpreter is not able to find a server block, it should generate an http response 404 not found.
 	*/
