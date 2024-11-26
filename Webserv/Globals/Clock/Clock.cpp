@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Clock.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 08:59:00 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/26 10:26:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,19 @@ void    Clock::setGlobals(Globals& globals)
 
 void   Clock::start()
 {
-	if (!_get_time())
+	if (!mf_get_time())
 		return ;
 }
 
 void    Clock::update()
 {
-	if (!_get_time())
+	if (!mf_get_time())
 		return ;
 	m_elapsed_ms = (m_now.tv_sec - m_start.tv_sec) * 1000 + (m_now.tv_usec - m_start.tv_usec) / 1000;
 }
 
 inline
-int Clock::_get_time()
+int Clock::mf_get_time()
 {
 	if (::gettimeofday(&m_now, NULL) == -1)
 	{
