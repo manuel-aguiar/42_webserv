@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:07:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:24:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # define CONNECTION_HPP
 
 # include "../../GenericUtils/Webserver_Definitions.h"
-
 
 class ListeningSocket;
 class Event;
