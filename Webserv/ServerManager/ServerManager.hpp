@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:33:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:23:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,24 +28,24 @@ class BlockFinder;
 
 class ServerManager
 {
-    public:
-        ServerManager(const ServerConfig& config, Globals* globals = NULL);
+	public:
+		ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
 		void	prepareWorkers();
-        void    run();
+		void	run();
 
-    private:
+	private:
 
-        std::vector<ServerWorker>       m_workers;
+		std::vector<ServerWorker>		m_workers;
 		BlockFinder						m_blockFinder;
-		const ServerConfig&             m_config;
-        Globals*                        m_globals;
+		const ServerConfig&				m_config;
+		Globals*						m_globals;
 
 
 		ThreadPool*                     m_threadPool;
 
-        void    mf_runSingleThreaded();
-        void    mf_runMultiThreaded();
+		void    mf_runSingleThreaded();
+		void    mf_runMultiThreaded();
 };
 
 
