@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Globals.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:10:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 10:04:40 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/26 10:22:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,34 +24,34 @@ class Globals
 		Globals(Clock* clock = NULL, LogFile* statusFile = NULL, LogFile* errorFile = NULL, LogFile* debugFile = NULL);
 		~Globals();
 
-		void            	setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorFile, LogFile& debugFile);
+		void				setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorFile, LogFile& debugFile);
 
-		void                logStatus(const std::string& message);
-		void                logDebug(const std::string& message);
-		void                logError(const std::string& message);
+		void				logStatus(const std::string& message);
+		void				logDebug(const std::string& message);
+		void				logError(const std::string& message);
 
-		void                logStatus(const char* message);
-		void                logDebug(const char* message);
-		void                logError(const char* message);
+		void				logStatus(const char* message);
+		void				logDebug(const char* message);
+		void				logError(const char* message);
 
-		Clock*              getClock() const;
-		LogFile*            getStatusFile() const;
-		LogFile*            getErrorFile() const;
-		LogFile*            getDebugFile() const;
+		Clock*				getClock() const;
+		LogFile*			getStatusFile() const;
+		LogFile*			getErrorFile() const;
+		LogFile*			getDebugFile() const;
 
-		void 			  	setClock(Clock* clock);
-		void 			  	setStatusFile(LogFile* statusFile);
-		void 			  	setErrorFile(LogFile* errorFile);
-		void 			  	setDebugFile(LogFile* debugFile);
+		void				setClock(Clock* clock);
+		void				setStatusFile(LogFile* statusFile);
+		void				setErrorFile(LogFile* errorFile);
+		void				setDebugFile(LogFile* debugFile);
 
 	private:
 
-		Clock*              m_clock;
-		LogFile*            m_statusFile;
+		Clock*				m_clock;
+		LogFile*			m_statusFile;
 		LogFile*			m_errorFile;
-		LogFile*            m_debugFile;
+		LogFile*			m_debugFile;
 
-		void            mf_setGlobals();
+		void				mf_setGlobals();
 
 		Globals(const Globals& copy);
 		Globals& operator=(const Globals& assign);

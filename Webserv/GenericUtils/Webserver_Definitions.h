@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:03:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:22:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ typedef sigset_t									t_sigset;
 
 typedef union
 {
-    t_sockaddr         sockaddr;
-    t_sockaddr_in      sockaddr_in;
-    t_sockaddr_in6     sockaddr_in6;
-    t_sockaddr_un      sockaddr_un;
+	t_sockaddr         sockaddr;
+	t_sockaddr_in      sockaddr_in;
+	t_sockaddr_in6     sockaddr_in6;
+	t_sockaddr_un      sockaddr_un;
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
