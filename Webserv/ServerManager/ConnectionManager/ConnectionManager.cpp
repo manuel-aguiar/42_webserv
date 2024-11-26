@@ -39,10 +39,10 @@ ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
         m_connections[i].m_readEvent = &m_readEvents[i];
         m_connections[i].m_writeEvent = &m_writeEvents[i];
 
-        m_readEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
+        m_readEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
         m_readEvents[i].setFlags(EPOLLIN);
 
-        m_writeEvents[i].setHandler_Function_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
+        m_writeEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
         m_writeEvents[i].setFlags(EPOLLOUT);
         
         m_spareConnections.push_back(&m_connections[i]);
