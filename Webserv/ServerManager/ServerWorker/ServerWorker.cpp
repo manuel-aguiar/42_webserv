@@ -72,7 +72,6 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
             listener->~ListeningSocket();
             continue ;
         }
-        listener->m_myEvent.m_fd = listener->m_sockfd;
         //std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
         m_eventManager.addEvent(listener->m_sockfd, listener->m_myEvent);
 
@@ -88,8 +87,6 @@ int ServerWorker::setup_mySignalHandler()
     pipeRead = SignalHandler::PipeRead(m_myID);
     m_mySignalEvent.setHandlerFunction_and_Data(&ServerWorker::EventExit, this);
     m_mySignalEvent.setFlags(EPOLLIN);
-    m_mySignalEvent.m_fd = pipeRead;
-    //std::cout << "added pipoe" << std::endl;
     m_eventManager.addEvent(pipeRead, m_mySignalEvent);
 
     return (1);

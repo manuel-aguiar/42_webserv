@@ -3,11 +3,14 @@
 #                                                         :::      ::::::::    #
 #    _ServerManager.docs                                :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 11:19:25 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/22 09:03:37 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/26 09:33:21 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-Loading
+Loads default config, prepares all server workers and starts the runtime.
+
+If there is more than one ServerWorker, Threadpool.addtask(serverworker.run())
+    
