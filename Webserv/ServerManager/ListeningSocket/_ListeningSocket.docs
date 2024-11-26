@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
-#    Updated: 2024/11/26 16:01:34 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/26 16:02:51 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,9 +55,12 @@ listening socket -> handler = ngx_http_init_connection
 
 then, listening socket will have the accept event subscribed on epoll.
 
-	accept creates a new connection.
+	newconnection = listening->accept();
 	listening->handler(new connection).
 
+	where handler in this case is the ngx_http_init we figured before from the connection.
+
+We are only implementing http, we don't really have to do it like this but effectively, we achieve decoupling this way
 
 for other protocols, the handler function would be for instance ngx_mail_init_connection, etc.
 and then everything is taken from then on.
