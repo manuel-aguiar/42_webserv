@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:20:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:19:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Event
 
 		HandlerData			getData();
 		HandlerFunction		getFunction();
+		int					getFlags();
 
         void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
         void				setFlags(int flags);
