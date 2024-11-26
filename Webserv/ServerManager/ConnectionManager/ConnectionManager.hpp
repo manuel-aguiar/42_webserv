@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ConnectionManager.hpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 16:13:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/14 14:14:48 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
+/*										      */
+/*								:::      ::::::::   */
+/*   ConnectionManager.hpp				     :+:      :+:    :+:   */
+/*							   +:+ +:+	  +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+	+#+	 */
+/*						      +#+#+#+#+#+   +#+	    */
+/*   Created: 2024/09/27 16:13:23 by mmaria-d	   #+#    #+#	      */
+/*   Updated: 2024/10/14 14:14:48 by mmaria-d	  ###   ########.fr	*/
+/*										      */
 /* ************************************************************************** */
 
 # ifndef CONNECTIONMANAGER_HPP
@@ -30,17 +30,17 @@ class ConnectionManager
 		ConnectionManager(Globals* m_globals, size_t maxConnections = MAX_CONNECTIONS);
 		~ConnectionManager();
 
-		Connection*     getConnection();
-		void            returnConnection(Connection* connection);
+		Connection*		getConnection();
+		void			returnConnection(Connection* connection);
 
 	private:
-		Globals*                                                       m_globals;
-		size_t                                                         m_maxConnections;
+		Globals*												m_globals;
+		size_t													m_maxConnections;
 
-		HeapArray<Connection>                                          m_connections;
-		HeapArray<Event>                                               m_readEvents;
-		HeapArray<Event>                                               m_writeEvents;
-		List<Connection*, MPool_FixedElem<Connection*> >               m_spareConnections;
+		HeapArray<Connection>									m_connections;
+		HeapArray<Event>						     			m_readEvents;
+		HeapArray<Event>						     			m_writeEvents;
+		List<Connection*, MPool_FixedElem<Connection*> >		 m_spareConnections;
 
 		void destroyConnection(Connection* connection);
 
