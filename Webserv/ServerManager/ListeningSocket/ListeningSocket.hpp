@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:24:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 16:20:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ class ListeningSocket
 		t_socklen                   m_addrlen;
 		int                         m_backlog;
 
+		typedef void				(*AcceptInitProtocol)(Connection *);
+		AcceptInitProtocol			m_initConnection;	
 
 
 		Event                       m_myEvent;

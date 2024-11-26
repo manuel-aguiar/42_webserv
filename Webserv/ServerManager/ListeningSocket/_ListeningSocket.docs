@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
-#    Updated: 2024/11/26 16:02:51 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/26 16:25:25 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,3 +66,6 @@ for other protocols, the handler function would be for instance ngx_mail_init_co
 and then everything is taken from then on.
 
 And this is how nginx achieves modularity between protocols.
+
+IN OUR CASE, we don't need any of this, but it is mindblowing enough such that i want to do it.
+In terms of implementation, it won't be a problem for those implementing the module.
