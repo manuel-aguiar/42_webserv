@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:23:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:25:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ ListeningSocket::~ListeningSocket()
 
 }
 
-int    ListeningSocket::open()
+int		ListeningSocket::open()
 {
 	int options;
 
@@ -78,7 +78,7 @@ int    ListeningSocket::open()
 	return (1);
 }
 
-int    ListeningSocket::bind()
+int		ListeningSocket::bind()
 {
 	if (::bind(m_sockfd, m_addr, m_addrlen) == -1)
 	{
@@ -88,7 +88,7 @@ int    ListeningSocket::bind()
 	return (1);
 }
 
-int    ListeningSocket::listen()
+int		ListeningSocket::listen()
 {
 	if (::listen(m_sockfd, m_backlog) == -1)
 	{
