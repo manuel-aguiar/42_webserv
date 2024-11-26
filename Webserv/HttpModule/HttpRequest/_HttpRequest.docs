@@ -1,0 +1,19 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _HttpRequest.docs                                  :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/26 10:32:30 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/11/26 10:45:44 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+A Connection can handle multiple requests ( as a browser sending requests on behalf
+of multiple clients).
+
+Requests are independent from each other.
+
+Each request may have a session associated with it.
+Not necessarily and for sure not known at the beginning before parsing (use ptr instead of reference)

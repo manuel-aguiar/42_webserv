@@ -3,16 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   HttpConnection.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:14:02 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:16:45 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/26 10:30:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPCONNECTION_HPP
 
 # define HTTPCONNECTION_HPP
+
+//C++ headers
+
+# include <vector>
+# include <queue>
+
+class Connection;
+class HttpRequest;
+class HttpResponse;
+
 
 class HttpConnection
 {
