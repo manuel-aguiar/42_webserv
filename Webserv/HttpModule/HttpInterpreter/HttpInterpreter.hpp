@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpInterpreter.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:16:50 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:17:01 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/26 15:10:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,13 @@
 
 # define HTTPINTERPRETER_HPP
 
+
+
 class HttpInterpreter
 {
+
+
+
 
 };
 

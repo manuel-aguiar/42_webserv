@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:14:02 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/26 10:30:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 15:14:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,16 @@ class HttpResponse;
 
 class HttpConnection
 {
+	public:
+		HttpConnection();
+		~HttpConnection();
 
+	private:
+		std::queue<HttpRequest>			m_requests;
+		std::queue<HttpResponse>		m_responses;
+
+		HttpConnection(const HttpConnection& copy);
+		HttpConnection& operator=(const HttpConnection& assign);
 };
 
 
