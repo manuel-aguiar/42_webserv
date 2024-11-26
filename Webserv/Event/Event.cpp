@@ -6,14 +6,19 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:19:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:22:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Event.hpp"
 # include <cassert>
+# include <cstddef>
 
-Event::Event() {}
+Event::Event() :
+    m_function(NULL),
+    m_data(NULL)
+{}
+
 Event::~Event() {}
 
 void    Event::setFlags(int flags)
@@ -26,7 +31,6 @@ void Event::setHandlerFunction_and_Data(HandlerFunction handler, HandlerData dat
     m_function = handler;
     m_data = data;
 }
-
 
 void Event::handle()
 {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerWorkerExitHandler.cpp                        :+:      :+:    :+:   */
+/*   ServerWorkerEvents.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 08:59:57 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:00:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:23:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,6 @@ void ServerWorker::EventExit(Event& event)
 {
     ServerWorker* server;
 
-    server = reinterpret_cast<ServerWorker*>(event.m_data);
+    server = reinterpret_cast<ServerWorker*>(event.getData());
     server->m_isRunning = false;
 }
