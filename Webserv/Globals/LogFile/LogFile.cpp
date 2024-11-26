@@ -27,12 +27,12 @@ LogFile::~LogFile()
 	::close(m_fd);
 }
 
-void    LogFile::setGlobals(Globals& globals)
+void	LogFile::setGlobals(Globals& globals)
 {
 	m_globals = &globals;
 }
 
-void    LogFile::record(const std::string& entry)
+void	LogFile::record(const std::string& entry)
 {
 	assert(m_globals != NULL);
 	m_globals->getClock()->update();
@@ -45,7 +45,7 @@ void    LogFile::record(const std::string& entry)
 	write(m_fd, "\n", 1);
 }
 
-void    LogFile::record(const char* entry)
+void	LogFile::record(const char* entry)
 {
 	assert(m_globals != NULL);
 	m_globals->getClock()->update();

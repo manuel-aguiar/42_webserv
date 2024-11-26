@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:20:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:27:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@ Globals*                                SignalHandler::gm_globals = NULL;
 int		                                SignalHandler::gm_signal = 0;
 std::vector<std::pair<int, int> >       SignalHandler::gm_pipes;
 
-int SignalHandler::PipeRead(int serverID)
+int		SignalHandler::PipeRead(int serverID)
 {
 	return (gm_pipes[serverID].first);
 }
 
-int SignalHandler::PipeWrite(int serverID)
+int		SignalHandler::PipeWrite(int serverID)
 {
 	return (gm_pipes[serverID].second);
 }
 
-int SignalHandler::getSignal()
+int		SignalHandler::getSignal()
 {
 	return (SignalHandler::gm_signal);
 };
@@ -43,7 +43,7 @@ void		SignalHandler::signal_handler(int sigNum)
 	}
 }
 
-int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals)
+int		SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals)
 {
 	int pipefd[2];
 
@@ -92,7 +92,7 @@ int SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int
 	return (1);
 }
 
-void SignalHandler::destroy_signal(t_sigaction *sigact)
+void	SignalHandler::destroy_signal(t_sigaction *sigact)
 {
 	(void)sigact;
 

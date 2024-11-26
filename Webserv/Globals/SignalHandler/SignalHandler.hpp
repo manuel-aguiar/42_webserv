@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:08:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 10:27:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ class Globals;
 class SignalHandler
 {
 	public:
-		static int 			PipeRead(int serverID);
-		static int 			PipeWrite(int serverID);
-		static int 			getSignal();
+		static int			PipeRead(int serverID);
+		static int			PipeWrite(int serverID);
+		static int			getSignal();
 		static void			signal_handler(int sigNum);
-		static int 			prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
-		static void 		destroy_signal(t_sigaction *sigact);
+		static int			prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
+		static void			destroy_signal(t_sigaction *sigact);
 
 	private:
-		static Globals*						        gm_globals;
+		static Globals*								gm_globals;
 		static std::vector<std::pair<int, int> >	gm_pipes;
-		static int 						            gm_signal;
+		static int 									gm_signal;
 
 };
 
