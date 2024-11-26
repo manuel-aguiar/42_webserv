@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    _ListeningSocket.docs                              :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
-#    Updated: 2024/11/22 10:50:26 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/26 16:01:34 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,3 +19,47 @@ Given our server is a single purpose HTTP server, we know that any traffic commi
 will be handled by the http interpreter, so the handler function for reading traffic
 will be provided by the http interpreter.
 
+The listening socket is one of the most important components of the program.
+A single listening socket can serve two or more server blocks, IF THEY OPERATE ON THE SAME PROTOCOL
+
+
+for instance:
+
+http {
+	server {
+		listen 80;
+	}
+}
+
+mail {
+	server {
+		listen 80;
+	}	
+}
+
+is not allowed and results in nginx configuration error since it is the listening socket that informs
+which protocol is in use (such being deduced when parsing and prepare the runtime from the configuration file)
+
+
+
+
+Nginx implements multiple protocols. the same listening socket can only serve a single protocol.
+
+When configuring, the configuration parsing determines which protocol is associated with each serverblock
+and therefore, each listening socket.
+
+for http
+
+listening socket -> handler = ngx_http_init_connection
+
+
+then, listening socket will have the accept event subscribed on epoll.
+
+	accept creates a new connection.
+	listening->handler(new connection).
+
+
+for other protocols, the handler function would be for instance ngx_mail_init_connection, etc.
+and then everything is taken from then on.
+
+And this is how nginx achieves modularity between protocols.
