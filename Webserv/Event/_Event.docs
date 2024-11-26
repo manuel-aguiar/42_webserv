@@ -1,18 +1,17 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    _Notes.docs                                        :+:      :+:    :+:    #
+#    _Event.docs                                        :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/26 08:52:50 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/26 09:01:35 by mmaria-d         ###   ########.fr        #
+#    Created: 2024/11/26 08:56:02 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/11/26 08:57:59 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-Here is where memory failure will likely occur in our program. As we parse and
-ask for memory (std::string, buffers, etc) we can get a memory failure.
-Memory failure is not a reason to close the program, we have to go on.
-BUT: we must deliever some sort of error page to the client that triggered the memory failure
+Events will be used throughout the program, so it makes sense for them to be
+placed on a higher level of the folder structure (while the event manager is
+part of the server manager)
 
-we can deliever INTERNAL SERVER ERROR (4xx ..?)
+Instead of centralizing eventhandlers, let each class defined their required ones.

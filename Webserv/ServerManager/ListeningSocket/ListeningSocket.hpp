@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 11:43:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:03:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
-# include "../EventManager/Event/Event.hpp"
+# include "../EventManager/EventManager.hpp"
 
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
-
+class Event;
 class ServerWorker;
 class Connection;
 class ConnectionManager;
@@ -42,6 +42,8 @@ class ListeningSocket
         void                        close();
 
         void                        closeConnection(Connection* connection);
+
+        static void                 EventAccept(Event& event);
 
         Globals*                    m_globals;
 

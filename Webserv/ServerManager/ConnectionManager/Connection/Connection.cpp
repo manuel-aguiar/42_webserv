@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 08:51:45 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/26 09:07:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Connection.hpp"
-#include "../Globals/Globals.hpp"
-#include "../ListeningSocket/ListeningSocket.hpp"
+# include "Connection.hpp"
+# include "../ListeningSocket/ListeningSocket.hpp"
+# include "../../../Event/Event.hpp"
+# include "../../../Globals/LogFile/LogFile.hpp"
 
 Connection::Connection(Globals* globals) :
     m_memPool(NULL),

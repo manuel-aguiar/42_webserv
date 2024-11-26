@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorker.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/22 10:47:24 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/26 09:11:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
 # include "../../EventManager/EventManager.hpp"
-# include "../../EventManager/Event/HandlerFunction.hpp"
 # include "../../../Globals/SignalHandler/SignalHandler.hpp"
 
 // C++ headers
@@ -29,12 +28,14 @@
 # include <map>
 # include <iostream>
 
+class Event;
 class Globals;
+class ServerManager;
 
 class ServerWorker
 {
     public:
-        ServerWorker(size_t serverID, Globals* globals);
+        ServerWorker(ServerManager& manager, size_t serverID, Globals* globals);
         ~ServerWorker();
 
         int run();
@@ -42,7 +43,7 @@ class ServerWorker
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
         int setup_mySignalHandler();
 
-
+        static void EventExit(Event& event);
 
 
         size_t                          m_myID;

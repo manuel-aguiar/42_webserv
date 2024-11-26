@@ -47,10 +47,4 @@ void HandlerFunction::Cgi_Write(Event& event)
     (void)event;
 }
 
-void HandlerFunction::signal_Read(Event& event)
-{
-    ServerWorker* server;
 
-    server = reinterpret_cast<ServerWorker*>(event.m_data);
-    server->m_isRunning = false;
-}

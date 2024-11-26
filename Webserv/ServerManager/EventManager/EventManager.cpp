@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 11:07:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:08:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "EventManager.hpp"
-# include "Event/Event.hpp"
+# include "../../Event/Event.hpp"
 # include "../Connection/Connection.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../ConnectionManager/ConnectionManager.hpp"

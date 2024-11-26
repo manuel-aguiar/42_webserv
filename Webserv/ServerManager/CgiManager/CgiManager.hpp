@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:28:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 12:04:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:01:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 # include "CgiDefaults.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../EventManager/Event/Event.hpp"
+# include "../../Event/Event.hpp"
 
 # include <queue>
 # include <list>

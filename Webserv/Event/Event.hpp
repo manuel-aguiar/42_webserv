@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/21 11:03:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/26 09:01:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #include <cassert>
 
-#include "../../../Globals/LogFile/LogFile.hpp"
+#include "../Globals/LogFile/LogFile.hpp"
 
 class Connection;
 
