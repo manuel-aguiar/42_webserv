@@ -14,7 +14,7 @@
 
 # define CONNECTIONMANAGER_HPP
 
-# include "Connection/Connection.hpp"
+# include "../../Connection/Connection.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
 

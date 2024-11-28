@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:50:53 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 17:36:01 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ typedef struct epoll_event							t_epoll_event;
 typedef struct sigaction							t_sigaction;
 typedef sigset_t									t_sigset;
 
+typedef void*										t_ptr_ProtoConnection;
+typedef void*										t_ptr_ProtoModule;
 
 typedef union
 {

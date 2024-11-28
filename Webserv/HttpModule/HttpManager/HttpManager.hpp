@@ -28,6 +28,9 @@ class HttpManager
 		HttpManager(ServerManager& serverManager);
 		~HttpManager();
 
+		void	addConnection(HttpConnection* connection);
+		void	removeConnection(HttpConnection* connection);
+
 	private:
 
 		typedef std::string t_sessionID;
