@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:50:53 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 16:58:33 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@ class ServerManager
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
 
-		void*	getProtoModule(e_protoModules module) const;
-		void	prepareWorkers();
-		void	run();
+		void*					getProtoModule(e_protoModules module) const;
+		const ServerConfig& 	getConfig() const;
+
+		void					prepareWorkers();
+		void					run();
 
 	private:
 
