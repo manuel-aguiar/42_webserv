@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:05:23 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 16:50:53 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class ServerManager
 		const ServerConfig&				m_config;
 		Globals*						m_globals;
 
-		void*							m_protoModules[MODULE_COUNT];
+		void*							m_protoModules[MODULE_COUNT];	// loads the modules that we will be using
 
 		ThreadPool*                     m_threadPool;
 

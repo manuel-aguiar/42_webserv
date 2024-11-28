@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:22:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 16:50:53 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct epoll_event							t_epoll_event;
 
 typedef struct sigaction							t_sigaction;
 typedef sigset_t									t_sigset;
+
 
 typedef union
 {
