@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    CodingGuidelines.txt                               :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 09:01:59 by codespace         #+#    #+#              #
-#    Updated: 2024/11/18 11:22:31 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/11/28 17:18:46 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,7 @@ general:
 
 			Potentially, add a text file explaining important concepts/decisions you took when implementing
 			class methods.
-			Not sure of a naming convention but something like _ServerManager.docs (_ just to place it away from 
+			Not sure of a naming convention but something like _ServerManager.docs (_ just to place it away from
 			actual code). We will check later how to compile documentation.
 			You can also document the functions with @ and stuff for intelisense in vscode
 	}
@@ -112,3 +112,20 @@ c++:
 .h files:
 	for non-class includes
 	- clearly separates class files and non-class files
+
+
+Throughout the code you may want ask access to a member of a class with the intent of changing it ->
+	Like a Listening Socket accessing a state manager like the EventManager or ConnectionManager, so you would return
+	a non-const& from such a call.
+	Therefore, give different names depending on whether you want to provide a read only reference or
+	access for changing the object pointed to by the object:
+
+		const Variable& getVariable() const; 	// return a const reference to Variable (the underlying varuiable is read Only)
+		Variable& accessVariable(); 			// return a non-const reference to Variable (the caller is expected to change its state)
+
+
+		get -> in the traditional OOP sense, read-only the object pointed to by the reference
+		access -> explicitely breaks encapsulation, read and WRITE the object pointed to by the reference
+
+
+	"Ok, so why not make those public" Probably right..................................
