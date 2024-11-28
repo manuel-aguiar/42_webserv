@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:14:02 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/28 11:05:15 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 11:11:26 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class HttpResponse;
 class HttpConnection
 {
 	public:
-		HttpConnection();
+		HttpConnection(Connection* newConnection);
 		~HttpConnection();
 
 	private:
