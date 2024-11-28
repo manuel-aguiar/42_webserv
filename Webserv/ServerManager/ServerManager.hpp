@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:23:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 16:05:23 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,20 @@ class Globals;
 class ThreadPool;
 class BlockFinder;
 
+typedef enum e_protoModules
+{
+	HTTP_MODULE,
+	MODULE_COUNT
+} e_protoModules;
+
+
 class ServerManager
 {
 	public:
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
 
+
+		void*	getProtoModule(e_protoModules module) const;
 		void	prepareWorkers();
 		void	run();
 
@@ -41,6 +50,7 @@ class ServerManager
 		const ServerConfig&				m_config;
 		Globals*						m_globals;
 
+		void*							m_protoModules[MODULE_COUNT];
 
 		ThreadPool*                     m_threadPool;
 

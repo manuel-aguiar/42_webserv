@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpModule.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:18:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 16:20:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 16:08:46 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,25 @@
 
 # define HTTPMODULE_HPP
 
+# include "HttpManager/HttpManager.hpp"
+
 class Connection;
 
 class HttpModule
 {
-	static void initConnection(Connection* accepted);
+	public:
+		HttpModule();
+		~HttpModule();
+
+		// public, yes, omg :0
+		HttpManager 	manager;
+
+		static void initConnection(Connection* accepted);
+
+	private:
+		HttpModule(const HttpModule& copy);
+		HttpModule& operator=(const HttpModule& assign);
+
 };
 
 #endif

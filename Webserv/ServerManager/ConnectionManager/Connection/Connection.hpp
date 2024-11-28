@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:24:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 16:02:30 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class Connection
         Globals*            m_globals;
 
 		void*				m_proto_connection;				// <- the http connection
+		void*				m_protoModule;					// <- the http module in our case
+															// set by the listening socket
 
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);

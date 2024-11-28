@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 16:20:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 16:01:38 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,9 @@ class ListeningSocket
 		int                         m_backlog;
 
 		typedef void				(*AcceptInitProtocol)(Connection *);
-		AcceptInitProtocol			m_initConnection;	
+		AcceptInitProtocol			m_initConnection;
 
+		void*						m_protoModule;
 
 		Event                       m_myEvent;
 		ConnectionManager&          m_connectionPool;
