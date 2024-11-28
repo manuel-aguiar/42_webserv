@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:01:38 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 17:02:23 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Globals;
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ConnectionManager& connPool, EventManager& m_eventManager, Globals* globals);
+		ListeningSocket(ServerWorker& worker, ConnectionManager& connPool, EventManager& m_eventManager, Globals* globals);
 		~ListeningSocket();
 
 		int                         open();
@@ -61,6 +61,7 @@ class ListeningSocket
 		void*						m_protoModule;
 
 		Event                       m_myEvent;
+		ServerWorker&				m_worker;
 		ConnectionManager&          m_connectionPool;
 		EventManager&               m_eventManager;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:25:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 17:04:04 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
 	m_globals(globals),
+	m_worker(worker),
 	m_connectionPool(connPool),
 	m_eventManager(eventManager)
 {
@@ -185,8 +186,9 @@ void    ListeningSocket::close()
 //private
 ListeningSocket::ListeningSocket() :
 	m_globals(NULL),
-	m_connectionPool(*((ConnectionManager*)NULL)),  //never do this, for real
-	m_eventManager(*((EventManager*)NULL))       //never do this, for real
+	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
+	m_connectionPool(*((ConnectionManager*)NULL)),  	//never do this, for real
+	m_eventManager(*((EventManager*)NULL))       		//never do this, for real
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)

@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:59:18 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 17:04:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@ ServerManager::ServerManager(const ServerConfig& config, Globals* globals = NULL
 	m_globals(globals)
 {
 	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
+}
+
+ServerManager::~ServerManager()
+{
+	for (size_t i = 0; i < MODULE_COUNT; ++i)
+		delete (m_protoModules[i]);
 }
 
 void    ServerManager::run()
