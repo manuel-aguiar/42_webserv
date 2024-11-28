@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Interpreter.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 08:22:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 10:45:09 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 # define INTERPRETER_HPP
 
-class HttpInterpreter
+class HttpManager
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        HttpManager();
+        ~HttpManager();
     private:
         int num;
 

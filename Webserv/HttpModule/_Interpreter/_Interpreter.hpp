@@ -14,7 +14,7 @@
 #include <queue>
 
 class Connection;
-class HttpInterpreter;
+class HttpManager;
 
 
 
@@ -37,7 +37,7 @@ class HttpResponse;
 class HttpConnection
 {
     Connection&                 ioConnection;
-    HttpInterpreter&            interpreter;
+    HttpManager&            interpreter;
 
     std::queue<HttpRequest>     requests;
     std::queue<HttpResponse>        responses;
@@ -60,7 +60,7 @@ class HttpRequest
 };
 
 
-class HttpInterpreter
+class HttpManager
 {
 
     public:

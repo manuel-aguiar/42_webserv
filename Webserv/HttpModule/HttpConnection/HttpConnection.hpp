@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpConnection.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:14:02 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/26 15:14:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 11:05:15 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ class HttpConnection
 		~HttpConnection();
 
 	private:
+
+		size_t							m_timeout;
+
 		std::queue<HttpRequest>			m_requests;
 		std::queue<HttpResponse>		m_responses;
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpInterpreter.hpp                                :+:      :+:    :+:   */
+/*   HttpManager.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:16:50 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/26 15:24:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 10:43:23 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,30 @@
 # define HTTPINTERPRETER_HPP
 
 # include <map>
+# include <set>
+# include <string>
 
+class HttpConnection;
 class HttpSession;
+class ServerManager;
 
-class HttpInterpreter
+class HttpManager
 {
 	public:
-		HttpInterpreter();
-		~HttpInterpreter();
+		HttpManager(ServerManager& serverManager);
+		~HttpManager();
 
 	private:
 
 		typedef std::string t_sessionID;
 
-		std::map<t_sessionID, HttpSession>	m_sessions;
+		ServerManager&							m_serverManager;
+		std::set<HttpConnection*>				m_connections;
+		std::map<t_sessionID, HttpSession>		m_sessions;
 
 
-		HttpInterpreter(const HttpInterpreter& copy);
-		HttpInterpreter& operator=(const HttpInterpreter& assign);
+		HttpManager(const HttpManager& copy);
+		HttpManager& operator=(const HttpManager& assign);
 
 };
 
@@ -54,7 +60,7 @@ mail
 {
 	server {
 		listen 80;
-	}	
+	}
 }
 
 
