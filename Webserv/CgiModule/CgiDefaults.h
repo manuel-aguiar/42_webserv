@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CgiDefaults.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:21:12 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/12 16:21:30 by codespace        ###   ########.fr       */
+/*   Updated: 2024/11/28 18:44:05 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,25 @@
 			ENV_CGI_VAR_COUNT
         }	t_CgiEnv;
 
+/*
+	GET /index.php?name=John HTTP/1.1
+	Host: example.com
+	User-Agent: Mozilla/5.0
+	Content-Length: 123
+	Content-Type: application/json
+	X-Custom-Header: MyCustomValue
+
+	CGI environment variables passed:
+
+	REQUEST_METHOD = GET
+	QUERY_STRING = name=John
+	HTTP_HOST = example.com
+	HTTP_USER_AGENT = Mozilla/5.0
+	CONTENT_LENGTH = 123
+	CONTENT_TYPE = application/json
+	HTTP_X_CUSTOM_HEADER = MyCustomValue
+
+
+*/
 
 #endif
