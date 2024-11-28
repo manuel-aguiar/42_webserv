@@ -6,13 +6,14 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 17:04:05 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/28 18:29:01 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerManager.hpp"
 # include "../../Toolkit.h"
 # include "../HttpModule/HttpModule.hpp"
+# include "../CgiModule/CgiModule.hpp"
 
 ServerManager::ServerManager(const ServerConfig& config, Globals* globals = NULL) :
 	m_blockFinder(config),
