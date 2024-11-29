@@ -24,6 +24,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* _gl
     m_isRunning(false),
     m_serverManager(manager)
 {
+
 }
 
 ServerWorker::~ServerWorker()
