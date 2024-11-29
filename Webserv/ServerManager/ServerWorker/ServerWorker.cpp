@@ -10,13 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "ServerManager.hpp"
+# include "ServerWorker.hpp"
+# include "../ServerManager.hpp"
 # include "../Globals/Globals.hpp"
+
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* _globals) :
     m_myID(serverID),
     m_pool(Nginx_MemoryPool::create(4096, 1)),
-    m_connManager(_globals),
+    m_connManager(_globals, manager.getConfig().get),						//number of conenctions should come from config
     m_eventManager(_globals),
     m_globals(_globals),
     m_isRunning(false),
@@ -105,7 +107,8 @@ int ServerWorker::run()
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
     m_connManager(NULL, 0),
-    m_serverManager(copy.m_serverManager)
+    m_serverManager(copy.m_serverManager),
+	m_config(copy.m_config)
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}
