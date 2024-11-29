@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:50:28 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 16:46:56 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Globals;
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ServerWorker& worker, ConnectionManager& connPool, EventManager& m_eventManager, Globals* globals);
+		ListeningSocket(ServerWorker& worker, Globals* globals);
 		~ListeningSocket();
 
 		int                         open();
@@ -45,31 +45,37 @@ class ListeningSocket
 
 		static void                 EventAccept(Event& event);
 
-		Globals*                    m_globals;
 
 		ServerWorker&				accessWorker();
 		ConnectionManager&          accessConnManager();
 		EventManager&               accessEventManager();
 
-		int                         m_socktype;
-		t_socket                    m_sockfd;
-		int                         m_proto;
-		t_sockaddr*                 m_addr;
-		t_socklen                   m_addrlen;
-		int                         m_backlog;
+
+
+
+
+
+	private:
+
+
+		Globals*                    m_globals;
+		int							m_socktype;
+		t_socket					m_sockfd;
+		int							m_proto;
+		t_port						m_port;
+		t_sockaddr*					m_addr;
+		t_socklen					m_addrlen;
+		int							m_backlog;
 
 		typedef void				(*AcceptInitProtocol)(Connection *);
 		AcceptInitProtocol			m_initConnection;
 
 		void*						m_protoModule;
 
-		Event                       m_myEvent;
+		Event						m_myEvent;
 		ServerWorker&				m_worker;
-		ConnectionManager&          m_connManager;
-		EventManager&               m_eventManager;
 
 
-	private:
 		ListeningSocket();
 		ListeningSocket(const ListeningSocket& copy);
 		ListeningSocket& operator=(const ListeningSocket& assign);

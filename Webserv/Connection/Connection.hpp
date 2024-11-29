@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 16:25:07 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 16:57:38 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class Connection
 
 	//getters
 		t_socket				getSocket() const;
-		const t_sockaddr&		getAddr() const;
+		const t_sockaddr*		getAddr() const;
 		t_socklen				getAddrlen() const;
 		const Event&			getReadEvent() const;
 		const Event&			getWriteEvent() const;
@@ -58,9 +58,12 @@ class Connection
 
 
 	//accessors
+		t_sockaddr*				accessAddr();
 		t_ptr_ProtoConnection	accessProtoConnection();
 		t_ptr_ProtoModule		accessProtoModule();
 		Nginx_MemoryPool&		accessMemPool();
+		Event&					accessReadEvent();
+		Event&					accessWriteEvent();
 
 
 

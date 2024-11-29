@@ -66,6 +66,7 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
         listener->m_proto = cur->ai_protocol;
         listener->m_addrlen = cur->ai_addrlen;
         listener->m_backlog = backlog;
+		listener->m_port = ::ntohs(((struct sockaddr_in *)cur->ai_addr)->sin_port);
         listener->m_myEvent.setHandlerFunction_and_Data(&ListeningSocket::EventAccept, listener);
         listener->m_myEvent.setFlags(EPOLLIN);
 

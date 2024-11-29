@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:19:24 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 10:57:10 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 16:58:17 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ t_socket				Connection::getSocket() const
 	return (m_sockfd);
 }
 
-const t_sockaddr&		Connection::getAddr() const
+const t_sockaddr*		Connection::getAddr() const
 {
-	return (*m_addr);
+	return (m_addr);
 }
 
 t_socklen				Connection::getAddrlen() const
@@ -120,5 +120,10 @@ t_ptr_ProtoModule		Connection::accessProtoModule()
 Nginx_MemoryPool&		Connection::accessMemPool()
 {
 	return (*m_memPool);
+}
+
+t_sockaddr*		Connection::accessAddr()
+{
+	return (m_addr);
 }
 

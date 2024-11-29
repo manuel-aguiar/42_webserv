@@ -6,22 +6,21 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:53:39 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 16:58:47 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
+#include "../ServerWorker/ServerWorker.hpp"
 #include "../ConnectionManager/ConnectionManager.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../../Globals/Globals.hpp"
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, Globals* globals) :
 	m_globals(globals),
-	m_worker(worker),
-	m_connManager(connPool),
-	m_eventManager(eventManager)
+	m_worker(worker)
 {
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
@@ -104,9 +103,11 @@ void    ListeningSocket::accept()
 	Connection* connection;
 	u_sockaddr  addr;
 	t_socklen   addrlen;
+	t_sockaddr* addrrr;
+	int			sockfd;
 
 
-	connection = m_connManager.provideConnection();
+	connection = m_worker.accessConnManager().provideConnection();
 
 	if (!connection)
 	{
@@ -114,22 +115,27 @@ void    ListeningSocket::accept()
 		return ;
 	}
 
-	connection->m_listener = this;
+	connection->setListener(*this);
 	addrlen = sizeof(addr);
-	connection->m_sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
+	sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
 
-	if (connection->m_sockfd == -1)
+
+	if (sockfd == -1)
 		goto NewConnection_Failure;
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->m_sockfd))
-		goto NewConnection_Failure;
-	connection->m_addr = (t_sockaddr*)connection->m_memPool->allocate(addrlen, true);
+	connection->setSocket(sockfd);
 
-	if (!connection->m_addr)
+	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 		goto NewConnection_Failure;
 
-	std::memcpy(connection->m_addr, &addr, addrlen);
-	connection->m_addrlen = addrlen;
+	addrrr = (t_sockaddr*)connection->accessMemPool().allocate(addrlen, true);
+
+	if (!addrrr)
+		goto NewConnection_Failure;
+	connection->setAddr(addrrr);
+
+	std::memcpy(connection->accessAddr(), &addr, addrlen);
+	connection->setAddrlen(addrlen);
 
 /*
 	Here the listening socket determines, based on configuration that the protocol
@@ -145,10 +151,11 @@ void    ListeningSocket::accept()
 
 
  //std::cout << "added conenction" << std::endl;
-	if (!m_eventManager.addEvent(connection->m_sockfd, *connection->m_readEvent))
+	if (!m_worker.accessEventManager().addEvent(
+			connection->getSocket(),
+			connection->accessReadEvent())
+		)
 		goto NewConnection_Failure;
-
-
 
 	return ;
 
@@ -160,16 +167,16 @@ NewConnection_Failure:
 
 void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 {
-	if (connection->m_sockfd != -1 && ::close(connection->m_sockfd) == -1)
+	if (connection->getSocket() != -1 && ::close(connection->getSocket()) == -1)
 		m_globals->logStatus("close(): " + std::string(strerror(errno)));
-	connection->m_sockfd = -1;
+	connection->setSocket(-1);
 	connection->reset();
-	m_connManager.returnConnection(connection);
+	m_worker.accessConnManager().returnConnection(connection);
 }
 
 void    ListeningSocket::closeConnection(Connection* connection)
 {
-	m_eventManager.delEvent(connection->m_sockfd);
+	m_worker.accessEventManager().delEvent(connection->getSocket());
 	mf_close_accepted_connection(connection);
 
 }
@@ -186,9 +193,7 @@ void    ListeningSocket::close()
 //private
 ListeningSocket::ListeningSocket() :
 	m_globals(NULL),
-	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
-	m_connManager(*((ConnectionManager*)NULL)),  	//never do this, for real
-	m_eventManager(*((EventManager*)NULL))       		//never do this, for real
+	m_worker(*((ServerWorker*)NULL))  					//never do this, for real
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)
