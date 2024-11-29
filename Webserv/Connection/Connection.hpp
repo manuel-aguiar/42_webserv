@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 10:55:11 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 16:25:07 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,19 @@ class Connection
 
 
 	private:
+		// set by ListeningSocket that accepts
 		t_socket				m_sockfd;
 		t_sockaddr*				m_addr;
 		t_socklen				m_addrlen;
 		Event*					m_readEvent;
 		Event*					m_writeEvent;
 		ListeningSocket*		m_listener;
-		Nginx_MemoryPool*		m_memPool;
-		Globals*				m_globals;
 		t_ptr_ProtoConnection	m_ptr_protoConnection;				// <- the http connection
 		t_ptr_ProtoModule		m_ptr_protoModule;					// <- the http module in our case
+
+		// owned by the connection
+		Nginx_MemoryPool*		m_memPool;
+		Globals*				m_globals;
 																				// set by the listening socket
 
 		Connection(const Connection& other);
