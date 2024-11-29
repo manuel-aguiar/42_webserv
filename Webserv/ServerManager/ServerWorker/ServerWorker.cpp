@@ -19,7 +19,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* _gl
     m_connManager(_globals),
     m_eventManager(_globals),
     m_globals(_globals),
-    m_isRunning(true),
+    m_isRunning(false),
     m_serverManager(manager)
 {
 }
@@ -51,7 +51,7 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)m_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(m_connManager, m_eventManager, m_globals);
+        new (listener) ListeningSocket(*this, m_connManager, m_eventManager, m_globals);
 
         listener->m_addr = (t_sockaddr *)m_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
@@ -94,6 +94,7 @@ int ServerWorker::setup_mySignalHandler()
 
 int ServerWorker::run()
 {
+	m_isRunning = true;
     while (m_isRunning)
     {
         m_eventManager.waitEvents(-1);
