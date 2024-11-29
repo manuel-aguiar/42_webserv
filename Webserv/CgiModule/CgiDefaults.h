@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:21:12 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/28 18:44:05 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:45:53 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@
 			ENV_CGI_SERVER_SOFTWARE,
 			ENV_CGI_VAR_COUNT
         }	t_CgiEnv;
+
+
+// add HTTP variables as well
+
 
 /*
 	GET /index.php?name=John HTTP/1.1

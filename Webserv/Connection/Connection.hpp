@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 17:42:08 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:48:11 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 
 # include "../../GenericUtils/Webserver_Definitions.h"
 
+class Globals;
 class ListeningSocket;
 class Event;
-class IProtoModule;
 
 class Connection
 {
@@ -26,46 +26,46 @@ class Connection
         Connection(Globals* globals = NULL);
         ~Connection();
 
-        void    init();
+        void    				init();
 
-        void    reset();
-        void    read();
-        void    write();
-        void    close();
+        void    				reset();
+        void    				read();
+        void    				write();
+        void    				close();
 
 		t_ptr_ProtoConnection	getProtoConnection() const;
 		t_ptr_ProtoModule		getProtoModule() const;
 
-		void	setProtoConnection(t_ptr_ProtoConnection connection);
-		void	setProtoModule(t_ptr_ProtoModule module);
+		void					setProtoConnection(t_ptr_ProtoConnection connection);
+		void					setProtoModule(t_ptr_ProtoModule module);
 
-		void    setListener(ListeningSocket* listener);
-		void    setMemPool(Nginx_MemoryPool* memPool);
+		void					setListener(ListeningSocket* listener);
+		void					setMemPool(Nginx_MemoryPool* memPool);
 
-		void    setReadEvent(Event* event);
-		void    setWriteEvent(Event* event);
+		void					setReadEvent(Event* event);
+		void					setWriteEvent(Event* event);
 
-		t_socket    getSocket() const;
-		t_sockaddr* getAddr() const;
-		t_socklen   getAddrlen() const;
+		t_socket				getSocket() const;
+		t_sockaddr*				getAddr() const;
+		t_socklen				getAddrlen() const;
 
-		void    setSocket(t_socket sockfd);
-		void    setAddr(t_sockaddr* addr);
-		void    setAddrlen(t_socklen addrlen);
+		void					setSocket(t_socket sockfd);
+		void					setAddr(t_sockaddr* addr);
+		void					setAddrlen(t_socklen addrlen);
 
-		Globals* getGlobals() const;
+		Globals* 				getGlobals() const;
 
     //private:
-        t_socket            m_sockfd;
-        t_sockaddr*         m_addr;
-        t_socklen           m_addrlen;
+        t_socket            				m_sockfd;
+        t_sockaddr*         				m_addr;
+        t_socklen           				m_addrlen;
 
 
-        Event*              m_readEvent;
-        Event*              m_writeEvent;
-        ListeningSocket*    m_listener;
-        Nginx_MemoryPool*   m_memPool;
-        Globals*            m_globals;
+        Event*              				m_readEvent;
+        Event*              				m_writeEvent;
+        ListeningSocket*    				m_listener;
+        Nginx_MemoryPool*   				m_memPool;
+        Globals*            				m_globals;
 
 		t_ptr_ProtoConnection				m_ptr_protoConnection;				// <- the http connection
 		t_ptr_ProtoModule					m_ptr_protoModule;					// <- the http module in our case
@@ -73,7 +73,6 @@ class Connection
 
         Connection(const Connection& other);
         Connection& operator=(const Connection& other);
-
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:18:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 18:15:15 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:46:30 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ class HttpModule
 		HttpManager& 			accessManager();
 		static void 			initConnection(Connection* accepted);
 
+		const HttpManager& 		getManager() const;
+
 	private:
-		HttpManager 	m_manager;
+		HttpManager 			m_manager;
 
 		HttpModule(const HttpModule& copy);
 		HttpModule& operator=(const HttpModule& assign);
