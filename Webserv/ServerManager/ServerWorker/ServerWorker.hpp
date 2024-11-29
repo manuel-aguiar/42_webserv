@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 10:11:49 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 11:00:14 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,14 @@ class ServerWorker
         ServerWorker(ServerManager& manager, size_t serverID, Globals* globals);
         ~ServerWorker();
 
+	// methods
         int 							run();
-
         int 							createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
         int 							setup_mySignalHandler();
 
+	//event handlers
         static void 					EventExit(Event& event);
 
-
-	// non-const accessors
-		ServerManager&					accessServerManager();
-		CgiManager&						accessCgiManager();
-		ConnectionManager&				accessConnManager();
-		EventManager&					accessEventManager();
 
 	// getters
 		const ServerManager&			getServerManager() const;
@@ -58,6 +53,12 @@ class ServerWorker
 		const ConnectionManager&		getConnManager() const;
 		const EventManager&				getEventManager() const;
 
+
+	// accessors
+		ServerManager&					accessServerManager();
+		CgiManager&						accessCgiManager();
+		ConnectionManager&				accessConnManager();
+		EventManager&					accessEventManager();
 
 		bool							isRunning() const;
 

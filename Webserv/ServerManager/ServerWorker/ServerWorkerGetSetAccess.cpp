@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerWorker_GetSetAccess.cpp                      :+:      :+:    :+:   */
+/*   ServerWorkerGetSetAccess.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 10:08:58 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 10:59:42 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerWorker.hpp"
 
-
+//accessors
 ServerManager&				ServerWorker::accessServerManager()
 {
 	return (m_serverManager);

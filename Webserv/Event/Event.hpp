@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:19:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/29 10:58:29 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,31 +16,36 @@
 
 class Event
 {
-    public:
-        Event();
-        ~Event();
+	public:
+		Event();
+		~Event();
 
-        typedef void	(*HandlerFunction)(Event& event);
-        typedef void*	HandlerData;
+		//typedefs
+		typedef void	(*HandlerFunction)(Event& event);
+		typedef void*	HandlerData;
 
+		//methods
+		void				handle();
+
+		//getters
 		HandlerData			getData();
 		HandlerFunction		getFunction();
 		int					getFlags();
 
-        void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
-        void				setFlags(int flags);
+		//setters
+		void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
+		void				setFlags(int flags);
 
 
-		
-        void				handle();
+
 
 	private:
-        HandlerFunction    m_function;
-        HandlerData        m_data;
-        int                m_flags;
+		HandlerFunction		m_function;
+		HandlerData			m_data;
+		int					m_flags;
 
-        Event(const Event& copy);
-        Event& operator=(const Event& assign);
+		Event(const Event& copy);
+		Event& operator=(const Event& assign);
 };
 
 #endif

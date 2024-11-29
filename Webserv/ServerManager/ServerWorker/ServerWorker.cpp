@@ -13,14 +13,16 @@
 # include "ServerWorker.hpp"
 # include "../ServerManager.hpp"
 # include "../Globals/Globals.hpp"
+# include "../../ServerConfig/ServerConfig.hpp"
 
 
-ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* _globals) :
+ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* globals) :
     m_myID(serverID),
     m_pool(Nginx_MemoryPool::create(4096, 1)),
-    m_connManager(_globals, manager.getConfig().get),						//number of conenctions should come from config
-    m_eventManager(_globals),
-    m_globals(_globals),
+    m_connManager(manager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
+    m_eventManager(globals),
+	m_config(manager.getConfig()),
+    m_globals(globals),
     m_isRunning(false),
     m_serverManager(manager)
 {
