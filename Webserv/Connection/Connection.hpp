@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:48:11 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:51:07 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Connection
         void    				close();
 
 		t_ptr_ProtoConnection	getProtoConnection() const;
-		t_ptr_ProtoModule		getProtoModule() const;
+		t_ptr_ProtoModule		accessProtoModule() const;
 
 		void					setProtoConnection(t_ptr_ProtoConnection connection);
 		void					setProtoModule(t_ptr_ProtoModule module);

@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 17:02:23 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:50:28 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ class ListeningSocket
 
 		Globals*                    m_globals;
 
+		ServerWorker&				accessWorker();
+		ConnectionManager&          accessConnManager();
+		EventManager&               accessEventManager();
 
 		int                         m_socktype;
 		t_socket                    m_sockfd;
@@ -62,7 +65,7 @@ class ListeningSocket
 
 		Event                       m_myEvent;
 		ServerWorker&				m_worker;
-		ConnectionManager&          m_connectionPool;
+		ConnectionManager&          m_connManager;
 		EventManager&               m_eventManager;
 
 

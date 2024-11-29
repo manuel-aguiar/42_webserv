@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:24:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/29 09:49:44 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void    EventManager::distributeEvents()
 			delEvent(connection->m_sockfd);
 			::close(connection->m_sockfd);
 			std::cout <<"       returning connection via epoll" << std::endl;
-			connection->m_listener->m_connectionPool.returnConnection(connection);
+			connection->m_listener->m_connManager.returnConnection(connection);
 			connection->reset();
 		}
 	}

@@ -27,22 +27,22 @@
 class ConnectionManager
 {
 	public:
-		ConnectionManager(Globals* m_globals, size_t maxConnections = MAX_CONNECTIONS);
+		ConnectionManager(Globals* m_globals, size_t maxConnections);
 		~ConnectionManager();
 
-		Connection*		getConnection();
-		void			returnConnection(Connection* connection);
+		Connection*				provideConnection();
+		void					returnConnection(Connection* connection);
 
 	private:
 		Globals*												m_globals;
 		size_t													m_maxConnections;
 
 		HeapArray<Connection>									m_connections;
-		HeapArray<Event>						     			m_readEvents;
-		HeapArray<Event>						     			m_writeEvents;
-		List<Connection*, MPool_FixedElem<Connection*> >		 m_spareConnections;
+		HeapArray<Event>										m_readEvents;
+		HeapArray<Event>										m_writeEvents;
+		List<Connection*, MPool_FixedElem<Connection*> >		m_spareConnections;
 
-		void destroyConnection(Connection* connection);
+		void 					destroyConnection(Connection* connection);
 
 		ConnectionManager();
 		ConnectionManager(const ConnectionManager& copy);

@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 17:04:04 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:53:39 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 ListeningSocket::ListeningSocket(ServerWorker& worker, ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
 	m_globals(globals),
 	m_worker(worker),
-	m_connectionPool(connPool),
+	m_connManager(connPool),
 	m_eventManager(eventManager)
 {
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
@@ -106,7 +106,7 @@ void    ListeningSocket::accept()
 	t_socklen   addrlen;
 
 
-	connection = m_connectionPool.getConnection();
+	connection = m_connManager.provideConnection();
 
 	if (!connection)
 	{
@@ -164,7 +164,7 @@ void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 		m_globals->logStatus("close(): " + std::string(strerror(errno)));
 	connection->m_sockfd = -1;
 	connection->reset();
-	m_connectionPool.returnConnection(connection);
+	m_connManager.returnConnection(connection);
 }
 
 void    ListeningSocket::closeConnection(Connection* connection)
@@ -187,7 +187,7 @@ void    ListeningSocket::close()
 ListeningSocket::ListeningSocket() :
 	m_globals(NULL),
 	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
-	m_connectionPool(*((ConnectionManager*)NULL)),  	//never do this, for real
+	m_connManager(*((ConnectionManager*)NULL)),  	//never do this, for real
 	m_eventManager(*((EventManager*)NULL))       		//never do this, for real
 {
 

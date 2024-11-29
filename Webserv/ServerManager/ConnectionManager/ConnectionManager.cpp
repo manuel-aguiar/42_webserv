@@ -13,14 +13,14 @@
 #include "ConnectionManager.hpp"
 #include "../Event/HandlerFunction.hpp"
 
-ConnectionManager::~ConnectionManager() 
+ConnectionManager::~ConnectionManager()
 {
     for (size_t i = 0; i < m_connections.size(); i++)
         m_connections[i].m_memPool->destroy();
 }
 
-ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) : 
-    m_globals(globals), 
+ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
+    m_globals(globals),
     m_maxConnections(maxConnections),
     m_connections(maxConnections),
     m_readEvents(maxConnections),
@@ -34,7 +34,7 @@ ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
         new (&m_connections[i]) Connection(m_globals);
         new (&m_readEvents[i]) Event(m_globals);
         new (&m_writeEvents[i]) Event(m_globals);
-        
+
         m_connections[i].init();
         m_connections[i].m_readEvent = &m_readEvents[i];
         m_connections[i].m_writeEvent = &m_writeEvents[i];
@@ -44,13 +44,13 @@ ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
 
         m_writeEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
         m_writeEvents[i].setFlags(EPOLLOUT);
-        
+
         m_spareConnections.push_back(&m_connections[i]);
-        
+
     }
 }
 
-Connection* ConnectionManager::getConnection()
+Connection* ConnectionManager::provideConnection()
 {
     Connection*     connection;
 
@@ -73,7 +73,7 @@ void ConnectionManager::returnConnection(Connection* connection)
 //private, as usual
 
 ConnectionManager::ConnectionManager() {}
-    
+
 ConnectionManager::ConnectionManager(const ConnectionManager& copy)
 {
     (void)copy;

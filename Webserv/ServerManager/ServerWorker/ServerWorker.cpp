@@ -16,7 +16,7 @@
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* _globals) :
     m_myID(serverID),
     m_pool(Nginx_MemoryPool::create(4096, 1)),
-    m_connectionPool(_globals),
+    m_connManager(_globals),
     m_eventManager(_globals),
     m_globals(_globals),
     m_isRunning(true),
@@ -51,7 +51,7 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
         listener = (ListeningSocket *)m_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(m_connectionPool, m_eventManager, m_globals);
+        new (listener) ListeningSocket(m_connManager, m_eventManager, m_globals);
 
         listener->m_addr = (t_sockaddr *)m_pool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
@@ -103,8 +103,8 @@ int ServerWorker::run()
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
-    m_connectionPool(NULL, 0),
-    m_serverManager(copy.m_serverManager) 
+    m_connManager(NULL, 0),
+    m_serverManager(copy.m_serverManager)
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}

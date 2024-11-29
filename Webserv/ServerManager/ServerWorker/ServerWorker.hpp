@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 16:59:02 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:52:42 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,27 @@ class ServerWorker
         int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
         int setup_mySignalHandler();
 
-        static void EventExit(Event& event);
+        static void 			EventExit(Event& event);
 
+		CgiManager&						accessCgiManager();
+		ConnectionManager&				accessConnManager();
+		EventManager&					accessEventManager();
+
+		const CgiManager&				getCgiManager() const;
+		const ConnectionManager&		getConnManager() const;
+		const EventManager&				getEventManager() const;
 
         size_t                          m_myID;
         std::vector<ListeningSocket*>   m_listeners;
         Nginx_MemoryPool*               m_pool;
         CgiManager                     	m_cgiHandler;
-        ConnectionManager               m_connectionPool;
+        ConnectionManager               m_connManager;
         EventManager                    m_eventManager;
 
         Globals*                        m_globals;
         Event                           m_mySignalEvent;
 
-		ServerConfig&					m_config;
+		const ServerConfig&				m_config;
 		ServerManager&					m_serverManager;
 
         bool                            m_isRunning;
