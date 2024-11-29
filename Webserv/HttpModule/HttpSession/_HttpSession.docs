@@ -6,38 +6,8 @@
 #    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/28 10:48:57 by manuel            #+#    #+#              #
-#    Updated: 2024/11/28 11:04:53 by manuel           ###   ########.fr        #
+#    Updated: 2024/11/29 16:27:46 by manuel           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-Requires further investigation but it seems that the standard doesn't require
-a session to store specific information.
-
-For our use case, the point is to send cookies to the client, such that the client stores them
-and we store some specific information we want to store, just for demonstration purposes.
-Next time the client contacts the server and shows the cookie with the required session id,
-then we can update some info regarding that specific session like:
-	- number of logged times
-	- total logged time?
-
-Such info could then be used to feed a cgi script such that we answer the client with a personalized
-message. in our case, we make it very basic.
-
-So, when parsing the httpRequest, we see if there is a cookie header, try to match it to our session map
-held by the httpinterpreter. if found, we update some info (like ++logged times). if not, we can create a new session id associated with it
-(and simply ignore theirs that doesn't exist, i think -> would ahve to check if there is a specific error for
-unnidentified session id).
-
-Otherwise, no cookie identified, we can create a new session, add to our session map with the httpmanager,
-generate a sessionid, and send it to the client in the headers such that the client can give it to us
-next time, and the process repeats.
-
-The point is, as a new request is received, we have no idea if it has a session associated or not until
-we start to parse it.
-
-
-
-
-Additionally, sessions should have a timeout, set by default.
-That is, after certain amount of time (since we won't be storing anything to disk), we should delete the session
-info after X amount of time.
+Ok not sure what do here
