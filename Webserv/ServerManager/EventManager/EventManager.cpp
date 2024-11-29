@@ -6,16 +6,13 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:49:44 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 10:02:45 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "EventManager.hpp"
-# include "../../Event/Event.hpp"
 # include "../Connection/Connection.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
-# include "../ConnectionManager/ConnectionManager.hpp"
-
+# include "../../Event/Event.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
@@ -114,7 +111,7 @@ int                 EventManager::waitEvents(int timeOut)
 	return (m_waitCount);
 }
 
-const   t_epoll_event&     EventManager::getEvent(int index)
+const   t_epoll_event&     EventManager::retrieveEvent(int index)
 {
 	assert(index >= 0 && index < m_waitCount);
 	return (m_events[index]);
@@ -132,21 +129,12 @@ void    EventManager::distributeEvents()
 
 		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
 		{
-			std::cout << "              handling event " << event << std::endl;
 			event->handle();
 		}
 
 		if (m_events[i].events & EPOLLHUP || m_events[i].events & EPOLLERR || m_events[i].events & EPOLLRDHUP)
 		{
-			std::cout << "              deleting event " << event << std::endl;
-			Connection* connection = (Connection*)event->getData();
-			if (connection->m_sockfd == -1)
-				continue ;
-			delEvent(connection->m_sockfd);
-			::close(connection->m_sockfd);
-			std::cout <<"       returning connection via epoll" << std::endl;
-			connection->m_listener->m_connManager.returnConnection(connection);
-			connection->reset();
+
 		}
 	}
 }

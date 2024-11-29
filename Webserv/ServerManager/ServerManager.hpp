@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:51:07 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 09:58:15 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,15 @@ class ServerManager
 {
 	public:
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
+		~ServerManager();
 
-		void*					accessProtoModule(e_protoModules module) const;
-		const ServerConfig& 	getConfig() const;
+		void*							accessProtoModule(e_protoModules module) const;
+		const ServerConfig& 			getConfig() const;
 
-		void					prepareWorkers();
-		void					run();
+		void							prepareWorkers();
+		void							run();
+
+
 
 	private:
 
@@ -55,8 +58,12 @@ class ServerManager
 
 		ThreadPool*                     m_threadPool;
 
-		void    mf_runSingleThreaded();
-		void    mf_runMultiThreaded();
+		void    						mf_runSingleThreaded();
+		void    						mf_runMultiThreaded();
+
+		ServerManager();
+		ServerManager(const ServerManager& copy);
+		ServerManager& operator=(const ServerManager& assign);
 };
 
 

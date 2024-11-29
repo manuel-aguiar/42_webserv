@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ConnectionManager.hpp"
-#include "../Event/HandlerFunction.hpp"
+# include "ConnectionManager.hpp"
+# include "../../Event/Event.hpp"
 
 ConnectionManager::~ConnectionManager()
 {
@@ -19,7 +19,7 @@ ConnectionManager::~ConnectionManager()
         m_connections[i].m_memPool->destroy();
 }
 
-ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
+ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
     m_globals(globals),
     m_maxConnections(maxConnections),
     m_connections(maxConnections),
@@ -32,18 +32,12 @@ ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) :
     for (size_t i = 0; i < maxConnections; i++)
     {
         new (&m_connections[i]) Connection(m_globals);
-        new (&m_readEvents[i]) Event(m_globals);
-        new (&m_writeEvents[i]) Event(m_globals);
+        new (&m_readEvents[i]) Event;
+        new (&m_writeEvents[i]) Event;
 
         m_connections[i].init();
         m_connections[i].m_readEvent = &m_readEvents[i];
         m_connections[i].m_writeEvent = &m_writeEvents[i];
-
-        m_readEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
-        m_readEvents[i].setFlags(EPOLLIN);
-
-        m_writeEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
-        m_writeEvents[i].setFlags(EPOLLOUT);
 
         m_spareConnections.push_back(&m_connections[i]);
 

@@ -27,7 +27,7 @@
 class ConnectionManager
 {
 	public:
-		ConnectionManager(Globals* m_globals, size_t maxConnections);
+		ConnectionManager(size_t maxConnections, Globals* m_globals);
 		~ConnectionManager();
 
 		Connection*				provideConnection();
