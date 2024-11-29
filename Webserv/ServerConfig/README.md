@@ -14,14 +14,17 @@
 ## Classes
   - ServerConfig
     - The `ServerConfig` is responsible for parsing the configuration file and preparing the server blocks for the webserver.
-  - ServerBlocks
-    - Each `ServerBlocks` contains configuration data specific to a single server, including details such as the server's host, root directory, error page settings, locations etc...
+  - ServerBlock
+    - Each `ServerBlock` contains configuration data specific to a single server, including details such as the server's host, root directory, error page settings, locations etc...
+  - ServerLocation 
+    - Contains data for a `location`, more about it below.
 
 ## Configuration File Rules
 
 - **Indentation**: Indentation is not required and is ignored during parsing.
 - **Comments**: Lines starting with `#` are considered comments and are ignored during parsing.
 - **Semicolons**: A semicolon at the end of a line is optional but may be used.
+- All directives must be on a new line, even if inside brackets.
   
 ## Configuration Directives
 
@@ -65,6 +68,9 @@ The configuration file consists of several directives that define the behavior o
 
 Defines rules for processing requests based on their URI.
 
+- **path**
+  - Set the URI where the location settings will apply
+
 - **type**
   - Set the location type. The options are:
     - normal:		Regular location, send and receive files.
@@ -83,6 +89,8 @@ Defines rules for processing requests based on their URI.
 ## Example Configuration
 
 ```plaintext
+max_connections 10;
+max_concurrent_cgi 3;
 server {
     listen 192.168.1.53:8080;
     server_names webserv.com www.webserv.com;
@@ -90,10 +98,9 @@ server {
     client_body_size 1M;
     client_header_size 1M;
     error_pages 404:./error/404.html 405:./error/405.html;
-    max_connections 10;
-    max_concurrent_cgi 3;
     
     location {
+		path /static/
         type normal
     }
 }
