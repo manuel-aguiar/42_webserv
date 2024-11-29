@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 10:18:47 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 10:55:11 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,34 +26,44 @@ class Connection
 		Connection(Globals* globals = NULL);
 		~Connection();
 
+	//methods
 		void    				init();
-
 		void    				reset();
 		void    				read();
 		void    				write();
 		void    				close();
 
-		t_ptr_ProtoConnection	getProtoConnection() const;
-		t_ptr_ProtoModule		accessProtoModule() const;
-
-		void					setProtoConnection(t_ptr_ProtoConnection connection);
-		void					setProtoModule(t_ptr_ProtoModule module);
-
-		void					setListener(ListeningSocket* listener);
-		void					setMemPool(Nginx_MemoryPool* memPool);
-
-		void					setReadEvent(Event* event);
-		void					setWriteEvent(Event* event);
-
+	//getters
 		t_socket				getSocket() const;
-		t_sockaddr*				getAddr() const;
+		const t_sockaddr&		getAddr() const;
 		t_socklen				getAddrlen() const;
+		const Event&			getReadEvent() const;
+		const Event&			getWriteEvent() const;
+		const ListeningSocket&	getListener() const;
+		const Globals&			getGlobals() const;
+		const Nginx_MemoryPool&	getMemPool() const;
 
+	//setters
 		void					setSocket(t_socket sockfd);
 		void					setAddr(t_sockaddr* addr);
 		void					setAddrlen(t_socklen addrlen);
+		void					setReadEvent(Event& event);
+		void					setWriteEvent(Event& event);
+		void					setListener(ListeningSocket& listener);
+		void					setGlobals(Globals* globals);
+		void					setMemPool(Nginx_MemoryPool& memPool);
+		void					setProtoConnection(t_ptr_ProtoConnection connection);
+		void					setProtoModule(t_ptr_ProtoModule module);
 
-		Globals* 				getGlobals() const;
+
+
+	//accessors
+		t_ptr_ProtoConnection	accessProtoConnection();
+		t_ptr_ProtoModule		accessProtoModule();
+		Nginx_MemoryPool&		accessMemPool();
+
+
+
 
 	private:
 		t_socket				m_sockfd;

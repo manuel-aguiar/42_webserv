@@ -16,7 +16,7 @@
 ConnectionManager::~ConnectionManager()
 {
     for (size_t i = 0; i < m_connections.size(); i++)
-        m_connections[i].m_memPool->destroy();
+        m_connections[i].accessMemPool().destroy();
 }
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
@@ -36,8 +36,8 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
         new (&m_writeEvents[i]) Event;
 
         m_connections[i].init();
-        m_connections[i].m_readEvent = &m_readEvents[i];
-        m_connections[i].m_writeEvent = &m_writeEvents[i];
+        m_connections[i].setReadEvent(m_readEvents[i]);
+        m_connections[i].setWriteEvent(m_writeEvents[i]);
 
         m_spareConnections.push_back(&m_connections[i]);
 

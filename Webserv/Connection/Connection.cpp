@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 09:07:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/29 10:52:03 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "../../../Globals/LogFile/LogFile.hpp"
 
 Connection::Connection(Globals* globals) :
-    m_memPool(NULL),
     m_globals(globals)
 {
 
@@ -144,19 +143,6 @@ void    Connection::write()
 }
 
 
-
 // no copies, as usual
-Connection::Connection(const Connection& other) :
-    m_memPool(other.m_memPool),
-    m_globals(other.m_globals)
-{
-    (void)other;
-}
-Connection& Connection::operator=(const Connection& other)
-{
-    if (this == &other)
-        return (*this);
-    m_memPool = other.m_memPool;
-    m_globals = other.m_globals;
-    return (*this);
-}
+Connection::Connection(const Connection& other) { (void)other;}
+Connection& Connection::operator=(const Connection& other) {return (*this);}
