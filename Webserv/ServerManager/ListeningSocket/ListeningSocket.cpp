@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 16:58:47 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/29 17:01:19 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,10 @@ int		ListeningSocket::listen()
 
 void    ListeningSocket::accept()
 {
-	Connection* connection;
-	u_sockaddr  addr;
-	t_socklen   addrlen;
-	t_sockaddr* addrrr;
+	Connection*	connection;
+	u_sockaddr	addr;
+	t_socklen	addrlen;
+	t_sockaddr*	addrrr;
 	int			sockfd;
 
 
