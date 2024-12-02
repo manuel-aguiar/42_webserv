@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/02 10:40:33 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/02 10:44:24 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,12 +48,6 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 																														\
 										$(SRC_PATH)/ServerManager/BlockFinder/BlockFinder.cpp							\
 																														\
-																														\
-										$(SRC_PATH)/ListeningSocket/ListeningSocket.cpp									\
-										$(SRC_PATH)/CgiManager/CgiManager.cpp											\
-										$(SRC_PATH)/CgiManager/python-cgi/pythonCgi.cpp									\
-										$(SRC_PATH)/CgiManager/CgiLiveRequest/CgiLiveRequest.cpp						\
-																														\
 										$(SRC_PATH)/Connection/Connection.cpp											\
 										$(SRC_PATH)/Connection/ConnectionGetSetAccess.cpp								\
 																														\
@@ -92,7 +86,7 @@ BUILD 							=
 
 
 
-$(NAME): OBJS
+$(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
 

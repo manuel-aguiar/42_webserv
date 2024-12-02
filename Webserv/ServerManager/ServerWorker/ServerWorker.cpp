@@ -12,26 +12,26 @@
 
 # include "ServerWorker.hpp"
 # include "../ServerManager.hpp"
-# include "../Globals/Globals.hpp"
+# include "../../Globals/Globals.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* globals) :
     m_myID(serverID),
-    m_pool(Nginx_MemoryPool::create(4096, 1)),
     m_connManager(manager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
     m_eventManager(globals),
 	m_config(manager.getConfig()),
     m_globals(globals),
     m_isRunning(false),
-    m_serverManager(manager)
+    m_serverManager(manager),
+    m_memPool(Nginx_MemoryPool::create(4096, 1))
 {
 
 }
 
 ServerWorker::~ServerWorker()
 {
-    m_pool->destroy();
+    m_memPool->destroy();
 }
 
 int ServerWorker::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
@@ -55,10 +55,10 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
 
     for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
-        listener = (ListeningSocket *)m_pool->allocate(sizeof(ListeningSocket), true);
+        listener = (ListeningSocket *)m_memPool->allocate(sizeof(ListeningSocket), true);
         new (listener) ListeningSocket(*this, m_connManager, m_eventManager, m_globals);
 
-        listener->m_addr = (t_sockaddr *)m_pool->allocate(cur->ai_addrlen, true);
+        listener->m_addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
         std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
 
 

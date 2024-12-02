@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorker.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 11:00:14 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 10:50:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@
 // Project Headers
 # include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
+# include "../EventManager/EventManager.hpp"
 # include "../ConnectionManager/ConnectionManager.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../Globals/LogFile/LogFile.hpp"
-# include "../../EventManager/EventManager.hpp"
-# include "../../../Globals/SignalHandler/SignalHandler.hpp"
+# include "../../Globals/Globals.hpp"
 
 // C++ headers
 # include <vector>
@@ -31,6 +30,7 @@
 class Event;
 class Globals;
 class ServerManager;
+class ServerConfig;
 
 class ServerWorker
 {
@@ -76,7 +76,7 @@ class ServerWorker
         Globals*                        m_globals;
         Event                           m_mySignalEvent;
 
-        Nginx_MemoryPool*               m_pool;
+        Nginx_MemoryPool*               m_memPool;
 
         bool                            m_isRunning;
 

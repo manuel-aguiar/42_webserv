@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/28 18:29:01 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 10:49:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerManager.hpp"
-# include "../../Toolkit.h"
+# include "../GenericUtils/Webserver_Definitions.h"
 # include "../HttpModule/HttpModule.hpp"
 # include "../CgiModule/CgiModule.hpp"
+# include "../Globals/SignalHandler/SignalHandler.hpp"
 
-ServerManager::ServerManager(const ServerConfig& config, Globals* globals = NULL) :
+ServerManager::ServerManager(const ServerConfig& config, Globals* globals) :
 	m_blockFinder(config),
 	m_config(config),
 	m_globals(globals)
@@ -26,7 +27,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals* globals = NULL
 ServerManager::~ServerManager()
 {
 	for (size_t i = 0; i < MODULE_COUNT; ++i)
-		delete (m_protoModules[i]);
+		delete ((unsigned char *)m_protoModules[i]);
 }
 
 void    ServerManager::run()

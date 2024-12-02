@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 09:16:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 10:45:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define CONNECTION_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../GenericUtils/Webserver_Definitions.h"
 
 class Globals;
 class ListeningSocket;
