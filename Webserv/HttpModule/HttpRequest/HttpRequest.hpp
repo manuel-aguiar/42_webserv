@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/28 11:06:45 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 10:20:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,10 @@ class HttpRequest
 		size_t				m_timeout;
 
 		HttpConnection*		m_httpConn;
-		HttpSession*		m_session;
+		
+		
+		
+		//HttpSession*		m_session;				//no idea here yet
 
 
 
