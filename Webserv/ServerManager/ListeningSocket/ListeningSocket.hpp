@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 16:46:56 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 11:02:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 class Event;
 class ServerWorker;
 class Connection;
-class ConnectionManager;
-class EventManager;
 class Globals;
 
 class ListeningSocket
@@ -35,6 +33,7 @@ class ListeningSocket
 		ListeningSocket(ServerWorker& worker, Globals* globals);
 		~ListeningSocket();
 
+		// methods
 		int                         open();
 		int                         bind();
 		int                         listen();
@@ -43,22 +42,35 @@ class ListeningSocket
 
 		void                        closeConnection(Connection* connection);
 
+		// events
 		static void                 EventAccept(Event& event);
 
 
+		// getters
+		const ServerWorker&			getWorker()		const;
+		t_socket					getSocket()		const;
+		int							getSockType()	const;
+		const t_sockaddr*			getAddr()		const;
+		t_socklen					getAddrlen()	const;
+		t_port						getPort()		const;
+		int							getBacklog()	const;
+		
+		// setters
+		void						setSocket(const t_socket sockfd);
+		void						setSockType(const int socktype);
+		void						setAddr(const t_sockaddr* sockaddr);
+		void						setAddrlen(const t_socklen addrlen);
+		void						setPort(const t_port port);
+		void						setBacklog(const int backlog);
+
+		// accessors
 		ServerWorker&				accessWorker();
-		ConnectionManager&          accessConnManager();
-		EventManager&               accessEventManager();
-
-
-
 
 
 
 	private:
 
 
-		Globals*                    m_globals;
 		int							m_socktype;
 		t_socket					m_sockfd;
 		int							m_proto;
@@ -70,11 +82,12 @@ class ListeningSocket
 		typedef void				(*AcceptInitProtocol)(Connection *);
 		AcceptInitProtocol			m_initConnection;
 
-		void*						m_protoModule;
+		t_ptr_ProtoModule			m_protoModule;
 
 		Event						m_myEvent;
 		ServerWorker&				m_worker;
 
+		Globals*                    m_globals;
 
 		ListeningSocket();
 		ListeningSocket(const ListeningSocket& copy);
