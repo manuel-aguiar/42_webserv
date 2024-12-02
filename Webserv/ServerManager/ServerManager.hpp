@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 09:58:15 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 10:41:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ class ServerManager
 
 		void							prepareWorkers();
 		void							run();
-
 
 
 	private:
