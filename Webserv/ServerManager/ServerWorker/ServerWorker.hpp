@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 10:50:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:38:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,19 @@ class ServerWorker
     private:
 
         size_t                          m_myID;
-        std::vector<ListeningSocket*>   m_listeners;
 
 		ServerManager&					m_serverManager;
-        CgiManager                     	m_cgiManager;
+		const ServerConfig&				m_config;
         ConnectionManager               m_connManager;
         EventManager                    m_eventManager;
-		const ServerConfig&				m_config;
-
-        Globals*                        m_globals;
+        CgiManager                     	m_cgiManager;
         Event                           m_mySignalEvent;
-
         Nginx_MemoryPool*               m_memPool;
+        std::vector<ListeningSocket*>   m_listeners;
 
         bool                            m_isRunning;
 
+        Globals*                        m_globals;
 
 
         ServerWorker();

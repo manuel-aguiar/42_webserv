@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConnectionGetSetAccess.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:19:24 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 16:58:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 14:38:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,52 +55,52 @@ const Nginx_MemoryPool&	Connection::getMemPool() const
 
 
 //setters
-void					Connection::setSocket(t_socket sockfd)
+void					Connection::setSocket(const t_socket sockfd)
 {
 	m_sockfd = sockfd;
 }
 
-void					Connection::setAddr(t_sockaddr* addr)
+void					Connection::setAddr(const t_sockaddr* addr)
 {
 	m_addr = addr;
 }
 
-void					Connection::setAddrlen(t_socklen addrlen)
+void					Connection::setAddrlen(const t_socklen addrlen)
 {
 	m_addrlen = addrlen;
 }
 
-void					Connection::setReadEvent(Event& event)
+void					Connection::setReadEvent(const Event& event)
 {
 	m_readEvent = &event;
 }
 
-void					Connection::setWriteEvent(Event& event)
+void					Connection::setWriteEvent(const Event& event)
 {
 	m_writeEvent = &event;
 }
 
-void					Connection::setListener(ListeningSocket& listener)
+void					Connection::setListener(const ListeningSocket& listener)
 {
 	m_listener = &listener;
 }
 
-void					Connection::setGlobals(Globals* globals)
+void					Connection::setGlobals(const Globals* globals)
 {
 	m_globals = globals;
 }
 
-void					Connection::setMemPool(Nginx_MemoryPool& memPool)
+void					Connection::setMemPool(const Nginx_MemoryPool& memPool)
 {
 	m_memPool = &memPool;
 }
 
-void					Connection::setProtoConnection(t_ptr_ProtoConnection connection)
+void					Connection::setProtoConnection(const t_ptr_ProtoConnection connection)
 {
 	m_ptr_protoConnection = connection;
 }
 
-void					Connection::setProtoModule(t_ptr_ProtoModule module)
+void					Connection::setProtoModule(const t_ptr_ProtoModule module)
 {
 	m_ptr_protoModule = module;
 }

@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 10:41:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:37:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Connection.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
-# include "../../../Event/Event.hpp"
-# include "../../../Globals/LogFile/LogFile.hpp"
+# include "../Event/Event.hpp"
+# include "../Globals/LogFile/LogFile.hpp"
+# include "../ServerManager/ListeningSocket/ListeningSocket.hpp"
 
 Connection::Connection(Globals* globals) :
     m_globals(globals)
@@ -52,4 +52,4 @@ void    Connection::write()
 
 // no copies, as usual
 Connection::Connection(const Connection& other) { (void)other;}
-Connection& Connection::operator=(const Connection& other) {return (*this);}
+Connection& Connection::operator=(const Connection& other) {(void)other; return (*this);}

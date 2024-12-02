@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:21:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:36:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 ListeningSocket::ListeningSocket(ServerWorker& worker, Globals* globals) :
-	m_globals(globals),
-	m_worker(worker)
+	m_worker(worker),
+	m_globals(globals)
 {
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
@@ -184,8 +184,8 @@ void    ListeningSocket::close()
 
 //private
 ListeningSocket::ListeningSocket() :
-	m_globals(NULL),
-	m_worker(*((ServerWorker*)NULL))  					//never do this, for real
+	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
+	m_globals(NULL)
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)

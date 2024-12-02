@@ -19,13 +19,13 @@
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* globals) :
 	m_myID(serverID),
-	m_connManager(manager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
-	m_eventManager(globals),
-	m_config(manager.getConfig()),
-	m_globals(globals),
-	m_isRunning(false),
 	m_serverManager(manager),
-	m_memPool(Nginx_MemoryPool::create(4096, 1))
+	m_config(m_serverManager.getConfig()),
+	m_connManager(m_serverManager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
+	m_eventManager(globals),
+	m_memPool(Nginx_MemoryPool::create(4096, 1)),
+	m_isRunning(false),
+	m_globals(globals)
 {
 
 }
@@ -112,9 +112,9 @@ int ServerWorker::run()
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
-	m_connManager(NULL, 0),
 	m_serverManager(copy.m_serverManager),
-	m_config(copy.m_config)
+	m_config(copy.m_config),
+	m_connManager(0, NULL)
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}

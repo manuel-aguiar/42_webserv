@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:54:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:36:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "EventManager.hpp"
-# include "../Connection/Connection.hpp"
+# include "../../Connection/Connection.hpp"
 # include "../../Event/Event.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
