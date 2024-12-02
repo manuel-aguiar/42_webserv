@@ -62,8 +62,8 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
 
 		addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
 		std::memcpy(addr, cur->ai_addr, cur->ai_addrlen);
+		
 		listener->setAddr(addr);
-
 		listener->setSockType(cur->ai_socktype);
 		listener->setProtocol(cur->ai_protocol);
 		listener->setAddrlen(cur->ai_addrlen);
