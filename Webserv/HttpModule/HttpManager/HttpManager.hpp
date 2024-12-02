@@ -33,11 +33,12 @@ class HttpManager
 
 	private:
 
-		typedef std::string t_sessionID;
+		//typedef std::string t_sessionID;								// still to figure out
 
 		ServerManager&							m_serverManager;
 		std::set<HttpConnection*>				m_connections;
-		std::map<t_sessionID, HttpSession>		m_sessions;
+		
+		//std::map<t_sessionID, HttpSession>		m_sessions;				// still to figure out
 
 
 		HttpManager(const HttpManager& copy);

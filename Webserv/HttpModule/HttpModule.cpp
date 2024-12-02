@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpModule.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:10:13 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 16:29:22 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 09:13:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,22 @@ HttpModule::~HttpModule()
 
 }
 
+
+/*
+	Connection has: pointer to the module.
+	The init function:
+	- allocates an HttpConnection class inside the Connection memory pool,
+	- links Connection to HttpConnection,
+	- tells the httpmanager to store that pointer (it may not be needed in the end if httpconnections are truly independent)
+		(in which case, removing sessions the httpmanager state is rather useless and we let each Connection manage itself with even handlers....)
+*/
 void HttpModule::initConnection(Connection* accepted)
 {
 	HttpManager& 	manager = (reinterpret_cast<HttpModule*>(accepted->accessProtoModule()))->accessHttpManager();
 
-	HttpConnection* conn = new HttpConnection(accepted);
+	HttpConnection* conn = (HttpConnection* )accepted->accessMemPool().allocate(sizeof(HttpConnection));
+	new (conn) HttpConnection(accepted);
+
 	accepted->setProtoConnection(conn);
 	manager.addConnection(conn);
 }
