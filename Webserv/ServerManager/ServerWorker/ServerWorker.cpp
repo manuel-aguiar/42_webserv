@@ -13,105 +13,107 @@
 # include "ServerWorker.hpp"
 # include "../ServerManager.hpp"
 # include "../../Globals/Globals.hpp"
+# include "../../Globals/SignalHandler/SignalHandler.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* globals) :
-    m_myID(serverID),
-    m_connManager(manager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
-    m_eventManager(globals),
+	m_myID(serverID),
+	m_connManager(manager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
+	m_eventManager(globals),
 	m_config(manager.getConfig()),
-    m_globals(globals),
-    m_isRunning(false),
-    m_serverManager(manager),
-    m_memPool(Nginx_MemoryPool::create(4096, 1))
+	m_globals(globals),
+	m_isRunning(false),
+	m_serverManager(manager),
+	m_memPool(Nginx_MemoryPool::create(4096, 1))
 {
 
 }
 
 ServerWorker::~ServerWorker()
 {
-    m_memPool->destroy();
+	m_memPool->destroy();
 }
 
 int ServerWorker::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
 {
-    ListeningSocket*    listener;
-    t_addrinfo          hints;
-    t_addrinfo          *res;
-    t_addrinfo          *cur;
+	ListeningSocket     *listener;
+	t_addrinfo          hints;
+	t_addrinfo          *res;
+	t_addrinfo          *cur;
+	t_sockaddr*         addr;
 
-    hints = (struct addrinfo){};
-    hints.ai_family = addrFamily;
-    hints.ai_socktype = socktype;
+	hints = (struct addrinfo){};
+	hints.ai_family = addrFamily;
+	hints.ai_socktype = socktype;
 
 	int status = getaddrinfo(node, port, &hints, &res);
 
 	if (status != 0)
 	{
-        m_globals->logStatus("getaddrinfo(): " + std::string(gai_strerror(status)));
+		m_globals->logStatus("getaddrinfo(): " + std::string(gai_strerror(status)));
 		return (1);
 	}
 
-    for(cur = res; cur != NULL; cur = cur->ai_next)
+	for(cur = res; cur != NULL; cur = cur->ai_next)
 	{
-        listener = (ListeningSocket *)m_memPool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(*this, m_globals);
+		listener = (ListeningSocket *)m_memPool->allocate(sizeof(ListeningSocket), true);
+		new (listener) ListeningSocket(*this, m_globals);
 
-        listener->m_addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
-        std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
+		addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
+		std::memcpy(addr, cur->ai_addr, cur->ai_addrlen);
+		listener->setAddr(addr);
+
+		listener->setSockType(cur->ai_socktype);
+		listener->setProtocol(cur->ai_protocol);
+		listener->setAddrlen(cur->ai_addrlen);
+		listener->setBacklog(backlog);
+		listener->setPort(::ntohs(((struct sockaddr_in *)cur->ai_addr)->sin_port));
+		listener->accessEvent().setHandlerFunction_and_Data(&ListeningSocket::EventAccept, listener);
+		listener->accessEvent().setFlags(EPOLLIN);
 
 
-        listener->m_socktype = cur->ai_socktype;
-        listener->m_proto = cur->ai_protocol;
-        listener->m_addrlen = cur->ai_addrlen;
-        listener->m_backlog = backlog;
-		listener->m_port = ::ntohs(((struct sockaddr_in *)cur->ai_addr)->sin_port);
-        listener->m_myEvent.setHandlerFunction_and_Data(&ListeningSocket::EventAccept, listener);
-        listener->m_myEvent.setFlags(EPOLLIN);
+		if (listener->open())
+			m_listeners.push_back(listener);
+		else
+		{
+			listener->~ListeningSocket();
+			continue ;
+		}
+		//std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
+		m_eventManager.addEvent(listener->getSocket(), listener->getEvent());
 
-
-        if (listener->open())
-            m_listeners.push_back(listener);
-        else
-        {
-            listener->~ListeningSocket();
-            continue ;
-        }
-        //std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
-        m_eventManager.addEvent(listener->m_sockfd, listener->m_myEvent);
-
-    }
-    freeaddrinfo(res);
-    return (0);
+	}
+	freeaddrinfo(res);
+	return (0);
 }
 
 int ServerWorker::setup_mySignalHandler()
 {
-    int pipeRead;
+	int pipeRead;
 
-    pipeRead = SignalHandler::PipeRead(m_myID);
-    m_mySignalEvent.setHandlerFunction_and_Data(&ServerWorker::EventExit, this);
-    m_mySignalEvent.setFlags(EPOLLIN);
-    m_eventManager.addEvent(pipeRead, m_mySignalEvent);
+	pipeRead = SignalHandler::PipeRead(m_myID);
+	m_mySignalEvent.setHandlerFunction_and_Data(&ServerWorker::EventExit, this);
+	m_mySignalEvent.setFlags(EPOLLIN);
+	m_eventManager.addEvent(pipeRead, m_mySignalEvent);
 
-    return (1);
+	return (1);
 }
 
 int ServerWorker::run()
 {
 	m_isRunning = true;
-    while (m_isRunning)
-    {
-        m_eventManager.waitEvents(-1);
-        m_eventManager.distributeEvents();
-    }
-    return (1);
+	while (m_isRunning)
+	{
+		m_eventManager.waitEvents(-1);
+		m_eventManager.distributeEvents();
+	}
+	return (1);
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
-    m_connManager(NULL, 0),
-    m_serverManager(copy.m_serverManager),
+	m_connManager(NULL, 0),
+	m_serverManager(copy.m_serverManager),
 	m_config(copy.m_config)
 {(void)copy;}
 

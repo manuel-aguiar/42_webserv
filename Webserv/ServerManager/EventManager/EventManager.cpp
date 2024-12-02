@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventManager.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 10:02:45 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 11:54:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ EventManager& EventManager::operator=(const EventManager& assign)
 }
 
 
-int                EventManager::addEvent(t_fd fd, Event& monitor)
+int                EventManager::addEvent(const t_fd fd, const Event& monitor)
 {
 	t_epoll_event event = (t_epoll_event){};
 
 	event.events = monitor.getFlags();
-	event.data.ptr = &monitor;
+	event.data.ptr = (void *)&monitor;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &event) == -1)
 	{
@@ -73,12 +73,12 @@ int                EventManager::addEvent(t_fd fd, Event& monitor)
 	return (1);
 }
 
-int                EventManager::modEvent(t_fd fd, Event& monitor)
+int                EventManager::modEvent(const t_fd fd, const Event& monitor)
 {
 	t_epoll_event event = (t_epoll_event){};
 
 	event.events = monitor.getFlags();
-	event.data.ptr = &monitor;
+	event.data.ptr = (void *)&monitor;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &event) == -1)
 	{
@@ -88,7 +88,7 @@ int                EventManager::modEvent(t_fd fd, Event& monitor)
 	return (1);
 }
 
-int                 EventManager::delEvent(t_fd fd)
+int                 EventManager::delEvent(const t_fd fd)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 	{

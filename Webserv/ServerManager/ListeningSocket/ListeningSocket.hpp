@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:30:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:51:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ class ListeningSocket
 		const ServerWorker&			getWorker()		const;
 		t_socket					getSocket()		const;
 		int							getSockType()	const;
+		int							getProtocol()	const;
 		const t_sockaddr*			getAddr()		const;
 		t_socklen					getAddrlen()	const;
 		t_port						getPort()		const;
@@ -62,6 +63,7 @@ class ListeningSocket
 		// setters
 		void						setSocket						(const t_socket sockfd);
 		void						setSockType						(const int socktype);
+		void						setProtocol						(const int proto);
 		void						setAddr							(const t_sockaddr* sockaddr);
 		void						setAddrlen						(const t_socklen addrlen);
 		void						setPort							(const t_port port);
@@ -72,7 +74,7 @@ class ListeningSocket
 		// accessors
 		ServerWorker&				accessWorker();
 		Event&						accessEvent();
-
+		t_sockaddr*					accessAddr();
 
 
 	private:

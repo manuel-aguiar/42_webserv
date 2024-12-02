@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 10:01:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 11:53:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ class EventManager
 		EventManager(Globals* globals = NULL);
 		~EventManager();
 
-		int							addEvent(t_fd fd, Event& monitor);
-		int							modEvent(t_fd fd, Event& monitor);
-		int							delEvent(t_fd fd);
+		int							addEvent(const t_fd fd, const Event& monitor);
+		int							modEvent(const t_fd fd, const Event& monitor);
+		int							delEvent(const t_fd fd);
 		int							waitEvents(int timeOut);
 		void						distributeEvents();
 		const t_epoll_event&		retrieveEvent(int index);
