@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:19:24 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/02 14:38:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:41:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void					Connection::setSocket(const t_socket sockfd)
 	m_sockfd = sockfd;
 }
 
-void					Connection::setAddr(const t_sockaddr* addr)
+void					Connection::setAddr(t_sockaddr* addr)
 {
 	m_addr = addr;
 }
@@ -70,27 +70,27 @@ void					Connection::setAddrlen(const t_socklen addrlen)
 	m_addrlen = addrlen;
 }
 
-void					Connection::setReadEvent(const Event& event)
+void					Connection::setReadEvent(Event& event)
 {
 	m_readEvent = &event;
 }
 
-void					Connection::setWriteEvent(const Event& event)
+void					Connection::setWriteEvent(Event& event)
 {
 	m_writeEvent = &event;
 }
 
-void					Connection::setListener(const ListeningSocket& listener)
+void					Connection::setListener(ListeningSocket& listener)
 {
 	m_listener = &listener;
 }
 
-void					Connection::setGlobals(const Globals* globals)
+void					Connection::setGlobals(Globals* globals)
 {
 	m_globals = globals;
 }
 
-void					Connection::setMemPool(const Nginx_MemoryPool& memPool)
+void					Connection::setMemPool(Nginx_MemoryPool& memPool)
 {
 	m_memPool = &memPool;
 }

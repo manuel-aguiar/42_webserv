@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/02 10:44:24 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/02 14:43:35 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,8 +59,8 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/Globals/SignalHandler/SignalHandler.cpp								\
 																														\
 										$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp						\
-										$(SRC_PATH)/GenericUtils/File/File.cpp											\
-										$(SRC_PATH)/GenericUtils/File/FilesUtils.cpp									
+										$(SRC_PATH)/GenericUtils/Files/File.cpp											\
+										$(SRC_PATH)/GenericUtils/Files/FilesUtils.cpp									
 
 
 

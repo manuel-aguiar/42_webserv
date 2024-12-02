@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:30:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:41:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ class Connection
 
 	//setters
 		void					setSocket			(const t_socket sockfd);
-		void					setAddr				(const t_sockaddr* addr);
+		void					setAddr				(t_sockaddr* addr);
 		void					setAddrlen			(const t_socklen addrlen);
-		void					setReadEvent		(const Event& event);
-		void					setWriteEvent		(const Event& event);
-		void					setListener			(const ListeningSocket& listener);
-		void					setGlobals			(const Globals* globals);
-		void					setMemPool			(const Nginx_MemoryPool& memPool);
+		void					setReadEvent		(Event& event);
+		void					setWriteEvent		(Event& event);
+		void					setListener			(ListeningSocket& listener);
+		void					setGlobals			(Globals* globals);
+		void					setMemPool			(Nginx_MemoryPool& memPool);
 		void					setProtoConnection	(const t_ptr_ProtoConnection connection);
 		void					setProtoModule		(const t_ptr_ProtoModule module);
 
