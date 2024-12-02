@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:02:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:30:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ class ListeningSocket
 		ListeningSocket(ServerWorker& worker, Globals* globals);
 		~ListeningSocket();
 
+		// typedefs
+		typedef void 				(*t_func_initProtoConn)(Connection*);
+
 		// methods
 		int                         open();
 		int                         bind();
@@ -54,17 +57,21 @@ class ListeningSocket
 		t_socklen					getAddrlen()	const;
 		t_port						getPort()		const;
 		int							getBacklog()	const;
+		const Event&				getEvent()		const;
 		
 		// setters
-		void						setSocket(const t_socket sockfd);
-		void						setSockType(const int socktype);
-		void						setAddr(const t_sockaddr* sockaddr);
-		void						setAddrlen(const t_socklen addrlen);
-		void						setPort(const t_port port);
-		void						setBacklog(const int backlog);
+		void						setSocket						(const t_socket sockfd);
+		void						setSockType						(const int socktype);
+		void						setAddr							(const t_sockaddr* sockaddr);
+		void						setAddrlen						(const t_socklen addrlen);
+		void						setPort							(const t_port port);
+		void						setBacklog						(const int backlog);
+		void						setProtoModule					(const t_ptr_ProtoModule module);
+		void						setInitProtocolConnection		(const t_func_initProtoConn func);
 
 		// accessors
 		ServerWorker&				accessWorker();
+		Event&						accessEvent();
 
 
 
@@ -79,12 +86,12 @@ class ListeningSocket
 		t_socklen					m_addrlen;
 		int							m_backlog;
 
-		typedef void				(*AcceptInitProtocol)(Connection *);
-		AcceptInitProtocol			m_initConnection;
+		t_func_initProtoConn		m_initConnection;
 
 		t_ptr_ProtoModule			m_protoModule;
 
 		Event						m_myEvent;
+
 		ServerWorker&				m_worker;
 
 		Globals*                    m_globals;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 17:01:19 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 11:21:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,18 +137,10 @@ void    ListeningSocket::accept()
 	std::memcpy(connection->accessAddr(), &addr, addrlen);
 	connection->setAddrlen(addrlen);
 
-/*
-	Here the listening socket determines, based on configuration that the protocol
-	interpreter that should handle the event is http or something else
-	it asks the http interpreter to create a new http connection, associate it with this
-	connection and replace this connection's event's function pointers to those of the http
-	connection interpreter.
-
-	Then, when reading, the http connection will look for headers, ask the interpreter for
-	sessions, set timeouts, etc.
-*/
-
-
+	//listener passes protoModule to connection and calls the ProtoConnection initializer (ServerWorker sets these from configuration parsing)
+	
+	connection->setProtoModule(m_protoModule);
+	m_initConnection(connection);
 
  //std::cout << "added conenction" << std::endl;
 	if (!m_worker.accessEventManager().addEvent(
