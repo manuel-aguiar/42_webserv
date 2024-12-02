@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 16:57:38 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/02 09:16:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ class Connection
 		void					setMemPool(Nginx_MemoryPool& memPool);
 		void					setProtoConnection(t_ptr_ProtoConnection connection);
 		void					setProtoModule(t_ptr_ProtoModule module);
-
 
 
 	//accessors
