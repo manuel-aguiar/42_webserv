@@ -30,6 +30,9 @@ ServerLocation::ServerLocation()
 	m_validTypes.insert("regular"); 
 	m_validTypes.insert("redirection");
 	m_validTypes.insert("cgi");
+
+	m_validMethods.insert("get");
+	m_validMethods.insert("post");
 }
 
 ServerLocation::ServerLocation(ServerBlock& server)//: m_block(server)
@@ -82,10 +85,6 @@ bool	ServerLocation::addConfigValue(const std::string &key, const std::string &v
 }
 
 // Getters & Setters
-// const ServerBlock&				ServerLocation::getServerBlock() const
-// {
-// 	return (m_block);
-// }
 
 const std::string&				ServerLocation::getPath() const
 {
@@ -197,8 +196,25 @@ bool		ServerLocation::setAutoindex(const std::string &value, const int &flag)
 	return (1);
 }
 
+std::string	strToLower(const std::string& str)
+{
+	std::string lowercaseString = str;
+	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
+		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
+	
+	return (lowercaseString);
+}
+
 bool		ServerLocation::addMethod(const std::string &value, const int &flag)
 {
+	(void)flag;
+	std::string	lowercaseStr = strToLower(value);
+
+	if (m_validMethods.find(lowercaseStr) != m_validMethods.end() && m_config.find(lowercaseStr) == m_config.end())
+	{
+		std::cout << "added method: " << lowercaseStr << std::endl;
+		m_config["methods"].insert(lowercaseStr);
+	}
 	return (1);
 }
 
@@ -222,14 +238,18 @@ bool		ServerLocation::validate() const
 void	ServerLocation::setDefaults(const int &flag)
 {
 	DefaultConfig	defaults;
+	std::istringstream iss(defaults.methods);
+	std::string value;
 
 	try {
 		setType(defaults.type, flag);
 	}
 	catch (std::exception &e) {}
 	try {
-		// this is only working for one default method
-		addMethod(defaults.methods, flag);
+
+		if (getMethods().empty())
+			while (iss >> value)
+				addMethod(value, 1);
 	}
 	catch (std::exception &e) {}
 	try {
@@ -240,12 +260,12 @@ void	ServerLocation::setDefaults(const int &flag)
 
 void		ServerLocation::printLocationConfig() const
 {
-	std::cout << "=== Location config ===" << std::endl;
-	std::cout << "path: " << getPath() << std::endl;
-	std::cout << "root: " << getRoot() << std::endl;
-	std::cout << "type: " << getType() << std::endl;
-	std::cout << "autoIndex: " << getAutoindex() << std::endl;
-	std::cout << "methods: ";
+	std::cout << "║ │ ┌─ Location ──┐" << std::endl;
+	std::cout << "║ │ │ path: " << getPath() << std::endl;
+	std::cout << "║ │ │ root: " << getRoot() << std::endl;
+	std::cout << "║ │ │ type: " << getType() << std::endl;
+	std::cout << "║ │ │ autoIndex: " << getAutoindex() << std::endl;
+	std::cout << "║ │ └ methods: ";
 	for (std::set<std::string>::const_iterator it = getMethods().begin(); it != getMethods().end(); it++)
 		std::cout << *it << " ";
 	std::cout << std::endl;

@@ -25,7 +25,7 @@
 # define DEFAULTCONF_BLOCK_ERROR_404_PAGE "../StaticAssets/ErrorPages/error_404.html"
 
 # define DEFAULTCONF_LOCATION_AUTOINDEX "0";
-# define DEFAULTCONF_LOCATION_METHODS "GET";
+# define DEFAULTCONF_LOCATION_METHODS "get post"; // Methods separated by spaces, lowercase 
 # define DEFAULTCONF_LOCATION_TYPE "regular";
 
 #endif

@@ -193,7 +193,7 @@ int		ServerConfig::parseConfigFile()
 					}
 					server.setLocations(m_locations);
 					m_servers.push_back(server);
-					///* DEBUG */ server.printServerConfig();
+					m_locations.clear();
 					break ;
 				case LOCATION_LEVEL:
 					currentLevel = SERVER_LEVEL;
@@ -205,7 +205,6 @@ int		ServerConfig::parseConfigFile()
 						return (0);
 					}
 					m_locations.push_back(location);
-					///* DEBUG */ location.printLocationConfig();
 					break ;
 				default:
 					std::cerr << "Parsing: Unexpected Error" << std::endl;
@@ -294,9 +293,13 @@ void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
 
 void	ServerConfig::printProgramConfig() const
 {
-	std::cout << "=== Program Configurations ===" << std::endl;
-	std::cout << "Maximum Concurrent CGI: " << getMaxConcurrentCgi() << std::endl;
-	std::cout << "Maximum Simultaneous Connections: " << getMaxConnections() << std::endl;
+	std::cout << "╔═ Program ══════════════════O" << std::endl;
+	std::cout << "║ " <<  std::endl ;
+
+	std::cout << "║ Maximum Concurrent CGI: " << getMaxConcurrentCgi() << std::endl;
+	std::cout << "║ Maximum Simultaneous Connections: " << getMaxConnections() << std::endl;
+	std::cout << "║ " <<  std::endl ;
+
 }
 
 void	ServerConfig::printConfigs() const
@@ -305,7 +308,11 @@ void	ServerConfig::printConfigs() const
 	for (std::map<std::string, ServerBlock>::const_iterator it = getServerBlocks().begin(); it != getServerBlocks().end(); it++)
 	{
 		it->second.printServerConfig();
-		for (std::map<std::string, ServerLocation>::const_iterator it2 = it->second.getLocations().begin(); it2 != it->second.getLocations().end(); it2++)
-			it2->second.printLocationConfig();
+		if (!it->second.getLocations().empty())
+			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->second.getLocations().begin(); it2 != it->second.getLocations().end(); it2++)
+				it2->second.printLocationConfig();
+		std::cout << "║ └──────────────────o" << std::endl;
 	}
+	std::cout << "╚═════════════════════════════O" << std::endl;
+
 }

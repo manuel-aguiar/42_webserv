@@ -20,6 +20,7 @@
 # include <map>
 # include <iostream>
 # include <exception>
+# include <sstream>
 
 // Own Headers
 # include "../../GenericUtils/Validation/Validation.hpp"
@@ -78,6 +79,7 @@ class ServerLocation
 		ServerBlock*					m_block; // this would be a reference if used
 		t_locationType					m_type;
 		std::set<std::string> 			m_validTypes;
+		std::set<std::string>			m_validMethods;
 
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here

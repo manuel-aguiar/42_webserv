@@ -296,10 +296,11 @@ void	ServerBlock::printServerConfig() const
 	std::set<std::string>	server_names = getServerNames();
 	std::set<std::string>	error_pages = getErrorPages();
 	
-	std::cout << "=== Server Config ===" << std::endl;
-	std::cout << "Host: " << getHost() << std::endl;
-	std::cout << "Port: " << getPort() << std::endl;
-	std::cout << "Server_names: ";
+	std::cout << "║ ┌─ Server ─────────o" << std::endl;
+	std::cout << "║ │ " <<  std::endl ;
+	std::cout << "║ │ Host: " << getHost() << std::endl;
+	std::cout << "║ │ Port: " << getPort() << std::endl;
+	std::cout << "║ │ Server_names: ";
 	if (!server_names.size())
 		std::cout << "(empty)";
 	else
@@ -307,16 +308,18 @@ void	ServerBlock::printServerConfig() const
 			std::cout << *it << " ";
 	std::cout << std::endl;
 
-	std::cout << "Client Body Size: " << getClientBodySize() << '\n';
-	std::cout << "Client Header Size: " << getClientHeaderSize() << '\n';
+	std::cout << "║ │ Client Body Size: " << getClientBodySize() << '\n';
+	std::cout << "║ │ Client Header Size: " << getClientHeaderSize() << '\n';
 
-	std::cout << "Root: " << getRoot() << std::endl;
+	std::cout << "║ │ Root: " << getRoot() << std::endl;
 
-	std::cout << "Error_pages: ";
+	std::cout << "║ │ Error_pages: ";
 	if (!error_pages.size())
 		std::cout << "(empty)";
 	else
 		for (std::set<std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
 			std::cout << *it << " ";
 	std::cout << std::endl;
+	std::cout << "║ │ " <<  std::endl ;
+
 }
