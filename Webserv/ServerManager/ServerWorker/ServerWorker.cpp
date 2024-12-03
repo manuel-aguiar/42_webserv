@@ -74,7 +74,7 @@ int ServerWorker::createListeners(const char* node, const char* port, int sockty
 
 
 		if (listener->open())
-			m_listeners.push_back(listener);
+			m_listeners.emplace_back(*listener);
 		else
 		{
 			listener->~ListeningSocket();

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 10:41:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:08:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define SERVERMANAGER_HPP
 
 // Project Headers
+# include "../GenericUtils/Webserver_Definitions.h"
 # include "ServerWorker/ServerWorker.hpp"
 # include "BlockFinder/BlockFinder.hpp"
 
@@ -39,8 +40,9 @@ class ServerManager
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
 		~ServerManager();
 
-		void*							accessProtoModule(e_protoModules module) const;
 		const ServerConfig& 			getConfig() const;
+		
+		void*							accessProtoModule(e_protoModules module) const;
 
 		void							prepareWorkers();
 		void							run();
@@ -48,7 +50,7 @@ class ServerManager
 
 	private:
 
-		std::vector<ServerWorker>		m_workers;
+		DynArray<ServerWorker>			m_workers;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		Globals*						m_globals;

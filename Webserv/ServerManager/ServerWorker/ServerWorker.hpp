@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:38:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:20:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define SERVERWORKER_HPP
 
 // Project Headers
+# include "../GenericUtils/Webserver_Definitions.h"
 # include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../EventManager/EventManager.hpp"
@@ -35,16 +36,16 @@ class ServerConfig;
 class ServerWorker
 {
     public:
-        ServerWorker(ServerManager& manager, size_t serverID, Globals* globals);
-        ~ServerWorker();
+		ServerWorker(ServerManager& manager, size_t serverID, Globals* globals);
+		~ServerWorker();
 
-	// methods
-        int 							run();
-        int 							createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
-        int 							setup_mySignalHandler();
+		// methods
+		int 							run();
+		int 							createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
+		int 							setup_mySignalHandler();
 
-	//event handlers
-        static void 					EventExit(Event& event);
+		//event handlers
+		static void 					EventExit(Event& event);
 
 
 	// getters
@@ -64,25 +65,23 @@ class ServerWorker
 
     private:
 
-        size_t                          m_myID;
+		size_t                          m_myID;
 
 		ServerManager&					m_serverManager;
 		const ServerConfig&				m_config;
-        ConnectionManager               m_connManager;
-        EventManager                    m_eventManager;
-        CgiManager                     	m_cgiManager;
-        Event                           m_mySignalEvent;
-        Nginx_MemoryPool*               m_memPool;
-        std::vector<ListeningSocket*>   m_listeners;
-
-        bool                            m_isRunning;
-
-        Globals*                        m_globals;
+		ConnectionManager				m_connManager;
+		EventManager					m_eventManager;
+		CgiManager						m_cgiManager;
+		Event							m_mySignalEvent;
+		Nginx_MemoryPool*				m_memPool;
+		DynArray<ListeningSocket>		m_listeners;
+		bool							m_isRunning;
+		Globals*						m_globals;
 
 
-        ServerWorker();
-        ServerWorker(const ServerWorker& copy);
-        ServerWorker& operator=(const ServerWorker& assign);
+		ServerWorker();
+		ServerWorker(const ServerWorker& copy);
+		ServerWorker& operator=(const ServerWorker& assign);
 };
 
 
