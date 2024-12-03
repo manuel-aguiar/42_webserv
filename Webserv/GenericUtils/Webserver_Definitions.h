@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:22:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/30 23:44:55 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,21 @@
 # include <sys/socket.h>
 # include <sys/un.h>
 # include <netdb.h>
-# include <sys/epoll.h>
+
+# ifdef __linux__
+#  include <sys/epoll.h>
+# endif
+
+# ifdef __APPLE__
+#  include <sys/event.h>
+# endif
+
 # include <cerrno>
 # include <signal.h>
 # include <cassert>
 
 //own headers
-# include "../Toolkit/Toolkit.h"
+# include "../../Toolkit/Toolkit.h"
 
 // definitions for everyone to use
 typedef unsigned char								t_byte;
