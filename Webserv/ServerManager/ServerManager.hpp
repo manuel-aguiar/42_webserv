@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 09:08:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:44:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,11 @@ class ServerManager
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
 		~ServerManager();
 
+		//getters
 		const ServerConfig& 			getConfig() const;
 		
-		void*							accessProtoModule(e_protoModules module) const;
+		//accessors
+		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
 
 		void							prepareWorkers();
 		void							run();
