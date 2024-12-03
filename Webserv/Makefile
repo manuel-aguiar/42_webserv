@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/21 12:13:25 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/02 14:43:35 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,25 +29,39 @@ MAKE 							= 	make
 SRC_PATH 						= 	.
 OBJ_PATH 						= 	_objs
 
-SRCS 							=		$(SRC_PATH)/main.cpp										\
-										$(SRC_PATH)/ListeningSocket/ListeningSocket.cpp				\
-										$(SRC_PATH)/CgiManager/CgiManager.cpp						\
-										$(SRC_PATH)/CgiManager/python-cgi/pythonCgi.cpp				\
-										$(SRC_PATH)/CgiManager/CgiLiveRequest/CgiLiveRequest.cpp	\
-										$(SRC_PATH)/Connection/Connection.cpp						\
-										$(SRC_PATH)/Connection/ConnectionPool.cpp					\
-										$(SRC_PATH)/Event/Event.cpp									\
-										$(SRC_PATH)/Event/HandlerFunction.cpp						\
-										$(SRC_PATH)/Server/Server.cpp								\
-										$(SRC_PATH)/EventManager/EventManager.cpp					\
-										$(SRC_PATH)/Globals/Globals.cpp								\
-										$(SRC_PATH)/Clock/Clock.cpp									\
-										$(SRC_PATH)/SignalHandler/SignalHandler.cpp					\
-										$(SRC_PATH)/FileDescriptor/FileDescriptor.cpp				\
-										$(SRC_PATH)/Logs/LogFile.cpp								\
-										$(SRC_PATH)/Logs/LogFileThreadSafe.cpp						\
-										$(SRC_PATH)/Logs/LogStream.cpp								\
-										$(SRC_PATH)/Logs/LogStreamThreadSafe.cpp
+
+SRCS 							=		$(SRC_PATH)/main.cpp															\
+																														\
+										$(SRC_PATH)/ServerManager/ServerManager.cpp										\
+																														\
+										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorker.cpp							\
+										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerEvents.cpp					\
+										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerGetSetAccess.cpp				\
+																														\
+										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocket.cpp					\
+										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketEvents.cpp				\
+										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketGetSetAccess.cpp		\
+																														\
+										$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp							\
+																														\
+										$(SRC_PATH)/ServerManager/ConnectionManager/ConnectionManager.cpp				\
+																														\
+										$(SRC_PATH)/ServerManager/BlockFinder/BlockFinder.cpp							\
+																														\
+										$(SRC_PATH)/Connection/Connection.cpp											\
+										$(SRC_PATH)/Connection/ConnectionGetSetAccess.cpp								\
+																														\
+										$(SRC_PATH)/Event/Event.cpp														\
+																														\
+										$(SRC_PATH)/Globals/Globals.cpp													\
+										$(SRC_PATH)/Globals/Clock/Clock.cpp												\
+										$(SRC_PATH)/Globals/LogFile/LogFile.cpp											\
+										$(SRC_PATH)/Globals/SignalHandler/SignalHandler.cpp								\
+																														\
+										$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp						\
+										$(SRC_PATH)/GenericUtils/Files/File.cpp											\
+										$(SRC_PATH)/GenericUtils/Files/FilesUtils.cpp									
+
 
 
 THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
@@ -72,7 +86,7 @@ BUILD 							=
 
 
 
-$(NAME): OBJS
+$(NAME): $(OBJS)
 	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
 	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
 

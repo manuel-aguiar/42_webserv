@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:27:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:42:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "SignalHandler.hpp"
-# include "../Globals/Globals.hpp"
-# include "../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../Globals.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 Globals*                                SignalHandler::gm_globals = NULL;
 int		                                SignalHandler::gm_signal = 0;

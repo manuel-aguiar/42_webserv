@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:19:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:53:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,31 +16,36 @@
 
 class Event
 {
-    public:
-        Event();
-        ~Event();
+	public:
+		Event();
+		~Event();
 
-        typedef void	(*HandlerFunction)(Event& event);
-        typedef void*	HandlerData;
+		//typedefs
+		typedef void	(*HandlerFunction)(Event& event);
+		typedef void*	HandlerData;
 
-		HandlerData			getData();
-		HandlerFunction		getFunction();
-		int					getFlags();
+		//methods
+		void				handle();
 
-        void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
-        void				setFlags(int flags);
+		//getters
+		HandlerData			getData()		const;
+		HandlerFunction		getFunction()	const;
+		int					getFlags()		const;
+
+		//setters
+		void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
+		void				setFlags(int flags);
 
 
-		
-        void				handle();
+
 
 	private:
-        HandlerFunction    m_function;
-        HandlerData        m_data;
-        int                m_flags;
+		HandlerFunction		m_function;
+		HandlerData			m_data;
+		int					m_flags;
 
-        Event(const Event& copy);
-        Event& operator=(const Event& assign);
+		Event(const Event& copy);
+		Event& operator=(const Event& assign);
 };
 
 #endif

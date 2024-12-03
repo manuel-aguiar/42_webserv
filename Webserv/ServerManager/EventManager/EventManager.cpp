@@ -6,16 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:24:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:36:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "EventManager.hpp"
+# include "../../Connection/Connection.hpp"
 # include "../../Event/Event.hpp"
-# include "../Connection/Connection.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
-# include "../ConnectionManager/ConnectionManager.hpp"
-
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
@@ -61,12 +58,12 @@ EventManager& EventManager::operator=(const EventManager& assign)
 }
 
 
-int                EventManager::addEvent(t_fd fd, Event& monitor)
+int                EventManager::addEvent(const t_fd fd, const Event& monitor)
 {
 	t_epoll_event event = (t_epoll_event){};
 
 	event.events = monitor.getFlags();
-	event.data.ptr = &monitor;
+	event.data.ptr = (void *)&monitor;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &event) == -1)
 	{
@@ -76,12 +73,12 @@ int                EventManager::addEvent(t_fd fd, Event& monitor)
 	return (1);
 }
 
-int                EventManager::modEvent(t_fd fd, Event& monitor)
+int                EventManager::modEvent(const t_fd fd, const Event& monitor)
 {
 	t_epoll_event event = (t_epoll_event){};
 
 	event.events = monitor.getFlags();
-	event.data.ptr = &monitor;
+	event.data.ptr = (void *)&monitor;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &event) == -1)
 	{
@@ -91,7 +88,7 @@ int                EventManager::modEvent(t_fd fd, Event& monitor)
 	return (1);
 }
 
-int                 EventManager::delEvent(t_fd fd)
+int                 EventManager::delEvent(const t_fd fd)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 	{
@@ -114,7 +111,7 @@ int                 EventManager::waitEvents(int timeOut)
 	return (m_waitCount);
 }
 
-const   t_epoll_event&     EventManager::getEvent(int index)
+const   t_epoll_event&     EventManager::retrieveEvent(int index)
 {
 	assert(index >= 0 && index < m_waitCount);
 	return (m_events[index]);
@@ -132,21 +129,12 @@ void    EventManager::distributeEvents()
 
 		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
 		{
-			std::cout << "              handling event " << event << std::endl;
 			event->handle();
 		}
 
 		if (m_events[i].events & EPOLLHUP || m_events[i].events & EPOLLERR || m_events[i].events & EPOLLRDHUP)
 		{
-			std::cout << "              deleting event " << event << std::endl;
-			Connection* connection = (Connection*)event->getData();
-			if (connection->m_sockfd == -1)
-				continue ;
-			delEvent(connection->m_sockfd);
-			::close(connection->m_sockfd);
-			std::cout <<"       returning connection via epoll" << std::endl;
-			connection->m_listener->m_connectionPool.returnConnection(connection);
-			connection->reset();
+
 		}
 	}
 }

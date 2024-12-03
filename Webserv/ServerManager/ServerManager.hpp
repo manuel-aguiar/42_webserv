@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:23:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:46:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define SERVERMANAGER_HPP
 
 // Project Headers
+# include "../GenericUtils/Webserver_Definitions.h"
 # include "ServerWorker/ServerWorker.hpp"
 # include "BlockFinder/BlockFinder.hpp"
 
@@ -26,26 +27,45 @@ class Globals;
 class ThreadPool;
 class BlockFinder;
 
+typedef enum e_protoModules
+{
+	HTTP_MODULE,
+	MODULE_COUNT
+} e_protoModules;
+
+
 class ServerManager
 {
 	public:
 		ServerManager(const ServerConfig& config, Globals* globals = NULL);
+		~ServerManager();
 
-		void	prepareWorkers();
-		void	run();
+		//getters
+		const ServerConfig& 			getConfig() const;
+		
+		//accessors
+		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
+
+		void							prepareWorkers();
+		void							run();
+
 
 	private:
-
-		std::vector<ServerWorker>		m_workers;
+		DynArray<ServerWorker*>			m_workers;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		Globals*						m_globals;
 
+		t_ptr_ProtoModule				m_protoModules[MODULE_COUNT];	// loads the modules that we will be using
 
 		ThreadPool*                     m_threadPool;
 
-		void    mf_runSingleThreaded();
-		void    mf_runMultiThreaded();
+		void    						mf_runSingleThreaded();
+		void    						mf_runMultiThreaded();
+
+		ServerManager();
+		ServerManager(const ServerManager& copy);
+		ServerManager& operator=(const ServerManager& assign);
 };
 
 

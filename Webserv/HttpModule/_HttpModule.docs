@@ -1,18 +1,16 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    _Notes.docs                                        :+:      :+:    :+:    #
+#    _HttpModule.docs                                   :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/26 08:52:50 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/26 09:01:35 by mmaria-d         ###   ########.fr        #
+#    Created: 2024/11/26 16:23:06 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/02 09:16:03 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-Here is where memory failure will likely occur in our program. As we parse and
-ask for memory (std::string, buffers, etc) we can get a memory failure.
-Memory failure is not a reason to close the program, we have to go on.
-BUT: we must deliever some sort of error page to the client that triggered the memory failure
+This is the Module that is called for connections that will exchange information
+based on the Http Connection
 
-we can deliever INTERNAL SERVER ERROR (4xx ..?)
+

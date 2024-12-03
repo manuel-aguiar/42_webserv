@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/30 23:44:55 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/03 22:12:27 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,11 @@ typedef struct epoll_event							t_epoll_event;
 
 typedef struct sigaction							t_sigaction;
 typedef sigset_t									t_sigset;
+
+typedef void*										t_ptr_ProtoConnection;
+typedef void*										t_ptr_ProtoModule;
+
+
 
 typedef union
 {

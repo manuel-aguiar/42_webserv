@@ -6,21 +6,21 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:25:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:36:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
+#include "../ServerWorker/ServerWorker.hpp"
 #include "../ConnectionManager/ConnectionManager.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../../Globals/Globals.hpp"
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ConnectionManager& connPool, EventManager& eventManager, Globals* globals) :
-	m_globals(globals),
-	m_connectionPool(connPool),
-	m_eventManager(eventManager)
+ListeningSocket::ListeningSocket(ServerWorker& worker, Globals* globals) :
+	m_worker(worker),
+	m_globals(globals)
 {
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
@@ -100,12 +100,14 @@ int		ListeningSocket::listen()
 
 void    ListeningSocket::accept()
 {
-	Connection* connection;
-	u_sockaddr  addr;
-	t_socklen   addrlen;
+	Connection*	connection;
+	u_sockaddr	addr;
+	t_socklen	addrlen;
+	t_sockaddr*	addrrr;
+	int			sockfd;
 
 
-	connection = m_connectionPool.getConnection();
+	connection = m_worker.accessConnManager().provideConnection();
 
 	if (!connection)
 	{
@@ -113,41 +115,39 @@ void    ListeningSocket::accept()
 		return ;
 	}
 
-	connection->m_listener = this;
+	connection->setListener(*this);
 	addrlen = sizeof(addr);
-	connection->m_sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
+	sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
 
-	if (connection->m_sockfd == -1)
+
+	if (sockfd == -1)
 		goto NewConnection_Failure;
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(connection->m_sockfd))
-		goto NewConnection_Failure;
-	connection->m_addr = (t_sockaddr*)connection->m_memPool->allocate(addrlen, true);
+	connection->setSocket(sockfd);
 
-	if (!connection->m_addr)
+	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 		goto NewConnection_Failure;
 
-	std::memcpy(connection->m_addr, &addr, addrlen);
-	connection->m_addrlen = addrlen;
+	addrrr = (t_sockaddr*)connection->accessMemPool().allocate(addrlen, true);
 
-/*
-	Here the listening socket determines, based on configuration that the protocol
-	interpreter that should handle the event is http or something else
-	it asks the http interpreter to create a new http connection, associate it with this
-	connection and replace this connection's event's function pointers to those of the http
-	connection interpreter.
+	if (!addrrr)
+		goto NewConnection_Failure;
+	connection->setAddr(addrrr);
 
-	Then, when reading, the http connection will look for headers, ask the interpreter for
-	sessions, set timeouts, etc.
-*/
+	std::memcpy(connection->accessAddr(), &addr, addrlen);
+	connection->setAddrlen(addrlen);
 
-
+	//listener passes protoModule to connection and calls the ProtoConnection initializer (ServerWorker sets these from configuration parsing)
+	
+	connection->setProtoModule(m_protoModule);
+	m_initConnection(connection);
 
  //std::cout << "added conenction" << std::endl;
-	if (!m_eventManager.addEvent(connection->m_sockfd, *connection->m_readEvent))
+	if (!m_worker.accessEventManager().addEvent(
+			connection->getSocket(),
+			connection->accessReadEvent())
+		)
 		goto NewConnection_Failure;
-
-
 
 	return ;
 
@@ -159,16 +159,16 @@ NewConnection_Failure:
 
 void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 {
-	if (connection->m_sockfd != -1 && ::close(connection->m_sockfd) == -1)
+	if (connection->getSocket() != -1 && ::close(connection->getSocket()) == -1)
 		m_globals->logStatus("close(): " + std::string(strerror(errno)));
-	connection->m_sockfd = -1;
+	connection->setSocket(-1);
 	connection->reset();
-	m_connectionPool.returnConnection(connection);
+	m_worker.accessConnManager().returnConnection(connection);
 }
 
 void    ListeningSocket::closeConnection(Connection* connection)
 {
-	m_eventManager.delEvent(connection->m_sockfd);
+	m_worker.accessEventManager().delEvent(connection->getSocket());
 	mf_close_accepted_connection(connection);
 
 }
@@ -184,9 +184,8 @@ void    ListeningSocket::close()
 
 //private
 ListeningSocket::ListeningSocket() :
-	m_globals(NULL),
-	m_connectionPool(*((ConnectionManager*)NULL)),  //never do this, for real
-	m_eventManager(*((EventManager*)NULL))       //never do this, for real
+	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
+	m_globals(NULL)
 {
 
 #if !defined(NDEBUG) && defined(DEBUG_CTOR)

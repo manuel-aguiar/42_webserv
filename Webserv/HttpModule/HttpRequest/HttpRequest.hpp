@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/26 10:45:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 10:20:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,14 @@ class HttpRequest
 
 
 	private:
-		
+
+		size_t				m_timeout;
 
 		HttpConnection*		m_httpConn;
-		HttpSession*		m_session;
+		
+		
+		
+		//HttpSession*		m_session;				//no idea here yet
 
 
 

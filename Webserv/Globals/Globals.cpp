@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:28:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:42:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Globals.hpp"
-#include "../Clock/Clock.hpp"
-#include "../Logs/ILog.hpp"
+#include "Clock/Clock.hpp"
+#include "LogFile/LogFile.hpp"
 
 Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile* debugFile) :
 	m_clock(clock),

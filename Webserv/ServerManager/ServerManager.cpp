@@ -6,12 +6,29 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:24:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 10:49:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerManager.hpp"
-# include "../../Toolkit.h"
+# include "ServerManager.hpp"
+# include "../GenericUtils/Webserver_Definitions.h"
+# include "../HttpModule/HttpModule.hpp"
+# include "../CgiModule/CgiModule.hpp"
+# include "../Globals/SignalHandler/SignalHandler.hpp"
+
+ServerManager::ServerManager(const ServerConfig& config, Globals* globals) :
+	m_blockFinder(config),
+	m_config(config),
+	m_globals(globals)
+{
+	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
+}
+
+ServerManager::~ServerManager()
+{
+	for (size_t i = 0; i < MODULE_COUNT; ++i)
+		delete ((unsigned char *)m_protoModules[i]);
+}
 
 void    ServerManager::run()
 {
@@ -37,10 +54,10 @@ void    ServerManager::mf_runMultiThreaded()
 	{
 		m_threadPool->addTask(m_workers[i], &ServerWorker::run);
 	}
-	
+
 	while (!SignalHandler::getSignal())
 		usleep(1000);
-	
+
 	m_threadPool->destroy(true);
 	delete (m_threadPool);
 }

@@ -1,13 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpInterpreter.cpp                                :+:      :+:    :+:   */
+/*   HttpModuleGetSetAccess.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 10:17:34 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:17:37 by codespace        ###   ########.fr       */
+/*   Created: 2024/11/29 16:21:04 by manuel            #+#    #+#             */
+/*   Updated: 2024/11/29 16:21:14 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpInterpreter.hpp"
+# include "HttpModule.hpp"
+

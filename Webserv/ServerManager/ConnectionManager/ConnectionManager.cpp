@@ -10,47 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ConnectionManager.hpp"
-#include "../Event/HandlerFunction.hpp"
+# include "ConnectionManager.hpp"
+# include "../../Event/Event.hpp"
 
-ConnectionManager::~ConnectionManager() 
+ConnectionManager::~ConnectionManager()
 {
     for (size_t i = 0; i < m_connections.size(); i++)
-        m_connections[i].m_memPool->destroy();
+        m_connections[i].accessMemPool().destroy();
 }
 
-ConnectionManager::ConnectionManager(Globals* globals, size_t maxConnections) : 
-    m_globals(globals), 
+ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
     m_maxConnections(maxConnections),
-    m_connections(maxConnections),
-    m_readEvents(maxConnections),
-    m_writeEvents(maxConnections),
-    m_spareConnections(MPool_FixedElem<Connection*>(maxConnections))
+    m_connections(maxConnections, *pool),
+    m_readEvents(maxConnections, *pool),
+    m_writeEvents(maxConnections, *pool),
+    m_spareConnections(Nginx_MPool_FixedElem<Connection*>(pool, maxConnections)),
+    m_globals(globals)
 {
-
+    m_connections.reserve(m_maxConnections);
+    m_readEvents.reserve(m_maxConnections);
+    m_writeEvents.reserve(m_maxConnections);
+    m_spareConnections.resize(m_maxConnections);
 
     for (size_t i = 0; i < maxConnections; i++)
     {
         new (&m_connections[i]) Connection(m_globals);
-        new (&m_readEvents[i]) Event(m_globals);
-        new (&m_writeEvents[i]) Event(m_globals);
-        
+        new (&m_readEvents[i]) Event;
+        new (&m_writeEvents[i]) Event;
+
         m_connections[i].init();
-        m_connections[i].m_readEvent = &m_readEvents[i];
-        m_connections[i].m_writeEvent = &m_writeEvents[i];
+        m_connections[i].setReadEvent(m_readEvents[i]);
+        m_connections[i].setWriteEvent(m_writeEvents[i]);
 
-        m_readEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Read, &m_connections[i]);
-        m_readEvents[i].setFlags(EPOLLIN);
-
-        m_writeEvents[i].setHandlerFunction_and_Data(&HandlerFunction::connection_Write, &m_connections[i]);
-        m_writeEvents[i].setFlags(EPOLLOUT);
-        
         m_spareConnections.push_back(&m_connections[i]);
-        
     }
 }
 
-Connection* ConnectionManager::getConnection()
+Connection* ConnectionManager::provideConnection()
 {
     Connection*     connection;
 
@@ -73,7 +69,7 @@ void ConnectionManager::returnConnection(Connection* connection)
 //private, as usual
 
 ConnectionManager::ConnectionManager() {}
-    
+
 ConnectionManager::ConnectionManager(const ConnectionManager& copy)
 {
     (void)copy;

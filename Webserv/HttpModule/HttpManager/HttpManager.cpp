@@ -1,19 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpConnection.cpp                                 :+:      :+:    :+:   */
+/*   HttpManager.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 10:14:12 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/28 17:08:40 by manuel           ###   ########.fr       */
+/*   Created: 2024/11/11 10:17:34 by codespace         #+#    #+#             */
+/*   Updated: 2024/11/11 10:17:37 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "HttpConnection.hpp"
-
-HttpConnection::HttpConnection(Connection* newConnection) :
-	m_connection(newConnection)
-{
-
-}
+#include "HttpInterpreter.hpp"

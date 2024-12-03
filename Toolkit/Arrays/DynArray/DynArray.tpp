@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DynArray.tpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/15 20:07:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 15:39:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class DynArray
 {
     public:
         DynArray(const Allocator& allocator = Allocator()) : m_array(NULL), m_size(0), m_capacity(0), m_allocator(allocator) {};
-        DynArray(int size, Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
+        DynArray(int size, const Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
         {
             m_array = m_allocator.allocate(size, NULL);
             for (int i = 0; i < size; i++)
@@ -57,14 +57,14 @@ class DynArray
                 return *this;
             if (m_array)
             {
-                for (int i = 0; i < m_size; i++)
+                for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
                 m_allocator.deallocate(m_array, m_capacity);
             }
             m_size = other.m_size;
             m_capacity = other.m_capacity;
             m_array = m_allocator.allocate(m_capacity);
-            for (int i = 0; i < m_size; i++)
+            for (size_t i = 0; i < m_size; i++)
                 m_allocator.construct(m_array + i, other.m_array[i]);
             return *this;
         }
@@ -138,13 +138,18 @@ class DynArray
         {
             if (m_array)
             {
-                for (int i = 0; i < m_size; i++)
+                for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
                 m_size = 0;
                 m_allocator.deallocate(m_array, m_capacity);
                 m_array = NULL;
                 m_capacity = 0;
             }
+        }
+
+        const Allocator& getAllocator() const
+        {
+            return (m_allocator);
         }
 
         void reserve(size_t size)

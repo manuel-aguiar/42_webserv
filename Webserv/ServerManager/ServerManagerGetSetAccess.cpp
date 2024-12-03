@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpManager.hpp                                :+:      :+:    :+:   */
+/*   ServerManagerGetSetAccess.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/19 08:14:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/19 11:21:21 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/03 09:03:04 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/03 09:45:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPINTERPRETER_HPP
+//Project headers
+# include "ServerManager.hpp"
+# include "../ServerConfig/ServerConfig.hpp"
 
-# define HTTPINTERPRETER_HPP
+//C++ headers
+# include <cassert>
 
-class HttpManager
+//getters
+const ServerConfig&	ServerManager::getConfig() const
 {
-    public:
-        HttpManager();
-        ~HttpManager();
+	return (m_config);
+}
 
-        HttpManager(const HttpManager& copy);
-        HttpManager& operator=(const HttpManager& assign);
-
-        void    interpret();
-};
-
-
-
-#endif
+//accessors
+t_ptr_ProtoModule		ServerManager::accessProtoModule(e_protoModules module)
+{
+	return (m_protoModules[module]);
+}
