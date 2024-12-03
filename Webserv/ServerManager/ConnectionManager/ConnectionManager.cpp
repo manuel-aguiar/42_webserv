@@ -20,12 +20,12 @@ ConnectionManager::~ConnectionManager()
 }
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
-    m_globals(globals),
     m_maxConnections(maxConnections),
     m_connections(maxConnections),
     m_readEvents(maxConnections),
     m_writeEvents(maxConnections),
-    m_spareConnections(MPool_FixedElem<Connection*>(maxConnections))
+    m_spareConnections(MPool_FixedElem<Connection*>(maxConnections)),
+    m_globals(globals)
 {
 
 

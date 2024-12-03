@@ -34,13 +34,14 @@ class ConnectionManager
 		void					returnConnection(Connection* connection);
 
 	private:
-		Globals*												m_globals;
 		size_t													m_maxConnections;
-
 		HeapArray<Connection>									m_connections;
 		HeapArray<Event>										m_readEvents;
 		HeapArray<Event>										m_writeEvents;
 		List<Connection*, MPool_FixedElem<Connection*> >		m_spareConnections;
+
+		Globals*												m_globals;
+
 
 		void 					mf_destroyConnection(Connection* connection);
 

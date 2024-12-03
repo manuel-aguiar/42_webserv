@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorkerGetSetAccess.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 10:59:42 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/03 10:00:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ ConnectionManager&			ServerWorker::accessConnManager()
 EventManager&				ServerWorker::accessEventManager()
 {
 	return (m_eventManager);
+}
+
+DynArray<ListeningSocket>&		ServerWorker::accessListeners()
+{
+	return (m_listeners);
 }
 
 // getters

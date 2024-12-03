@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:36:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:02:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class ListeningSocket
 	public:
 		ListeningSocket(ServerWorker& worker, Globals* globals);
 		~ListeningSocket();
+		ListeningSocket(const ListeningSocket& copy);
+		ListeningSocket& operator=(const ListeningSocket& assign);
 
 		// typedefs
 		typedef void 				(*t_func_initProtoConn)(Connection*);
@@ -80,7 +82,6 @@ class ListeningSocket
 
 	private:
 
-
 		int							m_socktype;
 		t_socket					m_sockfd;
 		int							m_proto;
@@ -100,8 +101,6 @@ class ListeningSocket
 		Globals*                    m_globals;
 
 		ListeningSocket();
-		ListeningSocket(const ListeningSocket& copy);
-		ListeningSocket& operator=(const ListeningSocket& assign);
 
 
 		void    mf_close_accepted_connection(Connection* connection);
