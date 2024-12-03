@@ -19,15 +19,18 @@ ConnectionManager::~ConnectionManager()
         m_connections[i].accessMemPool().destroy();
 }
 
-ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
+ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
     m_maxConnections(maxConnections),
-    m_connections(maxConnections),
-    m_readEvents(maxConnections),
-    m_writeEvents(maxConnections),
-    m_spareConnections(MPool_FixedElem<Connection*>(maxConnections)),
+    m_connections(*pool),
+    m_readEvents(*pool),
+    m_writeEvents(*pool),
+    m_spareConnections(*pool),
     m_globals(globals)
 {
-
+    m_connections.reserve(m_maxConnections);
+    m_readEvents.reserve(m_maxConnections);
+    m_writeEvents.reserve(m_maxConnections);
+    m_spareConnections.resize(m_maxConnections);
 
     for (size_t i = 0; i < maxConnections; i++)
     {
@@ -40,7 +43,6 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Globals* globals) :
         m_connections[i].setWriteEvent(m_writeEvents[i]);
 
         m_spareConnections.push_back(&m_connections[i]);
-
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 10:01:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:46:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,20 @@ static size_t countListeners(const ServerConfig& config)
 
 void	ServerManager::prepareWorkers()
 {
-	size_t	maxConn;
-	size_t	listenerCount;
+	Nginx_MemoryPool*	workerMemPool;
+	ServerWorker*		serverWorker;
+	size_t				maxConn;
+	size_t				listenerCount;
 
 	maxConn = m_config.getMaxConnections();
 	listenerCount = countListeners(m_config);
 	m_workers.reserve(maxConn);
 	for (size_t i = 0; i < maxConn; i++)
 	{
-		m_workers.emplace_back(*this, i, m_globals);
-		m_workers.back().accessListeners().reserve(listenerCount);
+		workerMemPool = Nginx_MemoryPool::create(4096, 1);
+		serverWorker = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
+		new (serverWorker) ServerWorker(*this, i, workerMemPool, m_globals);
+		m_workers.back()->accessListeners().reserve(listenerCount);
 	}
 }
 

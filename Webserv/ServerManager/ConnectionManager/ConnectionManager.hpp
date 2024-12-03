@@ -27,7 +27,7 @@
 class ConnectionManager
 {
 	public:
-		ConnectionManager(size_t maxConnections, Globals* globals);
+		ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals);
 		~ConnectionManager();
 
 		Connection*				provideConnection();
@@ -35,10 +35,10 @@ class ConnectionManager
 
 	private:
 		size_t													m_maxConnections;
-		HeapArray<Connection>									m_connections;
-		HeapArray<Event>										m_readEvents;
-		HeapArray<Event>										m_writeEvents;
-		List<Connection*, MPool_FixedElem<Connection*> >		m_spareConnections;
+		DynArray<Connection, Nginx_MemoryPool>					m_connections;
+		DynArray<Event, Nginx_MemoryPool>						m_readEvents;
+		DynArray<Event, Nginx_MemoryPool>						m_writeEvents;
+		std::list<Connection*, MPool_FixedElem<Connection*> >	m_spareConnections;
 
 		Globals*												m_globals;
 

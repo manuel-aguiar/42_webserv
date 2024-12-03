@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 09:59:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:18:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class ServerConfig;
 class ServerWorker
 {
     public:
-		ServerWorker(ServerManager& manager, size_t serverID, Globals* globals);
+		ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* memPool, Globals* globals);
 		~ServerWorker();
 
 		// methods
@@ -66,18 +66,18 @@ class ServerWorker
 
     private:
 
-		size_t                          m_myID;
+		size_t                          				m_myID;
 
-		ServerManager&					m_serverManager;
-		const ServerConfig&				m_config;
-		ConnectionManager				m_connManager;
-		EventManager					m_eventManager;
-		CgiManager						m_cgiManager;
-		Event							m_mySignalEvent;
-		Nginx_MemoryPool*				m_memPool;
-		DynArray<ListeningSocket>		m_listeners;
-		bool							m_isRunning;
-		Globals*						m_globals;
+		ServerManager&									m_serverManager;
+		const ServerConfig&								m_config;
+		ConnectionManager								m_connManager;
+		EventManager									m_eventManager;
+		CgiManager										m_cgiManager;
+		Event											m_mySignalEvent;
+		Nginx_MemoryPool*								m_memPool;
+		DynArray<ListeningSocket, Nginx_MemoryPool>		m_listeners;
+		bool											m_isRunning;
+		Globals*										m_globals;
 
 
 		ServerWorker();

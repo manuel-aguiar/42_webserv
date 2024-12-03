@@ -17,13 +17,13 @@
 # include "../../ServerConfig/ServerConfig.hpp"
 
 
-ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Globals* globals) :
+ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals* globals) :
 	m_myID(serverID),
 	m_serverManager(manager),
 	m_config(m_serverManager.getConfig()),
-	m_connManager(m_serverManager.getConfig().getMaxConnections(), globals),						//number of conenctions should come from config
+	m_connManager(m_serverManager.getConfig().getMaxConnections(), pool, globals),						//number of conenctions should come from config
 	m_eventManager(globals),
-	m_memPool(Nginx_MemoryPool::create(4096, 1)),
+	m_memPool(pool),
 	m_isRunning(false),
 	m_globals(globals)
 {
@@ -114,7 +114,7 @@ int ServerWorker::run()
 ServerWorker::ServerWorker(const ServerWorker& copy) :
 	m_serverManager(copy.m_serverManager),
 	m_config(copy.m_config),
-	m_connManager(0, NULL)
+	m_connManager(0, copy.m_memPool, NULL)
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}

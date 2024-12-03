@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 09:44:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:46:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ class ServerManager
 
 
 	private:
-
-		DynArray<ServerWorker>			m_workers;
+		DynArray<ServerWorker*>			m_workers;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		Globals*						m_globals;
