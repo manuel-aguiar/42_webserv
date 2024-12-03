@@ -21,10 +21,10 @@ ConnectionManager::~ConnectionManager()
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
     m_maxConnections(maxConnections),
-    m_connections(*pool),
-    m_readEvents(*pool),
-    m_writeEvents(*pool),
-    m_spareConnections(*pool),
+    m_connections(maxConnections, *pool),
+    m_readEvents(maxConnections, *pool),
+    m_writeEvents(maxConnections, *pool),
+    m_spareConnections(Nginx_MPool_FixedElem<Connection*>(pool, maxConnections)),
     m_globals(globals)
 {
     m_connections.reserve(m_maxConnections);

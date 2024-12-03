@@ -34,14 +34,18 @@ class Nginx_PoolAllocator
 		{
 			typedef Nginx_PoolAllocator<U> other;
 		};
-
-		Nginx_PoolAllocator(Nginx_MemoryPool* pool) : m_memoryPool(pool) {}
+		Nginx_PoolAllocator() : m_memoryPool(NULL) {std::cout << "default constructor" << std::endl;}
+		Nginx_PoolAllocator(Nginx_MemoryPool* pool) : m_memoryPool(pool) {std::cout << "allcoator inituialzed: " << pool << std::endl;}
+		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : m_memoryPool(copy.m_memoryPool) {(void)copy;}
+		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& assign) { m_memoryPool = assign.m_memoryPool;}
 
 		template <typename U>
 		Nginx_PoolAllocator(const Nginx_PoolAllocator<U>& other) : m_memoryPool(other.m_memoryPool) {(void)other;}
 
-		pointer allocate(size_type n)
+		pointer allocate(size_type n, const void* hint = 0)
 		{
+			assert(m_memoryPool != NULL);
+			(void)hint;
 			if (n == 0)
 				return 0;
 			if (n > std::numeric_limits<size_type>::max() / sizeof(T))

@@ -17,17 +17,19 @@
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
 */
-template <size_t Size, size_t Alignment>
-struct AlignedSize
-{
-    static const size_t value = (Size + Alignment - 1) & ~(Alignment - 1);
-};
+
 
 
 template <typename T>
 class MPool_FixedElem
 {
 	public:
+
+		template <size_t Size, size_t Alignment>
+		struct AlignedSize
+		{
+			static const size_t value = (Size + Alignment - 1) & ~(Alignment - 1);
+		};
 
 		typedef T               value_type;
 		typedef T*              pointer;
@@ -110,6 +112,7 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw(
 	m_maxElems(memoryPool.m_maxElems),
 	m_freeSlot(NULL)
 {
+	
 }
 
 
