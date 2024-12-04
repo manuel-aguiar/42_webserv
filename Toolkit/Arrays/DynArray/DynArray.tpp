@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 15:39:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 09:56:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,9 @@ class DynArray
             m_allocator.construct(m_array, value);
             m_size++;
         }
+    	
+        T* getArray() const {return (m_array);}
+
 
         T& at(size_t index)
         {

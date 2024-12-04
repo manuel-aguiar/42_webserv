@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 10:18:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 09:27:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class ServerWorker
 		const CgiManager&				getCgiManager() const;
 		const ConnectionManager&		getConnManager() const;
 		const EventManager&				getEventManager() const;
-
+		const DynArray<ListeningSocket>&getListeners();
 
 	// accessors
 		ServerManager&					accessServerManager();

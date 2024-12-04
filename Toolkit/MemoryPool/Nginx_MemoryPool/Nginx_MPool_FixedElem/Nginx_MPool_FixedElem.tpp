@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 09:20:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:25:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ class Nginx_MPool_FixedElem
 
 		Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t numElems = 0) throw();
 
-		Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& memoryPool) throw();
-		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& memoryPool) throw();
+		Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& copy) throw();
+		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& copy) throw();
 
 		~Nginx_MPool_FixedElem() throw();
 
@@ -89,6 +89,9 @@ class Nginx_MPool_FixedElem
 		size_t 											m_maxElems;
 		t_slot_pointer 									m_freeSlot;
 
+		bool operator==(const Nginx_MPool_FixedElem& other) const;
+		bool operator!=(const Nginx_MPool_FixedElem& other) const;
+
 };
 
 
@@ -105,14 +108,14 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t n
 
 
 template <typename T>
-Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& memoryPool) throw() :
-	m_elements(0, memoryPool.m_elements.getAllocator()),
-	m_elemCount(memoryPool.m_elemCount),
-	m_maxElems(memoryPool.m_maxElems),
-	m_freeSlot(memoryPool.m_freeSlot)
+Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& copy) throw() :
+	m_elements(0, copy.m_elements.getAllocator()),
+	m_elemCount(copy.m_elemCount),
+	m_maxElems(copy.m_maxElems),
+	m_freeSlot(copy.m_freeSlot)
 {
-	//std::cout <<  "copy constructor: " << memoryPool.m_elements.getAllocator().m_memoryPool << "\n";
-	//m_elements = DynArray<s_Slot, Nginx_PoolAllocator<s_Slot> >(memoryPool.m_maxElems, m_elements.getAllocator());
+	//std::cout <<  "copy constructor: " << copy.m_elements.getAllocator().m_memoryPool << "\n";
+	//m_elements = DynArray<s_Slot, Nginx_PoolAllocator<s_Slot> >(copy.m_maxElems, m_elements.getAllocator());
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
 
@@ -120,10 +123,10 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& mem
 
 template <typename T>
 template<class U>
-Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& memoryPool) throw() :
-	m_elements(0, memoryPool.m_elements.getAllocator()),
+Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& rebind) throw() :
+	m_elements(0, rebind.m_elements.getAllocator()),
 	m_elemCount(0),
-	m_maxElems(memoryPool.m_maxElems),
+	m_maxElems(rebind.m_maxElems),
 	m_freeSlot(NULL)
 {
 
@@ -242,5 +245,15 @@ Nginx_MPool_FixedElem<T>::deleteElement(pointer p)
 		deallocate(p);
 	}
 }
+
+template <typename T>
+inline bool 
+Nginx_MPool_FixedElem<T>::operator==(const Nginx_MPool_FixedElem& other) const
+{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
+
+template <typename T>
+inline bool 
+Nginx_MPool_FixedElem<T>::operator!=(const Nginx_MPool_FixedElem& other) const
+{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 
 #endif // MEMORY_BLOCK_TCC

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 09:19:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:45:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,14 @@ int main()
 {
 	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096, 1);
 
-/*
+
 	Nginx_PoolAllocator<std::string> alloc(pool);
-	//Nginx_MPool_FixedElem<std::string> alloc2(pool, 123);
+
+	DynArray<std::string, Nginx_PoolAllocator<std::string> > vec((Nginx_PoolAllocator<std::string>(pool)));
+
+	vec.reserve(50);
+
+/*	//Nginx_MPool_FixedElem<std::string> alloc2(pool, 123);
 
 	std::cout<< "pool alive\n";
 
@@ -39,15 +44,15 @@ int main()
 */
 
 	std::cout << "list time" << "\n";
-	
+/*	*/
 	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(alloc2);
-	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(Nginx_MPool_FixedElem<std::string>(pool, 50));
+
+	std::list<std::string, Nginx_PoolAllocator<std::string> > elem3((Nginx_PoolAllocator<std::string>(pool)));
 	
-	elem3.resize(50);
+	elem3.push_back("cenas");
 
 	std::cout << "list ready\n";
 
-	elem3.push_back("cenas");
 
 	
 	elem3.clear();
@@ -58,5 +63,5 @@ int main()
 
 /*
 
-clear && rm -rf vgcore* && c++ *.cpp ../Nginx_MemoryPool.cpp ../Nginx_MPool_Block.cpp -g && valgrind ./a.out
+clear && rm -rf vgcore* && c++ -Wall -Wextra -Werror *.cpp ../Nginx_MemoryPool.cpp ../Nginx_MPool_Block.cpp -g --std=c++98 && valgrind ./a.out
 */

@@ -41,7 +41,7 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* po
         m_connections[i].setReadEvent(m_readEvents[i]);
         m_connections[i].setWriteEvent(m_writeEvents[i]);
 
-        m_spareConnections.push_back(&m_connections[i]);
+        m_spareConnections.emplace_back(&m_connections[i]);
     }
 }
 
@@ -60,7 +60,7 @@ Connection* ConnectionManager::provideConnection()
 void ConnectionManager::returnConnection(Connection* connection)
 {
     connection->reset();
-    m_spareConnections.push_front(connection);
+    m_spareConnections.emplace_front(connection);
     std::cout << "connection returned: " << m_spareConnections.size() <<  std::endl;
 }
 
@@ -68,15 +68,5 @@ void ConnectionManager::returnConnection(Connection* connection)
 //private, as usual
 
 ConnectionManager::ConnectionManager() {}
-
-ConnectionManager::ConnectionManager(const ConnectionManager& copy)
-{
-    (void)copy;
-}
-
-
-ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign)
-{
-    (void)assign;
-    return (*this);
-}
+ConnectionManager::ConnectionManager(const ConnectionManager& copy) {(void)copy;}
+ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign) {(void)assign; return (*this);}
