@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerManagerPrepareWorkers.cpp                    :+:      :+:    :+:   */
+/*   _temnp.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 15:18:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 15:09:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,33 @@ int freeAllAddrInfo(std::vector<t_addrinfo*>& allAddrInfo)
 		::freeaddrinfo(allAddrInfo[i]);
 }
 
-
-
 /*
 
-	A Comparator struct that we use on std::set to make sure we are not trying to build sockets of addrinfo that are
-	exactly the same.
+	Use getaddrinfo on all ip:port combinations to extract all possible addresses to listen to.
+	Counts the number of addresses as these will translate to listeningsockets
+	Uses a std::set as a hashset to avoid doubled entries when setting up listening sockets:
+	That means we need to getaddrinfo on all (one you can localhost and 127.0.0.1, it must be the DNS to resolve
+	pointing to the same place), and then adding them to a hashSet to get all the unique combinations
+
+		-> setup the lsitening sockets from all the unique combinations
+	
+	freeaddrinfo on the vector that holds all struct addrinfo linkedlists
 
 */
+
+/*
+	struct addrinfo {
+	int             ai_flags;         
+	int             ai_family;        
+	int             ai_socktype;    
+	int             ai_protocol;     
+	socklen_t       ai_addrlen;       
+	char            *ai_canonname;   
+	struct sockaddr *ai_addr;        
+	struct addrinfo *ai_next;       
+	};
+*/
+
 struct AddrinfoPtrComparator
 {
 	bool operator()(const t_addrinfo* a, const t_addrinfo* b)
@@ -85,32 +104,29 @@ struct AddrinfoPtrComparator
 	}
 };
 
-/*
 
-	Use getaddrinfo on all ip:port combinations to extract all possible addresses to listen to.
-	Counts the number of addresses as these will translate to listeningsockets
-	Uses a std::set as a hashset to avoid doubled entries when setting up listening sockets:
-	That means we need to getaddrinfo on all (one you can localhost and 127.0.0.1, it must be the DNS to resolve
-	pointing to the same place), and then adding them to a hashSet to get all the unique combinations
+	struct ListenerPtrComparator {
+		bool operator()(const t_listeners* a, const t_listeners* b) const
+		{	
+			if (a->first != b->first)
+            	return (a->first < b->first);
+			return (a->second < b->second);
+		}
+	};
 
-		-> we also use another hashSet just to make sure we don't call getaddrinfo with 2 equal t_listeners.
-		Not as relevant but getaddrinfo is an expensive function that uses like 50 syscalls, not kiding.
-		I think (i hope) a std::set insert is lighter than that. This is deffinitely not relevant for the runtime
+	std::set<const t_listeners*, ListenerPtrComparator>	filterListeners;
 
-		-> setup the lsitening sockets from all the unique combinations
-	
-	freeaddrinfo on the vector that holds all struct addrinfo linkedlists
 
-*/
-int	setupAllAddrinfo(const ServerConfig& 									config, 
-					std::set<const t_addrinfo*, AddrinfoPtrComparator>& 	unique_AddrInfo,
-					std::vector<t_addrinfo*>& 								allLists_AddrInfo, 
+int	setupAllAddrinfo(const ServerConfig& config, 
+					std::set<const t_addrinfo*, AddrinfoPtrComparator>& unique_AddrInfo,
+					std::vector<const t_addrinfo*>& all_AddrInfo, 
 					int socktype, int addrFamily, int backlog)
 {
 	t_addrinfo          						*res;
 	t_addrinfo          						*cur;
 	t_addrinfo          						hints;
 	int											status;
+	int											totalCount = 0;
 
 	typedef std::map<std::string, ServerBlocks> t_blocks;
 	const t_blocks& 							blocks = config.getServerBlocks();
@@ -151,12 +167,17 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 				// print something, maybe exit, return (-1) for error ??
 				continue ;
 			}
-			allLists_AddrInfo.push_back(res);
+			all_AddrInfo.push_back(res);
 			for(cur = res; cur != NULL; cur = cur->ai_next)
-				unique_AddrInfo.insert(cur);
+			{
+				if (unique_AddrInfo.insert(cur).second == false)
+					continue ;			
+
+			}
+				
 		}
 	}
-	return (unique_AddrInfo.size());
+	return (totalCount);
 }
 
 void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& port, int socktype, int addrFamily, int backlog)
@@ -214,14 +235,10 @@ void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& po
 
 void	ServerManager::setupListeners()
 {
-	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
-	std::vector<t_addrinfo*> 							allLists_Addrinfo;
-	int													listenerCount;
+	std::vector<t_addrinfo*> 	allAddrInfo;
+	int							listenerCount;
 
-	listenerCount = setupAllAddrinfo(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
+	listenerCount = setupAllAddrinfo(m_config, allAddrInfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
 	
-	// setup all the listening sockets based on unique addrinfo structs
-
-	freeAllAddrInfo(allLists_Addrinfo);
 }
 
