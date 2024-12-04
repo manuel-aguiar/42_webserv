@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 16:30:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 09:20:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <vector>
 # include "../../../Arrays/Arrays.h"
 # include "../Nginx_PoolAllocator.hpp"
+# include "../../../CustomAssert/CustomAssert.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
@@ -98,7 +99,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t n
 	m_maxElems(numElems),
 	m_freeSlot(NULL)
 {
-	std::cout <<  "initializer: " << m_elements.getAllocator().m_memoryPool << "\n";
+	//std::cout <<  "initializer: " << m_elements.getAllocator().m_memoryPool << "\n";
 	//std::cout << "mem pool constructed: " << sizeof(T) << " array is size: " << m_elements.size() << std::endl;
 }
 
@@ -110,7 +111,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& mem
 	m_maxElems(memoryPool.m_maxElems),
 	m_freeSlot(memoryPool.m_freeSlot)
 {
-	std::cout <<  "copy constructor: " << memoryPool.m_elements.getAllocator().m_memoryPool << "\n";
+	//std::cout <<  "copy constructor: " << memoryPool.m_elements.getAllocator().m_memoryPool << "\n";
 	//m_elements = DynArray<s_Slot, Nginx_PoolAllocator<s_Slot> >(memoryPool.m_maxElems, m_elements.getAllocator());
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
@@ -126,7 +127,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& 
 	m_freeSlot(NULL)
 {
 
-	std::cout <<  "rebind: " << m_elements.getAllocator().m_memoryPool << "\n";
+	//std::cout <<  "rebind: " << m_elements.getAllocator().m_memoryPool << "\n";
 }
 
 
@@ -164,7 +165,7 @@ inline typename Nginx_MPool_FixedElem<T>::pointer
 Nginx_MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
 	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
-	assert(m_elemCount < m_maxElems);
+	CUSTOM_ASSERT(m_elemCount < m_maxElems, "Nginx_MPool_FixedElem is at max capacity already");
 	m_elements.reserve(m_maxElems);
 	if (m_freeSlot != 0)
 	{

@@ -30,7 +30,6 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* po
     m_connections.reserve(m_maxConnections);
     m_readEvents.reserve(m_maxConnections);
     m_writeEvents.reserve(m_maxConnections);
-    m_spareConnections.resize(m_maxConnections);
 
     for (size_t i = 0; i < maxConnections; i++)
     {

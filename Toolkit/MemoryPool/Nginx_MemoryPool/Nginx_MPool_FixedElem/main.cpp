@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 16:31:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 09:19:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,39 +43,20 @@ int main()
 	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(alloc2);
 	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(Nginx_MPool_FixedElem<std::string>(pool, 50));
 	
+	elem3.resize(50);
+
 	std::cout << "list ready\n";
 
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
+	elem3.push_back("cenas");
+
 	
 	elem3.clear();
 
 	pool->destroy();
 }
+
+
+/*
+
+clear && rm -rf vgcore* && c++ *.cpp ../Nginx_MemoryPool.cpp ../Nginx_MPool_Block.cpp -g && valgrind ./a.out
+*/
