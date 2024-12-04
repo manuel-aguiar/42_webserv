@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 10:45:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:47:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int main()
 /*	*/
 	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(alloc2);
 
+	// extra set of parenthesis to avoid dumb deductions...........................
 	std::list<std::string, Nginx_PoolAllocator<std::string> > elem3((Nginx_PoolAllocator<std::string>(pool)));
 	
 	elem3.push_back("cenas");
