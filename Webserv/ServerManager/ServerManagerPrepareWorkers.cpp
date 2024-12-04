@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 15:18:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 15:31:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 # include "../ServerConfig/ServerConfig.hpp"
 
 // C++ headers
+
+
+/*
+	Function to prepare the ServerWorker instances for battle.
+	Takes config, initializes server workers, prepares listening sockets, connections, eventmanagers
+	etc
+*/
 
 void	ServerManager::prepareWorkers()
 {
@@ -37,12 +44,27 @@ int freeAllAddrInfo(std::vector<t_addrinfo*>& allAddrInfo)
 		::freeaddrinfo(allAddrInfo[i]);
 }
 
+/*
 
+	Helper struct for comparint t_listeners when hashhing for unique values
+	Not needed anywhere else in the project
+
+*/
+struct ListenerPtrComparator {
+	bool operator()(const t_listeners* a, const t_listeners* b) const
+	{	
+		if (a->first != b->first)
+			return (a->first < b->first);
+		return (a->second < b->second);
+	}
+};
 
 /*
 
 	A Comparator struct that we use on std::set to make sure we are not trying to build sockets of addrinfo that are
 	exactly the same.
+
+	Not needed anywhere else in the project
 
 */
 struct AddrinfoPtrComparator
@@ -115,14 +137,7 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 	typedef std::map<std::string, ServerBlocks> t_blocks;
 	const t_blocks& 							blocks = config.getServerBlocks();
 
-	struct ListenerPtrComparator {
-		bool operator()(const t_listeners* a, const t_listeners* b) const
-		{	
-			if (a->first != b->first)
-            	return (a->first < b->first);
-			return (a->second < b->second);
-		}
-	};
+
 
 	std::set<const t_listeners*, ListenerPtrComparator>	filterListeners;
 
@@ -138,7 +153,7 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 			if (filterListeners.insert(&listeners[i]).second == false)
 				continue ;
 
-			status = getaddrinfo
+			status = ::getaddrinfo
 			(
 				listeners[i].first.c_str(), 
 				listeners[i].second.c_str(),
