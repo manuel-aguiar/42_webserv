@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 15:31:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:39:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,13 @@ void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& po
 	return (0);	
 }
 
+/*
+	Function that sets up the Listening Sockets for all ServerWorkers.
+
+	Gets all getaddrinfo structs from all ip:port combos obtained from config, and count all the unique ones.
+	ServerWorkers reserve the space for that ammount of listening sockets.
+	
+*/
 void	ServerManager::setupListeners()
 {
 	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
@@ -234,7 +241,11 @@ void	ServerManager::setupListeners()
 	int													listenerCount;
 
 	listenerCount = setupAllAddrinfo(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
+	m_listenAddrs.reserve(listenerCount);
 	
+	for (size_t i = 0; i < m_workers.size(); ++i)
+		m_workers[i]->accessListeners().reserve(listenerCount);
+
 	// setup all the listening sockets based on unique addrinfo structs
 
 	freeAllAddrInfo(allLists_Addrinfo);

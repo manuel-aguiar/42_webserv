@@ -36,7 +36,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_connManager		(m_serverManager.getConfig().getMaxConnections(), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(countListeners(m_config), Nginx_PoolAllocator<ListeningSocket>(pool)),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket>(pool)),
 	m_isRunning			(false),
 	m_globals			(globals)
 {

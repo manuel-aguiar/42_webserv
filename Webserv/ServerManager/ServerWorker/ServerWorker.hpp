@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 11:46:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:11:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,27 @@ class ServerWorker
 
 
 	// getters
-		const ServerManager&			getServerManager() const;
-		const CgiManager&				getCgiManager() const;
-		const ConnectionManager&		getConnManager() const;
-		const EventManager&				getEventManager() const;
-		const DynArray<ListeningSocket>&getListeners();
+		int								getID()				const;
+		const ServerManager&			getServerManager()	const;
+		const CgiManager&				getCgiManager()		const;
+		const ConnectionManager&		getConnManager()	const;
+		const EventManager&				getEventManager()	const;
+		const DynArray<ListeningSocket>&getListeners()		const;
+		const Nginx_MemoryPool&			getMemPool()		const;
+
+		bool							isRunning()			const;
 
 	// accessors
 		ServerManager&					accessServerManager();
 		CgiManager&						accessCgiManager();
 		ConnectionManager&				accessConnManager();
 		EventManager&					accessEventManager();
-		DynArray<ListeningSocket>&		accessListeners();
+		
+		DynArray<ListeningSocket, Nginx_PoolAllocator<ListeningSocket> >&		
+										accessListeners();
+		Nginx_MemoryPool&				accessMemPool();
 
-		bool							isRunning() const;
+
 
     private:
 
