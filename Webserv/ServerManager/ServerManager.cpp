@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 10:49:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 11:50:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void    ServerManager::run()
 
 void    ServerManager::mf_runSingleThreaded()
 {
-	m_workers[0].run();
+	m_workers[0]->run();
 }
 
 void    ServerManager::mf_runMultiThreaded()
@@ -52,7 +52,7 @@ void    ServerManager::mf_runMultiThreaded()
 
 	for (size_t i = 0; i < m_workers.size(); ++i)
 	{
-		m_threadPool->addTask(m_workers[i], &ServerWorker::run);
+		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
 	}
 
 	while (!SignalHandler::getSignal())

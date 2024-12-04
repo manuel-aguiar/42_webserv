@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 09:27:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 11:46:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ class ServerWorker
 		CgiManager										m_cgiManager;
 		Event											m_mySignalEvent;
 		Nginx_MemoryPool*								m_memPool;
-		DynArray<ListeningSocket, Nginx_MemoryPool>		m_listeners;
+		DynArray<ListeningSocket, 
+			Nginx_PoolAllocator<ListeningSocket> >		m_listeners;
 		bool											m_isRunning;
 		Globals*										m_globals;
 

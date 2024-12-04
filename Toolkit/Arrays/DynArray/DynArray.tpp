@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 09:56:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 11:55:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,22 @@ class DynArray
         DynArray &operator=(const DynArray &other)
         {
             if (this == &other)
-                return *this;
+                return (*this);
             if (m_array)
             {
                 for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
-                m_allocator.deallocate(m_array, m_capacity);
+                if (m_capacity != other.m_capacity)
+                {
+                    m_allocator.deallocate(m_array, m_capacity);
+                    m_array = m_allocator.allocate(other.m_capacity);
+                }    
             }
             m_size = other.m_size;
             m_capacity = other.m_capacity;
-            m_array = m_allocator.allocate(m_capacity);
             for (size_t i = 0; i < m_size; i++)
                 m_allocator.construct(m_array + i, other.m_array[i]);
-            return *this;
+            return (*this);
         }
 
         T& operator[](size_t index)

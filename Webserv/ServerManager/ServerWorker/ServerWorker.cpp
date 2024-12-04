@@ -16,16 +16,29 @@
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 
+static size_t countListeners(const ServerConfig& config)
+{
+	typedef std::map<std::string, ServerBlocks> t_blocks;
+
+	size_t count = 0;
+	const t_blocks& blocks = config.getServerBlocks();
+
+	for (t_blocks::const_iterator iter = blocks.begin(); iter != blocks.end(); ++iter)
+		count += iter->second.getListeners().size();
+	
+	return (count);
+}
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals* globals) :
-	m_myID(serverID),
-	m_serverManager(manager),
-	m_config(m_serverManager.getConfig()),
-	m_connManager(m_serverManager.getConfig().getMaxConnections(), pool, globals),						//number of conenctions should come from config
-	m_eventManager(globals),
-	m_memPool(pool),
-	m_isRunning(false),
-	m_globals(globals)
+	m_myID				(serverID),
+	m_serverManager		(manager),
+	m_config			(m_serverManager.getConfig()),
+	m_connManager		(m_serverManager.getConfig().getMaxConnections(), pool, globals),
+	m_eventManager		(globals),
+	m_memPool			(pool),
+	m_listeners			(countListeners(m_config), Nginx_PoolAllocator<ListeningSocket>(pool)),
+	m_isRunning			(false),
+	m_globals			(globals)
 {
 
 }
