@@ -50,55 +50,7 @@ ServerWorker::~ServerWorker()
 
 int ServerWorker::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
 {
-	ListeningSocket     *listener;
-	t_addrinfo          hints;
-	t_addrinfo          *res;
-	t_addrinfo          *cur;
-	t_sockaddr*         addr;
 
-	hints = (struct addrinfo){};
-	hints.ai_family = addrFamily;
-	hints.ai_socktype = socktype;
-
-	int status = getaddrinfo(node, port, &hints, &res);
-
-	if (status != 0)
-	{
-		m_globals->logStatus("getaddrinfo(): " + std::string(gai_strerror(status)));
-		return (1);
-	}
-
-	for(cur = res; cur != NULL; cur = cur->ai_next)
-	{
-		listener = (ListeningSocket *)m_memPool->allocate(sizeof(ListeningSocket), true);
-		new (listener) ListeningSocket(*this, m_globals);
-
-		addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
-		std::memcpy(addr, cur->ai_addr, cur->ai_addrlen);
-		
-		listener->setAddr(addr);
-		listener->setSockType(cur->ai_socktype);
-		listener->setProtocol(cur->ai_protocol);
-		listener->setAddrlen(cur->ai_addrlen);
-		listener->setBacklog(backlog);
-		listener->setPort(::ntohs(((struct sockaddr_in *)cur->ai_addr)->sin_port));
-		listener->accessEvent().setHandlerFunction_and_Data(&ListeningSocket::EventAccept, listener);
-		listener->accessEvent().setFlags(EPOLLIN);
-
-
-		if (listener->open())
-			m_listeners.emplace_back(*listener);
-		else
-		{
-			listener->~ListeningSocket();
-			continue ;
-		}
-		//std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
-		m_eventManager.addEvent(listener->getSocket(), listener->getEvent());
-
-	}
-	freeaddrinfo(res);
-	return (0);
 }
 
 int ServerWorker::setup_mySignalHandler()

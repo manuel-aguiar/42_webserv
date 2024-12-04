@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 10:46:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/04 12:22:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ class ServerManager
 
 		void							prepareWorkers();
 		void							run();
-
+		void							setupListeners();
+		void							setupSingleListener(const t_ip_str& ip, const t_port_str& port, int socktype, int addrFamily, int backlog);
 
 	private:
 		DynArray<ServerWorker*>			m_workers;
