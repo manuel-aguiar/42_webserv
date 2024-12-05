@@ -1,7 +1,7 @@
 .SILENT:
 NAME =			ServerConfig.out
 CXX =			c++
-CXXFLAGS =		-g -std=c++98 #-Wall -Wextra -Werror -g #-fsanitize=address
+CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror #-fsanitize=address
 SRC =			main.cpp ServerConfig/ServerConfig.cpp ServerBlock/ServerBlock.cpp \
 				DefaultConfig/DefaultConfig.cpp ServerLocation/ServerLocation.cpp \
 				../GenericUtils/StringUtils/StringUtils.cpp ../GenericUtils/Validation/Validation.cpp

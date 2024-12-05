@@ -9,7 +9,9 @@
 
 int main(int argc, char **argv)
 {
-	ServerConfig conf("./_TestConfigs/Pass/webserv.conf", NULL);
+	(void)argc;
+	(void)argv;
+	ServerConfig conf("./_Tests/TestFiles/Pass_webserv.conf", NULL);
 	
 	if (!conf.parseConfigFile())
 		return (1);

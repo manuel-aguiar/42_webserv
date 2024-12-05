@@ -46,12 +46,11 @@ class ServerConfig
 		// Getters & Setters
 		const t_path&								getConfigPath() const;
 		const std::map<std::string, ServerBlock>&	getServerBlocks() const;
-		const std::string&							getMaxWorkers() const;
 		const std::string&							getMaxConnections() const;
 		const std::string&							getMaxConcurrentCgi() const;
 		void										setConfigPath(const t_path &path);
-		bool										setMaxConnections(const std::string &value, const int &flag = 0);
-		bool										setMaxConcurrentCgi(const std::string &value, const int &flag = 0);
+		void										setMaxConnections(const std::string &value, const int &flag = 0);
+		void										setMaxConcurrentCgi(const std::string &value, const int &flag = 0);
 
 		int											parseConfigFile();
 
@@ -68,7 +67,7 @@ class ServerConfig
 		};
 
 		// Key/value storing for config settings
-		typedef bool (ServerConfig::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerConfig::*f_addConfigValue)(const std::string &, const int &);
 		std::map<std::string, std::set<std::string> >		m_config;
 		std::map<std::string, f_addConfigValue>				m_keys;
 
@@ -79,9 +78,6 @@ class ServerConfig
 		t_path								m_configFilePath;
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;
-
-		std::vector<ServerBlock>			m_servers;			// Server vector for parsing only
-		std::vector<ServerLocation>			m_locations;		// Location vector for parsing only
 		std::map<std::string, ServerBlock>	m_serverBlocks;		// std::string would be like IP:PORT:server_name as the identifier...?
 																// m_serverBlocks is the end result of the parsing process
 		// mostly for logs and debuging, see Globals class
@@ -92,9 +88,10 @@ class ServerConfig
 		int									m_parseConfigLine(const std::string &line, const size_t &currentLine,
 															ServerBlock &server, ServerLocation &location,
 															const int &currentLevel);
-		int									m_setConfigValue(const std::string &key, const std::string &value);
-		int									m_updateFile();
+		void								m_setConfigValue(const std::string &key, const std::string &value);
+		void								m_updateFile();
 		void								m_setServers(std::vector<ServerBlock> &servers);
+		void								m_setDefaults(const int &flag);
 };
 
 #endif

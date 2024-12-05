@@ -25,9 +25,6 @@ ServerConfig::ServerConfig(const char* configFilePath, Globals* globals)
 
 	m_config["max_connections"];
 	m_config["max_concurrent_cgi"];
-
-	setMaxConcurrentCgi(configDefault.maxCGI);
-	setMaxConnections(configDefault.maxConnections);
 }
 
 ServerConfig::~ServerConfig()
@@ -58,23 +55,18 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 	*this = other;
 }
 
-int		ServerConfig::m_updateFile()
+void	ServerConfig::m_updateFile()
 {
 	m_configFileStream.open(m_configFilePath.c_str());
-	if (!m_configFileStream.is_open()) {
-		std::cerr << "Error: Could not open configuration file." << std::endl;
-		return (0);
-	}
-	return (1);
+	if (!m_configFileStream.is_open())
+		throw (std::invalid_argument("Error: Could not open configuration file."));
 }
 
-int		ServerConfig::m_setConfigValue(const std::string &key, const std::string &value)
+void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &value)
 {
 	if (m_keys.find(key) == m_keys.end())
 		throw (std::invalid_argument("invalid key " + key));
 	(this->*m_keys[key])(value, 0);
-
-	return (1);
 }
 
 int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, ServerBlock &server,
@@ -138,8 +130,16 @@ int		ServerConfig::parseConfigFile()
 	ServerBlock		server;
 	ServerLocation	location;
 
-	if (!m_updateFile())
+	std::vector<ServerBlock>			m_servers;
+	std::vector<ServerLocation>			m_locations;
+
+	try {
+		m_updateFile();
+	}
+	catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
 		return (0);
+	}
 	if (m_serverCount)
 	{
 		std::cerr << "Error: parsing after startup not implemented" << std::endl;
@@ -221,6 +221,7 @@ int		ServerConfig::parseConfigFile()
 			}
 		}
 	}
+	m_setDefaults(0);
 	m_setServers(m_servers);
 	return (1);
 }
@@ -234,16 +235,6 @@ const t_path&		ServerConfig::getConfigPath() const
 const std::map<std::string, ServerBlock>&	ServerConfig::getServerBlocks() const
 {
 	return (m_serverBlocks);
-}
-
-const std::string		&ServerConfig::getMaxWorkers() const
-{
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("max_workers");
-
-	if (it != m_config.end())
-		return (*it->second.begin());
-	else
-		throw std::out_of_range("Key not found");
 }
 
 const std::string		&ServerConfig::getMaxConnections() const
@@ -271,22 +262,40 @@ void		ServerConfig::setConfigPath(const t_path &path)
 	m_configFilePath = path;
 }
 
-bool		ServerConfig::setMaxConnections(const std::string &value, const int &flag)
+void		ServerConfig::setMaxConnections(const std::string &value, const int &flag)
 {
-	return (m_config["max_connections"].insert(value).second);
+	if (!flag && !m_config["max_connections"].empty())
+		throw (std::invalid_argument("max_connections already set"));
+	m_config["max_connections"].clear();
+	m_config["max_connections"].insert(value);
 }
 
-bool		ServerConfig::setMaxConcurrentCgi(const std::string &value, const int &flag)
+void		ServerConfig::setMaxConcurrentCgi(const std::string &value, const int &flag)
 {
-	return (m_config["max_concurrent_cgi"].insert(value).second);
+	if (!flag && !m_config["max_concurrent_cgi"].empty())
+		throw (std::invalid_argument("max_concurrent_cgi already set"));
+	m_config["max_concurrent_cgi"].clear();
+	m_config["max_concurrent_cgi"].insert(value);
 }
 
 void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
 {
 	for (size_t i = 0; i < servers.size(); i++)
-	{
-		m_serverBlocks[servers[i].getHost()] = servers[i];
+		m_serverBlocks[*(servers[i].getListener().begin())] = servers[i]; // using first listener as key
+}
+
+void	ServerConfig::m_setDefaults(const int &flag)
+{
+	DefaultConfig	defaults;
+
+	try {
+		setMaxConnections(defaults.maxConnections, flag);
 	}
+	catch (std::exception &e) {}
+	try {
+		setMaxConcurrentCgi(defaults.maxCGI, flag);
+	}
+	catch (std::exception &e) {}
 }
 
 // Debug functions
@@ -295,7 +304,6 @@ void	ServerConfig::printProgramConfig() const
 {
 	std::cout << "╔═ Program ══════════════════O" << std::endl;
 	std::cout << "║ " <<  std::endl ;
-
 	std::cout << "║ Maximum Concurrent CGI: " << getMaxConcurrentCgi() << std::endl;
 	std::cout << "║ Maximum Simultaneous Connections: " << getMaxConnections() << std::endl;
 	std::cout << "║ " <<  std::endl ;

@@ -55,15 +55,15 @@ class ServerLocation
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
-		const int						getType() const;
-		bool							setType(const std::string &value, const int &flag = 0);
-		bool							setPath(const std::string &value, const int &flag = 0);
-		bool							setRoot(const std::string &value, const int &flag = 0);
-		bool							setAutoindex(const std::string &value, const int &flag = 0);
-		bool							addMethod(const std::string &value, const int &flag = 0);
+		int								getType() const;
+		void							setType(const std::string &value, const int &flag = 0);
+		void							setPath(const std::string &value, const int &flag = 0);
+		void							setRoot(const std::string &value, const int &flag = 0);
+		void							setAutoindex(const std::string &value, const int &flag = 0);
+		void							addMethod(const std::string &value, const int &flag = 0);
 
 		void							setDefaults(const int &flag = 0);
-		bool							addConfigValue(const std::string &key, const std::string &value);
+		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 
 		// DEBUG
@@ -72,7 +72,7 @@ class ServerLocation
 	private:
 
 		// Key/value storing for config settings
-		typedef bool (ServerLocation::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerLocation::*f_addConfigValue)(const std::string &, const int &);
 		std::map<std::string, std::set<std::string> > 	m_config;
 		std::map<std::string, f_addConfigValue> 		m_keys;
 

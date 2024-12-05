@@ -14,16 +14,18 @@
 
 ServerBlock::ServerBlock()
 {
-	m_keys["host"]					= &ServerBlock::setHost;
-	m_keys["port"]					= &ServerBlock::setPort;
+	m_keys["listen"]				= &ServerBlock::setListener;
+	// m_keys["host"]					= &ServerBlock::setHost;
+	// m_keys["port"]					= &ServerBlock::setPort;
 	m_keys["server_names"]			= &ServerBlock::addServerName;
 	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
 	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
 	m_keys["root"]					= &ServerBlock::setRootPath;
 	m_keys["error_pages"]			= &ServerBlock::addErrorPage;
 
-	m_config["host"];
-	m_config["port"];
+	m_config["listen"];
+	// m_config["host"];
+	// m_config["port"];
 	m_config["server_names"];
 	m_config["client_body_size"];
 	m_config["client_header_size"];
@@ -52,30 +54,58 @@ ServerBlock::ServerBlock(const ServerBlock &other)
 	*this = other;
 }
 
-bool	ServerBlock::setHost(const std::string &value, const int &flag)
+void	ServerBlock::setListener(const std::string &value, const int &flag)
 {
-	if (!flag && !m_config["host"].empty())
-		throw (std::invalid_argument("host already set"));
-	// if (!validateIpv4(value))
-	// 	throw (std::invalid_argument("not an ipv4 address"));
-	m_config["host"].clear();
-	m_config["host"].insert(value);
-	return (1);
+	std::string	hostname;
+	std::string	port;
+	size_t		portValue;
+	size_t		colonPos;
+
+	if (!flag && !m_config["listen"].empty())
+		throw (std::invalid_argument("listener already set"));
+
+	colonPos = value.find(':');
+	if (colonPos == 0 || colonPos == value.length() - 1)
+		throw (std::invalid_argument("Error: Invalid format. The input should be in 'hostname:port' format.\n"));
+	if (colonPos == std::string::npos)
+	{
+		hostname = DEFAULTCONF_BLOCK_IP_LISTEN;
+		port = value;
+	}
+	else
+	{
+		if (value.find(':', colonPos + 1) != std::string::npos)
+			throw (std::invalid_argument("Error: Invalid format. The input should be in 'hostname:port' format.\n"));
+		hostname = value.substr(0, colonPos);
+		port = value.substr(colonPos + 1);
+	}
+	portValue = stoull(port); // fix throw
+	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
+		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535.\n"));
+	m_config["listen"].insert(hostname + ':' + port);
 }
 
-bool	ServerBlock::setRootPath(const std::string &value, const int &flag)
+// bool	ServerBlock::setHost(const std::string &value, const int &flag)
+// {
+// 	if (!flag && !m_config["host"].empty())
+// 		throw (std::invalid_argument("host already set"));
+// 	// if (!validateIpv4(value))
+// 	// 	throw (std::invalid_argument("not an ipv4 address"));
+// 	m_config["host"].clear();
+// 	m_config["host"].insert(value);
+// 	return (1);
+// }
+
+void	ServerBlock::setRootPath(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["root"].empty())
 		throw (std::invalid_argument("root path already set"));
 
-	// is there any check to do here?
-
 	m_config["root"].clear();
 	m_config["root"].insert(value);
-	return (1);
 }
 
-bool	ServerBlock::setClientBodySize(const std::string &value, const int &flag)
+void	ServerBlock::setClientBodySize(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["client_body_size"].empty())
 		throw (std::invalid_argument("client body size already set"));
@@ -83,16 +113,13 @@ bool	ServerBlock::setClientBodySize(const std::string &value, const int &flag)
 		parse_size(value);
 	}
 	catch (std::exception &e) {
-		std::cerr << e.what();
-		return (0);
+		throw(e.what());
 	}
 	m_config["client_body_size"].clear();
 	m_config["client_body_size"].insert(value);
-
-	return (1);
 }
 
-bool	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
+void	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["client_header_size"].empty())
 		throw (std::invalid_argument("client header size already set"));
@@ -100,39 +127,33 @@ bool	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
 		parse_size(value);
 	}
 	catch (std::exception &e) {
-		std::cerr << e.what();
-		return (0);
+		throw(e.what());
 	}
 	m_config["client_header_size"].clear();
 	m_config["client_header_size"].insert(value);
-
-	return (1);
 }
 
-bool	ServerBlock::setPort(const std::string &value, const int &flag)
-{
-	if (!flag && !m_config["port"].empty())
-		throw (std::invalid_argument("port already set"));
-	if (!isNumber(value))
-		return (0);
-	m_config["port"].clear();
-	m_config["port"].insert(value);
+// bool	ServerBlock::setPort(const std::string &value, const int &flag)
+// {
+// 	if (!flag && !m_config["port"].empty())
+// 		throw (std::invalid_argument("port already set"));
+// 	if (!isNumber(value))
+// 		return (0);
+// 	m_config["port"].clear();
+// 	m_config["port"].insert(value);
 
-	return (1);
-}
+// 	return (1);
+// }
 
-bool	ServerBlock::addServerName(const std::string &value, const int &flag)
+void	ServerBlock::addServerName(const std::string &value, const int &flag)
 {
 	(void)flag;
-	// are there any more checks to do here?
-	if ((m_config["server_names"].find(value) != m_config["server_names"].end()))
-		return (0);
+	if (m_config["server_names"].find(value) != m_config["server_names"].end())
+		throw (std::invalid_argument("server name already set"));
 	m_config["server_names"].insert(value);
-
-	return (1);
 }
 
-bool	ServerBlock::addErrorPage(const std::string &value, const int &flag)
+void	ServerBlock::addErrorPage(const std::string &value, const int &flag)
 {
 	(void)flag;
 	std::stringstream	ss;
@@ -149,17 +170,13 @@ bool	ServerBlock::addErrorPage(const std::string &value, const int &flag)
 		throw (std::invalid_argument("error code is not a number: " + error_code));
 	// path = value.substr(separator + 1, value.size() - (separator - 1));			// To retrieve the path
 	m_config["error_pages"].insert(ss.str());
-
-	return (1);
 }
 
-bool	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
+void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
 {
 	if (m_keys.find(key) == m_keys.end())
 		throw (std::invalid_argument("invalid key " + key));
 	(this->*m_keys[key])(value, 0);
-
-	return (1);
 }
 
 const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
@@ -167,22 +184,32 @@ const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
 	return (m_locations);
 }
 
-const std::string&	ServerBlock::getHost() const
-{
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("host");
+// const std::string&	ServerBlock::getHost() const
+// {
+// 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("host");
 
-	if (it != m_config.end())
-		return (*it->second.begin());
-	else
-		throw std::out_of_range("Key not found");
-}
+// 	if (it != m_config.end())
+// 		return (*it->second.begin());
+// 	else
+// 		throw std::out_of_range("Key not found");
+// }
 
-const std::string&	ServerBlock::getPort() const
-{
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("port");
+// const std::string&	ServerBlock::getPort() const
+// {
+// 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("port");
 	
+// 	if (it != m_config.end())
+// 		return (*it->second.begin());
+// 	else
+// 		throw std::out_of_range("Key not found");
+// }
+
+const std::set<std::string>&	ServerBlock::getListener() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("listen");
+
 	if (it != m_config.end())
-		return (*it->second.begin());
+		return (it->second);
 	else
 		throw std::out_of_range("Key not found");
 }
@@ -197,7 +224,7 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 		throw std::out_of_range("Key not found");
 }
 
-const size_t	ServerBlock::getClientBodySize() const
+size_t	ServerBlock::getClientBodySize() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("client_body_size");
 
@@ -207,7 +234,7 @@ const size_t	ServerBlock::getClientBodySize() const
 		throw std::out_of_range("Key not found");
 }
 
-const size_t	ServerBlock::getClientHeaderSize() const
+size_t	ServerBlock::getClientHeaderSize() const
 {
 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("client_header_size");
 
@@ -242,10 +269,6 @@ void	ServerBlock::setDefaults(const int &flag)
 	DefaultConfig	defaults;
 
 	try {
-		setHost(defaults.IPListen, flag);
-	}
-	catch (std::exception &e) {}
-	try {
 		setClientBodySize(defaults.maxClientBodySize, flag);
 	}
 	catch (std::exception &e) {}
@@ -257,7 +280,7 @@ void	ServerBlock::setDefaults(const int &flag)
 
 bool	ServerBlock::validate() const
 {
-	if (m_config.find("port")->second.empty())
+	if (m_config.find("listen")->second.empty())
 	{
 		std::cerr << "Error: server config validation: listening port not assigned" << std::endl;
 		return (0);
@@ -298,8 +321,10 @@ void	ServerBlock::printServerConfig() const
 	
 	std::cout << "║ ┌─ Server ─────────o" << std::endl;
 	std::cout << "║ │ " <<  std::endl ;
-	std::cout << "║ │ Host: " << getHost() << std::endl;
-	std::cout << "║ │ Port: " << getPort() << std::endl;
+	std::cout << "║ │ listeners: ";
+	for(std::set<std::string>::const_iterator it = getListener().begin(); it != getListener().end(); it++)
+		std::cout << *it << " ";
+	std::cout << std::endl;
 	std::cout << "║ │ Server_names: ";
 	if (!server_names.size())
 		std::cout << "(empty)";

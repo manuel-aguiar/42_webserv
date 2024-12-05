@@ -40,30 +40,30 @@ class ServerBlock
 		ServerBlock(const ServerBlock &other);
 
         const std::set<std::string>&						getDomainNames() const;
-		const std::vector<t_listeners>&						getListeners() const;
 		const std::map<std::string, ServerLocation>& 		getLocations() const;
 
 		void							setLocations(const std::vector<ServerLocation> &Locations);
 
 		// premade
-		bool							setHost(const std::string &value, const int &flag = 0);
-		bool							setRootPath(const std::string &value, const int &flag = 0);
-		bool							setClientBodySize(const std::string &value, const int &flag = 0);
-		bool							setClientHeaderSize(const std::string &value, const int &flag = 0);
-		bool							setPort(const std::string &value, const int &flag = 0);
-		bool							addServerName(const std::string &value, const int &flag = 0);
-		bool							addErrorPage(const std::string &value, const int &flag = 0);
-        const std::string&				getHost() const;
-		const std::string&				getPort() const;
+		void							setListener(const std::string &value, const int &flag = 0);
+		// bool							setHost(const std::string &value, const int &flag = 0);
+		// bool							setPort(const std::string &value, const int &flag = 0);
+		void							setRootPath(const std::string &value, const int &flag = 0);
+		void							setClientBodySize(const std::string &value, const int &flag = 0);
+		void							setClientHeaderSize(const std::string &value, const int &flag = 0);
+		void							addServerName(const std::string &value, const int &flag = 0);
+		void							addErrorPage(const std::string &value, const int &flag = 0);
+        // const std::string&				getHost() const;
+		// const std::string&				getPort() const;
+		const std::set<std::string>&	getListener() const;
 		const std::set<std::string>&	getServerNames() const;
-		const size_t					getClientBodySize() const;
-		const size_t					getClientHeaderSize() const;
+		size_t							getClientBodySize() const;
+		size_t							getClientHeaderSize() const;
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
 
 		void							setDefaults(const int &flag = 0);
-
-		bool							addConfigValue(const std::string &key, const std::string &value);
+		void							addConfigValue(const std::string &key, const std::string &value);
 		void							addLocations(std::vector<ServerLocation> Locations);
 		bool							validate() const;
 
@@ -71,7 +71,7 @@ class ServerBlock
 		void							printServerConfig() const;
 
     private:
-		typedef bool (ServerBlock::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerBlock::*f_addConfigValue)(const std::string &, const int &);
 		std::map<std::string, std::set<std::string> >	m_config;
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
