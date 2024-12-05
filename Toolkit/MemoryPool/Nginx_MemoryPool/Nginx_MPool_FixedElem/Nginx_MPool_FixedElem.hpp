@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpInterpreter.hpp                                :+:      :+:    :+:   */
+/*   Nginx_MPool_FixedElem.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 10:16:50 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/11 10:17:01 by codespace        ###   ########.fr       */
+/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/03 11:55:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPINTERPRETER_HPP
-
-# define HTTPINTERPRETER_HPP
-
-class HttpInterpreter
-{
-
-};
 
 
+#ifndef NGINX_MPOOL_FIXEDELEM_HPP
+# define NGINX_MPOOL_FIXEDELEM_HPP
+
+# include <limits.h>
+# include <stddef.h>
+# include <cstring>
+# include <iostream>
+
+template <typename T>
+class Nginx_MPool_FixedElem;
+
+# include "Nginx_MPool_FixedElem.tpp"
 
 #endif

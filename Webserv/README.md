@@ -2,6 +2,11 @@
 
 The main folder structure here is as follows:
 
+Event:
+	- This a class that will be used everywhere to assign events to handlers
+
+Connection:
+	- Used everywhere, any protocol will interact directly with it
 
 ServerManager:
 	- All things related to management of TCP, listening sockets, connections, IO, Events

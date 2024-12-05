@@ -1,0 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _HttpModule.docs                                   :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/26 16:23:06 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/02 09:16:03 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+This is the Module that is called for connections that will exchange information
+based on the Http Connection
+
+

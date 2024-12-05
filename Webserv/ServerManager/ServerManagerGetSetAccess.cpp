@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HandlerFunction.hpp                                   :+:      :+:    :+:   */
+/*   ServerManagerGetSetAccess.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/03 10:54:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/03 11:04:30 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/03 09:03:04 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/03 09:45:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EVENTHANDLER_HPP
+//Project headers
+# include "ServerManager.hpp"
+# include "../ServerConfig/ServerConfig.hpp"
 
-# define EVENTHANDLER_HPP
+//C++ headers
+# include <cassert>
 
-class Event;
-class HandlerFunction
+//getters
+const ServerConfig&	ServerManager::getConfig() const
 {
-    public:
-        static void listener_Accept(Event& event);
-        static void connection_Read(Event& event);
-        static void connection_Write(Event& event);
-        static void Cgi_Read(Event& event);
-        static void Cgi_Write(Event& event);
-        static void signal_Read(Event& event);
-};
+	return (m_config);
+}
 
-
-#endif
+//accessors
+t_ptr_ProtoModule		ServerManager::accessProtoModule(e_protoModules module)
+{
+	return (m_protoModules[module]);
+}

@@ -6,53 +6,39 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:11:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/02 11:53:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "Event.hpp"
-# include "../Connection/Connection.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
+# include <cassert>
+# include <cstddef>
 
-Event::Event(Globals* globals) //: m_globals(globals)
-{
-    (void)globals;
-}
+Event::Event() :
+	m_function(NULL),
+	m_data(NULL)
+{}
 
-
-Event::~Event()
-{
-
-}
+Event::~Event() {}
 
 void    Event::setFlags(int flags)
 {
-    m_flags = flags;
+	m_flags = flags;
 }
 
-void Event::setHandler_Function_and_Data(HandlerFunction handler, HandlerData data)
+void Event::setHandlerFunction_and_Data(HandlerFunction handler, HandlerData data)
 {
-    m_function = handler;
-    m_data = data;
+	m_function = handler;
+	m_data = data;
 }
-
 
 void Event::handle()
 {
-    assert(this->m_function != NULL);
+	assert(this->m_function != NULL && this->m_data != NULL);
 
-    (this->m_function)(*this);
+	(this->m_function)(*this);
 }
-
 
 //private
-Event::Event(const Event& copy)
-{
-    (void)copy;
-}
-
-Event& Event::operator=(const Event& assign)
-{
-    (void)assign;
-    return (*this);
-}
+Event::Event(const Event& copy)  {(void)copy;}
+Event& Event::operator=(const Event& assign) {(void)assign; return (*this);}

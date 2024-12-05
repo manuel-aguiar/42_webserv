@@ -1,27 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpEventHandlers.hpp                              :+:      :+:    :+:   */
+/*   HttpRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/08 10:30:33 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/08 10:33:21 by manuel           ###   ########.fr       */
+/*   Created: 2024/11/11 10:17:20 by codespace         #+#    #+#             */
+/*   Updated: 2024/11/26 10:45:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPEVENTHANDLERS_HPP
-
-# define HTTPEVENTSHANDLERS_HPP
-
-
-class Event;
-class HttpEventHandlers
-{
-	static void	httpRead(Event& event);
-	static void	httpWrite(Event& event);
-
-};
-
-
-#endif
+#include "HttpRequest.hpp"

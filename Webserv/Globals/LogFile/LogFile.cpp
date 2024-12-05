@@ -17,43 +17,43 @@ LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {
 	assert(filename != NULL);
 
-    m_fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
-    if (m_fd == -1)
-        throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
+	m_fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
+	if (m_fd == -1)
+		throw std::runtime_error (std::string("Failed to start LogFile at: open(): ") + std::strerror(errno));
 }
 
 LogFile::~LogFile()
 {
-    ::close(m_fd);
+	::close(m_fd);
 }
 
-void    LogFile::setGlobals(Globals& globals)
+void	LogFile::setGlobals(Globals& globals)
 {
-    m_globals = &globals;
+	m_globals = &globals;
 }
 
-void    LogFile::record(const std::string& entry)
-{
-	assert(m_globals != NULL);
-    m_globals->getClock()->update();
-
-    const char* clockBuf = m_globals->getClock()->get_FormatedTime();
-
-    write(m_fd, clockBuf, std::strlen(clockBuf));
-    write(m_fd, ": ", 2);
-    write(m_fd, entry.c_str(), entry.size());
-    write(m_fd, "\n", 1);
-}
-
-void    LogFile::record(const char* entry)
+void	LogFile::record(const std::string& entry)
 {
 	assert(m_globals != NULL);
-    m_globals->getClock()->update();
+	m_globals->getClock()->update();
 
-    const char* clockBuf = m_globals->getClock()->get_FormatedTime();
+	const char* clockBuf = m_globals->getClock()->get_FormatedTime();
 
-    write(m_fd, clockBuf, std::strlen(clockBuf));
-    write(m_fd, ": ", 2);
-    write(m_fd, entry, std::strlen(entry));
-    write(m_fd, "\n", 1);
+	write(m_fd, clockBuf, std::strlen(clockBuf));
+	write(m_fd, ": ", 2);
+	write(m_fd, entry.c_str(), entry.size());
+	write(m_fd, "\n", 1);
+}
+
+void	LogFile::record(const char* entry)
+{
+	assert(m_globals != NULL);
+	m_globals->getClock()->update();
+
+	const char* clockBuf = m_globals->getClock()->get_FormatedTime();
+
+	write(m_fd, clockBuf, std::strlen(clockBuf));
+	write(m_fd, ": ", 2);
+	write(m_fd, entry, std::strlen(entry));
+	write(m_fd, "\n", 1);
 }

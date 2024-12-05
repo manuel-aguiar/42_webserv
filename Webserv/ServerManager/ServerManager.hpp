@@ -5,68 +5,70 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/19 14:27:21 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/04 16:39:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
+#ifndef SERVERMANAGER_HPP
 
-# define SERVER_HPP
+# define SERVERMANAGER_HPP
 
+// Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
-# include "CgiManager/CgiManager.hpp"
-# include "ListeningSocket/ListeningSocket.hpp"
-# include "Connection/ConnectionPool.hpp"
-# include "../Globals/LogFile/LogFile.hpp"
-# include "../EventManager/EventManager.hpp"
-# include "../Event/HandlerFunction.hpp"
-# include "../SignalHandler/SignalHandler.hpp"
+# include "ServerWorker/ServerWorker.hpp"
+# include "BlockFinder/BlockFinder.hpp"
 
+// C++ headers
 # include <vector>
-# include <map>
-# include <iostream>
 
+class ServerConfig;
 class Globals;
+class ThreadPool;
+class BlockFinder;
+
+typedef enum e_protoModules
+{
+	HTTP_MODULE,
+	MODULE_COUNT
+} e_protoModules;
+
 
 class ServerManager
 {
-    public:
-        ServerManager(size_t serverID, Globals* globals);
-        ~ServerManager();
+	public:
+		ServerManager(const ServerConfig& config, Globals* globals = NULL);
+		~ServerManager();
 
-        int createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
+		//getters
+		const ServerConfig& 			getConfig() const;
+		
+		//accessors
+		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
 
-        int setup_mySignalHandler();
+		void							prepareWorkers();
+		void							run();
+		void							setupListeners();
+		void							setupSingleListener(const t_ip_str& ip, const t_port_str& port, int socktype, int addrFamily, int backlog);
 
-        int run();
+	private:
+		DynArray<ServerWorker*>			m_workers;
+		DynArray<t_sockaddr>			m_listenAddrs;
+		BlockFinder						m_blockFinder;
+		const ServerConfig&				m_config;
+		Globals*						m_globals;
 
-    //private:
-        //typedef MemoryPool_Alloc<std::pair<int, ListeningSocket> > ListeningSocketPool;
-        //typedef std::map<int, ListeningSocket, std::less<int>, MemoryPool_Alloc<std::pair<int, ListeningSocket> > > ListeningSocketMap;
-        //ListeningSocketMap              m_listeners;
+		t_ptr_ProtoModule				m_protoModules[MODULE_COUNT];	// loads the modules that we will be using
 
-        size_t                          m_myID;
-        bool                            m_multithreadListen;
-        std::vector<ListeningSocket*>   m_listeners;
-        Nginx_MemoryPool*               m_pool;
-        CgiManager                     	m_cgiHandler;
-        ConnectionPool                  m_connectionPool;
-        EventManager                    m_eventManager;
-        Globals*                        m_globals;
-        Event                           m_mySignalEvent;
+		ThreadPool*                     m_threadPool;
 
-        bool                            m_isRunning;
+		void    						mf_runSingleThreaded();
+		void    						mf_runMultiThreaded();
 
-
-
-    private:
-        ServerManager();
-        ServerManager(const ServerManager& copy);
-        ServerManager& operator=(const ServerManager& assign);
+		ServerManager();
+		ServerManager(const ServerManager& copy);
+		ServerManager& operator=(const ServerManager& assign);
 };
-
-
 
 
 

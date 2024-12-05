@@ -1,0 +1,69 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _EventManager.docs                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
+#    Updated: 2024/11/22 14:18:27 by manuel           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+The event manager will handle traffic on the various kernel buffers our program will use.
+These buffers (pointed to by FileDescriptors) relate to, specifically:
+
+	- ListeningSockets
+		sockets ready to accept connections
+	- Connection Sockets Http Reads
+		we will have to be notified of when a client is sending traffic via a connection
+		and be ready to read it
+	- Connection Socket Http Writes
+		we will need to respond to our client. the event manager will notify us when
+		the client is ready to receive incoming data as we write it
+	- SignalHandler Pipe
+		we will use a pipe as the means to pass signals to our workers
+		(best used for multithreading, which we may not implement, but pre-prepares such feature)
+	- Cgi Pipe Writes
+		http connections, after parsing a request, may need to call the CgiManager
+		to execute scripts, and the message body will have to be passed to the script as it
+		when it is read to read our message
+	- Cgi Pipe Reads
+		The cgi interpreter will write a message to the http connections in order for responses
+		to be generated and sent to our client.
+
+
+	Possibly:
+	- Static File Read
+		When we read a file, technically it can also block (under heavy loads). So, ideally when sending a static file
+		However, that means we are processing a request, open a file descriptor and we have to wait for the next epoll iteration
+		to start reading, and for the following epoll iteration to start writing........ i'm not too fond of this, means We
+		essentially cannot serve a request in one go of epoll_wait......??
+
+	To be considered
+
+
+That means that there will be AT LEAST 6 Event Handler Functions, 1 per event-type subscribed to the EventManager.
+Because they will be function pointers, we don't have to go with enums and switches to call the right handler.
+
+Nginx has multiple eventhandlers within http_request.c. it up+dates the handlers to next stage as it parses
+(it may happen that data is still being read and we need to wait, it can jump right to where it left off)
+
+All the event manager deals with is Event class instances and nothing else.
+Each user of the event manager will have to provide handler functions to reinterpret the Event
+data* pointer to their relevant class and do their relevant work.
+For instance:
+	Signal Handler will take an event, use it to read the pipe.
+	Cgi Pipe Write will take an event, set the handler function to cast data* to the relevant
+	http connection for it to receive info.
+
+	so on and so forth.
+
+We are using function pointers instead of polymorphism yes...... because F polymorphism.
+
+The event manager exists at the level of the worker. In a multithreading scenario, each worker will
+have its own, independent, event manager to deal with it own file descriptors.
+
+
+
+Then when implementing email protocols, nginx also has event handlers for those etcetc

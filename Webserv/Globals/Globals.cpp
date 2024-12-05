@@ -3,35 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   Globals.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/11 09:26:39 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/02 14:42:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Globals.hpp"
-#include "../Clock/Clock.hpp"
-#include "../Logs/ILog.hpp"
+#include "Clock/Clock.hpp"
+#include "LogFile/LogFile.hpp"
 
 Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile* debugFile) :
-    m_clock(clock),
-    m_statusFile(statusFile),
+	m_clock(clock),
+	m_statusFile(statusFile),
 	m_errorFile(errorFile),
-    m_debugFile(debugFile)
+	m_debugFile(debugFile)
 {
-    if (m_clock && m_statusFile && m_errorFile && m_debugFile)
-        mf_setGlobals();
+	if (m_clock && m_statusFile && m_errorFile && m_debugFile)
+		mf_setGlobals();
 }
 
-void    Globals::setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorFile, LogFile& debugFile)
+void	Globals::setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorFile, LogFile& debugFile)
 {
-    m_clock = &clock;
-    m_statusFile = &statusFile;
-    m_errorFile = &errorFile;
+	m_clock = &clock;
+	m_statusFile = &statusFile;
+	m_errorFile = &errorFile;
 	m_debugFile = &debugFile;
 
-    mf_setGlobals();
+	mf_setGlobals();
 }
 
 void	Globals::logStatus(const std::string& message)
@@ -74,10 +74,10 @@ void	Globals::logError(const char* message)
 inline
 void    Globals::mf_setGlobals()
 {
-    m_clock->setGlobals(*this);
-    m_statusFile->setGlobals(*this);
+	m_clock->setGlobals(*this);
+	m_statusFile->setGlobals(*this);
 	m_errorFile->setGlobals(*this);
-    m_debugFile->setGlobals(*this);
+	m_debugFile->setGlobals(*this);
 }
 
 Clock*              Globals::getClock() const { return (m_clock); }

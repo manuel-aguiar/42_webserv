@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   func.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 07:43:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 08:24:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 10:45:09 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 
 class Socket;
-class HttpInterpreter;
+class HttpManager;
 
 typedef class Socket t_socket;
 typedef void*   t_interpreter;
@@ -27,21 +27,21 @@ class Socket
     public:
         Socket( t_socketRead    sockRead, t_interpreterRead interpRead, t_interpreter interpreter) :
                 _sockVar(42),
-                _interpreter(interpreter), 
+                _interpreter(interpreter),
                 _sockRead(sockRead),
                 _interpRead(interpRead) {}
-        
+
         void    onRead()
         {
             _sockRead(*this, _interpRead);
         }
-        
+
         int                 _sockVar;
 
         t_interpreter       _interpreter;
         t_socketRead        _sockRead;
         t_interpreterRead   _interpRead;
-        
+
 };
 
 
@@ -54,11 +54,11 @@ struct TypeCheck {
 };
 
 
-class HttpInterpreter
+class HttpManager
 {
     public:
 
-        HttpInterpreter() : m_state(404) {}
+        HttpManager() : m_state(404) {}
         void setState(int state) { m_state = state; }
         int getState() { return m_state; }
 
@@ -73,8 +73,8 @@ class HttpInterpreteronRead
     public:
         static void onRead(const Socket& me)
         {
-            
-            HttpInterpreter* local = static_cast<HttpInterpreter*>(me._interpreter);
+
+            HttpManager* local = static_cast<HttpManager*>(me._interpreter);
             local->onRead(me);
         }
 };
@@ -83,7 +83,7 @@ class FtpInterpreter
 {
     public:
         FtpInterpreter() : m_state(212) {}
-        
+
         void    setState(int state) { m_state = state; }
         int     getState() { return m_state; }
 
@@ -116,7 +116,7 @@ class ServerFunc
 {
     public:
         static void onRead(const t_socket& me, t_interpreterRead interpRead)
-        {            
+        {
             interpRead(me);
         }
 };
@@ -129,12 +129,12 @@ int main(void)
 {
     std::vector<Socket> sockets;
 
-    HttpInterpreter http;
+    HttpManager http;
     FtpInterpreter ftp;
 
     t_serversocket b1(&ServerFunc::onRead, &HttpInterpreteronRead::onRead, &http);
     t_clientsocket b2(&ClientFunc::onRead, &FtpInterpreterGetter::onRead, &http);
-    
+
     sockets.push_back(b1);
     sockets.push_back(b2);
 

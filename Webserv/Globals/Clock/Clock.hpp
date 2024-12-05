@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Clock.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/16 15:44:47 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/26 10:26:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,27 @@ class Globals;
 
 class Clock
 {
-    public:
-        Clock(Globals* globals = NULL);
-        ~Clock();
-        Clock(const Clock& copy);
-        Clock& operator=(const Clock& assign);
+	public:
+		Clock(Globals* globals = NULL);
+		~Clock();
+		Clock(const Clock& copy);
+		Clock& operator=(const Clock& assign);
 
-        void                setGlobals(Globals& logFile);
-        void                start();
-        void                update();
-        const char*         get_FormatedTime();
+		void				setGlobals(Globals& logFile);
+		void				start();
+		void				update();
+		const char*			get_FormatedTime();
 
-    private:
-        Globals*            m_globals;
-        struct timeval      m_start;
-        struct timeval      m_now;
-        time_t              m_elapsed_ms;
-        char                m_buffer[32];
+	private:
+		Globals*			m_globals;
+		struct timeval		m_start;
+		struct timeval		m_now;
+		time_t				m_elapsed_ms;
+		char				m_buffer[32];
 
 
-        //helpers
-        int                 _get_time();
+		//helpers
+		int					mf_get_time();
 };
 
 
