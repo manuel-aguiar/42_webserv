@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #ifndef WEBSERVER_DEFINITIONS_H
-
 # define WEBSERVER_DEFINITIONS_H
 
 # include <stdint.h>
