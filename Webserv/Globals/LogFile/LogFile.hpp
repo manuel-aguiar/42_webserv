@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   LogFile.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 10:24:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 10:04:28 by manuel           ###   ########.fr       */
+/*   Updated: 2024/11/26 10:26:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,24 @@ class Globals;
 class LogFile
 {
 
-    public:
-        LogFile(const char* filename, Globals* globals = NULL);
-        ~LogFile();
+	public:
+		LogFile(const char* filename, Globals* globals = NULL);
+		~LogFile();
 
-        void    setGlobals(Globals& globals);
+		void		setGlobals(Globals& globals);
 
-        void    record(const std::string& entry);
-        void    record(const char* entry);
-
-
-    private:
-        t_fd        m_fd;
-        Globals*    m_globals;
+		void		record(const std::string& entry);
+		void		record(const char* entry);
 
 
-        //Log();
-        //Log(const Log& copy);
-        //Log& operator=(const Log& assign);
+	private:
+		t_fd		m_fd;
+		Globals*	m_globals;
+
+
+		//Log();
+		//Log(const Log& copy);
+		//Log& operator=(const Log& assign);
 
 };
 

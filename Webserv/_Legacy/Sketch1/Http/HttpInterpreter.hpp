@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpInterpreter.hpp                                :+:      :+:    :+:   */
+/*   HttpManager.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,14 +14,14 @@
 
 # define HTTPINTERPRETER_HPP
 
-class HttpInterpreter
+class HttpManager
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        HttpManager();
+        ~HttpManager();
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
+        HttpManager(const HttpManager& copy);
+        HttpManager& operator=(const HttpManager& assign);
 
         void    interpret();
 };

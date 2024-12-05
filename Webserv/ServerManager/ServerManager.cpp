@@ -3,117 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:03:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 08:52:04 by codespace        ###   ########.fr       */
+/*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/04 11:50:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerManager.hpp"
-# include "../Globals/Globals.hpp"
+# include "../GenericUtils/Webserver_Definitions.h"
+# include "../HttpModule/HttpModule.hpp"
+# include "../CgiModule/CgiModule.hpp"
+# include "../Globals/SignalHandler/SignalHandler.hpp"
 
-ServerManager::ServerManager(size_t serverID, Globals* _globals) :
-    m_myID(serverID),
-    m_pool(Nginx_MemoryPool::create(4096, 1)),
-    m_connectionPool(_globals),
-    m_eventManager(_globals),
-    m_globals(_globals),
-    m_isRunning(true)
+ServerManager::ServerManager(const ServerConfig& config, Globals* globals) :
+	m_blockFinder(config),
+	m_config(config),
+	m_globals(globals)
 {
-    #ifdef SO_REUSEPORT
-        m_multithreadListen = true;
-    #else
-        m_multithreadListen = false;
-    #endif
+	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
 }
 
 ServerManager::~ServerManager()
 {
-    m_pool->destroy();
+	for (size_t i = 0; i < MODULE_COUNT; ++i)
+		delete ((unsigned char *)m_protoModules[i]);
 }
 
-int ServerManager::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
+void    ServerManager::run()
 {
-    ListeningSocket*    listener;
-    t_addrinfo          hints;
-    t_addrinfo          *res;
-    t_addrinfo          *cur;
+	if (m_workers.size() == 1)
+		mf_runSingleThreaded();
+	else
+		mf_runMultiThreaded();
 
-    hints = (struct addrinfo){};
-    hints.ai_family = addrFamily;
-    hints.ai_socktype = socktype;
+	// destroy workers,
+	// close signal handler pipes
+}
 
-	int status = getaddrinfo(node, port, &hints, &res);
+void    ServerManager::mf_runSingleThreaded()
+{
+	m_workers[0]->run();
+}
 
-	if (status != 0)
+void    ServerManager::mf_runMultiThreaded()
+{
+	m_threadPool = new ThreadPool(m_workers.size());
+
+	for (size_t i = 0; i < m_workers.size(); ++i)
 	{
-        m_globals->logStatus("getaddrinfo(): " + std::string(gai_strerror(status)));
-		return (1);
+		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
 	}
 
-    for(cur = res; cur != NULL; cur = cur->ai_next)
-	{
-        listener = (ListeningSocket *)m_pool->allocate(sizeof(ListeningSocket), true);
-        new (listener) ListeningSocket(m_connectionPool, m_eventManager, m_globals);
+	while (!SignalHandler::getSignal())
+		usleep(1000);
 
-        listener->m_addr = (t_sockaddr *)m_pool->allocate(cur->ai_addrlen, true);
-        std::memcpy(listener->m_addr, cur->ai_addr, cur->ai_addrlen);
-
-
-        listener->m_socktype = cur->ai_socktype;
-        listener->m_proto = cur->ai_protocol;
-        listener->m_addrlen = cur->ai_addrlen;
-        listener->m_backlog = backlog;
-        listener->m_myEvent.setHandler_Function_and_Data(&HandlerFunction::listener_Accept, listener);
-        listener->m_myEvent.setFlags(EPOLLIN);
-
-
-        if (listener->open())
-            m_listeners.push_back(listener);
-        else
-        {
-            listener->~ListeningSocket();
-            continue ;
-        }
-        listener->m_myEvent.m_fd = listener->m_sockfd;
-        //std::cout << "added listener: " << listener->m_sockfd << "and event fd " << listener->m_myEvent.m_fd << std::endl;
-        m_eventManager.addEvent(listener->m_sockfd, listener->m_myEvent);
-
-    }
-    freeaddrinfo(res);
-    return (0);
+	m_threadPool->destroy(true);
+	delete (m_threadPool);
 }
-
-int ServerManager::setup_mySignalHandler()
-{
-    int pipeRead;
-
-    pipeRead = SignalHandler::PipeRead(m_myID);
-    m_mySignalEvent.setHandler_Function_and_Data(&HandlerFunction::signal_Read, this);
-    m_mySignalEvent.setFlags(EPOLLIN);
-    m_mySignalEvent.m_fd = pipeRead;
-    //std::cout << "added pipoe" << std::endl;
-    m_eventManager.addEvent(pipeRead, m_mySignalEvent);
-
-    return (1);
-}
-
-int ServerManager::run()
-{
-    while (m_isRunning)
-    {
-        m_eventManager.waitEvents(-1);
-        m_eventManager.distributeEvents();
-    }
-    return (1);
-}
-
-//private
-ServerManager::ServerManager() :
-    m_connectionPool(NULL, 0) {}
-
-ServerManager::ServerManager(const ServerManager& copy) :
-    m_connectionPool(NULL, 0)  {(void)copy;}
-
-ServerManager& ServerManager::operator=(const ServerManager& assign) { (void)assign; return (*this);}

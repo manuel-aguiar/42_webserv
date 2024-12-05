@@ -1,0 +1,32 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _HttpConnection.docs                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/28 10:55:19 by manuel            #+#    #+#              #
+#    Updated: 2024/11/28 11:06:27 by manuel           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+This is the http "interface" between a the server's generic purpose Connection class
+and the http specific Connection class.
+
+If we were to implement a, say, mail protocol, said mail protocol would need to have
+a Connection "interface" as well.
+
+In our case, the listening socket is parameterized to connect and assign a protocol by default.
+so when listeningsocket->m_initConnection(new connection), the function pointer assigned will be
+HttpModule::initConnection (new connection).
+
+That function's purpose is to create a new HttpConnection, associate it with newConnection,
+register HttpConnection* in the HttpManager, assign the httpRead event handler to newConnection->m_readEvent,
+and subscribe the event to the ServerManager's eventManager.
+
+
+
+
+HttpConnection should also have a timeout:
+	if the connection is alive but no info has been exchanged for more than X amount of time AND our request and response
+	queues are empty, then we should close the httpconnection and free its resources.

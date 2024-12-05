@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Interpreter.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 12:09:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/18 10:32:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/11/28 10:45:09 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 
 # include "IInterpreter.hpp"
 
-class HttpInterpreter : public IInterpreter
+class HttpManager : public IInterpreter
 {
     public:
-        HttpInterpreter();
-        ~HttpInterpreter();
+        HttpManager();
+        ~HttpManager();
 
-        HttpInterpreter(const HttpInterpreter& copy);
-        HttpInterpreter& operator=(const HttpInterpreter& assign);
+        HttpManager(const HttpManager& copy);
+        HttpManager& operator=(const HttpManager& assign);
 
         void    interpret();
 };

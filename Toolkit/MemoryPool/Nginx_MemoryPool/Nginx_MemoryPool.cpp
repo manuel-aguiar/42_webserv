@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MemoryPool.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 10:25:31 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/04 09:21:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void*   Nginx_MemoryPool::allocate(size_t size)
 void*   Nginx_MemoryPool::allocate(size_t size, size_t alignment)
 {
     assert(m_active != NULL);
+
+    /*std::cout << "allocating: " << size << "\n";*/
 
     t_bigBlock*                 newBig;
 
