@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 11:29:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:36:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@ class ServerWorker
 		// methods
 		int 							run();
 
+		// helpers
+		void							addPendingAccept(ListeningSocket* listener);	
+		void							removePendingAccept(ListeningSocket* listener);
 		//event handlers
 		static void 					EventExit(Event& event);
 
@@ -67,7 +70,7 @@ class ServerWorker
 										accessListeners();
 		Nginx_MemoryPool&				accessMemPool();
 
-
+	
 
     private:
 
@@ -82,6 +85,8 @@ class ServerWorker
 		Nginx_MemoryPool*								m_memPool;
 		DynArray<ListeningSocket*,
 			Nginx_PoolAllocator<ListeningSocket*> >		m_listeners;
+		List<ListeningSocket*,
+			Nginx_MPool_FixedElem<ListeningSocket*> >	m_pendingAccept;
 		bool											m_isRunning;
 		Globals*										m_globals;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:50:54 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:33:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class ServerManager
 
 		//getters
 		const ServerConfig& 			getConfig() const;
-
+		const size_t					getListenerCount() const;
 		//accessors
 		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
 
@@ -55,6 +55,7 @@ class ServerManager
 		DynArray<ServerWorker*>			m_workers;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
+		size_t							m_listenerCount;
 		Globals*						m_globals;
 
 		t_ptr_ProtoModule				m_protoModules[MODULE_COUNT];	// loads the modules that we will be using

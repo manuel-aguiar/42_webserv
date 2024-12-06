@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:23:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:37:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,10 @@ void    ListeningSocket::accept()
 	if (!connection)
 	{
 		std::cout << "       connection pool empty" << std::endl;
+		/*
+			No connections available, add listener to the pending accept list at the worker
+		*/
+		m_worker.addPendingAccept(this);
 		return ;
 	}
 

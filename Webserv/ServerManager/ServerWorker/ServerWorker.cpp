@@ -25,6 +25,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_eventManager		(globals),
 	m_memPool			(pool),
 	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(pool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(pool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(globals)
 {
@@ -60,6 +61,21 @@ int ServerWorker::run()
 		m_eventManager.distributeEvents();
 	}
 	return (1);
+}
+
+/*
+	Ok, accept fails, add to pending, should unsubscribe from epoll...?
+	in reality should unsubscribe all listening sockets from epoll until there are connections available
+	to fullfill the pending accepts. Otherwise the list of pending could grow infinite for no reason
+	because the same listener could be there a load of times before there is one that becomes free.
+
+	when a listener returns a connection to the pool, that should trigger a check if there are pending listeners
+	waiting for connections, to get one and accept it.
+*/
+
+void	ServerWorker::addPendingAccept(ListeningSocket* listener)
+{
+	m_pendingAccept.push_back(listener);
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
