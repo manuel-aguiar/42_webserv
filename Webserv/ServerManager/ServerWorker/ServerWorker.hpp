@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorker.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:18:29 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 11:29:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # define SERVERWORKER_HPP
 
 // Project Headers
-# include "../GenericUtils/Webserver_Definitions.h"
 # include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../EventManager/EventManager.hpp"
@@ -41,8 +40,6 @@ class ServerWorker
 
 		// methods
 		int 							run();
-		int 							createListeners(const char* node, const char* port, int socktype, int ai_family, int backlog);
-		int 							setup_mySignalHandler();
 
 		//event handlers
 		static void 					EventExit(Event& event);

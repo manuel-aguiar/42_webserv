@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/03 10:33:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:42:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class List
 
 	public:
 
-		List(const NodeAllocator& alloc = NodeAllocator())
+		List(const Allocator& alloc = Allocator())
 			: m_size(0), m_header(), m_nodeAllocator(alloc)
 			{
 

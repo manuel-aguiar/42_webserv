@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 10:25:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:25:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <stdint.h>
 # include <stddef.h>
 # include <cstring>
-# include <cassert>
 
 # include <vector>
 # include "../../../Arrays/Arrays.h"
@@ -168,7 +167,11 @@ inline typename Nginx_MPool_FixedElem<T>::pointer
 Nginx_MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
 	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
-	CUSTOM_ASSERT(m_elemCount < m_maxElems, "Nginx_MPool_FixedElem is at max capacity already");
+	
+	
+	//CUSTOM_ASSERT(m_elemCount < m_maxElems, "Nginx_MPool_FixedElem is at max capacity already");
+	assert(m_elemCount < m_maxElems);
+
 	m_elements.reserve(m_maxElems);
 	if (m_freeSlot != 0)
 	{

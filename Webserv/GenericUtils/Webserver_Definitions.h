@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:47:24 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 11:24:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ typedef sigset_t									t_sigset;
 
 typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
+
+class Connection;
 typedef void 										(*t_func_initProtoConn)(Connection*);
 
 

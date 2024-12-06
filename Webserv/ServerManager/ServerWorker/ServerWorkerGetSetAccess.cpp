@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/04 16:12:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:35:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@ const EventManager&			ServerWorker::getEventManager() const
 	return (m_eventManager);
 }
 
+const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
+							ServerWorker::getListeners()		const
+{
+	return (m_listeners);
+}								
+
 const Nginx_MemoryPool&		ServerWorker::getMemPool() const
 {
 	return (*m_memPool);
@@ -68,7 +74,7 @@ EventManager&				ServerWorker::accessEventManager()
 	return (m_eventManager);
 }
 
-DynArray<ListeningSocket, Nginx_PoolAllocator<ListeningSocket> >&		ServerWorker::accessListeners()
+DynArray<ListeningSocket *, Nginx_PoolAllocator<ListeningSocket *> >&		ServerWorker::accessListeners()
 {
 	return (m_listeners);
 }

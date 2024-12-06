@@ -21,9 +21,9 @@ ConnectionManager::~ConnectionManager()
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
     m_maxConnections(maxConnections),
-    m_connections(maxConnections, *pool),
-    m_readEvents(maxConnections, *pool),
-    m_writeEvents(maxConnections, *pool),
+    m_connections(maxConnections, Nginx_PoolAllocator<Connection>(pool)),
+    m_readEvents(maxConnections, Nginx_PoolAllocator<Event>(pool)),
+    m_writeEvents(maxConnections, Nginx_PoolAllocator<Event>(pool)),
     m_spareConnections(Nginx_MPool_FixedElem<Connection*>(pool, maxConnections)),
     m_globals(globals)
 {

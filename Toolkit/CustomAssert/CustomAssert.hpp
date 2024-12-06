@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 10:48:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/14 10:51:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:22:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 # define CUSTOMASSERT_HPP
 
-# include <cassert>
+	#ifndef NDEBUG
 
-        #ifndef NDEBUG
+		# include <cassert>
+		
+	    #define CUSTOM_ASSERT(expr, msg) \
+		if (!(expr)) { \
+		    std::cerr << "Assertion failed: " << #expr << "\n" \
+			    << "Message: " << msg << "\n" \
+			    << "File: " << __FILE__ << "\n" \
+			    << "Line: " << __LINE__ << std::endl; \
+		    assert(expr); \
+		}
 
-            #define CUSTOM_ASSERT(expr, msg) \
-                if (!(expr)) { \
-                    std::cerr << "Assertion failed: " << #expr << "\n" \
-                            << "Message: " << msg << "\n" \
-                            << "File: " << __FILE__ << "\n" \
-                            << "Line: " << __LINE__ << std::endl; \
-                    assert(expr); \
-                }
-
-        #endif
+	#endif
 
 #endif

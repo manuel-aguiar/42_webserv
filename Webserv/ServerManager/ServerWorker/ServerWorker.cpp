@@ -16,18 +16,6 @@
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 
-static size_t countListeners(const ServerConfig& config)
-{
-	typedef std::map<std::string, ServerBlocks> t_blocks;
-
-	size_t count = 0;
-	const t_blocks& blocks = config.getServerBlocks();
-
-	for (t_blocks::const_iterator iter = blocks.begin(); iter != blocks.end(); ++iter)
-		count += iter->second.getListeners().size();
-	
-	return (count);
-}
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals* globals) :
 	m_myID				(serverID),
@@ -36,7 +24,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_connManager		(m_serverManager.getConfig().getMaxConnections(), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(Nginx_PoolAllocator<ListeningSocket>(pool)),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(pool)),
 	m_isRunning			(false),
 	m_globals			(globals)
 {
@@ -48,25 +36,25 @@ ServerWorker::~ServerWorker()
 	m_memPool->destroy();
 }
 
-int ServerWorker::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
-{
 
-}
-
-int ServerWorker::setup_mySignalHandler()
+int ServerWorker::run()
 {
 	int pipeRead;
 
+	//setup signal handler
 	pipeRead = SignalHandler::PipeRead(m_myID);
 	m_mySignalEvent.setHandlerFunction_and_Data(&ServerWorker::EventExit, this);
 	m_mySignalEvent.setFlags(EPOLLIN);
 	m_eventManager.addEvent(pipeRead, m_mySignalEvent);
 
-	return (1);
-}
+	// open listening sockets
+	for (size_t i = 0; i < m_listeners.size(); ++i)
+	{
+		if(!m_listeners[i]->open())
+			return (1);
+	}
 
-int ServerWorker::run()
-{
+	// run the server
 	m_isRunning = true;
 	while (m_isRunning)
 	{
