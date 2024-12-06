@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:38:48 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 10:50:17 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,14 @@ void	ServerManager::prepareWorkers()
 		{
 			newListener = (ListeningSocket*)m_workers[i]->accessMemPool().allocate(sizeof(ListeningSocket));
 			new (newListener) ListeningSocket(*m_workers[i], **iter, m_globals);
+
+			/*
+				Here one should check m_config to see what protocol module and connection initializer
+				should be passed on to the listening socket. For now just straight assign the HttpModules
+			*/
+			newListener->setProtoModule(m_protoModules[HTTP_MODULE]);
+			newListener->setInitProtocolConnection(m_initProtoConnection[HTTP_MODULE]);
+
 			m_workers[i]->accessListeners().emplace_back(newListener);
 		}
 	}
