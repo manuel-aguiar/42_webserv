@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 16:39:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 10:39:00 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,15 @@ class ServerManager
 
 		//getters
 		const ServerConfig& 			getConfig() const;
-		
+
 		//accessors
 		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
 
 		void							prepareWorkers();
 		void							run();
-		void							setupListeners();
-		void							setupSingleListener(const t_ip_str& ip, const t_port_str& port, int socktype, int addrFamily, int backlog);
 
 	private:
 		DynArray<ServerWorker*>			m_workers;
-		DynArray<t_sockaddr>			m_listenAddrs;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		Globals*						m_globals;

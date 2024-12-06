@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:27:59 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 10:38:48 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 
 
 
-
-int freeAllAddrInfo(std::vector<t_addrinfo*>& allAddrInfo)
-{
-	for (size_t i = 0; i < allAddrInfo.size(); ++i)
-		::freeaddrinfo(allAddrInfo[i]);
-}
 
 /*
 
@@ -105,7 +99,14 @@ struct AddrinfoPtrComparator
 	freeaddrinfo on the vector that holds all struct addrinfo linkedlists
 
 */
-int	setupAllAddrinfo(const ServerConfig& 									config,
+
+static int getAddrInfo_Free(std::vector<t_addrinfo*>& allAddrInfo)
+{
+	for (size_t i = 0; i < allAddrInfo.size(); ++i)
+		::freeaddrinfo(allAddrInfo[i]);
+}
+
+static int	getAddrInfo_Setup(const ServerConfig& 									config,
 					std::set<const t_addrinfo*, AddrinfoPtrComparator>& 	unique_AddrInfo,
 					std::vector<t_addrinfo*>& 								allLists_AddrInfo,
 					int socktype, int addrFamily, int backlog)
@@ -155,9 +156,17 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 	return (unique_AddrInfo.size());
 }
 
-
 /*
-	Function that sets up the Listening Sockets for all ServerWorkers.
+	Function to prepare the ServerWorker instances for battle.
+	Takes config, initializes server workers, prepares listening sockets, connections, eventmanagers
+	etc
+
+	The process between isntantiating workers and setting up listening sockets could be separated.
+	However, for cache locality, i wnat to make sure that the memory pool expands itself close together
+	for the worker and that its own listeningsockets/addrinfo's are close together. so, to avoid entangling
+	the memory between workers, i choose to do it all in one go.
+
+	Comments were left in an attempt to explain what each part does.
 
 	Gets all getaddrinfo structs from all ip:port combos obtained from config, and count all the unique ones.
 	ServerWorkers reserve the space for that ammount of listening sockets.
@@ -170,19 +179,28 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 	WARNING: NO NULL CHECKS YET FOR MEMORY FAILURE WHEN MEMORYPOOL EXPANDS
 
 */
-void	ServerManager::setupListeners()
+void	ServerManager::prepareWorkers()
 {
+	Nginx_MemoryPool*									workerMemPool;
+
+	//for getaddrinfo
 	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
 	std::vector<t_addrinfo*> 							allLists_Addrinfo;
 	ListeningSocket*									newListener;
-	int													listenerCount;
+	size_t												listenerCount;
 
-	listenerCount = setupAllAddrinfo(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
-	m_listenAddrs.reserve(listenerCount);
+	m_workers.reserve(m_config.getMaxWorkers());
 
-	// setup all the listening sockets based on unique addrinfo structs
-	for (size_t i = 0; i < m_workers.size(); ++i)
+	listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
+
+	for (size_t i = 0; i < m_workers.size(); i++)
 	{
+		// create a memorypool for the worker, allocate itself in it, save pointer in ServerManager
+		workerMemPool = Nginx_MemoryPool::create(4096, 1);
+		m_workers[i] = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
+		new (m_workers[i]) ServerWorker(*this, i, workerMemPool, m_globals);
+
+		// worker sets up its own listeners, inside its own memorypool
 		m_workers[i]->accessListeners().reserve(listenerCount);
 		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
 		{
@@ -192,28 +210,5 @@ void	ServerManager::setupListeners()
 		}
 	}
 
-	freeAllAddrInfo(allLists_Addrinfo);
-}
-
-/*
-	Function to prepare the ServerWorker instances for battle.
-	Takes config, initializes server workers, prepares listening sockets, connections, eventmanagers
-	etc
-*/
-
-void	ServerManager::prepareWorkers()
-{
-	Nginx_MemoryPool*	workerMemPool;
-	ServerWorker*		serverWorker;
-	size_t				listenerCount;
-
-	m_workers.reserve(m_config.getMaxWorkers());
-	for (size_t i = 0; i < m_workers.size(); i++)
-	{
-		workerMemPool = Nginx_MemoryPool::create(4096, 1);
-		serverWorker = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
-		new (serverWorker) ServerWorker(*this, i, workerMemPool, m_globals);
-	}
-
-	setupListeners();
+	getAddrInfo_Free(allLists_Addrinfo);
 }
