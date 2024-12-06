@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 19:04:31 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/06 21:04:33 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class BlockFinder {
 		std::string			m_wildcard_port;
 		std::string			m_wildcard_server_name;
 
-		std::unordered_map<std::string, const ServerBlocks*>	m_server_blocks;
+		std::map<std::string, const ServerBlocks*>	m_server_blocks;
 
 		std::string			mf_hashedKey(t_ip_str ip, t_port_str port, t_server_name server_name);
 		void				mf_normalizeDirectives(t_ip_str &ip, t_port_str &port, t_server_name &server_name);

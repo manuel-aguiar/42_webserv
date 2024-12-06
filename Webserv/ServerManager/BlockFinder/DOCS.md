@@ -46,12 +46,12 @@ When finding a server block, the following precedence order is used:
 ### Running Tests
 In the `BlockFinder` directory, run:
 ```bash
-c++ -std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester
+c++ --std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester
 ```
 
 or, to get assertions:
 ```bash
-c++ -std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester -wp
+c++ --std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester -wp
 ```
 
 ### Test Cases Available
