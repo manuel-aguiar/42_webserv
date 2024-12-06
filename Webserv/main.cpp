@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:33:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 11:08:45 by manuel           ###   ########.fr       */
+/*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/06 11:12:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 // Project headers
 # include "Globals/Globals.hpp"
