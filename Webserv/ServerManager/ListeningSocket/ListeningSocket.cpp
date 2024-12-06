@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:36:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 10:22:37 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, Globals* globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, Globals* globals) :
 	m_worker(worker),
 	m_globals(globals)
 {
+	size_t canonnameLen;
+
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
 		if (globals)
@@ -29,6 +31,28 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, Globals* globals) :
 		else
 			std::cout << "ListeningSocket Constructor Called" << std::endl;
 	#endif
+
+	std::memcpy(&m_addrInfo, &addrInfo, sizeof(addrInfo));
+	m_addrInfo.ai_next = NULL;
+
+	m_addrInfo.ai_addr = (t_sockaddr *)m_worker.accessMemPool().allocate(m_addrInfo.ai_addrlen, true);
+	std::memcpy(m_addrInfo.ai_addr, addrInfo.ai_addr, m_addrInfo.ai_addrlen);
+
+	// just convert the port to host byte order in place
+	((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port = ::ntohs(((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port);
+
+	canonnameLen = addrInfo.ai_canonname ? std::strlen(addrInfo.ai_canonname) : 0;
+
+	if (!canonnameLen)
+		m_addrInfo.ai_canonname = NULL;
+	else
+	{
+		m_addrInfo.ai_canonname = (char *)m_worker.accessMemPool().allocate(canonnameLen + 1, true);
+		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
+	}
+
+	m_myEvent.setHandlerFunction_and_Data(&ListeningSocket::EventAccept, this);
+	m_myEvent.setFlags(EPOLLIN);			//maybe not here
 }
 
 ListeningSocket::~ListeningSocket()
@@ -138,7 +162,7 @@ void    ListeningSocket::accept()
 	connection->setAddrlen(addrlen);
 
 	//listener passes protoModule to connection and calls the ProtoConnection initializer (ServerWorker sets these from configuration parsing)
-	
+
 	connection->setProtoModule(m_protoModule);
 	m_initConnection(connection);
 

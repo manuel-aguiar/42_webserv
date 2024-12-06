@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 16:39:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 10:07:15 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Globals;
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ServerWorker& worker, const t_sockaddr& listenAddr, Globals* globals);
+		ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, Globals* globals);
 		~ListeningSocket();
 
 		// typedefs
@@ -60,7 +60,7 @@ class ListeningSocket
 		t_port						getPort()						const;
 		int							getBacklog()					const;
 		const Event&				getEvent()						const;
-		
+
 		// setters
 		void						setSocket						(const t_socket sockfd);
 		void						setSockType						(const int socktype);
@@ -80,6 +80,8 @@ class ListeningSocket
 
 	private:
 
+		t_addrinfo					m_addrInfo;
+
 		int							m_socktype;
 		t_socket					m_sockfd;
 		int							m_proto;
@@ -89,13 +91,9 @@ class ListeningSocket
 		int							m_backlog;
 
 		t_func_initProtoConn		m_initConnection;
-
 		t_ptr_ProtoModule			m_protoModule;
-
 		Event						m_myEvent;
-
 		ServerWorker&				m_worker;
-
 		Globals*                    m_globals;
 
 		ListeningSocket();
