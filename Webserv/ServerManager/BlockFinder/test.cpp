@@ -7,6 +7,10 @@ int	main()
 
     BlockFinder	bfinder(config);
     bfinder.addServerBlock(block, "127.0.0.1", "80", "localhost");
+    bfinder.addServerBlock(block, "1.0.0.1", "80", "somedomain.com");
+    bfinder.addServerBlock(block, "0.0.0.0", "80", "somedomain.com");
+    bfinder.addServerBlock(block, "0.0.0.0", "80", "*");
+    bfinder.addServerBlock(block, "0.0.0.0", "443", "somedomain.com");
 
     {
 

@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 15:39:32 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/06 16:17:51 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,21 @@ class BlockFinder {
 		BlockFinder(const ServerConfig& config);
 		~BlockFinder();
 
-		void			addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name);
+		bool				hasServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
+		void				addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name);
 		const ServerBlocks*	findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
 
 	private:
+		const ServerConfig&	 m_config;
+		std::string			m_wildcard_ip;
+		std::string			m_wildcard_port;
+		std::string			m_wildcard_server_name;
 
-		std::string		_wildcard_ip;
-		std::string		_wildcard_port;
-		std::string		_wildcard_server_name;
+		std::unordered_map<std::string, const ServerBlocks*>	m_server_blocks;
 
-		std::unordered_map<std::string, const ServerBlocks*>	server_blocks_map;
-
-		std::string		hashed_key(t_ip_str ip, t_port_str port, t_server_name server_name);
-		bool			is_wildcard(const std::string &str, const std::string &wildcard);
+		std::string		hashedKey(t_ip_str ip, t_port_str port, t_server_name server_name);
+		void			normalizeDirectives(t_ip_str &ip, t_port_str &port, t_server_name &server_name);
+		bool			nonEmptyDirective(const std::string &str, const std::string &wildcard);
 };
 
 /*
