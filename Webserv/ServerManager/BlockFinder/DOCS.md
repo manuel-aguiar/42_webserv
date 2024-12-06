@@ -1,24 +1,32 @@
 ## API Methods
 
 ### Adding Blocks
-- `void addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name)`
+```c++
+void addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name)
+```
   - Adds a new server block with specified parameters
   - Empty values are automatically converted to wildcards
   - Duplicate blocks are ignored
   - **Note**: Port is mandatory and cannot be a wildcard
 
 ### Finding Blocks
-- `const ServerBlocks* findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)`
+```c++
+const ServerBlocks* findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+```
   - Returns pointer to matching server block or NULL if not found
   - Follows precedence rules for matching (see below)
 
 ### Checking Block Existence
-- `bool hasServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)`
+```c++
+bool hasServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+```
   - Returns true if a matching block exists
   - Uses normalized directives (empty values converted to wildcards)
 
 ### Removing Blocks
-- `void removeServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)`
+```c++
+void removeServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+```
   - Removes a server block matching the specified parameters
   - Uses normalized directives
 
@@ -36,7 +44,7 @@ When finding a server block, the following precedence order is used:
 ## Testing
 
 ### Running Tests
-Navigate to the `BlockFinder` directory and run:
+In the `BlockFinder` directory, run:
 ```bash
 c++ -std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester
 ```
