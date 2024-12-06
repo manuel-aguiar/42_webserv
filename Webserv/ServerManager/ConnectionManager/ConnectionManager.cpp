@@ -33,15 +33,15 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* po
 
     for (size_t i = 0; i < maxConnections; i++)
     {
-        new (&m_connections[i]) Connection(m_globals);
-        new (&m_readEvents[i]) Event;
-        new (&m_writeEvents[i]) Event;
+        m_connections.emplace_back(m_globals);
+        m_readEvents.emplace_back();
+        m_writeEvents.emplace_back();
 
         m_connections[i].init();
         m_connections[i].setReadEvent(m_readEvents[i]);
         m_connections[i].setWriteEvent(m_writeEvents[i]);
 
-        m_spareConnections.push_back(&m_connections[i]);
+        m_spareConnections.emplace_back(&m_connections[i]);
     }
 }
 
