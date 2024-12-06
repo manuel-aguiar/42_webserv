@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:22:37 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 17:03:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
-	m_myEvent.setHandlerFunction_and_Data(&ListeningSocket::EventAccept, this);
-	m_myEvent.setFlags(EPOLLIN);			//maybe not here
+	m_myEvent.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventAccept, EPOLLIN);
 }
 
 ListeningSocket::~ListeningSocket()

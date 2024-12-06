@@ -39,19 +39,17 @@ ServerWorker::~ServerWorker()
 
 int ServerWorker::run()
 {
-	int pipeRead;
 
 	//setup signal handler
-	pipeRead = SignalHandler::PipeRead(m_myID);
-	m_mySignalEvent.setHandlerFunction_and_Data(&ServerWorker::EventExit, this);
-	m_mySignalEvent.setFlags(EPOLLIN);
-	m_eventManager.addEvent(pipeRead, m_mySignalEvent);
+	m_mySignalEvent.setFd_Data_Handler_Flags(SignalHandler::PipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
+	m_eventManager.addEvent(m_mySignalEvent);
 
-	// open listening sockets
+	// open listening sockets and monitor them
 	for (size_t i = 0; i < m_listeners.size(); ++i)
 	{
 		if(!m_listeners[i]->open())
 			return (1);
+		m_eventManager.addEvent(m_listeners[i]->getEvent());
 	}
 
 	// run the server

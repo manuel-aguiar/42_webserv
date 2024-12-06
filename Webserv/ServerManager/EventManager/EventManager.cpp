@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:36:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:08:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,28 +44,16 @@ EventManager::~EventManager()
 }
 
 
-//private
 
-EventManager::EventManager(const EventManager& copy)
+
+int                EventManager::addEvent(const Event& event)
 {
-	(void)copy;
-}
+	t_epoll_event epollEvent = (t_epoll_event){};
 
-EventManager& EventManager::operator=(const EventManager& assign)
-{
-	(void)assign;
-	return (*this);
-}
+	epollEvent.events = event.getFlags();
+	epollEvent.data.ptr = (void *)&event;
 
-
-int                EventManager::addEvent(const t_fd fd, const Event& monitor)
-{
-	t_epoll_event event = (t_epoll_event){};
-
-	event.events = monitor.getFlags();
-	event.data.ptr = (void *)&monitor;
-
-	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &event) == -1)
+	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
 	{
 		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
@@ -73,14 +61,14 @@ int                EventManager::addEvent(const t_fd fd, const Event& monitor)
 	return (1);
 }
 
-int                EventManager::modEvent(const t_fd fd, const Event& monitor)
+int                EventManager::modEvent(const Event& event)
 {
-	t_epoll_event event = (t_epoll_event){};
+	t_epoll_event epollEvent = (t_epoll_event){};
 
-	event.events = monitor.getFlags();
-	event.data.ptr = (void *)&monitor;
+	epollEvent.events = event.getFlags();
+	epollEvent.data.ptr = (void *)&event;
 
-	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &event) == -1)
+	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
 	{
 		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
@@ -88,9 +76,9 @@ int                EventManager::modEvent(const t_fd fd, const Event& monitor)
 	return (1);
 }
 
-int                 EventManager::delEvent(const t_fd fd)
+int                 EventManager::delEvent(const Event& event)
 {
-	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
+	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
 		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
@@ -139,3 +127,16 @@ void    EventManager::distributeEvents()
 	}
 }
 
+
+//private
+
+EventManager::EventManager(const EventManager& copy)
+{
+	(void)copy;
+}
+
+EventManager& EventManager::operator=(const EventManager& assign)
+{
+	(void)assign;
+	return (*this);
+}

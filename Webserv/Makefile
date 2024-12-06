@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/02 14:43:35 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/06 16:47:36 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,6 +52,7 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/Connection/ConnectionGetSetAccess.cpp								\
 																														\
 										$(SRC_PATH)/Event/Event.cpp														\
+										$(SRC_PATH)/Event/EventGetSetAccess.cpp											\
 																														\
 										$(SRC_PATH)/Globals/Globals.cpp													\
 										$(SRC_PATH)/Globals/Clock/Clock.cpp												\

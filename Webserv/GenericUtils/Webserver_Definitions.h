@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 11:24:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 16:44:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,14 @@ typedef sigset_t									t_sigset;
 typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
 
+// Connection typedefs
 class Connection;
 typedef void 										(*t_func_initProtoConn)(Connection*);
 
+//Event typedefs
+class Event;
+typedef void										(*t_func_event_handler)(Event& event);
+typedef void*										t_ptr_event_data;
 
 typedef union
 {
