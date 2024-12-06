@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:45:42 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 10:50:55 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals* globals) :
 	m_globals(globals)
 {
 	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
-	m_protoConnections[HTTP_MODULE] = &HttpModule::initConnection;
+	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
 }
 
 ServerManager::~ServerManager()

@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:45:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 10:50:54 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ class ServerManager
 		Globals*						m_globals;
 
 		t_ptr_ProtoModule				m_protoModules[MODULE_COUNT];	// loads the modules that we will be using
-		t_ptr_ProtoConnection			m_protoConnections[MODULE_COUNT];	// loads the connections that we will be using
+		t_func_initProtoConn			m_initProtoConnection[MODULE_COUNT];	// loads the connections that we will be using
 
 		ThreadPool*                     m_threadPool;
 

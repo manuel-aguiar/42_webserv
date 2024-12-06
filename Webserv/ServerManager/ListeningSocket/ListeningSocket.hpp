@@ -6,7 +6,7 @@
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:07:15 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/06 10:50:54 by manuel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ class ListeningSocket
 		ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, Globals* globals);
 		~ListeningSocket();
 
-		// typedefs
-		typedef void 				(*t_func_initProtoConn)(Connection*);
 
 		// methods
 		int                         open();
