@@ -71,6 +71,13 @@ int ServerWorker::run()
 
 	when a listener returns a connection to the pool, that should trigger a check if there are pending listeners
 	waiting for connections, to get one and accept it.
+
+	However, if i unsubscribe from epoll, i will essentially miss out on all the potential accept monitors because
+	epoll will not be monitoring while they are down. It could trigger 1 accept but there were 10 missed.
+
+	I can however loop read the socket until i get an error and then i will know that there are no more connections.
+
+	Maybe listening sockets should subscribe EPOLLET... food for thought
 */
 
 void	ServerWorker::addPendingAccept(ListeningSocket* listener)
