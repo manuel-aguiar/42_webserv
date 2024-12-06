@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:53:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 12:00:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ class Event
 	public:
 		Event();
 		~Event();
+		Event(const Event& copy);
+		Event& operator=(const Event& assign);
 
 		//typedefs
 		typedef void	(*HandlerFunction)(Event& event);
@@ -44,8 +46,6 @@ class Event
 		HandlerData			m_data;
 		int					m_flags;
 
-		Event(const Event& copy);
-		Event& operator=(const Event& assign);
 };
 
 #endif

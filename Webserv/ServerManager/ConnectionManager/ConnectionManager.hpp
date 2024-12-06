@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 11:42:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:58:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,13 @@ class ConnectionManager
 		DynArray<Connection, Nginx_PoolAllocator<Connection> >		m_connections;
 		DynArray<Event, Nginx_PoolAllocator<Event> >				m_readEvents;
 		DynArray<Event, Nginx_PoolAllocator<Event> >				m_writeEvents;
-		List<Connection*, Nginx_MPool_FixedElem<Connection*> >		m_spareConnections;
+		List<Connection*, Nginx_MPool_FixedElem<Connection*> >	m_spareConnections;
 
 		Globals*													m_globals;
 
 
 		void 					mf_destroyConnection(Connection* connection);
 
-		ConnectionManager();
 		ConnectionManager(const ConnectionManager& copy);
 		ConnectionManager& operator=(const ConnectionManager& assign);
 };

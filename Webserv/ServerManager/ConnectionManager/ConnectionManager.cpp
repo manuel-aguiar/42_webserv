@@ -21,9 +21,9 @@ ConnectionManager::~ConnectionManager()
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
     m_maxConnections(maxConnections),
-    m_connections(maxConnections, Nginx_PoolAllocator<Connection>(pool)),
-    m_readEvents(maxConnections, Nginx_PoolAllocator<Event>(pool)),
-    m_writeEvents(maxConnections, Nginx_PoolAllocator<Event>(pool)),
+    m_connections(Nginx_PoolAllocator<Connection>(pool)),
+    m_readEvents(Nginx_PoolAllocator<Event>(pool)),
+    m_writeEvents(Nginx_PoolAllocator<Event>(pool)),
     m_spareConnections(Nginx_MPool_FixedElem<Connection*>(pool, maxConnections)),
     m_globals(globals)
 {
@@ -41,7 +41,7 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* po
         m_connections[i].setReadEvent(m_readEvents[i]);
         m_connections[i].setWriteEvent(m_writeEvents[i]);
 
-        m_spareConnections.emplace_back(&m_connections[i]);
+        m_spareConnections.push_back(&m_connections[i]);
     }
 }
 
@@ -60,13 +60,19 @@ Connection* ConnectionManager::provideConnection()
 void ConnectionManager::returnConnection(Connection* connection)
 {
     connection->reset();
-    m_spareConnections.emplace_front(connection);
+    m_spareConnections.push_front(connection);
     std::cout << "connection returned: " << m_spareConnections.size() <<  std::endl;
 }
 
 
 //private, as usual
 
-ConnectionManager::ConnectionManager() {}
-ConnectionManager::ConnectionManager(const ConnectionManager& copy) {(void)copy;}
+ConnectionManager::ConnectionManager(const ConnectionManager& copy) :
+    m_maxConnections(copy.m_maxConnections),
+    m_connections(copy.m_connections),
+    m_readEvents(copy.m_readEvents),
+    m_writeEvents(copy.m_writeEvents),
+    m_spareConnections(copy.m_spareConnections),
+    m_globals(copy.m_globals)
+{(void)copy;}
 ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign) {(void)assign; return (*this);}

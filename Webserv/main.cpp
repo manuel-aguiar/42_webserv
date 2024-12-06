@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 11:28:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 11:46:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 int main(int ac, char** av, char** env)
 {
 	(void)env;
+	
     if (ac != 2)
 	{
 		std::cerr << "Usage: " << av[0] << " <config_file>" << std::endl;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:53:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 12:00:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ Event::Event() :
 {}
 
 Event::~Event() {}
+
+// must redo this
+Event::Event(const Event& copy)  {(void)copy;}
+Event& Event::operator=(const Event& assign) {(void)assign; return (*this);}
 
 void    Event::setFlags(int flags)
 {
@@ -40,5 +44,3 @@ void Event::handle()
 }
 
 //private
-Event::Event(const Event& copy)  {(void)copy;}
-Event& Event::operator=(const Event& assign) {(void)assign; return (*this);}

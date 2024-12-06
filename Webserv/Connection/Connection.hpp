@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:41:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 12:01:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ class Connection
 	public:
 		Connection(Globals* globals = NULL);
 		~Connection();
+		Connection(const Connection& other);
+		Connection& operator=(const Connection& other);
 
 	//methods
 		void    				init();
@@ -82,9 +84,6 @@ class Connection
 		Nginx_MemoryPool*		m_memPool;
 		Globals*				m_globals;
 																				// set by the listening socket
-
-		Connection(const Connection& other);
-		Connection& operator=(const Connection& other);
 
 };
 
