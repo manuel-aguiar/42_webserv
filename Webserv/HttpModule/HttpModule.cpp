@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:10:13 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/02 09:13:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:21:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ void HttpModule::initConnection(Connection* accepted)
 
 	accepted->setProtoConnection(conn);
 	manager.addConnection(conn);
+
+	/*
+		set the Connection->accessReadEvent, with the relevant http handler function such that the listening socket
+		will then place the event for monitoring under epoll.
+	*/
 }
 
 

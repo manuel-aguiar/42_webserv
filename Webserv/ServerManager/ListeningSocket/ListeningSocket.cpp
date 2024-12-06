@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:03:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:23:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,13 +163,12 @@ void    ListeningSocket::accept()
 	//listener passes protoModule to connection and calls the ProtoConnection initializer (ServerWorker sets these from configuration parsing)
 
 	connection->setProtoModule(m_protoModule);
+
+	//initializes the relevant protocol structure and prepares events for the Connection before
+	// being added to epoll for monitoring, below.
 	m_initConnection(connection);
 
- //std::cout << "added conenction" << std::endl;
-	if (!m_worker.accessEventManager().addEvent(
-			connection->getSocket(),
-			connection->accessReadEvent())
-		)
+	if (!m_worker.accessEventManager().addEvent(connection->getReadEvent()))
 		goto NewConnection_Failure;
 
 	return ;
@@ -191,7 +190,7 @@ void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 
 void    ListeningSocket::closeConnection(Connection* connection)
 {
-	m_worker.accessEventManager().delEvent(connection->getSocket());
+	m_worker.accessEventManager().delEvent(connection->getReadEvent());
 	mf_close_accepted_connection(connection);
 
 }
