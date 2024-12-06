@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 16:31:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:37:32 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,14 @@ int main()
 {
 	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096, 1);
 
-/*
+
 	Nginx_PoolAllocator<std::string> alloc(pool);
-	//Nginx_MPool_FixedElem<std::string> alloc2(pool, 123);
+
+	DynArray<std::string, Nginx_PoolAllocator<std::string> > vec((Nginx_PoolAllocator<std::string>(pool)));
+
+	vec.reserve(1000);
+
+/*	//Nginx_MPool_FixedElem<std::string> alloc2(pool, 123);
 
 	std::cout<< "pool alive\n";
 
@@ -39,43 +44,26 @@ int main()
 */
 
 	std::cout << "list time" << "\n";
-	
+
+/*	*/
 	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(alloc2);
-	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(Nginx_MPool_FixedElem<std::string>(pool, 50));
-	
+
+	// extra set of parenthesis to avoid dumb deductions...........................
+	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3((Nginx_MPool_FixedElem<std::string>(pool, 20)));
+
+	elem3.push_back("cenas");
+
 	std::cout << "list ready\n";
 
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	elem3.push_back("yoyo");
-	
+
+
 	elem3.clear();
 
 	pool->destroy();
 }
+
+
+/*
+
+clear && rm -rf vgcore* && c++ -Wall -Wextra -Werror *.cpp ../Nginx_MemoryPool.cpp ../Nginx_MPool_Block.cpp -g --std=c++98 && valgrind ./a.out
+*/

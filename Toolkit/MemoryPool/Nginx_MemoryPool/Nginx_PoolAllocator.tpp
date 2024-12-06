@@ -10,12 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRING_ALLOCATOR_TPP
+#ifndef NGINX_POOLALLOCATOR_TPP
 
-# define STRING_ALLOCATOR_TPP
+# define NGINX_POOLALLOCATOR_TPP
 
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 #include <cstdio>
+
 template <typename T>
 class Nginx_PoolAllocator
 {
@@ -34,10 +35,11 @@ class Nginx_PoolAllocator
 		{
 			typedef Nginx_PoolAllocator<U> other;
 		};
-		Nginx_PoolAllocator() : m_memoryPool(NULL) {std::cout << "default constructor" << std::endl;}
-		Nginx_PoolAllocator(Nginx_MemoryPool* pool) : m_memoryPool(pool) {std::cout << "allcoator inituialzed: " << pool << std::endl;}
+		Nginx_PoolAllocator() : m_memoryPool(NULL) {/*std::cout << "default constructor" << std::endl;*/}
+		Nginx_PoolAllocator(Nginx_MemoryPool* pool) : m_memoryPool(pool) {/*std::cout << "allcoator inituialzed: " << pool << std::endl;*/}
 		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : m_memoryPool(copy.m_memoryPool) {(void)copy;}
-		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& assign) { m_memoryPool = assign.m_memoryPool;}
+
+		~Nginx_PoolAllocator() {};
 
 		template <typename U>
 		Nginx_PoolAllocator(const Nginx_PoolAllocator<U>& other) : m_memoryPool(other.m_memoryPool) {(void)other;}
@@ -48,7 +50,7 @@ class Nginx_PoolAllocator
 			(void)hint;
 			if (n == 0)
 				return 0;
-			if (n > std::numeric_limits<size_type>::max() / sizeof(T))
+			if (n > max_size())
 				throw std::bad_alloc();
 			return static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
 		}
@@ -69,8 +71,8 @@ class Nginx_PoolAllocator
 			p->~value_type();
 		}
 
-		bool operator==(const Nginx_PoolAllocator& other) const { return &m_memoryPool == &other.m_memoryPool; }
-		bool operator!=(const Nginx_PoolAllocator& other) const { return &m_memoryPool != &other.m_memoryPool; }
+		bool operator==(const Nginx_PoolAllocator& other) const { return (m_memoryPool == other.m_memoryPool); }
+		bool operator!=(const Nginx_PoolAllocator& other) const { return (m_memoryPool != other.m_memoryPool); }
 
 		size_type max_size() const
 		{
