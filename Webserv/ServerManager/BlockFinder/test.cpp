@@ -49,6 +49,13 @@ void    testPrecedence(BlockFinder& bfinder) {
     checkIfFound(bfinder.findServerBlock("0.0.0.0", "80", "*"), "0.0.0.0", "80", "*");
 }
 
+void    testSingle(BlockFinder& bfinder) {
+    std::cout << "Testing adding a block with ip: 0.0.0.0, port: 443, server_name: somedomain.com" << std::endl;
+    ServerBlocks	block("newTestBlock");
+
+    bfinder.addServerBlock(block, "0.0.0.0", "443", "somedomain.com");
+    checkIfFound(bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com"), "0.0.0.0", "443", "somedomain.com");
+}
 
 int	main(int argc, char **argv)
 {
@@ -56,6 +63,8 @@ int	main(int argc, char **argv)
     ServerBlocks	block("block");
 
     BlockFinder	bfinder(config);
+
+    testSingle(bfinder);
 
     // this is good data
     bfinder.addServerBlock(block, "127.0.0.2", "443", "somedomain.com");
