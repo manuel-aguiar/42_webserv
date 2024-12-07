@@ -2,7 +2,7 @@
 
 ### Adding Blocks
 ```c++
-void addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name)
+void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 ```
   - Adds a new server block with specified parameters
   - Empty values are automatically converted to wildcards
@@ -11,21 +11,21 @@ void addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_s
 
 ### Finding Blocks
 ```c++
-const ServerBlocks* findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 ```
   - Returns pointer to matching server block or NULL if not found
   - Follows precedence rules for matching (see below)
 
 ### Checking Block Existence
 ```c++
-bool hasServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+bool	BlockFinder::hasServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 ```
   - Returns true if a matching block exists
   - Uses normalized directives (empty values converted to wildcards)
 
 ### Removing Blocks
 ```c++
-void removeServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name)
+void	BlockFinder::removeServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 ```
   - Removes a server block matching the specified parameters
   - Uses normalized directives
@@ -46,12 +46,12 @@ When finding a server block, the following precedence order is used:
 ### Running Tests
 In the `BlockFinder` directory, run:
 ```bash
-c++ --std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester
+c++ --std=c++98 -Wall -Wextra -Werror test.cpp BlockFinder.cpp -o tester && ./tester
 ```
 
 or, to get assertions:
 ```bash
-c++ --std=c++98 test.cpp BlockFinder.cpp -o tester && ./tester -wp
+c++ --std=c++98 -Wall -Wextra -Werror test.cpp BlockFinder.cpp -o tester && ./tester -wp
 ```
 
 ### Test Cases Available

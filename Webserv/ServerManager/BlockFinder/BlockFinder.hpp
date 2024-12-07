@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 21:04:33 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/07 16:47:53 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,27 @@ class BlockFinder {
 		BlockFinder(const ServerConfig& config);
 		~BlockFinder();
 
-		bool				hasServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
-		void				addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name);
-		void				removeServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
-		const ServerBlocks*	findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
+		void				addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		const ServerBlocks*	findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		bool				hasServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		void				removeServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
 
 	private:
-		const ServerConfig&	 m_config;
-		std::string			m_wildcard_ip;
-		std::string			m_wildcard_port;
-		std::string			m_wildcard_server_name;
+		const ServerConfig&			 m_config;
+		const std::string			m_wildcardIp;
+		const std::string			m_wildcardPort;
+		const std::string			m_wildcardServerName;
 
-		std::map<std::string, const ServerBlocks*>	m_server_blocks;
+		// normalized values
+		std::string					m_normalizedIp;
+		std::string					m_normalizedPort;
+		std::string					m_normalizedServerName;
 
-		std::string			mf_hashedKey(t_ip_str ip, t_port_str port, t_server_name server_name);
-		void				mf_normalizeDirectives(t_ip_str &ip, t_port_str &port, t_server_name &server_name);
-		bool				mf_nonEmptyDirective(const std::string &str, const std::string &wildcard);
+		std::map<std::string, const ServerBlocks*>	m_serverBlocks;
+
+		std::string			mf_hashedKey(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName) const;
+		void				mf_normalizeDirectives(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		bool				mf_nonEmptyDirective(const std::string& str, const std::string& wildcard) const;
 };
 
 #endif
