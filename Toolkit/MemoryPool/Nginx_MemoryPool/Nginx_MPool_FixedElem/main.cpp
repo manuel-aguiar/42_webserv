@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 11:40:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:37:32 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ int main()
 
 	// extra set of parenthesis to avoid dumb deductions...........................
 	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3((Nginx_MPool_FixedElem<std::string>(pool, 20)));
-	
+
 	elem3.push_back("cenas");
 
 	std::cout << "list ready\n";
 
 
-	
+
 	elem3.clear();
 
 	pool->destroy();

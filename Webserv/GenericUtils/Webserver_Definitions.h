@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:27:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:39:06 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,15 @@
 # include <sys/socket.h>
 # include <sys/un.h>
 # include <netdb.h>
-# include <sys/epoll.h>
+
+# ifdef __linux__
+#  include <sys/epoll.h>
+# endif
+
+# ifdef __APPLE__
+#  include <sys/event.h>
+# endif
+
 # include <cerrno>
 # include <signal.h>
 # include <cassert>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 16:39:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:39:58 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class ListeningSocket
 		t_port						getPort()						const;
 		int							getBacklog()					const;
 		const Event&				getEvent()						const;
-		
+
 		// setters
 		void						setSocket						(const t_socket sockfd);
 		void						setSockType						(const int socktype);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorker.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 16:11:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:40:14 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ class ServerWorker
 		CgiManager&						accessCgiManager();
 		ConnectionManager&				accessConnManager();
 		EventManager&					accessEventManager();
-		
-		DynArray<ListeningSocket, Nginx_PoolAllocator<ListeningSocket> >&		
+
+		DynArray<ListeningSocket, Nginx_PoolAllocator<ListeningSocket> >&
 										accessListeners();
 		Nginx_MemoryPool&				accessMemPool();
 
@@ -82,7 +82,7 @@ class ServerWorker
 		CgiManager										m_cgiManager;
 		Event											m_mySignalEvent;
 		Nginx_MemoryPool*								m_memPool;
-		DynArray<ListeningSocket, 
+		DynArray<ListeningSocket,
 			Nginx_PoolAllocator<ListeningSocket> >		m_listeners;
 		bool											m_isRunning;
 		Globals*										m_globals;

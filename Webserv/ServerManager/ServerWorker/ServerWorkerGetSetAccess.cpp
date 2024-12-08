@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorkerGetSetAccess.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/04 16:12:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:40:22 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
