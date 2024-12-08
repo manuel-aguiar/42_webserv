@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 14:59:20 by rphuyal           #+#    #+#             */
-/*   Updated: 2024/12/07 16:49:19 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/08 14:40:05 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ bool    BlockFinder::mf_nonEmptyDirective(const std::string& str, const std::str
 
 void    BlockFinder::mf_normalizeDirectives(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 {
+    // assume values are correct by default
+    m_normalizedIp = ip;
+    m_normalizedPort = port;
+    m_normalizedServerName = serverName;
+
     // if the directive is empty or is a wildcard, replace it with the wildcard value
     if (mf_nonEmptyDirective(ip, m_wildcardIp))
         m_normalizedIp = m_wildcardIp;
@@ -69,9 +74,7 @@ void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, 
 
     std::string	key;
 
-    mf_normalizeDirectives(ip, port, serverName);
-
-    if (this->hasServerBlock(this->m_normalizedIp, this->m_normalizedPort, this->m_normalizedServerName))
+    if (this->hasServerBlock(ip, port, serverName))
         return;
 
     key = mf_hashedKey(this->m_normalizedIp, this->m_normalizedPort, this->m_normalizedServerName);
@@ -104,6 +107,16 @@ const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_por
 
     if (m_serverBlocks.find(key) != m_serverBlocks.end())
         return (m_serverBlocks.find(key)->second);
+
+    if (ip != m_normalizedIp)
+        return (NULL);
+
+    // if the specific ip didn't match, check if wildcard matches
+    key = mf_hashedKey(m_wildcardIp, this->m_normalizedPort, this->m_normalizedServerName);
+    std::map<std::string, const ServerBlocks*>::iterator it = m_serverBlocks.find(key);
+
+    if (it != m_serverBlocks.end())
+        return (it->second);
 
     return (NULL);
 }

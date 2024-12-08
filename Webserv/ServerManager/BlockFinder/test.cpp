@@ -57,12 +57,193 @@ void    testSingle(BlockFinder& bfinder) {
     checkIfFound(bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com"), "0.0.0.0", "443", "somedomain.com");
 }
 
+void reviewTests()
+{
+    {
+        /*********************************************************** */
+        /*********************************************************** */
+        /*********************************************************** */
+
+        std::cout << "  Test1: no Specific match available (expected result: deliever wildcard): \n";
+        try
+        {
+            //setup
+            ServerConfig config;
+            ServerBlocks block1("block1");
+            ServerBlocks block2("block2");
+            BlockFinder finder(config);
+
+            finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
+            finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
+
+            //test
+            const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "80", "example.com");
+            const ServerBlocks* expected = &block1;
+
+            if (result != expected)
+                throw std::runtime_error("Expected block1 to be found, no specific match available");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "      FAILED :" << e.what() << '\n';
+        }
+    }
+
+    /*********************************************************** */
+    /*********************************************************** */
+    /*********************************************************** */
+
+    std::cout << "  Test2: Specific match available (expected result: deliever specific): \n";
+    try
+    {
+        //setup
+        ServerConfig config;
+        ServerBlocks block1("block1");
+        ServerBlocks block2("block2");
+        BlockFinder finder(config);
+
+        finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
+        std::cout << "adding next block" << std::endl;
+        finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
+
+        // test
+        const ServerBlocks* result = finder.findServerBlock("127.0.0.1", "80", "example.com");
+        const ServerBlocks* expected = &block2;
+
+        if (result != expected)
+            throw std::runtime_error("Expected block2 to be found, most specific is available");
+        std::cout << "      PASSED\n";
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "      FAILED: " << e.what() << '\n';
+    }
+
+    /*********************************************************** */
+    /*********************************************************** */
+    /*********************************************************** */
+
+    std::cout << "  Test3: no match available (expected result: NULL): \n";
+    try
+    {
+        //setup
+        ServerConfig config;
+        ServerBlocks block1("block1");
+        BlockFinder finder(config);
+
+        finder.addServerBlock(block1, "127.0.0.1", "80", "example.com");
+
+        //test
+        const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "80", "example.com");
+        const ServerBlocks* expected = NULL;
+
+        checkIfFound(result, "127.0.0.2", "80", "example.com");
+        if (result != expected)
+            throw std::runtime_error("Received a block but No block matches the port:ip combo");
+        std::cout << "      PASSED\n";
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "      FAILED: " << e.what() << '\n';
+    }
+
+    /*********************************************************** */
+    /*********************************************************** */
+    /*********************************************************** */
+
+    std::cout << "  Test4: specific match test \n";
+
+    try
+    {
+        //setup
+        ServerConfig config;
+        ServerBlocks block1("block1");
+        ServerBlocks block2("block2");
+        ServerBlocks block3("block3");
+        BlockFinder finder(config);
+
+        finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
+        finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
+        finder.addServerBlock(block3, "127.0.0.2", "443", "somedomain.com");
+
+        //test
+        const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "443", "somedomain.com");
+        const ServerBlocks* expected = &block3;
+
+        if (result != expected)
+            throw std::runtime_error("There is a specific match available");
+        std::cout << "      PASSED\n";
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "      FAILED: " << e.what() << '\n';
+    }
+
+
+    /*********************************************************** */
+    /*********************************************************** */
+    /*********************************************************** */
+
+    std::cout << "  Test5: quick wildcard test\n";
+    /* this is the test i proposed initially in the review, successfully passed */
+    try
+    {
+        //setup
+        ServerBlocks block1("block1");
+        ServerConfig config;
+        BlockFinder bfinder(config);
+        bfinder.addServerBlock(block1, "0.0.0.0", "443", "somedomain.com");
+
+        //test
+        const ServerBlocks* result = bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com");
+        const ServerBlocks* expected = &block1;
+
+        if (result != expected)
+            throw std::runtime_error("Expected block1 to be found, no specific match available");
+        std::cout << "      PASSED\n";
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "      FAILED: " << e.what() << '\n';
+    }
+
+    /*********************************************************** */
+    /*********************************************************** */
+    /*********************************************************** */
+
+    std::cout << "  Test6: quick wildcard test, different port\n";
+    try
+    {
+        // setup
+        ServerBlocks block1("block1");
+        ServerConfig config;
+        BlockFinder bfinder(config);
+        bfinder.addServerBlock(block1, "0.0.0.0", "443", "somedomain.com");
+
+        const ServerBlocks* result = bfinder.findServerBlock("127.0.0.2", "444", "somedomain.com");
+        const ServerBlocks* expected = NULL;
+
+        if (result != expected)
+            throw std::runtime_error("Expected nothing to be found, ports don't match");
+        std::cout << "      PASSED\n";
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "      FAILED: " << e.what() << '\n';
+    }
+
+    std::cerr << "Review tests completed\n";
+}
+
 int	main(int argc, char **argv)
 {
     ServerConfig	config;
     ServerBlocks	block("block");
 
     BlockFinder	bfinder(config);
+
+    reviewTests();
 
     testSingle(bfinder);
 
