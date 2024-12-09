@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:02:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:38:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ t_fd						Event::getFd() const
 	return (m_fd);
 }
 
-const t_ptr_event_data		Event::getData() const
+t_ptr_event_data		Event::getData() const
 {
 	return (m_data);
 }
 
-const t_func_event_handler	Event::getHandler() const
+t_func_event_handler	Event::getHandler() const
 {
 	return (m_handler);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:33:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:31:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class ServerManager
 
 		//getters
 		const ServerConfig& 			getConfig() const;
-		const size_t					getListenerCount() const;
+		size_t							getListenerCount() const;
 		//accessors
 		t_ptr_ProtoModule				accessProtoModule(e_protoModules module);
 

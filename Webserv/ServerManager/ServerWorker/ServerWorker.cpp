@@ -24,8 +24,8 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_connManager		(m_serverManager.getConfig().getMaxConnections(), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(pool)),
-	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(pool, m_serverManager.getListenerCount())),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(m_memPool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(globals)
 {
@@ -86,9 +86,16 @@ void	ServerWorker::addPendingAccept(ListeningSocket* listener)
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :
-	m_serverManager(copy.m_serverManager),
-	m_config(copy.m_config),
-	m_connManager(0, copy.m_memPool, NULL)
+	m_myID				(copy.m_myID),
+	m_serverManager		(copy.m_serverManager),
+	m_config			(m_serverManager.getConfig()),
+	m_connManager		(m_serverManager.getConfig().getMaxConnections(), copy.m_memPool, copy.m_globals),
+	m_eventManager		(copy.m_globals),
+	m_memPool			(copy.m_memPool),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(m_memPool, m_serverManager.getListenerCount())),
+	m_isRunning			(false),
+	m_globals			(copy.m_globals)
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}

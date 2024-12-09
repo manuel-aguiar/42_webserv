@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:02:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:31:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define EVENT_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../GenericUtils/Webserver_Definitions.h"
 
 class Event
 {
@@ -31,8 +31,8 @@ class Event
 
 		//getters
 		t_fd						getFd()			const;
-		const t_ptr_event_data		getData()		const;
-		const t_func_event_handler	getHandler()	const;
+		t_ptr_event_data			getData()		const;
+		t_func_event_handler		getHandler()	const;
 		int							getFlags()		const;
 
 		//setters

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 16:54:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:38:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 # include <cstddef>
 
 Event::Event() :
-	m_handler(NULL),
-	m_data(NULL)
+	m_fd		(-1),
+	m_data		(NULL),
+	m_handler	(NULL)
 {}
 
 Event::~Event() {}
