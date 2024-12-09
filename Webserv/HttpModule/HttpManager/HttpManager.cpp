@@ -10,4 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpInterpreter.hpp"
+#include "HttpManager.hpp"
+
+HttpManager::HttpManager(ServerManager& serverManager) :
+	m_serverManager(serverManager)
+{
+}
+
+HttpManager::~HttpManager() {}
+
+HttpManager::HttpManager(const HttpManager& copy) :
+	m_serverManager(copy.m_serverManager)
+{
+}

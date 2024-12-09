@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:10:13 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 17:21:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:08:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 HttpModule::HttpModule(ServerManager& serverManager) :
 	m_serverManager(serverManager),
-	m_httpmanager(m_serverManager)
+	m_httpManager(m_serverManager)
 {
 
 }
@@ -52,3 +52,13 @@ void HttpModule::initConnection(Connection* accepted)
 }
 
 
+
+//private
+HttpModule::HttpModule(const HttpModule& copy) :
+	m_serverManager(copy.m_serverManager),
+	m_httpManager(m_serverManager)
+{
+
+}
+
+HttpModule& HttpModule::operator=(const HttpModule& assign) {(void)assign; return (*this);}

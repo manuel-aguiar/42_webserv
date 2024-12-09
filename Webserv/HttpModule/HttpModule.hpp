@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpModule.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 16:18:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 16:20:43 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/09 16:07:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ class HttpModule
 		ServerManager& 			accessServerManager();
 
 	private:
-		HttpManager 			m_httpmanager;
 		ServerManager& 			m_serverManager;
+		HttpManager 			m_httpManager;
 
 		HttpModule(const HttpModule& copy);
 		HttpModule& operator=(const HttpModule& assign);
