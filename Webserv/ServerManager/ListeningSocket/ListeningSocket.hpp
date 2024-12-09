@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 10:50:54 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/09 15:11:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,37 +60,23 @@ class ListeningSocket
 		const Event&				getEvent()						const;
 
 		// setters
-		void						setSocket						(const t_socket sockfd);
-		void						setSockType						(const int socktype);
-		void						setProtocol						(const int proto);
-		void						setAddr							(const t_sockaddr* sockaddr);
-		void						setAddrlen						(const t_socklen addrlen);
-		void						setPort							(const t_port port);
-		void						setBacklog						(const int backlog);
 		void						setProtoModule					(const t_ptr_ProtoModule module);
 		void						setInitProtocolConnection		(const t_func_initProtoConn func);
 
 		// accessors
 		ServerWorker&				accessWorker();
 		Event&						accessEvent();
-		t_sockaddr*					accessAddr();
-
 
 	private:
 
 		t_addrinfo					m_addrInfo;
-
-		int							m_socktype;
 		t_socket					m_sockfd;
 		int							m_proto;
-		t_port						m_port;
-		t_sockaddr*					m_addr;
-		t_socklen					m_addrlen;
 		int							m_backlog;
 
 		t_func_initProtoConn		m_initConnection;
 		t_ptr_ProtoModule			m_protoModule;
-		Event						m_myEvent;
+		Event						m_event;
 		ServerWorker&				m_worker;
 		Globals*                    m_globals;
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:37:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:11:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 	std::memcpy(m_addrInfo.ai_addr, addrInfo.ai_addr, m_addrInfo.ai_addrlen);
 
 	// just convert the port to host byte order in place
+	// this should require some form of switch statement to detect various address types as IPV6
 	((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port = ::ntohs(((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port);
 
 	canonnameLen = addrInfo.ai_canonname ? std::strlen(addrInfo.ai_canonname) : 0;
@@ -51,7 +52,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
-	m_myEvent.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventAccept, EPOLLIN);
+	m_event.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventAccept, EPOLLIN);
 }
 
 ListeningSocket::~ListeningSocket()
@@ -72,7 +73,7 @@ int		ListeningSocket::open()
 {
 	int options;
 
-	m_sockfd = ::socket(m_addr->sa_family, m_socktype, m_proto);
+	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_proto);
 	//std::cout << "listener sockfd " << m_sockfd << std::endl;
 	if (m_sockfd == -1)
 	{
@@ -103,7 +104,7 @@ int		ListeningSocket::open()
 
 int		ListeningSocket::bind()
 {
-	if (::bind(m_sockfd, m_addr, m_addrlen) == -1)
+	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
 	{
 		m_globals->logStatus("bind(): " + std::string(strerror(errno)));
 		return (0);
