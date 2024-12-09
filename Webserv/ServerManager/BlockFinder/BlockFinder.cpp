@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 14:59:20 by rphuyal           #+#    #+#             */
-/*   Updated: 2024/12/08 14:40:05 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:44:56 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ bool	BlockFinder::hasServerBlock(const t_ip_str& ip, const t_port_str& port, con
 **  if a directive is not provided, falls back to the wildcard value
 **	if the block is already in the map, it is not added again
 */
-void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+void	BlockFinder::addServerBlock(const ServerBlocks& block)
 {
     // listen directive in the config is mandatory, so asserting the port here
-    assert(!port.empty() && "Port directive is mandatory");
-    assert(port != m_wildcardPort && "Port directive cannot be a wildcard");
+    assert(!block.getPort().empty() && "Port directive is mandatory");
+    assert(block.getPort() != m_wildcardPort && "Port directive cannot be a wildcard");
 
     std::string	key;
 
-    if (this->hasServerBlock(ip, port, serverName))
+    if (this->hasServerBlock(block.getIp(), block.getPort(), block.getServerName()))
         return;
 
     key = mf_hashedKey(this->m_normalizedIp, this->m_normalizedPort, this->m_normalizedServerName);

@@ -5,9 +5,9 @@ void	printBlock(const ServerBlocks *block, t_ip_str ip, t_port_str port, t_serve
 {
     std::cout << "┌──────────── Block Found ────────────┐" << std::endl;
     std::cout << "│ ID:          " << std::left << std::setw(23) << block->id() << "│" << std::endl;
-    std::cout << "│ IP:          " << std::left << std::setw(23) << ip << "│" << std::endl;
-    std::cout << "│ Port:        " << std::left << std::setw(23) << port << "│" << std::endl;
-    std::cout << "│ Server Name: " << std::left << std::setw(23) << server_name << "│" << std::endl;
+    std::cout << "│ IP:          " << std::left << std::setw(23) << block->getIp() << "│" << std::endl;
+    std::cout << "│ Port:        " << std::left << std::setw(23) << block->getPort() << "│" << std::endl;
+    std::cout << "│ Server Name: " << std::left << std::setw(23) << block->getServerName() << "│" << std::endl;
     std::cout << "└─────────────────────────────────────┘\n\n" << std::endl;
 }
 
@@ -20,13 +20,14 @@ void    checkIfFound(const ServerBlocks* block_found, const t_ip_str ip, const t
 }
 
 void    testPrecedence(BlockFinder& bfinder) {
-    ServerBlocks block1("block1");
-    ServerBlocks block2("block2");
+    ServerBlocks block1("block1", "127.0.0.1", "80", "example.com");
+    ServerBlocks block2("block2", "0.0.0.0", "80", "example.com");
+    ServerBlocks block3("block2", "127.0.0.1", "80", "test.com");
 
     // Add blocks with different combinations of IP, port, and server name
-    bfinder.addServerBlock(block1, "127.0.0.1", "80", "example.com");   // IP: 127.0.0.1, Port: 80, Server Name: example.com
-    bfinder.addServerBlock(block2, "0.0.0.0", "80", "example.com");    // Wildcard IP, Port: 80, Server Name: example.com
-    bfinder.addServerBlock(block2, "127.0.0.1", "80", "test.com");     // IP: 127.0.0.1, Port: 80, Server Name: test.com
+    bfinder.addServerBlock(block1);   // IP: 127.0.0.1, Port: 80, Server Name: example.com
+    bfinder.addServerBlock(block2);    // Wildcard IP, Port: 80, Server Name: example.com
+    bfinder.addServerBlock(block3);     // IP: 127.0.0.1, Port: 80, Server Name: test.com
 
     // Exact match on IP, port, and server name (should match block1)
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: example.com" << std::endl;
@@ -51,9 +52,9 @@ void    testPrecedence(BlockFinder& bfinder) {
 
 void    testSingle(BlockFinder& bfinder) {
     std::cout << "Testing adding a block with ip: 0.0.0.0, port: 443, server_name: somedomain.com" << std::endl;
-    ServerBlocks	block("newTestBlock");
+    ServerBlocks	block("newTestBlock", "0.0.0.0", "443", "somedomain.com");
 
-    bfinder.addServerBlock(block, "0.0.0.0", "443", "somedomain.com");
+    bfinder.addServerBlock(block);
     checkIfFound(bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com"), "0.0.0.0", "443", "somedomain.com");
 }
 
@@ -69,12 +70,12 @@ void reviewTests()
         {
             //setup
             ServerConfig config;
-            ServerBlocks block1("block1");
-            ServerBlocks block2("block2");
+            ServerBlocks block1("block1", "0.0.0.0", "80", "example.com");
+            ServerBlocks block2("block2", "127.0.0.1", "80", "example.com");
             BlockFinder finder(config);
 
-            finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
-            finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
+            finder.addServerBlock(block1);
+            finder.addServerBlock(block2);
 
             //test
             const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "80", "example.com");
@@ -99,13 +100,14 @@ void reviewTests()
     {
         //setup
         ServerConfig config;
-        ServerBlocks block1("block1");
-        ServerBlocks block2("block2");
+
+        ServerBlocks block1("block1", "0.0.0.0", "80", "example.com");
+        ServerBlocks block2("block2", "127.0.0.1", "80", "example.com");
         BlockFinder finder(config);
 
-        finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
+        finder.addServerBlock(block2);
         std::cout << "adding next block" << std::endl;
-        finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
+        finder.addServerBlock(block1);
 
         // test
         const ServerBlocks* result = finder.findServerBlock("127.0.0.1", "80", "example.com");
@@ -129,10 +131,10 @@ void reviewTests()
     {
         //setup
         ServerConfig config;
-        ServerBlocks block1("block1");
+        ServerBlocks block1("block1", "127.0.0.1", "80", "example.com");
         BlockFinder finder(config);
 
-        finder.addServerBlock(block1, "127.0.0.1", "80", "example.com");
+        finder.addServerBlock(block1);
 
         //test
         const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "80", "example.com");
@@ -158,14 +160,14 @@ void reviewTests()
     {
         //setup
         ServerConfig config;
-        ServerBlocks block1("block1");
-        ServerBlocks block2("block2");
-        ServerBlocks block3("block3");
+        ServerBlocks block1("block1", "0.0.0.0", "80", "example.com");
+        ServerBlocks block2("block2", "127.0.0.1", "80", "example.com");
+        ServerBlocks block3("block3", "127.0.0.2", "443", "somedomain.com");
         BlockFinder finder(config);
 
-        finder.addServerBlock(block1, "0.0.0.0", "80", "example.com");
-        finder.addServerBlock(block2, "127.0.0.1", "80", "example.com");
-        finder.addServerBlock(block3, "127.0.0.2", "443", "somedomain.com");
+        finder.addServerBlock(block1);
+        finder.addServerBlock(block2);
+        finder.addServerBlock(block3);
 
         //test
         const ServerBlocks* result = finder.findServerBlock("127.0.0.2", "443", "somedomain.com");
@@ -190,10 +192,10 @@ void reviewTests()
     try
     {
         //setup
-        ServerBlocks block1("block1");
+        ServerBlocks block1("block1", "0.0.0.0", "443", "somedomain.com");
         ServerConfig config;
         BlockFinder bfinder(config);
-        bfinder.addServerBlock(block1, "0.0.0.0", "443", "somedomain.com");
+        bfinder.addServerBlock(block1);
 
         //test
         const ServerBlocks* result = bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com");
@@ -216,10 +218,10 @@ void reviewTests()
     try
     {
         // setup
-        ServerBlocks block1("block1");
+        ServerBlocks block1("block1", "0.0.0.0", "443", "somedomain.com");
         ServerConfig config;
         BlockFinder bfinder(config);
-        bfinder.addServerBlock(block1, "0.0.0.0", "443", "somedomain.com");
+        bfinder.addServerBlock(block1);
 
         const ServerBlocks* result = bfinder.findServerBlock("127.0.0.2", "444", "somedomain.com");
         const ServerBlocks* expected = NULL;
@@ -239,7 +241,7 @@ void reviewTests()
 int	main(int argc, char **argv)
 {
     ServerConfig	config;
-    ServerBlocks	block("block");
+    ServerBlocks	block("block", "127.0.0.2", "443", "somedomain.com");
 
     BlockFinder	bfinder(config);
 
@@ -248,9 +250,10 @@ int	main(int argc, char **argv)
     testSingle(bfinder);
 
     // this is good data
-    bfinder.addServerBlock(block, "127.0.0.2", "443", "somedomain.com");
+    bfinder.addServerBlock(block);
     // same server config block but on wildcard ip
-    bfinder.addServerBlock(block, "0.0.0.0", "443", "somedomain.com");
+    ServerBlocks block_wildcard("block", "0.0.0.0", "443", "somedomain.com");
+    bfinder.addServerBlock(block_wildcard);
 
     std::cout << "Searching a block with exact ip, port and server_name" << std::endl;
     checkIfFound(bfinder.findServerBlock("127.0.0.2", "443", "somedomain.com"), "127.0.0.2", "443", "somedomain.com");
@@ -258,23 +261,24 @@ int	main(int argc, char **argv)
     // try adding empty strings, they will be replaced with the wildcard value
     std::cout << "Adding an empty ip" << std::endl;
     // this will be replaced with the wildcard value
-    ServerBlocks	block_empty_ip("empty_ip");
-    bfinder.addServerBlock(block_empty_ip, "", "80", "localhost");
+    ServerBlocks	block_empty_ip("empty_ip", "", "80", "localhost");
+    bfinder.addServerBlock(block_empty_ip);
 
     // lets check the ip wildcard block exists
     std::cout << "Searching a block with empty ip, which should have been replaced with the wildcard value" << std::endl;
     checkIfFound(bfinder.findServerBlock("", "80", "localhost"), "0.0.0.0", "80", "localhost");
 
     // try to add a block with the same ip, port and server_name
-    ServerBlocks	block_duplicate("duplicate");
-    bfinder.addServerBlock(block_duplicate, "", "80", "localhost"); // this will be discarded
+    ServerBlocks	block_duplicate("duplicate", "", "80", "localhost");
+    bfinder.addServerBlock(block_duplicate); // this will be discarded
 
     std::cout << "Searching a block with duplicate ip, port and server_name" << std::endl;
     checkIfFound(bfinder.findServerBlock("", "80", "localhost"), "0.0.0.0", "80", "localhost");
 
     std::cout << "Adding an empty server_name" << std::endl;
     // this will be replaced with the wildcard value
-    bfinder.addServerBlock(block, "127.0.0.1", "80", "");
+    ServerBlocks block_empty_name("block", "127.0.0.1", "80", "");
+    bfinder.addServerBlock(block_empty_name);
 
     std::cout << "Searching a block with empty server_name" << std::endl;
     checkIfFound(bfinder.findServerBlock("127.0.0.1", "80", ""), "127.0.0.1", "80", "");
@@ -288,7 +292,8 @@ int	main(int argc, char **argv)
     // trigger manually
     if (argc > 1 && std::string(argv[1]) == "-wp") {
         // finally adding a wildcard port, which will throw an assertion failure
-        bfinder.addServerBlock(block, "127.0.0.1", "*", "localhost");
+        ServerBlocks block_wildcard_port("block", "127.0.0.1", "*", "localhost");
+        bfinder.addServerBlock(block_wildcard_port);
     }
 
     return (0);

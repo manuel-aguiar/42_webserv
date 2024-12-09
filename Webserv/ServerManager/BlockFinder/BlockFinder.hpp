@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/07 16:47:53 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:29:04 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,31 @@ class ServerConfig {
 
 class ServerBlocks {
 	public:
-		ServerBlocks(const std::string& id) : m_id(id) {}
+		ServerBlocks(const std::string& id, const t_ip_str& ip = "", const t_port_str& port = "", const t_server_name& serverName = "")
+			: m_id(id), m_ip(ip), m_port(port), m_serverName(serverName) {}
 		~ServerBlocks() {}
 
 		ServerBlocks&	operator=(const ServerBlocks& other) {
 			if (this == &other)
 				return (*this);
-
+			m_id = other.m_id;
+			m_ip = other.m_ip;
+			m_port = other.m_port;
+			m_serverName = other.m_serverName;
 			return (*this);
 		}
 
-		// used for testing
+		// getters
 		std::string		id() const { return (m_id); }
+		t_ip_str		getIp() const { return (m_ip); }
+		t_port_str		getPort() const { return (m_port); }
+		t_server_name	getServerName() const { return (m_serverName); }
 
 	private:
 		std::string		m_id;
+		t_ip_str		m_ip;
+		t_port_str		m_port;
+		t_server_name	m_serverName;
 };
 // TODO: remove temporary declerations until here
 
@@ -52,7 +62,7 @@ class BlockFinder {
 		BlockFinder(const ServerConfig& config);
 		~BlockFinder();
 
-		void				addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		void				addServerBlock(const ServerBlocks& block);
 		const ServerBlocks*	findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
 		bool				hasServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
 		void				removeServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
