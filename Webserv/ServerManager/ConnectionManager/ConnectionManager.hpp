@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConnectionManager.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 12:02:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:39:51 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

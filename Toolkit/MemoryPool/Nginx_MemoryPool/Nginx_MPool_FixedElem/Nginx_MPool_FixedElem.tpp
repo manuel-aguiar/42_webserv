@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MPool_FixedElem.tpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 10:25:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:38:21 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,12 +247,12 @@ Nginx_MPool_FixedElem<T>::deleteElement(pointer p)
 }
 
 template <typename T>
-inline bool 
+inline bool
 Nginx_MPool_FixedElem<T>::operator==(const Nginx_MPool_FixedElem& other) const
 { return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
 
 template <typename T>
-inline bool 
+inline bool
 Nginx_MPool_FixedElem<T>::operator!=(const Nginx_MPool_FixedElem& other) const
 { return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 

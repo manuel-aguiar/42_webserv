@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManagerPrepareWorkers.cpp                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 16:39:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:40:39 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int freeAllAddrInfo(std::vector<t_addrinfo*>& allAddrInfo)
 */
 struct ListenerPtrComparator {
 	bool operator()(const t_listeners* a, const t_listeners* b) const
-	{	
+	{
 		if (a->first != b->first)
 			return (a->first < b->first);
 		return (a->second < b->second);
@@ -78,9 +78,9 @@ struct AddrinfoPtrComparator
 		if (a->ai_family != b->ai_family)
 			return (a->ai_family < b->ai_family);
 		if (a->ai_socktype != b->ai_socktype)
-			return (a->ai_socktype < b->ai_socktype);	
+			return (a->ai_socktype < b->ai_socktype);
 		if (a->ai_protocol != b->ai_protocol)
-			return (a->ai_protocol < b->ai_protocol);	
+			return (a->ai_protocol < b->ai_protocol);
 		if (a->ai_addrlen != b->ai_addrlen)
 			return (a->ai_addrlen < b->ai_addrlen);
 		if (a->ai_canonname != b->ai_canonname)
@@ -120,13 +120,13 @@ struct AddrinfoPtrComparator
 		I think (i hope) a std::set insert is lighter than that. This is deffinitely not relevant for the runtime
 
 		-> setup the lsitening sockets from all the unique combinations
-	
+
 	freeaddrinfo on the vector that holds all struct addrinfo linkedlists
 
 */
-int	setupAllAddrinfo(const ServerConfig& 									config, 
+int	setupAllAddrinfo(const ServerConfig& 									config,
 					std::set<const t_addrinfo*, AddrinfoPtrComparator>& 	unique_AddrInfo,
-					std::vector<t_addrinfo*>& 								allLists_AddrInfo, 
+					std::vector<t_addrinfo*>& 								allLists_AddrInfo,
 					int socktype, int addrFamily, int backlog)
 {
 	t_addrinfo          						*res;
@@ -155,7 +155,7 @@ int	setupAllAddrinfo(const ServerConfig& 									config,
 
 			status = ::getaddrinfo
 			(
-				listeners[i].first.c_str(), 
+				listeners[i].first.c_str(),
 				listeners[i].second.c_str(),
 				&hints,
 				&res
@@ -201,7 +201,7 @@ void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& po
 
 		addr = (t_sockaddr *)m_memPool->allocate(cur->ai_addrlen, true);
 		std::memcpy(addr, cur->ai_addr, cur->ai_addrlen);
-		
+
 		listener->setAddr(addr);
 		listener->setSockType(cur->ai_socktype);
 		listener->setProtocol(cur->ai_protocol);
@@ -224,7 +224,7 @@ void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& po
 
 	}
 	freeaddrinfo(res);
-	return (0);	
+	return (0);
 }
 
 /*
@@ -232,7 +232,7 @@ void	ServerManager::setupSingleListener(const t_ip_str& ip, const t_port_str& po
 
 	Gets all getaddrinfo structs from all ip:port combos obtained from config, and count all the unique ones.
 	ServerWorkers reserve the space for that ammount of listening sockets.
-	
+
 */
 void	ServerManager::setupListeners()
 {
@@ -242,7 +242,7 @@ void	ServerManager::setupListeners()
 
 	listenerCount = setupAllAddrinfo(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
 	m_listenAddrs.reserve(listenerCount);
-	
+
 	for (size_t i = 0; i < m_workers.size(); ++i)
 		m_workers[i]->accessListeners().reserve(listenerCount);
 

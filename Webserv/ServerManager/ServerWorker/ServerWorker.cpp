@@ -25,7 +25,7 @@ static size_t countListeners(const ServerConfig& config)
 
 	for (t_blocks::const_iterator iter = blocks.begin(); iter != blocks.end(); ++iter)
 		count += iter->second.getListeners().size();
-	
+
 	return (count);
 }
 
@@ -50,7 +50,6 @@ ServerWorker::~ServerWorker()
 
 int ServerWorker::createListeners(const char* node, const char* port, int socktype, int addrFamily, int backlog)
 {
-
 }
 
 int ServerWorker::setup_mySignalHandler()

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DynArray.tpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 12:14:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/06 15:37:44 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class DynArray
                 {
                     m_allocator.deallocate(m_array, m_capacity);
                     m_array = m_allocator.allocate(other.m_capacity);
-                }    
+                }
             }
             m_size = other.m_size;
             m_capacity = other.m_capacity;
@@ -102,7 +102,7 @@ class DynArray
             m_allocator.construct(m_array, value);
             m_size++;
         }
-    	
+
         T* getArray() const {return (m_array);}
 
 
