@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/09 14:29:41 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/09 15:52:43 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,19 +33,14 @@ OBJ_PATH 						= 	_objs
 SRCS 							=		$(SRC_PATH)/main.cpp															\
 																														\
 										$(SRC_PATH)/ServerManager/ServerManager.cpp										\
-																														\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorker.cpp							\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerEvents.cpp					\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerGetSetAccess.cpp				\
-																														\
 										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocket.cpp					\
 										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketEvents.cpp				\
 										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketGetSetAccess.cpp		\
-																														\
 										$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp							\
-																														\
 										$(SRC_PATH)/ServerManager/ConnectionManager/ConnectionManager.cpp				\
-																														\
 										$(SRC_PATH)/ServerManager/BlockFinder/BlockFinder.cpp							\
 																														\
 										$(SRC_PATH)/Connection/Connection.cpp											\
@@ -61,7 +56,17 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 																														\
 										$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp						\
 										$(SRC_PATH)/GenericUtils/Files/File.cpp											\
-										$(SRC_PATH)/GenericUtils/Files/FilesUtils.cpp									
+										$(SRC_PATH)/GenericUtils/Files/FilesUtils.cpp									\
+																														\
+										$(SRC_PATH)/HttpModule/HttpModule.cpp											\
+										$(SRC_PATH)/HttpModule/HttpModuleGetSetAccess.cpp								\
+										$(SRC_PATH)/HttpModule/HttpConnection/HttpConnection.cpp						\
+										$(SRC_PATH)/HttpModule/HttpManager/HttpManager.cpp								\
+										$(SRC_PATH)/HttpModule/HttpRequest/HttpRequest.cpp								\
+										$(SRC_PATH)/HttpModule/HttpResponse/HttpResponse.cpp
+																			
+
+
 
 
 
