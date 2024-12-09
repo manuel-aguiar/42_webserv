@@ -221,6 +221,11 @@ int		ServerConfig::parseConfigFile()
 			}
 		}
 	}
+	if (m_serverCount == 0)
+	{
+		std::cerr << "Error: no server configurations on config file" << std::endl;
+		return (0);
+	}
 	m_setDefaults(0);
 	m_setServers(m_servers);
 	return (1);

@@ -15,8 +15,6 @@
 ServerBlock::ServerBlock()
 {
 	m_keys["listen"]				= &ServerBlock::setListener;
-	// m_keys["host"]					= &ServerBlock::setHost;
-	// m_keys["port"]					= &ServerBlock::setPort;
 	m_keys["server_names"]			= &ServerBlock::addServerName;
 	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
 	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
@@ -24,8 +22,8 @@ ServerBlock::ServerBlock()
 	m_keys["error_pages"]			= &ServerBlock::addErrorPage;
 
 	m_config["listen"];
-	// m_config["host"];
-	// m_config["port"];
+	m_config["host"];
+	m_config["port"];
 	m_config["server_names"];
 	m_config["client_body_size"];
 	m_config["client_header_size"];
@@ -96,6 +94,18 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 // 	return (1);
 // }
 
+// bool	ServerBlock::setPort(const std::string &value, const int &flag)
+// {
+// 	if (!flag && !m_config["port"].empty())
+// 		throw (std::invalid_argument("port already set"));
+// 	if (!isNumber(value))
+// 		return (0);
+// 	m_config["port"].clear();
+// 	m_config["port"].insert(value);
+
+// 	return (1);
+// }
+
 void	ServerBlock::setRootPath(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["root"].empty())
@@ -132,18 +142,6 @@ void	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
 	m_config["client_header_size"].clear();
 	m_config["client_header_size"].insert(value);
 }
-
-// bool	ServerBlock::setPort(const std::string &value, const int &flag)
-// {
-// 	if (!flag && !m_config["port"].empty())
-// 		throw (std::invalid_argument("port already set"));
-// 	if (!isNumber(value))
-// 		return (0);
-// 	m_config["port"].clear();
-// 	m_config["port"].insert(value);
-
-// 	return (1);
-// }
 
 void	ServerBlock::addServerName(const std::string &value, const int &flag)
 {

@@ -1,10 +1,11 @@
 .SILENT:
-NAME =			ServerConfig.out
+NAME =			TestServerConfig.out
 CXX =			c++
 CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror #-fsanitize=address
-SRC =			main.cpp ServerConfig/ServerConfig.cpp ServerBlock/ServerBlock.cpp \
-				DefaultConfig/DefaultConfig.cpp ServerLocation/ServerLocation.cpp \
-				../GenericUtils/StringUtils/StringUtils.cpp ../GenericUtils/Validation/Validation.cpp
+SRC =			ServerConfigTests.cpp ../ServerConfig/ServerConfig.cpp ../ServerBlock/ServerBlock.cpp \
+				../DefaultConfig/DefaultConfig.cpp ../ServerLocation/ServerLocation.cpp \
+				../../GenericUtils/StringUtils/StringUtils.cpp \
+				../../GenericUtils/Validation/Validation.cpp 
 
 
 #=== COLORS ===#

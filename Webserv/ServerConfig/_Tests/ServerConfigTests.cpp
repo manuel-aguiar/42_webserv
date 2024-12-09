@@ -1,29 +1,157 @@
-#include <gtest/gtest.h>
-#include "ServerConfigParser.h"  // Replace with your actual header file
-#include <fstream>
-#include <stdexcept>
+#include <iostream>
+#include <string>
+#include <stdexcept>  // For std::exception, std::runtime_error, etc.
+#include <dirent.h>
 
-// Test with valid configuration
-TEST(ServerConfigTests, ValidConfig) {
-    std::ifstream valid_config("tests/utils/TestFiles/valid_config.txt");
-    ServerConfigParser parser;
-    
-    ASSERT_NO_THROW(parser.parse(valid_config));
-    EXPECT_TRUE(parser.isValid());
+#include "../ServerConfig/ServerConfig.hpp"
+#include "../ServerBlock/ServerBlock.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
+
+#define TESTFOLDER std::string("./") 
+#define CLR_BLUE "\033[34m"
+#define CLR_RESET "\033[0m"
+#define CLR_PASS "\033[32mPass\033[0m"	
+#define CLR_FAIL "\033[31mFail\033[0m"
+
+void testPass(const std::string &filePath, int testNbr, int printDetails)
+{
+	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
+	ServerConfig config(filePath.c_str(), NULL);
+	if (config.parseConfigFile())
+		std::cout << CLR_PASS << std::endl;
+	else
+		std::cout << CLR_FAIL << std::endl;
+	if (printDetails)
+		config.printConfigs();
 }
 
-// Test with missing server_name (invalid config)
-TEST(ServerConfigTests, MissingServerName) {
-    std::ifstream invalid_config("tests/utils/TestFiles/invalid_config_1.txt");
-    ServerConfigParser parser;
-
-    EXPECT_THROW(parser.parse(invalid_config), std::invalid_argument);
+void testFail(const std::string &filePath, int testNbr, int printDetails)
+{
+	std::cout << "Test " << testNbr << " : " << filePath << " "  << std::endl;
+	ServerConfig config(filePath.c_str(), NULL);
+	if (config.parseConfigFile())
+		std::cout << CLR_FAIL << std::endl;
+	else
+		std::cout << CLR_PASS << std::endl;
+	if (printDetails)
+		config.printConfigs();
 }
 
-// Test with invalid listen directive
-TEST(ServerConfigTests, InvalidListen) {
-    std::ifstream invalid_config("tests/utils/TestFiles/invalid_config_2.txt");
-    ServerConfigParser parser;
+void testNoThrow(const std::string &filePath, int testNbr, int printDetails)
+{
+	std::cout << "Test " << testNbr << " : " << filePath;
+	try {
+		ServerConfig config(filePath.c_str(), NULL);
+		config.parseConfigFile();
+		if (printDetails)
+			config.printConfigs();
+		std::cout << "Passed!" << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cerr << "Test " << testNbr << " Failed: " << e.what() << std::endl;
+	}
+}
 
-    EXPECT_THROW(parser.parse(invalid_config), std::invalid_argument);
+void testThrow(const std::string &filePath, int testNbr, int printDetails)
+{
+	std::cout << "Test " << testNbr << " : " << filePath;
+	try {
+		ServerConfig config(filePath.c_str(), NULL);
+		config.parseConfigFile();
+		if (printDetails)
+			config.printConfigs();
+		std::cerr << "Failed: Test should throw but didn't" << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << "Passed (throw): " << e.what() << std::endl;
+	}
+}
+
+void testNoThrowInFolder(const std::string &folderPath, int printDetails)
+{
+	DIR		*dir;
+	struct	dirent *ent;
+	int		testNbr = 0;
+
+	if ((dir = opendir(folderPath.c_str())) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_REG) {
+				std::string filePath = folderPath + "/" + ent->d_name;
+				testNoThrow(filePath, ++testNbr, printDetails);
+			}
+		}
+		closedir(dir);
+	} else
+		std::cerr << "Could not open directory: " << folderPath << std::endl;
+}
+
+void testThrowInFolder(const std::string &folderPath, int printDetails)
+{
+	DIR		*dir;
+	struct	dirent *ent;
+	int		testNbr = 0;
+
+	if ((dir = opendir(folderPath.c_str())) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_REG) {
+				std::string filePath = folderPath + "/" + ent->d_name;
+				testThrow(filePath, ++testNbr, printDetails);
+			}
+		}
+		closedir(dir);
+	} else
+		std::cerr << "Could not open directory: " << folderPath << std::endl;
+}
+
+void testFolder(const std::string &folderPath, int printDetails, void (*testFunc)(const std::string &, int, int))
+{
+	DIR		*dir;
+	struct	dirent *ent;
+	int		testNbr = 0;
+
+	if ((dir = opendir(folderPath.c_str())) != NULL) {
+		while ((ent = readdir(dir)) != NULL) {
+			if (ent->d_type == DT_REG) {
+				std::string filePath = folderPath + "/" + ent->d_name;
+				testFunc(filePath, ++testNbr, printDetails);
+			}
+		}
+		closedir(dir);
+	} else
+		std::cerr << "Could not open directory: " << folderPath << std::endl;
+}
+
+
+int main()
+{
+	int printDetails;
+	int tests;
+
+	std::cout << "=== Testing ServerConfig ===" << std::endl;
+	std::cout << "Pass means that the output value is the expected value. Fail Means it isnt." << std::endl;
+	std::cout << "Wether the value is correctly stored needs to be checked manually by printing the stored information." << std::endl;
+	std::cout << "enter 0 to do all tests, 1 to do the valid situations, 2 to do the invalid situations" << std::endl;
+	std::cin >> tests;
+	std::cout << "enter 0 to see only the results or 1 to print stored information" << std::endl;
+	std::cin >> printDetails;
+	std::cout << "=== Testing ServerConfig ===" << std::endl;
+
+	switch (tests) {
+        case 0:
+			std::cout << std::endl << "=== VALID TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Pass", printDetails, testPass);
+			std::cout << std::endl << "=== INVALID TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Fail", printDetails, testFail);
+			break;
+		case 1:
+			std::cout << std::endl << "=== VALID TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Pass", printDetails, testPass);
+			break;
+		case 2:
+			std::cout << std::endl << "=== INVALID TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Fail", printDetails, testFail);
+			break;
+	}
+	return 0;
 }
