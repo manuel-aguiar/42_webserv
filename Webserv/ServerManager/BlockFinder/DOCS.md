@@ -2,9 +2,10 @@
 
 ### Adding Blocks
 ```c++
-void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+void	BlockFinder::addServerBlock(const ServerBlocks& block)
 ```
   - Adds a new server block with specified parameters
+  - values are taken from the ServerBlocks object using the getters
   - Empty values are automatically converted to wildcards
   - Duplicate blocks are ignored
   - **Note**: Port is mandatory and cannot be a wildcard
