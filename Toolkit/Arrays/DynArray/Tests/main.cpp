@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/15 20:08:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 08:45:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -471,47 +471,6 @@ int main()
 
 	pool->destroy();
 
-/*
-
-	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
-    std::cout << "              destroyed my memoryPool vector" << std::endl << std::endl;
-
-    {
-        std::cout << "          my memoryPool vector of polymorphic objects:" << std::endl;
-
-
-
-        Nginx_PoolAllocator<Base*> alloc(pool);
-        MyVectorInPool<Base*>::type* vec = (MyVectorInPool<Base*>::type*)pool->allocate(sizeof(MyVectorInPool<Base*>::type), sizeof(MyVectorInPool<Base*>::type));
-        new (vec) MyVectorInPool<Base*>::type(alloc);
-
-        vec->emplace_front(new Base(5));
-        vec->emplace_front(new Base(6));
-        vec->emplace_front(new Base(7));
-        vec->emplace_front(new Derived(1));
-        vec->emplace_front(new Derived(2));
-        vec->emplace_front(new Derived(3));
-
-        std::cout << "              printing vector, expecting: Der3, Der2, Der1, Base7, Base6, Base5" << std::endl;
-
-        for (MyVectorInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
-        {
-            (*iter)->print();
-        }
-
-        for (MyVectorInPool<Base*>::type::iterator iter = vec->begin(); iter != vec->end(); ++iter)
-        {
-            delete (*iter);
-        }
-
-        vec->~DynArray();
-		std::cout << "vec ouyt" << std::endl;
-    }
-	pool->destroy();
-
-    std::cout << "              destroyed my memoryPool vector" << std::endl << std::endl;
-
-  */
     return (0);
 }
 

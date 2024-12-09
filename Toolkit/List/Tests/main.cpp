@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/16 16:13:13 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/09 09:17:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -552,7 +552,7 @@ int main(void)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
-/******************* TEST 8 ************************/
+/******************* TEST 14 ************************/
 
 	try
 	{
@@ -560,31 +560,31 @@ int main(void)
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
-		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(MPool_FixedElem<StringInPool>(500));
-		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(MPool_FixedElem<StringInPool>(500));
+		std::list<StringInPool, Nginx_MPool_FixedElem<StringInPool> > 	std((Nginx_MPool_FixedElem<StringInPool>(memoryPool, 5000)));
+		List<StringInPool, Nginx_MPool_FixedElem<StringInPool> > 		list((Nginx_MPool_FixedElem<StringInPool>(memoryPool, 5000)));
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(StringInPool("cenas e coisas", allocChar));
-			list.push_back(StringInPool("cenas e coisas", allocChar));
+			list.emplace_back(StringInPool("cenas e coisas", allocChar));
 
 			std.push_back(StringInPool(" coisas", allocChar));
-			list.push_back(StringInPool(" coisas", allocChar));
+			list.emplace_back(StringInPool(" coisas", allocChar));
 
 			std.pop_front();
 			list.pop_front();
 
 			std.push_front(StringInPool(" tretas coisas", allocChar));
-			list.push_front(StringInPool(" tretas coisas", allocChar));
+			list.emplace_front(StringInPool(" tretas coisas", allocChar));
 
 			std.pop_back();
 			list.pop_back();
 
 			std.push_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
-			list.push_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
+			list.emplace_front(StringInPool(" tretasfasfas coisasagsgasgasgs", allocChar));
 
 			std.push_back(StringInPool(" tretas coisas", allocChar));
-			list.push_back(StringInPool(" tretas coisas", allocChar));
+			list.emplace_back(StringInPool(" tretas coisas", allocChar));
 
 			std.pop_front();
 			list.pop_front();
@@ -595,8 +595,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		std::list<StringInPool, MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
-		List<StringInPool, MPool_FixedElem<StringInPool> >::iterator it = list.begin();
+		std::list<StringInPool, Nginx_MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
+		List<StringInPool, Nginx_MPool_FixedElem<StringInPool> >::iterator it = list.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)

@@ -74,7 +74,7 @@ class MPool_FixedElem
 		typedef s_Slot		t_slot_type;
 		typedef s_Slot*		t_slot_pointer;
 
-		HeapArray<s_Slot> 	m_elements;
+		DynArray<s_Slot> 	m_elements;
 		size_t 				m_elemCount;
 		size_t 				m_maxElems;
 		t_slot_pointer 		m_freeSlot;
@@ -94,12 +94,12 @@ MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
 
 
 template <typename T>
-MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& memoryPool) throw() :
-	m_elemCount(memoryPool.m_elemCount),
-	m_maxElems(memoryPool.m_maxElems),
-	m_freeSlot(memoryPool.m_freeSlot)
+MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& copy) throw() :
+	m_elements(copy.m_elements),
+	m_elemCount(copy.m_elemCount),
+	m_maxElems(copy.m_maxElems),
+	m_freeSlot(copy.m_freeSlot)
 {
-	m_elements = HeapArray<s_Slot>(memoryPool.m_maxElems);
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
 
@@ -107,9 +107,9 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& memoryPool) throw() :
 
 template <typename T>
 template<class U>
-MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw() :
+MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& rebind) throw() :
 	m_elemCount(0),
-	m_maxElems(memoryPool.m_maxElems),
+	m_maxElems(rebind.m_maxElems),
 	m_freeSlot(NULL)
 {
 	
