@@ -79,12 +79,14 @@ class MPool_FixedElem
 		size_t 				m_maxElems;
 		t_slot_pointer 		m_freeSlot;
 
+		bool operator==(const MPool_FixedElem& other) const;
+		bool operator!=(const MPool_FixedElem& other) const;
 };
 
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
-	m_elements(numElems),
+	m_elements(0),
 	m_elemCount(0),
 	m_maxElems(numElems),
 	m_freeSlot(NULL)
@@ -95,11 +97,13 @@ MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
 
 template <typename T>
 MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& copy) throw() :
-	m_elements(copy.m_elements),
+	m_elements(0),
 	m_elemCount(copy.m_elemCount),
 	m_maxElems(copy.m_maxElems),
 	m_freeSlot(copy.m_freeSlot)
 {
+	//std::cout << "copy called" << std::endl;
+	m_elements.reserve(m_maxElems);
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
 
@@ -108,11 +112,12 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& copy) throw() :
 template <typename T>
 template<class U>
 MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& rebind) throw() :
+	m_elements(0),
 	m_elemCount(0),
 	m_maxElems(rebind.m_maxElems),
 	m_freeSlot(NULL)
 {
-	
+	//std::cout << "rebind called" << std::endl;
 }
 
 
@@ -151,7 +156,8 @@ MPool_FixedElem<T>::allocate(size_type, const_pointer)
 {
 	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
 	assert(m_elemCount < m_maxElems);
-
+	//std::cout << "allocate called" << std::endl;
+	
 	if (m_freeSlot != 0)
 	{
 		pointer result = reinterpret_cast<pointer>(m_freeSlot);
@@ -227,5 +233,15 @@ MPool_FixedElem<T>::deleteElement(pointer p)
 		deallocate(p);
 	}
 }
+
+template <typename T>
+inline bool 
+MPool_FixedElem<T>::operator==(const MPool_FixedElem& other) const
+{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
+
+template <typename T>
+inline bool 
+MPool_FixedElem<T>::operator!=(const MPool_FixedElem& other) const
+{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 
 #endif // MEMORY_BLOCK_TCC

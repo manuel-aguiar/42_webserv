@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/04 12:14:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 10:17:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,18 @@ class DynArray
 {
     public:
         DynArray(const Allocator& allocator = Allocator()) : m_array(NULL), m_size(0), m_capacity(0), m_allocator(allocator) {};
-        DynArray(int size, const Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
+        DynArray(size_t size, const Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
         {
-            m_array = m_allocator.allocate(size, NULL);
-            for (int i = 0; i < size; i++)
+            if (size)
+                m_array = m_allocator.allocate(size, NULL);
+            for (size_t i = 0; i < size; i++)
                 m_allocator.construct(m_array + i, T());
         }
 
-        DynArray(int size, T& value, const Allocator& allocator = Allocator())
+        DynArray(size_t size, T& value, const Allocator& allocator = Allocator())
         {
             m_array = m_allocator.allocate(size, NULL);
-            for (int i = 0; i < size; i++)
+            for (size_t i = 0; i < size; i++)
                 new (m_array + i) T(value);
         }
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:42:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 10:56:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,6 @@ int main(void)
     list1.pop_front();
     list1.push_back(3);   
     list1.push_back(3);
+
+    list1.clear();
 }

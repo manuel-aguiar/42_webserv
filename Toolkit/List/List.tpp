@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 11:42:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:58:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,16 @@ class List
 			T 		m_data;
 		};
 
+	
 	typedef typename Allocator::template rebind<DataNode>::other NodeAllocator;
 
 	public:
 
-		List(const Allocator& alloc = Allocator())
+		List(const NodeAllocator& alloc = Allocator())
 			: m_size(0), m_header(), m_nodeAllocator(alloc)
-			{
-
-			}
+		{
+			
+		}
 
 
 		List(const List& other)
@@ -163,6 +164,7 @@ class List
 		void	push_back(const T& data)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
+			std::cout << "alloc address: " << node << std::endl;
 			new (node) DataNode(data);
 			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
@@ -171,6 +173,7 @@ class List
 		void	push_front(const T& data)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
+			
 			new (node) DataNode(data);
 			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;

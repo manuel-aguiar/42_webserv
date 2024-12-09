@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 08:45:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 10:17:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ int main()
 		std::cout << "TEST 4: ";
 		Nginx_PoolAllocator<Dummy> alloc(pool);
 		std::vector<Dummy, Nginx_PoolAllocator<Dummy> > 		std(alloc);
-		DynArray<Dummy, Nginx_PoolAllocator<Dummy> > 			array(alloc);
+		DynArray<Dummy, Nginx_PoolAllocator<Dummy> > 			array(0, alloc);
 
 		std.reserve(23);
 		array.reserve(23);
