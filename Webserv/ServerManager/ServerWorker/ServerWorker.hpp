@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:36:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:43:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ class ServerWorker
 		const ServerConfig&								m_config;
 		ConnectionManager								m_connManager;
 		EventManager									m_eventManager;
-		CgiManager										m_cgiManager;
+		//CgiManager										m_cgiManager;
 		Event											m_mySignalEvent;
 		Nginx_MemoryPool*								m_memPool;
 		DynArray<ListeningSocket*,

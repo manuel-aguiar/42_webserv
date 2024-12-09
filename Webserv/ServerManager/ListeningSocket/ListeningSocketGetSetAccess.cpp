@@ -6,25 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:33:06 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/09 15:14:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:28:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ListeningSocket.hpp"
-
-/*
-	struct addrinfo {
-		int              ai_flags;
-		int              ai_family;
-		int              ai_socktype;
-		int              ai_protocol;
-		socklen_t        ai_addrlen;
-		struct sockaddr *ai_addr;
-		char            *ai_canonname;
-		struct addrinfo *ai_next;
-	};
-
-*/
 
 const ServerWorker&			ListeningSocket::getWorker()						const
 {

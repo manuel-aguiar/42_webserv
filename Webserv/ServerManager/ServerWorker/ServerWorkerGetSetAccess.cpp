@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/06 11:35:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:44:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ const ServerManager&		ServerWorker::getServerManager() const
 	return (m_serverManager);
 }
 
-const CgiManager&			ServerWorker::getCgiManager() const
-{
-	return (m_cgiManager);
-}
+//const CgiManager&			ServerWorker::getCgiManager() const
+//{
+//	return (m_cgiManager);
+//}
 
 const ConnectionManager&	ServerWorker::getConnManager() const
 {
@@ -59,10 +59,10 @@ ServerManager&				ServerWorker::accessServerManager()
 	return (m_serverManager);
 }
 
-CgiManager&					ServerWorker::accessCgiManager()
-{
-	return (m_cgiManager);
-}
+//CgiManager&					ServerWorker::accessCgiManager()
+//{
+//	return (m_cgiManager);
+//}
 
 ConnectionManager&			ServerWorker::accessConnManager()
 {
