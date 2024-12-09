@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 11:56:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 14:06:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& cop
 	m_maxElems(copy.m_maxElems),
 	m_freeSlot(copy.m_freeSlot)
 {
-	std::cout << "copy callled " << this << " from " << &copy << std::endl;
+	//std::cout << "copy callled " << this << " from " << &copy << std::endl;
 	m_elements.reserve(m_maxElems);
 	//std::cout <<  "copy constructor: " << copy.m_elements.getAllocator().m_memoryPool << "\n";
 	//m_elements = DynArray<s_Slot, Nginx_PoolAllocator<s_Slot> >(copy.m_maxElems, m_elements.getAllocator());
@@ -131,7 +131,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& 
 	m_freeSlot(NULL)
 {
 	
-	std::cout << "rebind callled " << this << " from " << &rebind << std::endl;
+	//std::cout << "rebind callled " << this << " from " << &rebind << std::endl;
 }
 
 
@@ -173,13 +173,13 @@ Nginx_MPool_FixedElem<T>::allocate(size_type, const_pointer)
 	
 	//CUSTOM_ASSERT(m_elemCount < m_maxElems, "Nginx_MPool_FixedElem is at max capacity already");
 	assert(m_elemCount < m_maxElems);
-	std::cout << "allocate called" << std::endl;
+	//std::cout << "allocate called" << std::endl;
 	
 	if (m_freeSlot != 0)
 	{
 		
 		pointer result = reinterpret_cast<pointer>(m_freeSlot);
-		std::cout << "	there is a free slot, returning: " << result << std::endl;
+		//std::cout << "	there is a free slot, returning: " << result << std::endl;
 		m_freeSlot = m_freeSlot->m_next;
 		m_elemCount++;
 		return (result);
@@ -187,7 +187,7 @@ Nginx_MPool_FixedElem<T>::allocate(size_type, const_pointer)
 	else
 	{
 		//m_elements.reserve(m_maxElems);
-		std::cout << "	there is no free slot, returning: " << &m_elements[m_elemCount] << std::endl;
+		//std::cout << "	there is no free slot, returning: " << &m_elements[m_elemCount] << std::endl;
 
 		return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
 	}
