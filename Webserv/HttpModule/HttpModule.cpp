@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:10:13 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/09 16:08:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:28:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void HttpModule::initConnection(Connection* accepted)
 	new (conn) HttpConnection(accepted);
 
 	accepted->setProtoConnection(conn);
-	manager.addConnection(conn);
+	manager.addConnection(*conn);
 
 	/*
 		set the Connection->accessReadEvent, with the relevant http handler function such that the listening socket

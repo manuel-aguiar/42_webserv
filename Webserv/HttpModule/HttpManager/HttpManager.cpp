@@ -10,13 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpManager.hpp"
+//Project headers
+# include "HttpManager.hpp"
+
+//C++ headers
+# include <cassert>
 
 HttpManager::HttpManager(ServerManager& serverManager) :
 	m_serverManager(serverManager)
 {
 }
 
+
+void	HttpManager::addConnection(HttpConnection& connection)
+{
+	m_connections.insert(&connection);
+}
+
+void	HttpManager::removeConnection(HttpConnection& connection)
+{
+	size_t res = m_connections.erase(&connection);
+	assert(res != 0);	// don't remove if it doesn't exist
+	(void)res;
+}
+
+
+//private
 HttpManager::~HttpManager() {}
 
 HttpManager::HttpManager(const HttpManager& copy) :
