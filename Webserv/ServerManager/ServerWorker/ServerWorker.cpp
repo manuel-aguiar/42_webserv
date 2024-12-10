@@ -10,18 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//Project headers
 # include "ServerWorker.hpp"
 # include "../ServerManager.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
-# include "../../ServerConfig/ServerConfig.hpp"
+# include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 
+// C++ headers
+# include <string>
 
 ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals* globals) :
 	m_myID				(serverID),
 	m_serverManager		(manager),
 	m_config			(m_serverManager.getConfig()),
-	m_connManager		(m_serverManager.getConfig().getMaxConnections(), pool, globals),
+	m_connManager		(::stoull(m_serverManager.getConfig().getMaxConnections()), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
 	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
@@ -89,7 +92,7 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 	m_myID				(copy.m_myID),
 	m_serverManager		(copy.m_serverManager),
 	m_config			(m_serverManager.getConfig()),
-	m_connManager		(m_serverManager.getConfig().getMaxConnections(), copy.m_memPool, copy.m_globals),
+	m_connManager		(::stoull(m_serverManager.getConfig().getMaxConnections()), copy.m_memPool, copy.m_globals),
 	m_eventManager		(copy.m_globals),
 	m_memPool			(copy.m_memPool),
 	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),

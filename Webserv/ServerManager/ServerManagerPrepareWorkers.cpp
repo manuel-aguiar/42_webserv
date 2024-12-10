@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:17:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:23:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 # include "ServerManager.hpp"
-# include "../ServerConfig/ServerConfig.hpp"
+# include "../ServerConfig/ServerConfig/ServerConfig.hpp"
 
 // C++ headers
 
@@ -187,7 +187,6 @@ void	ServerManager::prepareWorkers()
 	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
 	std::vector<t_addrinfo*> 							allLists_Addrinfo;
 	ListeningSocket*									newListener;
-	size_t												listenerCount;
 
 	m_workers.reserve(m_config.getMaxWorkers());
 
@@ -202,7 +201,7 @@ void	ServerManager::prepareWorkers()
 		new (m_workers[i]) ServerWorker(*this, i, workerMemPool, m_globals);
 
 		// worker sets up its own listeners, inside its own memorypool
-		m_workers[i]->accessListeners().reserve(listenerCount);
+		m_workers[i]->accessListeners().reserve(m_listenerCount);
 		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
 		{
 			newListener = (ListeningSocket*)m_workers[i]->accessMemPool().allocate(sizeof(ListeningSocket));

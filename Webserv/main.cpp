@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 14:08:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:19:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 // Project headers
 # include "Globals/Globals.hpp"
-# include "ServerConfig/ServerConfig.hpp"
+# include "ServerConfig/ServerConfig/ServerConfig.hpp"
 //# include "ServerConfig/DefaultConfig/DefaultConfig.hpp"
 # include "ServerManager/ServerManager.hpp"
 

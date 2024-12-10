@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 08:49:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:22:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals* globals) :
+	m_backlog(backlog),
 	m_worker(worker),
-	m_globals(globals),
-	m_backlog(backlog)
+	m_globals(globals)
 {
 	size_t canonnameLen;
 
