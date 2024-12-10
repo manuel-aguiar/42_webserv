@@ -46,15 +46,13 @@ class ServerBlock
 
 		// premade
 		void							setListener(const std::string &value, const int &flag = 0);
-		// bool							setHost(const std::string &value, const int &flag = 0);
-		// bool							setPort(const std::string &value, const int &flag = 0);
 		void							setRootPath(const std::string &value, const int &flag = 0);
 		void							setClientBodySize(const std::string &value, const int &flag = 0);
 		void							setClientHeaderSize(const std::string &value, const int &flag = 0);
 		void							addServerName(const std::string &value, const int &flag = 0);
 		void							addErrorPage(const std::string &value, const int &flag = 0);
-        // const std::string&				getHost() const;
-		// const std::string&				getPort() const;
+        const std::string&				getHost() const;
+		const std::string&				getPort() const;
 		const std::set<std::string>&	getListener() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
@@ -79,6 +77,9 @@ class ServerBlock
         std::map<t_path, ServerLocation>				m_locations;
 
 		std::vector<t_listeners>						m_listeners; // delete
+
+		bool							m_setHost(const std::string &value, const int &flag = 0); // Host and port are set through setListener() for ease of access
+		bool							m_setPort(const std::string &value, const int &flag = 0);
 };
 
 

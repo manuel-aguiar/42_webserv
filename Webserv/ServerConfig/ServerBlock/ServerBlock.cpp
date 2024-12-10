@@ -81,30 +81,29 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535.\n"));
 	m_config["listen"].insert(hostname + ':' + port);
+	m_setHost(hostname, flag);
+	m_setPort(port, flag);
 }
 
-// bool	ServerBlock::setHost(const std::string &value, const int &flag)
-// {
-// 	if (!flag && !m_config["host"].empty())
-// 		throw (std::invalid_argument("host already set"));
-// 	// if (!validateIpv4(value))
-// 	// 	throw (std::invalid_argument("not an ipv4 address"));
-// 	m_config["host"].clear();
-// 	m_config["host"].insert(value);
-// 	return (1);
-// }
+bool	ServerBlock::m_setHost(const std::string &value, const int &flag)
+{
+	if (!flag && !m_config["host"].empty())
+		throw (std::invalid_argument("host already set"));
+	m_config["host"].clear();
+	m_config["host"].insert(value);
+	return (1);
+}
 
-// bool	ServerBlock::setPort(const std::string &value, const int &flag)
-// {
-// 	if (!flag && !m_config["port"].empty())
-// 		throw (std::invalid_argument("port already set"));
-// 	if (!isNumber(value))
-// 		return (0);
-// 	m_config["port"].clear();
-// 	m_config["port"].insert(value);
+// No checks on m_setPort() because setListener() already does the checks
+bool	ServerBlock::m_setPort(const std::string &value, const int &flag)
+{
+	if (!flag && !m_config["port"].empty())
+		throw (std::invalid_argument("port already set"));
+	m_config["port"].clear();
+	m_config["port"].insert(value);
 
-// 	return (1);
-// }
+	return (1);
+}
 
 void	ServerBlock::setRootPath(const std::string &value, const int &flag)
 {
@@ -182,25 +181,25 @@ const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
 	return (m_locations);
 }
 
-// const std::string&	ServerBlock::getHost() const
-// {
-// 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("host");
+const std::string&	ServerBlock::getHost() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("host");
 
-// 	if (it != m_config.end())
-// 		return (*it->second.begin());
-// 	else
-// 		throw std::out_of_range("Key not found");
-// }
+	if (it != m_config.end())
+		return (*it->second.begin());
+	else
+		throw std::out_of_range("Key not found");
+}
 
-// const std::string&	ServerBlock::getPort() const
-// {
-// 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("port");
+const std::string&	ServerBlock::getPort() const
+{
+	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("port");
 	
-// 	if (it != m_config.end())
-// 		return (*it->second.begin());
-// 	else
-// 		throw std::out_of_range("Key not found");
-// }
+	if (it != m_config.end())
+		return (*it->second.begin());
+	else
+		throw std::out_of_range("Key not found");
+}
 
 const std::set<std::string>&	ServerBlock::getListener() const
 {
