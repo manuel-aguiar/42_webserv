@@ -15,7 +15,7 @@
 ServerBlock::ServerBlock()
 {
 	m_keys["listen"]				= &ServerBlock::setListener;
-	m_keys["server_names"]			= &ServerBlock::addServerName;
+	m_keys["server_name"]			= &ServerBlock::addServerName;
 	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
 	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
 	m_keys["root"]					= &ServerBlock::setRootPath;
@@ -24,7 +24,7 @@ ServerBlock::ServerBlock()
 	m_config["listen"];
 	m_config["host"];
 	m_config["port"];
-	m_config["server_names"];
+	m_config["server_name"];
 	m_config["client_body_size"];
 	m_config["client_header_size"];
 	m_config["root"];
@@ -145,9 +145,9 @@ void	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
 void	ServerBlock::addServerName(const std::string &value, const int &flag)
 {
 	(void)flag;
-	if (m_config["server_names"].find(value) != m_config["server_names"].end())
+	if (m_config["server_name"].find(value) != m_config["server_name"].end())
 		throw (std::invalid_argument("server name already set"));
-	m_config["server_names"].insert(value);
+	m_config["server_name"].insert(value);
 }
 
 void	ServerBlock::addErrorPage(const std::string &value, const int &flag)
@@ -213,7 +213,7 @@ const std::set<std::string>&	ServerBlock::getListener() const
 
 const std::set<std::string>&	ServerBlock::getServerNames() const
 {
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("server_names");
+	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("server_name");
 
 	if (it != m_config.end())
 		return (it->second);
@@ -282,9 +282,9 @@ bool	ServerBlock::validate() const
 		std::cerr << "Error: server config validation: listening port not assigned" << std::endl;
 		return (0);
 	}
-	if (m_config.find("server_names")->second.empty())
+	if (m_config.find("server_name")->second.empty())
 	{
-		std::cerr << "Error: server config validation: server_names not assigned" << std::endl;
+		std::cerr << "Error: server config validation: server_name not assigned" << std::endl;
 		return (0);
 	}
 	if (m_config.find("root")->second.empty())
@@ -313,7 +313,7 @@ void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
 
 void	ServerBlock::printServerConfig() const
 {
-	std::set<std::string>	server_names = getServerNames();
+	std::set<std::string>	server_name = getServerNames();
 	std::set<std::string>	error_pages = getErrorPages();
 	
 	std::cout << "║ ┌─ Server ─────────o" << std::endl;
@@ -322,11 +322,11 @@ void	ServerBlock::printServerConfig() const
 	for(std::set<std::string>::const_iterator it = getListener().begin(); it != getListener().end(); it++)
 		std::cout << *it << " ";
 	std::cout << std::endl;
-	std::cout << "║ │ Server_names: ";
-	if (!server_names.size())
+	std::cout << "║ │ server_name: ";
+	if (!server_name.size())
 		std::cout << "(empty)";
 	else
-		for (std::set<std::string>::const_iterator it = server_names.begin(); it != server_names.end(); it++)
+		for (std::set<std::string>::const_iterator it = server_name.begin(); it != server_name.end(); it++)
 			std::cout << *it << " ";
 	std::cout << std::endl;
 
