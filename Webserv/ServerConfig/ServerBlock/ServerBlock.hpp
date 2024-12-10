@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerBlock.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 14:32:31 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/10 10:13:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class ServerBlock
 
         const std::set<std::string>&						getDomainNames() const;
 		const std::map<std::string, ServerLocation>& 		getLocations() const;
+		const std::vector<t_listeners>&						getListeners() const;
 
 		void							setLocations(const std::vector<ServerLocation> &Locations);
 

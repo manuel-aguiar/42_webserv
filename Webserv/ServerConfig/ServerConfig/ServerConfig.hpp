@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:50:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 10:19:55 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/10 10:16:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ class ServerConfig
 		// Debug
 		void										printProgramConfig() const;
 		void										printConfigs() const;
+
+
+		//
+		size_t										getMaxWorkers() const;
 
 	private:
 		enum config_levels

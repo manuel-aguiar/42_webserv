@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerBlocks.hpp                                   :+:      :+:    :+:   */
+/*   ServerBlock.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -22,7 +22,7 @@
 
 class ServerLocations;
 
-class ServerBlocks
+class ServerBlock
 {
     public:
         //constructor destructors

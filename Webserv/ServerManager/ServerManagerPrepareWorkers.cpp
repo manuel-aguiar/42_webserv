@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:06:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:17:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ static int	getAddrInfo_Setup(const ServerConfig& 									config,
 	t_addrinfo          						hints;
 	int											status;
 
-	typedef std::map<std::string, ServerBlocks> t_blocks;
+	typedef std::map<std::string, ServerBlock> t_blocks;
 	const t_blocks& 							blocks = config.getServerBlocks();
 
 

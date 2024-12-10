@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 09:20:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:20:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:09:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@ class ServerConfig {
 		~ServerConfig() {}
 };
 
-class ServerBlocks {
+class ServerBlock {
 	public:
-		ServerBlocks(const std::string& id) : m_id(id) {}
-		~ServerBlocks() {}
+		ServerBlock(const std::string& id) : m_id(id) {}
+		~ServerBlock() {}
 
-		ServerBlocks&	operator=(const ServerBlocks& other) {
+		ServerBlock&	operator=(const ServerBlock& other) {
 			if (this == &other)
 				return (*this);
 

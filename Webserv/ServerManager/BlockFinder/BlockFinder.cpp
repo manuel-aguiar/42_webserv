@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 14:59:20 by rphuyal           #+#    #+#             */
-/*   Updated: 2024/12/10 09:24:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:09:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool	BlockFinder::hasServerBlock(const t_ip_str& ip, const t_port_str& port, con
 **  if a directive is not provided, falls back to the wildcard value
 **	if the block is already in the map, it is not added again
 */
-void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+void	BlockFinder::addServerBlock(const ServerBlock& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 {
     // listen directive in the config is mandatory, so asserting the port here
     assert(!port.empty() && "Port directive is mandatory");
@@ -95,7 +95,7 @@ void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, 
 **	- IP wildcard (`0.0.0.0`), port wildcard (`*`), and server name wildcard (`*`).
 */
 
-const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+const ServerBlock*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 {
     std::string	key;
 
@@ -113,7 +113,7 @@ const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_por
 
     // if the specific ip didn't match, check if wildcard matches
     key = mf_hashedKey(m_wildcardIp, this->m_normalizedPort, this->m_normalizedServerName);
-    std::map<std::string, const ServerBlocks*>::iterator it = m_serverBlocks.find(key);
+    std::map<std::string, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
 
     if (it != m_serverBlocks.end())
         return (it->second);

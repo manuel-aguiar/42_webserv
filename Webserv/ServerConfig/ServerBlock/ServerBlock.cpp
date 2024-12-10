@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:56:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:15:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
-	portValue = stoull(port); // fix throw
+	portValue = std::stoull(port); // fix throw
 	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535.\n"));
 	m_config["listen"].insert(hostname + ':' + port);
@@ -345,4 +345,10 @@ void	ServerBlock::printServerConfig() const
 	std::cout << std::endl;
 	std::cout << "║ │ " <<  std::endl ;
 
+}
+
+
+const std::vector<t_listeners>& ServerBlock::getListeners() const
+{
+	return (m_listeners);
 }
