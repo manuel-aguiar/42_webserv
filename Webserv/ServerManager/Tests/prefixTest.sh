@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Sponsored by ChatGPT
+# Sponsored by ChatGPT, usage: ./prefixTest.sh [target folder path]
 
 # Check if the target folder is provided
 if [ -z "$1" ]; then
