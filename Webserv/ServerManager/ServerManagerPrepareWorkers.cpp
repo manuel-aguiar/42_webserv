@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:34:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 08:50:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ struct AddrinfoPtrComparator
 
 */
 
-static int getAddrInfo_Free(std::vector<t_addrinfo*>& allAddrInfo)
+static void getAddrInfo_Free(std::vector<t_addrinfo*>& allAddrInfo)
 {
 	for (size_t i = 0; i < allAddrInfo.size(); ++i)
 		::freeaddrinfo(allAddrInfo[i]);
@@ -109,7 +109,7 @@ static int getAddrInfo_Free(std::vector<t_addrinfo*>& allAddrInfo)
 static int	getAddrInfo_Setup(const ServerConfig& 									config,
 					std::set<const t_addrinfo*, AddrinfoPtrComparator>& 	unique_AddrInfo,
 					std::vector<t_addrinfo*>& 								allLists_AddrInfo,
-					int socktype, int addrFamily, int backlog)
+					int socktype, int addrFamily)
 {
 	t_addrinfo          						*res;
 	t_addrinfo          						*cur;
@@ -191,7 +191,8 @@ void	ServerManager::prepareWorkers()
 
 	m_workers.reserve(m_config.getMaxWorkers());
 
-	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET, 100);				///must be replaced with correct values
+	const int backlog = 100;																								// must be replaced with correct value
+	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET);				///must be replaced with correct values
 
 	for (size_t i = 0; i < m_workers.size(); i++)
 	{
@@ -205,7 +206,7 @@ void	ServerManager::prepareWorkers()
 		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
 		{
 			newListener = (ListeningSocket*)m_workers[i]->accessMemPool().allocate(sizeof(ListeningSocket));
-			new (newListener) ListeningSocket(*m_workers[i], **iter, m_globals);
+			new (newListener) ListeningSocket(*m_workers[i], **iter, backlog, m_globals);
 
 			/*
 				Here one should check m_config to see what protocol module and connection initializer
