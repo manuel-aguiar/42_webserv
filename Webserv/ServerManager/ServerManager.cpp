@@ -3,16 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ServerManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/12/10 08:52:45 by mmaria-d         ###   ########.fr       */
-=======
-/*   Updated: 2024/12/06 15:40:27 by rphuyal          ###   ########.fr       */
->>>>>>> origin/main
+/*   Updated: 2024/12/10 09:09:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 # include "ServerManager.hpp"
 # include "../GenericUtils/Webserver_Definitions.h"
