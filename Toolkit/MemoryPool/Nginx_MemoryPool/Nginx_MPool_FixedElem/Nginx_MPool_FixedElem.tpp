@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 14:06:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 09:05:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,12 +260,12 @@ Nginx_MPool_FixedElem<T>::deleteElement(pointer p)
 }
 
 template <typename T>
-inline bool 
+inline bool
 Nginx_MPool_FixedElem<T>::operator==(const Nginx_MPool_FixedElem& other) const
 { return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
 
 template <typename T>
-inline bool 
+inline bool
 Nginx_MPool_FixedElem<T>::operator!=(const Nginx_MPool_FixedElem& other) const
 { return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 
