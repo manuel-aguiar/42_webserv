@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/10 08:46:42 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/10 10:08:47 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,11 @@ OBJ_PATH 						= 	_objs
 
 
 SRCS 							=		$(SRC_PATH)/main.cpp															\
+																														\
+										$(SRC_PATH)/ServerConfig/ServerConfig/ServerConfig.cpp							\
+										$(SRC_PATH)/ServerConfig/DefaultConfig/DefaultConfig.cpp						\
+										$(SRC_PATH)/ServerConfig/ServerBlock/ServerBlock.cpp							\
+										$(SRC_PATH)/ServerConfig/ServerLocation/ServerLocation.cpp						\
 																														\
 										$(SRC_PATH)/ServerManager/ServerManager.cpp										\
 										$(SRC_PATH)/ServerManager/ServerManagerGetSetAccess.cpp							\
