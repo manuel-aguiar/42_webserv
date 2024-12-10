@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/10 09:17:30 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/10 09:20:08 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "BlockFinder.hpp"
+#include "TestDependencies.hpp"
 #include <iomanip>
 
 void	printBlock(const ServerBlocks *block, t_ip_str ip, t_port_str port, t_server_name server_name)

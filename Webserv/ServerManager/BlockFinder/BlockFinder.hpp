@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BlockFinder.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/07 16:47:53 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/10 09:21:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,33 +19,9 @@
 // C++ headers
 # include <string>
 
-// TODO: remove temporary declerations
-class ServerConfig {
-	public:
-		ServerConfig() {}
-		~ServerConfig() {}
-};
-
-class ServerBlocks {
-	public:
-		ServerBlocks(const std::string& id) : m_id(id) {}
-		~ServerBlocks() {}
-
-		ServerBlocks&	operator=(const ServerBlocks& other) {
-			if (this == &other)
-				return (*this);
-
-			return (*this);
-		}
-
-		// used for testing
-		std::string		id() const { return (m_id); }
-
-	private:
-		std::string		m_id;
-};
-// TODO: remove temporary declerations until here
-
+//forward declarations
+class ServerConfig;
+class ServerBlocks;
 
 class BlockFinder {
 	public:
