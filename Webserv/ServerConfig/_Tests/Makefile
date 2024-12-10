@@ -1,9 +1,11 @@
 .SILENT:
-NAME =			a.out
+NAME =			TestServerConfig.out
 CXX =			c++
-CXXFLAGS =		-Wall -Wextra -Werror -g -std=c++98 #-fsanitize=address
-SRC =			./src/main.cpp ./src/ConfigHandler.cpp ./src/ServerConfig.cpp ./src/utils.cpp
-INCLUDE_DIR =	./inc/
+CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror #-fsanitize=address
+SRC =			ServerConfigTests.cpp ../ServerConfig/ServerConfig.cpp ../ServerBlock/ServerBlock.cpp \
+				../DefaultConfig/DefaultConfig.cpp ../ServerLocation/ServerLocation.cpp \
+				../../GenericUtils/StringUtils/StringUtils.cpp \
+				../../GenericUtils/Validation/Validation.cpp 
 
 
 #=== COLORS ===#
@@ -24,7 +26,7 @@ all: $(NAME)
 
 $(NAME): $(SRC)
 	@echo "$(TAG) Making Program"
-	@$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME) -I $(INCLUDE_DIR)
+	@$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME)
 
 clean:
 

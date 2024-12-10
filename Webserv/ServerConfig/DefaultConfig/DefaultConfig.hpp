@@ -15,31 +15,35 @@
 # define DEFAULTCONFIG_HPP
 
 // Project Headers
-# include "../WebservDefaultConfig.h"
+# include "WebservDefaultConfig.h"
 
 // C headers
 # include <stddef.h>
+# include <string>
 
 class DefaultConfig
 {
-    public:
-        DefaultConfig();
+	public:
+		DefaultConfig();
 
-        //blabla all default and public, it is just a macro bearer, getters and setters are a waste;
+		//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
 
-        const size_t    maxWorkers = DEFAULTCONF_GEN_MAX_WORKERS;
-        const size_t    maxClientBodySize = DEFAULTCONF_HTTP_MAX_CLIENT_BODY_SIZE;
-        const size_t    maxClientHeaderSize = DEFAULTCONF_HTTP_MAX_CLIENT_HEADER_SIZE;
-        const char*     IPListen = DEFAULTCONF_BLOCK_IP_LISTEN;
-        const size_t    maxConnections = DEFAULTCONF_BLOCK_MAX_CONNECTIONS;
-        const size_t    maxCGI = DEFAULTCONF_BLOCK_MAX_CGI;
-        
+		// Program
+		std::string	maxConnections;
+		std::string	maxCGI;
 
-        // add the remaining error pages
-        const char*     http400Path = DEFAULTCONF_BLOCK_ERROR_400_PAGE;
-        const char*     http404Path = DEFAULTCONF_BLOCK_ERROR_404_PAGE;
+		// Server
+		std::string	maxClientBodySize;
+		std::string	maxClientHeaderSize;
+		std::string	IPListen;
+		std::string	http400Path;
+		std::string	http404Path; // add the remaining error pages
+
+		// Location
+		std::string autoIndex;
+		std::string	methods;
+		std::string	type;
+
 };
-
-
 
 #endif
