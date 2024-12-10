@@ -14,7 +14,7 @@ bool	validateIpv4(const std::string &str)
 		return (0);
 	for (int i = 0; i < 4; i++)
 	{
-		if (!isNumber(values[i]) || stoull(values[i]) > 255)
+		if (!isNumber(values[i]) || ::stoull(values[i]) > 255)
 			return (0);
 	}
 

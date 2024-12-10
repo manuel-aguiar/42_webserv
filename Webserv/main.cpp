@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:19:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/10 10:25:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 // Project headers
 # include "Globals/Globals.hpp"
 # include "ServerConfig/ServerConfig/ServerConfig.hpp"
-//# include "ServerConfig/DefaultConfig/DefaultConfig.hpp"
 # include "ServerManager/ServerManager.hpp"
+
+// C++ headers
+# include <iostream>
 
 /*
 	WIP
@@ -42,10 +44,10 @@ int main(int ac, char** av, char** env)
 	LogFile			errorFile("error.log");
 	LogFile			debugFile("debug.log");
 	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
-	//ServerConfig	config(av[1], DefaultConfig(), &globals);
-	//ServerManager	webserver(config, &globals);
+	ServerConfig	config(av[1], &globals);
+	ServerManager	webserver(config, &globals);
 
-	//webserver.run();
+	webserver.run();
 
     return (0);
 }

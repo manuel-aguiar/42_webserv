@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/10 10:17:23 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/10 10:39:44 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,8 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 																														\
 										$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp						\
 										$(SRC_PATH)/GenericUtils/Files/File.cpp											\
-										$(SRC_PATH)/GenericUtils/Files/FilesUtils.cpp									\
+										$(SRC_PATH)/GenericUtils/StringUtils/StringUtils.cpp							\
+										$(SRC_PATH)/GenericUtils/Validation/Validation.cpp								\
 																														\
 										$(SRC_PATH)/HttpModule/HttpModule.cpp											\
 										$(SRC_PATH)/HttpModule/HttpModuleGetSetAccess.cpp								\
