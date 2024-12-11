@@ -64,7 +64,7 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 
 	colonPos = value.find(':');
 	if (colonPos == 0 || colonPos == value.length() - 1)
-		throw (std::invalid_argument("Error: Invalid format. The input should be in 'hostname:port' format.\n"));
+		throw (std::invalid_argument("Error: Invalid 'listen' value. The input should be in 'hostname:port' format."));
 	if (colonPos == std::string::npos)
 	{
 		hostname = DEFAULTCONF_BLOCK_IP_LISTEN;
@@ -73,13 +73,13 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 	else
 	{
 		if (value.find(':', colonPos + 1) != std::string::npos)
-			throw (std::invalid_argument("Error: Invalid format. The input should be in 'hostname:port' format.\n"));
+			throw (std::invalid_argument("Error: Invalid 'listen' value. The input should be in 'hostname:port' format."));
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
 	portValue = stoull(port); // fix throw
 	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
-		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535.\n"));
+		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535."));
 	m_config["listen"].insert(hostname + ':' + port);
 	m_setHost(hostname, flag);
 	m_setPort(port, flag);

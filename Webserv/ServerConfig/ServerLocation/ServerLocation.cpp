@@ -200,8 +200,15 @@ void		ServerLocation::addMethod(const std::string &value, const int &flag)
 {
 	(void)flag;
 	std::string	lowercaseStr = strToLower(value);
-
-	if (m_validMethods.find(lowercaseStr) != m_validMethods.end() && m_config.find(lowercaseStr) == m_config.end())
+	
+	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
+		throw (std::invalid_argument("invalid method"));
+	if (m_config.find(lowercaseStr) != m_config.end())
+	{
+		if (!flag)
+			throw (std::invalid_argument("method already set"));
+	}
+	else
 		m_config["methods"].insert(lowercaseStr);
 }
 
