@@ -18,8 +18,8 @@ fi
 TARGET_DIR="$1"
 
 TEST_DIR="_Tests"
-TEST_CPP="test"
-TESTDEPENDENCIES_HPP="TestDependencies"
+TEST_FILE="test"
+TESTDEPENDENCIES="TestDependencies"
 MAKEFILE_FILE="Makefile"
 
 # Check if the target folder exists
@@ -33,7 +33,7 @@ createTestFile() {
 
 
 # include "../$3.hpp"
-# include "$TESTDEPENDENCIES_HPP.hpp"
+# include "$TESTDEPENDENCIES.hpp"
 
 int main(void)
 {
@@ -100,11 +100,11 @@ createTestFolder() {
         mkdir -p "$TEST_FOLDER"
     fi
 
-	if [ ! -f "$TEST_FOLDER/$TEST_CPP" ]; then
-		createTestFile "$TEST_FOLDER" "$TEST_CPP" "$(basename "$CURRENT_DIR")"
+	if [ ! -f "$TEST_FOLDER/$TEST_FILE" ]; then
+		createTestFile "$TEST_FOLDER" "$TEST_FILE" "$(basename "$CURRENT_DIR")"
 	fi
-	if [ ! -f "$TEST_FOLDER/$TESTDEPENDENCIES_HPP" ]; then
-		createTestDependencies "$TEST_FOLDER" "$TESTDEPENDENCIES_HPP"
+	if [ ! -f "$TEST_FOLDER/$TESTDEPENDENCIES" ]; then
+		createTestDependencies "$TEST_FOLDER" "$TESTDEPENDENCIES"
 	fi
 	if [ ! -f "$TEST_FOLDER/$MAKEFILE_FILE" ]; then
 		createMakefile "$TEST_FOLDER" "$MAKEFILE_FILE"
