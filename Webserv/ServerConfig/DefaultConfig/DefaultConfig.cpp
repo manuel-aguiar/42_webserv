@@ -2,6 +2,8 @@
 
 DefaultConfig::DefaultConfig()
 {
+
+	serverRoot = DEFAULTCONF_SERVER_ROOT;
 	maxClientBodySize = DEFAULTCONF_HTTP_MAX_CLIENT_BODY_SIZE;
 	maxClientHeaderSize = DEFAULTCONF_HTTP_MAX_CLIENT_HEADER_SIZE;
 	IPListen = DEFAULTCONF_BLOCK_IP_LISTEN;

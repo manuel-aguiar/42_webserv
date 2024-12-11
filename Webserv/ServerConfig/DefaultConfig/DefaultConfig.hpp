@@ -33,6 +33,7 @@ class DefaultConfig
 		std::string	maxCGI;
 
 		// Server
+		std::string serverRoot;
 		std::string	maxClientBodySize;
 		std::string	maxClientHeaderSize;
 		std::string	IPListen;

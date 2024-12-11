@@ -14,8 +14,9 @@
 
 ServerConfig::ServerConfig(const char* configFilePath, Globals* globals)
 {
-	DefaultConfig configDefault;
+	DefaultConfig	configDefault;
 
+	m_configDefault = configDefault;
 	m_globals = globals;
 	m_configFilePath = configFilePath;
 	m_serverCount = 0;
@@ -44,6 +45,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 		m_configDefault = other.m_configDefault;
 		m_configFilePath = other.m_configFilePath;
 		m_serverBlocks = other.m_serverBlocks;
+		m_serverCount = other.m_serverCount;
 		m_keys = other.m_keys;
 		m_config = other.m_config;
 	}
@@ -121,6 +123,48 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 	return (1);
 }
 
+bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine, 
+										ServerBlock &server, ServerLocation &location, 
+										std::vector<ServerBlock> &servers, 
+										std::vector<ServerLocation> &locations)
+{
+	switch (currentLevel)
+	{
+		case PROGRAM_LEVEL:
+			std::cerr << "Error: config parsing: stray closing bracket on line "
+				<< currentLine << std::endl;
+			return (0);
+		case SERVER_LEVEL:
+			currentLevel = PROGRAM_LEVEL;
+			server.setDefaults();
+			if (!server.validate())
+			{
+				std::cerr << "Error: config parsing: invalid server block closing on line "
+					<< currentLine << std::endl;
+				return (0);
+			}
+			server.setLocations(locations);
+			servers.push_back(server);
+			locations.clear();
+			break ;
+		case LOCATION_LEVEL:
+			currentLevel = SERVER_LEVEL;
+			location.setDefaults();
+			if (!location.validate())
+			{
+				std::cerr << "Error: config parsing: invalid location block closing on line "
+					<< currentLine << std::endl;
+				return (0);
+			}
+			locations.push_back(location);
+			break ;
+		default:
+			std::cerr << "Parsing: Unexpected Error" << std::endl;
+			return (0);
+	}
+	return (1);
+}
+
 int		ServerConfig::parseConfigFile()
 {
 
@@ -130,8 +174,8 @@ int		ServerConfig::parseConfigFile()
 	ServerBlock		server;
 	ServerLocation	location;
 
-	std::vector<ServerBlock>			m_servers;
-	std::vector<ServerLocation>			m_locations;
+	std::vector<ServerBlock>			servers;
+	std::vector<ServerLocation>			locations;
 
 	try {
 		m_updateFile();
@@ -171,45 +215,13 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			currentLevel = LOCATION_LEVEL;
 			location = ServerLocation();
+			currentLevel = LOCATION_LEVEL;
 		}
 		else if (line == "}")
 		{
-			switch (currentLevel)
-			{
-				case PROGRAM_LEVEL:
-					std::cerr << "Error: config parsing: stray closing bracket on line "
-						<< currentLine << std::endl;
-					return (0);
-				case SERVER_LEVEL:
-					currentLevel = PROGRAM_LEVEL;
-					server.setDefaults();
-					if (!server.validate())
-					{
-						std::cerr << "Error: config parsing: invalid server block closing on line "
-							<< currentLine << std::endl;
-						return (0);
-					}
-					server.setLocations(m_locations);
-					m_servers.push_back(server);
-					m_locations.clear();
-					break ;
-				case LOCATION_LEVEL:
-					currentLevel = SERVER_LEVEL;
-					location.setDefaults();
-					if (!location.validate())
-					{
-						std::cerr << "Error: config parsing: invalid location block closing on line "
-							<< currentLine << std::endl;
-						return (0);
-					}
-					m_locations.push_back(location);
-					break ;
-				default:
-					std::cerr << "Parsing: Unexpected Error" << std::endl;
-					return (0);
-			}
+			if (!m_handleClosingBracket(currentLevel, currentLine, server, location, servers, locations))
+				return (0);
 		}
 		else
 		{
@@ -227,7 +239,7 @@ int		ServerConfig::parseConfigFile()
 		return (0);
 	}
 	m_setDefaults(0);
-	m_setServers(m_servers);
+	m_setServers(servers);
 	return (1);
 }
 
@@ -291,20 +303,17 @@ void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
 
 void	ServerConfig::m_setDefaults(const int &flag)
 {
-	DefaultConfig	defaults;
-
 	try {
-		setMaxConnections(defaults.maxConnections, flag);
+		setMaxConnections(m_configDefault.maxConnections, flag);
 	}
 	catch (std::exception &e) {}
 	try {
-		setMaxConcurrentCgi(defaults.maxCGI, flag);
+		setMaxConcurrentCgi(m_configDefault.maxCGI, flag);
 	}
 	catch (std::exception &e) {}
 }
 
 // Debug functions
-
 void	ServerConfig::printProgramConfig() const
 {
 	std::cout << "╔═ Program ══════════════════O" << std::endl;

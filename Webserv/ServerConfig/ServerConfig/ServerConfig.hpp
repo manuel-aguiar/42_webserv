@@ -32,8 +32,6 @@
 # include "../ServerBlock/ServerBlock.hpp"
 
 // forward declarations
-class DefaultConfig;
-class ServerBlock;
 class Globals;
 
 class ServerConfig
@@ -53,7 +51,6 @@ class ServerConfig
 		void										setMaxConcurrentCgi(const std::string &value, const int &flag = 0);
 
 		int											parseConfigFile();
-
 		// Debug
 		void										printProgramConfig() const;
 		void										printConfigs() const;
@@ -78,10 +75,8 @@ class ServerConfig
 		t_path								m_configFilePath;
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;
-		std::map<std::string, ServerBlock>	m_serverBlocks;		// std::string would be like IP:PORT:server_name as the identifier...?
-																// m_serverBlocks is the end result of the parsing process
-		// mostly for logs and debuging, see Globals class
-		Globals*							m_globals;
+		std::map<std::string, ServerBlock>	m_serverBlocks; // m_serverBlocks is the end result of the parsing process
+		Globals*							m_globals; // mostly for logs and debuging, see Globals class
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
@@ -92,6 +87,10 @@ class ServerConfig
 		void								m_updateFile();
 		void								m_setServers(std::vector<ServerBlock> &servers);
 		void								m_setDefaults(const int &flag);
+		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine, 
+												ServerBlock &server, ServerLocation &location, 
+												std::vector<ServerBlock> &servers, 
+												std::vector<ServerLocation> &locations);
 };
 
 #endif
