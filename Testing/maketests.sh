@@ -9,7 +9,7 @@
 # this is generic and not an all round testing builder
 #
 
-# Check if the target folder is provided
+
 if [ -z "$1" ]; then
     echo "Usage: $0 <target-folder>"
     exit 1
@@ -91,7 +91,6 @@ EOF
 }
 
 
-# Function to rename files and folders with "Test" prefix
 createTestFolder() {
     local CURRENT_DIR="$1"
     local TEST_FOLDER="$CURRENT_DIR/$TEST_DIR"
@@ -119,7 +118,6 @@ createTestFolder() {
     done
 }
 
-# Start renaming from the target directory
 createTestFolder "$TARGET_DIR"
 
 echo "All subfolders in '$TARGET_DIR' have a test folder."
