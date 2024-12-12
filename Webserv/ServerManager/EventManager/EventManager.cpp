@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 16:49:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:18:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,23 @@
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-EventManager::EventManager(Globals* globals) :
-	m_waitCount      (0),
-	m_globals        (globals)
+EventManager::EventManager(Globals& globals) :
+	m_epollfd		(-1),
+	m_waitCount		(0),
+	m_globals		(globals)
 {
-
-	assert(globals != NULL);
 
 	m_epollfd = epoll_create(1);
 
 	if (m_epollfd == -1)
 	{
-		m_globals->logStatus("epoll_create(): " + std::string(strerror(errno)));
+		m_globals.logError("epoll_create(): " + std::string(strerror(errno)));
 		throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
 	}
 
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_epollfd))
 	{
-		m_globals->logStatus("fcntl(): " + std::string(strerror(errno)));
+		m_globals.logError("fcntl(): " + std::string(strerror(errno)));
 		throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
 	}
 }
@@ -53,7 +52,7 @@ int                EventManager::addEvent(const Event& event)
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
 	{
-		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	return (1);
@@ -68,7 +67,7 @@ int                EventManager::modEvent(const Event& event)
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
 	{
-		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	return (1);
@@ -78,7 +77,7 @@ int                 EventManager::delEvent(const Event& event)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
-		m_globals->logStatus("epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	return (1);
@@ -103,8 +102,6 @@ const   t_epoll_event&     EventManager::retrieveEvent(int index)
 	return (m_events[index]);
 }
 
-#include <cstdio>
-
 void    EventManager::distributeEvents()
 {
 	Event* event;
@@ -128,10 +125,11 @@ void    EventManager::distributeEvents()
 
 //private
 
-EventManager::EventManager(const EventManager& copy)
-{
-	(void)copy;
-}
+EventManager::EventManager(const EventManager& copy) :
+	m_epollfd		(copy.m_epollfd),
+	m_waitCount		(copy.m_waitCount),
+	m_globals		(copy.m_globals)
+{}
 
 EventManager& EventManager::operator=(const EventManager& assign)
 {

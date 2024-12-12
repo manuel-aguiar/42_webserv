@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 10:58:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:19:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals* globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
 	m_backlog(backlog),
 	m_worker(worker),
 	m_globals(globals)
@@ -28,7 +28,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
 		if (globals)
-			m_globals->m_debugFile->record("ListeningSocket Constructor Called");
+			m_globals.m_debugFile->record("ListeningSocket Constructor Called");
 		else
 			std::cout << "ListeningSocket Constructor Called" << std::endl;
 	#endif
@@ -60,14 +60,13 @@ ListeningSocket::~ListeningSocket()
 {
 	close();
 
-#if !defined(NDEBUG) && defined(DEBUG_CTOR)
-	#include <iostream>
-	if (globals)
-		m_globals->m_debugFile->record("ListeningSocket Destructor Called");
-	else
-		std::cout << "ListeningSocket Destructor Called" << std::endl;
-#endif
-
+	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
+		#include <iostream>
+		if (globals)
+			m_globals.m_debugFile->record("ListeningSocket Destructor Called");
+		else
+			std::cout << "ListeningSocket Destructor Called" << std::endl;
+	#endif
 }
 
 int		ListeningSocket::open()
@@ -78,13 +77,15 @@ int		ListeningSocket::open()
 	//std::cout << "listener sockfd " << m_sockfd << std::endl;
 	if (m_sockfd == -1)
 	{
-		m_globals->logStatus("socket(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
 		return (0);
 	}
 
-	/*
-		TODO: fcntl set nonblocking
-	*/
+	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
+	{
+		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
+		return (0);
+	}	
 
 	#ifdef SO_REUSEPORT
 		options = SO_REUSEADDR | SO_REUSEPORT;
@@ -94,7 +95,7 @@ int		ListeningSocket::open()
 
 	if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
 	{
-		m_globals->logStatus("setsockopt(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
 		return (0);
 	}
 
@@ -107,7 +108,7 @@ int		ListeningSocket::bind()
 {
 	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
 	{
-		m_globals->logStatus("bind(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	return (1);
@@ -117,7 +118,7 @@ int		ListeningSocket::listen()
 {
 	if (::listen(m_sockfd, m_backlog) == -1)
 	{
-		m_globals->logStatus("listen(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
 		return (0);
 	}
 	return (1);
@@ -159,7 +160,7 @@ int    ListeningSocket::accept()
 		if (!(errno == EAGAIN || errno == EWOULDBLOCK))
 		{
 			/* there was backlog but accept failed */
-			m_globals->logStatus("ListeningSocket::accept(): " + std::string(strerror(errno)));
+			m_globals.logError("ListeningSocket::accept(): " + std::string(strerror(errno)));
 		}
 		m_worker.returnConnection(connection);
 		return (0);		
@@ -169,7 +170,7 @@ int    ListeningSocket::accept()
 
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
-		m_globals->logStatus("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		goto NewConnection_Failure;
 	}
 
@@ -177,7 +178,7 @@ int    ListeningSocket::accept()
 
 	if (!addrrr)
 	{
-		m_globals->logStatus("ListeningSocket::accept(), memorypool " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::accept(), memorypool " + std::string(strerror(errno)));
 		goto NewConnection_Failure;
 	}
 	connection->setAddr(addrrr);
@@ -200,7 +201,7 @@ NewConnection_Failure:
 void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 {
 	if (connection->getSocket() != -1 && ::close(connection->getSocket()) == -1)
-		m_globals->logStatus("close(): " + std::string(strerror(errno)));
+		m_globals.logError("close(): " + std::string(strerror(errno)));
 	m_worker.returnConnection(connection);
 }
 
@@ -214,7 +215,7 @@ void    ListeningSocket::closeConnection(Connection* connection)
 void    ListeningSocket::close()
 {
 	if (::close(m_sockfd) == -1)
-		m_globals->logStatus("close(): " + std::string(strerror(errno)));
+		m_globals.logError("close(): " + std::string(strerror(errno)));
 }
 
 
@@ -222,13 +223,13 @@ void    ListeningSocket::close()
 //private
 ListeningSocket::ListeningSocket() :
 	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
-	m_globals(NULL)
+	m_globals(*((Globals*)NULL))
 {
 
 	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
 		#include <iostream>
 		if (globals)
-			m_globals->m_debugFile->record("ListeningSocket Destructor Called");
+			m_globals.m_debugFile->record("ListeningSocket Destructor Called");
 		else
 			std::cout << "ListeningSocket Destructor Called" << std::endl;
 	#endif

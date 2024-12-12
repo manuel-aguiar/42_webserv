@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 10:09:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:18:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Globals;
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals* globals);
+		ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals& globals);
 		~ListeningSocket();
 
 
@@ -78,7 +78,7 @@ class ListeningSocket
 		t_ptr_ProtoModule			m_protoModule;
 		Event						m_event;
 		ServerWorker&				m_worker;
-		Globals*                    m_globals;
+		Globals&                    m_globals;
 
 		ListeningSocket();
 		ListeningSocket(const ListeningSocket& copy);

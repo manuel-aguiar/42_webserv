@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 09:47:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:20:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 class ConnectionManager
 {
 	public:
-		ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals);
+		ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals& globals);
 		~ConnectionManager();
 
 		Connection*				provideConnection();
@@ -40,7 +40,7 @@ class ConnectionManager
 		DynArray<Event, Nginx_PoolAllocator<Event> >				m_writeEvents;
 		List<Connection*, Nginx_MPool_FixedElem<Connection*> >		m_spareConnections;
 
-		Globals*													m_globals;
+		Globals&													m_globals;
 
 
 		void 					mf_destroyConnection(Connection* connection);

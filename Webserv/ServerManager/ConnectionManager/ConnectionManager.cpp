@@ -19,7 +19,7 @@ ConnectionManager::~ConnectionManager()
         m_connections[i].accessMemPool().destroy();
 }
 
-ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals* globals) :
+ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals& globals) :
     m_maxConnections(maxConnections),
     m_connections(Nginx_PoolAllocator<Connection>(pool)),
     m_readEvents(Nginx_PoolAllocator<Event>(pool)),

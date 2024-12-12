@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 17:46:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:16:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Event;
 class EventManager
 {
 	public:
-		EventManager(Globals* globals = NULL);
+		EventManager(Globals& globals);
 		~EventManager();
 
 		//methods
@@ -42,7 +42,7 @@ class EventManager
 		t_fd						m_epollfd;
 		t_epoll_event				m_events[MAX_EPOLL_EVENTS];
 		int							m_waitCount;
-		Globals*					m_globals;
+		Globals&					m_globals;
 
 	private:
 		EventManager(const EventManager& copy);

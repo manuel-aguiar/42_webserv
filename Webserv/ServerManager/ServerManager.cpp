@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:09:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:22:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "../CgiModule/CgiModule.hpp"
 # include "../Globals/SignalHandler/SignalHandler.hpp"
 
-ServerManager::ServerManager(const ServerConfig& config, Globals* globals) :
+ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_blockFinder(config),
 	m_config(config),
 	m_globals(globals)

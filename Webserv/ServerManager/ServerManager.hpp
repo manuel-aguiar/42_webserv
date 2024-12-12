@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:04:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:22:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef enum e_protoModules
 class ServerManager
 {
 	public:
-		ServerManager(const ServerConfig& config, Globals* globals = NULL);
+		ServerManager(const ServerConfig& config, Globals& globals);
 		~ServerManager();
 
 		//methods
@@ -58,7 +58,7 @@ class ServerManager
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		size_t							m_listenerCount;
-		Globals*						m_globals;
+		Globals&						m_globals;
 
 		t_ptr_ProtoModule				m_protoModules[MODULE_COUNT];	// loads the modules that we will be using
 		t_func_initProtoConn			m_initProtoConnection[MODULE_COUNT];	// loads the connections that we will be using

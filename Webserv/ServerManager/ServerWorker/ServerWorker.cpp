@@ -22,7 +22,7 @@
 // C++ headers
 # include <cstdlib>
 
-ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals* globals) :
+ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals& globals) :
 	m_myID				(serverID),
 	m_serverManager		(manager),
 	m_config			(m_serverManager.getConfig()),
