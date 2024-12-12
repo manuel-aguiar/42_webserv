@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:46 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:35:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:03:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "../ServerManager/ListeningSocket/ListeningSocket.hpp"
 
 Connection::Connection(Globals& globals) :
-    m_memPool(*Nginx_MemoryPool::create(4096, 10)),
+    m_memPool(*Nginx_MemoryPool::create(4096, 1)),
     m_globals(globals)
 {
 

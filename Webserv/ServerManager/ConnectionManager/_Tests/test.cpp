@@ -20,9 +20,7 @@ int main(void)
 	try
 	{
 		ConnectionManager manager(1, *pool, globals);
-		/*
-			ConnectionManager is allocating too much memory!!!!
-		*/
+		
 		std::cout << "	PASS\n";
 	}
 	catch(const std::exception& e)

@@ -26,6 +26,7 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& bo
     m_spareConnections(Nginx_MPool_FixedElem<Connection*>(&borrowedPool, maxConnections)),
     m_globals(globals)
 {
+    
     m_connections.reserve(m_maxConnections);
     m_readEvents.reserve(m_maxConnections);
     m_writeEvents.reserve(m_maxConnections);
@@ -41,6 +42,7 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& bo
 
         m_spareConnections.push_back(&m_connections[i]);
     }
+
 }
 
 Connection* ConnectionManager::provideConnection()
