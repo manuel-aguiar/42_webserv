@@ -37,7 +37,6 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool* po
         m_readEvents.emplace_back();
         m_writeEvents.emplace_back();
 
-        m_connections[i].init();
         m_connections[i].setReadEvent(m_readEvents[i]);
         m_connections[i].setWriteEvent(m_writeEvents[i]);
 

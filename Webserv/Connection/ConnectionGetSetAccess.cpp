@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:19:24 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/02 14:41:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:37:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ const ListeningSocket&	Connection::getListener() const
 
 const Globals&			Connection::getGlobals() const
 {
-	return (*m_globals);
+	return (m_globals);
 }
 
 const Nginx_MemoryPool&	Connection::getMemPool() const
 {
-	return (*m_memPool);
+	return (m_memPool);
 }
 
 
@@ -85,16 +85,6 @@ void					Connection::setListener(ListeningSocket& listener)
 	m_listener = &listener;
 }
 
-void					Connection::setGlobals(Globals* globals)
-{
-	m_globals = globals;
-}
-
-void					Connection::setMemPool(Nginx_MemoryPool& memPool)
-{
-	m_memPool = &memPool;
-}
-
 void					Connection::setProtoConnection(const t_ptr_ProtoConnection connection)
 {
 	m_ptr_protoConnection = connection;
@@ -119,7 +109,7 @@ t_ptr_ProtoModule		Connection::accessProtoModule()
 
 Nginx_MemoryPool&		Connection::accessMemPool()
 {
-	return (*m_memPool);
+	return (m_memPool);
 }
 
 t_sockaddr*		Connection::accessAddr()

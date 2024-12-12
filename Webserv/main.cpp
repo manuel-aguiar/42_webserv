@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 10:58:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:31:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int main(int ac, char** av)
 		LogFile			debugFile("debug.log");
 		Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
 		ServerConfig	config(av[1], &globals);
-		ServerManager	webserver(config, &globals);
+		ServerManager	webserver(config, globals);
 
 		webserver.run();
 	}

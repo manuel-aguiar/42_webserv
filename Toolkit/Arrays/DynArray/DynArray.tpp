@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:04:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:34:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ class DynArray
         }
 
         template <typename Arg1 >
-        void emplace_back(const Arg1& arg1)
+        void emplace_back(Arg1& arg1)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;
@@ -215,7 +215,7 @@ class DynArray
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2)
+        void emplace_back(Arg1& arg1, Arg2& arg2)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;
@@ -236,7 +236,7 @@ class DynArray
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;
@@ -279,7 +279,7 @@ class DynArray
         }
 
         template <typename Arg1 >
-        void emplace_front(const Arg1& arg1)
+        void emplace_front(Arg1& arg1)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;
@@ -303,7 +303,7 @@ class DynArray
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_front(const Arg1& arg1, const Arg2& arg2)
+        void emplace_front(Arg1& arg1, Arg2& arg2)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;
@@ -327,7 +327,7 @@ class DynArray
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        void emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			T* new_array = NULL;
 			size_t newCap = m_capacity ? m_capacity * 2 : 1;

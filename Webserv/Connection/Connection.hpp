@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 12:01:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:37:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Event;
 class Connection
 {
 	public:
-		Connection(Globals* globals = NULL);
+		Connection(Globals& globals);
 		~Connection();
 		Connection(const Connection& other);
 		Connection& operator=(const Connection& other);
@@ -52,8 +52,6 @@ class Connection
 		void					setReadEvent		(Event& event);
 		void					setWriteEvent		(Event& event);
 		void					setListener			(ListeningSocket& listener);
-		void					setGlobals			(Globals* globals);
-		void					setMemPool			(Nginx_MemoryPool& memPool);
 		void					setProtoConnection	(const t_ptr_ProtoConnection connection);
 		void					setProtoModule		(const t_ptr_ProtoModule module);
 
@@ -81,8 +79,8 @@ class Connection
 		t_ptr_ProtoModule		m_ptr_protoModule;					// <- the http module in our case
 
 		// owned by the connection
-		Nginx_MemoryPool*		m_memPool;
-		Globals*				m_globals;
+		Nginx_MemoryPool&		m_memPool;
+		Globals&				m_globals;
 																				// set by the listening socket
 
 };

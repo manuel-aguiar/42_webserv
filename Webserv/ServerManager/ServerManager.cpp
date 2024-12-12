@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:22:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:27:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ ServerManager::~ServerManager()
 {
 	for (size_t i = 0; i < MODULE_COUNT; ++i)
 		delete ((unsigned char *)m_protoModules[i]);
+	for (size_t i = 0; i < m_workers.size(); ++i)
+		m_workers[i]->~ServerWorker();
 }
 
 void    ServerManager::run()

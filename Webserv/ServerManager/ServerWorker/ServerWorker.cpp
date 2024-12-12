@@ -39,6 +39,8 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 
 ServerWorker::~ServerWorker()
 {
+	for (size_t i = 0; i < m_listeners.size(); ++i)
+		m_listeners[i]->~ListeningSocket();
 	m_memPool->destroy();
 }
 
