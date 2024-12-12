@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 16:24:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:50:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,14 @@ int                 EventManager::delEvent(const Event& event)
 
 int                 EventManager::waitEvents(int timeOut)
 {
-	std::cout << "                waiting for events" << std::endl;
+	//std::cout << "                waiting for events" << std::endl;
 	m_waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
-	 std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
-	 for (int i = 0; i < m_waitCount; i++)
-	 {
-		 std::cout << " " << ((Event*)m_events[i].data.ptr);
-	 }
-	 std::cout << std::endl;
+	//std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
+	//for (int i = 0; i < m_waitCount; i++)
+	//{
+	// std::cout << " " << ((Event*)m_events[i].data.ptr);
+	//}
+	//std::cout << std::endl;
 	return (m_waitCount);
 }
 
@@ -126,6 +126,7 @@ void    EventManager::distributeEvents()
 
 		}
 	}
+	
 }
 
 
