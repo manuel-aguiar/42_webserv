@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 15:21:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:28:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ class Globals;
 class SignalHandler;
 
 extern SignalHandler 	g_SignalHandler;
-extern size_t			gm_counter;
 
 class SignalHandler
 {
@@ -41,11 +40,11 @@ class SignalHandler
 		const std::vector<std::pair<t_fd, t_fd> >&		
 												getPipes();
 
-
-
 		t_fd									getPipeRead(int serverID);
 		t_fd									getPipeWrite(int serverID);
 		
+
+		//setters
 		void									setSignal(int sig);
 
 	private:

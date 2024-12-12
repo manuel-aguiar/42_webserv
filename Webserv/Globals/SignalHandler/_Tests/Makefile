@@ -8,7 +8,12 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 TARGET = test
 
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) ../SignalHandler.cpp \
+		../../LogFile/LogFile.cpp \
+		../../Globals.cpp \
+		../../Clock/Clock.cpp \
+		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp
+
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
