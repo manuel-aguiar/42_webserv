@@ -53,7 +53,6 @@ Connection* ConnectionManager::provideConnection()
         return (NULL);
     connection = m_spareConnections.front();
     m_spareConnections.pop_front();
-    std::cout << "connection sent away: " << m_spareConnections.size() <<  std::endl;
     return (connection);
 }
 
@@ -61,7 +60,7 @@ void ConnectionManager::returnConnection(Connection* connection)
 {
     connection->reset();
     m_spareConnections.push_front(connection);
-    std::cout << "connection returned: " << m_spareConnections.size() <<  std::endl;
+
 }
 
 

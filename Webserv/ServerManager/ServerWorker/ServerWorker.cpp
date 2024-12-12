@@ -68,26 +68,47 @@ int ServerWorker::run()
 	return (1);
 }
 
-/*
-	Ok, accept fails, add to pending, should unsubscribe from epoll...?
-	in reality should unsubscribe all listening sockets from epoll until there are connections available
-	to fullfill the pending accepts. Otherwise the list of pending could grow infinite for no reason
-	because the same listener could be there a load of times before there is one that becomes free.
-
-	when a listener returns a connection to the pool, that should trigger a check if there are pending listeners
-	waiting for connections, to get one and accept it.
-
-	However, if i unsubscribe from epoll, i will essentially miss out on all the potential accept monitors because
-	epoll will not be monitoring while they are down. It could trigger 1 accept but there were 10 missed.
-
-	I can however loop read the socket until i get an error and then i will know that there are no more connections.
-
-	Maybe listening sockets should subscribe EPOLLET... food for thought
-*/
-
 void	ServerWorker::addPendingAccept(ListeningSocket* listener)
 {
-	m_pendingAccept.push_back(listener);
+	m_pendingAccept.emplace_back(listener);
+}
+
+
+
+/*
+	Goes to the connection manager, removes the need from listening sockets to access the ConnectionManager
+	and instead they interact with their worker to provide it to them, reduces interdependency slightly
+*/
+Connection*						ServerWorker::provideConnection()
+{
+	return (m_connManager.provideConnection());
+}
+
+/*
+	When a Connection is returned to the ConnectionManager, check if there are listeningsockets
+	waiting for a free Connection instance such that they can accept.
+
+	If so, try to accept the first on the queue. If successful, move the ListeningSocket to the end of the
+	queue (they may have more connections to accept on their backlog, we can't know for certain)
+
+	If accept fails, means the listeningsocket has no backlog to accept so we can remove the pendingAccept
+
+	We do this until either the Connection isntance is reused or we come to the conclusion that there
+	is nothing pending right now.
+*/
+void							ServerWorker::returnConnection(Connection* connection)
+{
+	m_connManager.returnConnection(connection);
+		
+	while (m_pendingAccept.size())
+	{
+		if (m_pendingAccept.front()->accept())
+		{
+			m_pendingAccept.splice(m_pendingAccept.end(), m_pendingAccept, m_pendingAccept.begin());
+			break ;
+		}
+		m_pendingAccept.pop_front();
+	}	
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :

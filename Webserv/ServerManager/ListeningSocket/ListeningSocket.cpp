@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 09:25:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:33:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,12 @@ int		ListeningSocket::listen()
 	return (1);
 }
 
-void    ListeningSocket::accept()
+/*
+	Accepts a socket conenction on the ListeningSocket. Will be called by the EventManager
+	via the EventAccept function pointer, and by the ServerWorker when a Connection instance
+	is returned to try and recycle. 
+*/
+int    ListeningSocket::accept()
 {
 	Connection*	connection;
 	u_sockaddr	addr;
@@ -132,16 +137,15 @@ void    ListeningSocket::accept()
 	int			sockfd;
 
 
-	connection = m_worker.accessConnManager().provideConnection();
+	connection = m_worker.provideConnection();
 
 	if (!connection)
 	{
-		std::cout << "       connection pool empty" << std::endl;
 		/*
 			No connections available, add listener to the pending accept list at the worker
 		*/
 		m_worker.addPendingAccept(this);
-		return ;
+		return (0);
 	}
 
 	connection->setListener(*this);
@@ -150,48 +154,54 @@ void    ListeningSocket::accept()
 
 
 	if (sockfd == -1)
-		goto NewConnection_Failure;
+	{
+		
+		if (!(errno == EAGAIN || errno == EWOULDBLOCK))
+		{
+			/* there was backlog but accept failed */
+			m_globals->logStatus("ListeningSocket::accept(): " + std::string(strerror(errno)));
+		}
+		m_worker.returnConnection(connection);
+		return (0);		
+	}
 
 	connection->setSocket(sockfd);
 
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
+	{
+		m_globals->logStatus("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		goto NewConnection_Failure;
+	}
 
 	addrrr = (t_sockaddr*)connection->accessMemPool().allocate(addrlen, true);
 
 	if (!addrrr)
+	{
+		m_globals->logStatus("ListeningSocket::accept(), memorypool " + std::string(strerror(errno)));
 		goto NewConnection_Failure;
+	}
 	connection->setAddr(addrrr);
 
 	std::memcpy(connection->accessAddr(), &addr, addrlen);
 	connection->setAddrlen(addrlen);
-
-	//listener passes protoModule to connection and calls the ProtoConnection initializer (ServerWorker sets these from configuration parsing)
-
 	connection->setProtoModule(m_protoModule);
-
-	//initializes the relevant protocol structure and prepares events for the Connection before
-	// being added to epoll for monitoring, below.
 	m_initConnection(connection);
 
 	if (!m_worker.accessEventManager().addEvent(connection->getReadEvent()))
 		goto NewConnection_Failure;
 
-	return ;
+	return (1);
 
 NewConnection_Failure:
-	m_globals->logStatus("ListeningSocket::listener_Accept(): " + std::string(strerror(errno)));
 	mf_close_accepted_connection(connection);
-
+	return (0);
 }
 
 void    ListeningSocket::mf_close_accepted_connection(Connection* connection)
 {
 	if (connection->getSocket() != -1 && ::close(connection->getSocket()) == -1)
 		m_globals->logStatus("close(): " + std::string(strerror(errno)));
-	connection->setSocket(-1);
-	connection->reset();
-	m_worker.accessConnManager().returnConnection(connection);
+	m_worker.returnConnection(connection);
 }
 
 void    ListeningSocket::closeConnection(Connection* connection)
@@ -216,12 +226,12 @@ ListeningSocket::ListeningSocket() :
 	m_globals(NULL)
 {
 
-#if !defined(NDEBUG) && defined(DEBUG_CTOR)
-	#include <iostream>
-	if (globals)
-		m_globals->m_debugFile->record("ListeningSocket Destructor Called");
-	else
-		std::cout << "ListeningSocket Destructor Called" << std::endl;
-#endif
+	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
+		#include <iostream>
+		if (globals)
+			m_globals->m_debugFile->record("ListeningSocket Destructor Called");
+		else
+			std::cout << "ListeningSocket Destructor Called" << std::endl;
+	#endif
 
 }
