@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
-#    Updated: 2024/11/26 16:25:25 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/12 09:34:38 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,3 +69,20 @@ And this is how nginx achieves modularity between protocols.
 
 IN OUR CASE, we don't need any of this, but it is mindblowing enough such that i want to do it.
 In terms of implementation, it won't be a problem for those implementing the module.
+
+#################################################################
+
+We have a limited number of connections per worker, so if a listening socket doesn't find 
+a free connection, it must be put in a queue to wait until a connection is retrieved
+
+For that reason, we will be sub scribing listening sockets as edge-triggered (EPOLLET)
+so if they don't find a conenction they are placed in the queue of the connectionManager.
+
+When a connection is given back to the connectionManager, the connection manager will ask
+the first waiting listening socket of the queue to take it and place the listening socket at the end of the queue
+the queue will be rotating as connections are retrieved. if an accept fails, it means that
+there were no new tcp-connections waiting to connect so we can take the listeningSocket out of the queue
+and try the next and so on.
+
+So we give equal chance to every socket regardless of traffic but hopefully the ones with less traffic get
+queued out quickly
