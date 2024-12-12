@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/12 14:24:13 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/12 14:47:21 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/12 15:58:53 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,3 +20,6 @@ A Lot to do in ServerManager
 
 
 -> Setup signalhandler
+
+
+-> ConnectionManager is for sure allocating too much memory per Connection instance.

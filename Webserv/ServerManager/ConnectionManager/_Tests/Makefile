@@ -5,10 +5,20 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test
 
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) ../ConnectionManager.cpp \
+		../../../Globals/LogFile/LogFile.cpp \
+		../../../Globals/Globals.cpp \
+		../../../Globals/Clock/Clock.cpp \
+		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
+		../../../Connection/Connection.cpp \
+		../../../Event/Event.cpp \
+		../../../Connection/ConnectionGetSetAccess.cpp \
+		../../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp \
+		../../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp 
+
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
@@ -20,6 +30,9 @@ $(TARGET): $(OBJS)
 all: $(TARGET)
 
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -rf $(OBJS) $(TARGET) debug.log error.log status.log
+
+fclean:
+	rm -rf $(OBJS) $(TARGET) debug.log error.log status.log
 
 .PHONY: clean

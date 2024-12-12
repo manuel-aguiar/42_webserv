@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 15:21:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:37:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ const std::vector<std::pair<int, int> >&		SignalHandler::getPipes()
 {
 	return (m_pipes);
 }
-
 
 void		SignalHandler::prepare_signal(void (*handler)(int), size_t numServers, Globals& globals)
 {

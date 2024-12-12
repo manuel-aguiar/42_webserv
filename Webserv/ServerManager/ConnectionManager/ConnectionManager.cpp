@@ -15,8 +15,7 @@
 
 ConnectionManager::~ConnectionManager()
 {
-    for (size_t i = 0; i < m_connections.size(); i++)
-        m_connections[i].accessMemPool().destroy();
+
 }
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
