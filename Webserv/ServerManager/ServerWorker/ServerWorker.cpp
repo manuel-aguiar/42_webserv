@@ -57,7 +57,7 @@ ServerWorker::~ServerWorker()
 int ServerWorker::prepareLaunch()
 {
 	//setup signal handler
-	m_mySignalEvent.setFd_Data_Handler_Flags(SignalHandler::PipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
+	m_mySignalEvent.setFd_Data_Handler_Flags(g_SignalHandler.getPipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
 	m_eventManager.addEvent(m_mySignalEvent);
 
 	// open listening sockets and monitor them
@@ -67,6 +67,7 @@ int ServerWorker::prepareLaunch()
 			return (0);
 		m_eventManager.addEvent(m_listeners[i]->getEvent());
 	}
+	return (1);
 }
 
 int ServerWorker::run()

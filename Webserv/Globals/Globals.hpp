@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:10:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:22:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:00:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "LogFile/LogFile.hpp"
 # include "Clock/Clock.hpp"
+# include "SignalHandler/SignalHandler.hpp"
 
 class Globals
 {

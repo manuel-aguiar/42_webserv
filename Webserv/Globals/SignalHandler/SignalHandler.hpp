@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:57:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:21:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 class Globals;
 class SignalHandler;
 
-extern SignalHandler g_SignalHandler;
+extern SignalHandler 	g_SignalHandler;
+extern size_t			gm_counter;
 
 class SignalHandler
 {
@@ -31,22 +32,30 @@ class SignalHandler
 		SignalHandler();
 		~SignalHandler();
 
+		void									prepare_signal(void (*handler)(int), size_t numServers, Globals& globals);
 
+		static void								signal_handler(int sigNum);
 
-		int										PipeRead(int serverID);
-		int										PipeWrite(int serverID);
+		// getters
 		int										getSignal();
-		void									signal_handler(int sigNum);
-		int										prepare_signal(t_sigaction& sigact, void (*handler)(int), size_t numServers, Globals& globals);
-		void									destroy_signal(t_sigaction& sigact);
+		const std::vector<std::pair<t_fd, t_fd> >&		
+												getPipes();
+
+
+
+		t_fd									getPipeRead(int serverID);
+		t_fd									getPipeWrite(int serverID);
+		
+		void									setSignal(int sig);
 
 	private:
 		Globals*								m_globals;
-		std::vector<std::pair<int, int> >		m_pipes;
+		std::vector<std::pair<t_fd, t_fd> >		m_pipes;
 		int 									m_signal;
+		t_sigaction								m_sigact;
 
 		//shared to all instances
-		static size_t							m_counter;
+		static size_t							gm_counter;
 
 
 		//private

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:31:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:16:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int main(int ac, char** av)
 
 	try
 	{
+
 		Clock			clock;
 		LogFile			statusFile("status.log");
 		LogFile			errorFile("error.log");

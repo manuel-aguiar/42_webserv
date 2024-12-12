@@ -6,12 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:58:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:15:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 # include "ServerManager.hpp"
+# include "../ServerConfig/ServerConfig/ServerConfig.hpp"
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "../HttpModule/HttpModule.hpp"
 # include "../CgiModule/CgiModule.hpp"
@@ -25,6 +26,9 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
 	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
 	mf_prepareWorkers();
+
+	//prepare signal handler
+	g_SignalHandler.prepare_signal(SignalHandler::signal_handler, m_config.getNumWorkers(), globals);
 }
 
 /*
