@@ -1,0 +1,22 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    TODO.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/12/12 14:24:13 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/12 14:47:21 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+A Lot to do in ServerManager
+
+-> deferentiate preparation from actual running, failures in preparation
+    must result in exiting.
+
+    So all opening of listening sockets and event manager subscription should be done
+    in prep and not in .run()
+
+
+-> Setup signalhandler

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:50:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:09:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:47:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class ServerConfig
         ServerConfig(const char* configFile, const DefaultConfig& configDefault, Globals* globals);
 
 		const std::map<std::string, ServerBlock>&			getServerBlocks() const;
-		size_t 												getMaxWorkers() const;
+		size_t 												getNumWorkers() const;
 		size_t 												getMaxConnections() const;
 		size_t 												getMaxCgi() const;
 

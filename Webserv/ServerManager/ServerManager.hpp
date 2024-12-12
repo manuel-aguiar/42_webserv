@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:22:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:29:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ class ServerManager
 		~ServerManager();
 
 		//methods
-		void							prepareWorkers();
 		void							run();
 
 		//getters
@@ -65,6 +64,7 @@ class ServerManager
 
 		ThreadPool*                     m_threadPool;
 
+		void							mf_prepareWorkers();
 		void							mf_runSingleThreaded();
 		void							mf_runMultiThreaded();
 

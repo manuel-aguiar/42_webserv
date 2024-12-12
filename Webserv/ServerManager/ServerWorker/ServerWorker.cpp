@@ -54,10 +54,8 @@ ServerWorker::~ServerWorker()
 	m_memPool.destroy();
 }
 
-
-int ServerWorker::run()
+int ServerWorker::prepareLaunch()
 {
-
 	//setup signal handler
 	m_mySignalEvent.setFd_Data_Handler_Flags(SignalHandler::PipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
 	m_eventManager.addEvent(m_mySignalEvent);
@@ -66,10 +64,13 @@ int ServerWorker::run()
 	for (size_t i = 0; i < m_listeners.size(); ++i)
 	{
 		if(!m_listeners[i]->open())
-			return (1);
+			return (0);
 		m_eventManager.addEvent(m_listeners[i]->getEvent());
 	}
+}
 
+int ServerWorker::run()
+{
 	// run the server
 	m_isRunning = true;
 	while (m_isRunning)

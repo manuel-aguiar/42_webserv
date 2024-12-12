@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 13:10:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:17:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:47:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -330,7 +330,7 @@ void	ServerConfig::printConfigs() const
 
 }
 
-size_t ServerConfig::getMaxWorkers() const
+size_t ServerConfig::getNumWorkers() const
 {
 	return (10); // YOLO
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:27:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:50:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,30 @@ class Globals;
 class SignalHandler
 {
 	public:
-		static int			PipeRead(int serverID);
-		static int			PipeWrite(int serverID);
-		static int			getSignal();
-		static void			signal_handler(int sigNum);
-		static int			prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
-		static void			destroy_signal(t_sigaction *sigact);
+		SignalHandler();
+		~SignalHandler();
+
+
+
+		int										PipeRead(int serverID);
+		int										PipeWrite(int serverID);
+		int										getSignal();
+		void									signal_handler(int sigNum);
+		int										prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
+		void									destroy_signal(t_sigaction *sigact);
 
 	private:
-		static Globals*								gm_globals;
-		static std::vector<std::pair<int, int> >	gm_pipes;
-		static int 									gm_signal;
+		Globals*								m_globals;
+		std::vector<std::pair<int, int> >		m_pipes;
+		int 									m_signal;
 
+		//shared to all instances
+		static size_t							m_counter;
+
+
+		//private
+		SignalHandler(const SignalHandler& copy);
+		SignalHandler& operator=(const SignalHandler& assign);
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:12:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:31:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 {
 	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
 	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
+	mf_prepareWorkers();
 }
 
 /*

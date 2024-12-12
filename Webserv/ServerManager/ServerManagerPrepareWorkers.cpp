@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:21:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:47:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 # include "../ServerConfig/ServerConfig/ServerConfig.hpp"
 
 // C++ headers
-
-
-
 
 /*
 
@@ -179,7 +176,7 @@ static int	getAddrInfo_Setup(const ServerConfig& 									config,
 	WARNING: NO NULL CHECKS YET FOR MEMORY FAILURE WHEN MEMORYPOOL EXPANDS
 
 */
-void	ServerManager::prepareWorkers()
+void	ServerManager::mf_prepareWorkers()
 {
 	Nginx_MemoryPool*									workerMemPool;
 
@@ -188,7 +185,7 @@ void	ServerManager::prepareWorkers()
 	std::vector<t_addrinfo*> 							allLists_Addrinfo;
 	ListeningSocket*									newListener;
 
-	m_workers.reserve(m_config.getMaxWorkers());
+	m_workers.reserve(m_config.getNumWorkers());
 
 	const int backlog = 100;																								// must be replaced with correct value
 	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET);				///must be replaced with correct values
