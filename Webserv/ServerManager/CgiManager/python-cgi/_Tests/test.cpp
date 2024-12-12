@@ -2,6 +2,7 @@
 
 # include "../python-cgi.hpp"
 # include "TestDependencies.hpp"
+# include <iostream>
 
 int main(void)
 {

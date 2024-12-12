@@ -6,9 +6,17 @@
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = test
+TARGET = test.out
 
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) ../EventManager.cpp \
+		../../../Globals/LogFile/LogFile.cpp \
+		../../../Globals/Globals.cpp \
+		../../../Globals/Clock/Clock.cpp \
+		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
+		../../../Event/Event.cpp \
+		../../../Event/EventGetSetAccess.cpp \
+		../../../Connection/ConnectionGetSetAccess.cpp
+
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
@@ -19,7 +27,13 @@ $(TARGET): $(OBJS)
 
 all: $(TARGET)
 
+run: $(TARGET)
+	valgrind --track-fds=yes ./$(TARGET)
+
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -rf $(OBJS) 
+
+fclean: clean
+	rm -rf $(TARGET) debug.log error.log status.log
 
 .PHONY: clean

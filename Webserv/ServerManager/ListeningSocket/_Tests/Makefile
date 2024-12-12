@@ -6,7 +6,7 @@
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = test
+TARGET = test.out
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
@@ -18,6 +18,9 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: $(TARGET)
+
+run: $(TARGET)
+	valgrind ./$(TARGET)
 
 clean:
 	rm -rf $(OBJS) $(TARGET)

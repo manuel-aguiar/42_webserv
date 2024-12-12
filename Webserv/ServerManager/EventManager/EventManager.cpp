@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:18:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:24:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,13 @@ EventManager::EventManager(Globals& globals) :
 
 EventManager::~EventManager()
 {
-
+	if (m_epollfd != -1)
+	{
+		if (close(m_epollfd) == -1)
+		{
+			m_globals.logError("close(): " + std::string(strerror(errno)));
+		}
+	}
 }
 
 

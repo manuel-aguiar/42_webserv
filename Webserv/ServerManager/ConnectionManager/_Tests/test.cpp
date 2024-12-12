@@ -20,14 +20,14 @@ int main(void)
 	try
 	{
 		ConnectionManager manager(1, *pool, globals);
-		
+
 		std::cout << "	PASS\n";
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << "	FAILED: " << e.what() << '\n';
 	}
-	
+
 	pool->destroy();
 
 	return (0);

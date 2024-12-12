@@ -34,6 +34,7 @@ createTestFile() {
 
 # include "../$3.hpp"
 # include "$TESTDEPENDENCIES.hpp"
+# include <iostream>
 
 int main(void)
 {
@@ -70,7 +71,7 @@ createMakefile() {
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = test
+TARGET = test.out
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
@@ -83,10 +84,18 @@ $(TARGET): $(OBJS)
 
 all: $(TARGET)
 
+run: $(TARGET)
+	valgrind ./$(TARGET)
+
 clean:
 	rm -rf $(OBJS) $(TARGET)
 
-.PHONY: clean
+fclean: clean
+	$(TARGET)
+
+re: fclean all
+
+.PHONY: clean fclean run
 EOF
 }
 
