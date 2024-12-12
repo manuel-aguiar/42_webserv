@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/09 14:11:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:38:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ class List
 		}
 
 		template <typename Arg1 >
-		void	emplace_back(const Arg1& arg1)
+		void	emplace_back(Arg1& arg1)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1);
@@ -218,7 +218,7 @@ class List
 		}
 
 		template <typename Arg1, typename Arg2 >
-		void	emplace_back(const Arg1& arg1, const Arg2& arg2)
+		void	emplace_back(Arg1& arg1, Arg2& arg2)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2);
@@ -227,7 +227,7 @@ class List
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
-		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+		void	emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
@@ -244,7 +244,7 @@ class List
 		}
 
 		template <typename Arg1 >
-		void	emplace_front(const Arg1& arg1)
+		void	emplace_front(Arg1& arg1)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1);
@@ -253,7 +253,7 @@ class List
 		}
 
 		template <typename Arg1, typename Arg2 >
-		void	emplace_front(const Arg1& arg1, const Arg2& arg2)
+		void	emplace_front(Arg1& arg1, Arg2& arg2)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2);
@@ -262,7 +262,7 @@ class List
 		}
 
 		template <typename Arg1, typename Arg2, typename Arg3 >
-		void	emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+		void	emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
