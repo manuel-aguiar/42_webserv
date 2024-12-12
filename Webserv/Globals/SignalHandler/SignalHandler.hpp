@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:50:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:57:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 
 
 class Globals;
+class SignalHandler;
+
+extern SignalHandler g_SignalHandler;
 
 class SignalHandler
 {
@@ -34,8 +37,8 @@ class SignalHandler
 		int										PipeWrite(int serverID);
 		int										getSignal();
 		void									signal_handler(int sigNum);
-		int										prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
-		void									destroy_signal(t_sigaction *sigact);
+		int										prepare_signal(t_sigaction& sigact, void (*handler)(int), size_t numServers, Globals& globals);
+		void									destroy_signal(t_sigaction& sigact);
 
 	private:
 		Globals*								m_globals;

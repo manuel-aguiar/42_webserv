@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 08:02:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:51:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:55:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,33 +55,31 @@ void		SignalHandler::signal_handler(int sigNum)
 	}
 }
 
-int		SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals)
+int		SignalHandler::prepare_signal(t_sigaction& sigact, void (*handler)(int), size_t numServers, Globals& globals)
 {
 	int pipefd[2];
 
-	assert(globals != NULL);
-
-	m_globals = globals;
+	m_globals = &globals;
 	m_pipes.reserve(numServers);
 
-	sigact->sa_flags = SA_RESTART;
-	sigact->sa_handler = handler;
+	sigact.sa_flags = SA_RESTART;
+	sigact.sa_handler = handler;
 
-	if (sigemptyset(&(sigact->sa_mask)) == -1)
+	if (sigemptyset(&(sigact.sa_mask)) == -1)
 	{
-		m_globals->logStatus("SignalHandler::prepare_signal, sigemptyset(): " + std::string(std::strerror(errno)));
+		m_globals->logError("SignalHandler::prepare_signal, sigemptyset(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: sigemptyset() failed");
 	}
 
-	if (sigaction(SIGINT, sigact, NULL) == -1)
+	if (sigaction(SIGINT, &sigact, NULL) == -1)
 	{
-		m_globals->logStatus("sigact(): " + std::string(std::strerror(errno)));
+		m_globals->logError("sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: sigact() failed");
 	}
 
-	if (sigaction(SIGQUIT, sigact, NULL) == -1)
+	if (sigaction(SIGQUIT, &sigact, NULL) == -1)
 	{
-		m_globals->logStatus("sigact(): " + std::string(std::strerror(errno)));
+		m_globals->logError("sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: sigact() failed");
 	}
 
@@ -89,13 +87,13 @@ int		SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), in
 	{
 		if (pipe(pipefd) == -1)
 		{
-			m_globals->logStatus("pipe(): " + std::string(std::strerror(errno)));
+			m_globals->logError("pipe(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, pipe() failed");
 		}
 		if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0])
 		|| !FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
 		{
-			m_globals->logStatus("fcntl(): " + std::string(std::strerror(errno)));
+			m_globals->logError("fcntl(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, fcntl() failed");
 		}
 
@@ -104,16 +102,16 @@ int		SignalHandler::prepare_signal(t_sigaction *sigact, void (*handler)(int), in
 	return (1);
 }
 
-void	SignalHandler::destroy_signal(t_sigaction *sigact)
+void	SignalHandler::destroy_signal(t_sigaction& sigact)
 {
 	(void)sigact;
 
 	for (size_t i = 0; i < m_pipes.size(); ++i)
 	{
 		if (close(PipeRead(i)) == -1)
-			m_globals->logStatus("close(): " + std::string(std::strerror(errno)));
+			m_globals->logError("close(): " + std::string(std::strerror(errno)));
 		if (close(PipeWrite(i)) == -1)
-			m_globals->logStatus("close(): " + std::string(std::strerror(errno)));
+			m_globals->logError("close(): " + std::string(std::strerror(errno)));
 	}
 	m_pipes.clear();
 }

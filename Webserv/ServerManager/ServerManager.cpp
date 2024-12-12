@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:31:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:58:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,10 @@ void    ServerManager::mf_runSingleThreaded()
 
 void    ServerManager::mf_runMultiThreaded()
 {
+	/*
+		MUST DO THE PTHREAD SIGSET STUFF BEFORE OPENING THE POOL
+	*/
+
 	m_threadPool = new ThreadPool(m_workers.size());
 
 	for (size_t i = 0; i < m_workers.size(); ++i)
@@ -64,7 +68,7 @@ void    ServerManager::mf_runMultiThreaded()
 		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
 	}
 
-	while (!SignalHandler::getSignal())
+	while (!g_SignalHandler.getSignal())
 		usleep(1000);
 
 	m_threadPool->destroy(true);
