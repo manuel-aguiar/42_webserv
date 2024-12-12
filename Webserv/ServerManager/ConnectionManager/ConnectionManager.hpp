@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:20:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:20:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 class ConnectionManager
 {
 	public:
-		ConnectionManager(size_t maxConnections, Nginx_MemoryPool* pool, Globals& globals);
+		ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals);
 		~ConnectionManager();
 
 		Connection*				provideConnection();

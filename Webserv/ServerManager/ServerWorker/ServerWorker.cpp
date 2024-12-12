@@ -22,26 +22,36 @@
 // C++ headers
 # include <cstdlib>
 
-ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool* pool, Globals& globals) :
+ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_MemoryPool& pool, Globals& globals) :
 	m_myID				(serverID),
 	m_serverManager		(manager),
 	m_config			(m_serverManager.getConfig()),
 	m_connManager		(::atoi(m_serverManager.getConfig().getMaxConnections().c_str()), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
-	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(m_memPool, m_serverManager.getListenerCount())),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(globals)
 {
 
 }
 
+/*
+	ListeningSockets are created inside the serverWorker's memory pool which doesn't call destructors
+	so we must call it explicitely ourselves. ConnectionManager is the same since it builts its structs
+	inside the same memorypool, so we must call its destructor explicitely.
+
+	The alternative to all of this could be to wrap the memory pool inside a shared pointer.
+*/
 ServerWorker::~ServerWorker()
 {
 	for (size_t i = 0; i < m_listeners.size(); ++i)
 		m_listeners[i]->~ListeningSocket();
-	m_memPool->destroy();
+	m_listeners.clear();	
+	m_pendingAccept.clear();
+	m_connManager.~ConnectionManager();
+	m_memPool.destroy();
 }
 
 
@@ -120,8 +130,8 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 	m_connManager		(::atoi(m_serverManager.getConfig().getMaxConnections().c_str()), copy.m_memPool, copy.m_globals),
 	m_eventManager		(copy.m_globals),
 	m_memPool			(copy.m_memPool),
-	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
-	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(m_memPool, m_serverManager.getListenerCount())),
+	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(copy.m_globals)
 {(void)copy;}

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/10 09:08:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:21:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
 
 const Nginx_MemoryPool&		ServerWorker::getMemPool() const
 {
-	return (*m_memPool);
+	return (m_memPool);
 }
 
 
@@ -81,5 +81,5 @@ DynArray<ListeningSocket *, Nginx_PoolAllocator<ListeningSocket *> >&		ServerWor
 
 Nginx_MemoryPool&			ServerWorker::accessMemPool()
 {
-	return (*m_memPool);
+	return (m_memPool);
 }

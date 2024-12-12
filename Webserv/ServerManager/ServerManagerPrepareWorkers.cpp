@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:04:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:21:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ void	ServerManager::prepareWorkers()
 		// create a memorypool for the worker, allocate itself in it, save pointer in ServerManager
 		workerMemPool = Nginx_MemoryPool::create(4096, 1);
 		m_workers[i] = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
-		new (m_workers[i]) ServerWorker(*this, i, workerMemPool, m_globals);
+		new (m_workers[i]) ServerWorker(*this, i, *workerMemPool, m_globals);
 
 		// worker sets up its own listeners, inside its own memorypool
 		m_workers[i]->accessListeners().reserve(m_listenerCount);

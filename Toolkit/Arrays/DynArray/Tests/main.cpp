@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 10:17:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:08:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,13 +304,13 @@ int main()
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(new Base(i));
-			array.emplace_back(new Base(i));
+			array.push_back(new Base(i));
 
 			std.push_back(new Derived(i));
-			array.emplace_back(new Derived(i));
+			array.push_back(new Derived(i));
 
 			std.push_back(new Derived(i));
-			array.emplace_back(new Derived(i));
+			array.push_back(new Derived(i));
 
 			delete std.back();
 			delete array.back();
@@ -467,7 +467,11 @@ int main()
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+	DynArray<std::string, Nginx_PoolAllocator<std::string> >	array((Nginx_PoolAllocator<std::string>(pool)));
+	
+	array.push_back("uma string bue grande qye aloca memoria de certeza");
 
+	array.clear();
 
 	pool->destroy();
 

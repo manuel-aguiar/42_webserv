@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:27:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 14:12:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
 }
 
+/*
+	ServerWorkers are built inside the memory pool which doesn't call destructors
+	We must call the destructors ourselves
+*/
 ServerManager::~ServerManager()
 {
 	for (size_t i = 0; i < MODULE_COUNT; ++i)
