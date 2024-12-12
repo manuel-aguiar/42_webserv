@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 09:24:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:54:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,24 @@ int main(int ac, char** av)
 		return (1);
 	}
 
-	Clock			clock;
-	LogFile			statusFile("status.log");
-	LogFile			errorFile("error.log");
-	LogFile			debugFile("debug.log");
-	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
-	ServerConfig	config(av[1], &globals);
-	ServerManager	webserver(config, &globals);
+	try
+	{
+		//setup
+		Clock			clock;
+		LogFile			statusFile("status.log");
+		LogFile			errorFile("error.log");
+		LogFile			debugFile("debug.log");
+		Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
+		ServerConfig	config(av[1], &globals);
+		ServerManager	webserver(config, &globals);
 
-	webserver.run();
-
+		//RUN
+		webserver.run();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << av[0] << ": CRITICAL FAILURE " << e.what() << '\n';
+	}
+	
     return (0);
 }

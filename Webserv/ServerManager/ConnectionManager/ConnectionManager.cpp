@@ -60,7 +60,6 @@ void ConnectionManager::returnConnection(Connection* connection)
 {
     connection->reset();
     m_spareConnections.push_front(connection);
-
 }
 
 
