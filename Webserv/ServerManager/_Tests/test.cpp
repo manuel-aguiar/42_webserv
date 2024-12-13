@@ -9,7 +9,17 @@
 int main(void)
 {
 	/**********************************************/
-
+	/*********************************************
+		Partial integration test of ServerManager.
+		Mock dependency implementations:
+			- ServerConfig
+			- Globals
+			- HttpModule
+		
+		Everything else: Rock n' Roll
+	***********************************************/
+	/**********************************************/
+	
 	std::cout << "Test1: ";
 
 	/* Just to check that i can spawn the servermanager, somehow */
