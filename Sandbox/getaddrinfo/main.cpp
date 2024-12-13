@@ -75,7 +75,7 @@ void	printIPaddress(struct addrinfo* info)
 	std::cout << ipversion << ": " << ipstr << std::endl;
 }
 
-int main(void)
+int main1(void)
 {
 	struct addrinfo hints;
 	struct addrinfo* res;
@@ -172,7 +172,7 @@ int main(void)
 
 
 
-/*
+
 int main(void) {
   struct addrinfo* addr;
   int result = getaddrinfo("google.com", NULL, NULL, &addr);
@@ -184,6 +184,6 @@ int main(void) {
   printf("google.com is at: %s\n", inet_ntoa(internet_addr->sin_addr));
   return (EXIT_SUCCESS);
 }
-*/
+
 
 

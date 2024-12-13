@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:33:06 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/09 15:28:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:31:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ const Event&				ListeningSocket::getEvent()						const
 	return (m_event);
 }
 
-void						ListeningSocket::setProtoModule					(const t_ptr_ProtoModule module)
+void						ListeningSocket::setProtoModule					(const t_ptr_ProtoModule& module)
 {
 	m_protoModule = module;
 }
 
-void						ListeningSocket::setInitProtocolConnection		(const t_func_initProtoConn func)
+void						ListeningSocket::setInitProtocolConnection		(const t_func_initProtoConn& func)
 {
 	m_initConnection = func;
 }

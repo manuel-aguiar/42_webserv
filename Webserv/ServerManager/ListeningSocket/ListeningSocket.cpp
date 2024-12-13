@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 12:01:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:12:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int		ListeningSocket::open()
 {
 	int options;
 
-	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_proto);
+	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_addrInfo.ai_protocol);
 	//std::cout << "listener sockfd " << m_sockfd << std::endl;
 	if (m_sockfd == -1)
 	{

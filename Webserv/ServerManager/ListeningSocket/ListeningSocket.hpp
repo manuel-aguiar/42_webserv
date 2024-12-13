@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 11:19:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:31:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ class ListeningSocket
 		const Event&				getEvent()						const;
 
 		// setters
-		void						setProtoModule					(const t_ptr_ProtoModule module);
-		void						setInitProtocolConnection		(const t_func_initProtoConn func);
+		void						setProtoModule					(const t_ptr_ProtoModule& module);
+		void						setInitProtocolConnection		(const t_func_initProtoConn& func);
 
 		// accessors
 		ServerWorker&				accessWorker();
@@ -75,7 +75,6 @@ class ListeningSocket
 
 		t_addrinfo					m_addrInfo;
 		t_socket					m_sockfd;
-		int							m_proto;
 		int							m_backlog;
 
 		t_func_initProtoConn		m_initConnection;
