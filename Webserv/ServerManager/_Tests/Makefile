@@ -5,7 +5,7 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test
 
 SRCS = $(wildcard *.cpp)
@@ -19,7 +19,14 @@ $(TARGET): $(OBJS)
 
 all: $(TARGET)
 
+run: $(TARGET)
+	valgrind --track-fds=yes ./$(TARGET)
+	make fclean
+
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -rf $(OBJS) 
+
+fclean: clean
+	rm -rf $(TARGET)
 
 .PHONY: clean
