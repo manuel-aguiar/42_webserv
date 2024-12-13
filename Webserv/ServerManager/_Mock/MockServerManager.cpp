@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 12:02:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:28:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,4 +287,15 @@ void	ServerManager::mf_prepareWorkers()
 	}
 
 	getAddrInfo_Free(allLists_Addrinfo);
+}
+
+
+const t_ptr_ProtoModule*	ServerManager::getProtoModules() const
+{
+	return (m_protoModules);
+}
+
+const t_func_initProtoConn*	ServerManager::getInitProtoConnections() const
+{
+	return (m_initProtoConnection);
 }

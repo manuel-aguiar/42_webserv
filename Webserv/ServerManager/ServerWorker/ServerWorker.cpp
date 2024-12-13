@@ -29,7 +29,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_connManager		(::atoi(m_serverManager.getConfig().getMaxConnections().c_str()), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
+	m_listeners			(m_serverManager.getListenerCount(), Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
 	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(globals)
@@ -139,3 +139,18 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 {(void)copy;}
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}
+
+
+void	ServerWorker::createListeningSocket(const t_addrinfo& addrinfo, 
+											const int backlog, 
+											const t_ptr_ProtoModule& protoModule, 
+											const t_func_initProtoConn& initProtoConnection)
+{
+	ListeningSocket*	newListener;
+
+	newListener = (ListeningSocket*)m_memPool.allocate(sizeof(ListeningSocket));
+	new (newListener) ListeningSocket(*this, m_memPool, addrinfo, backlog, m_globals);
+	newListener->setProtoModule(protoModule);
+	newListener->setInitProtocolConnection(initProtoConnection);
+	m_listeners.emplace_back(newListener);
+}

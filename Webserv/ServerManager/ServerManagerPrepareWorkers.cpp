@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 11:20:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:54:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,6 @@ void	ServerManager::mf_prepareWorkers()
 	//for getaddrinfo
 	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
 	std::vector<t_addrinfo*> 							allLists_Addrinfo;
-	ListeningSocket*									newListener;
 
 	m_workers.reserve(m_config.getNumWorkers());
 
@@ -197,20 +196,20 @@ void	ServerManager::mf_prepareWorkers()
 		m_workers[i] = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
 		new (m_workers[i]) ServerWorker(*this, i, *workerMemPool, m_globals);
 
-		// worker sets up its own listeners, inside its own memorypool
-		m_workers[i]->accessListeners().reserve(m_listenerCount);
 		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
-		{
-			newListener = (ListeningSocket*)m_workers[i]->accessMemPool().allocate(sizeof(ListeningSocket));
-			new (newListener) ListeningSocket(*m_workers[i], *workerMemPool, **iter, backlog, m_globals);
+		{	
 			/*
-				Here one should check m_config to see what protocol module and connection initializer
-				should be passed on to the listening socket. For now just straight assign the HttpModules
+				The protoModule and protoconnection should be found in serverconfig but we don't have
+				more than the http module, so no worries
 			*/
-			newListener->setProtoModule(m_protoModules[HTTP_MODULE]);
-			newListener->setInitProtocolConnection(m_initProtoConnection[HTTP_MODULE]);
-
-			m_workers[i]->accessListeners().emplace_back(newListener);
+			
+			m_workers[i]->createListeningSocket
+			(
+				**iter, 
+				backlog, 
+				m_protoModules[HTTP_MODULE], 
+				m_initProtoConnection[HTTP_MODULE]
+			);
 		}
 	}
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:03:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:40:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:26:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,14 @@ size_t	ServerManager::getListenerCount() const
 t_ptr_ProtoModule		ServerManager::accessProtoModule(e_protoModules module)
 {
 	return (m_protoModules[module]);
+}
+
+const t_ptr_ProtoModule*	ServerManager::getProtoModules() const
+{
+	return (m_protoModules);
+}
+
+const t_func_initProtoConn*	ServerManager::getInitProtoConnections() const
+{
+	return (m_initProtoConnection);
 }
