@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 15:12:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:30:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,12 +105,12 @@ int		ListeningSocket::open()
 		return (0);
 	}
 
-	if (!bind() || !listen())
+	if (!mf_bind() || !mf_listen())
 		return (0);
 	return (1);
 }
 
-int		ListeningSocket::bind()
+int		ListeningSocket::mf_bind()
 {
 	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
 	{
@@ -120,7 +120,7 @@ int		ListeningSocket::bind()
 	return (1);
 }
 
-int		ListeningSocket::listen()
+int		ListeningSocket::mf_listen()
 {
 	if (::listen(m_sockfd, m_backlog) == -1)
 	{
@@ -216,6 +216,7 @@ void    ListeningSocket::close()
 {
 	if (m_sockfd != -1 && ::close(m_sockfd) == -1)
 		m_globals.logError("close(): " + std::string(strerror(errno)));
+	m_sockfd = -1;
 }
 
 

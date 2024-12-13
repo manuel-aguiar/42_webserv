@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 12:13:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:31:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int		ListeningSocket::open()
 {
 	int options;
 
-	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_proto);
+	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_addrInfo.ai_protocol);
 	//std::cout << "listener sockfd " << m_sockfd << std::endl;
 	if (m_sockfd == -1)
 	{
@@ -99,29 +99,11 @@ int		ListeningSocket::open()
 		return (0);
 	}
 
-	if (!bind() || !listen())
+	if (!mf_bind() || !mf_listen())
 		return (0);
 	return (1);
 }
 
-int		ListeningSocket::bind()
-{
-	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
-	{
-		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
-		return (0);
-	}
-	return (1);
-}
-
-int		ListeningSocket::listen()
-{
-	if (::listen(m_sockfd, m_backlog) == -1)
-	{
-		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
-		return (0);
-	}
-	return (1);
 }
 
 /*
@@ -306,3 +288,21 @@ Event&						ListeningSocket::accessEvent()
 	return (m_event);
 }
 
+int		ListeningSocket::mf_bind()
+{
+	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
+	{
+		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
+		return (0);
+	}
+	return (1);
+}
+
+int		ListeningSocket::mf_listen()
+{
+	if (::listen(m_sockfd, m_backlog) == -1)
+	{
+		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
+		return (0);
+	}
+	return (1);

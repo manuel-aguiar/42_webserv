@@ -17,7 +17,7 @@ int main(void)
 {
 
 	/******************************************/
-	
+
 	//setup
 	Globals				globals(NULL, NULL, NULL, NULL);
 	Nginx_MemoryPool*	pool = Nginx_MemoryPool::create(4096, 1);
@@ -110,6 +110,10 @@ int main(void)
 		
 		try
 		{
+			/*
+				Testing getters	
+			*/
+
 			// setup
 			t_addrinfo          						*res;
 			t_addrinfo          						hints;
@@ -123,6 +127,7 @@ int main(void)
 
 			const char* ip = "127.0.0.1";
 			const char* portStr = "8080";
+			const int backlog = 10;
 			t_port portNum = 8080;
 
 			status = getaddrinfo(ip, portStr, &hints, &res);
@@ -140,7 +145,7 @@ int main(void)
 			freeaddrinfo(res);
 
 			//test
-			ListeningSocket listener(worker, *pool, cur, 10, globals);
+			ListeningSocket listener(worker, *pool, cur, backlog, globals);
 			((t_sockaddr_in*)cur.ai_addr)->sin_port = ::ntohs(((t_sockaddr_in*)cur.ai_addr)->sin_port);
 
 			{
@@ -149,13 +154,6 @@ int main(void)
 				if (result != expected)
 					throw std::runtime_error("open() should pass with a valid addrinfo");
 			}
-
-/*
-		int							getProtocol()					const;
-		int							getBacklog()					const;
-		const Event&				getEvent()						const;
-*/
-
 			{
 				const ServerWorker& result = listener.getWorker();
 				const ServerWorker& expected = worker; 
@@ -186,7 +184,40 @@ int main(void)
 				if (result != expected)
 					throw std::runtime_error("port not currectly converted to host byte order");
 			}
-			
+			{
+				const int result = listener.getBacklog();
+				const int expected = backlog; 
+				if (result != expected)
+					throw std::runtime_error("backlog not set correctly");
+			}
+			{
+				const t_socket result = listener.getSocket();
+				const t_socket unexpected = -1;
+				if (result == unexpected)
+					throw std::runtime_error("getEvent() doesn't return the correct event");
+			}
+			const Event& event = listener.getEvent();
+			{
+				const t_func_event_handler result = event.getHandler();
+				const t_func_event_handler expected = &ListeningSocket::EventAccept;
+				if (result != expected)
+					throw std::runtime_error("event should be listeningsocket::eventaccept");
+			}
+			{
+				const t_ptr_event_data result = event.getData();
+				const t_ptr_event_data expected = &listener;
+				if (result != expected)
+					throw std::runtime_error("event handler should be the listener itself");
+			}
+			listener.close();
+			{
+				const t_socket result = listener.getSocket();
+				const t_socket expected = -1;
+				if (result != expected)
+					throw std::runtime_error("socket should be closed and = -1");
+			}
+
+
 			std::cout << "	PASS\n";
 		}
 		catch(const std::exception& e)
