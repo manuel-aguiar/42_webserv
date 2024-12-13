@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:00:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 10:06:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_blockFinder(config),
 	m_config(config),
-	m_globals(globals)
+	m_globals(globals),
+	m_threadPool(NULL)
 {
 	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
 	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
@@ -41,6 +42,8 @@ ServerManager::~ServerManager()
 		delete ((unsigned char *)m_protoModules[i]);
 	for (size_t i = 0; i < m_workers.size(); ++i)
 		m_workers[i]->~ServerWorker();
+	if (m_threadPool)
+		delete (m_threadPool);
 }
 
 void    ServerManager::run()
@@ -72,22 +75,25 @@ void    ServerManager::mf_runMultiThreaded()
 {
 	sigset_t threadSigSet;
 
-	/*** UNPROTECTED ***/
-
-	sigemptyset(&threadSigSet);
-	sigaddset(&threadSigSet, SIGINT);
-	sigaddset(&threadSigSet, SIGQUIT);
-	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);
+	if (::sigemptyset(&threadSigSet) != 0)
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigemptyset failed");
+	if (::sigaddset(&threadSigSet, SIGINT))
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
+	if (::sigaddset(&threadSigSet, SIGQUIT))
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
+	if (::pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL))
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
 
 	m_threadPool = new ThreadPool(m_workers.size());
 
-	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);
+	if (::pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL))
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
 
 	for (size_t i = 0; i < m_workers.size(); ++i)
 		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
 
 	while (!g_SignalHandler.getSignal())
-		usleep(1000);
+		::usleep(1000);
 
 	m_threadPool->destroy(true);
 	delete (m_threadPool);
