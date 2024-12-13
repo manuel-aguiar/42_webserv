@@ -38,7 +38,7 @@ int main(void)
 		if (conn2 != NULL)
 			throw std::runtime_error("provideConnection() did not return NULL, but there are no connections");
 
-		manager.returnConnection(conn1);
+		manager.returnConnection(*conn1);
 		conn2 = manager.provideConnection();
 
 		if (conn2 != conn1)
@@ -71,11 +71,34 @@ int main(void)
 		if (conn2 != NULL)
 			throw std::runtime_error("provideConnection() did not return NULL, but there are no connections");
 
-		manager.returnConnection(conn1);
+		manager.returnConnection(*conn1);
 		conn2 = manager.provideConnection();
 
 		if (conn2 != conn1)
 			throw std::runtime_error("provideConnection() should have returned the same we gave back");
+
+		std::cout << "	PASS\n";
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "	FAILED: " << e.what() << '\n';
+	}
+
+	/************************************************************/
+	/************************************************************/
+	/************************************************************/
+	/************************************************************/
+
+
+	std::cout << "Test4: ";
+	try
+	{
+		ConnectionManager manager(0, *pool, globals);
+		Connection* conn1;
+		conn1 = manager.provideConnection();
+
+		//manager.returnConnection(*conn1);		//correctly raises abort in DEBUG mode
+		(void)conn1;
 
 		std::cout << "	PASS\n";
 	}

@@ -95,7 +95,6 @@ all: $(TARGET)
 
 run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
-	make fclean
 
 clean:
 	rm -rf $(OBJS) $(TARGET)

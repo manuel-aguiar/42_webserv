@@ -203,4 +203,6 @@ void	ServerWorker::createListeningSocket(const t_addrinfo& addrinfo,
 {
 	(void)addrinfo;
 	(void)backlog;
+	(void)protoModule;
+	(void)initProtoConnection;
 }

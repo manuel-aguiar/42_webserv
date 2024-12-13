@@ -58,6 +58,8 @@ Connection* ConnectionManager::provideConnection()
 
 void ConnectionManager::returnConnection(Connection& connection)
 {
+    assert(&connection != NULL);
+    
     connection.reset();
     m_spareConnections.push_front(&connection);
 }
