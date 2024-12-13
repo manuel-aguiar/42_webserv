@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/12 14:00:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 09:57:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,6 +235,34 @@ class List
 			++m_size;
 		}
 
+
+		template <typename Arg1 >
+		void	emplace_back(const Arg1& arg1)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2 >
+		void	emplace_back(const Arg1& arg1, const Arg2& arg2)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3 >
+		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
 		void 	emplace_front()
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
@@ -270,6 +298,33 @@ class List
 			++m_size;
 		}
 
+
+		template <typename Arg1 >
+		void	emplace_front(const Arg1& arg1)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1);
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2 >
+		void	emplace_front(const Arg1& arg1, const Arg2& arg2)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2);
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3 >
+		void	emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3);
+			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			++m_size;
+		}
 
         class iterator
         {

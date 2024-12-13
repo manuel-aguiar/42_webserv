@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 15:15:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 10:00:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,32 @@ void    ServerManager::mf_runSingleThreaded()
 	m_workers[0]->run();
 }
 
+/*
+	Run ServerManager in a multi-threaded environment (1 worker per thread)
+
+	Sets up signal handling such that only the main thread receives process group signals
+	Opens the Threadpool that creates the threads with this signal mask
+	Reinstate the previous mask
+
+	Run.
+*/
 void    ServerManager::mf_runMultiThreaded()
 {
-	/*
-		MUST DO THE PTHREAD SIGSET STUFF BEFORE OPENING THE POOL
-	*/
+	sigset_t threadSigSet;
+
+	/*** UNPROTECTED ***/
+
+	sigemptyset(&threadSigSet);
+	sigaddset(&threadSigSet, SIGINT);
+	sigaddset(&threadSigSet, SIGQUIT);
+	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);
 
 	m_threadPool = new ThreadPool(m_workers.size());
 
+	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);
+
 	for (size_t i = 0; i < m_workers.size(); ++i)
-	{
 		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
-	}
 
 	while (!g_SignalHandler.getSignal())
 		usleep(1000);

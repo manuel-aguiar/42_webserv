@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/01 19:41:24 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/13 09:51:45 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 INC_PATH			=	include
 SRC_PATH			=	source
-OBJ_PATH			=	objs
+OBJ_PATH			=	_objs
 
 INC_ABST_PATH		= 	$(addprefix $(INC_PATH)/, Abstract)
 INC_CONC_PATH		=	$(addprefix $(INC_PATH)/, Concrete)
