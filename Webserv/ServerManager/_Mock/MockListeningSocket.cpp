@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:31:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:32:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ int		ListeningSocket::open()
 	return (1);
 }
 
-}
 
 /*
 	Accepts a socket conenction on the ListeningSocket. Will be called by the EventManager
@@ -266,12 +265,12 @@ const Event&				ListeningSocket::getEvent()						const
 	return (m_event);
 }
 
-void						ListeningSocket::setProtoModule					(const t_ptr_ProtoModule module)
+void						ListeningSocket::setProtoModule					(const t_ptr_ProtoModule& module)
 {
 	m_protoModule = module;
 }
 
-void						ListeningSocket::setInitProtocolConnection		(const t_func_initProtoConn func)
+void						ListeningSocket::setInitProtocolConnection		(const t_func_initProtoConn& func)
 {
 	m_initConnection = func;
 }
