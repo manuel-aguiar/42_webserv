@@ -12,8 +12,7 @@ void EventHandler(Event& event)
 	char buffer[100];
 	int readChars;
 
-	while ((readChars = read(event.getFd(), buffer, 100)) > 0)
-		buffer[readChars] = '\0';
+	while ((readChars = read(event.getFd(), buffer, 100)) > 0);
 
 	event.setData((unsigned char *)123);	
 };

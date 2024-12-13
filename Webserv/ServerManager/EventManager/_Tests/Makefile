@@ -5,7 +5,7 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test.out
 
 SRCS = $(wildcard *.cpp) ../EventManager.cpp \

@@ -12,10 +12,9 @@ SRCS = $(wildcard *.cpp) ../ConnectionManager.cpp \
 		../../../Globals/_Mock/MockLogFile.cpp \
 		../../../Globals/_Mock/MockGlobals.cpp \
 		../../../Globals/_Mock/MockClock.cpp \
+		../../../Connection/_Mock/MockConnection.cpp \
 		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		../../../Connection/Connection.cpp \
 		../../../Event/Event.cpp \
-		../../../Connection/ConnectionGetSetAccess.cpp \
 		../../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp \
 		../../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp 
 
