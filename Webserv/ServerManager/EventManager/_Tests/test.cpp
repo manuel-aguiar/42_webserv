@@ -12,14 +12,10 @@ void EventHandler(Event& event)
 	char buffer[100];
 	int readChars;
 
-	std::cout << "Event triggered, reading fd: ";
-
 	while ((readChars = read(event.getFd(), buffer, 100)) > 0)
-	{
 		buffer[readChars] = '\0';
-		std::cout << buffer << std::endl;
-	}
-		
+
+	event.setData((unsigned char *)123);	
 }
 
 int main(void)
@@ -71,6 +67,9 @@ int main(void)
 
 		close(pipefd[1]);
 		close(pipefd[0]);
+
+		if ((unsigned char *)event.getData() != (unsigned char *)123)
+			throw std::runtime_error("Event data not set correctly");
 
 		std::cout << "	PASS\n";
 	}
