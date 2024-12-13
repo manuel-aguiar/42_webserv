@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:20:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 11:06:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class ConnectionManager
 		~ConnectionManager();
 
 		Connection*				provideConnection();
-		void					returnConnection(Connection* connection);
+		void					returnConnection(Connection& connection);
 
 	private:
 		size_t														m_maxConnections;

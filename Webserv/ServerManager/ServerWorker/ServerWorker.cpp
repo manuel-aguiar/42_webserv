@@ -82,9 +82,9 @@ int ServerWorker::run()
 	return (1);
 }
 
-void	ServerWorker::addPendingAccept(ListeningSocket* listener)
+void	ServerWorker::addPendingAccept(ListeningSocket& listener)
 {
-	m_pendingAccept.emplace_back(listener);
+	m_pendingAccept.emplace_back(&listener);
 }
 
 
@@ -110,7 +110,7 @@ Connection*						ServerWorker::provideConnection()
 	We do this until either the Connection isntance is reused or we come to the conclusion that there
 	is nothing pending right now.
 */
-void							ServerWorker::returnConnection(Connection* connection)
+void							ServerWorker::returnConnection(Connection& connection)
 {
 	m_connManager.returnConnection(connection);
 		

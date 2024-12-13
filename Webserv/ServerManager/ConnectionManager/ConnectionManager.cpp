@@ -56,10 +56,10 @@ Connection* ConnectionManager::provideConnection()
     return (connection);
 }
 
-void ConnectionManager::returnConnection(Connection* connection)
+void ConnectionManager::returnConnection(Connection& connection)
 {
-    connection->reset();
-    m_spareConnections.push_front(connection);
+    connection.reset();
+    m_spareConnections.push_front(&connection);
 }
 
 

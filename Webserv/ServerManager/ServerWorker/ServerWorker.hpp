@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 14:27:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 11:10:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,11 @@ class ServerWorker
 
 		// helpers
 
-		void							addPendingAccept(ListeningSocket* listener);	
-		void							removePendingAccept(ListeningSocket* listener);
+		void							addPendingAccept(ListeningSocket& listener);	
 
 		// interaction with ConnectionManager
 		Connection*						provideConnection();
-		void							returnConnection(Connection* connection);
+		void							returnConnection(Connection& connection);
 
 		//event handlers
 		static void 					EventExit(Event& event);
