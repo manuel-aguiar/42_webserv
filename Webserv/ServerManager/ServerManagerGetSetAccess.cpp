@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:03:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:19:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 10:40:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # include "ServerManager.hpp"
 # include "../ServerConfig/ServerConfig/ServerConfig.hpp"
 
-//C++ headers
-# include <cassert>
 
 //getters
 const ServerConfig&	ServerManager::getConfig() const

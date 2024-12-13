@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 15:16:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 10:15:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int main(int ac, char** av)
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << av[0] << ": CRITICAL FAILURE " << e.what() << '\n';
+		std::cerr << av[0] << ": CRITICAL FAILURE: " << e.what() << '\n';
 		return (EXIT_FAILURE);
 	}
 	
