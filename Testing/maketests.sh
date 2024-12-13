@@ -85,7 +85,7 @@ $(TARGET): $(OBJS)
 all: $(TARGET)
 
 run: $(TARGET)
-	valgrind ./$(TARGET)
+	valgrind --track-fds=yes ./$(TARGET)
 
 clean:
 	rm -rf $(OBJS) $(TARGET)

@@ -6,7 +6,7 @@
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
-TARGET = test
+TARGET = test.out
 
 SRCS = $(wildcard *.cpp) ../ConnectionManager.cpp \
 		../../../Globals/_Mock/MockLogFile.cpp \
