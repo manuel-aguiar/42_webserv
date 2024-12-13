@@ -6,10 +6,9 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:06:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 10:10:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 # include "ServerManager.hpp"
 # include "../ServerConfig/ServerConfig/ServerConfig.hpp"
@@ -52,11 +51,14 @@ void    ServerManager::run()
 		mf_runSingleThreaded();
 	else
 		mf_runMultiThreaded();
-
-	// destroy workers,
-	// close signal handler pipes
 }
 
+
+/*
+	Run ServerManager single threaded (only 1 worker to work with)
+	
+	Just run the single worker
+*/
 void    ServerManager::mf_runSingleThreaded()
 {
 	m_workers[0]->run();
@@ -97,4 +99,5 @@ void    ServerManager::mf_runMultiThreaded()
 
 	m_threadPool->destroy(true);
 	delete (m_threadPool);
+	m_threadPool = NULL;
 }
