@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:45:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 12:13:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
 	m_backlog(backlog),
 	m_worker(worker),
 	m_globals(globals)
@@ -36,7 +36,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 	std::memcpy(&m_addrInfo, &addrInfo, sizeof(addrInfo));
 	m_addrInfo.ai_next = NULL;
 
-	m_addrInfo.ai_addr = (t_sockaddr *)m_worker.accessMemPool().allocate(m_addrInfo.ai_addrlen, true);
+	m_addrInfo.ai_addr = (t_sockaddr *)memPool.allocate(m_addrInfo.ai_addrlen, true);
 	std::memcpy(m_addrInfo.ai_addr, addrInfo.ai_addr, m_addrInfo.ai_addrlen);
 
 	// just convert the port to host byte order in place
@@ -49,7 +49,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 		m_addrInfo.ai_canonname = NULL;
 	else
 	{
-		m_addrInfo.ai_canonname = (char *)m_worker.accessMemPool().allocate(canonnameLen + 1, true);
+		m_addrInfo.ai_canonname = (char *)memPool.allocate(canonnameLen + 1, true);
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
@@ -142,7 +142,7 @@ int    ListeningSocket::accept()
 
 	if (!connection)
 	{
-		m_worker.addPendingAccept(this);
+		m_worker.addPendingAccept(*this);
 		return (0);
 	}
 
@@ -159,7 +159,7 @@ int    ListeningSocket::accept()
 			/* there was backlog but accept failed */
 			m_globals.logError("ListeningSocket::accept(): " + std::string(strerror(errno)));
 		}
-		m_worker.returnConnection(connection);
+		m_worker.returnConnection(*connection);
 		return (0);		
 	}
 
@@ -168,7 +168,7 @@ int    ListeningSocket::accept()
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
 		m_globals.logError("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
-		return (mf_close_accepted_connection(connection));
+		return (mf_close_accepted_connection(*connection));
 	}
 
 	addrrr = (t_sockaddr*)connection->accessMemPool().allocate(addrlen, true);
@@ -176,7 +176,7 @@ int    ListeningSocket::accept()
 	if (!addrrr)
 	{
 		m_globals.logError("ListeningSocket::accept(), memorypool " + std::string(strerror(errno)));
-		return (mf_close_accepted_connection(connection));
+		return (mf_close_accepted_connection(*connection));
 	}
 	connection->setAddr(addrrr);
 
@@ -186,22 +186,22 @@ int    ListeningSocket::accept()
 	m_initConnection(connection);
 
 	if (!m_worker.accessEventManager().addEvent(connection->getReadEvent()))
-		return (mf_close_accepted_connection(connection));
+		return (mf_close_accepted_connection(*connection));
 
 	return (1);
 }
 
-int    ListeningSocket::mf_close_accepted_connection(Connection* connection)
+int    ListeningSocket::mf_close_accepted_connection(Connection& connection)
 {
-	if (connection->getSocket() != -1 && ::close(connection->getSocket()) == -1)
+	if (connection.getSocket() != -1 && ::close(connection.getSocket()) == -1)
 		m_globals.logError("close(): " + std::string(strerror(errno)));
 	m_worker.returnConnection(connection);
 	return (0);
 }
 
-void    ListeningSocket::closeConnection(Connection* connection)
+void    ListeningSocket::closeConnection(Connection& connection)
 {
-	m_worker.accessEventManager().delEvent(connection->getReadEvent());
+	m_worker.accessEventManager().delEvent(connection.getReadEvent());
 	mf_close_accepted_connection(connection);
 }
 
