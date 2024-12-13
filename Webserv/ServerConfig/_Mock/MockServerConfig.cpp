@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerConfig.cpp                                   :+:      :+:    :+:   */
+/*   MockServerConfig.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 13:10:21 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:51:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 11:57:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,20 @@
 
 ServerConfig::ServerConfig(const char* configFilePath, Globals* globals)
 {
+	(void)configFilePath;
+	(void)globals;
+
 	DefaultConfig configDefault;
 
 	m_globals = globals;
-	m_configFilePath = configFilePath;
 	m_serverCount = 0;
 
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
 
 	m_config["max_connections"];
-	m_config["max_concurrent_cgi"];
+	m_config["max_concurrent_cgi"];	
+
 }
 
 ServerConfig::~ServerConfig()
@@ -57,21 +60,35 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 
 void	ServerConfig::m_updateFile()
 {
+	/*	
 	m_configFileStream.open(m_configFilePath.c_str());
 	if (!m_configFileStream.is_open())
 		throw (std::invalid_argument("Error: Could not open configuration file."));
+	*/
+
 }
 
 void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &value)
 {
-	if (m_keys.find(key) == m_keys.end())
-		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value, 0);
+	(void)key;
+	(void)value;
+	/*
+		if (m_keys.find(key) == m_keys.end())
+				throw (std::invalid_argument("invalid key " + key));
+		(this->*m_keys[key])(value, 0);
+	*/
 }
 
 int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, ServerBlock &server,
 										ServerLocation &location, const int &currentLevel)
 {
+	(void)line;
+	(void)currentLine;
+	(void)server;
+	(void)location;
+	(void)currentLevel;
+
+/*
 	std::istringstream iss(line);
 	std::string key, value;
 	iss >> key;
@@ -118,12 +135,14 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 		std::cerr << "key \"" << key <<  "\" with no value on line " << currentLine << std::endl;
 		return (0);
 	}
+*/
+
 	return (1);
 }
 
 int		ServerConfig::parseConfigFile()
 {
-
+/*
 	std::string		line;
 	size_t			currentLine	= 0;
 	int				currentLevel	= PROGRAM_LEVEL;
@@ -228,6 +247,7 @@ int		ServerConfig::parseConfigFile()
 	}
 	m_setDefaults(0);
 	m_setServers(m_servers);
+*/
 	return (1);
 }
 
@@ -244,12 +264,15 @@ const std::map<std::string, ServerBlock>&	ServerConfig::getServerBlocks() const
 
 const std::string		&ServerConfig::getMaxConnections() const
 {
+	/*
 	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("max_connections");
 
 	if (it != m_config.end())
 		return (*it->second.begin());
 	else
 		throw std::out_of_range("Key not found");
+	*/
+	return (*(m_config.find("max_connections")->second).begin());
 }
 
 const std::string		&ServerConfig::getMaxConcurrentCgi() const

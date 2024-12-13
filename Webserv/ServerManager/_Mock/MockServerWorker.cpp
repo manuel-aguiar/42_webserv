@@ -26,11 +26,11 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_myID				(serverID),
 	m_serverManager		(manager),
 	m_config			(m_serverManager.getConfig()),
-	m_connManager		(::atoi(m_serverManager.getConfig().getMaxConnections().c_str()), pool, globals),
+	m_connManager		(100, pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
 	m_listeners			(Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
-	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, m_serverManager.getListenerCount())),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, 10)),
 	m_isRunning			(false),
 	m_globals			(globals)
 {
@@ -46,45 +46,23 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 */
 ServerWorker::~ServerWorker()
 {
-	for (size_t i = 0; i < m_listeners.size(); ++i)
-		m_listeners[i]->~ListeningSocket();
-	m_listeners.clear();	
-	m_pendingAccept.clear();
-	m_connManager.~ConnectionManager();
-	m_memPool.destroy();
+
 }
 
 int ServerWorker::prepareLaunch()
 {
-	//setup signal handler
-	m_mySignalEvent.setFd_Data_Handler_Flags(g_SignalHandler.getPipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
-	m_eventManager.addEvent(m_mySignalEvent);
 
-	// open listening sockets and monitor them
-	for (size_t i = 0; i < m_listeners.size(); ++i)
-	{
-		if(!m_listeners[i]->open())
-			return (0);
-		m_eventManager.addEvent(m_listeners[i]->getEvent());
-	}
 	return (1);
 }
 
 int ServerWorker::run()
 {
-	// run the server
-	m_isRunning = true;
-	while (m_isRunning)
-	{
-		m_eventManager.waitEvents(-1);
-		m_eventManager.distributeEvents();
-	}
 	return (1);
 }
 
-void	ServerWorker::addPendingAccept(ListeningSocket* listener)
+void	ServerWorker::addPendingAccept(ListeningSocket& listener)
 {
-	m_pendingAccept.emplace_back(listener);
+	m_pendingAccept.emplace_back(&listener);
 }
 
 
@@ -110,7 +88,7 @@ Connection*						ServerWorker::provideConnection()
 	We do this until either the Connection isntance is reused or we come to the conclusion that there
 	is nothing pending right now.
 */
-void							ServerWorker::returnConnection(Connection* connection)
+void							ServerWorker::returnConnection(Connection& connection)
 {
 	m_connManager.returnConnection(connection);
 		
@@ -122,7 +100,7 @@ void							ServerWorker::returnConnection(Connection* connection)
 			break ;
 		}
 		m_pendingAccept.pop_front();
-	}	
+	}
 }
 
 ServerWorker::ServerWorker(const ServerWorker& copy) :

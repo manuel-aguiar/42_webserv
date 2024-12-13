@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:46:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 12:02:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_globals(globals),
 	m_threadPool(NULL)
 {
-	m_protoModules[HTTP_MODULE] = new HttpModule(*this);
-	m_initProtoConnection[HTTP_MODULE] = &HttpModule::initConnection;
-	mf_prepareWorkers();
 
-	//prepare signal handler
-	g_SignalHandler.prepare_signal(SignalHandler::signal_handler, m_config.getNumWorkers(), globals);
 }
 
 /*
@@ -37,12 +32,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 */
 ServerManager::~ServerManager()
 {
-	for (size_t i = 0; i < MODULE_COUNT; ++i)
-		delete ((unsigned char *)m_protoModules[i]);
-	for (size_t i = 0; i < m_workers.size(); ++i)
-		m_workers[i]->~ServerWorker();
-	if (m_threadPool)
-		delete (m_threadPool);
+
 }
 
 void    ServerManager::run()
@@ -61,7 +51,7 @@ void    ServerManager::run()
 */
 void    ServerManager::mf_runSingleThreaded()
 {
-	m_workers[0]->run();
+
 }
 
 /*
@@ -75,31 +65,7 @@ void    ServerManager::mf_runSingleThreaded()
 */
 void    ServerManager::mf_runMultiThreaded()
 {
-	sigset_t threadSigSet;
 
-	if (::sigemptyset(&threadSigSet) != 0)
-		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigemptyset failed");
-	if (::sigaddset(&threadSigSet, SIGINT))
-		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
-	if (::sigaddset(&threadSigSet, SIGQUIT))
-		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
-	if (::pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL))
-		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
-
-	m_threadPool = new ThreadPool(m_workers.size());
-
-	if (::pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL))
-		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
-
-	for (size_t i = 0; i < m_workers.size(); ++i)
-		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
-
-	while (!g_SignalHandler.getSignal())
-		::usleep(1000);
-
-	m_threadPool->destroy(true);
-	delete (m_threadPool);
-	m_threadPool = NULL;
 }
 
 //getters
@@ -307,7 +273,7 @@ void	ServerManager::mf_prepareWorkers()
 		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
 		{
 			newListener = (ListeningSocket*)m_workers[i]->accessMemPool().allocate(sizeof(ListeningSocket));
-			new (newListener) ListeningSocket(*m_workers[i], **iter, backlog, m_globals);
+			new (newListener) ListeningSocket(*m_workers[i], *workerMemPool, **iter, backlog, m_globals);
 
 			/*
 				Here one should check m_config to see what protocol module and connection initializer

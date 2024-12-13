@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 11:11:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 12:01:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
+
+ListeningSocket::ListeningSocket(	ServerWorker& worker, 
+									Nginx_MemoryPool& memPool, 
+									const t_addrinfo& addrInfo, 
+									const int backlog, 
+									Globals& globals) :
+	m_sockfd(-1),
 	m_backlog(backlog),
 	m_worker(worker),
 	m_globals(globals)
@@ -36,7 +42,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 	std::memcpy(&m_addrInfo, &addrInfo, sizeof(addrInfo));
 	m_addrInfo.ai_next = NULL;
 
-	m_addrInfo.ai_addr = (t_sockaddr *)m_worker.accessMemPool().allocate(m_addrInfo.ai_addrlen, true);
+	m_addrInfo.ai_addr = (t_sockaddr *)memPool.allocate(m_addrInfo.ai_addrlen, true);
 	std::memcpy(m_addrInfo.ai_addr, addrInfo.ai_addr, m_addrInfo.ai_addrlen);
 
 	// just convert the port to host byte order in place
@@ -49,7 +55,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, const t_addrinfo& addrInf
 		m_addrInfo.ai_canonname = NULL;
 	else
 	{
-		m_addrInfo.ai_canonname = (char *)m_worker.accessMemPool().allocate(canonnameLen + 1, true);
+		m_addrInfo.ai_canonname = (char *)memPool.allocate(canonnameLen + 1, true);
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
@@ -208,7 +214,7 @@ void    ListeningSocket::closeConnection(Connection& connection)
 
 void    ListeningSocket::close()
 {
-	if (::close(m_sockfd) == -1)
+	if (m_sockfd != -1 && ::close(m_sockfd) == -1)
 		m_globals.logError("close(): " + std::string(strerror(errno)));
 }
 
