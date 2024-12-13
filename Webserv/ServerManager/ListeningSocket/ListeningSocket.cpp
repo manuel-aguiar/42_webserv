@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:30:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:41:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,25 +110,7 @@ int		ListeningSocket::open()
 	return (1);
 }
 
-int		ListeningSocket::mf_bind()
-{
-	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
-	{
-		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
-		return (0);
-	}
-	return (1);
-}
 
-int		ListeningSocket::mf_listen()
-{
-	if (::listen(m_sockfd, m_backlog) == -1)
-	{
-		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
-		return (0);
-	}
-	return (1);
-}
 
 /*
 	Accepts a socket conenction on the ListeningSocket. Will be called by the EventManager
@@ -235,4 +217,25 @@ ListeningSocket::ListeningSocket() :
 			std::cout << "ListeningSocket Destructor Called" << std::endl;
 	#endif
 
+}
+
+
+int		ListeningSocket::mf_bind()
+{
+	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
+	{
+		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
+		return (0);
+	}
+	return (1);
+}
+
+int		ListeningSocket::mf_listen()
+{
+	if (::listen(m_sockfd, m_backlog) == -1)
+	{
+		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
+		return (0);
+	}
+	return (1);
 }
