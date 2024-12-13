@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:32:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:34:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,10 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool
 	// this should require some form of switch statement to detect various address types as IPV6
 	((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port = ::ntohs(((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port);
 
+    m_addrInfo.ai_canonname = NULL;
 	canonnameLen = addrInfo.ai_canonname ? std::strlen(addrInfo.ai_canonname) : 0;
-
-	if (!canonnameLen)
-		m_addrInfo.ai_canonname = NULL;
-	else
+    
+	if (canonnameLen)
 	{
 		m_addrInfo.ai_canonname = (char *)memPool.allocate(canonnameLen + 1, true);
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
