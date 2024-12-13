@@ -11,13 +11,13 @@
 /* ************************************************************************** */
 
 //Project headers
-# include "../ServerWorker.hpp"
-# include "../../ServerManager.hpp"
-# include "../../../Globals/Globals.hpp"
-# include "../../../Globals/SignalHandler/SignalHandler.hpp"
-# include "../../../ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../GenericUtils/Validation/Validation.hpp"
+# include "../ServerWorker/ServerWorker.hpp"
+# include "../ServerManager.hpp"
+# include "../../Globals/Globals.hpp"
+# include "../../Globals/SignalHandler/SignalHandler.hpp"
+# include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
 
 // C++ headers
 # include <cstdlib>
