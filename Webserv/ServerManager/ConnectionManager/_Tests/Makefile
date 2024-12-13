@@ -9,9 +9,9 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test
 
 SRCS = $(wildcard *.cpp) ../ConnectionManager.cpp \
-		../../../Globals/LogFile/LogFile.cpp \
-		../../../Globals/Globals.cpp \
-		../../../Globals/Clock/Clock.cpp \
+		../../../Globals/_Mock/MockLogFile.cpp \
+		../../../Globals/_Mock/MockGlobals.cpp \
+		../../../Globals/_Mock/MockClock.cpp \
 		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
 		../../../Connection/Connection.cpp \
 		../../../Event/Event.cpp \
@@ -29,10 +29,13 @@ $(TARGET): $(OBJS)
 
 all: $(TARGET)
 
-clean:
-	rm -rf $(OBJS) $(TARGET) debug.log error.log status.log
+run: $(TARGET)
+	valgrind --track-fds=yes ./$(TARGET)
 
-fclean:
-	rm -rf $(OBJS) $(TARGET) debug.log error.log status.log
+clean:
+	rm -rf $(OBJS) 
+
+fclean: clean
+	rm -rf $(TARGET)
 
 .PHONY: clean

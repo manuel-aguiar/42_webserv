@@ -8,11 +8,7 @@
 int main(void)
 {
 	/***************************************** */
-	Clock			clock;
-	LogFile			statusFile("status.log");
-	LogFile			errorFile("error.log");
-	LogFile			debugFile("debug.log");
-	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
+	Globals			globals(NULL, NULL, NULL, NULL);
 
 	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096, 1);
 

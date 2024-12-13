@@ -16,16 +16,12 @@ void EventHandler(Event& event)
 		buffer[readChars] = '\0';
 
 	event.setData((unsigned char *)123);	
-}
+};
 
 int main(void)
 {
 	/***************************************** */
-	Clock			clock;
-	LogFile			statusFile("status.log");
-	LogFile			errorFile("error.log");
-	LogFile			debugFile("debug.log");
-	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
+	Globals			globals(NULL, NULL, NULL, NULL);
 
 	std::cout << "Test1: ";
 	try
@@ -44,8 +40,8 @@ int main(void)
 	{
 		int pipefd[2];
 
-		EventManager manager(globals);
-		Event event;
+		EventManager	manager(globals);
+		Event			event;
 
 		pipe(pipefd);
 		dup2(pipefd[0], STDIN_FILENO);
@@ -61,7 +57,6 @@ int main(void)
 		const char* str = "	triggering event\n";
 		write(pipefd[1], str, strlen(str));
 		
-
 		manager.waitEvents(-1);
 		manager.distributeEvents();
 

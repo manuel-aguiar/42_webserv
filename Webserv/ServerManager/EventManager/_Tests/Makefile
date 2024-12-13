@@ -9,9 +9,9 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 TARGET = test.out
 
 SRCS = $(wildcard *.cpp) ../EventManager.cpp \
-		../../../Globals/LogFile/LogFile.cpp \
-		../../../Globals/Globals.cpp \
-		../../../Globals/Clock/Clock.cpp \
+		../../../Globals/_Mock/MockLogFile.cpp \
+		../../../Globals/_Mock/MockGlobals.cpp \
+		../../../Globals/_Mock/MockClock.cpp \
 		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
 		../../../Event/Event.cpp \
 		../../../Event/EventGetSetAccess.cpp \
@@ -34,6 +34,6 @@ clean:
 	rm -rf $(OBJS) 
 
 fclean: clean
-	rm -rf $(TARGET) debug.log error.log status.log
+	rm -rf $(TARGET)
 
 .PHONY: clean
