@@ -14,8 +14,7 @@ SRCS = $(wildcard *.cpp) ../EventManager.cpp \
 		../../../Globals/_Mock/MockClock.cpp \
 		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
 		../../../Event/Event.cpp \
-		../../../Event/EventGetSetAccess.cpp \
-		../../../Connection/ConnectionGetSetAccess.cpp
+		../../../Event/EventGetSetAccess.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
