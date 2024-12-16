@@ -34,15 +34,13 @@ class CgiRequestData
 		CgiRequestData(const CgiRequestData &copy);
 		CgiRequestData &operator=(const CgiRequestData &copy);
 
-		Event&			getEventHandler(t_CgiEvents eventType);
-		void			setEventHandler(t_CgiEvents eventType, const t_ptr_event_data data, const t_func_event_handler handler);
+		Event&				getEventHandler(const t_CgiEvents eventType);
+		void				setEventHandler(const t_CgiEvents eventType, const t_ptr_event_data data, const t_func_event_handler handler);
 		
 		const std::string&	getMsgBody() const;	
 		std::string&		accessMsgBody();
 		
 	private:
-		//tks copilot, wtf is this
-		Connection*		m_connection;
 		Event 			m_events[CGI_EVENT_COUNT];
 		std::string		m_msgBody;
 

@@ -49,21 +49,24 @@ void    CgiLiveRequest::reset()
 	m_curRequestData = NULL;
 	m_curEventManager = NULL;
 
+	if (m_writeEvent.getFd() != -1)
+	{
+		m_curEventManager->delEvent(m_writeEvent);
+		m_writeEvent.setFd(-1);
+	}
+	if (m_readEvent.getFd() != -1)
+	{
+		m_curEventManager->delEvent(m_readEvent);
+		m_readEvent.setFd(-1);
+	}
+
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
 }
 
-CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
-	m_curEventManager(other.m_curEventManager),
-	m_curRequestData(other.m_curRequestData),
-	m_pid(other.m_pid),
-	m_manager(other.m_manager),
-	m_globals(other.m_globals)
-{
-    *this = other;
-}
+
 
 
 void	CgiLiveRequest::writeToChild()
@@ -110,17 +113,22 @@ void	CgiLiveRequest::forcedClose()
 		m_pid = -1;
 		::waitpid(m_pid, NULL, 0);
 	}
-	if (m_writeEvent.getFd() != -1)
-	{
-		m_curEventManager->delEvent(m_writeEvent);
-		m_writeEvent.setFd(-1);
-	}
-	if (m_readEvent.getFd() != -1)
-	{
-		m_curEventManager->delEvent(m_readEvent);
-		m_readEvent.setFd(-1);
-	}
 	m_curRequestData->getEventHandler(CGI_ON_ERROR).handle();
+	reset();
+}
+
+
+
+
+
+CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
+	m_curEventManager(other.m_curEventManager),
+	m_curRequestData(other.m_curRequestData),
+	m_pid(other.m_pid),
+	m_manager(other.m_manager),
+	m_globals(other.m_globals)
+{
+    *this = other;
 }
 
 CgiLiveRequest &CgiLiveRequest::operator=(const CgiLiveRequest &other)

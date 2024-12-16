@@ -12,7 +12,7 @@
 
 #include "CgiRequestData.hpp"
 
-void	CgiRequestData::setEventHandler(t_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
+void	CgiRequestData::setEventHandler(const t_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
 {
 	m_events[event].setFd_Data_Handler_Flags(0, data, handler, 0);
 }
