@@ -6,11 +6,11 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 10:09:06 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/16 10:11:31 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/16 11:58:56 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-This is the class instance that a user of the Cgi MOdule must pass it in order to
+This is the class instance that a user of the Cgi Module must pass it in order to
 get a script executed.
 
 This instance must provide:
@@ -21,3 +21,11 @@ This instance must provide:
 
 
 This instance will then be processed and queued for execution at the CgiModule
+
+
+
+
+The RequestData must have some sort of callback to the http_connection object that
+asked for the execution.
+For instance, when the cgi request receives data it calls the http_connection to inform
+there is data to be sent to the final client.

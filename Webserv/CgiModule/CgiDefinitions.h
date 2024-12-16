@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequestUtils.cpp                            :+:      :+:    :+:   */
+/*   CgiDefinitions.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 09:34:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 14:30:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/16 14:08:57 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/16 14:09:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiLiveRequest.hpp"
-# include "../../Globals/Globals.hpp"
+#ifndef CGIDEFINITIONS_H
 
-void 	CgiLiveRequest::mf_closeFd(t_fd& fd)
+# define CGIDEFINITIONS_H
+
+typedef enum e_CgiEvents
 {
-	if (fd != -1 && ::close(fd) == -1)
-		m_globals.logError("CgiLiveRequest::closeFd(), close(): " + std::string(strerror(errno)));
-	fd = -1;
-}
+	CGI_ON_READ,
+	CGI_ON_WRITE,
+	CGI_ON_ERROR,
+	CGI_ON_CLOSE,
+	CGI_EVENT_COUNT
+} t_CgiEvents;
+
+#endif

@@ -6,13 +6,16 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:57:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:04:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project Headers
 # include "CgiLiveRequest.hpp"
+# include "../CgiRequestData/CgiRequestData.hpp"
+# include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../Globals/Globals.hpp"
 
 // C Headers
 # include <unistd.h>
@@ -20,78 +23,82 @@
 
 void   CgiLiveRequest::execute()
 {
-	assert(m_eventManager != NULL && m_pendingRequest != NULL);
+	assert(m_curEventManager != NULL && m_curRequestData != NULL);
 
     if (::pipe(m_ParentToChild) == -1)
 	{
-		//write to log
-        std::cerr << "Pipe failed: " << strerror(errno) << std::endl;
-		//closeAllPipes();
-        return;
+		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
+		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
-		//write to log
-		std::cerr << "Pipe failed: " << strerror(errno) << std::endl;
-		//closeAllPipes();
-		return;
+		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
+		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
 		!FileDescriptor::setNonBlocking(m_ChildToParent[0]) ||
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
-		//write to log, fcntl failed, not really critical
+		m_globals.logError("CgiLiveRequest::execute(), fcntl(): " + std::string(strerror(errno)));
+		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
 	}
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
-		//write to log
-        std::cerr << "Fork failed: " << strerror(errno) << std::endl;
-		//closeAllPipes();
-        return;
+		m_globals.logError("CgiLiveRequest::execute(), fork(): " + std::string(strerror(errno)));
+		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
     }
-
     if (m_pid == 0)
-	{
-
-        if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
-		{
-			//write to log
-			std::cerr << "Dup2 failed: " << strerror(errno) << std::endl;
-			//closeAllPipes();
-        	::exit(EXIT_FAILURE);
-		}
-        if (::close(m_ParentToChild[1]) == -1)
-		{
-			//write to log, non critical
-		}
-
-        //::execve(m_argv[0], m_argv, m_envp);
-
-        // write log, exec failed
-        std::cerr << "Exec failed: " << strerror(errno) << std::endl;
-        ::exit(EXIT_FAILURE);
-
-    }
+		mf_executeChild();
 	else
-	{
+		mf_executeParent();
+}
 
-        if (::close(m_ParentToChild[0]) == -1)
-		{
-			// write to log, non critical
-		}
 
-        const char* postData = "sample data for POST request";
-        ::write(m_ParentToChild[1], postData, strlen(postData));
-        ::close(m_ParentToChild[1]);
 
-		/**************************/
-		// subscribe pipe read to epoll
-		/***************************/
+void	CgiLiveRequest::mf_executeParent()
+{
+	mf_closeFd(m_ParentToChild[0]);
+	mf_closeFd(m_ChildToParent[1]);
+	
+	m_writeEvent.setFd(m_ParentToChild[1]);
+	m_readEvent.setFd(m_ChildToParent[0]);
 
-        int status;
-        ::waitpid(m_pid, &status, 0);
-    }
+	m_curEventManager->addEvent(m_writeEvent);
+	m_curEventManager->addEvent(m_readEvent);
+
+
+/*	
+	const char* postData = "sample data for POST request";
+	::write(m_ParentToChild[1], postData, strlen(postData));
+	::close(m_ParentToChild[1]);
+*/
+	/**************************/
+	// subscribe pipe read to epoll
+	/***************************/
+
+/*
+	int status;
+	::waitpid(m_pid, &status, 0);
+*/
+
+
+}
+
+void	CgiLiveRequest::mf_executeChild()
+{
+	mf_closeFd(m_ParentToChild[1]);
+	mf_closeFd(m_ChildToParent[0]);
+	
+	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
+		::exit(EXIT_FAILURE);
+
+	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
+		::exit(EXIT_FAILURE);
+
+	::close(m_ParentToChild[1]);
+	::execve(m_argv[0], m_argv, m_envp);
+	::exit(EXIT_FAILURE);
 }

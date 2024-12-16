@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequestUtils.cpp                            :+:      :+:    :+:   */
+/*   CgiLiveRequestEvents.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 09:34:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 14:30:48 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/16 14:27:08 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/16 14:44:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiLiveRequest.hpp"
-# include "../../Globals/Globals.hpp"
+#include "CgiLiveRequest.hpp"
 
-void 	CgiLiveRequest::mf_closeFd(t_fd& fd)
+void	CgiLiveRequest::mf_CgiWrite(Event& event)
 {
-	if (fd != -1 && ::close(fd) == -1)
-		m_globals.logError("CgiLiveRequest::closeFd(), close(): " + std::string(strerror(errno)));
-	fd = -1;
+	CgiLiveRequest* request;
+	
+	request = static_cast<CgiLiveRequest*>(event.getData());
+	request->writeToChild();
 }

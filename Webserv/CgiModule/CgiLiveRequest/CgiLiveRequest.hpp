@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:57:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 14:44:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,18 @@
 # define CGIREQUEST_HPP
 
 //Project Headers
+# include "../CgiDefinitions.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Event/Event.hpp"
 
 class EventManager;
 class CgiModule;
 class CgiRequestData;
+class CgiPendingRequest;
 class Globals;
 class Connection;
+
+// implement some timeout for script execution, if nothing then kill
 
 class CgiLiveRequest
 {
@@ -32,13 +36,18 @@ class CgiLiveRequest
 
 		void    execute();
 		void    reset();
-		void    prepare(EventManager& manager, const CgiRequestData& request, Connection& connection);
+		void    prepare(EventManager& manager, const CgiPendingRequest& request, Connection& connection);
+
+		void	writeToChild();
+		void	readFromChild();
 
 	private:
 		// pointers, will be reused
-		EventManager*				m_eventManager;
-		CgiRequestData*				m_pendingRequest;
-		Connection*					m_connection;
+		EventManager*				m_curEventManager;
+		CgiRequestData*				m_curRequestData;
+		
+		char**						m_argv;
+		char**						m_envp;
 		
 		Event						m_readEvent;
 		Event						m_writeEvent;
@@ -52,8 +61,13 @@ class CgiLiveRequest
 
 
 		// helpers
-		void						closeFd(t_fd& fd);
+		void						mf_closeFd(t_fd& fd);
+		void						mf_executeParent();
+		void						mf_executeChild();
 
+
+		// internal events
+		static void					mf_CgiWrite(Event& event);
 
 		CgiLiveRequest(const CgiLiveRequest &other);
 		CgiLiveRequest &operator=(const CgiLiveRequest &other);

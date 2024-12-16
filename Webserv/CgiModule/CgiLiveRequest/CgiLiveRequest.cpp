@@ -12,7 +12,9 @@
 
 // Project Headers
 #include "CgiLiveRequest.hpp"
+#include "../CgiRequestData/CgiRequestData.hpp"
 #include "../../Globals/Globals.hpp"
+#include "../../ServerManager/EventManager/EventManager.hpp"
 
 //#include "../python-cgi/pythonCgi.hpp"
 
@@ -20,9 +22,8 @@
 # include <unistd.h>
 
 CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
-	m_eventManager(NULL),
-	m_pendingRequest(NULL),
-	m_connection(NULL),
+	m_curEventManager(NULL),
+	m_curRequestData(NULL),
 	m_pid(-1),
 	m_manager(manager),
 	m_globals(globals)
@@ -31,35 +32,57 @@ CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
+	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiWrite, EPOLLIN);
 }
 
 CgiLiveRequest::~CgiLiveRequest()
 {
+
 }
 
 void    CgiLiveRequest::reset()
 {
 	m_readEvent.reset();
 	m_writeEvent.reset();
-	m_pendingRequest = NULL;
-	m_eventManager = NULL;
+	m_curRequestData = NULL;
+	m_curEventManager = NULL;
 
-	closeFd(m_ParentToChild[0]);
-	closeFd(m_ParentToChild[1]);
-	closeFd(m_ChildToParent[0]);
-	closeFd(m_ChildToParent[1]);
+	mf_closeFd(m_ParentToChild[0]);
+	mf_closeFd(m_ParentToChild[1]);
+	mf_closeFd(m_ChildToParent[0]);
+	mf_closeFd(m_ChildToParent[1]);
 }
 
 CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
-	m_eventManager(other.m_eventManager),
-	m_pendingRequest(other.m_pendingRequest),
-	m_connection(other.m_connection),
+	m_curEventManager(other.m_curEventManager),
+	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
 	m_manager(other.m_manager),
 	m_globals(other.m_globals)
 {
     *this = other;
 }
+
+
+void	CgiLiveRequest::writeToChild()
+{
+	size_t bytesWritten;
+	std::string& body = m_curRequestData->accessMsgBody();
+
+	bytesWritten = ::write(m_ParentToChild[1], body.c_str(), body.size());
+
+	if (bytesWritten != body.size())
+	{
+		if (bytesWritten > 0)
+			body.erase(0, bytesWritten);
+		return ;
+	}
+		
+	m_curEventManager->delEvent(m_writeEvent);
+	mf_closeFd(m_ParentToChild[1]);
+}
+
+
 
 CgiLiveRequest &CgiLiveRequest::operator=(const CgiLiveRequest &other)
 {
