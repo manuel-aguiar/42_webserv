@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   CgiDefaults.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:21:12 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/12 16:21:30 by codespace        ###   ########.fr       */
+/*   Updated: 2024/12/16 08:41:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CGI_DEFAULTS_H
+#ifndef CGIDEFAULTS_H
 
-# define CGI_DEFAULTS_H
+# define CGIDEFAULTS_H
 
 		typedef enum e_CgiEnv
 		{

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 14:35:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 08:33:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define SERVERWORKER_HPP
 
 // Project Headers
-# include "../CgiManager/CgiManager.hpp"
+//# include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../EventManager/EventManager.hpp"
 # include "../ConnectionManager/ConnectionManager.hpp"
@@ -61,7 +61,7 @@ class ServerWorker
 	// getters
 		int								getID()				const;
 		const ServerManager&			getServerManager()	const;
-		const CgiManager&				getCgiManager()		const;
+		//const CgiManager&				getCgiManager()		const;
 		const ConnectionManager&		getConnManager()	const;
 		const EventManager&				getEventManager()	const;
 		const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
@@ -72,7 +72,7 @@ class ServerWorker
 
 	// accessors
 		ServerManager&					accessServerManager();
-		CgiManager&						accessCgiManager();
+		//CgiManager&						accessCgiManager();
 		ConnectionManager&				accessConnManager();
 		EventManager&					accessEventManager();
 

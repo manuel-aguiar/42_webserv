@@ -1,12 +1,23 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    _CgiManager.docs                                   :+:      :+:    :+:    #
+#    _CgiModule.docs                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/11/22 10:54:42 by manuel           ###   ########.fr        #
+#    Updated: 2024/12/16 08:39:55 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+Request for CGI,
+	prepare environment variables
+	get an available slot
+		if not, put in queue
+	set in and out pipes, place them in the eventmanager, fork
+	ready to write, write message body into pipe
+	ready to read, read message body
+	received end of file, waitpid, mark slot as available
+
+	wait for Connection write event (to client)
+		write to Client.
