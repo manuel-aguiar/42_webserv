@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 16:50:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:00:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int                EventManager::addEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getFlags();
+	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
@@ -68,7 +68,7 @@ int                EventManager::modEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getFlags();
+	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
@@ -114,19 +114,10 @@ void    EventManager::distributeEvents()
 
 	for (int i = 0; i < m_waitCount; i++)
 	{
-		event = (Event*)m_events[i].data.ptr;
-
-		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
-		{
-			event->handle();
-		}
-
-		if (m_events[i].events & EPOLLHUP || m_events[i].events & EPOLLERR || m_events[i].events & EPOLLRDHUP)
-		{
-
-		}
+		event = static_cast<Event*>(m_events[i].data.ptr);
+		event->setTriggeredFlags(m_events[i].events);
+		event->handle();
 	}
-	
 }
 
 

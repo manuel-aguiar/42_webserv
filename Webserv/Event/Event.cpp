@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:19:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:59:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 # include <cstddef>
 
 Event::Event() :
-	m_fd		(-1),
-	m_data		(NULL),
-	m_handler	(NULL),
-	m_flags		(0)
+	m_fd				(-1),
+	m_data				(NULL),
+	m_handler			(NULL),
+	m_monitoredFlags	(0),
+	m_triggeredFlags	(0)
 {}
 
 Event::~Event() {}
@@ -36,7 +37,8 @@ void	Event::reset()
 	this->m_fd = -1;
 	this->m_data = NULL;
 	this->m_handler = NULL;
-	this->m_flags = 0;
+	this->m_monitoredFlags = 0;
+	this->m_triggeredFlags = 0;
 }
 
 //private

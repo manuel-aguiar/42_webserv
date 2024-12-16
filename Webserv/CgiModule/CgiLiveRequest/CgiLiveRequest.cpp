@@ -33,6 +33,7 @@ CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
 	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiWrite, EPOLLIN);
+	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiRead, EPOLLOUT);
 }
 
 CgiLiveRequest::~CgiLiveRequest()

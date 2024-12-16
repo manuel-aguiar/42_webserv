@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 14:44:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:52:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class CgiLiveRequest
 		CgiModule&					m_manager;
 		Globals&					m_globals;
 
+		char						m_readBuf[1024];
 
 		// helpers
 		void						mf_closeFd(t_fd& fd);
@@ -68,6 +69,9 @@ class CgiLiveRequest
 
 		// internal events
 		static void					mf_CgiWrite(Event& event);
+		static void					mf_CgiRead(Event& event);
+
+
 
 		CgiLiveRequest(const CgiLiveRequest &other);
 		CgiLiveRequest &operator=(const CgiLiveRequest &other);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 14:38:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:59:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,14 @@ t_func_event_handler	Event::getHandler() const
 	return (m_handler);
 }
 
-int							Event::getFlags() const
+int							Event::getMonitoredFlags() const
 {
-	return (m_flags);
+	return (m_monitoredFlags);
+}
+
+int							Event::getTriggeredFlags() const
+{
+	return (m_monitoredFlags);
 }
 
 // setters
@@ -51,9 +56,14 @@ void	Event::setHandler(const t_func_event_handler handler)
 	m_handler = handler;
 }
 
-void	Event::setFlags(int flags)
+void	Event::setMonitorFlags(int flags)
 {
-	m_flags = flags;
+	m_monitoredFlags = flags;
+}
+
+void	Event::setTriggeredFlags(int flags)
+{
+	m_triggeredFlags = flags;
 }
 
 void	Event::setFd_Data_Handler_Flags(const t_fd fd, const t_ptr_event_data data, const t_func_event_handler function, int flags)
@@ -61,7 +71,7 @@ void	Event::setFd_Data_Handler_Flags(const t_fd fd, const t_ptr_event_data data,
 	m_fd = fd;
 	m_data = data;
 	m_handler = function;
-	m_flags = flags;
+	m_monitoredFlags = flags;
 }
 
 // accessors

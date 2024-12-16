@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:44:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:59:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int                EventManager::addEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getFlags();
+	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
@@ -68,7 +68,7 @@ int                EventManager::modEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getFlags();
+	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
