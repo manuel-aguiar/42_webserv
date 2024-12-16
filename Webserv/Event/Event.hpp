@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 10:46:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 09:16:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Event
 
 		//methods
 		void						handle();
+		void						reset();
 
 		//getters
 		t_fd						getFd()			const;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:31:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 08:56:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@
 # include "../../../Utils/FileDescriptor/FileDescriptor.hpp"
 
 
-class PythonCgi;
-
-class CgiManager;
+class CgiModule;
 
 class CgiLiveRequest
 {
