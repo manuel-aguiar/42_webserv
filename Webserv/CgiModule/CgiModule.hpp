@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:25:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 10:07:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@
 //Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
 
+// C++ headers
+# include <map>
+
 class CgiLiveRequest;
-class CgiPendingRequest;
+class CgiRequestData;
 class Globals;
 
 class CgiModule
@@ -29,14 +32,23 @@ class CgiModule
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &copy);
 
+		// methods
+		void		addInterpreter(const std::string& extension, const std::string& path);
+		void		addRequestData(const CgiRequestData& request);
+
 	private:
 		size_t																		m_maxConnections;
 		DynArray<CgiLiveRequest>													m_liveRequests;
-		List<CgiPendingRequest, MemoryPool_Dealloc<CgiPendingRequest, 4096> >		m_pendingRequests;
-		List<CgiLiveRequest*, MPool_FixedElem<Connection*> >						m_spareLiveRequests;
 
+		// no memory pool for now
+		List<CgiRequestData*>														m_pendingRequests;
+		List<CgiLiveRequest*>														m_spareLiveRequests;
 
-		Globals&																		m_globals;
+		typedef std::string															t_extension;
+		typedef std::string															t_path;
+		std::map<t_extension, t_path>												m_scriptInterpreters;		
+
+		Globals&																	m_globals;
 
 };
 

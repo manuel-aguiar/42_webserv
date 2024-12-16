@@ -22,6 +22,7 @@
 CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_eventManager(NULL),
 	m_pendingRequest(NULL),
+	m_connection(NULL),
 	m_pid(-1),
 	m_manager(manager),
 	m_globals(globals)
@@ -52,6 +53,7 @@ void    CgiLiveRequest::reset()
 CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
 	m_eventManager(other.m_eventManager),
 	m_pendingRequest(other.m_pendingRequest),
+	m_connection(other.m_connection),
 	m_pid(other.m_pid),
 	m_manager(other.m_manager),
 	m_globals(other.m_globals)

@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiPendingRequest.hpp                              :+:      :+:    :+:   */
+/*   CgiRequestData.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:01:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:04:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 09:52:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CGIPENDINGREQUEST_HPP
+#ifndef CGIREQUESTDATA_HPP
 
-# define CGIPENDINGREQUEST_HPP
+# define CGIREQUESTDATA_HPP
 
-class CgiPendingRequest
+# include <string>
+
+class CgiRequestData
 {
 	public:
-		CgiPendingRequest();
-		~CgiPendingRequest();
-		CgiPendingRequest(const CgiPendingRequest &copy);
-		CgiPendingRequest &operator=(const CgiPendingRequest &copy);
+		CgiRequestData();
+		~CgiRequestData();
+		CgiRequestData(const CgiRequestData &copy);
+		CgiRequestData &operator=(const CgiRequestData &copy);
 	
 	private:
 		//tks copilot, wtf is this

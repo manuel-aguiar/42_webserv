@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 09:35:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 09:57:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@
 
 class EventManager;
 class CgiModule;
-class CgiPendingRequest;
+class CgiRequestData;
 class Globals;
+class Connection;
 
 class CgiLiveRequest
 {
@@ -31,12 +32,13 @@ class CgiLiveRequest
 
 		void    execute();
 		void    reset();
-		void    prepare(EventManager& manager, const CgiPendingRequest& request);
+		void    prepare(EventManager& manager, const CgiRequestData& request, Connection& connection);
 
 	private:
 		// pointers, will be reused
 		EventManager*				m_eventManager;
-		CgiPendingRequest*			m_pendingRequest;
+		CgiRequestData*				m_pendingRequest;
+		Connection*					m_connection;
 		
 		Event						m_readEvent;
 		Event						m_writeEvent;
