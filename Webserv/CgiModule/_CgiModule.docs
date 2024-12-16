@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/12/16 11:54:52 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/16 16:26:48 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,8 +32,11 @@ with all the data required to perform the CgiTask.
 
 The caller will have to call CgiModule::addRequestData(const CgiRequestData& data);
 
-Internally, the CgiModule will turn it into a pending request by parsing its content:
-	- arguments
-	- environment variables
 
 Then it will try to execute it and, if there are no CgiLiveRequest slots to handle, it will be stored
+
+
+
+Again the design has the objective of maintaining flexibility. The CgiModule knows nothing about http
+in reality, it could be used by any protocol as long as they provide valid event handler, and a valid
+event manager.

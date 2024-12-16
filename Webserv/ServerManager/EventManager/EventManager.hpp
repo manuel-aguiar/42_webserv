@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:16:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:31:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,12 @@ class EventManager
 		~EventManager();
 
 		//methods
+		int							retrieveEvents(int timeOut);
+
 		int							addEvent(const Event& event);
 		int							modEvent(const Event& event);
 		int							delEvent(const Event& event);
 		
-		int							waitEvents(int timeOut);
-		void						distributeEvents();
-		const t_epoll_event&		retrieveEvent(int index);
-
 		//getters
 		t_fd						getEpollFd() const;
 		int						  	getWaitCount() const;

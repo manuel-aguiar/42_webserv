@@ -56,7 +56,7 @@ int main(void)
 		const char* str = "	triggering event\n";
 		write(pipefd[1], str, strlen(str));
 		
-		manager.waitEvents(-1);
+		manager.retrieveEvents(-1);
 		manager.distributeEvents();
 
 		close(pipefd[1]);

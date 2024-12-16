@@ -76,8 +76,8 @@ int ServerWorker::run()
 	m_isRunning = true;
 	while (m_isRunning)
 	{
-		m_eventManager.waitEvents(-1);
-		m_eventManager.distributeEvents();
+		// add a mechanism for figuring the right timeout to call
+		m_eventManager.retrieveEvents(-1);
 	}
 	return (1);
 }
