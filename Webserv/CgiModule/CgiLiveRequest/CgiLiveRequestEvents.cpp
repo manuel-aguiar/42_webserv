@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 14:27:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 15:50:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:18:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	CgiLiveRequest::mf_CgiWrite(Event& event)
 
 void	CgiLiveRequest::mf_CgiRead(Event& event)
 {
-	CgiLiveRequest* request;
+	CgiLiveRequest*	request;
 	
 	request = static_cast<CgiLiveRequest*>(event.getData());
 	request->readFromChild();

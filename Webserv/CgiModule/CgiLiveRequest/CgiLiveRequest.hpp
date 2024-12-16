@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 15:52:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:18:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,15 @@ class CgiLiveRequest
 		void    execute();
 		void    reset();
 		void    prepare(EventManager& manager, const CgiPendingRequest& request, Connection& connection);
+		
+		void	forcedClose();
 
 		void	writeToChild();
 		void	readFromChild();
+
+
+
+		EventManager*				accessCurEventManager() const;	
 
 	private:
 		// pointers, will be reused

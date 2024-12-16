@@ -20,6 +20,7 @@
 
 // C Headers
 # include <unistd.h>
+# include <sys/wait.h>
 
 CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_curEventManager(NULL),
@@ -80,10 +81,47 @@ void	CgiLiveRequest::writeToChild()
 	}
 		
 	m_curEventManager->delEvent(m_writeEvent);
+	m_writeEvent.setFd(-1);
 	mf_closeFd(m_ParentToChild[1]);
 }
 
+void	CgiLiveRequest::readFromChild()
+{
+	size_t	bytesRead;
+	int		triggeredFlags;
+	
+	triggeredFlags = m_readEvent.getTriggeredFlags();
+	bytesRead = ::read(m_ChildToParent[0], m_readBuf, sizeof(m_readBuf));
 
+	if (bytesRead == 0 || (triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	{
+		m_curEventManager->delEvent(m_readEvent);
+		mf_closeFd(m_ChildToParent[0]);
+	}
+
+	m_curRequestData->getEventHandler(CGI_ON_READ).handle();
+}
+
+void	CgiLiveRequest::forcedClose()
+{
+	if (m_pid != -1)
+	{
+		::kill(m_pid, SIGKILL);
+		m_pid = -1;
+		::waitpid(m_pid, NULL, 0);
+	}
+	if (m_writeEvent.getFd() != -1)
+	{
+		m_curEventManager->delEvent(m_writeEvent);
+		m_writeEvent.setFd(-1);
+	}
+	if (m_readEvent.getFd() != -1)
+	{
+		m_curEventManager->delEvent(m_readEvent);
+		m_readEvent.setFd(-1);
+	}
+	m_curRequestData->getEventHandler(CGI_ON_ERROR).handle();
+}
 
 CgiLiveRequest &CgiLiveRequest::operator=(const CgiLiveRequest &other)
 {
