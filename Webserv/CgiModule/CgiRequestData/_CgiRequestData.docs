@@ -1,0 +1,23 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _CgiRequestData.docs                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/12/16 10:09:06 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/16 10:11:31 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+This is the class instance that a user of the Cgi MOdule must pass it in order to
+get a script executed.
+
+This instance must provide:
+	all the required environment variables, 
+	message body,
+	the base Connection object to which the request is connected,
+	an eventmanager (that of the serverWorker) to monitor traffic
+
+
+This instance will then be processed and queued for execution at the CgiModule
