@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:03:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:48:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 //Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "Cgi_Definitions.h"
+
+# include "CgiLiveRequest/CgiLiveRequest.hpp"
+# include "CgiRequestData/CgiRequestData.hpp"
 
 // C++ headers
 # include <map>

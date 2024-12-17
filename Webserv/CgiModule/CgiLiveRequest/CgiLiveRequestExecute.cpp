@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:33:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:40:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,20 +61,24 @@ void   CgiLiveRequest::execute()
 
 void	CgiLiveRequest::mf_prepareExecve()
 {
-	size_t					entries;
+	typedef std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator		t_EnvBaseIter;
+	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
+
+	const std::map<e_CgiEnv, t_CgiEnvValue>& 		EnvBase = m_curRequestData->getEnvBase();
+	const std::map<t_CgiEnvKey, t_CgiEnvValue>& 	EnvExtra = m_curRequestData->getEnvExtra();
+	size_t											entryCount = EnvBase.size() + EnvExtra.size();
 	
-	entries = m_curRequestData->getEnvBase().size() + m_curRequestData->getEnvExtra().size();
-	m_envStr.reserve(entries);
-	m_envPtr.reserve(entries + 1);
+	m_envStr.reserve(entryCount);
+	m_envPtr.reserve(entryCount + 1);
 	m_argPtr.reserve(3);
 
-	for (std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvBase().begin(); it != m_curRequestData->getEnvBase().end(); it++)
+	for (t_EnvBaseIter it = EnvBase.begin(); it != EnvBase.end(); it++)
 		m_envStr.push_back(m_CgiModule.getBaseEnvKeys().find(it->first)->second + "=" + it->second);
 
-	for (std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvExtra().begin(); it != m_curRequestData->getEnvExtra().end(); it++)
+	for (t_EnvExtraIter it = EnvExtra.begin(); it != EnvExtra.end(); it++)
 		m_envStr.push_back(it->first + "=" + it->second);
 
-	for (size_t i = 0; i < entries; i++)
+	for (size_t i = 0; i < entryCount; i++)
 		m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
 	m_envPtr.push_back(NULL);
 

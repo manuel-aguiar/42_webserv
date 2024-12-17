@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 08:41:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 09:06:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:41:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,25 +55,30 @@ void HttpCgiGateway::onTimeout(Event& event)
 
 void HttpCgiGateway::CgiOnRead(HttpRequest& request)
 {
+	(void)request;
 	/** received info on CgiRequestData buffer, pass to client */
 }
 
 void HttpCgiGateway::CgiOnWrite(HttpRequest& request)
 {
+	(void)request;
 	/* probably nothing to do */
 }
 
 void HttpCgiGateway::CgiOnError(HttpRequest& request)
 {
+	(void)request;
 	/* send internal server error to client */
 }
 
 void HttpCgiGateway::CgiOnClose(HttpRequest& request)
 {
+	(void)request;
 	/* all good, probably nothing to do*/
 }
 
 void HttpCgiGateway::CgiOnTimeout(HttpRequest& request)
 {
+	(void)request;
 	/* send internal server error to client, either script is too long or some other bottleneck */
 }

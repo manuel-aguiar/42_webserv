@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/13 09:57:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:52:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,16 +199,16 @@ class List
 			mf_deallocate(node);
 			--m_size;
 		}
-
+		
 		void 	emplace_back()
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode();
-			mf_insertAfter(node);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 
-		template <typename Arg1 >
+		template <typename Arg1>
 		void	emplace_back(Arg1& arg1)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);

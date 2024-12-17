@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:03:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:52:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@ CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 {
 	m_liveRequests.reserve(maxConnections);
 	for (size_t i = 0; i < maxConnections; i++)
-		m_spareLiveRequests.emplace_back(*this);
+	{
+		m_liveRequests.emplace_back(*this, globals);
+		m_spareLiveRequests.emplace_back(&m_liveRequests[i]);
+	}
+		
 	
 	m_baseEnvLeftEqual[E_CGI_AUTH_TYPE] = STR_CGI_AUTH_TYPE;
 	m_baseEnvLeftEqual[E_CGI_CONTENT_LENGTH] = STR_CGI_CONTENT_LENGTH;
@@ -49,6 +53,6 @@ void	CgiModule::addInterpreter(const std::string& extension, const std::string& 
 
 CgiRequestData&	CgiModule::acquireRequestData()
 {
-	m_pendingRequests.emplace_back();
+	m_pendingRequests.emplace_back();		//absolutely horrible
 	return (m_pendingRequests.back());
 }
