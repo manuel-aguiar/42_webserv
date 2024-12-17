@@ -12,27 +12,29 @@
 
 #include "CgiRequestData.hpp"
 
-void	CgiRequestData::setEventHandler(const e_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
+CgiRequestData::CgiRequestData()
 {
-	m_events[event].setFd_Data_Handler_Flags(0, data, handler, 0);
 }
 
-const std::map<e_CgiEnv, t_CgiEnvValue>& 		CgiRequestData::getEnvBase() const
+CgiRequestData::~CgiRequestData()
 {
-	return (m_envBase);
 }
 
-const std::map<t_CgiEnvKey, t_CgiEnvValue>&		CgiRequestData::getEnvExtra() const
+CgiRequestData::CgiRequestData(const CgiRequestData &copy)
 {
-	return (m_envExtra);
+	*this = copy;
 }
 
-const std::string&								CgiRequestData::getExtension() const
+CgiRequestData &CgiRequestData::operator=(const CgiRequestData &copy)
 {
-	return (m_extension);
+	if (this == &copy)
+		return (*this);
+	m_msgBody = copy.m_msgBody;
+	m_envBase = copy.m_envBase;
+	m_envExtra = copy.m_envExtra;
+	m_extension = copy.m_extension;
+	m_scriptPath = copy.m_scriptPath;
+	return (*this);
 }
 
-const std::string&								CgiRequestData::getScriptPath() const
-{
-	return (m_scriptPath);
-}
+

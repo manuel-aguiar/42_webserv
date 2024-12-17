@@ -32,7 +32,7 @@ class CgiRequestData
 		CgiRequestData();
 		~CgiRequestData();
 		CgiRequestData(const CgiRequestData &copy);
-		CgiRequestData &operator=(const CgiRequestData &copy);
+		CgiRequestData &operator=(const CgiRequestData &assign);
 
 		
 		
@@ -52,7 +52,7 @@ class CgiRequestData
 		void											setEventHandler(const e_CgiEvents eventType, 
 																		const t_ptr_event_data data, 
 																		const t_func_event_handler handler);
-																		
+
 		void											setMsgBody(const std::string& body);
 		void											setEnvBase(const e_CgiEnv env, const std::string& value);
 		void											setEnvExtra(const std::string& key, const std::string& value);

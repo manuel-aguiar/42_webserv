@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:35:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 13:03:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,3 +69,17 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 {
 	m_scriptPath = path;
 }
+
+
+//accessors
+
+Event&				CgiRequestData::accessEventHandler(const e_CgiEvents eventType)
+{
+	return (m_events[eventType]);
+}
+
+std::string&		CgiRequestData::accessMsgBody()
+{
+	return (m_msgBody);
+}
+

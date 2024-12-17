@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:55:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 13:01:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,14 @@ CgiRequestData&	CgiModule::acquireRequestData()
 {
 	m_pendingRequests.emplace_back();
 	return (m_pendingRequests.back());
+}
+
+const std::map<e_CgiEnv, t_CgiEnvKey>&	CgiModule::getBaseEnvKeys() const
+{
+	return (m_baseEnvLeftEqual);
+}
+
+const std::map<t_extension, t_path>&	CgiModule::getInterpreters() const
+{
+	return (m_Interpreters);
 }
