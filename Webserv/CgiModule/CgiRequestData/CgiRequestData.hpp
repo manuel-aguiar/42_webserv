@@ -15,7 +15,7 @@
 # define CGIREQUESTDATA_HPP
 
 //Project Headers
-# include "../CgiDefinitions.h"
+# include "../Cgi_Definitions.h"
 # include "../../Event/Event.hpp"
 
 // C++ headers

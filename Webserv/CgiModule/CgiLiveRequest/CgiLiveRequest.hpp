@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 16:41:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 08:46:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define CGIREQUEST_HPP
 
 //Project Headers
-# include "../CgiDefinitions.h"
+# include "../Cgi_Definitions.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Event/Event.hpp"
 

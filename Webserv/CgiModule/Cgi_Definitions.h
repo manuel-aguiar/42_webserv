@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiDefinitions.h                                   :+:      :+:    :+:   */
+/*   Cgi_Definitions.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -20,6 +20,7 @@ typedef enum e_CgiEvents
 	CGI_ON_WRITE,
 	CGI_ON_ERROR,
 	CGI_ON_CLOSE,
+	CGI_ON_TIMEOUT,
 	CGI_EVENT_COUNT
 } t_CgiEvents;
 
