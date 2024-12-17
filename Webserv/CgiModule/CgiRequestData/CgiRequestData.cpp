@@ -22,11 +22,12 @@ CgiRequestData::~CgiRequestData()
 
 CgiRequestData::CgiRequestData(const CgiRequestData &copy) :
 	m_msgBody(copy.m_msgBody),
-	m_envBase(copy.m_envBase),
-	m_envExtra(copy.m_envExtra),
 	m_extension(copy.m_extension),
-	m_scriptPath(copy.m_scriptPath)
+	m_scriptPath(copy.m_scriptPath),
+	m_envBase(copy.m_envBase),
+	m_envExtra(copy.m_envExtra)
 {
+	
 }
 
 CgiRequestData &CgiRequestData::operator=(const CgiRequestData &assign)
@@ -34,10 +35,10 @@ CgiRequestData &CgiRequestData::operator=(const CgiRequestData &assign)
 	if (this == &assign)
 		return (*this);
 	m_msgBody = assign.m_msgBody;
-	m_envBase = assign.m_envBase;
-	m_envExtra = assign.m_envExtra;
 	m_extension = assign.m_extension;
 	m_scriptPath = assign.m_scriptPath;
+	m_envBase = assign.m_envBase;
+	m_envExtra = assign.m_envExtra;
 	return (*this);
 }
 

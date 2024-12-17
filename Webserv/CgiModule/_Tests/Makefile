@@ -8,7 +8,35 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test.out
 
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) \
+											\
+		../CgiModule.cpp \
+		../CgiModuleExecute.cpp \
+		../CgiModuleGetSetAccess.cpp \
+		../CgiLiveRequest/CgiLiveRequest.cpp \
+		../CgiLiveRequest/CgiLiveRequestEvents.cpp \
+		../CgiLiveRequest/CgiLiveRequestExecute.cpp \
+		../CgiLiveRequest/CgiLiveRequestUtils.cpp \
+											\
+		../CgiRequestData/CgiRequestData.cpp \
+		../CgiRequestData/CgiRequestDataGetSetAccess.cpp	\
+		\
+		../../ServerManager/EventManager/EventManager.cpp \
+											\
+		../../Globals/_Mock/MockLogFile.cpp \
+		../../Globals/_Mock/MockGlobals.cpp \
+		../../Globals/_Mock/MockClock.cpp \
+		../../Globals/SignalHandler/SignalHandler.cpp \
+											\
+		../../HttpModule/_Mock/MockHttpModule.cpp \
+		../../HttpModule/_Mock/MockHttpManager.cpp \
+											\
+		../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
+		../../GenericUtils/StringUtils/StringUtils.cpp \
+		../../GenericUtils/Validation/Validation.cpp \
+		../../Event/Event.cpp \
+		../../Event/EventGetSetAccess.cpp
+
 OBJS = $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)

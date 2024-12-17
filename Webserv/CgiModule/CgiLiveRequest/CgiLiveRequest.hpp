@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:15:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:58:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,8 @@ class CgiLiveRequest
 		CgiLiveRequest(CgiModule& manager, Globals& globals);
 		~CgiLiveRequest();
 
-		void    execute();
+		void    execute(CgiRequestData& request);
 		void    reset();
-		void    prepare(EventManager& manager, const CgiRequestData& request);
 		
 		void	forcedClose();
 

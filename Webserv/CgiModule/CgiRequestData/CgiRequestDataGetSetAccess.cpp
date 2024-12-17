@@ -6,11 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 13:03:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:10:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiRequestData.hpp"
+
+
 
 //getters
 const std::string&								CgiRequestData::getMsgBody() const
@@ -70,6 +72,10 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 	m_scriptPath = path;
 }
 
+void		CgiRequestData::setEventManager(EventManager& eventManager)
+{
+	m_eventManager = &eventManager;
+}
 
 //accessors
 

@@ -23,8 +23,7 @@
 # include <map>
 
 // forward declarations
-class Connection;
-
+class EventManager;
 
 class CgiRequestData
 {
@@ -44,7 +43,8 @@ class CgiRequestData
 		// accessors
 		Event&											accessEventHandler(const e_CgiEvents eventType);
 		std::string&									accessMsgBody();
-
+		EventManager&									accessEventManager();
+		
 		// setters
 		void											setEventHandler(const e_CgiEvents eventType, 
 																		const t_ptr_event_data data, 
@@ -55,10 +55,12 @@ class CgiRequestData
 		void											setEnvExtra(const std::string& key, const std::string& value);
 		void											setExtension(const std::string& extension);
 		void											setScriptPath(const std::string& path);
-		
+		void											setEventManager(EventManager& eventManager);
+
+
 	private:
-	
-		Event 											m_events[CGI_EVENT_COUNT];
+		Event 											m_events[E_CGI_EVENT_COUNT];
+		EventManager*									m_eventManager;
 		std::string										m_msgBody;
 		std::string										m_extension;
 		std::string										m_scriptPath;

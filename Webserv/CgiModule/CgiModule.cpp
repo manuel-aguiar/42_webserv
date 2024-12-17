@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 13:01:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:19:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 	m_maxConnections(maxConnections),
 	m_liveRequests(),
+	m_allRequestData(),
 	m_pendingRequests(),
 	m_spareLiveRequests(),
 	m_globals(globals)
@@ -46,23 +47,13 @@ CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 	m_baseEnvLeftEqual[E_CGI_SERVER_SOFTWARE] = STR_CGI_SERVER_SOFTWARE;
 }
 
-void	CgiModule::addInterpreter(const std::string& extension, const std::string& path)
+CgiModule::~CgiModule()
 {
-	m_Interpreters[extension] = path;
+
 }
 
 CgiRequestData&	CgiModule::acquireRequestData()
 {
-	m_pendingRequests.emplace_back();
-	return (m_pendingRequests.back());
-}
-
-const std::map<e_CgiEnv, t_CgiEnvKey>&	CgiModule::getBaseEnvKeys() const
-{
-	return (m_baseEnvLeftEqual);
-}
-
-const std::map<t_extension, t_path>&	CgiModule::getInterpreters() const
-{
-	return (m_Interpreters);
+	m_allRequestData.emplace_back();
+	return (m_allRequestData.back());
 }

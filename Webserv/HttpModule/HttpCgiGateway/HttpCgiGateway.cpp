@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 08:41:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:41:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:45:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "../HttpRequest/HttpRequest.hpp"
 #include "../../Event/Event.hpp"
 
-void (*HttpCgiGateway::eventHandlers[CGI_EVENT_COUNT])(Event& event) = {
+void (*HttpCgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
 	HttpCgiGateway::onRead,
 	HttpCgiGateway::onWrite,
 	HttpCgiGateway::onError,

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:40:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:58:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,21 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-void   CgiLiveRequest::execute()
+void   CgiLiveRequest::execute(CgiRequestData& request)
 {
+	m_curEventManager = &request.accessEventManager();
+	m_curRequestData = &request;
 	assert(m_curEventManager != NULL && m_curRequestData != NULL);
 
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -42,7 +44,7 @@ void   CgiLiveRequest::execute()
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("CgiLiveRequest::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
 	}
 
 	mf_prepareExecve();
@@ -51,7 +53,7 @@ void   CgiLiveRequest::execute()
     if (m_pid == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
     }
     if (m_pid == 0)
 		mf_executeChild();
