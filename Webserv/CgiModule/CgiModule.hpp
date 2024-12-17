@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 08:33:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 09:11:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class CgiModule
 		void				addInterpreter(const std::string& extension, const std::string& path);
 		void				addRequestData(const CgiRequestData& request);
 
-		CgiRequestData&		requireRequestData();
+		CgiRequestData&		acquireRequestData();
 
 
 	private:

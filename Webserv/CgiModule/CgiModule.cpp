@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 17:00:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 09:11:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,8 @@ void	CgiModule::addInterpreter(const std::string& extension, const std::string& 
 	m_scriptInterpreters[extension] = path;
 }
 
-CgiRequestData&	CgiModule::requireRequestData()
+CgiRequestData&	CgiModule::acquireRequestData()
 {
-	CgiRequestData*	requestData;
-
 	m_pendingRequests.emplace_back();
-	
-	return *requestData;
+	return (m_pendingRequests.back());
 }
