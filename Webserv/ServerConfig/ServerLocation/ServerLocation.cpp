@@ -36,30 +36,6 @@ ServerLocation::ServerLocation()
 	m_validMethods.insert("delete");
 }
 
-ServerLocation::ServerLocation(ServerBlock& server)//: m_block(server)
-{
-	(void)server;
-	m_keys["path"]		= &ServerLocation::setPath;
-	m_keys["root"]		= &ServerLocation::setRoot;
-	m_keys["type"]		= &ServerLocation::setType;
-	m_keys["autoIndex"]	= &ServerLocation::setAutoindex;
-	m_keys["methods"]	= &ServerLocation::addMethod;
-
-	m_config["path"];
-	m_config["root"];
-	m_config["type"];
-	m_config["autoIndex"];
-	m_config["methods"];
-
-	m_validTypes.insert("regular"); 
-	m_validTypes.insert("redirection");
-	m_validTypes.insert("cgi");
-
-	m_validMethods.insert("get");
-	m_validMethods.insert("post");
-	m_validMethods.insert("delete");
-}
-
 ServerLocation::~ServerLocation()
 {
 	// Nothing to do here
@@ -69,14 +45,13 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 {
 	if (this != &other)
 	{
-		m_type = other.m_type;
 		m_keys = other.m_keys;
 		m_config = other.m_config;
 	}
 	return (*this);
 }
 
-ServerLocation::ServerLocation(const ServerLocation &other): m_block(other.m_block)
+ServerLocation::ServerLocation(const ServerLocation &other)
 {
 	*this = other;
 }

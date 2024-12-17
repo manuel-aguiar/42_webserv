@@ -39,18 +39,14 @@ class ServerLocation
 			E_LOCATION_REDIRECTION,
 			E_LOCATION_CGI
 		}	t_locationType;
-
-		// ServerLocation(ServerBlock& block, t_locationType type);    //non-const, very likely location will have to update the block...?
-		
+	
 		ServerLocation();
-		ServerLocation(ServerBlock& server);
 		~ServerLocation();
 		ServerLocation &operator=(const ServerLocation &other);
 		ServerLocation(const ServerLocation &other);
 
 		// Getters & Setters
 		const ServerBlock&				getServerBlock() const;
-		t_locationType					getLocationType() const;
 		const std::string&				getPath() const;
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;
@@ -76,8 +72,7 @@ class ServerLocation
 		std::map<std::string, std::set<std::string> > 	m_config;
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-		ServerBlock*					m_block; // this would be a reference if used
-		t_locationType					m_type;
+		// ServerBlock&					m_block;
 		std::set<std::string> 			m_validTypes;
 		std::set<std::string>			m_validMethods;
 
