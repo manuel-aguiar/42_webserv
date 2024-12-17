@@ -42,7 +42,7 @@ class CgiRequestData
 		const std::map<t_CgiEnvKey, t_CgiEnvValue>&		getEnvExtra() const;
 
 		const std::string&								getExtension() const;
-
+		const std::string&								getScriptPath() const;	
 
 		std::string&		accessMsgBody();
 
@@ -54,6 +54,7 @@ class CgiRequestData
 		std::string		m_msgBody;
 
 		std::string		m_extension;
+		std::string		m_scriptPath;
 
 
 		std::map<e_CgiEnv, t_CgiEnvValue>			m_envBase;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:05:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:15:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ class CgiLiveRequest
 		void						mf_closeFd(t_fd& fd);
 		void						mf_executeParent();
 		void						mf_executeChild();
+		void						mf_prepareExecve();
 
 
 		// internal events

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:08:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:17:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void   CgiLiveRequest::execute()
 		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
 	}
 
+	mf_prepareExecve();
 
     m_pid = ::fork();
     if (m_pid == -1)
@@ -58,6 +59,29 @@ void   CgiLiveRequest::execute()
 		mf_executeParent();
 }
 
+void	CgiLiveRequest::mf_prepareExecve()
+{
+	size_t					entries;
+	
+	entries = m_curRequestData->getEnvBase().size() + m_curRequestData->getEnvExtra().size();
+	m_envStr.reserve(entries);
+	m_envPtr.reserve(entries + 1);
+	m_argPtr.reserve(3);
+
+	for (std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvBase().begin(); it != m_curRequestData->getEnvBase().end(); it++)
+		m_envStr.push_back(m_CgiModule.getBaseEnvKeys().find(it->first)->second + "=" + it->second);
+
+	for (std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvExtra().begin(); it != m_curRequestData->getEnvExtra().end(); it++)
+		m_envStr.push_back(it->first + "=" + it->second);
+
+	for (size_t i = 0; i < entries; i++)
+		m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
+	m_envPtr.push_back(NULL);
+
+	m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
+	m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
+	m_argPtr.push_back(NULL);
+}
 
 
 void	CgiLiveRequest::mf_executeParent()
@@ -91,7 +115,7 @@ void	CgiLiveRequest::mf_executeParent()
 
 void	CgiLiveRequest::mf_executeChild()
 {
-	size_t					entries;
+
 
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
@@ -103,27 +127,6 @@ void	CgiLiveRequest::mf_executeChild()
 		::exit(EXIT_FAILURE);
 	::close(m_ParentToChild[1]);
 
-	entries = m_curRequestData->getEnvBase().size() + m_curRequestData->getEnvExtra().size();
-	m_envStr.reserve(entries);
-	m_envPtr.reserve(entries + 1);
-	m_argPtr.reserve(3);
-
-	for (std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvBase().begin(); it != m_curRequestData->getEnvBase().end(); it++)
-		m_envStr.push_back(m_CgiModule.getBaseEnvKeys().find(it->first)->second + "=" + it->second);
-
-	for (std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvExtra().begin(); it != m_curRequestData->getEnvExtra().end(); it++)
-		m_envStr.push_back(it->first + "=" + it->second);
-
-	for (size_t i = 0; i < entries; i++)
-		m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
-	m_envPtr.push_back(NULL);
-
-	
-	m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
-
-	/// m_argPtr.push_back([absolute path to the script!!!!!!!]);
-	
-	m_argPtr.push_back(NULL);
 
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
 	::exit(EXIT_FAILURE);

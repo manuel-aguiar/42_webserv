@@ -31,3 +31,8 @@ const std::string&								CgiRequestData::getExtension() const
 {
 	return (m_extension);
 }
+
+const std::string&								CgiRequestData::getScriptPath() const
+{
+	return (m_scriptPath);
+}
