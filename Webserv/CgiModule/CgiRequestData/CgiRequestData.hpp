@@ -34,9 +34,6 @@ class CgiRequestData
 		CgiRequestData(const CgiRequestData &copy);
 		CgiRequestData &operator=(const CgiRequestData &assign);
 
-		
-		
-		
 		// getters
 		const std::string&								getMsgBody() const;
 		const std::map<e_CgiEnv, t_CgiEnvValue>& 		getEnvBase() const;
@@ -60,14 +57,13 @@ class CgiRequestData
 		void											setScriptPath(const std::string& path);
 		
 	private:
-		Event 			m_events[CGI_EVENT_COUNT];
-		std::string		m_msgBody;
-		std::string		m_extension;
-		std::string		m_scriptPath;
-
-
-		std::map<e_CgiEnv, t_CgiEnvValue>			m_envBase;
-		std::map<t_CgiEnvKey, t_CgiEnvValue>		m_envExtra;
+	
+		Event 											m_events[CGI_EVENT_COUNT];
+		std::string										m_msgBody;
+		std::string										m_extension;
+		std::string										m_scriptPath;
+		std::map<e_CgiEnv, t_CgiEnvValue>				m_envBase;
+		std::map<t_CgiEnvKey, t_CgiEnvValue>			m_envExtra;
 
 };	
 
