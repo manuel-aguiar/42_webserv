@@ -78,11 +78,11 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 	std::string key, value;
 	iss >> key;
 
-	if (key.empty() || key[0] == '#') // should we check key.empty?
+	if (key[0] == '#')
 		return (2);
 	while (iss >> value)
 	{
-		if (*value.rbegin() == ';') // TO FIX: this will clear semicolons at the end of the value (even if not the last one!!)
+		if (*value.rbegin() == ';')
 			value = value.substr(0, value.size() - 1);
 		switch (currentLevel)
 		{
@@ -321,7 +321,6 @@ void	ServerConfig::printProgramConfig() const
 	std::cout << "║ Maximum Concurrent CGI: " << getMaxConcurrentCgi() << std::endl;
 	std::cout << "║ Maximum Simultaneous Connections: " << getMaxConnections() << std::endl;
 	std::cout << "║ " <<  std::endl ;
-
 }
 
 void	ServerConfig::printConfigs() const
@@ -336,5 +335,4 @@ void	ServerConfig::printConfigs() const
 		std::cout << "║ └──────────────────o" << std::endl;
 	}
 	std::cout << "╚═════════════════════════════O" << std::endl;
-
 }

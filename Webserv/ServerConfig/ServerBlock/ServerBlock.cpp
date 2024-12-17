@@ -291,11 +291,6 @@ bool	ServerBlock::validate() const
 		std::cerr << "Error: server config validation: server_name not assigned" << std::endl;
 		return (0);
 	}
-	// if (m_config.find("root")->second.empty())
-	// {
-	// 	std::cerr << "Error: server config validation: root path not assigned" << std::endl;
-	// 	return (0);
-	// }
 
 	return (1);
 }
