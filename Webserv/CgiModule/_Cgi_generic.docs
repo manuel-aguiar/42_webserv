@@ -6,13 +6,9 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/17 09:29:43 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/17 09:41:31 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/17 13:09:17 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-Essentially, our server will have to be a lightweight reverse proxy where
-it does minimal processing of an http request, send it to the Cgi Module, get
-the output from the script straight back to the Client, nothing more nothing less.
 
 So, the CgiLivequest may take the HttpRequest's buffer and write to it, call onWrite,
 which will call the httpRequest to call the Connection:
