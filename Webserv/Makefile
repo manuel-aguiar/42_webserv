@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/17 08:41:47 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/17 12:36:25 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,7 +79,8 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestExecute.cpp					\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestEvents.cpp					\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestUtils.cpp					\
-										$(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestData.cpp					
+										$(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestData.cpp							\
+										$(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp		
 																			
 
 

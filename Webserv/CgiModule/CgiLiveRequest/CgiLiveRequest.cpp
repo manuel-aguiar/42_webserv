@@ -67,6 +67,7 @@ void    CgiLiveRequest::reset()
 
 	m_argPtr.clear();
 	m_envPtr.clear();
+	m_envStr.clear();
 }
 
 
@@ -105,7 +106,7 @@ void	CgiLiveRequest::readFromChild()
 		mf_closeFd(m_ChildToParent[0]);
 	}
 
-	m_curRequestData->getEventHandler(CGI_ON_READ).handle();
+	m_curRequestData->accessEventHandler(CGI_ON_READ).handle();
 }
 
 void	CgiLiveRequest::forcedClose()
@@ -116,7 +117,7 @@ void	CgiLiveRequest::forcedClose()
 		m_pid = -1;
 		::waitpid(m_pid, NULL, 0);
 	}
-	m_curRequestData->getEventHandler(CGI_ON_ERROR).handle();
+	m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle();
 	reset();
 }
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 12:17:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:33:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ void   CgiLiveRequest::execute()
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -42,7 +42,7 @@ void   CgiLiveRequest::execute()
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("CgiLiveRequest::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
 	}
 
 	mf_prepareExecve();
@@ -51,7 +51,7 @@ void   CgiLiveRequest::execute()
     if (m_pid == -1)
 	{
 		m_globals.logError("CgiLiveRequest::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessEventHandler(CGI_ON_ERROR).handle());
     }
     if (m_pid == 0)
 		mf_executeChild();
