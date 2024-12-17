@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 14:58:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 16:32:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,19 +121,29 @@ void	CgiLiveRequest::mf_executeParent()
 
 void	CgiLiveRequest::mf_executeChild()
 {
+	std::cout << "executing child" << std::endl;
 
-
-	mf_closeFd(m_ParentToChild[1]);
-	mf_closeFd(m_ChildToParent[0]);
 	
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
+	{
+		std::cout << "first dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
+	}
+	else
+		std::cout << "first dup2 success" << std::endl;
 
 	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
+	{
+		std::cout << "second dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
-	::close(m_ParentToChild[1]);
+	}
+	else
+		std::cout << "second dup2 success" << std::endl;
+		
 
 
+	std::cout << "calling execve" << std::endl;
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
+	std::cout << "execve failed" << std::endl;
 	::exit(EXIT_FAILURE);
 }

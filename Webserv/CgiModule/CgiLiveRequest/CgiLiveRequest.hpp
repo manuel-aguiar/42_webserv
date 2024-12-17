@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 14:58:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 16:02:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ class CgiLiveRequest
 		void    execute(CgiRequestData& request);
 		void    reset();
 		
+		void	cleanClose();
 		void	forcedClose();
 
 		void	writeToChild();
 		void	readFromChild();
+
+		CgiRequestData*				accessCurRequestData();
 
 	private:
 		EventManager*				m_curEventManager;

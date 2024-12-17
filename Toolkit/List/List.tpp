@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/17 12:52:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:55:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -400,7 +400,17 @@ class List
 			other.m_header.m_next = &other.m_header;
 			other.m_header.m_prev = &other.m_header;
 		}
+		
+		void	erase(iterator pos)
+		{
+			BaseNode* target = pos.getPtr();
 
+			assert(mf_iterIsInList(target));
+			mf_removeTarget(target);
+			mf_deallocate(target);
+			--m_size;
+		}
+		
 		void	splice(iterator pos, List& other, iterator itOther)
 		{
 			BaseNode* thisTgt = pos.getPtr();

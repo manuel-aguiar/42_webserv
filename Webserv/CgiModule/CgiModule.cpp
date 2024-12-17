@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 15:19:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 16:06:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,39 @@ CgiRequestData&	CgiModule::acquireRequestData()
 {
 	m_allRequestData.emplace_back();
 	return (m_allRequestData.back());
+}
+
+/*
+
+	Deletes the CgiRequestData as it is no longer needed.
+	Checks if there are more pending requests to execute, if so, execute.
+	Else, save it for a later request.
+
+*/
+void	CgiModule::returnLiveRequest(CgiLiveRequest& request)
+{
+	CgiRequestData* requestData;
+
+	requestData = request.accessCurRequestData();
+	if (requestData)
+	{
+		for (List<CgiRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
+		{
+			if (&(*it) == requestData)
+			{
+				m_allRequestData.erase(it);
+				break ;
+			}
+		}
+	}
+
+	request.reset();
+
+	if (m_pendingRequests.size() > 0)
+	{
+		request.execute(*m_pendingRequests.front());
+		m_pendingRequests.pop_front();
+	}
+	else
+		m_spareLiveRequests.push_back(&request);
 }

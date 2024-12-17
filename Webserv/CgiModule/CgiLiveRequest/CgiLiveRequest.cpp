@@ -48,6 +48,7 @@ void    CgiLiveRequest::reset()
 	m_writeEvent.reset();
 	m_curRequestData = NULL;
 	m_curEventManager = NULL;
+	m_pid = -1;
 
 	if (m_writeEvent.getFd() != -1)
 	{
@@ -75,21 +76,34 @@ void    CgiLiveRequest::reset()
 
 void	CgiLiveRequest::writeToChild()
 {
-	size_t bytesWritten;
+	int					triggeredFlags;
+	size_t				bytesWritten;
 	std::string& body = m_curRequestData->accessMsgBody();
 
-	bytesWritten = ::write(m_ParentToChild[1], body.c_str(), body.size());
-
-	if (bytesWritten != body.size())
+	triggeredFlags = m_writeEvent.getTriggeredFlags();
+	if (triggeredFlags & EPOLLOUT)
 	{
-		if (bytesWritten > 0)
-			body.erase(0, bytesWritten);
-		return ;
+		bytesWritten = ::write(m_ParentToChild[1], body.c_str(), body.size());
+
+		if (bytesWritten != body.size())
+		{
+			if (bytesWritten > 0)
+				body.erase(0, bytesWritten);
+			return ;
+		}
+		else
+		{
+			m_curEventManager->delEvent(m_writeEvent);
+			mf_closeFd(m_ParentToChild[1]);
+		}
+		m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).handle();
 	}
-		
-	m_curEventManager->delEvent(m_writeEvent);
-	m_writeEvent.setFd(-1);
-	mf_closeFd(m_ParentToChild[1]);
+	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
+	{
+		m_curEventManager->delEvent(m_writeEvent);
+		mf_closeFd(m_ParentToChild[1]);
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+	}
 }
 
 void	CgiLiveRequest::readFromChild()
@@ -98,15 +112,35 @@ void	CgiLiveRequest::readFromChild()
 	int		triggeredFlags;
 	
 	triggeredFlags = m_readEvent.getTriggeredFlags();
-	bytesRead = ::read(m_ChildToParent[0], m_readBuf, sizeof(m_readBuf));
-
-	if (bytesRead == 0 || (triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	if (triggeredFlags & EPOLLIN)
+	{
+		bytesRead = ::read(m_ChildToParent[0], m_readBuf, sizeof(m_readBuf) - 1);
+		m_readBuf[bytesRead] = '\0';
+		std::cout << "Read from child: " << m_readBuf << std::endl;
+		m_curRequestData->accessEventHandler(E_CGI_ON_READ).handle();
+	}
+		
+	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		m_curEventManager->delEvent(m_readEvent);
 		mf_closeFd(m_ChildToParent[0]);
+		m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
 	}
+}
 
-	m_curRequestData->accessEventHandler(E_CGI_ON_READ).handle();
+void	CgiLiveRequest::cleanClose()
+{
+	int status;
+
+	if (m_pid != -1)
+	{
+		::waitpid(m_pid, &status, 0);
+		m_pid = -1;
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+			m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
+		else
+			m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+	}
 }
 
 void	CgiLiveRequest::forcedClose()
@@ -114,14 +148,16 @@ void	CgiLiveRequest::forcedClose()
 	if (m_pid != -1)
 	{
 		::kill(m_pid, SIGKILL);
-		m_pid = -1;
 		::waitpid(m_pid, NULL, 0);
+		m_pid = -1;
 	}
 	m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
-	reset();
 }
 
-
+CgiRequestData*	CgiLiveRequest::accessCurRequestData()
+{
+	return (m_curRequestData);
+}
 
 
 

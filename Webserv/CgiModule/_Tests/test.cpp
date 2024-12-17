@@ -11,6 +11,8 @@
 /*	Test using the actual EventManager*/	
 /************************************ */
 
+#include <unistd.h>
+
 int main(void)
 {
 
@@ -35,6 +37,15 @@ int main(void)
 		requestData.setScriptPath("/workspaces/42_webserv/Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData.setEventManager(eventManager);
 
+		cgi.executeRequest(requestData);
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+		std::cout << " triggered: " <<  eventManager.retrieveEvents(1000) << " \n";
+
+		std::cout << "		OK\n";
 	}
 	catch(const std::exception& e)
 	{

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 15:10:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:24:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,3 +89,7 @@ std::string&		CgiRequestData::accessMsgBody()
 	return (m_msgBody);
 }
 
+EventManager&		CgiRequestData::accessEventManager()
+{
+	return (*m_eventManager);
+}
