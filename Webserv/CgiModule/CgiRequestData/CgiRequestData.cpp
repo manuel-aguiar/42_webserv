@@ -12,7 +12,22 @@
 
 #include "CgiRequestData.hpp"
 
-void	CgiRequestData::setEventHandler(const t_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
+void	CgiRequestData::setEventHandler(const e_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
 {
 	m_events[event].setFd_Data_Handler_Flags(0, data, handler, 0);
+}
+
+const std::map<e_CgiEnv, t_CgiEnvValue>& 		CgiRequestData::getEnvBase() const
+{
+	return (m_envBase);
+}
+
+const std::map<t_CgiEnvKey, t_CgiEnvValue>&		CgiRequestData::getEnvExtra() const
+{
+	return (m_envExtra);
+}
+
+const std::string&								CgiRequestData::getExtension() const
+{
+	return (m_extension);
 }

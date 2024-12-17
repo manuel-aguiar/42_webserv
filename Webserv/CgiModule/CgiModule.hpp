@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 09:11:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:03:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 //Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
+# include "Cgi_Definitions.h"
 
 // C++ headers
 # include <map>
@@ -38,6 +39,8 @@ class CgiModule
 
 		CgiRequestData&		acquireRequestData();
 
+		const std::map<e_CgiEnv, t_CgiEnvKey>&	getBaseEnvKeys() const;
+		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 	private:
 		size_t																		m_maxConnections;
@@ -47,9 +50,8 @@ class CgiModule
 		List<CgiRequestData>														m_pendingRequests;
 		List<CgiLiveRequest*>														m_spareLiveRequests;
 
-		typedef std::string															t_extension;
-		typedef std::string															t_path;
-		std::map<t_extension, t_path>												m_scriptInterpreters;		
+		std::map<t_extension, t_path>												m_Interpreters;
+		std::map<e_CgiEnv, t_CgiEnvKey>												m_baseEnvLeftEqual;
 
 		Globals&																	m_globals;
 

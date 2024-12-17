@@ -6,12 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 15:04:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:08:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project Headers
 # include "CgiLiveRequest.hpp"
+# include "../CgiModule.hpp"
 # include "../CgiRequestData/CgiRequestData.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
@@ -43,6 +44,7 @@ void   CgiLiveRequest::execute()
 		m_globals.logError("CgiLiveRequest::execute(), fcntl(): " + std::string(strerror(errno)));
 		return (m_curRequestData->getEventHandler(CGI_ON_ERROR).handle());
 	}
+
 
     m_pid = ::fork();
     if (m_pid == -1)
@@ -89,6 +91,8 @@ void	CgiLiveRequest::mf_executeParent()
 
 void	CgiLiveRequest::mf_executeChild()
 {
+	size_t					entries;
+
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	
@@ -97,8 +101,30 @@ void	CgiLiveRequest::mf_executeChild()
 
 	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
 		::exit(EXIT_FAILURE);
-
 	::close(m_ParentToChild[1]);
-	::execve(m_argv[0], m_argv, m_envp);
+
+	entries = m_curRequestData->getEnvBase().size() + m_curRequestData->getEnvExtra().size();
+	m_envStr.reserve(entries);
+	m_envPtr.reserve(entries + 1);
+	m_argPtr.reserve(3);
+
+	for (std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvBase().begin(); it != m_curRequestData->getEnvBase().end(); it++)
+		m_envStr.push_back(m_CgiModule.getBaseEnvKeys().find(it->first)->second + "=" + it->second);
+
+	for (std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator it = m_curRequestData->getEnvExtra().begin(); it != m_curRequestData->getEnvExtra().end(); it++)
+		m_envStr.push_back(it->first + "=" + it->second);
+
+	for (size_t i = 0; i < entries; i++)
+		m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
+	m_envPtr.push_back(NULL);
+
+	
+	m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
+
+	/// m_argPtr.push_back([absolute path to the script!!!!!!!]);
+	
+	m_argPtr.push_back(NULL);
+
+	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
 	::exit(EXIT_FAILURE);
 }

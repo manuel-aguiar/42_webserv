@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:21:12 by codespace         #+#    #+#             */
-/*   Updated: 2024/12/16 08:41:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 10:13:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define CGIDEFAULTS_H
 
-		typedef enum e_CgiEnv
+		typedef enum e_CgiEnvasfasffasf
 		{
 			ENV_CGI_AUTH_TYPE,
 			ENV_CGI_CONTENT_LENGTH,
@@ -34,7 +34,7 @@
 			ENV_CGI_SERVER_PROTOCOL,
 			ENV_CGI_SERVER_SOFTWARE,
 			ENV_CGI_VAR_COUNT
-        }	t_CgiEnv;
+        }	e_CgiEnv;
 
 
 #endif

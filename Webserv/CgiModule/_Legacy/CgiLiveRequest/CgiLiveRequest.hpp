@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 08:56:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:05:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,15 @@ class CgiLiveRequest
         Nginx_PoolAllocator<char>   m_strAlloc;
 
         const char*                 m_scriptPath;
-        char**                      m_argv;
-        char**                      m_envp;
+        char**                      m_argPtr;
+        char**                      m_envPtr;
         const char*                 m_stdinData;
 
 
 		char*						m_CgiEnv[ENV_CGI_VAR_COUNT];
 
 
-		CgiManager&					m_manager;
+		CgiManager&					m_CgiModule;
 
 	private:
 

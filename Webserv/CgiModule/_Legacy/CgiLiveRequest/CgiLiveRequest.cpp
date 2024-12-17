@@ -17,10 +17,10 @@
 CgiLiveRequest::CgiLiveRequest(CgiManager& manager) :
     m_requestDataPool(Nginx_MemoryPool::create(4096)),
     m_strAlloc(m_requestDataPool),
-    m_argv(NULL),
-    m_envp(NULL),
+    m_argPtr(NULL),
+    m_envPtr(NULL),
     m_stdinData(NULL),
-	m_manager(manager)
+	m_CgiModule(manager)
 {
 	m_ParentToChild[0] = -1;
 	m_ParentToChild[1] = -1;
@@ -36,8 +36,8 @@ CgiLiveRequest::~CgiLiveRequest()
 void    CgiLiveRequest::reset()
 {
     m_requestDataPool->reset();
-    m_argv = NULL;
-    m_envp = NULL;
+    m_argPtr = NULL;
+    m_envPtr = NULL;
     m_stdinData = NULL;
     m_scriptPath = NULL;
 }
@@ -50,11 +50,11 @@ void CgiLiveRequest::initPython(PythonCgi& pythonCgi, const char* scriptPath)
 void CgiLiveRequest::debugPrintInputs()
 {
     std::cout << "argv: " << std::endl;
-    for (int i = 0; m_argv[i]; i++)
-        std::cout << m_argv[i] << std::endl;
+    for (int i = 0; m_argPtr[i]; i++)
+        std::cout << m_argPtr[i] << std::endl;
     std::cout << "envp: " << std::endl;
-    for (int i = 0; m_envp[i]; i++)
-        std::cout << m_envp[i] << std::endl;
+    for (int i = 0; m_envPtr[i]; i++)
+        std::cout << m_envPtr[i] << std::endl;
     std::cout << "stdinData: " << m_stdinData << std::endl;
 }
 
@@ -106,7 +106,7 @@ void   CgiLiveRequest::execute()
 			//write to log, non critical
 		}
 
-        execve(m_argv[0], m_argv, m_envp);
+        execve(m_argPtr[0], m_argPtr, m_envPtr);
 
         // write log, exec failed
         std::cerr << "Exec failed: " << strerror(errno) << std::endl;
@@ -149,10 +149,10 @@ void CgiLiveRequest::closeAllPipes()
 CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
     m_requestDataPool(other.m_requestDataPool),
     m_strAlloc(other.m_strAlloc),
-    m_argv(other.m_argv),
-    m_envp(other.m_envp),
+    m_argPtr(other.m_argPtr),
+    m_envPtr(other.m_envPtr),
     m_stdinData(other.m_stdinData),
-	m_manager(other.m_manager)
+	m_CgiModule(other.m_CgiModule)
 {
     *this = other;
 }

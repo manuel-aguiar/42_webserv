@@ -26,7 +26,7 @@ CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_curEventManager(NULL),
 	m_curRequestData(NULL),
 	m_pid(-1),
-	m_manager(manager),
+	m_CgiModule(manager),
 	m_globals(globals)
 {
 	m_ParentToChild[0] = -1;
@@ -64,6 +64,9 @@ void    CgiLiveRequest::reset()
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
+
+	m_argPtr.clear();
+	m_envPtr.clear();
 }
 
 
@@ -125,7 +128,7 @@ CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
 	m_curEventManager(other.m_curEventManager),
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
-	m_manager(other.m_manager),
+	m_CgiModule(other.m_CgiModule),
 	m_globals(other.m_globals)
 {
     *this = other;

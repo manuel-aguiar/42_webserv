@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 08:46:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/17 12:05:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,10 @@ class CgiLiveRequest
 	private:
 		EventManager*				m_curEventManager;
 		CgiRequestData*				m_curRequestData;
-		char**						m_argv;
-		char**						m_envp;
+
+		DynArray<std::string>		m_envStr;
+		DynArray<char *>			m_envPtr;
+		DynArray<char *>			m_argPtr;
 		
 		Event						m_readEvent;
 		Event						m_writeEvent;
@@ -55,7 +57,7 @@ class CgiLiveRequest
 		t_fd						m_ChildToParent[2];
 		t_pid						m_pid;
 
-		CgiModule&					m_manager;
+		CgiModule&					m_CgiModule;
 		Globals&					m_globals;
 
 		char						m_readBuf[1024];
