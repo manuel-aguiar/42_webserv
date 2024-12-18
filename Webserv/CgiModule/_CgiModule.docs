@@ -6,10 +6,9 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/12/18 09:17:30 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 10:30:37 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
 
 The CgiModule executes CGI requests. The way to interact with it is to acquire
 a CgiRequestData instance via CgiModule::acquireRequestData.
@@ -26,7 +25,7 @@ Setup:
 		CgiModule::addInterpreter()
 		which takes an extension (eg "py"), and an absolute path to the interpreter (eg "/usr/bin/python3")
 	Note: the same extension cannot be executed by different interpreters. the last call to addInterpreter
-	for a given extension will be the one executed.
+	for a given extension will be the one used for execution.
 
 
 Internally, CgiModule has a private class CgiLiveRequest that is responsible for the actual execution.
@@ -49,20 +48,6 @@ Request for CGI,
 
 	wait for Connection write event (to client)
 		write to Client.
-
-
-A request is always start as a CgiPendingRequest, where the environment variables are setup.
-That pending request will  become live if there is a slot available to do all the fork process
-
-An outsider interacting with the CgiModule will have to pass it a valid CgiRequestData class instance
-with all the data required to perform the CgiTask.
-
-
-The caller will have to call CgiModule::addRequestData(const CgiRequestData& data);
-
-
-Then it will try to execute it and, if there are no CgiLiveRequest slots to handle, it will be stored
-
 
 
 Again the design has the objective of maintaining flexibility. The CgiModule knows nothing about http

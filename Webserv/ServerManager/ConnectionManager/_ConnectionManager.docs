@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 10:34:00 by manuel            #+#    #+#              #
-#    Updated: 2024/12/18 08:48:57 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 11:23:07 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,4 +15,15 @@ It is the sole create and destructor of connections.
 
 To do that, we create a ManagedConnection private class the inherits the protected constructors
 of Connection, to make it clear that Connection cannot be spawned on its own and can only be
-created by the ConnectionManager
+created by the ConnectionManager.
+
+The ConnectionManager exposes to main methods:
+
+	ConnectionManager::provideConnection  -> to provide one internally generated Connection instance.
+
+	ConnectionManager::returnConnection -> to return one internally generated Connection instance.
+
+Beware -> calling returnConnection and passing a Connection& that wasn't obtained via
+provideConnection is UNDEFINED BEHAVIOUR
+	-> in debug mode it will call ABORT when returning a connection that does not belong to
+	this ConnectionManager, or that is already in the sparelist.

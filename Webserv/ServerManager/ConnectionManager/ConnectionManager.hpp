@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:43:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 11:06:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@
 # include <queue>
 # include <list>
 # include <vector>
+
+//debug headers
+#ifndef NDEBUG
+	# include <algorithm>
+#endif
 
 class ConnectionManager
 {

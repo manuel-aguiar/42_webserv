@@ -8,7 +8,9 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test.out
 
-SRCS = $(wildcard *.cpp) ../ConnectionManager.cpp \
+SRCS = $(wildcard *.cpp) \
+		../ConnectionManager.cpp \
+		../ManagedConnection.cpp \
 		../../../Globals/_Mock/MockLogFile.cpp \
 		../../../Globals/_Mock/MockGlobals.cpp \
 		../../../Globals/_Mock/MockClock.cpp \
@@ -35,6 +37,6 @@ clean:
 	rm -rf $(OBJS) 
 
 fclean: clean
-	rm -rf $(TARGET)
+	rm -rf $(TARGET) vgcore*
 
 .PHONY: clean

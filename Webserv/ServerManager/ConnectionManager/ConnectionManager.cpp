@@ -19,60 +19,91 @@ ConnectionManager::~ConnectionManager()
 }
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
-    m_maxConnections(maxConnections),
-    m_connections(Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
-    m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-    m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-    m_spareConnections(Nginx_MPool_FixedElem<ManagedConnection*>(&borrowedPool, maxConnections)),
-    m_globals(globals)
+	m_maxConnections(maxConnections),
+	m_connections(Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
+	m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
+	m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
+	m_spareConnections(Nginx_MPool_FixedElem<ManagedConnection*>(&borrowedPool, maxConnections)),
+	m_globals(globals)
 {
-    
-    m_connections.reserve(m_maxConnections);
-    m_readEvents.reserve(m_maxConnections);
-    m_writeEvents.reserve(m_maxConnections);
+	
+	m_connections.reserve(m_maxConnections);
+	m_readEvents.reserve(m_maxConnections);
+	m_writeEvents.reserve(m_maxConnections);
 
-    for (size_t i = 0; i < maxConnections; i++)
-    {
-        m_connections.emplace_back(m_globals);
-        m_readEvents.emplace_back();
-        m_writeEvents.emplace_back();
+	for (size_t i = 0; i < maxConnections; i++)
+	{
+		m_connections.emplace_back(m_globals);
+		m_readEvents.emplace_back();
+		m_writeEvents.emplace_back();
 
-        m_connections[i].setReadEvent(m_readEvents[i]);
-        m_connections[i].setWriteEvent(m_writeEvents[i]);
+		m_connections[i].setReadEvent(m_readEvents[i]);
+		m_connections[i].setWriteEvent(m_writeEvents[i]);
 
-        m_spareConnections.push_back(&m_connections[i]);
-    }
+		m_spareConnections.push_back(&m_connections[i]);
+	}
 
 }
 
 Connection* ConnectionManager::provideConnection()
 {
-    Connection*     connection;
+	Connection*     connection;
 
-    if (!m_spareConnections.size())
-        return (NULL);
-    connection = m_spareConnections.front();
-    m_spareConnections.pop_front();
-    return (connection);
+	if (!m_spareConnections.size())
+		return (NULL);
+	connection = m_spareConnections.front();
+	m_spareConnections.pop_front();
+	return (connection);
 }
+
+
 
 void ConnectionManager::returnConnection(Connection& connection)
 {
-    assert(&connection != NULL);
-    
-    connection.reset();
-    m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
+	connection.reset();
+	m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
+
+
+
+	// Debug
+	#ifndef NDEBUG
+		bool test = false;
+
+		for (size_t i = 0; i < m_maxConnections; i++)
+		{
+			if (&connection == &m_connections[i])
+			{
+				test = true;
+				break;
+			}
+		}
+		CUSTOM_ASSERT(test, "ConnectionManager::returnConnection : Connection does not belong to this manager");   //confirm it is one of ours
+		
+		test = true;
+		for (List<ManagedConnection*, Nginx_MPool_FixedElem<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
+			iter != m_spareConnections.end(); 
+			++iter)
+		{
+			if (*iter == &connection)
+			{
+				test = false;
+				break;
+			}
+		}
+		CUSTOM_ASSERT(test, "ConnectionManager::returnConnection : Connection is already in the spare list");   //confirm it is not in the spare list
+	#endif
+
 }
 
 
 //private, as usual
 
 ConnectionManager::ConnectionManager(const ConnectionManager& copy) :
-    m_maxConnections(copy.m_maxConnections),
-    m_connections(copy.m_connections),
-    m_readEvents(copy.m_readEvents),
-    m_writeEvents(copy.m_writeEvents),
-    m_spareConnections(copy.m_spareConnections),
-    m_globals(copy.m_globals)
+	m_maxConnections(copy.m_maxConnections),
+	m_connections(copy.m_connections),
+	m_readEvents(copy.m_readEvents),
+	m_writeEvents(copy.m_writeEvents),
+	m_spareConnections(copy.m_spareConnections),
+	m_globals(copy.m_globals)
 {(void)copy;}
 ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign) {(void)assign; return (*this);}

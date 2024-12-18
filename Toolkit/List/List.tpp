@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/17 15:55:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 11:03:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,9 +329,12 @@ class List
         class iterator
         {
             public:
-                typedef BaseNode                                   value_type;
-                typedef BaseNode*                                  pointer;
-                typedef BaseNode&                                  reference;
+                typedef BaseNode								value_type;
+                typedef BaseNode*								pointer;
+                typedef BaseNode&								reference;
+				typedef std::ptrdiff_t							difference_type;
+        		typedef std::bidirectional_iterator_tag			iterator_category;
+
 
                 iterator(pointer ptr) : m_ptr(ptr) {}
                 iterator(const iterator& other) : m_ptr(other.m_ptr) {}

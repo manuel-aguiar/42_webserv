@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 10:00:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 10:33:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define CGIMODULE_HPP
 
-//Project Headers
+// Project Headers
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../Cgi_Definitions.h"
 # include "../CgiRequestData/CgiRequestData.hpp"
@@ -22,7 +22,6 @@
 // C++ headers
 # include <map>
 
-class CgiLiveRequest;
 class CgiRequestData;
 class Globals;
 
@@ -35,14 +34,9 @@ class CgiModule
 		// methods
 		void									addInterpreter(const std::string& extension, const std::string& path);
 		void									removeInterpreter(const std::string& extension);
-		
 		CgiRequestData&							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
 
-
-		
-		
-		
 		//getters
 		const std::map<e_CgiEnv, t_CgiEnvKey>&	getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;

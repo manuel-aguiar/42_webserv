@@ -93,11 +93,12 @@ int main(void)
 	std::cout << "Test4: ";
 	try
 	{
-		ConnectionManager manager(0, *pool, globals);
-		Connection* conn1;
-		conn1 = manager.provideConnection();
+		ConnectionManager manager(1, *pool, globals);
 
-		//manager.returnConnection(*conn1);		//correctly raises abort in DEBUG mode
+		Connection* conn1 = manager.provideConnection();
+		manager.returnConnection(*conn1);
+		//manager.returnConnection(*conn1);		//raises abort in DEBUG mode
+
 		(void)conn1;
 
 		std::cout << "	PASS\n";
