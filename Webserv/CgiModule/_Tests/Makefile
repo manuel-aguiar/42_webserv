@@ -52,7 +52,7 @@ run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
 
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -rf $(OBJS) $(TARGET) vgcore*
 
 fclean: clean
 	$(TARGET)

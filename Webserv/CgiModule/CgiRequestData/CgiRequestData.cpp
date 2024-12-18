@@ -12,7 +12,13 @@
 
 #include "CgiRequestData.hpp"
 
-CgiRequestData::CgiRequestData()
+CgiRequestData::CgiRequestData() :
+	m_eventManager(NULL),
+	m_msgBody(""),
+	m_extension(""),
+	m_scriptPath(""),
+	m_envBase(),
+	m_envExtra()
 {
 }
 

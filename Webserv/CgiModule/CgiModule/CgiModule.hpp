@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 10:33:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:10:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class CgiModule
 		// methods
 		void									addInterpreter(const std::string& extension, const std::string& path);
 		void									removeInterpreter(const std::string& extension);
+		
 		CgiRequestData&							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
 

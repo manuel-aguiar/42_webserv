@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 10:02:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:29:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@
 
 void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 {
-	m_curEventManager = &request.accessEventManager();
 	m_curRequestData = &request;
+	m_curEventManager = &m_curRequestData->accessEventManager();
+	
+
+	// more asserts, all data must be in place and ready to execute
 	assert(m_curEventManager != NULL && m_curRequestData != NULL);
 
     if (::pipe(m_ParentToChild) == -1)
