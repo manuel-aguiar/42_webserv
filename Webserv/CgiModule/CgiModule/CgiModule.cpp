@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:37:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:43:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiLiveRequest/CgiLiveRequest.hpp"
+# include "../CgiLiveRequest/CgiLiveRequest.hpp"
 # include "CgiModule.hpp"
 
 CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
