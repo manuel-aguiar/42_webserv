@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:32:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:49:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 //Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "Cgi_Definitions.h"
-
 # include "CgiLiveRequest/CgiLiveRequest.hpp"
 # include "CgiRequestData/CgiRequestData.hpp"
 
@@ -45,16 +44,16 @@ class CgiModule
 		
 		
 		
-				//getters
+		//getters
 		const std::map<e_CgiEnv, t_CgiEnvKey>&	getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 	private:
 
-		// internal class
+		// internal request execution, other file since its long
 		class 			CgiLiveRequest;
 
-		// managed data
+		// internal data handling
 		class ManagedRequestData : public CgiRequestData
 		{
 			public:
@@ -79,9 +78,10 @@ class CgiModule
 		Globals&																	m_globals;
 
 		void									mf_returnLiveRequest(CgiLiveRequest& request);
-		//private copies, control over how many forks can be done at the same time
+
+
 		CgiModule(const CgiModule &copy);
-		CgiModule &operator=(const CgiModule &copy);
+		CgiModule &operator=(const CgiModule &assign);
 
 };
 

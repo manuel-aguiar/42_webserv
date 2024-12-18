@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:43:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:48:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,27 @@ CgiModule::~CgiModule()
 
 }
 
-/*
+//private as usual
+CgiModule::CgiModule(const CgiModule &copy) :
+	m_maxConnections(copy.m_maxConnections),
+	m_globals(copy.m_globals)
+{
 
+}
+
+CgiModule& CgiModule::operator=(const CgiModule &assign)
+{
+	if (this == &assign)
+		return (*this);
+	m_maxConnections = assign.m_maxConnections;
+	return (*this);
+}
+
+
+/*
 	Deletes the CgiRequestData as it is no longer needed.
 	Checks if there are more pending requests to execute, if so, execute.
 	Else, save it for a later request.
-
 */
 void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 {
