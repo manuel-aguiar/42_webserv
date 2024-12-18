@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:25:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 10:02:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project Headers
 # include "CgiLiveRequest.hpp"
-# include "../CgiModule.hpp"
+# include "../CgiModule/CgiModule.hpp"
 # include "../CgiRequestData/CgiRequestData.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-void   CgiModule::CgiLiveRequest::execute(ManagedRequestData& request)
+void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 {
 	m_curEventManager = &request.accessEventManager();
 	m_curRequestData = &request;

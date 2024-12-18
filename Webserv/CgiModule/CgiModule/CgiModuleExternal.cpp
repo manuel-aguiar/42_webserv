@@ -6,11 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:37:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 10:01:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiLiveRequest/CgiLiveRequest.hpp"
+# include "../CgiLiveRequest/CgiLiveRequest.hpp"
 # include "CgiModule.hpp"
 
 CgiRequestData&	CgiModule::acquireRequestData()

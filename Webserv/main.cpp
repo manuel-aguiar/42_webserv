@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 11:12:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 10:15:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:51:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 // Project headers
 # include "Globals/Globals.hpp"
 # include "ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "ServerManager/ServerManager.hpp"
+# include "ServerManager/ServerManager/ServerManager.hpp"
 
 // C++ headers
 # include <iostream>

@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/18 09:40:40 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 09:51:38 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,9 +37,9 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/ServerConfig/ServerBlock/ServerBlock.cpp							\
 										$(SRC_PATH)/ServerConfig/ServerLocation/ServerLocation.cpp						\
 																														\
-										$(SRC_PATH)/ServerManager/ServerManager.cpp										\
-										$(SRC_PATH)/ServerManager/ServerManagerGetSetAccess.cpp							\
-										$(SRC_PATH)/ServerManager/ServerManagerPrepareWorkers.cpp						\
+										$(SRC_PATH)/ServerManager/ServerManager/ServerManager.cpp						\
+										$(SRC_PATH)/ServerManager/ServerManager/ServerManagerGetSetAccess.cpp			\
+										$(SRC_PATH)/ServerManager/ServerManager/ServerManagerPrepareWorkers.cpp			\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorker.cpp							\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerEvents.cpp					\
 										$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerGetSetAccess.cpp				\
