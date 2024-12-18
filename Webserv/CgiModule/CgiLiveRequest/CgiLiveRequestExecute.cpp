@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 16:33:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:25:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-void   CgiLiveRequest::execute(CgiRequestData& request)
+void   CgiModule::CgiLiveRequest::execute(ManagedRequestData& request)
 {
 	m_curEventManager = &request.accessEventManager();
 	m_curRequestData = &request;
@@ -61,7 +61,7 @@ void   CgiLiveRequest::execute(CgiRequestData& request)
 		mf_executeParent();
 }
 
-void	CgiLiveRequest::mf_prepareExecve()
+void	CgiModule::CgiLiveRequest::mf_prepareExecve()
 {
 	typedef std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator		t_EnvBaseIter;
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
@@ -90,7 +90,7 @@ void	CgiLiveRequest::mf_prepareExecve()
 }
 
 
-void	CgiLiveRequest::mf_executeParent()
+void	CgiModule::CgiLiveRequest::mf_executeParent()
 {
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ChildToParent[1]);
@@ -119,7 +119,7 @@ void	CgiLiveRequest::mf_executeParent()
 
 }
 
-void	CgiLiveRequest::mf_executeChild()
+void	CgiModule::CgiLiveRequest::mf_executeChild()
 {
 	std::cout << "executing child" << std::endl;
 

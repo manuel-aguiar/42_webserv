@@ -27,12 +27,13 @@ class EventManager;
 
 class CgiRequestData
 {
-	public:
+	protected:
 		CgiRequestData();
 		~CgiRequestData();
 		CgiRequestData(const CgiRequestData &copy);
 		CgiRequestData &operator=(const CgiRequestData &assign);
 
+	public:
 		// getters
 		const std::string&								getMsgBody() const;
 		const std::map<e_CgiEnv, t_CgiEnvValue>& 		getEnvBase() const;

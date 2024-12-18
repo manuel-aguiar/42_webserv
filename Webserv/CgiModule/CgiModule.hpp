@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 15:53:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:32:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ class CgiModule
 	public:
 		CgiModule(size_t maxConnections, Globals& globals);
 		~CgiModule();
-		CgiModule(const CgiModule &copy);
-		CgiModule &operator=(const CgiModule &copy);
 
 		// methods
 		void									addInterpreter(const std::string& extension, const std::string& path);
@@ -44,7 +42,6 @@ class CgiModule
 		void									executeRequest(CgiRequestData& data);
 
 
-		void									returnLiveRequest(CgiLiveRequest& request);
 		
 		
 		
@@ -53,19 +50,38 @@ class CgiModule
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 	private:
+
+		// internal class
+		class 			CgiLiveRequest;
+
+		// managed data
+		class ManagedRequestData : public CgiRequestData
+		{
+			public:
+				ManagedRequestData();
+				~ManagedRequestData();
+				ManagedRequestData(const ManagedRequestData &copy);
+				ManagedRequestData &operator=(const ManagedRequestData &assign);
+		};
+
 		size_t																		m_maxConnections;
 		DynArray<CgiLiveRequest>													m_liveRequests;
-		List<CgiRequestData>														m_allRequestData;
+		List<ManagedRequestData>													m_allRequestData;
 		
 		
 		// no memory pool for now
-		List<CgiRequestData*>														m_pendingRequests;
+		List<ManagedRequestData*>													m_pendingRequests;
 		List<CgiLiveRequest*>														m_spareLiveRequests;
 
 		std::map<t_extension, t_path>												m_Interpreters;
 		std::map<e_CgiEnv, t_CgiEnvKey>												m_baseEnvLeftEqual;
 
 		Globals&																	m_globals;
+
+		void									mf_returnLiveRequest(CgiLiveRequest& request);
+		//private copies, control over how many forks can be done at the same time
+		CgiModule(const CgiModule &copy);
+		CgiModule &operator=(const CgiModule &copy);
 
 };
 

@@ -6,16 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 16:02:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:33:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CGIREQUEST_HPP
+#ifndef CGILIVEREQUEST_HPP
 
-# define CGIREQUEST_HPP
+# define CGILIVEREQUEST_HPP
 
 //Project Headers
 # include "../Cgi_Definitions.h"
+# include "../CgiModule.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Event/Event.hpp"
 
@@ -27,7 +28,7 @@ class Connection;
 
 // implement some timeout for script execution, if nothing then kill
 
-class CgiLiveRequest
+class CgiModule::CgiLiveRequest
 {
 	public:
 		CgiLiveRequest(CgiModule& manager, Globals& globals);

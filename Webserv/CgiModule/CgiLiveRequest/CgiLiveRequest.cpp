@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
+CgiModule::CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_curEventManager(NULL),
 	m_curRequestData(NULL),
 	m_pid(-1),
@@ -37,12 +37,12 @@ CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
 	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiRead, EPOLLOUT);
 }
 
-CgiLiveRequest::~CgiLiveRequest()
+CgiModule::CgiLiveRequest::~CgiLiveRequest()
 {
 
 }
 
-void    CgiLiveRequest::reset()
+void    CgiModule::CgiLiveRequest::reset()
 {
 	m_readEvent.reset();
 	m_writeEvent.reset();
@@ -74,7 +74,7 @@ void    CgiLiveRequest::reset()
 
 
 
-void	CgiLiveRequest::writeToChild()
+void	CgiModule::CgiLiveRequest::writeToChild()
 {
 	int					triggeredFlags;
 	size_t				bytesWritten;
@@ -106,7 +106,7 @@ void	CgiLiveRequest::writeToChild()
 	}
 }
 
-void	CgiLiveRequest::readFromChild()
+void	CgiModule::CgiLiveRequest::readFromChild()
 {
 	size_t	bytesRead;
 	int		triggeredFlags;
@@ -128,7 +128,7 @@ void	CgiLiveRequest::readFromChild()
 	}
 }
 
-void	CgiLiveRequest::cleanClose()
+void	CgiModule::CgiLiveRequest::cleanClose()
 {
 	int status;
 
@@ -143,7 +143,7 @@ void	CgiLiveRequest::cleanClose()
 	}
 }
 
-void	CgiLiveRequest::forcedClose()
+void	CgiModule::CgiLiveRequest::forcedClose()
 {
 	if (m_pid != -1)
 	{
@@ -154,14 +154,14 @@ void	CgiLiveRequest::forcedClose()
 	m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
 }
 
-CgiRequestData*	CgiLiveRequest::accessCurRequestData()
+CgiRequestData*	CgiModule::CgiLiveRequest::accessCurRequestData()
 {
 	return (m_curRequestData);
 }
 
 
 
-CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
+CgiModule::CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
 	m_curEventManager(other.m_curEventManager),
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
@@ -171,7 +171,7 @@ CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
     *this = other;
 }
 
-CgiLiveRequest &CgiLiveRequest::operator=(const CgiLiveRequest &other)
+CgiModule::CgiLiveRequest& CgiModule::CgiLiveRequest::operator=(const CgiLiveRequest &other)
 {
     if (this == &other)
         return (*this);

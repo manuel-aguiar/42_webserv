@@ -6,10 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 16:06:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:37:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include "CgiLiveRequest/CgiLiveRequest.hpp"
 # include "CgiModule.hpp"
 
 CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
@@ -52,12 +53,6 @@ CgiModule::~CgiModule()
 
 }
 
-CgiRequestData&	CgiModule::acquireRequestData()
-{
-	m_allRequestData.emplace_back();
-	return (m_allRequestData.back());
-}
-
 /*
 
 	Deletes the CgiRequestData as it is no longer needed.
@@ -65,14 +60,14 @@ CgiRequestData&	CgiModule::acquireRequestData()
 	Else, save it for a later request.
 
 */
-void	CgiModule::returnLiveRequest(CgiLiveRequest& request)
+void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 {
-	CgiRequestData* requestData;
+	ManagedRequestData* requestData;
 
-	requestData = request.accessCurRequestData();
+	requestData = static_cast<ManagedRequestData*>(request.accessCurRequestData());
 	if (requestData)
 	{
-		for (List<CgiRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
+		for (List<ManagedRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
 		{
 			if (&(*it) == requestData)
 			{

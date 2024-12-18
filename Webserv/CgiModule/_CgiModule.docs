@@ -6,9 +6,37 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/12/17 14:19:36 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 09:17:30 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+
+The CgiModule executes CGI requests. The way to interact with it is to acquire
+a CgiRequestData instance via CgiModule::acquireRequestData.
+
+The user must fill the CgiRequestData with the relevant data required to execute
+the Cgi request (see CgiRequestData/_CgiRequestData.docs) using the provided setters.
+
+The user the must call CgiModule::executeRequest(CgiRequestData) to queue the request
+in CgiModule's internals for execution.
+
+Setup:
+	To execute scripts, the CgiModule needs to be correctly configured by adding interpreters
+	to it via:
+		CgiModule::addInterpreter()
+		which takes an extension (eg "py"), and an absolute path to the interpreter (eg "/usr/bin/python3")
+	Note: the same extension cannot be executed by different interpreters. the last call to addInterpreter
+	for a given extension will be the one executed.
+
+
+Internally, CgiModule has a private class CgiLiveRequest that is responsible for the actual execution.
+
+CgiModule also has a private ManagedRequestData to access CgiRequestData protected constructors to make
+it clear that CgiRequestData cannot be spawned but must be asked for to the CgiModule via
+CgiModule::acquireRequestData.
+
+
+
 
 Request for CGI,
 	prepare environment variables

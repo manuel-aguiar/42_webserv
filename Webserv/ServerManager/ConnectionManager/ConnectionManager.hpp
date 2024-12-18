@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 08:59:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:02:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ class ConnectionManager
 			public:
 				ManagedConnection(Globals& globals);
 				~ManagedConnection();
-			private:
 				ManagedConnection(const ManagedConnection& copy);
 				ManagedConnection& operator=(const ManagedConnection& assign);
 		};
