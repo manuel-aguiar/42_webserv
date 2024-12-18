@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 10:34:00 by manuel            #+#    #+#              #
-#    Updated: 2024/12/18 11:23:07 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 11:25:27 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ created by the ConnectionManager.
 The ConnectionManager exposes to main methods:
 
 	ConnectionManager::provideConnection  -> to provide one internally generated Connection instance.
+		-> the caller must check for NULL, NULL meaning that there are no Connections available right now
 
 	ConnectionManager::returnConnection -> to return one internally generated Connection instance.
 

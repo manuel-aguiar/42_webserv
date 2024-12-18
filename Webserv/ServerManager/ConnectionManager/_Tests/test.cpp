@@ -33,12 +33,15 @@ int main(void)
 		if (conn1 == NULL)
 			throw std::runtime_error("provideConnection() returned NULL, but there is one connection");
 
+
 		Connection* conn2 = manager.provideConnection();
 
 		if (conn2 != NULL)
 			throw std::runtime_error("provideConnection() did not return NULL, but there are no connections");
 
 		manager.returnConnection(*conn1);
+
+		
 		conn2 = manager.provideConnection();
 
 		if (conn2 != conn1)
@@ -97,8 +100,12 @@ int main(void)
 
 		Connection* conn1 = manager.provideConnection();
 		manager.returnConnection(*conn1);
-		//manager.returnConnection(*conn1);		//raises abort in DEBUG mode
-
+		//manager.returnConnection(*conn1);				//correctly raises abort in DEBUG mode
+		/*
+			ConnectionManager manager2(1, *pool, globals);
+			Connection* foreign = manager2.provideConnection();
+			manager.returnConnection(*foreign);			//correctly raises abort in DEBUG mode	
+		*/
 		(void)conn1;
 
 		std::cout << "	PASS\n";

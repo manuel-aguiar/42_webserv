@@ -60,26 +60,12 @@ Connection* ConnectionManager::provideConnection()
 
 void ConnectionManager::returnConnection(Connection& connection)
 {
-	connection.reset();
-	m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
-
-
-
 	// Debug
 	#ifndef NDEBUG
-		bool test = false;
-
-		for (size_t i = 0; i < m_maxConnections; i++)
-		{
-			if (&connection == &m_connections[i])
-			{
-				test = true;
-				break;
-			}
-		}
-		CUSTOM_ASSERT(test, "ConnectionManager::returnConnection : Connection does not belong to this manager");   //confirm it is one of ours
+		CUSTOM_ASSERT(&connection >= &m_connections[0] && &connection <= &m_connections[m_maxConnections],
+			"ConnectionManager::returnConnection : Connection is not managed by this manager");   //confirm it is in the managed list
 		
-		test = true;
+		bool test = true;
 		for (List<ManagedConnection*, Nginx_MPool_FixedElem<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
 			iter != m_spareConnections.end(); 
 			++iter)
@@ -92,6 +78,9 @@ void ConnectionManager::returnConnection(Connection& connection)
 		}
 		CUSTOM_ASSERT(test, "ConnectionManager::returnConnection : Connection is already in the spare list");   //confirm it is not in the spare list
 	#endif
+
+	connection.reset();
+	m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
 
 }
 
