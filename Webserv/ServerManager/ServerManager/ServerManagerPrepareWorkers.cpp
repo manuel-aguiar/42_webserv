@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 14:54:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:41:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 # include "ServerManager.hpp"
-# include "../ServerConfig/ServerConfig/ServerConfig.hpp"
+# include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 
 // C++ headers
 

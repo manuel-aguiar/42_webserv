@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 14:31:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:41:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 # define SERVERMANAGER_HPP
 
 // Project Headers
-# include "../GenericUtils/Webserver_Definitions.h"
-# include "ServerWorker/ServerWorker.hpp"
-# include "BlockFinder/BlockFinder.hpp"
+# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../ServerWorker/ServerWorker.hpp"
+# include "../BlockFinder/BlockFinder.hpp"
 
 // C++ headers
 # include <vector>

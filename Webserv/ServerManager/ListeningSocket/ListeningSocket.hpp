@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:31:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:43:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,19 @@
 
 # define LISTENINGSOCKET_HPP
 
+
+// Project Headers
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
 # include "../../Event/Event.hpp"
 # include "../EventManager/EventManager.hpp"
 
+// C headers
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
+//forward declarations
 class Event;
 class ServerWorker;
 class Connection;

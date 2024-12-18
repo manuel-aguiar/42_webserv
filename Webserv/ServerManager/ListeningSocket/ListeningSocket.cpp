@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:41:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "../../Globals/Globals.hpp"
 #include "../../Event/Event.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
-
 
 ListeningSocket::ListeningSocket(	ServerWorker& worker, 
 									Nginx_MemoryPool& memPool, 

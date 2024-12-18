@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/18 09:35:44 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 09:40:40 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,9 +75,9 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/HttpModule/HttpResponse/HttpResponse.cpp							\
 										$(SRC_PATH)/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp						\
 																														\
-										$(SRC_PATH)/CgiModule/CgiModule.cpp												\
-										$(SRC_PATH)/CgiModule/CgiModuleExternal.cpp										\
-										$(SRC_PATH)/CgiModule/CgiModuleManagedRequestData.cpp							\
+										$(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp									\
+										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp							\
+										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleManagedRequestData.cpp					\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequest.cpp							\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestExecute.cpp					\
 										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestEvents.cpp					\

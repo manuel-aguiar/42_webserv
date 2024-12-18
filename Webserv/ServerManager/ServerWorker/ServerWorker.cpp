@@ -12,7 +12,7 @@
 
 //Project headers
 # include "ServerWorker.hpp"
-# include "../ServerManager.hpp"
+# include "../ServerManager/ServerManager.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"

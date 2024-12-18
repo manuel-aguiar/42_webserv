@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 15:03:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 08:33:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:42:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # define SERVERWORKER_HPP
 
 // Project Headers
-//# include "../CgiManager/CgiManager.hpp"
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../EventManager/EventManager.hpp"
 # include "../ConnectionManager/ConnectionManager.hpp"
@@ -61,7 +60,6 @@ class ServerWorker
 	// getters
 		int								getID()				const;
 		const ServerManager&			getServerManager()	const;
-		//const CgiManager&				getCgiManager()		const;
 		const ConnectionManager&		getConnManager()	const;
 		const EventManager&				getEventManager()	const;
 		const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
@@ -72,7 +70,6 @@ class ServerWorker
 
 	// accessors
 		ServerManager&					accessServerManager();
-		//CgiManager&						accessCgiManager();
 		ConnectionManager&				accessConnManager();
 		EventManager&					accessEventManager();
 
@@ -90,7 +87,6 @@ class ServerWorker
 		const ServerConfig&								m_config;
 		ConnectionManager								m_connManager;
 		EventManager									m_eventManager;
-		//CgiManager										m_cgiManager;
 		Event											m_mySignalEvent;
 		Nginx_MemoryPool&								m_memPool;
 		DynArray<ListeningSocket*,

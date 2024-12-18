@@ -10,9 +10,10 @@ TARGET = test.out
 
 SRCS = $(wildcard *.cpp) \
 											\
-		../CgiModule.cpp \
-		../CgiModuleExecute.cpp \
-		../CgiModuleGetSetAccess.cpp \
+		../CgiModule/CgiModule.cpp \
+		../CgiModule/CgiModuleExternal.cpp \
+		../CgiModule/CgiModuleGetSetAccess.cpp \
+		../CgiModule/CgiModuleManagedRequestData.cpp \
 		../CgiLiveRequest/CgiLiveRequest.cpp \
 		../CgiLiveRequest/CgiLiveRequestEvents.cpp \
 		../CgiLiveRequest/CgiLiveRequestExecute.cpp \
