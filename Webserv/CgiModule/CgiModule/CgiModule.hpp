@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 15:01:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 16:48:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ class CgiModule
 		CgiRequestData&							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
 
+
+		void									forceStop();
+
+		size_t									getLiveRequestCount() const;
+
 		//getters
 		const t_CgiEnvKey*						getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
@@ -58,6 +63,7 @@ class CgiModule
 		};
 
 		size_t																		m_maxConnections;
+		size_t																		m_liveRequestCount;
 		DynArray<CgiLiveRequest>													m_liveRequests;
 		List<ManagedRequestData>													m_allRequestData;
 		
@@ -72,7 +78,7 @@ class CgiModule
 
 		Globals&																	m_globals;
 
-		void									mf_returnLiveRequest(CgiLiveRequest& request);
+		void																		mf_returnLiveRequest(CgiLiveRequest& request);
 
 
 		CgiModule(const CgiModule &copy);

@@ -33,8 +33,8 @@ CgiModule::CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) 
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
-	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiWrite, EPOLLIN);
-	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiRead, EPOLLOUT);
+	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
+	m_readEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
 }
 
 CgiModule::CgiLiveRequest::~CgiLiveRequest()
@@ -81,12 +81,15 @@ void	CgiModule::CgiLiveRequest::writeToChild()
 	std::string& body = m_curRequestData->accessMsgBody();
 
 	triggeredFlags = m_writeEvent.getTriggeredFlags();
+	//std::cout << "Write to child called, flags: " << triggeredFlags << "\n";
 	if (triggeredFlags & EPOLLOUT)
 	{
+		
 		bytesWritten = ::write(m_ParentToChild[1], body.c_str(), body.size());
-
+		//std::cout << "epollout flag, bytes written: " << bytesWritten << "\n";
 		if (bytesWritten != body.size())
 		{
+			
 			if (bytesWritten > 0)
 				body.erase(0, bytesWritten);
 			return ;
@@ -112,14 +115,21 @@ void	CgiModule::CgiLiveRequest::readFromChild()
 	int		triggeredFlags;
 	
 	triggeredFlags = m_readEvent.getTriggeredFlags();
+
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(m_ChildToParent[0], m_readBuf, sizeof(m_readBuf) - 1);
 		m_readBuf[bytesRead] = '\0';
-		std::cout << "Read from child: " << m_readBuf << std::endl;
+		if (bytesRead == 0)
+		{
+			m_curEventManager->delEvent(m_readEvent);
+			mf_closeFd(m_ChildToParent[0]);
+		}
 		m_curRequestData->accessEventHandler(E_CGI_ON_READ).handle();
+		if (bytesRead == 0)
+			cleanClose();
 	}
-		
+
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		m_curEventManager->delEvent(m_readEvent);
@@ -141,17 +151,19 @@ void	CgiModule::CgiLiveRequest::cleanClose()
 		else
 			m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
 	}
+	m_CgiModule.mf_returnLiveRequest(*this);
 }
 
 void	CgiModule::CgiLiveRequest::forcedClose()
 {
-	if (m_pid != -1)
-	{
-		::kill(m_pid, SIGKILL);
-		::waitpid(m_pid, NULL, 0);
-		m_pid = -1;
-	}
+	if (m_pid == -1)
+		return ;
+
+	::kill(m_pid, SIGKILL);
+	::waitpid(m_pid, NULL, 0);
+	m_pid = -1;
 	m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+	m_CgiModule.mf_returnLiveRequest(*this);
 }
 
 CgiRequestData*	CgiModule::CgiLiveRequest::accessCurRequestData()

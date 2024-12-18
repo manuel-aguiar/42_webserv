@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 15:11:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:05:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,29 +124,29 @@ void	CgiModule::CgiLiveRequest::mf_executeParent()
 
 void	CgiModule::CgiLiveRequest::mf_executeChild()
 {
-	std::cout << "executing child" << std::endl;
+	//std::cerr << "executing child" << std::endl;
 
 	
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
-	{
-		std::cout << "first dup2 failed" << std::endl;
+	//{
+		//std::cerr << "first dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
-	}
-	else
-		std::cout << "first dup2 success" << std::endl;
+	//}
+	//else
+	//	std::cerr << "first dup2 success" << std::endl;
 
 	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
-	{
-		std::cout << "second dup2 failed" << std::endl;
+	//{
+	//	std::cerr << "second dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
-	}
-	else
-		std::cout << "second dup2 success" << std::endl;
+	//}
+	//else
+	//	std::cerr << "second dup2 success" << std::endl;
 		
 
 
-	std::cout << "calling execve" << std::endl;
+	//std::cerr << "calling execve" << std::endl;
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
-	std::cout << "execve failed" << std::endl;
+	//std::cerr << "execve failed" << std::endl;
 	::exit(EXIT_FAILURE);
 }

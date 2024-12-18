@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 15:01:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 16:09:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,9 @@ const t_CgiEnvKey*						CgiModule::getBaseEnvKeys() const
 const std::map<t_extension, t_path>&	CgiModule::getInterpreters() const
 {
 	return (m_Interpreters);
+}
+
+size_t									CgiModule::getLiveRequestCount() const
+{
+	return (m_liveRequests.size() - m_spareLiveRequests.size());
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 14:59:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:05:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 	m_maxConnections(maxConnections),
+	m_liveRequestCount(0),
 	m_liveRequests(),
 	m_allRequestData(),
 	m_pendingRequests(),
@@ -50,7 +51,7 @@ CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 
 CgiModule::~CgiModule()
 {
-
+	forceStop();
 }
 
 //private as usual
@@ -100,5 +101,18 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 		m_pendingRequests.pop_front();
 	}
 	else
+	{
 		m_spareLiveRequests.push_back(&request);
+		m_liveRequestCount--;
+	}
+}
+
+
+void	CgiModule::forceStop()
+{
+	for (DynArray<CgiLiveRequest>::iterator it = m_liveRequests.begin(); it != m_liveRequests.end(); it++)
+	{
+		it->forcedClose();
+		it->reset();
+	}
 }
