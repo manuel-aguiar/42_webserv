@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 11:37:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 08:58:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,13 @@ class Event;
 
 class Connection
 {
-	public:
+	protected:
 		Connection(Globals& globals);
 		~Connection();
 		Connection(const Connection& other);
 		Connection& operator=(const Connection& other);
 
+	public:
 	//methods
 		void    				init();
 		void    				reset();

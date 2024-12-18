@@ -20,10 +20,10 @@ ConnectionManager::~ConnectionManager()
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
     m_maxConnections(maxConnections),
-    m_connections(Nginx_PoolAllocator<Connection>(&borrowedPool)),
+    m_connections(Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
     m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
     m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-    m_spareConnections(Nginx_MPool_FixedElem<Connection*>(&borrowedPool, maxConnections)),
+    m_spareConnections(Nginx_MPool_FixedElem<ManagedConnection*>(&borrowedPool, maxConnections)),
     m_globals(globals)
 {
     
@@ -61,7 +61,7 @@ void ConnectionManager::returnConnection(Connection& connection)
     assert(&connection != NULL);
     
     connection.reset();
-    m_spareConnections.push_front(&connection);
+    m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
 }
 
 

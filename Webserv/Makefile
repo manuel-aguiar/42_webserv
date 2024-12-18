@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/17 12:36:25 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/18 09:01:01 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketGetSetAccess.cpp		\
 										$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp							\
 										$(SRC_PATH)/ServerManager/ConnectionManager/ConnectionManager.cpp				\
+										$(SRC_PATH)/ServerManager/ConnectionManager/ManagedConnection.cpp				\
 										$(SRC_PATH)/ServerManager/BlockFinder/BlockFinder.cpp							\
 																														\
 										$(SRC_PATH)/Connection/Connection.cpp											\

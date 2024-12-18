@@ -3,10 +3,16 @@
 #                                                         :::      ::::::::    #
 #    _ConnectionManager.docs                            :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 10:34:00 by manuel            #+#    #+#              #
-#    Updated: 2024/11/29 10:34:01 by manuel           ###   ########.fr        #
+#    Updated: 2024/12/18 08:48:57 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+The connectionManager manages all Connection object instances.
+It is the sole create and destructor of connections.
+
+To do that, we create a ManagedConnection private class the inherits the protected constructors
+of Connection, to make it clear that Connection cannot be spawned on its own and can only be
+created by the ConnectionManager

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 11:06:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 08:59:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,24 @@ class ConnectionManager
 		void					returnConnection(Connection& connection);
 
 	private:
-		size_t														m_maxConnections;
-		DynArray<Connection, Nginx_PoolAllocator<Connection> >		m_connections;
-		DynArray<Event, Nginx_PoolAllocator<Event> >				m_readEvents;
-		DynArray<Event, Nginx_PoolAllocator<Event> >				m_writeEvents;
-		List<Connection*, Nginx_MPool_FixedElem<Connection*> >		m_spareConnections;
 
-		Globals&													m_globals;
+		class ManagedConnection : public Connection
+		{
+			public:
+				ManagedConnection(Globals& globals);
+				~ManagedConnection();
+			private:
+				ManagedConnection(const ManagedConnection& copy);
+				ManagedConnection& operator=(const ManagedConnection& assign);
+		};
+
+		size_t																		m_maxConnections;
+		DynArray<ManagedConnection, Nginx_PoolAllocator<ManagedConnection> >		m_connections;
+		DynArray<Event, Nginx_PoolAllocator<Event> >								m_readEvents;
+		DynArray<Event, Nginx_PoolAllocator<Event> >								m_writeEvents;
+		List<ManagedConnection*, Nginx_MPool_FixedElem<ManagedConnection*> >		m_spareConnections;
+
+		Globals&																	m_globals;
 
 
 		void 					mf_destroyConnection(Connection* connection);
