@@ -1,1 +1,3 @@
 replace the stupid maps with arrays
+
+make CgiLiveRequest a private class of the CgiModule, make it clear the user cannot interact with it
