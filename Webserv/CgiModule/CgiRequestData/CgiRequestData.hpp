@@ -36,8 +36,7 @@ class CgiRequestData
 	public:
 		// getters
 		const std::string&								getMsgBody() const;
-		const std::map<e_CgiEnv, t_CgiEnvValue>& 		getEnvBase() const;
-		const std::map<t_CgiEnvKey, t_CgiEnvValue>&		getEnvExtra() const;
+		const t_CgiRequestEnv& 							getEnvVars() const;
 		const std::string&								getExtension() const;
 		const std::string&								getScriptPath() const;	
 
@@ -58,15 +57,13 @@ class CgiRequestData
 		void											setScriptPath(const std::string& path);
 		void											setEventManager(EventManager& eventManager);
 
-
 	private:
 		Event 											m_events[E_CGI_EVENT_COUNT];
 		EventManager*									m_eventManager;
 		std::string										m_msgBody;
 		std::string										m_extension;
 		std::string										m_scriptPath;
-		std::map<e_CgiEnv, t_CgiEnvValue>				m_envBase;
-		std::map<t_CgiEnvKey, t_CgiEnvValue>			m_envExtra;
+		t_CgiRequestEnv									m_env;
 
 };	
 

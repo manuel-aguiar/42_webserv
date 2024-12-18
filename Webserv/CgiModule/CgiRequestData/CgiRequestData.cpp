@@ -16,10 +16,9 @@ CgiRequestData::CgiRequestData() :
 	m_eventManager(NULL),
 	m_msgBody(""),
 	m_extension(""),
-	m_scriptPath(""),
-	m_envBase(),
-	m_envExtra()
+	m_scriptPath("")
 {
+	m_env.envBase.reserve(E_CGI_ENV_COUNT);
 }
 
 CgiRequestData::~CgiRequestData()
@@ -27,13 +26,13 @@ CgiRequestData::~CgiRequestData()
 }
 
 CgiRequestData::CgiRequestData(const CgiRequestData &copy) :
+	m_eventManager(copy.m_eventManager),
 	m_msgBody(copy.m_msgBody),
 	m_extension(copy.m_extension),
-	m_scriptPath(copy.m_scriptPath),
-	m_envBase(copy.m_envBase),
-	m_envExtra(copy.m_envExtra)
+	m_scriptPath(copy.m_scriptPath)
 {
-	
+	m_env.envBase = copy.m_env.envBase;
+	m_env.envExtra = copy.m_env.envExtra;
 }
 
 CgiRequestData &CgiRequestData::operator=(const CgiRequestData &assign)
@@ -43,8 +42,8 @@ CgiRequestData &CgiRequestData::operator=(const CgiRequestData &assign)
 	m_msgBody = assign.m_msgBody;
 	m_extension = assign.m_extension;
 	m_scriptPath = assign.m_scriptPath;
-	m_envBase = assign.m_envBase;
-	m_envExtra = assign.m_envExtra;
+	m_env.envBase = assign.m_env.envBase;
+	m_env.envExtra = assign.m_env.envExtra;
 	return (*this);
 }
 

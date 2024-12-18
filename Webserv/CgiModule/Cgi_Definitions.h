@@ -14,8 +14,12 @@
 
 # define CGIDEFINITIONS_H
 
+//Project Headers
+# include "../GenericUtils/Webserver_Definitions.h"
+
 //C++ headers
 # include <string>
+# include <utility>
 
 typedef std::string						t_extension;
 typedef std::string						t_CgiEnvKey;
@@ -53,6 +57,12 @@ typedef enum
 	E_CGI_SERVER_SOFTWARE,
 	E_CGI_ENV_COUNT
 }	e_CgiEnv;
+
+typedef struct s_CgiRequestEnv
+{
+	DynArray<std::pair<e_CgiEnv, t_CgiEnvKey> >		envBase;
+	std::map<t_CgiEnvKey, t_CgiEnvValue>			envExtra;
+}	t_CgiRequestEnv;
 
 #define STR_CGI_AUTH_TYPE "AUTH_TYPE"
 #define STR_CGI_CONTENT_LENGTH "CONTENT_LENGTH"

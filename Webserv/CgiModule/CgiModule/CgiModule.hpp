@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 14:10:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:01:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class CgiModule
 		void									executeRequest(CgiRequestData& data);
 
 		//getters
-		const std::map<e_CgiEnv, t_CgiEnvKey>&	getBaseEnvKeys() const;
+		const t_CgiEnvKey*						getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 	private:
@@ -67,7 +67,8 @@ class CgiModule
 		List<CgiLiveRequest*>														m_spareLiveRequests;
 
 		std::map<t_extension, t_path>												m_Interpreters;
-		std::map<e_CgiEnv, t_CgiEnvKey>												m_baseEnvLeftEqual;
+
+		t_CgiEnvKey																	m_baseEnv[E_CGI_ENV_COUNT];
 
 		Globals&																	m_globals;
 

@@ -15,7 +15,7 @@
 
 int main(void)
 {
-try
+	try
 	{
 		//setup
 		Globals 		globals(NULL, NULL, NULL, NULL);
@@ -23,9 +23,13 @@ try
 		EventManager 	eventManager(globals);
 		CgiModule 		cgi(10, globals);
 
+
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
+
 		CgiRequestData& requestData = cgi.acquireRequestData();
+		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
+		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)

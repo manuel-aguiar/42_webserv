@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/12 13:59:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:04:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,12 @@ class DynArray
         {
             return (m_array[index]);
         }
+        const T& operator[](size_t index) const
+        {
+            return (m_array[index]);
+        }
 
-        size_t size()
+        size_t size() const
         {
             return (m_size);
         }

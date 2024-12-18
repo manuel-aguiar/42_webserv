@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:25:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 14:29:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:11:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,21 @@ void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 
 void	CgiModule::CgiLiveRequest::mf_prepareExecve()
 {
-	typedef std::map<e_CgiEnv, t_CgiEnvValue>::const_iterator		t_EnvBaseIter;
+	
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
 
-	const std::map<e_CgiEnv, t_CgiEnvValue>& 		EnvBase = m_curRequestData->getEnvBase();
-	const std::map<t_CgiEnvKey, t_CgiEnvValue>& 	EnvExtra = m_curRequestData->getEnvExtra();
-	size_t											entryCount = EnvBase.size() + EnvExtra.size();
+	const t_CgiRequestEnv& 			envRequest = m_curRequestData->getEnvVars();
+	const t_CgiEnvKey*				envBase = m_CgiModule.getBaseEnvKeys();
+	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	
 	m_envStr.reserve(entryCount);
 	m_envPtr.reserve(entryCount + 1);
 	m_argPtr.reserve(3);
 
-	for (t_EnvBaseIter it = EnvBase.begin(); it != EnvBase.end(); it++)
-		m_envStr.push_back(m_CgiModule.getBaseEnvKeys().find(it->first)->second + "=" + it->second);
+	for (size_t i = 0; i < envRequest.envBase.size(); i++)
+		m_envStr.push_back(envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
 
-	for (t_EnvExtraIter it = EnvExtra.begin(); it != EnvExtra.end(); it++)
+	for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
 		m_envStr.push_back(it->first + "=" + it->second);
 
 	for (size_t i = 0; i < entryCount; i++)

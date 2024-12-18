@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 15:24:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:11:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,9 @@ const std::string&								CgiRequestData::getMsgBody() const
 	return (m_msgBody);
 }
 
-const std::map<e_CgiEnv, t_CgiEnvValue>& 		CgiRequestData::getEnvBase() const
+const t_CgiRequestEnv& 							CgiRequestData::getEnvVars() const
 {
-	return (m_envBase);
-}
-
-const std::map<t_CgiEnvKey, t_CgiEnvValue>&		CgiRequestData::getEnvExtra() const
-{
-	return (m_envExtra);
+	return (m_env);
 }
 
 const std::string&								CgiRequestData::getExtension() const
@@ -54,12 +49,12 @@ void		CgiRequestData::setMsgBody(const std::string& body)
 
 void		CgiRequestData::setEnvBase(const e_CgiEnv env, const std::string& value)
 {
-	m_envBase[env] = value;
+	m_env.envBase.emplace_back(env, value);
 }
 
 void		CgiRequestData::setEnvExtra(const std::string& key, const std::string& value)
 {
-	m_envExtra[key] = value;
+	m_env.envExtra[key] = value;
 }
 
 void		CgiRequestData::setExtension(const std::string& extension)

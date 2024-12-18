@@ -1,1 +1,1 @@
-replace the stupid maps with arrays
+
