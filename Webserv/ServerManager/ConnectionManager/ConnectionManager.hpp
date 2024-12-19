@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 14:15:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:41:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class ConnectionManager
 		DynArray<ManagedConnection, Nginx_PoolAllocator<ManagedConnection> >		m_connections;
 		DynArray<Event, Nginx_PoolAllocator<Event> >								m_readEvents;
 		DynArray<Event, Nginx_PoolAllocator<Event> >								m_writeEvents;
-		List<ManagedConnection*, Nginx_MPool_FixedElem<ManagedConnection*> >		m_spareConnections;
+		DynArray<ManagedConnection*, Nginx_PoolAllocator<ManagedConnection*> >		m_spareConnections;
 
 		Globals&																	m_globals;
 

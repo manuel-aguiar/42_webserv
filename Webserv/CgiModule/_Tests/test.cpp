@@ -310,7 +310,7 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(3, 1000, globals);							//<- only 10 workers, 1000 backlog
+		CgiModule 		cgi(10, 1000, globals);							//<- only 10 workers, 1000 backlog
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		

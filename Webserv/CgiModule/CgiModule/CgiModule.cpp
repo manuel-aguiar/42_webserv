@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 13:58:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:55:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,27 @@ CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
 	m_busyWorkerCount(0),
 	m_allWorkers(),
 	m_allRequestData(),
-	m_availableRequestData(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
-	m_pendingRequests(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
-	m_availableCgiWorkers(MPool_FixedElem<InternalCgiWorker*>(m_numWorkers)),
+	m_availableWorkers(),
+	m_availableRequestData(),
+	m_executionQueue(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
 	m_globals(globals)
 {
+	// prepare workers
 	m_allWorkers.reserve(workers);
-	
+	m_availableWorkers.reserve(workers);
 	for (size_t i = 0; i < m_numWorkers; i++)
 	{
 		m_allWorkers.emplace_back(*this, globals);
-		m_availableCgiWorkers.emplace_back(&m_allWorkers[i]);
+		m_availableWorkers.push_back(&m_allWorkers[i]);
 	}
 	
+	// prepare RequestData
 	m_allRequestData.reserve(backlog);
+	m_availableRequestData.reserve(backlog);
 	for (size_t i = 0; i < m_backlog; i++)
 	{
 		m_allRequestData.emplace_back();
-		m_availableRequestData.emplace_back(&m_allRequestData[i]);
+		m_availableRequestData.push_back(&m_allRequestData[i]);
 	}
 		
 	

@@ -23,13 +23,14 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& bo
 	m_connections(Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
 	m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
 	m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-	m_spareConnections(Nginx_MPool_FixedElem<ManagedConnection*>(&borrowedPool, maxConnections)),
+	m_spareConnections(Nginx_PoolAllocator<ManagedConnection*>(&borrowedPool)),
 	m_globals(globals)
 {
 	
 	m_connections.reserve(m_maxConnections);
 	m_readEvents.reserve(m_maxConnections);
 	m_writeEvents.reserve(m_maxConnections);
+	m_spareConnections.reserve(m_maxConnections);
 
 	for (size_t i = 0; i < maxConnections; i++)
 	{
@@ -42,7 +43,6 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& bo
 
 		m_spareConnections.push_back(&m_connections[i]);
 	}
-
 }
 
 Connection* ConnectionManager::provideConnection()
@@ -51,8 +51,8 @@ Connection* ConnectionManager::provideConnection()
 
 	if (!m_spareConnections.size())
 		return (NULL);
-	connection = m_spareConnections.front();
-	m_spareConnections.pop_front();
+	connection = m_spareConnections.back();
+	m_spareConnections.pop_back();
 	return (connection);
 }
 
@@ -66,7 +66,7 @@ void ConnectionManager::returnConnection(Connection& connection)
 			"ConnectionManager::returnConnection : Connection is not managed by this manager");   //confirm it is in the managed list
 		
 		bool test = true;
-		for (List<ManagedConnection*, Nginx_MPool_FixedElem<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
+		for (DynArray<ManagedConnection*, Nginx_PoolAllocator<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
 			iter != m_spareConnections.end(); 
 			++iter)
 		{
@@ -80,7 +80,7 @@ void ConnectionManager::returnConnection(Connection& connection)
 	#endif
 
 	connection.reset();
-	m_spareConnections.push_front(static_cast<ManagedConnection*>(&connection));
+	m_spareConnections.push_back(static_cast<ManagedConnection*>(&connection));
 
 }
 

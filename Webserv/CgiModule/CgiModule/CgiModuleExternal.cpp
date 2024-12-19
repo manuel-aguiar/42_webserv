@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 15:31:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:51:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ CgiRequestData*	CgiModule::acquireRequestData()
 
 	if (!m_availableRequestData.size())
 		return (NULL);
-	data = m_availableRequestData.front();
-	m_availableRequestData.pop_front();
+	data = m_availableRequestData.back();
+	m_availableRequestData.pop_back();
 	return (data);
 }
 
@@ -50,8 +50,8 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 		// assert this request is not in the waiting queue already
 
 		test = true;
-		for (List<InternalCgiRequestData*>::iterator iter = m_pendingRequests.begin(); 
-			iter != m_pendingRequests.end(); 
+		for (List<InternalCgiRequestData*>::iterator iter = m_executionQueue.begin(); 
+			iter != m_executionQueue.end(); 
 			++iter)
 		{
 			if (&request == (*iter))
@@ -88,15 +88,15 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
-	if (m_availableCgiWorkers.size() == 0)
+	if (m_availableWorkers.size() == 0)
 	{
-		m_pendingRequests.push_back(requestData);
-		pendingIter = --m_pendingRequests.end();
+		m_executionQueue.push_back(requestData);
+		pendingIter = --m_executionQueue.end();
 		requestData->setPendingLocation(pendingIter);
 		return ;
 	}
-	worker = m_availableCgiWorkers.front();
-	m_availableCgiWorkers.pop_front();
+	worker = m_availableWorkers.back();
+	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	requestData->setExecutor(worker);
 	worker->execute(request);

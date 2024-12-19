@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 13:57:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:54:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ class CgiModule
 		DynArray<InternalCgiRequestData>											m_allRequestData;
 		
 		
-		// no memory pool for now
-		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_availableRequestData;
-		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_pendingRequests;
-		List<InternalCgiWorker*, MPool_FixedElem<InternalCgiWorker**> >				m_availableCgiWorkers;
+		DynArray<InternalCgiWorker*>												m_availableWorkers;
+		DynArray<InternalCgiRequestData*>											m_availableRequestData;
+
+		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_executionQueue;
 
 		std::map<t_extension, t_path>												m_Interpreters;
 
