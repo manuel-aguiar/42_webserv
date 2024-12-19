@@ -81,7 +81,7 @@ void    CgiModule::InternalCgiWorker::reset()
 void	CgiModule::InternalCgiWorker::writeToChild()
 {
 	int					triggeredFlags;
-	size_t				bytesWritten;
+	int					bytesWritten;
 	std::string& body = m_curRequestData->accessMsgBody();
 
 	triggeredFlags = m_writeEvent.getTriggeredFlags();
@@ -89,9 +89,16 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 	if (triggeredFlags & EPOLLOUT)
 	{
 		
-		bytesWritten = ::write(m_ParentToChild[1], body.c_str(), body.size());
+		bytesWritten = ::send(m_ParentToChild[1], body.c_str(), body.size(), MSG_NOSIGNAL);
+
+		if (bytesWritten == -1)
+		{
+			m_curEventManager->delEvent(m_writeEvent);
+			mf_closeFd(m_ParentToChild[1]);
+			return ;
+		}
 		//std::cout << "epollout flag, bytes written: " << bytesWritten << "\n";
-		if (bytesWritten != body.size())
+		if ((size_t)bytesWritten != body.size())
 		{
 			
 			if (bytesWritten > 0)

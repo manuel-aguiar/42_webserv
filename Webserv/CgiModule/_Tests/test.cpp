@@ -234,17 +234,18 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(1, 100, globals);							//<- only 1 executor
+		CgiModule 		cgi(1, 5, globals);							//<- only 1 executor
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
-		CgiRequestData* requestData1 = cgi.acquireRequestData();
+		
+			CgiRequestData* requestData1 = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
-		requestData1->setMsgBody("Hello World!");
-		requestData1->setExtension("py");
-		requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData1->setEventManager(eventManager);
+			for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
+				requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData1->setMsgBody("Hello World!");
+			requestData1->setExtension("py");
+			requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+			requestData1->setEventManager(eventManager);
 
 
 		CgiRequestData* requestData2 = cgi.acquireRequestData();
@@ -260,7 +261,6 @@ int main(void)
 
 
 		CgiRequestData* requestData3 = cgi.acquireRequestData();
-
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
 			requestData3->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
@@ -269,7 +269,6 @@ int main(void)
 		requestData3->setExtension("py");
 		requestData3->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData3->setEventManager(eventManager);
-
 
 		cgi.executeRequest(*requestData1);
 		cgi.executeRequest(*requestData2);
@@ -288,7 +287,53 @@ int main(void)
 		std::cerr << "	FAILED: " << e.what() << '\n';
 	}
 
+/******************************************/
+/******************************************/
+/******************************************/
+/******************************************/
 
+	std::cout << "Test7: ";
+	// Just abusing this
+	try
+	{
+		//setup
+		Globals 		globals(NULL, NULL, NULL, NULL);
+		CgiUser 		user;
+		EventManager 	eventManager(globals);
+		CgiModule 		cgi(10, 1000, globals);							//<- only 10 workers, 1000 backlog
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		
+		// failing, potential pipe not beign correctly reset
+
+		for (size_t i = 0; i < 1000; i++)
+		{
+			CgiRequestData* requestData1 = cgi.acquireRequestData();
+
+			for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
+				requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData1->setMsgBody("Hello World!");
+			requestData1->setExtension("py");
+			requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+			requestData1->setEventManager(eventManager);
+			cgi.executeRequest(*requestData1);
+		}
+
+		std::cout << "while loop " << std::endl;
+
+		while (cgi.getBusyWorkerCount() > 0)
+		{
+			size_t waited = eventManager.retrieveEvents(1000);
+			(void)waited;
+			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << std::endl;
+		}
+
+		std::cout << "		PASSED\n";
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "	FAILED: " << e.what() << '\n';
+	}
 
 
 

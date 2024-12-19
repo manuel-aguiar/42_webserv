@@ -40,6 +40,7 @@ void	CgiModule::InternalCgiRequestData::reset()
 {
 	CgiRequestData::reset();
 	m_executor = NULL;
+	m_pendingLocation = NULL;
 }
 
 

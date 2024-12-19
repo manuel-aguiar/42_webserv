@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 14:02:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:15:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,24 @@
 
 void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
 {
-	InternalCgiRequestData* requestData;
+	InternalCgiRequestData* currentData;
+    InternalCgiRequestData* newData;
 
-	requestData = static_cast<InternalCgiRequestData*>(worker.accessCurRequestData());
+
+	currentData = static_cast<InternalCgiRequestData*>(worker.accessCurRequestData());
 	
-	if (requestData)
-		mf_returnRequestData(*requestData);
+	if (currentData)
+		mf_returnRequestData(*currentData);
 
     worker.reset();
 
 	if (m_pendingRequests.size() > 0)
 	{
-		worker.execute(*m_pendingRequests.front());
-		m_pendingRequests.pop_front();
+        newData = m_pendingRequests.front();
+        m_pendingRequests.pop_front();
+        newData->setPendingLocation(NULL);
+        
+		worker.execute(*newData);
 	}
 	else
 	{
