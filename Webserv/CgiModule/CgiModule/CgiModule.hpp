@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 09:44:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:10:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Globals;
 class CgiModule
 {
 	public:
-		CgiModule(size_t maxConnections, Globals& globals);
+		CgiModule(size_t workers, size_t backlog, Globals& globals);
 		~CgiModule();
 
 		// methods

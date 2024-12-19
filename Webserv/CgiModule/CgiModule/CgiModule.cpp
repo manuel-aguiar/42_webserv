@@ -6,15 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 10:12:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:10:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../CgiLiveRequest/CgiLiveRequest.hpp"
 # include "CgiModule.hpp"
 
-CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
-	m_maxConnections(maxConnections),
+CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
+	m_maxConnections(workers),
 	m_liveRequestCount(0),
 	m_liveRequests(),
 	m_allRequestData(),
@@ -22,8 +22,8 @@ CgiModule::CgiModule(size_t maxConnections, Globals& globals) :
 	m_spareLiveRequests(),
 	m_globals(globals)
 {
-	m_liveRequests.reserve(maxConnections);
-	for (size_t i = 0; i < maxConnections; i++)
+	m_liveRequests.reserve(workers);
+	for (size_t i = 0; i < workers; i++)
 	{
 		m_liveRequests.emplace_back(*this, globals);
 		m_spareLiveRequests.emplace_back(&m_liveRequests[i]);
@@ -100,8 +100,8 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 
 void	CgiModule::mf_deleteRequestData(ManagedRequestData& data)
 {	
-	List<ManagedRequestData>::iterator 	dataIter;
-	List<ManagedRequestData*>::iterator pendingIter;
+	List<ManagedRequestData>::iterator	dataIter;
+	List<ManagedRequestData*>::iterator	pendingIter;
 	
 	dataIter = data.accessDataLocation();
 	pendingIter = data.accessPendingLocation();
