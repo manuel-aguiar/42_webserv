@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 14:02:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:59:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		InternalCgiWorker*							
 					accessExecutor();
 		List<InternalCgiRequestData *, MPool_FixedElem<InternalCgiRequestData *> >::iterator&		
-					accessPendingLocation();
+					accessQueuePosition();
 
 
 	private:
 		InternalCgiWorker*							m_executor;
 		
 		List<InternalCgiRequestData *, MPool_FixedElem<InternalCgiRequestData *> >::iterator		
-													m_pendingLocation;
+													m_queuePosition;
 };
 
 

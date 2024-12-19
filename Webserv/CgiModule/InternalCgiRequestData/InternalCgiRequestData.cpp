@@ -40,7 +40,7 @@ void	CgiModule::InternalCgiRequestData::reset()
 {
 	CgiRequestData::reset();
 	m_executor = NULL;
-	m_pendingLocation = NULL;
+	m_queuePosition = NULL;
 }
 
 
@@ -52,7 +52,7 @@ void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker
 
 void	CgiModule::InternalCgiRequestData::setPendingLocation(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& location)
 {
-	m_pendingLocation = location;
+	m_queuePosition = location;
 }
 
 
@@ -62,7 +62,7 @@ CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor(
 }
 
 List<CgiModule::InternalCgiRequestData *, MPool_FixedElem<CgiModule::InternalCgiRequestData *> >::iterator&	
-CgiModule::InternalCgiRequestData::accessPendingLocation()
+CgiModule::InternalCgiRequestData::accessQueuePosition()
 {
-	return (m_pendingLocation);
+	return (m_queuePosition);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:51:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 18:59:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 {	
     List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator pendingIter;
 
-    pendingIter = data.accessPendingLocation();
+    pendingIter = data.accessQueuePosition();
 
     if (pendingIter != NULL)
 		m_executionQueue.erase(pendingIter);
