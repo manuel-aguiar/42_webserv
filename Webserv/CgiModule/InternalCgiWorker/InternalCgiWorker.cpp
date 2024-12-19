@@ -85,7 +85,15 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 	std::string& body = m_curRequestData->accessMsgBody();
 
 	triggeredFlags = m_writeEvent.getTriggeredFlags();
-	//std::cout << "Write to child called, flags: " << triggeredFlags << "\n";
+
+	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
+	{
+		m_curEventManager->delEvent(m_writeEvent);
+		mf_closeFd(m_ParentToChild[1]);
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+		return ;
+	}
+
 	if (triggeredFlags & EPOLLOUT)
 	{
 		
@@ -97,7 +105,7 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 			mf_closeFd(m_ParentToChild[1]);
 			return ;
 		}
-		//std::cout << "epollout flag, bytes written: " << bytesWritten << "\n";
+		
 		if ((size_t)bytesWritten != body.size())
 		{
 			
@@ -112,12 +120,7 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 		}
 		m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).handle();
 	}
-	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
-	{
-		m_curEventManager->delEvent(m_writeEvent);
-		mf_closeFd(m_ParentToChild[1]);
-		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
-	}
+
 }
 
 void	CgiModule::InternalCgiWorker::readFromChild()

@@ -1,2 +1,1 @@
-change the order of writing, check epollerr epollhup first before writing
-inverse of reading.
+
