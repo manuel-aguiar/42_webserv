@@ -55,8 +55,8 @@ clean:
 	rm -rf $(OBJS) $(TARGET) vgcore*
 
 fclean: clean
-	$(TARGET)
+	rm -rf $(TARGET)
 
-re: fclean all
+re: fclean run
 
 .PHONY: clean fclean run

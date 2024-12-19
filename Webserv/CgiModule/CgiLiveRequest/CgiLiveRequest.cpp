@@ -33,8 +33,8 @@ CgiModule::CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) 
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
-	m_writeEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
-	m_readEvent.setFd_Data_Handler_Flags(0, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
+	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
+	m_readEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
 }
 
 CgiModule::CgiLiveRequest::~CgiLiveRequest()
@@ -49,6 +49,7 @@ void    CgiModule::CgiLiveRequest::reset()
 	m_curRequestData = NULL;
 	m_curEventManager = NULL;
 	m_pid = -1;
+
 
 	if (m_writeEvent.getFd() != -1)
 	{
@@ -65,6 +66,9 @@ void    CgiModule::CgiLiveRequest::reset()
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
+
+	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
+	m_readEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
 
 	m_argPtr.clear();
 	m_envPtr.clear();
