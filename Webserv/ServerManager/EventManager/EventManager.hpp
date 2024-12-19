@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 16:31:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:04:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ class EventManager
 		//getters
 		t_fd						getEpollFd() const;
 		int						  	getWaitCount() const;
-
+		size_t						getSubscribeCount() const;
 	private:
+		size_t						m_subscribeCount;
 		t_fd						m_epollfd;
 		t_epoll_event				m_events[MAX_EPOLL_EVENTS];
 		int							m_waitCount;

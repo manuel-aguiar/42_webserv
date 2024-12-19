@@ -143,8 +143,12 @@ int main(void)
 		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
+			(void)waited;
+			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
+
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::logic_error("eventManager still has events subscribed");
 
 		std::cout << "		PASSED\n";
 	}
@@ -211,8 +215,12 @@ int main(void)
 		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
+			(void)waited;
+			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
+
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::logic_error("eventManager still has events subscribed");
 
 		std::cout << "		PASSED\n";
 	}
@@ -277,9 +285,11 @@ int main(void)
 		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
+			(void)waited;
+			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
-
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::logic_error("eventManager still has events subscribed");
 		std::cout << "		PASSED\n";
 	}
 	catch(const std::exception& e)
@@ -300,7 +310,7 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(10, 1000, globals);							//<- only 10 workers, 1000 backlog
+		CgiModule 		cgi(3, 1000, globals);							//<- only 10 workers, 1000 backlog
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		
@@ -319,15 +329,14 @@ int main(void)
 			cgi.executeRequest(*requestData1);
 		}
 
-		std::cout << "while loop " << std::endl;
-
 		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << std::endl;
 		}
-
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::logic_error("eventManager still has events subscribed");
 		std::cout << "		PASSED\n";
 	}
 	catch(const std::exception& e)

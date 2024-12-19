@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 17:05:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:04:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 EventManager::EventManager(Globals& globals) :
+	m_subscribeCount(0),
 	m_epollfd		(-1),
 	m_waitCount		(0),
 	m_globals		(globals)
@@ -61,6 +62,7 @@ int                EventManager::addEvent(const Event& event)
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
+	++m_subscribeCount;
 	return (1);
 }
 
@@ -86,6 +88,7 @@ int                 EventManager::delEvent(const Event& event)
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
+	--m_subscribeCount;
 	return (1);
 }
 
@@ -107,6 +110,11 @@ int                 EventManager::retrieveEvents(int timeOut)
 		event->handle();
 	}
 	return (m_waitCount);
+}
+
+size_t			EventManager::getSubscribeCount() const
+{
+	return (m_subscribeCount);
 }
 
 //private
