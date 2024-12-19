@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 08:55:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:29:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,24 +99,17 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 }
 
 void	CgiModule::mf_deleteRequestData(ManagedRequestData& data)
-{
-	for (List<ManagedRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
-	{
-		if (&(*it) == &data)
-		{
-			m_allRequestData.erase(it);
-			break ;
-		}
-	}
+{	
+	List<ManagedRequestData>::iterator 	dataIter;
+	List<ManagedRequestData*>::iterator pendingIter;
+	
+	dataIter = data.accessDataLocation();
+	pendingIter = data.accessPendingLocation();
 
-	for (List<ManagedRequestData*>::iterator it = m_pendingRequests.begin(); it != m_pendingRequests.end(); it++)
-	{
-		if (*it == &data)
-		{
-			m_pendingRequests.erase(it);
-			break ;
-		}
-	}
+	if (pendingIter != NULL)
+		m_pendingRequests.erase(pendingIter);
+	if (dataIter != NULL)
+		m_allRequestData.erase(dataIter);
 }
 
 

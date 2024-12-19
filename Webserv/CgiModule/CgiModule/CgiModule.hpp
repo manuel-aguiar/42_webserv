@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 09:00:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:35:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,18 @@ class CgiModule
 				ManagedRequestData(const ManagedRequestData &copy);
 				ManagedRequestData &operator=(const ManagedRequestData &assign);
 
-				void						setExecutor(CgiLiveRequest* executor);
-				CgiLiveRequest*				accessExecutor();
+				void									setExecutor(CgiLiveRequest* const executor);
+				void									setDataLocation(const List<ManagedRequestData>::iterator& location);
+				void									setPendingLocation(const List<ManagedRequestData*>::iterator& location);
+
+				CgiLiveRequest*							accessExecutor();
+				List<ManagedRequestData>::iterator&		accessDataLocation();
+				List<ManagedRequestData*>::iterator&	accessPendingLocation();
 
 			private:
-				CgiLiveRequest*				m_executor;
-
+				CgiLiveRequest*							m_executor;
+				List<ManagedRequestData>::iterator 		m_dataLocation;
+				List<ManagedRequestData*>::iterator		m_pendingLocation;
 		};
 
 		size_t																		m_maxConnections;

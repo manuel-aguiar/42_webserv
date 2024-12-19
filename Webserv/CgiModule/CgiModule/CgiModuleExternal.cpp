@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 09:02:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:22:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 
 CgiRequestData&	CgiModule::acquireRequestData()
 {
+	List<ManagedRequestData>::iterator newRequestData;
+	
 	m_allRequestData.emplace_back();
+	newRequestData = --m_allRequestData.end();
+	newRequestData->setDataLocation(newRequestData);
 	return (m_allRequestData.back());
 }
 
@@ -72,14 +76,17 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 			"CgiModule::executeRequest : this CgiRequestedData is already being executed");
 	#endif
 
-	ManagedRequestData*	requestData;
-	CgiLiveRequest* 	liveRequest;
+	ManagedRequestData*					requestData;
+	CgiLiveRequest* 					liveRequest;
+	List<ManagedRequestData*>::iterator pendingIter;
 
 	requestData = static_cast<ManagedRequestData*>(&request);
 
 	if (m_spareLiveRequests.size() == 0)
 	{
 		m_pendingRequests.push_back(requestData);
+		pendingIter = --m_pendingRequests.end();
+		requestData->setPendingLocation(pendingIter);
 		return ;
 	}
 	liveRequest = m_spareLiveRequests.front();
@@ -153,8 +160,7 @@ void	CgiModule::cancelRequest(CgiRequestData& request)
 	{
 		requestData->setExecutor(NULL);
 		liveRequest->forcedClose();
-	}
-		
+	}	
 	else
 		mf_deleteRequestData(*requestData);
 }

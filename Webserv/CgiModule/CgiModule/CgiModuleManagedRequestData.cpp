@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 09:13:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 09:01:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:35:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,34 @@ CgiModule::ManagedRequestData &CgiModule::ManagedRequestData::operator=(const Ma
 	return (*this);
 }
 
-
-void	CgiModule::ManagedRequestData::setExecutor(CgiModule::CgiLiveRequest* executor)
+// setters
+void	CgiModule::ManagedRequestData::setExecutor(CgiModule::CgiLiveRequest* const executor)
 {
 	m_executor = executor;
 }
 
+void	CgiModule::ManagedRequestData::setDataLocation(const List<ManagedRequestData>::iterator& location)
+{
+	m_dataLocation = location;
+}
+
+void	CgiModule::ManagedRequestData::setPendingLocation(const List<ManagedRequestData*>::iterator& location)
+{
+	m_pendingLocation = location;
+}
+
+
 CgiModule::CgiLiveRequest*	CgiModule::ManagedRequestData::accessExecutor()
 {
 	return (m_executor);
+}
+
+List<CgiModule::ManagedRequestData>::iterator&	CgiModule::ManagedRequestData::accessDataLocation()
+{
+	return (m_dataLocation);
+}
+
+List<CgiModule::ManagedRequestData*>::iterator&	CgiModule::ManagedRequestData::accessPendingLocation()
+{
+	return (m_pendingLocation);
 }

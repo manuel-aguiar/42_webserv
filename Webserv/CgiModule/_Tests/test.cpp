@@ -36,7 +36,7 @@ int main(void)
 		
 		requestData1.setMsgBody("Hello World!");
 		requestData1.setExtension("py");
-		requestData1.setScriptPath("/workspaces/42_webserv/Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData1.setEventManager(eventManager);
 
 /******************************************/
@@ -77,7 +77,7 @@ int main(void)
 		
 		requestData1.setMsgBody("Hello World!");
 		requestData1.setExtension("py");
-		requestData1.setScriptPath("/workspaces/42_webserv/Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData1.setEventManager(eventManager);
 
 /******************************************/
