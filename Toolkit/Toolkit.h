@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 16:53:08 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/19 15:29:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:30:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # include "Exceptions/Exceptions.h"
 # include "List/List.hpp"
 # include "SmartPointers/SmartPointers.h"
-# include "CustomAssert/CustomAssert.hpp"
-# include "StaticAssert/StaticAssert.hpp"
+# include "Assert/CustomAssert/CustomAssert.hpp"
+# include "Assert/StaticAssert/StaticAssert.hpp"
 # include "MemoryPool/MemoryPool.h"
 # include "ThreadPool/ThreadPool.h"
 

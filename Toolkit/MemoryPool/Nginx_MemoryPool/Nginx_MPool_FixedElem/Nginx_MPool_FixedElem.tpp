@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:05:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 15:31:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <vector>
 # include "../../../Arrays/Arrays.h"
 # include "../Nginx_PoolAllocator.hpp"
-# include "../../../CustomAssert/CustomAssert.hpp"
+# include "../../../Assert/CustomAssert/CustomAssert.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
