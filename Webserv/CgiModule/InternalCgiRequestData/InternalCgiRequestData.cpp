@@ -50,9 +50,9 @@ void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker
 	m_executor = executor;
 }
 
-void	CgiModule::InternalCgiRequestData::setPendingLocation(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& location)
+void	CgiModule::InternalCgiRequestData::setQueuePosition(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& position)
 {
-	m_queuePosition = location;
+	m_queuePosition = position;
 }
 
 

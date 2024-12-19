@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:51:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:07:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 	{
 		m_executionQueue.push_back(requestData);
 		pendingIter = --m_executionQueue.end();
-		requestData->setPendingLocation(pendingIter);
+		requestData->setQueuePosition(pendingIter);
 		return ;
 	}
 	worker = m_availableWorkers.back();

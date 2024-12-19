@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:59:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:07:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		void		reset();
 
 		void		setExecutor(InternalCgiWorker* const executor);
-		void		setPendingLocation(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& location);
+		void		setQueuePosition(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& position);
 
 		InternalCgiWorker*							
 					accessExecutor();
