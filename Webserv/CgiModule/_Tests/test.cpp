@@ -82,6 +82,41 @@ int main(void)
 
 /******************************************/
 
+		cgi.cancelRequest(requestData1);
+
+		std::cout << "		PASSED\n";
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "	FAILED: " << e.what() << '\n';
+	}
+
+/*
+	std::cout << "Test2: \n";
+	try
+	{
+		//setup
+		Globals 		globals(NULL, NULL, NULL, NULL);
+		CgiUser 		user;
+		EventManager 	eventManager(globals);
+		CgiModule 		cgi(10, globals);
+
+		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
+		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		CgiRequestData& requestData1 = cgi.acquireRequestData();
+
+		//subscribe event callbacks
+		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
+			requestData1.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+		
+		requestData1.setMsgBody("Hello World!");
+		requestData1.setExtension("py");
+		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1.setEventManager(eventManager);
+
+
 		CgiRequestData& requestData2 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
@@ -93,7 +128,6 @@ int main(void)
 		requestData2.setScriptPath("/workspaces/42_webserv/Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData2.setEventManager(eventManager);
 
-/******************************************/
 
 		CgiRequestData& requestData3 = cgi.acquireRequestData();
 
@@ -106,7 +140,6 @@ int main(void)
 		requestData3.setScriptPath("/workspaces/42_webserv/Testing/MockWebsites/Website1/cgi-bin/hello.py");
 		requestData3.setEventManager(eventManager);
 
-/******************************************* */
 
 		cgi.executeRequest(requestData1);
 		cgi.executeRequest(requestData2);
@@ -125,7 +158,7 @@ int main(void)
 		std::cerr << "	FAILED: " << e.what() << '\n';
 	}
 
-/*
+
 	try
 	{
 		//setup
