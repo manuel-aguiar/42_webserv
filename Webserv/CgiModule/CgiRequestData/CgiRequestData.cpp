@@ -47,4 +47,15 @@ CgiRequestData &CgiRequestData::operator=(const CgiRequestData &assign)
 	return (*this);
 }
 
+void	CgiRequestData::reset()
+{
+	m_eventManager = NULL;
+	m_msgBody.clear();
+	m_extension.clear();
+	m_scriptPath.clear();
+	m_env.envBase.clear();
+	m_env.envExtra.clear();
 
+	for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
+		m_events[i].reset();
+}

@@ -51,10 +51,10 @@ int main(void)
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
 		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
-		CgiRequestData& requestData1 = cgi.acquireRequestData();
-		CgiRequestData& requestData2 = cgi.acquireRequestData();
-		CgiRequestData& requestData3 = cgi.acquireRequestData();
-		CgiRequestData& requestData4 = cgi.acquireRequestData();
+		CgiRequestData* requestData1 = cgi.acquireRequestData();
+		CgiRequestData* requestData2 = cgi.acquireRequestData();
+		CgiRequestData* requestData3 = cgi.acquireRequestData();
+		CgiRequestData* requestData4 = cgi.acquireRequestData();
 
 
 		(void)requestData1;
@@ -86,12 +86,12 @@ int main(void)
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
 		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
-		CgiRequestData& requestData1 = cgi.acquireRequestData();
-		CgiRequestData& requestData2 = cgi.acquireRequestData();
-		CgiRequestData& requestData3 = cgi.acquireRequestData();
-		CgiRequestData& requestData4 = cgi.acquireRequestData();
+		CgiRequestData* requestData1 = cgi.acquireRequestData();
+		CgiRequestData* requestData2 = cgi.acquireRequestData();
+		CgiRequestData* requestData3 = cgi.acquireRequestData();
+		CgiRequestData* requestData4 = cgi.acquireRequestData();
 
-		cgi.cancelRequest(requestData3);
+		cgi.cancelRequest(*requestData3);
 
 		(void)requestData1;
 		(void)requestData2;
@@ -125,25 +125,25 @@ int main(void)
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
 		
-		CgiRequestData& requestData1 = cgi.acquireRequestData();
+		CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData1.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
-		requestData1.setMsgBody("Hello World!");
-		requestData1.setExtension("py");
-		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData1.setEventManager(eventManager);
+		requestData1->setMsgBody("Hello World!");
+		requestData1->setExtension("py");
+		requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1->setEventManager(eventManager);
 
 /******************************************/
 
-		cgi.executeRequest(requestData1);
+		cgi.executeRequest(*requestData1);
 
-		while (cgi.getLiveRequestCount() > 0)
+		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getLiveRequestCount() << " \n";
+			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
 
 		std::cout << "		PASSED\n";
@@ -170,48 +170,48 @@ int main(void)
 		CgiModule 		cgi(10, 100, globals);							//10 executors available
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
-		CgiRequestData& requestData1 = cgi.acquireRequestData();
+		CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData1.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
-		requestData1.setMsgBody("Hello World!");
-		requestData1.setExtension("py");
-		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData1.setEventManager(eventManager);
+			requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+		requestData1->setMsgBody("Hello World!");
+		requestData1->setExtension("py");
+		requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1->setEventManager(eventManager);
 
 
-		CgiRequestData& requestData2 = cgi.acquireRequestData();
+		CgiRequestData* requestData2 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData2.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData2->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
-		requestData2.setMsgBody("Hello World!");
-		requestData2.setExtension("py");
-		requestData2.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData2.setEventManager(eventManager);
+		requestData2->setMsgBody("Hello World!");
+		requestData2->setExtension("py");
+		requestData2->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData2->setEventManager(eventManager);
 
 
-		CgiRequestData& requestData3 = cgi.acquireRequestData();
+		CgiRequestData* requestData3 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData3.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData3->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
-		requestData3.setMsgBody("Hello World!");
-		requestData3.setExtension("py");
-		requestData3.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData3.setEventManager(eventManager);
+		requestData3->setMsgBody("Hello World!");
+		requestData3->setExtension("py");
+		requestData3->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData3->setEventManager(eventManager);
 
 
-		cgi.executeRequest(requestData1);
-		cgi.executeRequest(requestData2);
-		cgi.executeRequest(requestData3);
+		cgi.executeRequest(*requestData1);
+		cgi.executeRequest(*requestData2);
+		cgi.executeRequest(*requestData3);
 
-		while (cgi.getLiveRequestCount() > 0)
+		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getLiveRequestCount() << " \n";
+			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
 
 		std::cout << "		PASSED\n";
@@ -237,48 +237,48 @@ int main(void)
 		CgiModule 		cgi(1, 100, globals);							//<- only 1 executor
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
-		CgiRequestData& requestData1 = cgi.acquireRequestData();
+		CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData1.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
-		requestData1.setMsgBody("Hello World!");
-		requestData1.setExtension("py");
-		requestData1.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData1.setEventManager(eventManager);
+			requestData1->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+		requestData1->setMsgBody("Hello World!");
+		requestData1->setExtension("py");
+		requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData1->setEventManager(eventManager);
 
 
-		CgiRequestData& requestData2 = cgi.acquireRequestData();
+		CgiRequestData* requestData2 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData2.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData2->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
-		requestData2.setMsgBody("Hello World!");
-		requestData2.setExtension("py");
-		requestData2.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData2.setEventManager(eventManager);
+		requestData2->setMsgBody("Hello World!");
+		requestData2->setExtension("py");
+		requestData2->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData2->setEventManager(eventManager);
 
 
-		CgiRequestData& requestData3 = cgi.acquireRequestData();
+		CgiRequestData* requestData3 = cgi.acquireRequestData();
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
-			requestData3.setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData3->setEventHandler(static_cast<e_CgiEvents>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
-		requestData3.setMsgBody("Hello World!");
-		requestData3.setExtension("py");
-		requestData3.setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
-		requestData3.setEventManager(eventManager);
+		requestData3->setMsgBody("Hello World!");
+		requestData3->setExtension("py");
+		requestData3->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+		requestData3->setEventManager(eventManager);
 
 
-		cgi.executeRequest(requestData1);
-		cgi.executeRequest(requestData2);
-		cgi.executeRequest(requestData3);
+		cgi.executeRequest(*requestData1);
+		cgi.executeRequest(*requestData2);
+		cgi.executeRequest(*requestData3);
 
-		while (cgi.getLiveRequestCount() > 0)
+		while (cgi.getBusyWorkerCount() > 0)
 		{
 			size_t waited = eventManager.retrieveEvents(1000);
-			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getLiveRequestCount() << " \n";
+			std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
 
 		std::cout << "		PASSED\n";

@@ -155,7 +155,7 @@ void	CgiModule::InternalCgiWorker::cleanClose()
 		else
 			m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
 	}
-	m_CgiModule.mf_returnLiveRequest(*this);
+	m_CgiModule.mf_returnWorker(*this);
 }
 
 void	CgiModule::InternalCgiWorker::forcedClose()
@@ -167,7 +167,7 @@ void	CgiModule::InternalCgiWorker::forcedClose()
 	::waitpid(m_pid, NULL, 0);
 	m_pid = -1;
 	m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
-	m_CgiModule.mf_returnLiveRequest(*this);
+	m_CgiModule.mf_returnWorker(*this);
 }
 
 CgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()

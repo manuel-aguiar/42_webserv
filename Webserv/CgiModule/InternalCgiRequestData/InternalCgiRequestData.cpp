@@ -36,18 +36,20 @@ CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(
 	return (*this);
 }
 
+void	CgiModule::InternalCgiRequestData::reset()
+{
+	CgiRequestData::reset();
+	m_executor = NULL;
+}
+
+
 // setters
 void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker* const executor)
 {
 	m_executor = executor;
 }
 
-void	CgiModule::InternalCgiRequestData::setDataLocation(const List<InternalCgiRequestData>::iterator& location)
-{
-	m_dataLocation = location;
-}
-
-void	CgiModule::InternalCgiRequestData::setPendingLocation(const List<InternalCgiRequestData*>::iterator& location)
+void	CgiModule::InternalCgiRequestData::setPendingLocation(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& location)
 {
 	m_pendingLocation = location;
 }
@@ -58,12 +60,8 @@ CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor(
 	return (m_executor);
 }
 
-List<CgiModule::InternalCgiRequestData>::iterator&	CgiModule::InternalCgiRequestData::accessDataLocation()
-{
-	return (m_dataLocation);
-}
-
-List<CgiModule::InternalCgiRequestData*>::iterator&	CgiModule::InternalCgiRequestData::accessPendingLocation()
+List<CgiModule::InternalCgiRequestData *, MPool_FixedElem<CgiModule::InternalCgiRequestData *> >::iterator&	
+CgiModule::InternalCgiRequestData::accessPendingLocation()
 {
 	return (m_pendingLocation);
 }

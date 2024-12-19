@@ -12,6 +12,7 @@ SRCS = $(wildcard *.cpp) \
 											\
 		../CgiModule/CgiModule.cpp \
 		../CgiModule/CgiModuleExternal.cpp \
+		../CgiModule/CgiModuleInternal.cpp \
 		../CgiModule/CgiModuleGetSetAccess.cpp \
 		../InternalCgiRequestData/InternalCgiRequestData.cpp \
 		../InternalCgiWorker/InternalCgiWorker.cpp \

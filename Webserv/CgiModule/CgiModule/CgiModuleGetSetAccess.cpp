@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 16:09:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 13:51:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ const std::map<t_extension, t_path>&	CgiModule::getInterpreters() const
 	return (m_Interpreters);
 }
 
-size_t									CgiModule::getLiveRequestCount() const
+size_t									CgiModule::getBusyWorkerCount() const
 {
-	return (m_liveRequests.size() - m_spareLiveRequests.size());
+	return (m_allWorkers.size() - m_availableCgiWorkers.size());
 }

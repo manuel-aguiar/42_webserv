@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 11:40:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 13:58:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,27 @@
 CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
 	m_numWorkers(workers),
 	m_backlog(backlog),
-	m_liveRequestCount(0),
-	m_liveRequests(),
+	m_busyWorkerCount(0),
+	m_allWorkers(),
 	m_allRequestData(),
-	m_spareRequestData(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
+	m_availableRequestData(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
 	m_pendingRequests(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
-	m_spareLiveRequests(MPool_FixedElem<InternalCgiWorker*>(m_numWorkers)),
+	m_availableCgiWorkers(MPool_FixedElem<InternalCgiWorker*>(m_numWorkers)),
 	m_globals(globals)
 {
-	m_liveRequests.reserve(workers);
+	m_allWorkers.reserve(workers);
 	
 	for (size_t i = 0; i < m_numWorkers; i++)
 	{
-		m_liveRequests.emplace_back(*this, globals);
-		m_spareLiveRequests.emplace_back(&m_liveRequests[i]);
+		m_allWorkers.emplace_back(*this, globals);
+		m_availableCgiWorkers.emplace_back(&m_allWorkers[i]);
 	}
 	
 	m_allRequestData.reserve(backlog);
 	for (size_t i = 0; i < m_backlog; i++)
 	{
 		m_allRequestData.emplace_back();
-		m_spareRequestData.emplace_back(&m_allRequestData[i]);
+		m_availableRequestData.emplace_back(&m_allRequestData[i]);
 	}
 		
 	
@@ -82,53 +82,6 @@ CgiModule& CgiModule::operator=(const CgiModule &assign)
 }
 
 
-/*
-	Deletes the CgiRequestData as it is no longer needed.
-	Checks if there are more pending requests to execute, if so, execute.
-	Else, save it for a later request.
-*/
-void	CgiModule::mf_returnLiveRequest(InternalCgiWorker& request)
-{
-	InternalCgiRequestData* requestData;
-
-	requestData = static_cast<InternalCgiRequestData*>(request.accessCurRequestData());
-	if (requestData)
-		mf_deleteRequestData(*requestData);
-
-	request.reset();
-
-	if (m_pendingRequests.size() > 0)
-	{
-		request.execute(*m_pendingRequests.front());
-		m_pendingRequests.pop_front();
-	}
-	else
-	{
-		m_spareLiveRequests.push_back(&request);
-		m_liveRequestCount--;
-	}
-}
-
-void	CgiModule::mf_deleteRequestData(InternalCgiRequestData& data)
-{	
-	List<InternalCgiRequestData>::iterator	dataIter;
-	List<InternalCgiRequestData*>::iterator	pendingIter;
-	
-	dataIter = data.accessDataLocation();
-	pendingIter = data.accessPendingLocation();
-
-	if (pendingIter != NULL)
-		m_pendingRequests.erase(pendingIter);
-	if (dataIter != NULL)
-		m_allRequestData.erase(dataIter);
-}
 
 
-void	CgiModule::forceStop()
-{
-	for (DynArray<InternalCgiWorker>::iterator it = m_liveRequests.begin(); it != m_liveRequests.end(); it++)
-	{
-		it->forcedClose();
-		it->reset();
-	}
-}
+

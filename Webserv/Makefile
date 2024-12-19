@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/19 13:54:03 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,6 +77,8 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 																														\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp									\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp							\
+										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleInternal.cpp							\
+
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp						\
 										$(SRC_PATH)/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp 				\
 										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp							\

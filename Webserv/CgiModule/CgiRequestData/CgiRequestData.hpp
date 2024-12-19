@@ -34,6 +34,9 @@ class CgiRequestData
 		CgiRequestData &operator=(const CgiRequestData &assign);
 
 	public:
+
+		void											reset();
+
 		// getters
 		const std::string&								getMsgBody() const;
 		const t_CgiRequestEnv& 							getEnvVars() const;

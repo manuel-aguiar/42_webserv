@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 13:57:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class CgiModule
 		void									forceStop();
 
 		//getters
-		size_t									getLiveRequestCount() const;
+		size_t									getBusyWorkerCount() const;
 		const t_CgiEnvKey*						getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
@@ -54,15 +54,16 @@ class CgiModule
 
 		size_t																		m_numWorkers;
 		size_t																		m_backlog;
-		size_t																		m_liveRequestCount;
-		DynArray<InternalCgiWorker>													m_liveRequests;
+		size_t																		m_busyWorkerCount;
+
+		DynArray<InternalCgiWorker>													m_allWorkers;
 		DynArray<InternalCgiRequestData>											m_allRequestData;
 		
 		
 		// no memory pool for now
-		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_spareRequestData;
+		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_availableRequestData;
 		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_pendingRequests;
-		List<InternalCgiWorker*, MPool_FixedElem<InternalCgiWorker**> >					m_spareLiveRequests;
+		List<InternalCgiWorker*, MPool_FixedElem<InternalCgiWorker**> >				m_availableCgiWorkers;
 
 		std::map<t_extension, t_path>												m_Interpreters;
 
@@ -70,8 +71,8 @@ class CgiModule
 
 		Globals&																	m_globals;
 
-		void																		mf_returnLiveRequest(InternalCgiWorker& request);
-		void																		mf_deleteRequestData(InternalCgiRequestData& data);
+		void																		mf_returnWorker(InternalCgiWorker& worker);
+		void																		mf_returnRequestData(InternalCgiRequestData& data);
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);
