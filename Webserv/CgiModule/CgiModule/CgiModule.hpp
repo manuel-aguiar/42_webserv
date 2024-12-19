@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 11:10:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class CgiModule
 		void									addInterpreter(const std::string& extension, const std::string& path);
 		void									removeInterpreter(const std::string& extension);
 		
-		CgiRequestData&							acquireRequestData();
+		CgiRequestData*							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
 		void									cancelRequest(CgiRequestData& data);
 
@@ -48,41 +48,21 @@ class CgiModule
 
 	private:
 
-		// internal request execution, other file since its long
-		class 			CgiLiveRequest;
+		// internal classes, not exposed to the user
+		class 			InternalCgiWorker;
+		class			InternalCgiRequestData;
 
-		// internal data handling
-		class ManagedRequestData : public CgiRequestData
-		{
-			public:
-				ManagedRequestData();
-				~ManagedRequestData();
-				ManagedRequestData(const ManagedRequestData &copy);
-				ManagedRequestData &operator=(const ManagedRequestData &assign);
-
-				void									setExecutor(CgiLiveRequest* const executor);
-				void									setDataLocation(const List<ManagedRequestData>::iterator& location);
-				void									setPendingLocation(const List<ManagedRequestData*>::iterator& location);
-
-				CgiLiveRequest*							accessExecutor();
-				List<ManagedRequestData>::iterator&		accessDataLocation();
-				List<ManagedRequestData*>::iterator&	accessPendingLocation();
-
-			private:
-				CgiLiveRequest*							m_executor;
-				List<ManagedRequestData>::iterator 		m_dataLocation;
-				List<ManagedRequestData*>::iterator		m_pendingLocation;
-		};
-
-		size_t																		m_maxConnections;
+		size_t																		m_numWorkers;
+		size_t																		m_backlog;
 		size_t																		m_liveRequestCount;
-		DynArray<CgiLiveRequest>													m_liveRequests;
-		List<ManagedRequestData>													m_allRequestData;
+		DynArray<InternalCgiWorker>													m_liveRequests;
+		DynArray<InternalCgiRequestData>											m_allRequestData;
 		
 		
 		// no memory pool for now
-		List<ManagedRequestData*>													m_pendingRequests;
-		List<CgiLiveRequest*>														m_spareLiveRequests;
+		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_spareRequestData;
+		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_pendingRequests;
+		List<InternalCgiWorker*, MPool_FixedElem<InternalCgiWorker**> >					m_spareLiveRequests;
 
 		std::map<t_extension, t_path>												m_Interpreters;
 
@@ -90,8 +70,8 @@ class CgiModule
 
 		Globals&																	m_globals;
 
-		void																		mf_returnLiveRequest(CgiLiveRequest& request);
-		void																		mf_deleteRequestData(ManagedRequestData& data);
+		void																		mf_returnLiveRequest(InternalCgiWorker& request);
+		void																		mf_deleteRequestData(InternalCgiRequestData& data);
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

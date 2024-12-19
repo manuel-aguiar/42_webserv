@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiModuleManagedRequestData.cpp                    :+:      :+:    :+:   */
+/*   CgiModuleInternalCgiRequestData.cpp                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,25 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiModule.hpp"
+# include "InternalCgiRequestData.hpp"
 
-CgiModule::ManagedRequestData::ManagedRequestData() :
+CgiModule::InternalCgiRequestData::InternalCgiRequestData() :
 	CgiRequestData(),
 	m_executor(NULL)
 {
 }
 
-CgiModule::ManagedRequestData::~ManagedRequestData()
+CgiModule::InternalCgiRequestData::~InternalCgiRequestData()
 {
 }
 
-CgiModule::ManagedRequestData::ManagedRequestData(const ManagedRequestData &copy) :
+CgiModule::InternalCgiRequestData::InternalCgiRequestData(const InternalCgiRequestData &copy) :
 	CgiRequestData(copy),
 	m_executor(copy.m_executor)
 {
 }
 
-CgiModule::ManagedRequestData &CgiModule::ManagedRequestData::operator=(const ManagedRequestData &assign)
+CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(const InternalCgiRequestData &assign)
 {
 	if (this != &assign)
 		CgiRequestData::operator=(assign);
@@ -37,33 +37,33 @@ CgiModule::ManagedRequestData &CgiModule::ManagedRequestData::operator=(const Ma
 }
 
 // setters
-void	CgiModule::ManagedRequestData::setExecutor(CgiModule::CgiLiveRequest* const executor)
+void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker* const executor)
 {
 	m_executor = executor;
 }
 
-void	CgiModule::ManagedRequestData::setDataLocation(const List<ManagedRequestData>::iterator& location)
+void	CgiModule::InternalCgiRequestData::setDataLocation(const List<InternalCgiRequestData>::iterator& location)
 {
 	m_dataLocation = location;
 }
 
-void	CgiModule::ManagedRequestData::setPendingLocation(const List<ManagedRequestData*>::iterator& location)
+void	CgiModule::InternalCgiRequestData::setPendingLocation(const List<InternalCgiRequestData*>::iterator& location)
 {
 	m_pendingLocation = location;
 }
 
 
-CgiModule::CgiLiveRequest*	CgiModule::ManagedRequestData::accessExecutor()
+CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor()
 {
 	return (m_executor);
 }
 
-List<CgiModule::ManagedRequestData>::iterator&	CgiModule::ManagedRequestData::accessDataLocation()
+List<CgiModule::InternalCgiRequestData>::iterator&	CgiModule::InternalCgiRequestData::accessDataLocation()
 {
 	return (m_dataLocation);
 }
 
-List<CgiModule::ManagedRequestData*>::iterator&	CgiModule::ManagedRequestData::accessPendingLocation()
+List<CgiModule::InternalCgiRequestData*>::iterator&	CgiModule::InternalCgiRequestData::accessPendingLocation()
 {
 	return (m_pendingLocation);
 }

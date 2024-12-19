@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequestExecute.cpp                          :+:      :+:    :+:   */
+/*   InternalCgiWorkerExecute.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 // Project Headers
-# include "CgiLiveRequest.hpp"
+# include "InternalCgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../CgiRequestData/CgiRequestData.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
+void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 {
 	m_curRequestData = &request;
 	m_curEventManager = &m_curRequestData->accessEventManager();
@@ -33,12 +33,12 @@ void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 
     if (::pipe(m_ParentToChild) == -1)
 	{
-		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
+		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
 		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
-		m_globals.logError("CgiLiveRequest::execute(), pipe(): " + std::string(strerror(errno)));
+		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
 		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
@@ -46,7 +46,7 @@ void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_ChildToParent[0]) ||
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
-		m_globals.logError("CgiLiveRequest::execute(), fcntl(): " + std::string(strerror(errno)));
+		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
 		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
 	}
 
@@ -55,7 +55,7 @@ void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
     m_pid = ::fork();
     if (m_pid == -1)
 	{
-		m_globals.logError("CgiLiveRequest::execute(), fork(): " + std::string(strerror(errno)));
+		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
 		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
     }
     if (m_pid == 0)
@@ -64,7 +64,7 @@ void   CgiModule::CgiLiveRequest::execute(CgiRequestData& request)
 		mf_executeParent();
 }
 
-void	CgiModule::CgiLiveRequest::mf_prepareExecve()
+void	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
 	
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
@@ -93,7 +93,7 @@ void	CgiModule::CgiLiveRequest::mf_prepareExecve()
 }
 
 
-void	CgiModule::CgiLiveRequest::mf_executeParent()
+void	CgiModule::InternalCgiWorker::mf_executeParent()
 {
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ChildToParent[1]);
@@ -122,7 +122,7 @@ void	CgiModule::CgiLiveRequest::mf_executeParent()
 
 }
 
-void	CgiModule::CgiLiveRequest::mf_executeChild()
+void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
 	//std::cerr << "executing child" << std::endl;
 

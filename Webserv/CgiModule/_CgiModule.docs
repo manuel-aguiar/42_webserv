@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/12/19 09:50:03 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,9 +64,9 @@ CgiModule::removeInterpreter(const std::string& extension);
 
 
 
-Internally, CgiModule has a private class CgiLiveRequest that is responsible for the actual execution.
+Internally, CgiModule has a private class InternalCgiWorker that is responsible for the actual execution.
 
-CgiModule also has a private ManagedRequestData to access CgiRequestData protected constructors to make
+CgiModule also has a private InternalCgiRequestData to access CgiRequestData protected constructors to make
 it clear that CgiRequestData cannot be spawned but must be asked for to the CgiModule via
 CgiModule::acquireRequestData.
 

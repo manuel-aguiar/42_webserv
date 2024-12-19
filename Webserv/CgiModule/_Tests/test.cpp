@@ -21,10 +21,10 @@ int main(void)
 	{
 		//setup
 		Globals 		globals(NULL, NULL, NULL, NULL);
-		CgiModule 		cgi(10, globals);
+		CgiModule 		cgi(10, 100, globals);
 
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
-		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
+		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
 		(void)cgi;
 
@@ -46,10 +46,10 @@ int main(void)
 	{
 		//setup
 		Globals 		globals(NULL, NULL, NULL, NULL);
-		CgiModule 		cgi(10, globals);
+		CgiModule 		cgi(10, 100, globals);
 
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
-		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
+		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
 		CgiRequestData& requestData1 = cgi.acquireRequestData();
 		CgiRequestData& requestData2 = cgi.acquireRequestData();
@@ -81,10 +81,10 @@ int main(void)
 	{
 		//setup
 		Globals 		globals(NULL, NULL, NULL, NULL);
-		CgiModule 		cgi(10, globals);
+		CgiModule 		cgi(10, 100, globals);
 
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
-		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
+		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
 		CgiRequestData& requestData1 = cgi.acquireRequestData();
 		CgiRequestData& requestData2 = cgi.acquireRequestData();
@@ -117,10 +117,10 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(10, globals);
+		CgiModule 		cgi(10, 100, globals);
 
 		//CgiRequestData requestData2;  // correctly doesn't allow compilation, protected constructors
-		//CgiLiveRequest liveRequest;	// correctly doesn't allow compilation, private to CgiModule
+		//InternalCgiWorker liveRequest;	// correctly doesn't allow compilation, private to CgiModule
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
@@ -167,7 +167,7 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(10, globals);							//10 executors available
+		CgiModule 		cgi(10, 100, globals);							//10 executors available
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		CgiRequestData& requestData1 = cgi.acquireRequestData();
@@ -234,7 +234,7 @@ int main(void)
 		Globals 		globals(NULL, NULL, NULL, NULL);
 		CgiUser 		user;
 		EventManager 	eventManager(globals);
-		CgiModule 		cgi(1, globals);							//<- only 1 executor
+		CgiModule 		cgi(1, 100, globals);							//<- only 1 executor
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		CgiRequestData& requestData1 = cgi.acquireRequestData();

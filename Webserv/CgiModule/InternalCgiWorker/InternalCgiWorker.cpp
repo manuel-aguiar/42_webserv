@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequest.cpp                                     :+:      :+:    :+:   */
+/*   InternalCgiWorker.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 // Project Headers
-#include "CgiLiveRequest.hpp"
+#include "InternalCgiWorker.hpp"
 #include "../CgiRequestData/CgiRequestData.hpp"
 #include "../../Globals/Globals.hpp"
 #include "../../ServerManager/EventManager/EventManager.hpp"
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-CgiModule::CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) :
+CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& globals) :
 	m_curEventManager(NULL),
 	m_curRequestData(NULL),
 	m_pid(-1),
@@ -33,16 +33,16 @@ CgiModule::CgiLiveRequest::CgiLiveRequest(CgiModule& manager, Globals& globals) 
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
-	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
-	m_readEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
+	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiWrite, EPOLLOUT);
+	m_readEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiRead, EPOLLIN);
 }
 
-CgiModule::CgiLiveRequest::~CgiLiveRequest()
+CgiModule::InternalCgiWorker::~InternalCgiWorker()
 {
 
 }
 
-void    CgiModule::CgiLiveRequest::reset()
+void    CgiModule::InternalCgiWorker::reset()
 {
 	m_readEvent.reset();
 	m_writeEvent.reset();
@@ -67,8 +67,8 @@ void    CgiModule::CgiLiveRequest::reset()
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
 
-	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiWrite, EPOLLOUT);
-	m_readEvent.setFd_Data_Handler_Flags(-1, this, &CgiLiveRequest::mf_CgiRead, EPOLLIN);
+	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiWrite, EPOLLOUT);
+	m_readEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiRead, EPOLLIN);
 
 	m_argPtr.clear();
 	m_envPtr.clear();
@@ -78,7 +78,7 @@ void    CgiModule::CgiLiveRequest::reset()
 
 
 
-void	CgiModule::CgiLiveRequest::writeToChild()
+void	CgiModule::InternalCgiWorker::writeToChild()
 {
 	int					triggeredFlags;
 	size_t				bytesWritten;
@@ -113,7 +113,7 @@ void	CgiModule::CgiLiveRequest::writeToChild()
 	}
 }
 
-void	CgiModule::CgiLiveRequest::readFromChild()
+void	CgiModule::InternalCgiWorker::readFromChild()
 {
 	size_t	bytesRead;
 	int		triggeredFlags;
@@ -142,7 +142,7 @@ void	CgiModule::CgiLiveRequest::readFromChild()
 	}
 }
 
-void	CgiModule::CgiLiveRequest::cleanClose()
+void	CgiModule::InternalCgiWorker::cleanClose()
 {
 	int status;
 
@@ -158,7 +158,7 @@ void	CgiModule::CgiLiveRequest::cleanClose()
 	m_CgiModule.mf_returnLiveRequest(*this);
 }
 
-void	CgiModule::CgiLiveRequest::forcedClose()
+void	CgiModule::InternalCgiWorker::forcedClose()
 {
 	if (m_pid == -1)
 		return ;
@@ -170,14 +170,14 @@ void	CgiModule::CgiLiveRequest::forcedClose()
 	m_CgiModule.mf_returnLiveRequest(*this);
 }
 
-CgiRequestData*	CgiModule::CgiLiveRequest::accessCurRequestData()
+CgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
 {
 	return (m_curRequestData);
 }
 
 
 
-CgiModule::CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
+CgiModule::InternalCgiWorker::InternalCgiWorker(const InternalCgiWorker &other) :
 	m_curEventManager(other.m_curEventManager),
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
@@ -187,7 +187,7 @@ CgiModule::CgiLiveRequest::CgiLiveRequest(const CgiLiveRequest &other) :
     *this = other;
 }
 
-CgiModule::CgiLiveRequest& CgiModule::CgiLiveRequest::operator=(const CgiLiveRequest &other)
+CgiModule::InternalCgiWorker& CgiModule::InternalCgiWorker::operator=(const InternalCgiWorker &other)
 {
     if (this == &other)
         return (*this);

@@ -1,6 +1,6 @@
 
 Implement CgiRequestData max backlog, add the memory pools, list queues etc.
 
-Separate ManagedRequestData to a separate file for easier reading
+Separate InternalCgiRequestData to a separate file for easier reading
 
 There are problems with the execution of multiple

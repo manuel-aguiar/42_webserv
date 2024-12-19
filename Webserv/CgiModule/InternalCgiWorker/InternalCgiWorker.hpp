@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequest.hpp                                 :+:      :+:    :+:   */
+/*   InternalCgiWorker.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 11:42:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:55:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:14:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CGILIVEREQUEST_HPP
+#ifndef InternalCgiWorker_HPP
 
-# define CGILIVEREQUEST_HPP
+# define InternalCgiWorker_HPP
 
 //Project Headers
 # include "../Cgi_Definitions.h"
@@ -27,11 +27,11 @@ class Connection;
 
 // implement some timeout for script execution, if nothing then kill
 
-class CgiModule::CgiLiveRequest
+class CgiModule::InternalCgiWorker
 {
 	public:
-		CgiLiveRequest(CgiModule& manager, Globals& globals);
-		~CgiLiveRequest();
+		InternalCgiWorker(CgiModule& manager, Globals& globals);
+		~InternalCgiWorker();
 
 		void    execute(CgiRequestData& request);
 		void    reset();
@@ -77,8 +77,8 @@ class CgiModule::CgiLiveRequest
 
 
 
-		CgiLiveRequest(const CgiLiveRequest &other);
-		CgiLiveRequest &operator=(const CgiLiveRequest &other);
+		InternalCgiWorker(const InternalCgiWorker &other);
+		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 };
 
 

@@ -1,7 +1,7 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    _CgiLiveRequest.docs                               :+:      :+:    :+:    #
+#    _InternalCgiWorker.docs                               :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-Just like the class Connection, CgiLiveRequest instance are going to be recycled
+Just like the class Connection, InternalCgiWorker instance are going to be recycled
 after use, with the CgiModule acting as the ConnectionManager for Cgi Requests.
 
 Since different workers may access the CgiModule, the caller of each request will

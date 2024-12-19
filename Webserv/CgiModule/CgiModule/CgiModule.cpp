@@ -6,27 +6,38 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 11:10:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:40:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../CgiLiveRequest/CgiLiveRequest.hpp"
+# include "../InternalCgiWorker/InternalCgiWorker.hpp"
+# include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
 CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
-	m_maxConnections(workers),
+	m_numWorkers(workers),
+	m_backlog(backlog),
 	m_liveRequestCount(0),
 	m_liveRequests(),
 	m_allRequestData(),
-	m_pendingRequests(),
-	m_spareLiveRequests(),
+	m_spareRequestData(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
+	m_pendingRequests(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
+	m_spareLiveRequests(MPool_FixedElem<InternalCgiWorker*>(m_numWorkers)),
 	m_globals(globals)
 {
 	m_liveRequests.reserve(workers);
-	for (size_t i = 0; i < workers; i++)
+	
+	for (size_t i = 0; i < m_numWorkers; i++)
 	{
 		m_liveRequests.emplace_back(*this, globals);
 		m_spareLiveRequests.emplace_back(&m_liveRequests[i]);
+	}
+	
+	m_allRequestData.reserve(backlog);
+	for (size_t i = 0; i < m_backlog; i++)
+	{
+		m_allRequestData.emplace_back();
+		m_spareRequestData.emplace_back(&m_allRequestData[i]);
 	}
 		
 	
@@ -56,7 +67,7 @@ CgiModule::~CgiModule()
 
 //private as usual
 CgiModule::CgiModule(const CgiModule &copy) :
-	m_maxConnections(copy.m_maxConnections),
+	m_numWorkers(copy.m_numWorkers),
 	m_globals(copy.m_globals)
 {
 
@@ -66,7 +77,7 @@ CgiModule& CgiModule::operator=(const CgiModule &assign)
 {
 	if (this == &assign)
 		return (*this);
-	m_maxConnections = assign.m_maxConnections;
+	m_numWorkers = assign.m_numWorkers;
 	return (*this);
 }
 
@@ -76,11 +87,11 @@ CgiModule& CgiModule::operator=(const CgiModule &assign)
 	Checks if there are more pending requests to execute, if so, execute.
 	Else, save it for a later request.
 */
-void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
+void	CgiModule::mf_returnLiveRequest(InternalCgiWorker& request)
 {
-	ManagedRequestData* requestData;
+	InternalCgiRequestData* requestData;
 
-	requestData = static_cast<ManagedRequestData*>(request.accessCurRequestData());
+	requestData = static_cast<InternalCgiRequestData*>(request.accessCurRequestData());
 	if (requestData)
 		mf_deleteRequestData(*requestData);
 
@@ -98,10 +109,10 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 	}
 }
 
-void	CgiModule::mf_deleteRequestData(ManagedRequestData& data)
+void	CgiModule::mf_deleteRequestData(InternalCgiRequestData& data)
 {	
-	List<ManagedRequestData>::iterator	dataIter;
-	List<ManagedRequestData*>::iterator	pendingIter;
+	List<InternalCgiRequestData>::iterator	dataIter;
+	List<InternalCgiRequestData*>::iterator	pendingIter;
 	
 	dataIter = data.accessDataLocation();
 	pendingIter = data.accessPendingLocation();
@@ -115,7 +126,7 @@ void	CgiModule::mf_deleteRequestData(ManagedRequestData& data)
 
 void	CgiModule::forceStop()
 {
-	for (DynArray<CgiLiveRequest>::iterator it = m_liveRequests.begin(); it != m_liveRequests.end(); it++)
+	for (DynArray<InternalCgiWorker>::iterator it = m_liveRequests.begin(); it != m_liveRequests.end(); it++)
 	{
 		it->forcedClose();
 		it->reset();

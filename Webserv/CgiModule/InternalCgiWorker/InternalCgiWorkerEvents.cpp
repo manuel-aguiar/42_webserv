@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequestEvents.cpp                           :+:      :+:    :+:   */
+/*   InternalCgiWorkerEvents.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CgiLiveRequest.hpp"
+#include "InternalCgiWorker.hpp"
 
-void	CgiModule::CgiLiveRequest::mf_CgiWrite(Event& event)
+void	CgiModule::InternalCgiWorker::mf_CgiWrite(Event& event)
 {
-	CgiLiveRequest* request;
+	InternalCgiWorker* request;
 	
-	request = static_cast<CgiLiveRequest*>(event.getData());
+	request = static_cast<InternalCgiWorker*>(event.getData());
 	request->writeToChild();
 }
 
-void	CgiModule::CgiLiveRequest::mf_CgiRead(Event& event)
+void	CgiModule::InternalCgiWorker::mf_CgiRead(Event& event)
 {
-	CgiLiveRequest*	request;
+	InternalCgiWorker*	request;
 	
-	request = static_cast<CgiLiveRequest*>(event.getData());
+	request = static_cast<InternalCgiWorker*>(event.getData());
 	request->readFromChild();
 }

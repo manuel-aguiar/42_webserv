@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CgiLiveRequestUtils.cpp                            :+:      :+:    :+:   */
+/*   InternalCgiWorkerUtils.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "CgiLiveRequest.hpp"
+# include "InternalCgiWorker.hpp"
 # include "../../Globals/Globals.hpp"
 
-void 	CgiModule::CgiLiveRequest::mf_closeFd(t_fd& fd)
+void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
-		m_globals.logError("CgiLiveRequest::closeFd(), close(): " + std::string(strerror(errno)));
+		m_globals.logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
 	fd = -1;
 }

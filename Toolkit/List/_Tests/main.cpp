@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/12 09:41:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:35:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -681,6 +681,41 @@ int main(void)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+/******************* TEST 17 ************************/
+
+	try
+	{
+		std::cout << "TEST 17: ";
+
+
+		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
+		List<int, Nginx_MPool_FixedElem<int> > 			list(Nginx_MPool_FixedElem<int>(memoryPool, 100));
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			std.splice(std.end(), std, std.begin());
+
+			list.emplace_back(i);
+			list.splice(list.end(), list, list.begin());
+		}
+
+		if (std.size() != list.size())
+			throw std::logic_error("size mismatch");
+
+		std::list<int, Nginx_MPool_FixedElem<int> >::iterator iter = std.begin();
+		List<int, Nginx_MPool_FixedElem<int> >::iterator it = list.begin();
+		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
 	memoryPool->destroy();
 

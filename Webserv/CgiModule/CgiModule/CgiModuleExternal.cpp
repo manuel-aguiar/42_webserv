@@ -6,16 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 10:16:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../CgiLiveRequest/CgiLiveRequest.hpp"
+# include "../InternalCgiWorker/InternalCgiWorker.hpp"
+# include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-CgiRequestData&	CgiModule::acquireRequestData()
+CgiRequestData*	CgiModule::acquireRequestData()
 {
-	List<ManagedRequestData>::iterator newRequestData;
+	List<InternalCgiRequestData>::iterator newRequestData;
 	
 	m_allRequestData.emplace_back();
 	newRequestData = --m_allRequestData.end();
@@ -32,7 +33,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 		// assert the requestdata belongs to this CgiModule
 
 		bool test = false;
-		for (List<ManagedRequestData>::iterator iter = m_allRequestData.begin(); 
+		for (List<InternalCgiRequestData>::iterator iter = m_allRequestData.begin(); 
 			iter != m_allRequestData.end(); 
 			++iter)
 		{
@@ -48,7 +49,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 		// assert this request is not in the waiting queue already
 
 		test = true;
-		for (List<ManagedRequestData*>::iterator iter = m_pendingRequests.begin(); 
+		for (List<InternalCgiRequestData*>::iterator iter = m_pendingRequests.begin(); 
 			iter != m_pendingRequests.end(); 
 			++iter)
 		{
@@ -63,7 +64,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 		
 		// assert this request is not being executed already right now
 		test = true;
-		for (DynArray<CgiLiveRequest>::iterator iter = m_liveRequests.begin(); 
+		for (DynArray<InternalCgiWorker>::iterator iter = m_liveRequests.begin(); 
 			iter != m_liveRequests.end(); 
 			++iter)
 		{
@@ -77,11 +78,11 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 			"CgiModule::executeRequest : this CgiRequestedData is already being executed");
 	#endif
 
-	ManagedRequestData*					requestData;
-	CgiLiveRequest* 					liveRequest;
-	List<ManagedRequestData*>::iterator pendingIter;
+	InternalCgiRequestData*					requestData;
+	InternalCgiWorker* 					liveRequest;
+	List<InternalCgiRequestData*>::iterator pendingIter;
 
-	requestData = static_cast<ManagedRequestData*>(&request);
+	requestData = static_cast<InternalCgiRequestData*>(&request);
 
 	if (m_spareLiveRequests.size() == 0)
 	{
@@ -104,7 +105,7 @@ void	CgiModule::cancelRequest(CgiRequestData& request)
 
 
 		bool test = false;
-		for (List<ManagedRequestData>::iterator iter = m_allRequestData.begin(); 
+		for (List<InternalCgiRequestData>::iterator iter = m_allRequestData.begin(); 
 			iter != m_allRequestData.end(); 
 			++iter)
 		{
@@ -120,10 +121,10 @@ void	CgiModule::cancelRequest(CgiRequestData& request)
 	
 
 	// implementation
-	ManagedRequestData* requestData;
-	CgiLiveRequest*		liveRequest;
+	InternalCgiRequestData* requestData;
+	InternalCgiWorker*		liveRequest;
 
-	requestData = static_cast<ManagedRequestData*>(&request);
+	requestData = static_cast<InternalCgiRequestData*>(&request);
 	liveRequest = requestData->accessExecutor();
 
 	if (liveRequest)

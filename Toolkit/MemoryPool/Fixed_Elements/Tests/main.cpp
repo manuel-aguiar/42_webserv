@@ -6,11 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 10:56:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:27:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../MPool_FixedElements.hpp"
+#include "../../../List/List.hpp"
 #include <list>
 
 int main(void)
@@ -41,5 +42,30 @@ int main(void)
     list1.push_back(3);   
     list1.push_back(3);
 
-    list1.clear();
+    List<int, MPool_FixedElem<int> > list2(MPool_FixedElem<int>(10));
+
+    list2.push_back(1);
+    list2.push_back(2);
+    list2.push_back(3);
+    list2.push_back(1);
+    list2.push_back(2);
+    list2.push_back(3);
+    list2.push_back(1);
+    list2.push_back(2);
+    list2.push_back(3);   
+    list2.push_back(3); 
+    list2.pop_front();
+    list2.pop_front();
+    list2.pop_front();
+    list2.pop_front();
+    list2.push_back(3); 
+    list2.pop_front();
+    list2.push_back(3);   
+    list2.push_back(3);
+    list2.pop_front();
+    list2.pop_front();
+    list2.pop_front();
+    list2.push_back(3);   
+    list2.push_back(3);
+
 }

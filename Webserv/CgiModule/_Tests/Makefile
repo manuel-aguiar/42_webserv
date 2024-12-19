@@ -13,11 +13,11 @@ SRCS = $(wildcard *.cpp) \
 		../CgiModule/CgiModule.cpp \
 		../CgiModule/CgiModuleExternal.cpp \
 		../CgiModule/CgiModuleGetSetAccess.cpp \
-		../CgiModule/CgiModuleManagedRequestData.cpp \
-		../CgiLiveRequest/CgiLiveRequest.cpp \
-		../CgiLiveRequest/CgiLiveRequestEvents.cpp \
-		../CgiLiveRequest/CgiLiveRequestExecute.cpp \
-		../CgiLiveRequest/CgiLiveRequestUtils.cpp \
+		../InternalCgiRequestData/InternalCgiRequestData.cpp \
+		../InternalCgiWorker/InternalCgiWorker.cpp \
+		../InternalCgiWorker/InternalCgiWorkerEvents.cpp \
+		../InternalCgiWorker/InternalCgiWorkerExecute.cpp \
+		../InternalCgiWorker/InternalCgiWorkerUtils.cpp \
 											\
 		../CgiRequestData/CgiRequestData.cpp \
 		../CgiRequestData/CgiRequestDataGetSetAccess.cpp	\

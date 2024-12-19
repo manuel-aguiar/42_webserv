@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/18 10:04:44 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/19 11:37:52 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,11 +78,11 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp									\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp							\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp						\
-										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleManagedRequestData.cpp					\
-										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequest.cpp							\
-										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestExecute.cpp					\
-										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestEvents.cpp					\
-										$(SRC_PATH)/CgiModule/CgiLiveRequest/CgiLiveRequestUtils.cpp					\
+										$(SRC_PATH)/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp 				\
+										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp							\
+										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp					\
+										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp					\
+										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorkerUtils.cpp					\
 										$(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestData.cpp							\
 										$(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp
 																			

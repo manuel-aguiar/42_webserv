@@ -1,6 +1,6 @@
 
 
-# include "../CgiLiveRequest.hpp"
+# include "../InternalCgiWorker.hpp"
 # include "TestDependencies.hpp"
 # include <iostream>
 
