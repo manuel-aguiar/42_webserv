@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 16:48:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:00:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class CgiModule
 		
 		CgiRequestData&							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
-
+		void									cancelRequest(CgiRequestData& data);
 
 		void									forceStop();
 
@@ -60,6 +60,13 @@ class CgiModule
 				~ManagedRequestData();
 				ManagedRequestData(const ManagedRequestData &copy);
 				ManagedRequestData &operator=(const ManagedRequestData &assign);
+
+				void						setExecutor(CgiLiveRequest* executor);
+				CgiLiveRequest*				accessExecutor();
+
+			private:
+				CgiLiveRequest*				m_executor;
+
 		};
 
 		size_t																		m_maxConnections;
@@ -79,7 +86,7 @@ class CgiModule
 		Globals&																	m_globals;
 
 		void																		mf_returnLiveRequest(CgiLiveRequest& request);
-
+		void																		mf_deleteRequestData(ManagedRequestData& data);
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

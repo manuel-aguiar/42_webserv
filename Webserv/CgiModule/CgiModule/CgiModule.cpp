@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 17:05:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/19 08:55:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,7 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 
 	requestData = static_cast<ManagedRequestData*>(request.accessCurRequestData());
 	if (requestData)
-	{
-		for (List<ManagedRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
-		{
-			if (&(*it) == requestData)
-			{
-				m_allRequestData.erase(it);
-				break ;
-			}
-		}
-	}
+		mf_deleteRequestData(*requestData);
 
 	request.reset();
 
@@ -104,6 +95,27 @@ void	CgiModule::mf_returnLiveRequest(CgiLiveRequest& request)
 	{
 		m_spareLiveRequests.push_back(&request);
 		m_liveRequestCount--;
+	}
+}
+
+void	CgiModule::mf_deleteRequestData(ManagedRequestData& data)
+{
+	for (List<ManagedRequestData>::iterator it = m_allRequestData.begin(); it != m_allRequestData.end(); it++)
+	{
+		if (&(*it) == &data)
+		{
+			m_allRequestData.erase(it);
+			break ;
+		}
+	}
+
+	for (List<ManagedRequestData*>::iterator it = m_pendingRequests.begin(); it != m_pendingRequests.end(); it++)
+	{
+		if (*it == &data)
+		{
+			m_pendingRequests.erase(it);
+			break ;
+		}
 	}
 }
 
