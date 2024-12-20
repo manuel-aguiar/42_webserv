@@ -95,6 +95,7 @@ int main(void)
 
 		DynArray<A_ProtoRequest> requests;
 		requests.reserve(connectionCount);
+
 		for (size_t i = 0; i < connectionCount; ++i)
 		{
 			requests.emplace_back(eventManager, globals, cgi);
@@ -130,13 +131,19 @@ int main(void)
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::logic_error("eventManager still has events subscribed");
 
+		bool test = true;
 		for (size_t i = 0; i < connectionCount; ++i)
 		{
 			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
 				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
-				throw std::logic_error("script output does not match expected output");
+			{
+				std::cout << i << " failed: " << requests[i].m_TotalBytesRead << " " << requests[i].m_buffer << "\n\n";
+				std::cout << "original: " << ::strlen(scriptOutput) << " " << scriptOutput << "\n\n";
+				test = false;
+			}
 		}
-
+		if (!test)
+			throw std::logic_error("script output does not match expected output, cases above");
 
 		std::cout << "	PASS\n";
 
@@ -145,8 +152,6 @@ int main(void)
 	{
 		std::cerr << "	FAILED: " << e.what() << '\n';
 	}	
-
-
 
 	return (0);
 }

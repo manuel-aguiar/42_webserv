@@ -1,0 +1,17 @@
+AUTH_TYPE: <not set>
+CONTENT_LENGTH: <not set>
+CONTENT_TYPE: <not set>
+GATEWAY_INTERFACE: <not set>
+PATH_INFO: <not set>
+PATH_TRANSLATED: <not set>
+QUERY_STRING: <not set>
+REMOTE_ADDR: <not set>
+REMOTE_HOST: <not set>
+REMOTE_IDENT: <not set>
+REMOTE_USER: <not set>
+REQUEST_METHOD: <not set>
+SCRIPT_NAME: <not set>
+SERVER_NAME: <not set>
+SERVER_PORT: <not set>
+SERVER_PROTOCOL: <not set>
+SERVER_SOFTWARE: <not set>
