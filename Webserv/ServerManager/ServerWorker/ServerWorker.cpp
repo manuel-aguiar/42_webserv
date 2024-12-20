@@ -57,7 +57,11 @@ ServerWorker::~ServerWorker()
 int ServerWorker::prepareLaunch()
 {
 	//setup signal handler
-	m_mySignalEvent.setFd_Data_Handler_Flags(g_SignalHandler.getPipeRead(m_myID), this, &ServerWorker::EventExit, EPOLLIN);
+	m_mySignalEvent.setFdFlags(g_SignalHandler.getPipeRead(m_myID), EPOLLIN);
+	m_mySignalEvent.setCallback(this, &ServerWorker::EventCallbackExit);
+
+	
+	
 	m_eventManager.addEvent(m_mySignalEvent);
 
 	// open listening sockets and monitor them
@@ -80,6 +84,11 @@ int ServerWorker::run()
 		m_eventManager.retrieveEvents(-1);
 	}
 	return (1);
+}
+
+void	ServerWorker::stop()
+{
+	m_isRunning = false;
 }
 
 void	ServerWorker::addPendingAccept(ListeningSocket& listener)

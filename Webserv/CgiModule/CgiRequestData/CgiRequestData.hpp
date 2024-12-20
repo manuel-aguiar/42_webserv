@@ -44,25 +44,23 @@ class CgiRequestData
 		const std::string&								getScriptPath() const;	
 
 		// accessors
-		Event&											accessEventHandler(const e_CgiEvents eventType);
-		std::string&									accessMsgBody();
+		Callback&										accessCallback(const e_CgiCallbacks eventType);
 		
 		// setters
-		void											setEventHandler(const e_CgiEvents eventType, 
-																		const t_ptr_event_data data, 
-																		const t_func_event_handler handler);
+		void											setCallback(const e_CgiCallbacks eventType, 
+																		const t_ptr_callback_data data, 
+																		const t_func_callback_handler handler);
 
 		void											setMsgBody(const std::string& body);
 		void											setEnvBase(const e_CgiEnv env, const std::string& value);
 		void											setEnvExtra(const std::string& key, const std::string& value);
 		void											setExtension(const std::string& extension);
 		void											setScriptPath(const std::string& path);
-		void											setEventManager(EventManager& eventManager);
 
 	private:
 		Event											m_CgiReadEvent;
 		Event											m_CgiWriteEvent;
-		Event 											m_events[E_CGI_EVENT_COUNT];
+		Callback 										m_callbacks[E_CGI_CALLBACK_COUNT];
 		std::string										m_extension;
 		std::string										m_scriptPath;
 		t_CgiRequestEnv									m_env;

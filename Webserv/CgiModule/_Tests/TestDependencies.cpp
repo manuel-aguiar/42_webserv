@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 14:22:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 14:49:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "TestDependencies.hpp"
 #include "../../Event/Event.hpp"
 
-void (*CgiUserGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
+void (*CgiUserGateway::eventHandlers[E_CGI_CALLBACK_COUNT])(Event& event) = {
 	CgiUserGateway::onRead,
 	CgiUserGateway::onWrite,
 	CgiUserGateway::onError,

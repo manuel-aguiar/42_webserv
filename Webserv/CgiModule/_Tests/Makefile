@@ -36,6 +36,8 @@ SRCS = $(wildcard *.cpp) \
 		../../GenericUtils/Validation/Validation.cpp \
 		../../Event/Event.cpp \
 		../../Event/EventGetSetAccess.cpp \
+		../../Callback/Callback.cpp \
+		../../Callback/CallbackGetSetAccess.cpp \
 		TestProtoConnections/A_ProtoRequest.cpp
 
 ##TestProtoConnections/B_ProtoConn.cpp 

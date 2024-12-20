@@ -6,16 +6,16 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 08:41:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 14:45:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 #include "HttpCgiGateway.hpp"
 #include "../HttpRequest/HttpRequest.hpp"
-#include "../../Event/Event.hpp"
+#include "../../Callback/Callback.hpp"
 
-void (*HttpCgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
+void (*HttpCgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback) = {
 	HttpCgiGateway::onRead,
 	HttpCgiGateway::onWrite,
 	HttpCgiGateway::onError,
@@ -23,33 +23,33 @@ void (*HttpCgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
 	HttpCgiGateway::onTimeout
 };
 
-void HttpCgiGateway::onRead(Event& event)
+void HttpCgiGateway::onRead(Callback& Callback)
 {
-	HttpRequest& request = *static_cast<HttpRequest*>(event.getData());
+	HttpRequest& request = *static_cast<HttpRequest*>(Callback.getData());
 	HttpCgiGateway::CgiOnRead(request);
 }
 
-void HttpCgiGateway::onWrite(Event& event)
+void HttpCgiGateway::onWrite(Callback& Callback)
 {
-	HttpRequest& request = *static_cast<HttpRequest*>(event.getData());
+	HttpRequest& request = *static_cast<HttpRequest*>(Callback.getData());
 	HttpCgiGateway::CgiOnWrite(request);
 }
 
-void HttpCgiGateway::onError(Event& event)
+void HttpCgiGateway::onError(Callback& Callback)
 {
-	HttpRequest& request = *static_cast<HttpRequest*>(event.getData());
+	HttpRequest& request = *static_cast<HttpRequest*>(Callback.getData());
 	HttpCgiGateway::CgiOnError(request);
 }
 
-void HttpCgiGateway::onClose(Event& event)
+void HttpCgiGateway::onClose(Callback& Callback)
 {
-	HttpRequest& request = *static_cast<HttpRequest*>(event.getData());
+	HttpRequest& request = *static_cast<HttpRequest*>(Callback.getData());
 	HttpCgiGateway::CgiOnClose(request);
 }
 
-void HttpCgiGateway::onTimeout(Event& event)
+void HttpCgiGateway::onTimeout(Callback& Callback)
 {
-	HttpRequest& request = *static_cast<HttpRequest*>(event.getData());
+	HttpRequest& request = *static_cast<HttpRequest*>(Callback.getData());
 	HttpCgiGateway::CgiOnTimeout(request);
 }
 

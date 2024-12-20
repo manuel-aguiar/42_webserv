@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:43:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:54:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ class ListeningSocket
 		void                        close();
 		void                        closeConnection(Connection& connection);
 
-		// events
-		static void                 EventAccept(Event& event);
+		// events callbacks
+		static void                 EventCallbackAccept(Callback& callback);
 
 
 		// getters

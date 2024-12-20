@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/19 13:54:03 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/20 12:19:14 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,6 +57,9 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/Event/Event.cpp														\
 										$(SRC_PATH)/Event/EventGetSetAccess.cpp											\
 																														\
+										$(SRC_PATH)/Callback/Callback.cpp												\
+										$(SRC_PATH)/Callback/CallbackGetSetAccess.cpp									\
+																														\
 										$(SRC_PATH)/Globals/Globals.cpp													\
 										$(SRC_PATH)/Globals/Clock/Clock.cpp												\
 										$(SRC_PATH)/Globals/LogFile/LogFile.cpp											\
@@ -78,7 +81,7 @@ SRCS 							=		$(SRC_PATH)/main.cpp															\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp									\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp							\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleInternal.cpp							\
-
+																														\
 										$(SRC_PATH)/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp						\
 										$(SRC_PATH)/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp 				\
 										$(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp							\

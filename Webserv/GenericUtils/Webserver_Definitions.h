@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 09:05:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:00:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ typedef void*										t_ptr_ProtoModule;
 class Connection;
 typedef void 										(*t_func_initProtoConn)(Connection*);
 
-//Event typedefs
-class Event;
-typedef void										(*t_func_event_handler)(Event& event);
-typedef void*										t_ptr_event_data;
+class Callback;
+typedef void										(*t_func_callback_handler)(Callback& callback);
+typedef void*										t_ptr_callback_data;
+
 
 typedef union
 {

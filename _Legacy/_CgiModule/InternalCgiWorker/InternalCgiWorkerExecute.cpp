@@ -34,12 +34,12 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessCallbacks(E_CGI_ON_ERROR).handle());
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessCallbacks(E_CGI_ON_ERROR).handle());
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -47,7 +47,7 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessCallbacks(E_CGI_ON_ERROR).handle());
 	}
 
 	mf_prepareExecve();
@@ -56,7 +56,7 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		return (m_curRequestData->accessCallbacks(E_CGI_ON_ERROR).handle());
     }
     if (m_pid == 0)
 		mf_executeChild();

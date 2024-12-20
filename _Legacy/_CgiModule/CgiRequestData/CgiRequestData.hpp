@@ -44,12 +44,12 @@ class CgiRequestData
 		const std::string&								getScriptPath() const;	
 
 		// accessors
-		Event&											accessEventHandler(const e_CgiEvents eventType);
+		Event&											accessCallbacks(const e_CgiCallbacks eventType);
 		std::string&									accessMsgBody();
 		EventManager&									accessEventManager();
 		
 		// setters
-		void											setEventHandler(const e_CgiEvents eventType, 
+		void											setCallback(const e_CgiCallbacks eventType, 
 																		const t_ptr_event_data data, 
 																		const t_func_event_handler handler);
 
@@ -61,7 +61,7 @@ class CgiRequestData
 		void											setEventManager(EventManager& eventManager);
 
 	private:
-		Event 											m_events[E_CGI_EVENT_COUNT];
+		Event 											m_events[E_CGI_CALLBACK_COUNT];
 		EventManager*									m_eventManager;
 		std::string										m_msgBody;
 		std::string										m_extension;

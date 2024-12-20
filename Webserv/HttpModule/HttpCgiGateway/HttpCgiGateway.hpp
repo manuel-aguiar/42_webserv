@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 08:44:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 14:45:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,22 @@
 # include "../../CgiModule/Cgi_Definitions.h"
 
 //forward declarations
-class Event;
+class Callback;
 class HttpRequest;
 
 class HttpCgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onRead(Event& event);
-		static void onWrite(Event& event);
-		static void onError(Event& event);
-		static void onClose(Event& event);
-		static void onTimeout(Event& event);
+		static void onRead(Callback& Callback);
+		static void onWrite(Callback& Callback);
+		static void onError(Callback& Callback);
+		static void onClose(Callback& Callback);
+		static void onTimeout(Callback& Callback);
 
-		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
+		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
 
-		// Implementation of events
+		// Implementation of Callbacks
 		static void CgiOnRead(HttpRequest& request);
 		static void CgiOnWrite(HttpRequest& request);
 		static void CgiOnError(HttpRequest& request);

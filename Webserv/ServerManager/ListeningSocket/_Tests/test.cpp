@@ -199,7 +199,7 @@ int main(void)
 			const Event& event = listener.getEvent();
 			{
 				const t_func_event_handler result = event.getHandler();
-				const t_func_event_handler expected = &ListeningSocket::EventAccept;
+				const t_func_event_handler expected = &ListeningSocket::EventCallbackAccept;
 				if (result != expected)
 					throw std::runtime_error("event should be listeningsocket::eventaccept");
 			}

@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   A_ProtoRequest.hpp                                    :+:      :+:    :+:   */
+/*   B_ProtoConn.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 09:09:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 09:16:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef A_ProtoRequest_HPP
+#ifndef B_PROTOCONN_HPP
 
-# define A_ProtoRequest_HPP
+# define B_PROTOCONN_HPP
 
 
 #include "../../Cgi_Definitions.h"
 
 class Event;
 
-class A_ProtoRequest
+class B_ProtoConn
 {
     
 };
 
-class A_ProtoRequest_CgiGateway
+class B_ProtoConn_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
@@ -34,14 +34,14 @@ class A_ProtoRequest_CgiGateway
 		static void onClose(Event& event);
 		static void onTimeout(Event& event);
 
-		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
+		static void (*eventHandlers[E_CGI_CALLBACK_COUNT])(Event& event);
 
 		// Implementation of events
-		static void CgiOnRead(A_ProtoRequest& request);
-		static void CgiOnWrite(A_ProtoRequest& request);
-		static void CgiOnError(A_ProtoRequest& request);
-		static void CgiOnClose(A_ProtoRequest& request);
-		static void CgiOnTimeout(A_ProtoRequest& request);	
+		static void CgiOnRead(B_ProtoConn& request);
+		static void CgiOnWrite(B_ProtoConn& request);
+		static void CgiOnError(B_ProtoConn& request);
+		static void CgiOnClose(B_ProtoConn& request);
+		static void CgiOnTimeout(B_ProtoConn& request);	
 };
 
 

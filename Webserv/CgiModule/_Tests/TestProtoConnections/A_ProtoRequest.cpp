@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #include "A_ProtoRequest.hpp"
-#include "../../../Event/Event.hpp"
+#include "../../../Callback/Callback.hpp"
 
 
-A_ProtoRequest::A_ProtoRequest(EventManager& eventManager, Globals& globals) :
-	eventManager(eventManager),
+A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals) :
+	manager(manager),
 	globals(globals)
 {
 
@@ -28,7 +28,7 @@ A_ProtoRequest::~A_ProtoRequest()
 
 
 
-void (*A_ProtoRequest_CgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
+void (*A_ProtoRequest_CgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback) = {
 	A_ProtoRequest_CgiGateway::onExecute,
 	A_ProtoRequest_CgiGateway::onRead,
 	A_ProtoRequest_CgiGateway::onWrite,
@@ -37,39 +37,39 @@ void (*A_ProtoRequest_CgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event
 	A_ProtoRequest_CgiGateway::onTimeout
 };
 
-void A_ProtoRequest_CgiGateway::onExecute(Event& event)
+void A_ProtoRequest_CgiGateway::onExecute(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnExecute(request);
 }
 
-void A_ProtoRequest_CgiGateway::onRead(Event& event)
+void A_ProtoRequest_CgiGateway::onRead(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnRead(request);
 }
 
-void A_ProtoRequest_CgiGateway::onWrite(Event& event)
+void A_ProtoRequest_CgiGateway::onWrite(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnWrite(request);
 }
 
-void A_ProtoRequest_CgiGateway::onError(Event& event)
+void A_ProtoRequest_CgiGateway::onError(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnError(request);
 }
 
-void A_ProtoRequest_CgiGateway::onClose(Event& event)
+void A_ProtoRequest_CgiGateway::onClose(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnClose(request);
 }
 
-void A_ProtoRequest_CgiGateway::onTimeout(Event& event)
+void A_ProtoRequest_CgiGateway::onTimeout(Callback& Callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
 	A_ProtoRequest_CgiGateway::CgiOnTimeout(request);
 }
 

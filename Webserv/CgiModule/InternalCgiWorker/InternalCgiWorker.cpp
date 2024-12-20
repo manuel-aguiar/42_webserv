@@ -69,7 +69,7 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 	{
 		m_curEventManager->delEvent(m_writeEvent);
 		mf_closeFd(m_ParentToChild[1]);
-		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR).handle();
 		return ;
 	}
 
@@ -97,7 +97,7 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 			m_curEventManager->delEvent(m_writeEvent);
 			mf_closeFd(m_ParentToChild[1]);
 		}
-		m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_WRITE).handle();
 	}
 }
 
@@ -117,7 +117,7 @@ void	CgiModule::InternalCgiWorker::readFromChild()
 			m_curEventManager->delEvent(m_readEvent);
 			mf_closeFd(m_ChildToParent[0]);
 		}
-		m_curRequestData->accessEventHandler(E_CGI_ON_READ).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_READ).handle();
 		if (bytesRead == 0)
 			cleanClose();
 	}
@@ -126,7 +126,7 @@ void	CgiModule::InternalCgiWorker::readFromChild()
 	{
 		m_curEventManager->delEvent(m_readEvent);
 		mf_closeFd(m_ChildToParent[0]);
-		m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_CLOSE).handle();
 	}
 }
 
@@ -138,7 +138,7 @@ void	CgiModule::InternalCgiWorker::cleanClose()
 	{
 		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
-		m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_CLOSE).handle();
 	}
 	m_CgiModule.mf_returnWorker(*this);
 }

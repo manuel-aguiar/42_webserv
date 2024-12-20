@@ -6,19 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 15:11:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:10:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiRequestData.hpp"
 
-
-
-//getters
-const std::string&								CgiRequestData::getMsgBody() const
-{
-	return (m_msgBody);
-}
 
 const t_CgiRequestEnv& 							CgiRequestData::getEnvVars() const
 {
@@ -37,14 +30,9 @@ const std::string&								CgiRequestData::getScriptPath() const
 
 
 // setters
-void	CgiRequestData::setEventHandler(const e_CgiEvents event, const t_ptr_event_data data, const t_func_event_handler handler)
+void	CgiRequestData::setCallback(const e_CgiCallbacks event, const t_ptr_callback_data data, const t_func_callback_handler handler)
 {
-	m_events[event].setFd_Data_Handler_Flags(0, data, handler, 0);
-}
-
-void		CgiRequestData::setMsgBody(const std::string& body)
-{
-	m_msgBody = body;
+	m_callbacks[event].setData_Handler(data, handler);
 }
 
 void		CgiRequestData::setEnvBase(const e_CgiEnv env, const std::string& value)
@@ -67,24 +55,10 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 	m_scriptPath = path;
 }
 
-void		CgiRequestData::setEventManager(EventManager& eventManager)
-{
-	m_eventManager = &eventManager;
-}
-
 //accessors
 
-Event&				CgiRequestData::accessEventHandler(const e_CgiEvents eventType)
+Callback&				CgiRequestData::accessCallback(const e_CgiCallbacks eventType)
 {
-	return (m_events[eventType]);
+	return (m_callbacks[eventType]);
 }
 
-std::string&		CgiRequestData::accessMsgBody()
-{
-	return (m_msgBody);
-}
-
-EventManager&		CgiRequestData::accessEventManager()
-{
-	return (*m_eventManager);
-}

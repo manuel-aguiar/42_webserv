@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocketEvents.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 09:03:06 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/29 17:03:17 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/20 11:54:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ListeningSocket.hpp"
 # include "../../Event/Event.hpp"
 
-void ListeningSocket::EventAccept(Event& event)
+void ListeningSocket::EventCallbackAccept(Callback& callback)
 {
 	ListeningSocket*	listener;
 
-	listener = reinterpret_cast<ListeningSocket*>(event.getData());
+	listener = reinterpret_cast<ListeningSocket*>(callback.getData());
 	listener->accept();
 }

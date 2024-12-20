@@ -16,7 +16,7 @@
 
 
 #include "../../Cgi_Definitions.h"
-#include "../../../Event/Event.hpp"
+#include "../../../Callback/Callback.hpp"
 
 class EventManager;
 class Globals;
@@ -24,12 +24,12 @@ class Globals;
 class A_ProtoRequest
 {
     public:
-		A_ProtoRequest(EventManager& eventManager, Globals& globals);
+		A_ProtoRequest(EventManager& manager, Globals& globals);
 		~A_ProtoRequest();
 		
 
 	private:
-		EventManager&	eventManager;
+		EventManager&	manager;
 		Globals&		globals;	
 		
 		char 			buffer[1024];
@@ -39,16 +39,16 @@ class A_ProtoRequest_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onExecute(Event& event);
-		static void onRead(Event& event);
-		static void onWrite(Event& event);
-		static void onError(Event& event);
-		static void onClose(Event& event);
-		static void onTimeout(Event& event);
+		static void onExecute(Callback& Callback);
+		static void onRead(Callback& Callback);
+		static void onWrite(Callback& Callback);
+		static void onError(Callback& Callback);
+		static void onClose(Callback& Callback);
+		static void onTimeout(Callback& Callback);
 
-		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
+		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
 
-		// Implementation of events
+		// Implementation of Callbacks
 		static void CgiOnExecute(A_ProtoRequest& request);
 		static void CgiOnRead(A_ProtoRequest& request);
 		static void CgiOnWrite(A_ProtoRequest& request);

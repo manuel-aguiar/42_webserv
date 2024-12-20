@@ -56,6 +56,6 @@ void	CgiRequestData::reset()
 	m_env.envBase.clear();
 	m_env.envExtra.clear();
 
-	for (size_t i = 0; i < E_CGI_EVENT_COUNT; i++)
+	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 		m_events[i].reset();
 }

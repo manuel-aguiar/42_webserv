@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:43:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:04:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ ListeningSocket::ListeningSocket(	ServerWorker& worker,
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
-	m_event.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventAccept, EPOLLIN | EPOLLET);
+	m_event.setFdFlags(m_sockfd, EPOLLIN | EPOLLET);
+	m_event.setCallback(this, &ListeningSocket::EventCallbackAccept);
 }
 
 ListeningSocket::~ListeningSocket()
@@ -113,7 +114,7 @@ int		ListeningSocket::open()
 
 /*
 	Accepts a socket conenction on the ListeningSocket. Will be called by the EventManager
-	via the EventAccept function pointer, and by the ServerWorker when a Connection instance
+	via the EventCallbackAccept function pointer, and by the ServerWorker when a Connection instance
 	is returned to try and recycle. 
 */
 int    ListeningSocket::accept()

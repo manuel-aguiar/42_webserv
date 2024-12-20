@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 14:22:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/17 14:45:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class CgiUserGateway
 		static void onClose(Event& event);
 		static void onTimeout(Event& event);
 
-		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
+		static void (*eventHandlers[E_CGI_CALLBACK_COUNT])(Event& event);
 
 		// Implementation of events
 		static void CgiOnRead(CgiUser& request);

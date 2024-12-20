@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 16:34:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:52:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool
 		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
 	}
 
-	m_event.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventAccept, EPOLLIN | EPOLLET);
+	m_event.setFd_Data_Handler_Flags(m_sockfd, this, &ListeningSocket::EventCallbackAccept, EPOLLIN | EPOLLET);
 }
 
 ListeningSocket::~ListeningSocket()
@@ -210,7 +210,7 @@ ListeningSocket::ListeningSocket() :
 
 }
 
-void ListeningSocket::EventAccept(Event& event)
+void ListeningSocket::EventCallbackAccept(Event& event)
 {
 	ListeningSocket*	listener;
 

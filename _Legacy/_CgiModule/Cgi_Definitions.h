@@ -33,8 +33,8 @@ typedef enum
 	E_CGI_ON_ERROR,
 	E_CGI_ON_CLOSE,
 	E_CGI_ON_TIMEOUT,
-	E_CGI_EVENT_COUNT
-} 	e_CgiEvents;
+	E_CGI_CALLBACK_COUNT
+} 	e_CgiCallbacks;
 
 
 typedef enum

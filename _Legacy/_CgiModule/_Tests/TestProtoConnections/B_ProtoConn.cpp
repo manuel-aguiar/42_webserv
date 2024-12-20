@@ -6,14 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 14:22:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 09:16:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:11:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "B_ProtoConn.hpp"
 #include "../../../Event/Event.hpp"
 
-void (*B_ProtoConn_CgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
+void (*B_ProtoConn_CgiGateway::eventHandlers[E_CGI_CALLBACK_COUNT])(Event& event) = {
 	B_ProtoConn_CgiGateway::onRead,
 	B_ProtoConn_CgiGateway::onWrite,
 	B_ProtoConn_CgiGateway::onError,
