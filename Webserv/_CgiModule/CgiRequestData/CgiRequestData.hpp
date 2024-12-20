@@ -46,6 +46,7 @@ class CgiRequestData
 		// accessors
 		Event&											accessEventHandler(const e_CgiEvents eventType);
 		std::string&									accessMsgBody();
+		EventManager&									accessEventManager();
 		
 		// setters
 		void											setEventHandler(const e_CgiEvents eventType, 
@@ -61,6 +62,8 @@ class CgiRequestData
 
 	private:
 		Event 											m_events[E_CGI_EVENT_COUNT];
+		EventManager*									m_eventManager;
+		std::string										m_msgBody;
 		std::string										m_extension;
 		std::string										m_scriptPath;
 		t_CgiRequestEnv									m_env;

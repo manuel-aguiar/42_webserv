@@ -38,10 +38,9 @@ SRCS = $(wildcard *.cpp) \
 		../../GenericUtils/Validation/Validation.cpp \
 		../../Event/Event.cpp \
 		../../Event/EventGetSetAccess.cpp \
-		TestProtoConnections/A_ProtoConn.cpp
-
-##TestProtoConnections/B_ProtoConn.cpp 
-##TestProtoConnections/C_ProtoConn.cpp
+		TestProtoConnections/A_ProtoConn.cpp \
+		TestProtoConnections/B_ProtoConn.cpp \
+		TestProtoConnections/C_ProtoConn.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

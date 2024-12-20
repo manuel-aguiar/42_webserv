@@ -23,6 +23,7 @@
 # include <sys/wait.h>
 
 CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& globals) :
+	m_curEventManager(NULL),
 	m_curRequestData(NULL),
 	m_pid(-1),
 	m_CgiModule(manager),
@@ -46,6 +47,7 @@ void    CgiModule::InternalCgiWorker::reset()
 	m_readEvent.reset();
 	m_writeEvent.reset();
 	m_curRequestData = NULL;
+	m_curEventManager = NULL;
 	m_pid = -1;
 
 

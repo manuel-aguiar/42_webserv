@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   B_ProtoConn.hpp                                    :+:      :+:    :+:   */
+/*   TestDependencies.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 09:09:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 09:11:52 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/17 14:22:07 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/17 14:45:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef B_PROTOCONN_HPP
+#ifndef TESTDEPENDENCIES_HPP
 
-# define B_PROTOCONN_HPP
+# define TESTDEPENDENCIES_HPP
 
-
-#include "../../Cgi_Definitions.h"
+#include "../Cgi_Definitions.h"
 
 class Event;
 
-class B_ProtoConn
+class CgiUser
 {
-    
+
 };
 
-class B_ProtoConn_Gateway
+class CgiUserGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
@@ -37,14 +36,12 @@ class B_ProtoConn_Gateway
 		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
 
 		// Implementation of events
-		static void CgiOnRead(B_ProtoConn& request);
-		static void CgiOnWrite(B_ProtoConn& request);
-		static void CgiOnError(B_ProtoConn& request);
-		static void CgiOnClose(B_ProtoConn& request);
-		static void CgiOnTimeout(B_ProtoConn& request);	
+		static void CgiOnRead(CgiUser& request);
+		static void CgiOnWrite(CgiUser& request);
+		static void CgiOnError(CgiUser& request);
+		static void CgiOnClose(CgiUser& request);
+		static void CgiOnTimeout(CgiUser& request);	
 };
-
-
 
 
 #endif

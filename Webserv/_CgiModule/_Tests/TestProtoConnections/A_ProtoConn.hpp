@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 09:09:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 10:09:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 09:16:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,16 @@
 #include "../../Cgi_Definitions.h"
 
 class Event;
-class EventManager;
-class Globals;
 
 class A_ProtoConn
 {
-    public:
-		A_ProtoConn(EventManager& eventManager, Globals& globals);
-		~A_ProtoConn();
-
-
-	private:
-		EventManager&	eventManager;
-		Globals&		globals;	
-		char 			buffer[1024];
+    
 };
 
 class A_ProtoConn_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onExecute(Event& event);
 		static void onRead(Event& event);
 		static void onWrite(Event& event);
 		static void onError(Event& event);
@@ -48,7 +37,6 @@ class A_ProtoConn_CgiGateway
 		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
 
 		// Implementation of events
-		static void CgiOnExecute(A_ProtoConn& event);
 		static void CgiOnRead(A_ProtoConn& request);
 		static void CgiOnWrite(A_ProtoConn& request);
 		static void CgiOnError(A_ProtoConn& request);

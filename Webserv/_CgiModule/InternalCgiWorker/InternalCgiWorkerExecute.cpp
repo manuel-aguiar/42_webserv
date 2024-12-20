@@ -25,6 +25,11 @@
 void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 {
 	m_curRequestData = &request;
+	m_curEventManager = &m_curRequestData->accessEventManager();
+	
+
+	// more asserts, all data must be in place and ready to execute
+	assert(m_curEventManager != NULL && m_curRequestData != NULL);
 
     if (::pipe(m_ParentToChild) == -1)
 	{
@@ -46,10 +51,7 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 	}
 
 	mf_prepareExecve();
-	m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).setFd(m_ParentToChild[1]);
-	m_curRequestData->accessEventHandler(E_CGI_ON_READ).setFd(m_ChildToParent[0]);
-	m_curRequestData->accessEventHandler(E_CGI_ON_EXECUTE).handle();
-	
+
     m_pid = ::fork();
     if (m_pid == -1)
 	{

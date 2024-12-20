@@ -45,11 +45,15 @@ class CgiModule::InternalCgiWorker
 		CgiRequestData*				accessCurRequestData();
 
 	private:
+		EventManager*				m_curEventManager;
 		CgiRequestData*				m_curRequestData;
 
 		DynArray<std::string>		m_envStr;
 		DynArray<char *>			m_envPtr;
 		DynArray<char *>			m_argPtr;
+		
+		Event						m_readEvent;
+		Event						m_writeEvent;
 
 		t_fd						m_ParentToChild[2];
 		t_fd						m_ChildToParent[2];
@@ -57,6 +61,8 @@ class CgiModule::InternalCgiWorker
 
 		CgiModule&					m_CgiModule;
 		Globals&					m_globals;
+
+		char						m_readBuf[1024];
 
 		// helpers
 		void						mf_closeFd(t_fd& fd);
