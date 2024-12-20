@@ -1,1 +1,3 @@
 
+more testing CgiModule, environment variables, unnexpected stoppers
+clean the API to make it easier for the user.
