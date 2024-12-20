@@ -57,11 +57,9 @@ ServerWorker::~ServerWorker()
 int ServerWorker::prepareLaunch()
 {
 	//setup signal handler
-	m_mySignalEvent.setFdFlags(g_SignalHandler.getPipeRead(m_myID), EPOLLIN);
+	m_mySignalEvent.setFdFlagsCallback(g_SignalHandler.getPipeRead(m_myID), EPOLLIN, this, &ServerWorker::EventCallbackExit);
 	m_mySignalEvent.setCallback(this, &ServerWorker::EventCallbackExit);
 
-	
-	
 	m_eventManager.addEvent(m_mySignalEvent);
 
 	// open listening sockets and monitor them

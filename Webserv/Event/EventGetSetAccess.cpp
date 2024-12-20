@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 12:01:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:27:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,14 @@ void	Event::setFdFlags(const t_fd fd, int flags)
 
 void	Event::setCallback(const t_ptr_callback_data data, const t_func_callback_handler handler)
 {
+	m_callback.setData(data);
+	m_callback.setHandler(handler);
+}
+
+void	Event::setFdFlagsCallback(const t_fd fd, int flags, const t_ptr_callback_data data, const t_func_callback_handler handler)
+{
+	m_fd = fd;
+	m_monitoredFlags = flags;
 	m_callback.setData(data);
 	m_callback.setHandler(handler);
 }
