@@ -56,80 +56,6 @@ void    CgiModule::InternalCgiWorker::reset()
 
 
 
-
-void	CgiModule::InternalCgiWorker::writeToChild()
-{
-	int					triggeredFlags;
-	int					bytesWritten;
-	std::string& body = m_curRequestData->accessMsgBody();
-
-	triggeredFlags = m_writeEvent.getTriggeredFlags();
-
-	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
-	{
-		m_curEventManager->delEvent(m_writeEvent);
-		mf_closeFd(m_ParentToChild[1]);
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR).call();
-		return ;
-	}
-
-	if (triggeredFlags & EPOLLOUT)
-	{
-		
-		bytesWritten = ::send(m_ParentToChild[1], body.c_str(), body.size(), MSG_NOSIGNAL);
-
-		if (bytesWritten == -1)
-		{
-			m_curEventManager->delEvent(m_writeEvent);
-			mf_closeFd(m_ParentToChild[1]);
-			return ;
-		}
-		
-		if ((size_t)bytesWritten != body.size())
-		{
-			
-			if (bytesWritten > 0)
-				body.erase(0, bytesWritten);
-			return ;
-		}
-		else
-		{
-			m_curEventManager->delEvent(m_writeEvent);
-			mf_closeFd(m_ParentToChild[1]);
-		}
-		m_curRequestData->accessCallback(E_CGI_ON_WRITE).call();
-	}
-}
-
-void	CgiModule::InternalCgiWorker::readFromChild()
-{
-	size_t	bytesRead;
-	int		triggeredFlags;
-	
-	triggeredFlags = m_readEvent.getTriggeredFlags();
-
-	if (triggeredFlags & EPOLLIN)
-	{
-		bytesRead = ::read(m_ChildToParent[0], m_readBuf, sizeof(m_readBuf) - 1);
-		m_readBuf[bytesRead] = '\0';
-		if (bytesRead == 0)
-		{
-			m_curEventManager->delEvent(m_readEvent);
-			mf_closeFd(m_ChildToParent[0]);
-		}
-		m_curRequestData->accessCallback(E_CGI_ON_READ).call();
-		if (bytesRead == 0)
-			cleanClose();
-	}
-
-	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
-	{
-		m_curEventManager->delEvent(m_readEvent);
-		mf_closeFd(m_ChildToParent[0]);
-		m_curRequestData->accessCallback(E_CGI_ON_CLOSE).call();
-	}
-}
-
 void	CgiModule::InternalCgiWorker::cleanClose()
 {
 	int status;
@@ -138,7 +64,6 @@ void	CgiModule::InternalCgiWorker::cleanClose()
 	{
 		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
-		m_curRequestData->accessCallback(E_CGI_ON_CLOSE).call();
 	}
 	m_CgiModule.mf_returnWorker(*this);
 }
@@ -181,4 +106,14 @@ CgiModule::InternalCgiWorker& CgiModule::InternalCgiWorker::operator=(const Inte
     if (this == &other)
         return (*this);
     return (*this);
+}
+
+void CgiModule::InternalCgiWorker::finishedReading()
+{
+	mf_closeFd(m_ChildToParent[0]);
+}
+
+void CgiModule::InternalCgiWorker::finishedWriting()
+{
+	mf_closeFd(m_ParentToChild[1]);
 }

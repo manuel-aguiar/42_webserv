@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 19:07:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 13:13:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,4 +155,29 @@ void	CgiModule::forceStop()
 		it->forcedClose();
 		it->reset();
 	}
+}
+
+
+void	CgiModule::finishedReading(CgiRequestData& request)
+{
+	InternalCgiRequestData* requestData;
+
+	requestData = static_cast<InternalCgiRequestData*>(&request);
+	requestData->accessExecutor()->finishedReading();
+}
+
+void	CgiModule::finishedWriting(CgiRequestData& request)
+{
+	InternalCgiRequestData* requestData;
+
+	requestData = static_cast<InternalCgiRequestData*>(&request);
+	requestData->accessExecutor()->finishedWriting();
+}
+
+void	CgiModule::finishedRequest(CgiRequestData& request)
+{
+	InternalCgiRequestData* requestData;
+
+	requestData = static_cast<InternalCgiRequestData*>(&request);
+	requestData->accessExecutor()->cleanClose();
 }

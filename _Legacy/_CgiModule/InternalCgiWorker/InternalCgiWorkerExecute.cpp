@@ -95,8 +95,8 @@ void	CgiModule::InternalCgiWorker::mf_prepareExecve()
 
 void	CgiModule::InternalCgiWorker::mf_executeParent()
 {
-	mf_closeFd(m_ParentToChild[0]);
-	mf_closeFd(m_ChildToParent[1]);
+	closeFd(m_ParentToChild[0]);
+	closeFd(m_ChildToParent[1]);
 	
 	m_writeEvent.setFd(m_ParentToChild[1]);
 	m_readEvent.setFd(m_ChildToParent[0]);

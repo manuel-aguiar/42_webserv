@@ -37,14 +37,14 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
@@ -54,27 +54,27 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
 
 	if (!mf_prepareExecve())
 	{
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
 
-	m_curRequestData->accessCallback(E_CGI_ON_WRITE).setFd(m_ParentToChild[1]);
-	m_curRequestData->accessCallback(E_CGI_ON_READ).setFd(m_ChildToParent[0]);
-	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).handle();
+	m_curRequestData->accessReadEvent().setFd(m_ChildToParent[0]);
+	m_curRequestData->accessWriteEvent().setFd(m_ParentToChild[1]);
+	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).call();
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_RUNTIME).handle();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_RUNTIME).call();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
     }

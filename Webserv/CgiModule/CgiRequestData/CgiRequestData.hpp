@@ -35,17 +35,25 @@ class CgiRequestData
 
 	public:
 
+		void											finishedReading();
+		void											finishedWriting();
+
 		void											reset();
 
 		// getters
 		const std::string&								getMsgBody() const;
 		const t_CgiRequestEnv& 							getEnvVars() const;
 		const std::string&								getExtension() const;
-		const std::string&								getScriptPath() const;	
+		const std::string&								getScriptPath() const;
+			
+		const Event&									getReadEvent() const;
+		const Event&									getWriteEvent() const;
+
 
 		// accessors
 		Callback&										accessCallback(const e_CgiCallbacks eventType);
-		
+		Event&											accessReadEvent();
+		Event&											accessWriteEvent();								
 		// setters
 		void											setCallback(const e_CgiCallbacks eventType, 
 																		const t_ptr_callback_data data, 

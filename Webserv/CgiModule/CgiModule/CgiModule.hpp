@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:54:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 13:13:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ class CgiModule
 		CgiRequestData*							acquireRequestData();
 		void									executeRequest(CgiRequestData& data);
 		void									cancelRequest(CgiRequestData& data);
+
+		void									finishedReading(CgiRequestData& request);
+		void									finishedWriting(CgiRequestData& request);
+		void									finishedRequest(CgiRequestData& request);
 
 		void									forceStop();
 

@@ -17,22 +17,38 @@
 
 #include "../../Cgi_Definitions.h"
 #include "../../../Callback/Callback.hpp"
+#include "../../CgiRequestData/CgiRequestData.hpp"
+#include "../../CgiModule/CgiModule.hpp"
 
 class EventManager;
 class Globals;
+class CgiModule;
 
 class A_ProtoRequest
 {
     public:
-		A_ProtoRequest(EventManager& manager, Globals& globals);
+		A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi);
 		~A_ProtoRequest();
 		
+		void	readCgi();
+		void	writeCgi();
+		void   	executeCgi();
+		void	cancelCgi();
 
-	private:
-		EventManager&	manager;
-		Globals&		globals;	
+		void	requestCgi();
+
+		void	printBufStdout();
+
+
+		EventManager&	m_manager;
+		Globals&		m_globals;
+		CgiModule&		m_cgi;
+
+		CgiRequestData*	m_curRequestData;
+
+		std::string		m_msgBody;
 		
-		char 			buffer[1024];
+		char 			m_buffer[1024];
 };
 
 class A_ProtoRequest_CgiGateway
@@ -40,21 +56,16 @@ class A_ProtoRequest_CgiGateway
 	public:
 		// Generic handlers to provide to CgiRequestData
 		static void onExecute(Callback& Callback);
-		static void onRead(Callback& Callback);
-		static void onWrite(Callback& Callback);
-		static void onError(Callback& Callback);
-		static void onClose(Callback& Callback);
-		static void onTimeout(Callback& Callback);
+		static void onErrorStartup(Callback& Callback);
+		static void onErrorRuntime(Callback& callback);
 
 		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
 
 		// Implementation of Callbacks
 		static void CgiOnExecute(A_ProtoRequest& request);
-		static void CgiOnRead(A_ProtoRequest& request);
-		static void CgiOnWrite(A_ProtoRequest& request);
-		static void CgiOnError(A_ProtoRequest& request);
-		static void CgiOnClose(A_ProtoRequest& request);
-		static void CgiOnTimeout(A_ProtoRequest& request);	
+		static void CgiOnErrorStartup(A_ProtoRequest& request);
+		static void CgiOnErrorRuntime(A_ProtoRequest& request);
+
 };
 
 

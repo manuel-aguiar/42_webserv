@@ -33,14 +33,15 @@ class CgiModule::InternalCgiWorker
 		InternalCgiWorker(CgiModule& manager, Globals& globals);
 		~InternalCgiWorker();
 
+
 		void    execute(CgiRequestData& request);
 		void    reset();
 		
 		void	cleanClose();
 		void	forcedClose();
 
-		void	writeToChild();
-		void	readFromChild();
+		void	finishedReading();
+		void	finishedWriting();
 
 		CgiRequestData*				accessCurRequestData();
 
@@ -59,17 +60,10 @@ class CgiModule::InternalCgiWorker
 		Globals&					m_globals;
 
 		// helpers
-		void						mf_closeFd(t_fd& fd);
 		void						mf_executeParent();
 		void						mf_executeChild();
 		bool						mf_prepareExecve();
-
-
-		// internal events
-		static void					mf_CgiWrite(Event& event);
-		static void					mf_CgiRead(Event& event);
-
-
+		void						mf_closeFd(t_fd& fd);
 
 		InternalCgiWorker(const InternalCgiWorker &other);
 		InternalCgiWorker &operator=(const InternalCgiWorker &other);

@@ -8,7 +8,7 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test.out
 
-SRCS = $(wildcard *.cpp) \
+SRCS = test.cpp \
 											\
 		../CgiModule/CgiModule.cpp \
 		../CgiModule/CgiModuleExternal.cpp \
@@ -38,7 +38,9 @@ SRCS = $(wildcard *.cpp) \
 		../../Event/EventGetSetAccess.cpp \
 		../../Callback/Callback.cpp \
 		../../Callback/CallbackGetSetAccess.cpp \
-		TestProtoConnections/A_ProtoRequest.cpp
+		TestProtoConnections/A_ProtoRequest.cpp \
+		TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
+		TestProtoConnections/A_ProtoRequestReadWrite.cpp
 
 ##TestProtoConnections/B_ProtoConn.cpp 
 ##TestProtoConnections/C_ProtoConn.cpp

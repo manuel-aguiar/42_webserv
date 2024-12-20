@@ -14,103 +14,33 @@
 #include "../../../Callback/Callback.hpp"
 
 
-A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals) :
-	manager(manager),
-	globals(globals)
+A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi) :
+	m_manager(manager),
+	m_globals(globals),
+	m_cgi(cgi)
 {
 
 }
 
 A_ProtoRequest::~A_ProtoRequest()
 {
+
+}
+
+void	A_ProtoRequest::requestCgi()
+{
+	m_curRequestData = m_cgi.acquireRequestData();
+		//subscribe event callbacks
+	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+		m_curRequestData->setCallback(static_cast<e_CgiCallbacks>(i), this, A_ProtoRequest_CgiGateway::Callbacks[i]);
+	
+	m_curRequestData->setExtension("py");
+	m_curRequestData->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
 }
 
 
-
-
-void (*A_ProtoRequest_CgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback) = {
-	A_ProtoRequest_CgiGateway::onExecute,
-	A_ProtoRequest_CgiGateway::onRead,
-	A_ProtoRequest_CgiGateway::onWrite,
-	A_ProtoRequest_CgiGateway::onError,
-	A_ProtoRequest_CgiGateway::onClose,
-	A_ProtoRequest_CgiGateway::onTimeout
-};
-
-void A_ProtoRequest_CgiGateway::onExecute(Callback& Callback)
+void	A_ProtoRequest::printBufStdout()
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnExecute(request);
-}
-
-void A_ProtoRequest_CgiGateway::onRead(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnRead(request);
-}
-
-void A_ProtoRequest_CgiGateway::onWrite(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnWrite(request);
-}
-
-void A_ProtoRequest_CgiGateway::onError(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnError(request);
-}
-
-void A_ProtoRequest_CgiGateway::onClose(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnClose(request);
-}
-
-void A_ProtoRequest_CgiGateway::onTimeout(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnTimeout(request);
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnExecute(A_ProtoRequest& request)
-{
-	//std::cout << "User read callback\n";
-	(void)request;
-	/** received info on CgiRequestData buffer, pass to client */
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnRead(A_ProtoRequest& request)
-{
-	//std::cout << "User read callback\n";
-	(void)request;
-	/** received info on CgiRequestData buffer, pass to client */
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnWrite(A_ProtoRequest& request)
-{
-	//std::cout << "User write callback\n";
-	(void)request;
-	/* probably nothing to do */
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnError(A_ProtoRequest& request)
-{
-	//std::cout << "User error callback\n";
-	(void)request;
-	/* send internal server error to client */
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnClose(A_ProtoRequest& request)
-{
-	//std::cout << "User close callback\n";
-	(void)request;
-	/* all good, probably nothing to do*/
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnTimeout(A_ProtoRequest& request)
-{
-	//std::cout << "User timeout callback\n";
-	(void)request;
-	/* send internal server error to client, either script is too long or some other bottleneck */
+	std::cout << "called\n";
+	std::cout << "Buffer: " << m_buffer << std::endl;
 }
