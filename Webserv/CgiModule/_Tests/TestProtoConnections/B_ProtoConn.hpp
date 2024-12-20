@@ -1,0 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   B_ProtoConn.hpp                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/20 09:09:24 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/20 09:11:52 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef B_PROTOCONN_HPP
+
+# define B_PROTOCONN_HPP
+
+
+#include "../../Cgi_Definitions.h"
+
+class Event;
+
+class B_ProtoConn
+{
+    
+};
+
+class B_ProtoConn_Gateway
+{
+	public:
+		// Generic handlers to provide to CgiRequestData
+		static void onRead(Event& event);
+		static void onWrite(Event& event);
+		static void onError(Event& event);
+		static void onClose(Event& event);
+		static void onTimeout(Event& event);
+
+		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
+
+		// Implementation of events
+		static void CgiOnRead(B_ProtoConn& request);
+		static void CgiOnWrite(B_ProtoConn& request);
+		static void CgiOnError(B_ProtoConn& request);
+		static void CgiOnClose(B_ProtoConn& request);
+		static void CgiOnTimeout(B_ProtoConn& request);	
+};
+
+
+
+
+#endif
