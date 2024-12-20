@@ -62,7 +62,7 @@ class CgiModule::InternalCgiWorker
 		void						mf_closeFd(t_fd& fd);
 		void						mf_executeParent();
 		void						mf_executeChild();
-		void						mf_prepareExecve();
+		bool						mf_prepareExecve();
 
 
 		// internal events

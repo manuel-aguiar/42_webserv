@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   A_ProtoConn.hpp                                    :+:      :+:    :+:   */
+/*   A_ProtoRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,21 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef A_PROTOCONN_HPP
+#ifndef A_ProtoRequest_HPP
 
-# define A_PROTOCONN_HPP
+# define A_ProtoRequest_HPP
 
 
 #include "../../Cgi_Definitions.h"
 
 class Event;
 
-class A_ProtoConn
+class A_ProtoRequest
 {
     
 };
 
-class A_ProtoConn_CgiGateway
+class A_ProtoRequest_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
@@ -37,11 +37,11 @@ class A_ProtoConn_CgiGateway
 		static void (*eventHandlers[E_CGI_EVENT_COUNT])(Event& event);
 
 		// Implementation of events
-		static void CgiOnRead(A_ProtoConn& request);
-		static void CgiOnWrite(A_ProtoConn& request);
-		static void CgiOnError(A_ProtoConn& request);
-		static void CgiOnClose(A_ProtoConn& request);
-		static void CgiOnTimeout(A_ProtoConn& request);	
+		static void CgiOnRead(A_ProtoRequest& request);
+		static void CgiOnWrite(A_ProtoRequest& request);
+		static void CgiOnError(A_ProtoRequest& request);
+		static void CgiOnClose(A_ProtoRequest& request);
+		static void CgiOnTimeout(A_ProtoRequest& request);	
 };
 
 

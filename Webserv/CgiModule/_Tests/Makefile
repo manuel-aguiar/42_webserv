@@ -16,9 +16,7 @@ SRCS = $(wildcard *.cpp) \
 		../CgiModule/CgiModuleGetSetAccess.cpp \
 		../InternalCgiRequestData/InternalCgiRequestData.cpp \
 		../InternalCgiWorker/InternalCgiWorker.cpp \
-		../InternalCgiWorker/InternalCgiWorkerEvents.cpp \
 		../InternalCgiWorker/InternalCgiWorkerExecute.cpp \
-		../InternalCgiWorker/InternalCgiWorkerUtils.cpp \
 											\
 		../CgiRequestData/CgiRequestData.cpp \
 		../CgiRequestData/CgiRequestDataGetSetAccess.cpp	\
@@ -38,7 +36,7 @@ SRCS = $(wildcard *.cpp) \
 		../../GenericUtils/Validation/Validation.cpp \
 		../../Event/Event.cpp \
 		../../Event/EventGetSetAccess.cpp \
-		TestProtoConnections/A_ProtoConn.cpp
+		TestProtoConnections/A_ProtoRequest.cpp
 
 ##TestProtoConnections/B_ProtoConn.cpp 
 ##TestProtoConnections/C_ProtoConn.cpp

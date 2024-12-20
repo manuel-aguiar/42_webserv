@@ -22,6 +22,14 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
+/*
+
+	If any syscall fails, we should let the caller know there was an error, cancel the CgiRequest and reset it
+	reset the InternalCgiWorker and return
+
+*/
+
+
 void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 {
 	m_curRequestData = &request;
@@ -29,12 +37,16 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR_STARTUP).handle();
+		m_CgiModule.cancelRequest(*m_curRequestData);
+		return ;
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR_STARTUP).handle();
+		m_CgiModule.cancelRequest(*m_curRequestData);
+		return ;
 	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -42,19 +54,29 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR_STARTUP).handle();
+		m_CgiModule.cancelRequest(*m_curRequestData);
+		return ;
 	}
 
-	mf_prepareExecve();
+	if (!mf_prepareExecve())
+	{
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR_STARTUP).handle();
+		m_CgiModule.cancelRequest(*m_curRequestData);
+		return ;
+	}
+
 	m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).setFd(m_ParentToChild[1]);
 	m_curRequestData->accessEventHandler(E_CGI_ON_READ).setFd(m_ChildToParent[0]);
 	m_curRequestData->accessEventHandler(E_CGI_ON_EXECUTE).handle();
-	
+
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle());
+		m_curRequestData->accessEventHandler(E_CGI_ON_ERROR_RUNTIME).handle();
+		m_CgiModule.cancelRequest(*m_curRequestData);
+		return ;
     }
     if (m_pid == 0)
 		mf_executeChild();
@@ -62,7 +84,7 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 		mf_executeParent();
 }
 
-void	CgiModule::InternalCgiWorker::mf_prepareExecve()
+bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
 	
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
@@ -71,23 +93,32 @@ void	CgiModule::InternalCgiWorker::mf_prepareExecve()
 	const t_CgiEnvKey*				envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	
-	m_envStr.reserve(entryCount);
-	m_envPtr.reserve(entryCount + 1);
-	m_argPtr.reserve(3);
+	try
+	{
+		m_envStr.reserve(entryCount);
+		m_envPtr.reserve(entryCount + 1);
+		m_argPtr.reserve(3);
 
-	for (size_t i = 0; i < envRequest.envBase.size(); i++)
-		m_envStr.push_back(envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
+		for (size_t i = 0; i < envRequest.envBase.size(); i++)
+			m_envStr.push_back(envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
 
-	for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
-		m_envStr.push_back(it->first + "=" + it->second);
+		for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
+			m_envStr.push_back(it->first + "=" + it->second);
 
-	for (size_t i = 0; i < entryCount; i++)
-		m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
-	m_envPtr.push_back(NULL);
+		for (size_t i = 0; i < entryCount; i++)
+			m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
+		m_envPtr.push_back(NULL);
 
-	m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
-	m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
-	m_argPtr.push_back(NULL);
+		m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
+		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
+		m_argPtr.push_back(NULL);
+		return (true);
+	}
+	catch(const std::exception& e)
+	{
+		m_globals.logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
+	}
+	return (false);
 }
 
 
@@ -95,13 +126,6 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 {
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ChildToParent[1]);
-	
-	m_writeEvent.setFd(m_ParentToChild[1]);
-	m_readEvent.setFd(m_ChildToParent[0]);
-
-	m_curEventManager->addEvent(m_writeEvent);
-	m_curEventManager->addEvent(m_readEvent);
-
 }
 
 void	CgiModule::InternalCgiWorker::mf_executeChild()

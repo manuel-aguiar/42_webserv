@@ -6,20 +6,42 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 14:22:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 09:15:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 10:08:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "A_ProtoRequest.hpp"
 #include "../../../Event/Event.hpp"
 
+
+A_ProtoRequest::A_ProtoRequest(EventManager& eventManager, Globals& globals) :
+	eventManager(eventManager),
+	globals(globals)
+{
+
+}
+
+A_ProtoRequest::~A_ProtoRequest()
+{
+}
+
+
+
+
 void (*A_ProtoRequest_CgiGateway::eventHandlers[E_CGI_EVENT_COUNT])(Event& event) = {
+	A_ProtoRequest_CgiGateway::onExecute,
 	A_ProtoRequest_CgiGateway::onRead,
 	A_ProtoRequest_CgiGateway::onWrite,
 	A_ProtoRequest_CgiGateway::onError,
 	A_ProtoRequest_CgiGateway::onClose,
 	A_ProtoRequest_CgiGateway::onTimeout
 };
+
+void A_ProtoRequest_CgiGateway::onExecute(Event& event)
+{
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	A_ProtoRequest_CgiGateway::CgiOnExecute(request);
+}
 
 void A_ProtoRequest_CgiGateway::onRead(Event& event)
 {
@@ -49,6 +71,13 @@ void A_ProtoRequest_CgiGateway::onTimeout(Event& event)
 {
 	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
 	A_ProtoRequest_CgiGateway::CgiOnTimeout(request);
+}
+
+void A_ProtoRequest_CgiGateway::CgiOnExecute(A_ProtoRequest& request)
+{
+	//std::cout << "User read callback\n";
+	(void)request;
+	/** received info on CgiRequestData buffer, pass to client */
 }
 
 void A_ProtoRequest_CgiGateway::CgiOnRead(A_ProtoRequest& request)

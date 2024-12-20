@@ -5,7 +5,7 @@
 # include "../../ServerManager/EventManager/EventManager.hpp"
 
 # include "TestDependencies.hpp"
-# include "TestProtoConnections/A_ProtoConn.hpp"
+# include "TestProtoConnections/A_ProtoRequest.hpp"
 # include <iostream>
 
 /************************************ */
@@ -21,7 +21,7 @@ int main(void)
 	{
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager manager(globals);
-		A_ProtoConn request(manager, globals);
+		A_ProtoRequest request(manager, globals);
 
 		CgiModule cgi(10, 100, globals);
 

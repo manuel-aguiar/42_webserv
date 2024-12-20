@@ -32,8 +32,6 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
-	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiWrite, EPOLLOUT);
-	m_readEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiRead, EPOLLIN);
 }
 
 CgiModule::InternalCgiWorker::~InternalCgiWorker()
@@ -43,30 +41,13 @@ CgiModule::InternalCgiWorker::~InternalCgiWorker()
 
 void    CgiModule::InternalCgiWorker::reset()
 {
-	m_readEvent.reset();
-	m_writeEvent.reset();
 	m_curRequestData = NULL;
 	m_pid = -1;
-
-
-	if (m_writeEvent.getFd() != -1)
-	{
-		m_curEventManager->delEvent(m_writeEvent);
-		m_writeEvent.setFd(-1);
-	}
-	if (m_readEvent.getFd() != -1)
-	{
-		m_curEventManager->delEvent(m_readEvent);
-		m_readEvent.setFd(-1);
-	}
 
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
-
-	m_writeEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiWrite, EPOLLOUT);
-	m_readEvent.setFd_Data_Handler_Flags(-1, this, &InternalCgiWorker::mf_CgiRead, EPOLLIN);
 
 	m_argPtr.clear();
 	m_envPtr.clear();
@@ -118,7 +99,6 @@ void	CgiModule::InternalCgiWorker::writeToChild()
 		}
 		m_curRequestData->accessEventHandler(E_CGI_ON_WRITE).handle();
 	}
-
 }
 
 void	CgiModule::InternalCgiWorker::readFromChild()
@@ -158,23 +138,19 @@ void	CgiModule::InternalCgiWorker::cleanClose()
 	{
 		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
-		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-			m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
-		else
-			m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+		m_curRequestData->accessEventHandler(E_CGI_ON_CLOSE).handle();
 	}
 	m_CgiModule.mf_returnWorker(*this);
 }
 
 void	CgiModule::InternalCgiWorker::forcedClose()
 {
-	if (m_pid == -1)
-		return ;
-
-	::kill(m_pid, SIGKILL);
-	::waitpid(m_pid, NULL, 0);
-	m_pid = -1;
-	m_curRequestData->accessEventHandler(E_CGI_ON_ERROR).handle();
+	if (m_pid != -1)
+	{
+		::kill(m_pid, SIGKILL);
+		::waitpid(m_pid, NULL, 0);
+		m_pid = -1;	
+	}
 	m_CgiModule.mf_returnWorker(*this);
 }
 
@@ -183,10 +159,15 @@ CgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
 	return (m_curRequestData);
 }
 
+void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
+{
+	if (fd != -1 && ::close(fd) == -1)
+		m_globals.logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
+	fd = -1;
+}
 
 
 CgiModule::InternalCgiWorker::InternalCgiWorker(const InternalCgiWorker &other) :
-	m_curEventManager(other.m_curEventManager),
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
 	m_CgiModule(other.m_CgiModule),

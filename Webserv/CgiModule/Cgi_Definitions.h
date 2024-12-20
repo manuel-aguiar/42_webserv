@@ -28,9 +28,10 @@ typedef std::string						t_CgiEnvValue;
 typedef enum
 {
 	E_CGI_ON_EXECUTE,
+	E_CGI_ON_ERROR_STARTUP,
+	E_CGI_ON_ERROR_RUNTIME,
 	E_CGI_ON_READ,
 	E_CGI_ON_WRITE,
-	E_CGI_ON_ERROR,
 	E_CGI_ON_CLOSE,
 	E_CGI_ON_TIMEOUT,
 	E_CGI_EVENT_COUNT

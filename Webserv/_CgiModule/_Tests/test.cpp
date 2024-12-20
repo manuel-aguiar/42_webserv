@@ -5,7 +5,7 @@
 # include "../../ServerManager/EventManager/EventManager.hpp"
 
 # include "TestDependencies.hpp"
-# include "TestProtoConnections/A_ProtoConn.hpp"
+# include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "TestProtoConnections/B_ProtoConn.hpp"
 # include "TestProtoConnections/C_ProtoConn.hpp"
 # include <iostream>

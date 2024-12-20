@@ -60,6 +60,8 @@ class CgiRequestData
 		void											setEventManager(EventManager& eventManager);
 
 	private:
+		Event											m_CgiReadEvent;
+		Event											m_CgiWriteEvent;
 		Event 											m_events[E_CGI_EVENT_COUNT];
 		std::string										m_extension;
 		std::string										m_scriptPath;
