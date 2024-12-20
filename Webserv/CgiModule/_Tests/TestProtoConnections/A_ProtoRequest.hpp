@@ -29,14 +29,20 @@ class A_ProtoRequest
     public:
 		A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi);
 		~A_ProtoRequest();
+		A_ProtoRequest(const A_ProtoRequest& copy);
 		
 		void	readCgi();
 		void	writeCgi();
 		void   	executeCgi();
 		void	cancelCgi();
 
-		void	requestCgi();
+		void	debugPrint() const;
 
+		//event callbacks
+		static void EventCallbackOnRead(Callback& event);
+		static void EventCallbackOnWrite(Callback& event);
+
+		void	requestCgi();
 		void	printBufStdout();
 
 
@@ -44,11 +50,12 @@ class A_ProtoRequest
 		Globals&		m_globals;
 		CgiModule&		m_cgi;
 
-		CgiRequestData*	m_curRequestData;
+		CgiRequestData*	m_CgiRequestData;
 
 		std::string		m_msgBody;
 		
 		char 			m_buffer[1024];
+		size_t			m_TotalBytesRead;
 };
 
 class A_ProtoRequest_CgiGateway

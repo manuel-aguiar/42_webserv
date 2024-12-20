@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 15:04:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:43:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,7 @@ class DynArray
                 m_capacity = newCap;
                 m_array = new_array;
             }
+            ++m_size;
         }
 
         void emplace_front()

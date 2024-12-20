@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 13:45:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 14:19:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,25 @@ void	A_ProtoRequest::writeCgi()
 {
 	int					triggeredFlags;
 	int					bytesWritten;
-	const Event&		writeEvent = m_curRequestData->getWriteEvent();
+	const Event&		writeEvent = m_CgiRequestData->getWriteEvent();
 
 	triggeredFlags = writeEvent.getTriggeredFlags();
 
 	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
 	{
 		m_manager.delEvent(writeEvent);
-		m_cgi.finishedWriting(*m_curRequestData);
+		m_cgi.finishedWriting(*m_CgiRequestData);
 		return ;
 	}
 
 	if (triggeredFlags & EPOLLOUT)
 	{
-		
 		bytesWritten = ::send(writeEvent.getFd(), m_msgBody.c_str(), m_msgBody.size(), MSG_NOSIGNAL);
 
 		if (bytesWritten == -1)
 		{
 			m_manager.delEvent(writeEvent);
-			m_cgi.finishedWriting(*m_curRequestData);
+			m_cgi.finishedWriting(*m_CgiRequestData);
 			return ;
 		}
 		
@@ -50,7 +49,7 @@ void	A_ProtoRequest::writeCgi()
 		else
 		{
 			m_manager.delEvent(writeEvent);
-			m_cgi.finishedWriting(*m_curRequestData);
+			m_cgi.finishedWriting(*m_CgiRequestData);
 		}
 	}
 }
@@ -59,19 +58,19 @@ void	A_ProtoRequest::readCgi()
 {
 	size_t				bytesRead;
 	int					triggeredFlags;
-	const Event&		readEvent = m_curRequestData->getReadEvent();
+	const Event&		readEvent = m_CgiRequestData->getReadEvent();
 	
 	triggeredFlags = readEvent.getTriggeredFlags();
 
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(readEvent.getFd(), m_buffer, sizeof(m_buffer) - 1);
-		m_buffer[bytesRead] = '\0';
+		m_TotalBytesRead += bytesRead;
 		if (bytesRead == 0)
 		{
 			m_manager.delEvent(readEvent);
-			m_cgi.finishedReading(*m_curRequestData);
-			m_cgi.finishedRequest(*m_curRequestData);
+			m_cgi.finishedReading(*m_CgiRequestData);
+			m_cgi.finishedRequest(*m_CgiRequestData);
 			printBufStdout();
 		}
 	}
@@ -84,20 +83,36 @@ void	A_ProtoRequest::readCgi()
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		m_manager.delEvent(readEvent);
-		m_cgi.finishedReading(*m_curRequestData);
-		m_cgi.finishedRequest(*m_curRequestData);
+		m_cgi.finishedReading(*m_CgiRequestData);
+		m_cgi.finishedRequest(*m_CgiRequestData);
 		printBufStdout();
 	}
 }
 
 void	A_ProtoRequest::executeCgi()
 {
-	m_manager.addEvent(m_curRequestData->getReadEvent());
-	m_manager.addEvent(m_curRequestData->getWriteEvent());
+	m_CgiRequestData->accessReadEvent().setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
+	m_CgiRequestData->accessReadEvent().setMonitorFlags(EPOLLIN);
+	m_CgiRequestData->accessWriteEvent().setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
+	m_CgiRequestData->accessWriteEvent().setMonitorFlags(EPOLLOUT);
+	m_manager.addEvent(m_CgiRequestData->getReadEvent());
+	m_manager.addEvent(m_CgiRequestData->getWriteEvent());
 }
 
 void	A_ProtoRequest::cancelCgi()
 {
-	m_manager.delEvent(m_curRequestData->getReadEvent());
-	m_manager.delEvent(m_curRequestData->getWriteEvent());
+	m_manager.delEvent(m_CgiRequestData->getReadEvent());
+	m_manager.delEvent(m_CgiRequestData->getWriteEvent());
+}
+
+void A_ProtoRequest::EventCallbackOnRead(Callback& event)
+{
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	request.readCgi();
+}
+
+void A_ProtoRequest::EventCallbackOnWrite(Callback& event)
+{
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
+	request.writeCgi();
 }

@@ -3,16 +3,36 @@
 # include "../CgiModule/CgiModule.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../../Toolkit/Toolkit.h"
 
 # include "TestDependencies.hpp"
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include <iostream>
 
 /************************************ */
-/*	Test using the actual EventManager*/	
+/*										*/	
 /************************************ */
 
 #include <unistd.h>
+
+const char* scriptOutput = "AUTH_TYPE: <not set>\n"
+"CONTENT_LENGTH: <not set>\n"
+"CONTENT_TYPE: <not set>\n"
+"GATEWAY_INTERFACE: <not set>\n"
+"PATH_INFO: <not set>\n"
+"PATH_TRANSLATED: <not set>\n"
+"QUERY_STRING: <not set>\n"
+"REMOTE_ADDR: <not set>\n"
+"REMOTE_HOST: <not set>\n"
+"REMOTE_IDENT: <not set>\n"
+"REMOTE_USER: <not set>\n"
+"REQUEST_METHOD: <not set>\n"
+"SCRIPT_NAME: <not set>\n"
+"SERVER_NAME: <not set>\n"
+"SERVER_PORT: <not set>\n"
+"SERVER_PROTOCOL: <not set>\n"
+"SERVER_SOFTWARE: <not set>\n";
+
 
 int main(void)
 {
@@ -22,13 +42,21 @@ int main(void)
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 		CgiModule cgi(10, 100, globals);
-		A_ProtoRequest request(eventManager, globals, cgi);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		cgi.addInterpreter("sh", "/usr/bin/bash");
 		cgi.addInterpreter("php", "/usr/bin/php");
 
-		request.requestCgi();
+		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+
+		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+		
+		protoRequest.m_CgiRequestData->setExtension("py");
+		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
@@ -40,14 +68,83 @@ int main(void)
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::logic_error("eventManager still has events subscribed");
 
+		if (protoRequest.m_TotalBytesRead != ::strlen(scriptOutput) ||
+			::strncmp(protoRequest.m_buffer, scriptOutput, protoRequest.m_TotalBytesRead) != 0)
+			throw std::logic_error("script output does not match expected output");
+
 		std::cout << "	PASS\n";
 
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		std::cerr << "	FAILED: " << e.what() << '\n';
 	}
-	
+
+	std::cout << "Test2: ";
+	try
+	{
+		Globals globals(NULL, NULL, NULL, NULL);
+		EventManager eventManager(globals);
+		const int connectionCount = 1000;
+
+		CgiModule cgi(10, connectionCount, globals);
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		cgi.addInterpreter("sh", "/usr/bin/bash");
+		cgi.addInterpreter("php", "/usr/bin/php");
+
+		DynArray<A_ProtoRequest> requests;
+		requests.reserve(connectionCount);
+		for (size_t i = 0; i < connectionCount; ++i)
+		{
+			requests.emplace_back(eventManager, globals, cgi);
+			requests[i].m_CgiRequestData = cgi.acquireRequestData();
+			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
+				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
+			switch (i % 3)
+			{
+				case 0:
+					requests[i].m_CgiRequestData->setExtension("py");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+					break;
+				case 1:
+					requests[i].m_CgiRequestData->setExtension("sh");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
+					break;
+				case 2:
+					requests[i].m_CgiRequestData->setExtension("php");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
+					break;
+			}
+			cgi.executeRequest(*requests[i].m_CgiRequestData);
+		}
+
+
+		while (cgi.getBusyWorkerCount() > 0)
+		{
+			size_t waited = eventManager.retrieveEvents(1000);
+			(void)waited;
+			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
+		}
+
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::logic_error("eventManager still has events subscribed");
+
+		for (size_t i = 0; i < connectionCount; ++i)
+		{
+			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
+				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
+				throw std::logic_error("script output does not match expected output");
+		}
+
+
+		std::cout << "	PASS\n";
+
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "	FAILED: " << e.what() << '\n';
+	}	
 
 
 

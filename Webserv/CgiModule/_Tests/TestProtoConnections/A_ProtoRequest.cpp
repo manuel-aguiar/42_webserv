@@ -13,11 +13,14 @@
 #include "A_ProtoRequest.hpp"
 #include "../../../Callback/Callback.hpp"
 
+#include <iomanip>
 
 A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi) :
 	m_manager(manager),
 	m_globals(globals),
-	m_cgi(cgi)
+	m_cgi(cgi),
+	m_TotalBytesRead(0)
+
 {
 
 }
@@ -27,20 +30,60 @@ A_ProtoRequest::~A_ProtoRequest()
 
 }
 
+A_ProtoRequest::A_ProtoRequest(const A_ProtoRequest& copy) :
+	m_manager(copy.m_manager),
+	m_globals(copy.m_globals),
+	m_cgi(copy.m_cgi),
+	m_TotalBytesRead(copy.m_TotalBytesRead)
+{
+
+}
+
 void	A_ProtoRequest::requestCgi()
 {
-	m_curRequestData = m_cgi.acquireRequestData();
+	m_CgiRequestData = m_cgi.acquireRequestData();
 		//subscribe event callbacks
 	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-		m_curRequestData->setCallback(static_cast<e_CgiCallbacks>(i), this, A_ProtoRequest_CgiGateway::Callbacks[i]);
+		m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(i), this, A_ProtoRequest_CgiGateway::Callbacks[i]);
 	
-	m_curRequestData->setExtension("py");
-	m_curRequestData->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
+	m_CgiRequestData->setExtension("py");
+	m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+	m_cgi.executeRequest(*m_CgiRequestData);
 }
 
 
 void	A_ProtoRequest::printBufStdout()
 {
-	std::cout << "called\n";
-	std::cout << "Buffer: " << m_buffer << std::endl;
+	m_buffer[m_TotalBytesRead] = '\0';
+	//std::cout << m_buffer << std::endl;
+}
+
+
+void A_ProtoRequest::debugPrint() const
+{
+    std::cout << "===== Debug Info for A_ProtoRequest =====" << std::endl;
+
+    // Printing pointers (address or null)
+    std::cout << "CgiRequestData: " << (m_CgiRequestData ? "Valid Pointer" : "NULL") << std::endl;
+
+    // Printing sizes
+    std::cout << "Total Bytes Read: " << m_TotalBytesRead << std::endl;
+
+    // Printing string content
+    std::cout << "Message Body: " << m_msgBody << std::endl;
+
+    // Printing buffer content as a string and hex
+    std::cout << "Buffer Content (as string): \"" << std::string(m_buffer, m_TotalBytesRead) << "\"" << std::endl;
+    std::cout << "Buffer Content (hex dump): ";
+    for (size_t i = 0; i < m_TotalBytesRead; ++i) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << (unsigned int)(unsigned char)m_buffer[i] << " ";
+    }
+    std::cout << std::dec << std::endl; // Reset to decimal formatting
+
+    // Manager and Globals addresses
+    std::cout << "EventManager Address: " << &m_manager << std::endl;
+    std::cout << "Globals Address: " << &m_globals << std::endl;
+    std::cout << "CgiModule Address: " << &m_cgi << std::endl;
+
+    std::cout << "========================================" << std::endl;
 }

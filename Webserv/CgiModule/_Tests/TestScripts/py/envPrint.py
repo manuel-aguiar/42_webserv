@@ -10,7 +10,6 @@ def main():
         "SERVER_SOFTWARE"
     ]
 
-    print("Content-Type: text/plain\n")
     for var in env_vars:
         value = os.getenv(var, "<not set>")
         print(f"{var}: {value}")

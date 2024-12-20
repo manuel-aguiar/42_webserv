@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 10:41:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:07:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
         newData = m_executionQueue.front();
         m_executionQueue.pop_front();
         newData->setQueuePosition(NULL);
-        
+        newData->setExecutor(&worker);
 		worker.execute(*newData);
 	}
 	else
