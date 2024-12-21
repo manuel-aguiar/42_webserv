@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/21 12:47:54 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/21 12:53:51 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,6 @@ SRCS =  $(SRC_PATH)/CgiModule/_Tests/test.cpp \
         $(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
 
 
-# Derived object and dependency files
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS 			= 	$(OBJS:.o=.d)
 
