@@ -6,13 +6,13 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 15:59:23 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/20 13:17:58 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/21 12:50:32 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 							= 	webserv
 COMP 							= 	c++ -std=c++98
-FLAGS 							= 	-Wall -Wextra -Werror
+FLAGS 							= 	-Wall -Wextra -Werror -MMD -MP
 EXTERN_LINKER 					= 	-lpthread
 DEBUG_FLAGS 					= 	-g #-fsanitize=address
 BUILD_FLAGS 					= 	-DNDEBUG
@@ -103,7 +103,7 @@ LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL) $(EXTERN_LINKER)
 
 
 OBJS 							= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
-
+DEPS 							= 	$(OBJS:.o=.d)
 
 BUILD 							=
 									ifeq ($(MAKECMDGOALS),debug)
@@ -123,6 +123,8 @@ $(NAME): $(OBJS)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -c $< -o $@
+
+-include $(DEPS)
 
 all: $(NAME)
 

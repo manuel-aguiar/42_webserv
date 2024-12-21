@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 14:22:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 12:11:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:47:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "../Cgi_Definitions.h"
 
 class Event;
+
+
 
 class CgiUser
 {

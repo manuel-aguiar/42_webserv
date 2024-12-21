@@ -1,69 +1,85 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/21 12:47:54 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# 
-# This is just a Makefile to compile tests
-# It must be adjusted acoording to dependencies of tests themselves
-#
-
+# Compiler and flags
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET = test.out
 
-SRCS = test.cpp \
-											\
-		../CgiModule/CgiModule.cpp \
-		../CgiModule/CgiModuleExternal.cpp \
-		../CgiModule/CgiModuleInternal.cpp \
-		../CgiModule/CgiModuleGetSetAccess.cpp \
-		../InternalCgiRequestData/InternalCgiRequestData.cpp \
-		../InternalCgiWorker/InternalCgiWorker.cpp \
-		../InternalCgiWorker/InternalCgiWorkerExecute.cpp \
-											\
-		../CgiRequestData/CgiRequestData.cpp \
-		../CgiRequestData/CgiRequestDataGetSetAccess.cpp	\
-		\
-		../../ServerManager/EventManager/EventManager.cpp \
-											\
-		../../Globals/_Mock/MockLogFile.cpp \
-		../../Globals/_Mock/MockGlobals.cpp \
-		../../Globals/_Mock/MockClock.cpp \
-		../../Globals/SignalHandler/SignalHandler.cpp \
-											\
-		../../HttpModule/_Mock/MockHttpModule.cpp \
-		../../HttpModule/_Mock/MockHttpManager.cpp \
-											\
-		../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		../../GenericUtils/StringUtils/StringUtils.cpp \
-		../../GenericUtils/Validation/Validation.cpp \
-		../../Event/Event.cpp \
-		../../Event/EventGetSetAccess.cpp \
-		../../Callback/Callback.cpp \
-		../../Callback/CallbackGetSetAccess.cpp \
-		TestProtoConnections/A_ProtoRequest.cpp \
-		TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
-		TestProtoConnections/A_ProtoRequestReadWrite.cpp
+# Paths
+ROOT_PATH = ../../../Webserv
+SRC_PATH = $(ROOT_PATH)/.
+OBJ_PATH = $(ROOT_PATH)/CgiModule/_Tests/_build
 
-##TestProtoConnections/B_ProtoConn.cpp 
-##TestProtoConnections/C_ProtoConn.cpp
+# Sources
+SRCS =  $(SRC_PATH)/CgiModule/_Tests/test.cpp \
+        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
+        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
+        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestReadWrite.cpp \
+						\
+						\
+        $(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp \
+        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp \
+        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleInternal.cpp \
+        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
+        $(SRC_PATH)/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
+        $(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
+        $(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
+        $(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestData.cpp \
+        $(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
+        $(SRC_PATH)/ServerManager/EventManager/EventManager.cpp \
+        $(SRC_PATH)/Globals/_Mock/MockLogFile.cpp \
+        $(SRC_PATH)/Globals/_Mock/MockGlobals.cpp \
+        $(SRC_PATH)/Globals/_Mock/MockClock.cpp \
+        $(SRC_PATH)/Globals/SignalHandler/SignalHandler.cpp \
+        $(SRC_PATH)/HttpModule/_Mock/MockHttpModule.cpp \
+        $(SRC_PATH)/HttpModule/_Mock/MockHttpManager.cpp \
+        $(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+        $(SRC_PATH)/GenericUtils/StringUtils/StringUtils.cpp \
+        $(SRC_PATH)/GenericUtils/Validation/Validation.cpp \
+        $(SRC_PATH)/Event/Event.cpp \
+        $(SRC_PATH)/Event/EventGetSetAccess.cpp \
+        $(SRC_PATH)/Callback/Callback.cpp \
+        $(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
 
-OBJS = $(SRCS:.cpp=.o)
 
+# Derived object and dependency files
+OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+DEPS 			= 	$(OBJS:.o=.d)
+
+# Target rules
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
 
-%.o: %.cpp
+# Compile sources to objects, creating necessary subdirectories
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Include dependencies
+-include $(DEPS)
+
+# Standard targets
 all: $(TARGET)
 
 run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
 
 clean:
-	rm -rf $(OBJS) $(TARGET) vgcore*
+	rm -rf $(OBJ_PATH) vgcore*
 
 fclean: clean
 	rm -rf $(TARGET)
 
-re: fclean run
+re: fclean all
 
 .PHONY: clean fclean run

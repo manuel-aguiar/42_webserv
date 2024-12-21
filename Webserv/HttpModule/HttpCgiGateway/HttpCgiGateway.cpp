@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 08:41:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 12:11:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 12:49:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,9 @@
 void (*HttpCgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback) = {
 	HttpCgiGateway::onRead,
 	HttpCgiGateway::onWrite,
-	HttpCgiGateway::onError,
-	HttpCgiGateway::onClose,
-	HttpCgiGateway::onTimeout
+	HttpCgiGateway::onError
 };
+
 
 void HttpCgiGateway::onRead(Callback& Callback)
 {
