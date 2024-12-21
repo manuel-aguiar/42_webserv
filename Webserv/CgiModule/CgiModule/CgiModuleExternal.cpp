@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 13:13:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 01:24:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	requestData->setExecutor(worker);
-	worker->execute(request);
+	worker->execute(*requestData);
 }
 
 void	CgiModule::cancelRequest(CgiRequestData& request)
@@ -157,27 +157,13 @@ void	CgiModule::forceStop()
 	}
 }
 
-
-void	CgiModule::finishedReading(CgiRequestData& request)
+void	CgiModule::finishRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData* requestData;
+	InternalCgiWorker*		worker;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
-	requestData->accessExecutor()->finishedReading();
-}
-
-void	CgiModule::finishedWriting(CgiRequestData& request)
-{
-	InternalCgiRequestData* requestData;
-
-	requestData = static_cast<InternalCgiRequestData*>(&request);
-	requestData->accessExecutor()->finishedWriting();
-}
-
-void	CgiModule::finishedRequest(CgiRequestData& request)
-{
-	InternalCgiRequestData* requestData;
-
-	requestData = static_cast<InternalCgiRequestData*>(&request);
-	requestData->accessExecutor()->cleanClose();
+	worker = requestData->accessExecutor();
+	if (worker)
+		worker->cleanClose();
 }

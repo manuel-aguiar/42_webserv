@@ -12,7 +12,7 @@
 
 // Project Headers
 #include "InternalCgiWorker.hpp"
-#include "../CgiRequestData/CgiRequestData.hpp"
+#include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 #include "../../Globals/Globals.hpp"
 #include "../../ServerManager/EventManager/EventManager.hpp"
 
@@ -79,7 +79,7 @@ void	CgiModule::InternalCgiWorker::forcedClose()
 	m_CgiModule.mf_returnWorker(*this);
 }
 
-CgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
+CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
 {
 	return (m_curRequestData);
 }
@@ -106,14 +106,4 @@ CgiModule::InternalCgiWorker& CgiModule::InternalCgiWorker::operator=(const Inte
     if (this == &other)
         return (*this);
     return (*this);
-}
-
-void CgiModule::InternalCgiWorker::finishedReading()
-{
-	mf_closeFd(m_ChildToParent[0]);
-}
-
-void CgiModule::InternalCgiWorker::finishedWriting()
-{
-	mf_closeFd(m_ParentToChild[1]);
 }

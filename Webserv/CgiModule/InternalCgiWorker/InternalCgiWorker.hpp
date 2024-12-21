@@ -34,19 +34,16 @@ class CgiModule::InternalCgiWorker
 		~InternalCgiWorker();
 
 
-		void    execute(CgiRequestData& request);
+		void    execute(InternalCgiRequestData& request);
 		void    reset();
 		
 		void	cleanClose();
 		void	forcedClose();
 
-		void	finishedReading();
-		void	finishedWriting();
-
-		CgiRequestData*				accessCurRequestData();
+		InternalCgiRequestData*				accessCurRequestData();
 
 	private:
-		CgiRequestData*				m_curRequestData;
+		InternalCgiRequestData*				m_curRequestData;
 
 		DynArray<std::string>		m_envStr;
 		DynArray<char *>			m_envPtr;

@@ -13,8 +13,8 @@
 #include "CgiRequestData.hpp"
 
 CgiRequestData::CgiRequestData() :
-	m_CgiReadEvent(),
-	m_CgiWriteEvent(),
+	m_readFd(-1),
+	m_writeFd(-1),
 	m_extension(""),
 	m_scriptPath("")
 {
@@ -52,7 +52,4 @@ void	CgiRequestData::reset()
 
 	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 		m_callbacks[i].reset();
-		
-	m_CgiReadEvent.reset();
-	m_CgiWriteEvent.reset();
 }

@@ -39,18 +39,6 @@ A_ProtoRequest::A_ProtoRequest(const A_ProtoRequest& copy) :
 
 }
 
-void	A_ProtoRequest::requestCgi()
-{
-	m_CgiRequestData = m_cgi.acquireRequestData();
-		//subscribe event callbacks
-	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-		m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(i), this, A_ProtoRequest_CgiGateway::Callbacks[i]);
-	
-	m_CgiRequestData->setExtension("py");
-	m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-	m_cgi.executeRequest(*m_CgiRequestData);
-}
-
 
 void	A_ProtoRequest::printBufStdout()
 {

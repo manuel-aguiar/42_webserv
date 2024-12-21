@@ -55,6 +55,16 @@ void	CgiModule::InternalCgiRequestData::setQueuePosition(const List<InternalCgiR
 	m_queuePosition = position;
 }
 
+void	CgiModule::InternalCgiRequestData::setReadFd(const t_fd fd)
+{
+	m_readFd = fd;
+}
+
+void	CgiModule::InternalCgiRequestData::setWriteFd(const t_fd fd)
+{
+	m_writeFd = fd;
+}
+
 
 CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor()
 {

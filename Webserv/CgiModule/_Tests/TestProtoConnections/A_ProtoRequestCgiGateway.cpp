@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   A_ProtoRequest_Gateway.cpp                         :+:      :+:    :+:   */
+/*   A_ProtoRequestCgiGateway.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:51:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 13:29:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 01:02:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,37 +19,20 @@ void (*A_ProtoRequest_CgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Cal
 	A_ProtoRequest_CgiGateway::onErrorRuntime,
 };
 
-void A_ProtoRequest_CgiGateway::onExecute(Callback& Callback)
+void A_ProtoRequest_CgiGateway::onExecute(Callback& callback)
 {
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnExecute(request);
-}
-
-void A_ProtoRequest_CgiGateway::onErrorStartup(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnErrorStartup(request);
-}
-
-void A_ProtoRequest_CgiGateway::onErrorRuntime(Callback& Callback)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(Callback.getData());
-	A_ProtoRequest_CgiGateway::CgiOnErrorRuntime(request);
-}
-
-void A_ProtoRequest_CgiGateway::CgiOnExecute(A_ProtoRequest& request)
-{
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(callback.getData());
 	request.executeCgi();
 }
 
-void A_ProtoRequest_CgiGateway::CgiOnErrorStartup(A_ProtoRequest& request)
+void A_ProtoRequest_CgiGateway::onErrorStartup(Callback& callback)
 {
-	//std::cout << "User read callback\n";
-	(void)request;
-	/** received info on CgiRequestData buffer, pass to client */
+	(void)callback;
 }
 
-void A_ProtoRequest_CgiGateway::CgiOnErrorRuntime(A_ProtoRequest& request)
+void A_ProtoRequest_CgiGateway::onErrorRuntime(Callback& callback)
 {
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(callback.getData());
 	request.cancelCgi();
 }
+

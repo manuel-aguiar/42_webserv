@@ -42,13 +42,14 @@ class A_ProtoRequest
 		static void EventCallbackOnRead(Callback& event);
 		static void EventCallbackOnWrite(Callback& event);
 
-		void	requestCgi();
 		void	printBufStdout();
-
 
 		EventManager&	m_manager;
 		Globals&		m_globals;
 		CgiModule&		m_cgi;
+		
+		Event 			m_CgiReadEvent;
+		Event 			m_CgiWriteEvent;
 
 		CgiRequestData*	m_CgiRequestData;
 
@@ -67,12 +68,6 @@ class A_ProtoRequest_CgiGateway
 		static void onErrorRuntime(Callback& callback);
 
 		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
-
-		// Implementation of Callbacks
-		static void CgiOnExecute(A_ProtoRequest& request);
-		static void CgiOnErrorStartup(A_ProtoRequest& request);
-		static void CgiOnErrorRuntime(A_ProtoRequest& request);
-
 };
 
 

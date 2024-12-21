@@ -13,7 +13,7 @@
 // Project Headers
 # include "InternalCgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
-# include "../CgiRequestData/CgiRequestData.hpp"
+# include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../Globals/Globals.hpp"
@@ -30,7 +30,7 @@
 */
 
 
-void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
+void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 {
 	m_curRequestData = &request;
 
@@ -66,8 +66,8 @@ void   CgiModule::InternalCgiWorker::execute(CgiRequestData& request)
 		return ;
 	}
 
-	m_curRequestData->accessReadEvent().setFd(m_ChildToParent[0]);
-	m_curRequestData->accessWriteEvent().setFd(m_ParentToChild[1]);
+	m_curRequestData->setReadFd(m_ChildToParent[0]);
+	m_curRequestData->setWriteFd(m_ParentToChild[1]);
 	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).call();
 
     m_pid = ::fork();
@@ -130,29 +130,14 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 
 void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
-	//std::cerr << "executing child" << std::endl;
-
-	
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
-	//{
-		//std::cerr << "first dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
-	//}
-	//else
-	//	std::cerr << "first dup2 success" << std::endl;
-
 	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
-	//{
-	//	std::cerr << "second dup2 failed" << std::endl;
 		::exit(EXIT_FAILURE);
-	//}
-	//else
-	//	std::cerr << "second dup2 success" << std::endl;
-		
+	
+	::close(m_ParentToChild[1]);
+	::close(m_ChildToParent[0]);
 
-
-	//std::cerr << "calling execve" << std::endl;
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
-	//std::cerr << "execve failed" << std::endl;
 	::exit(EXIT_FAILURE);
 }

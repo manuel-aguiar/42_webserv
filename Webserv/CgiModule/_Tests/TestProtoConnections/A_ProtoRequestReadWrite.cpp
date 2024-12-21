@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 15:54:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 01:31:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,22 @@ void	A_ProtoRequest::writeCgi()
 {
 	int					triggeredFlags;
 	int					bytesWritten;
-	const Event&		writeEvent = m_CgiRequestData->getWriteEvent();
 
-	triggeredFlags = writeEvent.getTriggeredFlags();
+	triggeredFlags = m_CgiWriteEvent.getTriggeredFlags();
 
 	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
 	{
-		m_manager.delEvent(writeEvent);
-		m_cgi.finishedWriting(*m_CgiRequestData);
+		m_manager.delEvent(m_CgiWriteEvent);
 		return ;
 	}
 
 	if (triggeredFlags & EPOLLOUT)
 	{
-		bytesWritten = ::send(writeEvent.getFd(), m_msgBody.c_str(), m_msgBody.size(), MSG_NOSIGNAL);
+		bytesWritten = ::send(m_CgiWriteEvent.getFd(), m_msgBody.c_str(), m_msgBody.size(), MSG_NOSIGNAL);
 
 		if (bytesWritten == -1)
 		{
-			m_manager.delEvent(writeEvent);
-			m_cgi.finishedWriting(*m_CgiRequestData);
+			m_manager.delEvent(m_CgiWriteEvent);
 			return ;
 		}
 		
@@ -48,8 +45,7 @@ void	A_ProtoRequest::writeCgi()
 		}
 		else
 		{
-			m_manager.delEvent(writeEvent);
-			m_cgi.finishedWriting(*m_CgiRequestData);
+			m_manager.delEvent(m_CgiWriteEvent);
 		}
 	}
 }
@@ -58,19 +54,17 @@ void	A_ProtoRequest::readCgi()
 {
 	size_t				bytesRead;
 	int					triggeredFlags;
-	const Event&		readEvent = m_CgiRequestData->getReadEvent();
 	
-	triggeredFlags = readEvent.getTriggeredFlags();
+	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
 
 	if (triggeredFlags & EPOLLIN)
 	{
-		bytesRead = ::read(readEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
+		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
 		m_TotalBytesRead += bytesRead;
 		if (bytesRead == 0 || m_TotalBytesRead == sizeof(m_buffer) - 1)
 		{
-			m_manager.delEvent(readEvent);
-			m_cgi.finishedReading(*m_CgiRequestData);
-			m_cgi.finishedRequest(*m_CgiRequestData);
+			m_manager.delEvent(m_CgiReadEvent);
+			m_cgi.finishRequest(*m_CgiRequestData);
 			printBufStdout();
 		}
 	}
@@ -82,27 +76,30 @@ void	A_ProtoRequest::readCgi()
 
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
-		m_manager.delEvent(readEvent);
-		m_cgi.finishedReading(*m_CgiRequestData);
-		m_cgi.finishedRequest(*m_CgiRequestData);
+		m_manager.delEvent(m_CgiReadEvent);
+		m_cgi.finishRequest(*m_CgiRequestData);
 		printBufStdout();
 	}
 }
 
 void	A_ProtoRequest::executeCgi()
 {
-	m_CgiRequestData->accessReadEvent().setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
-	m_CgiRequestData->accessReadEvent().setMonitorFlags(EPOLLIN);
-	m_CgiRequestData->accessWriteEvent().setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
-	m_CgiRequestData->accessWriteEvent().setMonitorFlags(EPOLLOUT);
-	m_manager.addEvent(m_CgiRequestData->getReadEvent());
-	m_manager.addEvent(m_CgiRequestData->getWriteEvent());
+	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
+	m_CgiReadEvent.setMonitorFlags(EPOLLIN);
+	m_CgiReadEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
+
+	m_CgiWriteEvent.setFd(m_CgiRequestData->getWriteFd());
+	m_CgiWriteEvent.setMonitorFlags(EPOLLOUT);
+	m_CgiWriteEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
+	
+	m_manager.addEvent(m_CgiReadEvent);
+	m_manager.addEvent(m_CgiWriteEvent);
 }
 
 void	A_ProtoRequest::cancelCgi()
 {
-	m_manager.delEvent(m_CgiRequestData->getReadEvent());
-	m_manager.delEvent(m_CgiRequestData->getWriteEvent());
+	m_manager.delEvent(m_CgiReadEvent);
+	m_manager.delEvent(m_CgiWriteEvent);
 }
 
 void A_ProtoRequest::EventCallbackOnRead(Callback& event)

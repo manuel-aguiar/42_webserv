@@ -35,9 +35,6 @@ class CgiRequestData
 
 	public:
 
-		void											finishedReading();
-		void											finishedWriting();
-
 		void											reset();
 
 		// getters
@@ -46,14 +43,11 @@ class CgiRequestData
 		const std::string&								getExtension() const;
 		const std::string&								getScriptPath() const;
 			
-		const Event&									getReadEvent() const;
-		const Event&									getWriteEvent() const;
-
+		t_fd											getReadFd() const;
+		t_fd											getWriteFd() const;
 
 		// accessors
 		Callback&										accessCallback(const e_CgiCallbacks eventType);
-		Event&											accessReadEvent();
-		Event&											accessWriteEvent();								
 		// setters
 		void											setCallback(const e_CgiCallbacks eventType, 
 																		const t_ptr_callback_data data, 
@@ -65,9 +59,11 @@ class CgiRequestData
 		void											setExtension(const std::string& extension);
 		void											setScriptPath(const std::string& path);
 
+	protected:
+		t_fd											m_readFd;
+		t_fd											m_writeFd;
+		
 	private:
-		Event											m_CgiReadEvent;
-		Event											m_CgiWriteEvent;
 		Callback 										m_callbacks[E_CGI_CALLBACK_COUNT];
 		std::string										m_extension;
 		std::string										m_scriptPath;

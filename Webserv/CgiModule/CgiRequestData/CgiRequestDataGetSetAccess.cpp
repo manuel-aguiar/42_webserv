@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 13:18:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 01:30:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ const std::string&								CgiRequestData::getScriptPath() const
 	return (m_scriptPath);
 }
 
-const Event&									CgiRequestData::getReadEvent() const
+t_fd										CgiRequestData::getReadFd() const
 {
-	return (m_CgiReadEvent);
+	return (m_readFd);
 }
 
-const Event&									CgiRequestData::getWriteEvent() const
+t_fd										CgiRequestData::getWriteFd() const
 {
-	return (m_CgiWriteEvent);
+	return (m_writeFd);
 }
 
 // setters
@@ -69,15 +69,5 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 Callback&				CgiRequestData::accessCallback(const e_CgiCallbacks eventType)
 {
 	return (m_callbacks[eventType]);
-}
-
-Event& 					CgiRequestData::accessReadEvent()
-{
-	return (m_CgiReadEvent);
-}
-
-Event& 					CgiRequestData::accessWriteEvent()
-{
-	return (m_CgiWriteEvent);
 }
 

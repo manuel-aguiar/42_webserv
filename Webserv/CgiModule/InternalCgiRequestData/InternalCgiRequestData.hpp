@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 19:07:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/21 01:18:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 
 		void		setExecutor(InternalCgiWorker* const executor);
 		void		setQueuePosition(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& position);
+		void		setReadFd(const t_fd fd);
+		void		setWriteFd(const t_fd fd);
+
 
 		InternalCgiWorker*							
 					accessExecutor();
