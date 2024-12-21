@@ -38,6 +38,7 @@ class A_ProtoRequest
 
 		void	debugPrint() const;
 
+
 		//event callbacks
 		static void EventCallbackOnRead(Callback& event);
 		static void EventCallbackOnWrite(Callback& event);

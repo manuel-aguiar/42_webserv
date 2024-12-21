@@ -35,6 +35,7 @@ class CgiRequestData
 
 	public:
 
+		// methods
 		void											reset();
 
 		// getters
