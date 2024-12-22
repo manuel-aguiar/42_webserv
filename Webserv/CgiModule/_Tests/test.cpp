@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/22 10:57:29 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 
 # include "../CgiModule/CgiModule.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
-# include "../../../Toolkit/Toolkit.h"
 
 # include "TestDependencies.hpp"
 # include "TestProtoConnections/A_ProtoRequest.hpp"
