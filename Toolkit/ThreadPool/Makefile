@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/13 09:51:45 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/22 11:02:51 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@
 ## GENERAL RULES
 NAME 				= 	libthreadpool.a
 COMP 				= 	c++ -std=c++98
-FLAGS 				= 	-Wall -Wextra -Werror
+FLAGS 				= 	-Wall -Wextra -Werror -MMD -MP
 LIB 				= 	ar rcs
 RM					=	rm
 MAKE				=	make
@@ -76,6 +76,8 @@ SRCS				=	$(addprefix $(SRC_ABST_PATH)/, $(SRC_ABST_FILES))	\
 
 OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
 
+DEPS 				= 	$(OBJS:.o=.d)
+
 BUILD 							= 
 									ifeq ($(MAKECMDGOALS),debug)
 										BUILD = $(DEBUG_FLAGS)
@@ -92,7 +94,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS)
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -I$(INC_PATH) -c $< -o $@
 	
-
+-include $(DEPS)
 
 ## Rules
 

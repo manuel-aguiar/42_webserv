@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/07 13:56:05 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/22 11:02:17 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@
 
 NAME 				= 	libmemorypool.a
 COMP 				= 	c++ -std=c++98
-FLAGS 				= 	-Wall -Wextra -Werror
+FLAGS 				= 	-Wall -Wextra -Werror -MMD -MP
 LIB 				= 	ar rcs
 RM					=	rm
 MAKE				=	make
@@ -68,6 +68,7 @@ SRCS				=	$(SRC_PATH)/$(NGINXMEMPOOL_PATH)/Nginx_MemoryPool.cpp			\
 
 OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
 
+DEPS 				= 	$(OBJS:.o=.d)
 
 BUILD 							= 
 									ifeq ($(MAKECMDGOALS),debug)
@@ -84,6 +85,8 @@ $(NAME): $(OBJS)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS) $(OTHER_INCS)
 	@mkdir -p $(dir $@)
 	$(COMP) $(FLAGS) $(BUILD) -I$(INC_PATH) -c $< -o $@
+
+-include $(DEPS)
 
 ## Rules
 
