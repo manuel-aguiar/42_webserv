@@ -6,13 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 10:30:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:51:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../Globals.hpp"
 #include "../Clock/Clock.hpp"
 #include "../LogFile/LogFile.hpp"
+
+#include <iostream>
 
 Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile* debugFile)
 {

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:51:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:45:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 # include "../../HttpModule/HttpModule.hpp"
 # include "../../CgiModule/CgiModule/CgiModule.hpp"
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
+
+// Toolkit headers
+# include "../../../Toolkit/ThreadPool/ThreadPool.h"
 
 ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	m_blockFinder(config),

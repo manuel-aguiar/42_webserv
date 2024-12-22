@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:55:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 08:58:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:47:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 # define CONNECTION_HPP
 
+// Toolkit headers
+# include "../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+
+// Project headers
 # include "../GenericUtils/Webserver_Definitions.h"
 
 class Globals;

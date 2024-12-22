@@ -14,12 +14,16 @@
 
 # define CGIDEFINITIONS_H
 
+//Toolkit headers
+# include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
+
 //Project Headers
 # include "../GenericUtils/Webserver_Definitions.h"
 
 //C++ headers
 # include <string>
 # include <utility>
+# include <map>
 
 typedef std::string						t_extension;
 typedef std::string						t_CgiEnvKey;

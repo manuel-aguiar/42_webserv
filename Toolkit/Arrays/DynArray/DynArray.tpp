@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 15:43:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:48:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 # define WEBSERVER_VECTOR_TPP
 
+// C++ headers
 # include <cstdlib>
 # include <cassert>
 # include <memory>
+# include <cstring>
 
 template <typename T, typename Allocator>
 class DynArray

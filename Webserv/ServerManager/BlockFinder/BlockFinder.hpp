@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/10 10:10:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:47:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 // C++ headers
 # include <string>
+# include <map>
 
 //forward declarations
 class ServerConfig;

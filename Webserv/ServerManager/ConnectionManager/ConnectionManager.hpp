@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:41:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:39:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include "../../Connection/Connection.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
+# include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+# include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_PoolAllocator.hpp"
+# include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
+
 
 // C++ headers
 # include <queue>

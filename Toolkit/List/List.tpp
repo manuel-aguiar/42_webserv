@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/19 09:20:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:46:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define LIST_TPP
 
 #include <cassert>
+#include <cstddef>
 
 template <typename T, typename Allocator>
 class List

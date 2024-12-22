@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MemoryPool.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/11 10:26:18 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/22 10:40:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 # define NGINX_MEMORYPOOL_HPP
 
-
+// C++ headers
+# include <limits>
 # include <climits>
 # include <cstddef>
 # include <exception>

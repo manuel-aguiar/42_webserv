@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 11:54:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:38:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 
 // Project Headers
+# include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
 # include "../../Event/Event.hpp"

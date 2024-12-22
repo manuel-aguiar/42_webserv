@@ -6,13 +6,18 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/21 01:08:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:44:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CGIMODULE_HPP
 
 # define CGIMODULE_HPP
+
+// Toolkit Headers
+# include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
+# include "../../../Toolkit/List/List.hpp"
+# include "../../../Toolkit/MemoryPool/Fixed_Elements/MPool_FixedElements.hpp"
 
 // Project Headers
 # include "../../GenericUtils/Webserver_Definitions.h"
