@@ -6,8 +6,8 @@
 
 # include "../../../Globals/Globals.hpp"
 # include "../../../ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "../../ServerManager.hpp"
-
+# include "../../ServerManager/ServerManager.hpp"
+# include "../../../GenericUtils/Webserver_Definitions.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -198,14 +198,14 @@ int main(void)
 			}
 			const Event& event = listener.getEvent();
 			{
-				const t_func_event_handler result = event.getHandler();
-				const t_func_event_handler expected = &ListeningSocket::EventCallbackAccept;
+				const t_func_callback_handler result = event.getCallback().getHandler();
+				const t_func_callback_handler expected = &ListeningSocket::EventCallbackAccept;
 				if (result != expected)
 					throw std::runtime_error("event should be listeningsocket::eventaccept");
 			}
 			{
-				const t_ptr_event_data result = event.getData();
-				const t_ptr_event_data expected = &listener;
+				const t_ptr_callback_data result = event.getCallback().getData();
+				const t_ptr_callback_data expected = &listener;
 				if (result != expected)
 					throw std::runtime_error("event handler should be the listener itself");
 			}

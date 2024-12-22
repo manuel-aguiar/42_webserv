@@ -8,57 +8,64 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
 TARGET = test.out
 
-
+ROOT_PATH = ../../..
 
 EXTERN_LINKER 					= 	-lpthread
 
-THREADPOOL_PATH 				= 	../../../Toolkit/ThreadPool
+THREADPOOL_PATH 				= 	$(ROOT_PATH)/Toolkit/ThreadPool
 THREADPOOL_LIB					= 	libthreadpool.a
 
-MEMORYPOOL_PATH					= 	../../../Toolkit/MemoryPool
+MEMORYPOOL_PATH					= 	$(ROOT_PATH)/Toolkit/MemoryPool
 MEMORYPOOL_LIB					= 	libmemorypool.a
 
+# Paths
+
+SRC_PATH = $(ROOT_PATH)/Webserv/.
+OBJ_PATH = $(ROOT_PATH)/Webserv/_build
 
 
-SRCS = $(wildcard *.cpp) \
-		../ServerManager.cpp \
-		../ServerManagerGetSetAccess.cpp \
-		../ServerManagerPrepareWorkers.cpp \
+SRCS =  $(SRC_PATH)/ServerManager/_Tests/test.cpp \
+		$(SRC_PATH)/ServerManager/ServerManager/ServerManager.cpp \
+		$(SRC_PATH)/ServerManager/ServerManager/ServerManagerGetSetAccess.cpp \
+		$(SRC_PATH)/ServerManager/ServerManager/ServerManagerPrepareWorkers.cpp \
 											\
-		../EventManager/EventManager.cpp \
-		../ListeningSocket/ListeningSocket.cpp \
-		../ListeningSocket/ListeningSocketGetSetAccess.cpp \
-		../ListeningSocket/ListeningSocketEvents.cpp \
-		../ConnectionManager/ConnectionManager.cpp \
-		../ServerWorker/ServerWorker.cpp \
-		../ServerWorker/ServerWorkerGetSetAccess.cpp \
-		../ServerWorker/ServerWorkerEvents.cpp \
-		../BlockFinder/BlockFinder.cpp \
+		$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp \
+		$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocket.cpp \
+		$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketGetSetAccess.cpp \
+		$(SRC_PATH)/ServerManager/ListeningSocket/ListeningSocketEvents.cpp \
+		$(SRC_PATH)/ServerManager/ConnectionManager/ConnectionManager.cpp \
+		$(SRC_PATH)/ServerManager/ConnectionManager/ManagedConnection.cpp \
+		$(SRC_PATH)/ServerManager/ServerWorker/ServerWorker.cpp \
+		$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerGetSetAccess.cpp \
+		$(SRC_PATH)/ServerManager/ServerWorker/ServerWorkerEvents.cpp \
+		$(SRC_PATH)/ServerManager/BlockFinder/BlockFinder.cpp \
 										\
-		../../ServerConfig/_Mock/MockServerConfig.cpp \
-		../../ServerConfig/_Mock/MockServerBlock.cpp \
-		../../ServerConfig/_Mock/MockServerLocation.cpp \
-		../../ServerConfig/_Mock/MockDefaultConfig.cpp \
+		$(SRC_PATH)/ServerConfig/_Mock/MockServerConfig.cpp \
+		$(SRC_PATH)/ServerConfig/_Mock/MockServerBlock.cpp \
+		$(SRC_PATH)/ServerConfig/_Mock/MockServerLocation.cpp \
+		$(SRC_PATH)/ServerConfig/_Mock/MockDefaultConfig.cpp \
 											\
-		../../Globals/_Mock/MockLogFile.cpp \
-		../../Globals/_Mock/MockGlobals.cpp \
-		../../Globals/_Mock/MockClock.cpp \
+		$(SRC_PATH)/Globals/_Mock/MockLogFile.cpp \
+		$(SRC_PATH)/Globals/_Mock/MockGlobals.cpp \
+		$(SRC_PATH)/Globals/_Mock/MockClock.cpp \
 											\
-		../../Globals/SignalHandler/SignalHandler.cpp \
+		$(SRC_PATH)/Globals/SignalHandler/SignalHandler.cpp \
 											\
-		../../Connection/Connection.cpp \
-		../../Connection/ConnectionGetSetAccess.cpp \
+		$(SRC_PATH)/Connection/Connection.cpp \
+		$(SRC_PATH)/Connection/ConnectionGetSetAccess.cpp \
 											\
-		../../HttpModule/_Mock/MockHttpModule.cpp \
-		../../HttpModule/_Mock/MockHttpManager.cpp \
+		$(SRC_PATH)/HttpModule/_Mock/MockHttpModule.cpp \
+		$(SRC_PATH)/HttpModule/_Mock/MockHttpManager.cpp \
 		\
-		../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		../../GenericUtils/StringUtils/StringUtils.cpp \
-		../../GenericUtils/Validation/Validation.cpp \
-		../../Event/Event.cpp \
-		../../Event/EventGetSetAccess.cpp
+		$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+		$(SRC_PATH)/GenericUtils/StringUtils/StringUtils.cpp \
+		$(SRC_PATH)/GenericUtils/Validation/Validation.cpp \
+		$(SRC_PATH)/Event/Event.cpp \
+		$(SRC_PATH)/Event/EventGetSetAccess.cpp \
+		$(SRC_PATH)/Callback/Callback.cpp \
+		$(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
 
-OBJS = $(SRCS:.cpp=.o)
+OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 
 THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
 MEMORYPOOL_LINKER 				= 	-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
@@ -75,7 +82,8 @@ $(TARGET): $(OBJS)
 
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBS) -o $(TARGET)
 
-%.o: %.cpp
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: $(TARGET)
@@ -84,13 +92,8 @@ run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
 
 clean:
-	rm -rf $(OBJS) 
-	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
-	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
+	rm -rf $(TARGET) vgcore*
 
 fclean: clean
-	rm -rf $(TARGET)
-	@$(MAKE) $(MAKECMDGOALS) -C $(THREADPOOL_PATH)
-	@$(MAKE) $(MAKECMDGOALS) -C $(MEMORYPOOL_PATH)
 
 .PHONY: clean

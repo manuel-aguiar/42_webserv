@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/12/22 10:19:28 by mmaria-d          #+#    #+#              #
+#    Updated: 2024/12/22 10:19:33 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 
 # 
 # This is just a Makefile to compile tests
@@ -5,35 +17,70 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET = test.out
 
-SRCS = $(wildcard *.cpp) ../EventManager.cpp \
-		../../../Globals/_Mock/MockLogFile.cpp \
-		../../../Globals/_Mock/MockGlobals.cpp \
-		../../../Globals/_Mock/MockClock.cpp \
-		../../../GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		../../../Event/Event.cpp \
-		../../../Event/EventGetSetAccess.cpp
+ROOT_PATH = ../../../..
 
-OBJS = $(SRCS:.cpp=.o)
+EXTERN_LINKER 					= 	-lpthread
+
+THREADPOOL_PATH 				= 	$(ROOT_PATH)/Toolkit/ThreadPool
+THREADPOOL_LIB					= 	libthreadpool.a
+
+MEMORYPOOL_PATH					= 	$(ROOT_PATH)/Toolkit/MemoryPool
+MEMORYPOOL_LIB					= 	libmemorypool.a
+
+# Paths
+
+SRC_PATH = $(ROOT_PATH)/Webserv/.
+OBJ_PATH = $(ROOT_PATH)/Webserv/_build
+
+
+SRCS =  $(SRC_PATH)/ServerManager/EventManager/_Tests/test.cpp \
+											\
+		$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp \
+										\
+		$(SRC_PATH)/Globals/_Mock/MockLogFile.cpp \
+		$(SRC_PATH)/Globals/_Mock/MockGlobals.cpp \
+		$(SRC_PATH)/Globals/_Mock/MockClock.cpp \
+											\
+		$(SRC_PATH)/Connection/_Mock/MockConnection.cpp \
+		\
+		$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+		$(SRC_PATH)/Event/Event.cpp \
+		$(SRC_PATH)/Event/EventGetSetAccess.cpp \
+		$(SRC_PATH)/Callback/Callback.cpp \
+		$(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
+
+OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+
+THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
+MEMORYPOOL_LINKER 				= 	-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
+
+LIB_THREADPOOL 					= 	-L./$(THREADPOOL_PATH) $(THREADPOOL_LINKER)
+LIB_MEMORYPOOL 					= 	-L./$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
+
+LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL) $(EXTERN_LINKER)
 
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
 
-%.o: %.cpp
+	@$(MAKE) -C $(THREADPOOL_PATH)
+	@$(MAKE) -C $(MEMORYPOOL_PATH)
+
+	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBS) -o $(TARGET)
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: $(TARGET)
 
 run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
-	make fclean
 
 clean:
-	rm -rf $(OBJS) 
+	rm -rf $(TARGET) vgcore*
 
 fclean: clean
-	rm -rf $(TARGET)
 
 .PHONY: clean

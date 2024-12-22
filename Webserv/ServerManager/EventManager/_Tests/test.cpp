@@ -7,14 +7,9 @@
 # include "../../../Event/Event.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-void EventHandler(Event& event)
+void EventHandler(Callback& callback)
 {
-	char buffer[100];
-	int readChars;
-
-	while ((readChars = read(event.getFd(), buffer, 100)) > 0);
-
-	event.setData((unsigned char *)123);	
+	callback.setData((unsigned char *)123);	
 };
 
 int main(void)
@@ -48,7 +43,7 @@ int main(void)
 		event.setFd(STDIN_FILENO);
 		FileDescriptor::setCloseOnExec_NonBlocking(event.getFd());
 		event.setMonitorFlags(EPOLLIN);
-		event.setHandler(EventHandler);
+		event.accessCallback().setHandler(EventHandler);
 
 
 		manager.addEvent(event);
@@ -57,12 +52,11 @@ int main(void)
 		write(pipefd[1], str, strlen(str));
 		
 		manager.retrieveEvents(-1);
-		manager.distributeEvents();
 
 		close(pipefd[1]);
 		close(pipefd[0]);
 
-		if ((unsigned char *)event.getData() != (unsigned char *)123)
+		if ((unsigned char *)event.getCallback().getData() != (unsigned char *)123)
 			throw std::runtime_error("Event data not set correctly");
 
 		std::cout << "	PASS\n";

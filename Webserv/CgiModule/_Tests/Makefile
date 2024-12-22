@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/21 12:53:51 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/22 09:58:19 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ TARGET = test.out
 # Paths
 ROOT_PATH = ../../../Webserv
 SRC_PATH = $(ROOT_PATH)/.
-OBJ_PATH = $(ROOT_PATH)/CgiModule/_Tests/_build
+OBJ_PATH = $(ROOT_PATH)/_build
 
 # Sources
 SRCS =  $(SRC_PATH)/CgiModule/_Tests/test.cpp \
@@ -74,10 +74,10 @@ run: $(TARGET)
 	valgrind --track-fds=yes ./$(TARGET)
 
 clean:
-	rm -rf $(OBJ_PATH) vgcore*
+	rm -rf $(TARGET) vgcore*
 
 fclean: clean
-	rm -rf $(TARGET)
+
 
 re: fclean all
 
