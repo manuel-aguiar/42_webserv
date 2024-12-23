@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:48:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 08:59:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,6 +262,70 @@ class DynArray
             ++m_size;
         }
 
+        template <typename Arg1 >
+        void emplace_back(const Arg1& arg1)
+        {
+			T* new_array = NULL;
+			size_t newCap = m_capacity ? m_capacity * 2 : 1;
+
+            if (m_size == m_capacity)
+				new_array = m_allocator.allocate(newCap);
+
+			new ((new_array ? new_array : m_array) + m_size) T(arg1);
+
+			if (new_array && m_array != new_array)
+            {
+                std::memmove((void*)new_array, (void*)m_array, m_size * sizeof(T));
+                m_allocator.deallocate(m_array, m_size);
+                m_capacity = newCap;
+                m_array = new_array;
+            }
+			++m_size;
+        }
+
+        template <typename Arg1, typename Arg2 >
+        void emplace_back(const Arg1& arg1, const Arg2& arg2)
+        {
+			T* new_array = NULL;
+			size_t newCap = m_capacity ? m_capacity * 2 : 1;
+
+            if (m_size == m_capacity)
+				new_array = m_allocator.allocate(newCap);
+
+			new ((new_array ? new_array : m_array) + m_size) T(arg1, arg2);
+
+			if (new_array && m_array != new_array)
+            {
+                std::memmove((void*)new_array, (void*)m_array, m_size * sizeof(T));
+                m_allocator.deallocate(m_array, m_size);
+                m_capacity = newCap;
+                m_array = new_array;
+            }
+			++m_size;
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        {
+			T* new_array = NULL;
+			size_t newCap = m_capacity ? m_capacity * 2 : 1;
+
+            if (m_size == m_capacity)
+				new_array = m_allocator.allocate(newCap);
+
+			new ((new_array ? new_array : m_array) + m_size) T(arg1, arg2, arg3);
+
+			if (new_array && m_array != new_array)
+            {
+                std::memmove((void*)new_array, (void*)m_array, m_size * sizeof(T));
+                m_allocator.deallocate(m_array, m_size);
+                m_capacity = newCap;
+                m_array = new_array;
+            }
+            ++m_size;
+        }
+
+/*
         void emplace_front()
         {
 			T* new_array = NULL;
@@ -356,7 +420,7 @@ class DynArray
 
             m_size++;
         }
-
+*/
 
         class iterator
         {

@@ -3,10 +3,23 @@
 #                                                         :::      ::::::::    #
 #    _ServerWorker.docs                                 :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 10:12:29 by manuel            #+#    #+#              #
-#    Updated: 2024/11/29 10:12:34 by manuel           ###   ########.fr        #
+#    Updated: 2024/12/23 09:12:48 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+The ServerWorker will house all the components required for a single server to run:
+    ListeningSockets;
+    ConnectionManager;
+    EventManager;
+
+
+with these, it will run the server.
+
+The two main methods are the following:
+
+    prepareLaunch() -> this, opens up the previously prepared ListeningSockets and registers
+        the base events requiered for the runtime of the server's internals
+    run() -> run the server

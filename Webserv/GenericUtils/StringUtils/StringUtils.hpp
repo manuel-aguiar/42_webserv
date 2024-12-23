@@ -10,4 +10,10 @@ size_t	stoull(const std::string &str);
 size_t	parse_size(const std::string &size_str);
 std::vector<std::string> split(const std::string &str, char delimiter);
 
+class StringUtils
+{
+    public:
+        static void move(std::string& dest, std::string& src) {}
+};
+
 #endif

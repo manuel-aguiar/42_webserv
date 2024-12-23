@@ -6,9 +6,11 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
-#    Updated: 2024/12/12 09:34:38 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 09:06:56 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+Internal class, the user will essentially never use a ListeningSocket directly
 
 The purpose of ListeningSocket is to accept incoming connections from clients.
 It will ask the ConnectionManager for a free connection to use, setting its

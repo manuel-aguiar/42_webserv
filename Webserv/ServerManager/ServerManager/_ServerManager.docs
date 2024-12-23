@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/18 11:19:25 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/26 09:33:21 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 09:06:14 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,3 +14,4 @@ Loads default config, prepares all server workers and starts the runtime.
 
 If there is more than one ServerWorker, Threadpool.addtask(serverworker.run())
     
+Essentially the only public method that is of interest is ::run() which runs the server.

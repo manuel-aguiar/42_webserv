@@ -57,3 +57,9 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 
 	return (tokens);
 }
+
+void StringUtils::move(std::string& dest, std::string& src)
+{
+	dest.swap(src);
+	src.clear();
+}
