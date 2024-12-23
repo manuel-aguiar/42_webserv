@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:57:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 14:09:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int main(void)
 	{
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		const int connectionCount = 1000;
+		const int connectionCount = 3;
 
 		CgiModule cgi(10, connectionCount, globals);
 

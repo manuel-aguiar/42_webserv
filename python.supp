@@ -1,0 +1,51 @@
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/bin/python3.12
+   fun:PyObject_Malloc
+   fun:_PyObject_GC_New
+   fun:PyDict_New
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:Py_InitializeFromConfig
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:Py_BytesMain
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:PyObject_Malloc
+   fun:_PyObject_GC_New
+   fun:PyDict_New
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:Py_InitializeFromConfig
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:PyObject_Malloc
+   fun:_PyObject_GC_New
+   fun:PyDict_New
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+   fun:Py_InitializeFromConfig
+   obj:/usr/bin/python3.12
+   obj:/usr/bin/python3.12
+}

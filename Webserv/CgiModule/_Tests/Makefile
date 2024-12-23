@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/22 09:58:19 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 14:42:15 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,11 +67,27 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 # Include dependencies
 -include $(DEPS)
 
+##chatgpt magic to generate suppresion files
+#valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all python3 TestScripts/py/envPrint.py  2>&1 | awk '/^{/{flag=1} flag; /}$/ {flag=0}' > python.supp && cat python.supp
+
 # Standard targets
 all: $(TARGET)
 
 run: $(TARGET)
-	valgrind --track-fds=yes ./$(TARGET)
+	@valgrind   \
+        --gen-suppressions=all \
+        --suppressions=TestScripts/py/python.supp \
+        --suppressions=TestScripts/sh/bash.supp \
+        --suppressions=TestScripts/php/php.supp \
+        --quiet \
+        --trace-children=yes \
+        --leak-check=full \
+        --errors-for-leak-kinds=all \
+        --show-leak-kinds=all \
+        ./$(TARGET)
+
+##        --track-fds=yes 
+##        --track-origins=yes
 
 clean:
 	rm -rf $(TARGET) vgcore*
