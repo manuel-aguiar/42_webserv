@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   test1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:42:45 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/23 15:22:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,13 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
+# include "../../../_Tests/test.h"
 
-
-int main()
+int TestPart1(int testNumber)
 {
-
-	/******************* TEST 1 ************************/
-	std::cout << "\n*************** DynArray tests ***************" << std::endl;
-	try
+    try
 	{
-		std::cout << "TEST 1: ";
+		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
 		DynArray<int> 			array;
 
@@ -55,13 +52,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
-
+    testNumber++;
 	/******************* TEST 2 ************************/
 
 	try
 	{
-		std::cout << "TEST 2: ";
+		std::cout << "TEST " << testNumber << ": ";
 		std::vector<ToolkitDummy> 		std;
 		DynArray<ToolkitDummy> 			array;
 
@@ -85,13 +83,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
-
+    testNumber++;
 	/******************* TEST 3 ************************/
 
 	try
 	{
-		std::cout << "TEST 3: ";
+		std::cout << "TEST " << testNumber << ": ";
 		std::vector<ToolkitDummy> 		std;
 		DynArray<ToolkitDummy> 			array;
 
@@ -115,8 +114,9 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
-
+    testNumber++;
 
 	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096);
 
@@ -124,7 +124,7 @@ int main()
 
 	try
 	{
-		std::cout << "TEST 4: ";
+		std::cout << "TEST " << testNumber << ": ";
 		Nginx_PoolAllocator<ToolkitDummy> alloc(pool);
 		std::vector<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 		std(alloc);
 		DynArray<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 			array(0, alloc);
@@ -152,13 +152,15 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
+    testNumber++;
 
 /******************* TEST 5 ************************/
 
 	try
 	{
-		std::cout << "TEST 5: ";
+		std::cout << "TEST " << testNumber << ": ";
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		DynArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(alloc);
@@ -210,14 +212,15 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
-
+    testNumber++;
 
 /******************* TEST 6 ************************/
 
 	try
 	{
-		std::cout << "TEST 6: ";
+		std::cout << "TEST " << testNumber << ": ";
 		std::vector<ToolkitDummy> 		std;
 		DynArray<ToolkitDummy> 			array;
 
@@ -243,14 +246,15 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
-
+    testNumber++;
 
 /******************* TEST 7 ************************/
 
 	try
 	{
-		std::cout << "TEST 7: ";
+		std::cout << "TEST " << testNumber << ": ";
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		DynArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(alloc);
@@ -330,7 +334,9 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
+    testNumber++;
 
 	DynArray<std::string, Nginx_PoolAllocator<std::string> >	array((Nginx_PoolAllocator<std::string>(pool)));
 	
@@ -340,11 +346,5 @@ int main()
 
 	pool->destroy();
 
-	std::cout << "*********************************************\n" << std::endl;
-
-    return (0);
+    return (testNumber);
 }
-
-/*
-    c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && ./main
-*/

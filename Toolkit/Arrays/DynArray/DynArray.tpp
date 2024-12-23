@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 11:32:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 15:59:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,30 @@ class DynArray
                     m_array = m_allocator.allocate(other.m_capacity);
                 }
             }
+            else
+                m_array = m_allocator.allocate(other.m_capacity);
+                
             m_size = other.m_size;
             m_capacity = other.m_capacity;
             for (size_t i = 0; i < m_size; i++)
                 m_allocator.construct(m_array + i, other.m_array[i]);
             return (*this);
+        }
+
+        void move(DynArray& from)
+        {
+            if (m_array)
+            {
+                for (size_t i = 0; i < m_size; i++)
+                    m_allocator.destroy(m_array + i);
+                m_allocator.deallocate(m_array, m_capacity);
+            }
+            m_array = from.m_array;
+            m_size = from.m_size;
+            m_capacity = from.m_capacity;
+            from.m_array = NULL;
+            from.m_size = 0;
+            from.m_capacity = 0;
         }
 
         T& operator[](size_t index)
@@ -99,15 +118,6 @@ class DynArray
             if (m_size == m_capacity)
                 reserve(m_capacity ? m_capacity * 2 : 1);
             m_allocator.construct(m_array + m_size++, value);
-        }
-
-        void push_front(const T& value)
-        {
-            if (m_size == m_capacity)
-                reserve(m_capacity ? m_capacity * 2 : 1);
-            std::memmove((void*)(m_array + 1), (void*)m_array, m_size * sizeof(T));
-            m_allocator.construct(m_array, value);
-            m_size++;
         }
 
         T* getArray() const {return (m_array);}
@@ -170,13 +180,13 @@ class DynArray
             if (size <= m_capacity)
                 return;
             T* new_array = m_allocator.allocate(size);
-            if (m_array != new_array)
+            m_capacity = size;
+            if (m_array && m_array != new_array)
             {
                 std::memmove((void*)new_array, (void*)m_array, m_size * sizeof(T));
                 m_allocator.deallocate(m_array, m_size);
-                m_capacity = size;
-                m_array = new_array;
             }
+            m_array = new_array;
         }
 
         void emplace_back()
