@@ -16,6 +16,7 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
 
 // C Headers
@@ -86,12 +87,12 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 
 bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
-	
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
 
 	const t_CgiRequestEnv& 			envRequest = m_curRequestData->getEnvVars();
 	const t_CgiEnvKey*				envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
+	std::string						temp;
 	
 	try
 	{
@@ -100,13 +101,22 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 		m_argPtr.reserve(3);
 
 		for (size_t i = 0; i < envRequest.envBase.size(); i++)
-			m_envStr.push_back(envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
-
+		{
+			temp = (envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
+			m_envStr.emplace_back();
+			StringUtils::move(m_envStr.back(), temp);
+		}
+		
 		for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
-			m_envStr.push_back(it->first + "=" + it->second);
+		{
+			temp = (it->first + "=" + it->second);
+			m_envStr.emplace_back();
+			StringUtils::move(m_envStr.back(), temp);
+		}
 
 		for (size_t i = 0; i < entryCount; i++)
 			m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
+
 		m_envPtr.push_back(NULL);
 
 		m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));

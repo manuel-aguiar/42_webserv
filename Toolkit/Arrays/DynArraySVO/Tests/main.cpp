@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 08:48:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:06:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,31 @@
 
 #include "../../../MemoryPool/MemoryPool.h"
 
-class Dummy
+class ToolkitDummy
 {
 	public:
-		Dummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
+		ToolkitDummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
 		{
 			//std::cout << "dummy constructor" << std::endl;
 		};
 
-        Dummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
+        ToolkitDummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
         {
             //std::cout << "dummy parameter constructor" << std::endl;
             this->value = value;
         }
-		~Dummy()
+		~ToolkitDummy()
 		{
 			//std::cout << "dummy destroy" << std::endl;
 			if (m_data)  delete [] m_data;
 				m_data = NULL;
 		};
-		Dummy(const Dummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
+		ToolkitDummy(const ToolkitDummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
 		{
 			//std::cout << "dummy copy" << std::endl;
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 		};
-		Dummy& operator=(const Dummy& other)
+		ToolkitDummy& operator=(const ToolkitDummy& other)
 		{
 			if (!m_data)
 				m_data = new int [4];
@@ -52,8 +52,8 @@ class Dummy
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 			return (*this);
 		};
-		bool operator==(const Dummy& other) {return (value == other.value && _name == other._name);};
-		bool operator!=(const Dummy& other) {return !(value == other.value && _name == other._name);};
+		bool operator==(const ToolkitDummy& other) {return (value == other.value && _name == other._name);};
+		bool operator!=(const ToolkitDummy& other) {return !(value == other.value && _name == other._name);};
         const char* print()
         {
             return("dummy: hey there ");
@@ -66,19 +66,19 @@ class Dummy
         std::string _name;
 };
 
-class Base {
+class ToolkitBase {
 public:
-    Base() : m_data(new int[4]), value(0), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
+    ToolkitBase() : m_data(new int[4]), value(0), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
         //std::cout << "Base constructor" << std::endl;
     }
 
-    Base(int value) : m_data(new int[4]), value(value), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
+    ToolkitBase(int value) : m_data(new int[4]), value(value), _name("Base i am a string so long that deffinitely allocates memory on the heap myself") {
         //std::cout << "Base parameter constructor" << std::endl;
     }
 
-	bool operator==(const Base& other) {return (value == other.value && _name == other._name);};
-	bool operator!=(const Base& other) {return !(value == other.value && _name == other._name);};
-    virtual ~Base() {
+	bool operator==(const ToolkitBase& other) {return (value == other.value && _name == other._name);};
+	bool operator!=(const ToolkitBase& other) {return !(value == other.value && _name == other._name);};
+    virtual ~ToolkitBase() {
         //std::cout << "Base destroy" << std::endl;
         if (m_data)
         {
@@ -87,12 +87,12 @@ public:
         }
     }
 
-    Base(const Base& other) : m_data(new int[4]), value(other.value), _name(other._name) {
+    ToolkitBase(const ToolkitBase& other) : m_data(new int[4]), value(other.value), _name(other._name) {
         //std::cout << "Base copy" << std::endl;
         std::memcpy(m_data, other.m_data, 4 * sizeof(int));
     }
 
-    Base& operator=(const Base& other) {
+    ToolkitBase& operator=(const ToolkitBase& other) {
         if (this != &other) {
             //std::cout << "Base copy assignment" << std::endl;
             if (m_data) {
@@ -119,36 +119,36 @@ protected:
 };
 
 // Derived class
-class Derived : public Base {
+class ToolkitDerived : public ToolkitBase {
 public:
-    Derived() : Base() {
+    ToolkitDerived() : ToolkitBase() {
         //std::cout << "Derived constructor" << std::endl;
 		_name = "Derived i am a string so long that deffinitely allocates memory on the heap myself";
     }
 
-    Derived(int value) : Base(value) {
+    ToolkitDerived(int value) : ToolkitBase(value) {
         //std::cout << "Derived parameter constructor" << std::endl;
 		_name = "Derived i am a string so long that deffinitely allocates memory on the heap myself";
     }
 
-    ~Derived() {
+    ~ToolkitDerived() {
         //std::cout << "Derived destroy" << std::endl;
     }
 
-    Derived(const Derived& other) : Base(other) {
+    ToolkitDerived(const ToolkitDerived& other) : ToolkitBase(other) {
         //std::cout << "Derived copy" << std::endl;
     }
 
-    Derived& operator=(const Derived& other) {
+    ToolkitDerived& operator=(const ToolkitDerived& other) {
         if (this != &other) {
             //std::cout << "Derived copy assignment" << std::endl;
-            Base::operator=(other);
+            ToolkitBase::operator=(other);
         }
         return *this;
     }
 
-	bool operator==(const Derived& other) {return (value == other.value && _name == other._name);};
-	bool operator!=(const Derived& other) {return !(value == other.value && _name == other._name);};
+	bool operator==(const ToolkitDerived& other) {return (value == other.value && _name == other._name);};
+	bool operator!=(const ToolkitDerived& other) {return !(value == other.value && _name == other._name);};
 
     void print()
     {
@@ -197,8 +197,8 @@ int main()
 	try
 	{
 		std::cout << "TEST 2: ";
-		std::vector<Dummy> 		std;
-		DynArraySVO<Dummy> 			array;
+		std::vector<ToolkitDummy> 		std;
+		DynArraySVO<ToolkitDummy> 			array;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -208,8 +208,8 @@ int main()
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArraySVO<Dummy>::iterator it = array.begin();
-		std::vector<Dummy>::iterator iter = std.begin();
+		DynArraySVO<ToolkitDummy>::iterator it = array.begin();
+		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -227,8 +227,8 @@ int main()
 	try
 	{
 		std::cout << "TEST 3: ";
-		std::vector<Dummy> 		std;
-		DynArraySVO<Dummy> 		array;
+		std::vector<ToolkitDummy> 		std;
+		DynArraySVO<ToolkitDummy> 		array;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -238,8 +238,8 @@ int main()
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArraySVO<Dummy>::iterator it = array.begin();
-		std::vector<Dummy>::iterator iter = std.begin();
+		DynArraySVO<ToolkitDummy>::iterator it = array.begin();
+		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -260,9 +260,9 @@ int main()
 	try
 	{
 		std::cout << "TEST 4: ";
-		Nginx_PoolAllocator<Dummy> alloc(pool);
-		std::vector<Dummy, Nginx_PoolAllocator<Dummy> > 		std(alloc);
-		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> > 		array(alloc);
+		Nginx_PoolAllocator<ToolkitDummy> alloc(pool);
+		std::vector<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 		std(alloc);
+		DynArraySVO<ToolkitDummy, 10, Nginx_PoolAllocator<ToolkitDummy> > 		array(alloc);
 
 		std.reserve(23);
 		array.reserve(23);
@@ -275,8 +275,8 @@ int main()
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArraySVO<Dummy, 10, Nginx_PoolAllocator<Dummy> >::iterator it = array.begin();
-		std::vector<Dummy, Nginx_PoolAllocator<Dummy> >::iterator iter = std.begin();
+		DynArraySVO<ToolkitDummy, 10, Nginx_PoolAllocator<ToolkitDummy> >::iterator it = array.begin();
+		std::vector<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> >::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -294,34 +294,34 @@ int main()
 	try
 	{
 		std::cout << "TEST 5: ";
-		Nginx_PoolAllocator<Base*> alloc(pool);
-		std::vector<Base*, Nginx_PoolAllocator<Base*> > 		std(alloc);
-		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> > 			array(alloc);
+		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
+		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
+		DynArraySVO<ToolkitBase*, 10, Nginx_PoolAllocator<ToolkitBase*> > 			array(alloc);
 
 		std.reserve(23);
 		array.reserve(23);
 
 		for (int i = 0; i < 100; ++i)
 		{
-			std.push_back(new Base(i));
-			array.push_back(new Base(i));
+			std.push_back(new ToolkitBase(i));
+			array.push_back(new ToolkitBase(i));
 
-			std.push_back(new Derived(i));
-			array.push_back(new Derived(i));
+			std.push_back(new ToolkitDerived(i));
+			array.push_back(new ToolkitDerived(i));
 
-			std.push_back(new Derived(i));
-			array.push_back(new Derived(i));
+			std.push_back(new ToolkitDerived(i));
+			array.push_back(new ToolkitDerived(i));
 
 			std.pop_back();
 			array.pop_back();
-			std.push_back(new Base(i));
-			array.push_back(new Base(i));
+			std.push_back(new ToolkitBase(i));
+			array.push_back(new ToolkitBase(i));
 		}
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArraySVO<Base*, 10, Nginx_PoolAllocator<Base*> >::iterator it = array.begin();
-		std::vector<Base*, Nginx_PoolAllocator<Base*> >::iterator iter = std.begin();
+		DynArraySVO<ToolkitBase*, 10, Nginx_PoolAllocator<ToolkitBase*> >::iterator it = array.begin();
+		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> >::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (**it != **iter)

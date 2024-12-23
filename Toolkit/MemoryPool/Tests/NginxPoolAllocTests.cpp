@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 13:00:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 09:00:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:01:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@
 # include "../MemoryPool.h"
 
 
-class Dummy
+class ToolkitDummy
 {
 	public:
-		Dummy() : m_data(new int [4])
+		ToolkitDummy() : m_data(new int [4])
 		{
 			std::cout << "constructor" << std::endl;
 		};
-		~Dummy()
+		~ToolkitDummy()
 		{
 			std::cout << "dummy destroy" << std::endl; 
 			if (m_data)  delete [] m_data; 
 				m_data = NULL;
 		};
-		Dummy(const Dummy& other) : m_data(new int [4])
+		ToolkitDummy(const ToolkitDummy& other) : m_data(new int [4])
 		{
 			std::cout << "dummy copy" << std::endl; 
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 		};
-		Dummy& operator=(const Dummy& other)
+		ToolkitDummy& operator=(const ToolkitDummy& other)
 		{
 			if (!m_data)
 				m_data = new int [4];
@@ -102,33 +102,33 @@ int main(void)
 	vec->push_back(9);
 	vec->push_back(123);
 
-	Nginx_PoolAllocator<std::pair<int, Dummy> > alloc4(pool);
+	Nginx_PoolAllocator<std::pair<int, ToolkitDummy> > alloc4(pool);
 
-	MapInPool<int, Dummy>::type* myMap2 = (MapInPool<int, Dummy>::type*)pool->allocate(sizeof(MapInPool<int, Dummy>::type), sizeof(MapInPool<int, Dummy>::type));
-	new (myMap2) MapInPool<int, Dummy>::type(std::less<int>(), alloc4);
+	MapInPool<int, ToolkitDummy>::type* myMap2 = (MapInPool<int, ToolkitDummy>::type*)pool->allocate(sizeof(MapInPool<int, ToolkitDummy>::type), sizeof(MapInPool<int, ToolkitDummy>::type));
+	new (myMap2) MapInPool<int, ToolkitDummy>::type(std::less<int>(), alloc4);
 
-	myMap2->insert(std::make_pair(2, Dummy()));
-	myMap2->insert(std::make_pair(3, Dummy()));
+	myMap2->insert(std::make_pair(2, ToolkitDummy()));
+	myMap2->insert(std::make_pair(3, ToolkitDummy()));
 
-	myMap2->insert(std::make_pair(3, Dummy()));
-	myMap2->insert(std::make_pair(4, Dummy()));
-	myMap2->insert(std::make_pair(5, Dummy()));
-	myMap2->insert(std::make_pair(6, Dummy()));
+	myMap2->insert(std::make_pair(3, ToolkitDummy()));
+	myMap2->insert(std::make_pair(4, ToolkitDummy()));
+	myMap2->insert(std::make_pair(5, ToolkitDummy()));
+	myMap2->insert(std::make_pair(6, ToolkitDummy()));
 
-	(*myMap2)[15] = Dummy();
+	(*myMap2)[15] = ToolkitDummy();
 
 	myMap->~map();
 	myMap2->~map();
 
 
-	Nginx_PoolAllocator<Dummy> alloc5(pool);
-	VectorInPool<Dummy>::type*  vec2 = (VectorInPool<Dummy>::type*)pool->allocate(sizeof(VectorInPool<Dummy>::type), sizeof(VectorInPool<Dummy>::type));
-	new (vec2) VectorInPool<Dummy>::type(alloc5);	
+	Nginx_PoolAllocator<ToolkitDummy> alloc5(pool);
+	VectorInPool<ToolkitDummy>::type*  vec2 = (VectorInPool<ToolkitDummy>::type*)pool->allocate(sizeof(VectorInPool<ToolkitDummy>::type), sizeof(VectorInPool<ToolkitDummy>::type));
+	new (vec2) VectorInPool<ToolkitDummy>::type(alloc5);	
 
 	vec2->reserve(7);
 
-	vec2->push_back(Dummy());
-	vec2->push_back(Dummy());
+	vec2->push_back(ToolkitDummy());
+	vec2->push_back(ToolkitDummy());
 
 
 	// this is the poor man's std::vector::emplace_back()
@@ -137,18 +137,18 @@ int main(void)
 	// which means this can go wrong pretty fast
 	// fun experiment, though
 
-	new (&((*vec2)[2])) Dummy();
-	new (&((*vec2)[3])) Dummy();
-	new (&((*vec2)[4])) Dummy();
-	new (&((*vec2)[5])) Dummy();
-	new (&((*vec2)[6])) Dummy();
+	new (&((*vec2)[2])) ToolkitDummy();
+	new (&((*vec2)[3])) ToolkitDummy();
+	new (&((*vec2)[4])) ToolkitDummy();
+	new (&((*vec2)[5])) ToolkitDummy();
+	new (&((*vec2)[6])) ToolkitDummy();
 
 
-	((*vec2)[2]).~Dummy();
-	((*vec2)[3]).~Dummy();
-	((*vec2)[4]).~Dummy();
-	((*vec2)[5]).~Dummy();
-	((*vec2)[6]).~Dummy();
+	((*vec2)[2]).~ToolkitDummy();
+	((*vec2)[3]).~ToolkitDummy();
+	((*vec2)[4]).~ToolkitDummy();
+	((*vec2)[5]).~ToolkitDummy();
+	((*vec2)[6]).~ToolkitDummy();
 
 	vec2->~vector();
 

@@ -1,72 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/19 11:35:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:06:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include "../List.hpp"
-#include <list>
-
-#include <cstring>
-
-
-class Dummy
-{
-	public:
-		Dummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
-		{
-			//std::cout << "dummy constructor" << std::endl;
-		};
-
-        Dummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
-        {
-            //std::cout << "dummy parameter constructor" << std::endl;
-            this->value = value;
-        }
-		~Dummy()
-		{
-			//std::cout << "dummy destroy" << std::endl;
-			if (m_data)  delete [] m_data;
-				m_data = NULL;
-		};
-		Dummy(const Dummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
-		{
-			//std::cout << "dummy copy" << std::endl;
-			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
-		};
-		Dummy& operator=(const Dummy& other)
-		{
-			if (!m_data)
-				m_data = new int [4];
-			//std::cout << " dummy copy assignment" << std::endl;
-            value = other.value;
-            _name = other._name;
-			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
-			return (*this);
-		};
-		bool operator==(const Dummy& other) {return (value == other.value && _name == other._name);};
-		bool operator!=(const Dummy& other) {return !(value == other.value && _name == other._name);};
-        const char* print()
-        {
-            return("dummy: hey there ");
-        }
-
-	private:
-
-        int value;
-		int* m_data;
-        std::string _name;
-};
-
+// Project headers
 #include "../../MemoryPool/MemoryPool.h"
+#include "../List.hpp"
+#include "../../_Tests/ToolkitDummy.hpp"
+
+// C++ headers
+#include <list>
+#include <iostream>
+#include <cstring>
 #include <stdexcept>
+
 
 int main(void)
 {
@@ -76,8 +30,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 1: ";
-		std::list<Dummy> 	std;
-		List<Dummy> 		list;
+		std::list<ToolkitDummy> 	std;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -87,8 +41,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy>::iterator it = list.begin();
-		std::list<Dummy>::iterator iter = std.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
+		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -106,8 +60,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 2: ";
-		std::list<Dummy> 	std;
-		List<Dummy> 		list;
+		std::list<ToolkitDummy> 	std;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -117,8 +71,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy>::iterator it = list.begin();
-		std::list<Dummy>::iterator iter = std.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
+		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -136,8 +90,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 3: ";
-		std::list<Dummy> 	std;
-		List<Dummy> 		list;
+		std::list<ToolkitDummy> 	std;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -147,8 +101,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy>::iterator it = list.begin();
-		std::list<Dummy>::iterator iter = std.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
+		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -164,8 +118,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 4: ";
-		std::list<Dummy> 	std;
-		List<Dummy> 		list;
+		std::list<ToolkitDummy> 	std;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -175,8 +129,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy>::iterator it = list.begin();
-		std::list<Dummy>::iterator iter = std.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
+		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -197,9 +151,9 @@ int main(void)
 	{
 		std::cout << "TEST 5: ";
 
-		Nginx_PoolAllocator<Dummy> alloc(memoryPool);
-		std::list<Dummy, Nginx_PoolAllocator<Dummy> > std(alloc);
-		List<Dummy, Nginx_PoolAllocator<Dummy> > list(alloc);
+		Nginx_PoolAllocator<ToolkitDummy> alloc(memoryPool);
+		std::list<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > std(alloc);
+		List<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > list(alloc);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -209,8 +163,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy, Nginx_PoolAllocator<Dummy> >::iterator it = list.begin();
-		std::list<Dummy, Nginx_PoolAllocator<Dummy> >::iterator iter = std.begin();
+		List<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> >::iterator it = list.begin();
+		std::list<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> >::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -261,8 +215,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 7: ";
-		std::list<Dummy> 	std;
-		List<Dummy> 		list;
+		std::list<ToolkitDummy> 	std;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -295,8 +249,8 @@ int main(void)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		List<Dummy>::iterator it = list.begin();
-		std::list<Dummy>::iterator iter = std.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
+		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -372,18 +326,18 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 9: ";
-		List<Dummy> 		list;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			list.push_back(i);
 		}
 
-		List<Dummy> copy;
+		List<ToolkitDummy> copy;
 
 		copy = list;
-		List<Dummy>::iterator iter = copy.begin();
-		List<Dummy>::iterator it = list.begin();
+		List<ToolkitDummy>::iterator iter = copy.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -401,8 +355,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 10: ";
-		List<Dummy> 		copy;
-		List<Dummy> 		list;
+		List<ToolkitDummy> 		copy;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -416,8 +370,8 @@ int main(void)
 		copy.push_back(1000);
 
 		copy = list;
-		List<Dummy>::iterator iter = copy.begin();
-		List<Dummy>::iterator it = list.begin();
+		List<ToolkitDummy>::iterator iter = copy.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
 
 		if (list.size() != copy.size())
 		{
@@ -445,16 +399,16 @@ int main(void)
 	{
 		std::cout << "TEST 11: ";
 
-		List<Dummy> 		list;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			list.push_back(i);
 		}
 
-		List<Dummy> 		copy(list);
-		List<Dummy>::iterator iter = copy.begin();
-		List<Dummy>::iterator it = list.begin();
+		List<ToolkitDummy> 		copy(list);
+		List<ToolkitDummy>::iterator iter = copy.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -472,8 +426,8 @@ int main(void)
 	try
 	{
 		std::cout << "TEST 12: ";
-		List<Dummy> 		copy;
-		List<Dummy> 		list;
+		List<ToolkitDummy> 		copy;
+		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -487,8 +441,8 @@ int main(void)
 		copy.pop_front();
 
 		copy = list;
-		List<Dummy>::iterator iter = copy.begin();
-		List<Dummy>::iterator it = list.begin();
+		List<ToolkitDummy>::iterator iter = copy.begin();
+		List<ToolkitDummy>::iterator it = list.begin();
 
 		if (list.size() != copy.size())
 		{

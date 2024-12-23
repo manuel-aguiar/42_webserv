@@ -6,27 +6,27 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 12:02:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:01:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "../StackArray.hpp"
 
-class Dummy
+class ToolkitDummy
 {
     public:
-        Dummy() : _someref(*(int *)NULL), _value(0), _arr(new int [4])  {std::cout << " default constructor" << std::endl;};;
-        Dummy(int value) : _someref(*(int *)NULL), _value(value), _arr(new int [4])  {std::cout << "constructor" << std::endl;};
-        ~Dummy()
+        ToolkitDummy() : _someref(*(int *)NULL), _value(0), _arr(new int [4])  {std::cout << " default constructor" << std::endl;};;
+        ToolkitDummy(int value) : _someref(*(int *)NULL), _value(value), _arr(new int [4])  {std::cout << "constructor" << std::endl;};
+        ~ToolkitDummy()
         {
             if (_arr)
                 delete [] _arr;            
             std::cout << "destructor" << std::endl;
         };
         
-        Dummy(const Dummy& other) : _someref(other._someref), _value(other._value), _arr(new int [4])  {std::cout << "copy" << std::endl;};;
-        Dummy& operator=(const Dummy& other)
+        ToolkitDummy(const ToolkitDummy& other) : _someref(other._someref), _value(other._value), _arr(new int [4])  {std::cout << "copy" << std::endl;};;
+        ToolkitDummy& operator=(const ToolkitDummy& other)
         {
             {std::cout << "assign" << std::endl;};
             if (this == &other)
@@ -64,7 +64,7 @@ class Dummy
         int*    _arr;
 };
 
-std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
+std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy)
 {
     os << "yoyo " << dummy.getValue();
     return (os);
@@ -72,36 +72,36 @@ std::ostream& operator<<(std::ostream& os, const Dummy& dummy)
 
 int main(void)
 {
-    StackArray<Dummy, 10> array1;
-    StackArray<Dummy*, 10> array0;
+    StackArray<ToolkitDummy, 10> array1;
+    StackArray<ToolkitDummy*, 10> array0;
 
     for (size_t i = 0; i < array1.size(); i++)
     {
         array0[i] = &array1[i];
-        new (&(*array0[i])) Dummy(i);
+        new (&(*array0[i])) ToolkitDummy(i);
     }
 
-    Dummy cenas = array1[3];
+    ToolkitDummy cenas = array1[3];
     std::cout << "dummy cenas : " << cenas << std::endl;
 
-    Dummy tretas = cenas;
+    ToolkitDummy tretas = cenas;
     std::cout << "dummy tretas : " << cenas << std::endl;
 
-    Dummy& ref = tretas;
+    ToolkitDummy& ref = tretas;
     std::cout << "dummy ref : " << ref << std::endl;
 
-    Dummy* ptr = &array1[4];
+    ToolkitDummy* ptr = &array1[4];
     std::cout << "dummy ptr : " << *ptr << std::endl;
 
-    StackArray<Dummy, 10> array3 = array1;
+    StackArray<ToolkitDummy, 10> array3 = array1;
     
-    StackArray<Dummy, 10> array2;
+    StackArray<ToolkitDummy, 10> array2;
     array2 = array3;
 
     for (size_t i = 0; i < array2.size(); i++)
     {
         array0[i]->present();
-        array2[i].~Dummy();
+        array2[i].~ToolkitDummy();
     }
 
     StackArray<int, 10> arr;

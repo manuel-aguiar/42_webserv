@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 14:27:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/10 17:53:51 by manuel           ###   ########.fr       */
+/*   Updated: 2024/12/23 10:06:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,31 @@
 #include <map>
 #include <cstring>
 
-class Dummy
+class ToolkitDummy
 {
 	public:
-		Dummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
+		ToolkitDummy() : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
 		{
 			std::cout << "dummy constructor" << std::endl;
 		};
 
-        Dummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
+        ToolkitDummy(int value) : value(0), m_data(new int [4]), _name("i am a string so long that deffinitely allocates memory on the heap myself")
         {
             std::cout << "dummy parameter constructor" << std::endl;
             this->value = value;
         }
-		~Dummy()
+		~ToolkitDummy()
 		{
 			std::cout << "dummy destroy" << std::endl;
 			if (m_data)  delete [] m_data;
 				m_data = NULL;
 		};
-		Dummy(const Dummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
+		ToolkitDummy(const ToolkitDummy& other) : value(other.value), m_data(new int [4]), _name(other._name)
 		{
 			std::cout << "dummy copy" << std::endl;
 			std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 		};
-		Dummy& operator=(const Dummy& other)
+		ToolkitDummy& operator=(const ToolkitDummy& other)
 		{
 			if (!m_data)
 				m_data = new int [4];
@@ -51,7 +51,7 @@ class Dummy
 
         void print()
         {
-            std::cout << "              Dummy: " << value << std::endl;
+            std::cout << "              ToolkitDummy: " << value << std::endl;
         }
 
 	private:
@@ -61,17 +61,17 @@ class Dummy
         std::string _name;
 };
 
-class Base {
+class ToolkitBase {
 public:
-    Base() : m_data(new int[4]), value(0), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
+    ToolkitBase() : m_data(new int[4]), value(0), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
         std::cout << "Base constructor" << std::endl;
     }
 
-    Base(int value) : m_data(new int[4]), value(value), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
+    ToolkitBase(int value) : m_data(new int[4]), value(value), _name("i am a string so long that deffinitely allocates memory on the heap myself") {
         std::cout << "Base parameter constructor" << std::endl;
     }
 
-    virtual ~Base() {
+    virtual ~ToolkitBase() {
         std::cout << "Base destroy" << std::endl;
         if (m_data)
         {
@@ -80,12 +80,12 @@ public:
         }
     }
 
-    Base(const Base& other) : m_data(new int[4]), value(other.value), _name(other._name) {
+    ToolkitBase(const ToolkitBase& other) : m_data(new int[4]), value(other.value), _name(other._name) {
         std::cout << "Base copy" << std::endl;
         std::memcpy(m_data, other.m_data, 4 * sizeof(int));
     }
 
-    Base& operator=(const Base& other) {
+    ToolkitBase& operator=(const ToolkitBase& other) {
         if (this != &other) {
             std::cout << "Base copy assignment" << std::endl;
             if (m_data) {
@@ -112,28 +112,28 @@ protected:
 };
 
 // Derived class
-class Derived : public Base {
+class ToolkitDerived : public ToolkitBase {
 public:
-    Derived() : Base() {
+    ToolkitDerived() : ToolkitBase() {
         std::cout << "Derived constructor" << std::endl;
     }
 
-    Derived(int value) : Base(value) {
+    ToolkitDerived(int value) : ToolkitBase(value) {
         std::cout << "Derived parameter constructor" << std::endl;
     }
 
-    ~Derived() {
+    ~ToolkitDerived() {
         std::cout << "Derived destroy" << std::endl;
     }
 
-    Derived(const Derived& other) : Base(other) {
+    ToolkitDerived(const ToolkitDerived& other) : ToolkitBase(other) {
         std::cout << "Derived copy" << std::endl;
     }
 
-    Derived& operator=(const Derived& other) {
+    ToolkitDerived& operator=(const ToolkitDerived& other) {
         if (this != &other) {
             std::cout << "Derived copy assignment" << std::endl;
-            Base::operator=(other);
+            ToolkitBase::operator=(other);
         }
         return *this;
     }
@@ -151,10 +151,10 @@ public:
 
 int main4()
 {
-	std::map<int, SharedPtr<Dummy> > map;
+	std::map<int, SharedPtr<ToolkitDummy> > map;
 
 	for (int i = 0; i < 10000;++i)
-		map.insert(std::pair<int, SharedPtr<Dummy> >(i, make_SharedPtr<Dummy, int, std::allocator<Dummy> >(i)));
+		map.insert(std::pair<int, SharedPtr<ToolkitDummy> >(i, make_SharedPtr<ToolkitDummy, int, std::allocator<ToolkitDummy> >(i)));
 
 	return (0);
 }
@@ -164,10 +164,10 @@ int main3()
 
 	//super copying is faster than shared pointer
 
-	std::map<int, Dummy> map;
+	std::map<int, ToolkitDummy> map;
 
 	for (int i = 0; i < 10000;++i)
-		map.insert(std::pair<int, Dummy>(i, Dummy(i)));
+		map.insert(std::pair<int, ToolkitDummy>(i, ToolkitDummy(i)));
 
 	return (0);
 }

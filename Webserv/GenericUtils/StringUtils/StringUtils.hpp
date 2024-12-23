@@ -13,7 +13,7 @@ std::vector<std::string> split(const std::string &str, char delimiter);
 class StringUtils
 {
     public:
-        static void move(std::string& dest, std::string& src) {}
+        static void move(std::string& dest, std::string& src);
 };
 
 #endif

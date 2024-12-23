@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include <vector>
-#include "../../Arrays/Arrays.h"
+#include "../../Arrays/DynArray/DynArray.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation

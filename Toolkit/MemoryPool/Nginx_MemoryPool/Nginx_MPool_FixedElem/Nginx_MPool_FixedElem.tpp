@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 15:31:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 09:57:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <cstring>
 
 # include <vector>
-# include "../../../Arrays/Arrays.h"
+# include "../../../Arrays/DynArray/DynArray.hpp"
 # include "../Nginx_PoolAllocator.hpp"
 # include "../../../Assert/CustomAssert/CustomAssert.hpp"
 

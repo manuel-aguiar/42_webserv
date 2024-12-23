@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:20:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/27 14:31:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:01:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,17 +443,17 @@ int main123(int ac, char **av)
 
 
 
-class Dummy
+class ToolkitDummy
 {
     public:
-        Dummy() : i(42), s("yobro") , p(&s), u (i / 4){}
-        Dummy(int i, std::string s) : i(i), s(s) , p(&s), u (i / 4){}
+        ToolkitDummy() : i(42), s("yobro") , p(&s), u (i / 4){}
+        ToolkitDummy(int i, std::string s) : i(i), s(s) , p(&s), u (i / 4){}
         int             i;
         std::string     s;
         std::string*    p;
         u_int16_t       u;
 
-        bool operator<(const Dummy& other) const
+        bool operator<(const ToolkitDummy& other) const
         {
             return (i < other.i);
         }
@@ -468,17 +468,17 @@ int main(int ac, char **av)
         return (1);
     }
 
-    typedef SharedMPool_Alloc<std::pair<int, Dummy> >      MapPool;
-    typedef std::map<int, Dummy, std::less<int>, MapPool> Map;
+    typedef SharedMPool_Alloc<std::pair<int, ToolkitDummy> >      MapPool;
+    typedef std::map<int, ToolkitDummy, std::less<int>, MapPool> Map;
 
-    typedef SharedMPool_Alloc<Dummy>                       ListPool;
-    typedef std::list<Dummy, ListPool>                    List;
+    typedef SharedMPool_Alloc<ToolkitDummy>                       ListPool;
+    typedef std::list<ToolkitDummy, ListPool>                    List;
 
-    typedef SharedMPool_Alloc<Dummy>                       SetPool;
-    typedef std::set<Dummy, std::less<Dummy>, SetPool>    Set;
+    typedef SharedMPool_Alloc<ToolkitDummy>                       SetPool;
+    typedef std::set<ToolkitDummy, std::less<ToolkitDummy>, SetPool>    Set;
 
     std::less<int>      intComp;
-    std::less<Dummy>    dummyComp;
+    std::less<ToolkitDummy>    dummyComp;
 
     MapPool mapPool;
     Map     map1(intComp, mapPool);
@@ -503,37 +503,37 @@ int main(int ac, char **av)
         int multiplier = i * times;
 
         // Insert into list1 and then perform random operations on it
-        list1.push_back(Dummy(multiplier + 1, "ListTest"));
+        list1.push_back(ToolkitDummy(multiplier + 1, "ListTest"));
         if (i % 2 == 0) {
-            list1.push_front(Dummy(multiplier + 2, "ListFront"));
+            list1.push_front(ToolkitDummy(multiplier + 2, "ListFront"));
         }
         if (i % 3 == 0 && !list1.empty()) {
             list1.pop_back();  // Random pop back
         }
 
         // Manipulate map2 with insertions and overwrites
-        map2[multiplier + 1] = Dummy(multiplier + 1, "MapValue");
+        map2[multiplier + 1] = ToolkitDummy(multiplier + 1, "MapValue");
         if (i % 4 == 0) {
-            map2[multiplier + 2] = Dummy(multiplier + 2, "MapOverwrite");
+            map2[multiplier + 2] = ToolkitDummy(multiplier + 2, "MapOverwrite");
         }
         if (i % 5 == 0 && map2.size() > 2) {
             map2.erase(multiplier + 1);  // Erase some keys periodically
         }
 
         // Insert into set3 and then random erases to test allocation
-        set3.insert(Dummy(multiplier + 3, "SetTest"));
+        set3.insert(ToolkitDummy(multiplier + 3, "SetTest"));
         if (i % 6 == 0) {
-            set3.insert(Dummy(multiplier + 4, "SetTestInsert"));
+            set3.insert(ToolkitDummy(multiplier + 4, "SetTestInsert"));
         }
         if (i % 7 == 0 && !set3.empty()) {
-            set3.erase(Dummy(multiplier + 3, "SetTest"));  // Erase by key
+            set3.erase(ToolkitDummy(multiplier + 3, "SetTest"));  // Erase by key
         }
 
         // Cross container operations: inserting into multiple containers at once
         if (i % 10 == 0) {
-            list2.push_back(Dummy(multiplier + 5, "CrossInsert"));
-            map3[multiplier + 6] = Dummy(multiplier + 6, "CrossInsertMap");
-            set1.insert(Dummy(multiplier + 7, "CrossInsertSet"));
+            list2.push_back(ToolkitDummy(multiplier + 5, "CrossInsert"));
+            map3[multiplier + 6] = ToolkitDummy(multiplier + 6, "CrossInsertMap");
+            set1.insert(ToolkitDummy(multiplier + 7, "CrossInsertSet"));
         }
 
         // Erase or pop elements in other containers
@@ -544,13 +544,13 @@ int main(int ac, char **av)
             map3.erase(multiplier + 6);  // Remove from map3 periodically
         }
         if (i % 11 == 0 && !set1.empty()) {
-            set1.erase(Dummy(multiplier + 7, "CrossInsertSet"));  // Remove from set1
+            set1.erase(ToolkitDummy(multiplier + 7, "CrossInsertSet"));  // Remove from set1
         }
 
         // Keep adding to all containers to keep them growing
-        list3.push_back(Dummy(multiplier + 8, "ListTest3"));
-        map1[multiplier + 9] = Dummy(multiplier + 9, "MapTest1");
-        set2.insert(Dummy(multiplier + 10, "SetTest2"));
+        list3.push_back(ToolkitDummy(multiplier + 8, "ListTest3"));
+        map1[multiplier + 9] = ToolkitDummy(multiplier + 9, "MapTest1");
+        set2.insert(ToolkitDummy(multiplier + 10, "SetTest2"));
     }
 
     for (int multiplier = 0; multiplier < 10; ++multiplier)
@@ -574,16 +574,16 @@ int main(int ac, char **av)
             map3.find(randKey + multiplier * 30);
 
             // --------- Set Find Tests ---------
-            Dummy d1(randValue, "FindSet1");
-            Dummy d2(randValue + 1, "FindSet2");
-            Dummy d3(randValue + 2, "FindSet3");
+            ToolkitDummy d1(randValue, "FindSet1");
+            ToolkitDummy d2(randValue + 1, "FindSet2");
+            ToolkitDummy d3(randValue + 2, "FindSet3");
 
             set1.find(d1);  // Find in set1
             set2.find(d2);  // Find in set2
             set3.find(d3);  // Find in set3
 
             // Random unsuccessful find (Dummy object does not exist)
-            Dummy d_fail(randValue + multiplier * 10, "FailFindSet");
+            ToolkitDummy d_fail(randValue + multiplier * 10, "FailFindSet");
             set1.find(d_fail);
             set2.find(d_fail);
             set3.find(d_fail);
