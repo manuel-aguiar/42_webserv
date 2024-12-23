@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:44:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:10:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define CGIMODULE_HPP
 
 // Toolkit Headers
-# include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
+# include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 # include "../../../Toolkit/List/List.hpp"
 # include "../../../Toolkit/MemoryPool/Fixed_Elements/MPool_FixedElements.hpp"
 
@@ -62,12 +62,12 @@ class CgiModule
 		size_t																		m_backlog;
 		size_t																		m_busyWorkerCount;
 
-		DynArray<InternalCgiWorker>													m_allWorkers;
-		DynArray<InternalCgiRequestData>											m_allRequestData;
+		HeapArray<InternalCgiWorker>													m_allWorkers;
+		HeapArray<InternalCgiRequestData>											m_allRequestData;
 		
 		
-		DynArray<InternalCgiWorker*>												m_availableWorkers;
-		DynArray<InternalCgiRequestData*>											m_availableRequestData;
+		HeapArray<InternalCgiWorker*>												m_availableWorkers;
+		HeapArray<InternalCgiRequestData*>											m_availableRequestData;
 
 		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_executionQueue;
 

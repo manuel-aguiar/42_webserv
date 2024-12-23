@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 17:15:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 17:44:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../_Tests/test.h"
 
+
 int TestPart1(int testNumber)
 {
     try
@@ -35,7 +36,7 @@ int TestPart1(int testNumber)
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			array.push_back(i);
 		}
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
@@ -162,7 +163,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber << ": ";
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
-		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		array(100, alloc);
+		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		array(500, alloc);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -218,7 +219,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<ToolkitDummy> 			std;
-		HeapArray<ToolkitDummy> 			array(100);
+		HeapArray<ToolkitDummy> 			array(200);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -253,7 +254,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber << ": ";
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
-		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(100, alloc);
+		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(400, alloc);
 
 		ToolkitBase* base;
 

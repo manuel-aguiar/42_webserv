@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 17:16:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:03:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,12 +190,6 @@ int TestPart2(int testNumber)
 
         if (array.size() != 0)
             throw std::logic_error("::move failed, source array not empty");    
-
-        array.push_back(1);
-        array.push_back(2);
-
-        if (std.size() != assign.size())
-			throw std::logic_error("::move failed, the movedFrom array influenced the moveTo");
 
         array.clear();
 

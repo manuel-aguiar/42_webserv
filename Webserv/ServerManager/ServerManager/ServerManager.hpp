@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:44:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 09:50:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:08:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define SERVERMANAGER_HPP
 
 // Project Headers
+# include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../ServerWorker/ServerWorker.hpp"
 # include "../BlockFinder/BlockFinder.hpp"
@@ -55,7 +56,7 @@ class ServerManager
 
 
 	private:
-		DynArray<ServerWorker*>			m_workers;
+		HeapArray<ServerWorker*>		m_workers;
 		BlockFinder						m_blockFinder;
 		const ServerConfig&				m_config;
 		size_t							m_listenerCount;

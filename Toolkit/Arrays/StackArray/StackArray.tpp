@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 17:23:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 17:38:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ class StackArray
                 pointer m_ptr;
         };
 
-    iterator begin() { return iterator(reinterpret_cast<T*>(&m_array)); }
+    iterator begin() { return iterator(reinterpret_cast<T*>(&m_array[0])); }
     iterator end() { return iterator(reinterpret_cast<T*>(&m_array[m_size * sizeof(T)])); }
 
 	private:

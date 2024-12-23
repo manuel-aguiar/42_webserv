@@ -20,17 +20,12 @@ ConnectionManager::~ConnectionManager()
 
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
 	m_maxConnections(maxConnections),
-	m_connections(Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
-	m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-	m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-	m_spareConnections(Nginx_PoolAllocator<ManagedConnection*>(&borrowedPool)),
+	m_connections(m_maxConnections, Nginx_PoolAllocator<ManagedConnection>(&borrowedPool)),
+	m_readEvents(m_maxConnections, Nginx_PoolAllocator<Event>(&borrowedPool)),
+	m_writeEvents(m_maxConnections, Nginx_PoolAllocator<Event>(&borrowedPool)),
+	m_spareConnections(m_maxConnections, Nginx_PoolAllocator<ManagedConnection*>(&borrowedPool)),
 	m_globals(globals)
 {
-	
-	m_connections.reserve(m_maxConnections);
-	m_readEvents.reserve(m_maxConnections);
-	m_writeEvents.reserve(m_maxConnections);
-	m_spareConnections.reserve(m_maxConnections);
 
 	for (size_t i = 0; i < maxConnections; i++)
 	{
@@ -66,7 +61,7 @@ void ConnectionManager::returnConnection(Connection& connection)
 			"ConnectionManager::returnConnection : Connection is not managed by this manager");   //confirm it is in the managed list
 		
 		bool test = true;
-		for (DynArray<ManagedConnection*, Nginx_PoolAllocator<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
+		for (HeapArray<ManagedConnection*, Nginx_PoolAllocator<ManagedConnection*> >::iterator iter = m_spareConnections.begin(); 
 			iter != m_spareConnections.end(); 
 			++iter)
 		{

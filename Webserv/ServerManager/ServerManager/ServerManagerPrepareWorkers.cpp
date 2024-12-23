@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 09:04:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/18 09:41:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 18:09:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,6 @@ void	ServerManager::mf_prepareWorkers()
 	//for getaddrinfo
 	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
 	std::vector<t_addrinfo*> 							allLists_Addrinfo;
-
-	m_workers.reserve(m_config.getNumWorkers());
 
 	const int backlog = 100;																								// must be replaced with correct value
 	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET);				///must be replaced with correct values
