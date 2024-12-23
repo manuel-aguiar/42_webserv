@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 08:59:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 11:32:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,103 +324,6 @@ class DynArray
             }
             ++m_size;
         }
-
-/*
-        void emplace_front()
-        {
-			T* new_array = NULL;
-			size_t newCap = m_capacity ? m_capacity * 2 : 1;
-
-            if (m_size == m_capacity)
-                new_array = m_allocator.allocate(newCap);
-
-			new ((new_array ? new_array : m_array)) T();
-
-			if (new_array && m_array != new_array)
-            {
-                std::memmove((void*)(new_array + 1), (void*)m_array, m_size * sizeof(T));
-                m_allocator.deallocate(m_array, m_size);
-                m_capacity = newCap;
-                m_array = new_array;
-            }
-			else
-            	std::memmove((void*)(m_array + 1), (void*)m_array, m_size * sizeof(T));
-
-            m_size++;
-        }
-
-        template <typename Arg1 >
-        void emplace_front(Arg1& arg1)
-        {
-			T* new_array = NULL;
-			size_t newCap = m_capacity ? m_capacity * 2 : 1;
-
-            if (m_size == m_capacity)
-                new_array = m_allocator.allocate(newCap);
-
-			new ((new_array ? new_array : m_array)) T(arg1);
-
-			if (new_array && m_array != new_array)
-            {
-                std::memmove((void*)(new_array + 1), (void*)m_array, m_size * sizeof(T));
-                m_allocator.deallocate(m_array, m_size);
-                m_capacity = newCap;
-                m_array = new_array;
-            }
-			else
-            	std::memmove((void*)(m_array + 1), (void*)m_array, m_size * sizeof(T));
-
-            m_size++;
-        }
-
-        template <typename Arg1, typename Arg2 >
-        void emplace_front(Arg1& arg1, Arg2& arg2)
-        {
-			T* new_array = NULL;
-			size_t newCap = m_capacity ? m_capacity * 2 : 1;
-
-            if (m_size == m_capacity)
-                new_array = m_allocator.allocate(newCap);
-
-			new ((new_array ? new_array : m_array)) T(arg1, arg2);
-
-			if (new_array && m_array != new_array)
-            {
-                std::memmove((void*)(new_array + 1), (void*)m_array, m_size * sizeof(T));
-                m_allocator.deallocate(m_array, m_size);
-                m_capacity = newCap;
-                m_array = new_array;
-            }
-			else
-            	std::memmove((void*)(m_array + 1), (void*)m_array, m_size * sizeof(T));
-
-            m_size++;
-        }
-
-        template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
-        {
-			T* new_array = NULL;
-			size_t newCap = m_capacity ? m_capacity * 2 : 1;
-
-            if (m_size == m_capacity)
-                new_array = m_allocator.allocate(newCap);
-
-			new ((new_array ? new_array : m_array)) T(arg1, arg2, arg3);
-
-			if (new_array && m_array != new_array)
-            {
-                std::memmove((void*)(new_array + 1), (void*)m_array, m_size * sizeof(T));
-                m_allocator.deallocate(m_array, m_size);
-                m_capacity = newCap;
-                m_array = new_array;
-            }
-			else
-            	std::memmove((void*)(m_array + 1), (void*)m_array, m_size * sizeof(T));
-
-            m_size++;
-        }
-*/
 
         class iterator
         {

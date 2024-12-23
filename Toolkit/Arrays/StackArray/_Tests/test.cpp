@@ -5,65 +5,204 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:28:25 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/23 11:38:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// C++ headers
+#include <iostream>
+#include <string>
+#include <stdexcept>
+#include <sstream>
 
 // Project headers
 #include "../StackArray.hpp"
 #include "../../../_Tests/ToolkitDummy.hpp"
+#include "../../../_Tests/ToolkitBase.hpp"
+#include "../../../_Tests/ToolkitDerived.hpp"
 
-
-// C++ headers
-#include <iostream>
-#include <cstddef>
-
-int main(void)
+template <typename T>
+std::string to_string(const T& value)
 {
-    StackArray<ToolkitDummy, 10> array1;
-    StackArray<ToolkitDummy*, 10> array0;
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+int main()
+{
+	/******************* TEST 1 ************************/
+	std::cout << "\n*************** StackArray tests ***************" << std::endl;
+	try
+	{
+		std::cout << "TEST 1: ";
+		StackArray<int, 100> array;
+		for (int i = 0; i < 100; ++i)
+		{
+			array.emplace_back(i);
+		}
+		if (array.size() != 100)
+			throw std::logic_error("size mismatch");
+		for (int i = 0; i < 100; ++i)
+		{
+			if (array[i] != i)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
-    for (size_t i = 0; i < array1.size(); i++)
-    {
-        array0[i] = &array1[i];
-        new (&(*array0[i])) ToolkitDummy(i);
-    }
+	/******************* TEST 2 ************************/
 
-    ToolkitDummy cenas = array1[3];
-    std::cout << "dummy cenas : " << cenas << std::endl;
+	try
+	{
+		std::cout << "TEST 2: ";
+		StackArray<ToolkitDummy, 100> array;
+		for (int i = 0; i < 100; ++i)
+		{
+			array.emplace_back(i);
+		}
+		if (array.size() != 100)
+			throw std::logic_error("size mismatch");
+		for (size_t i = 0; i < 100; ++i)
+		{
+			if (array[i] != i)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
-    ToolkitDummy tretas = cenas;
-    std::cout << "dummy tretas : " << cenas << std::endl;
+	/******************* TEST 3 ************************/
 
-    ToolkitDummy& ref = tretas;
-    std::cout << "dummy ref : " << ref << std::endl;
+	try
+	{
+		std::cout << "TEST 3: ";
+		StackArray<int, 100> array;
+		for (int i = 0; i < 100; ++i)
+		{
+			array.emplace_back(i);
+		}
+		array.pop_back();
+		if (array.size() != 99)
+			throw std::logic_error("size mismatch after pop_back");
 
-    ToolkitDummy* ptr = &array1[4];
-    std::cout << "dummy ptr : " << *ptr << std::endl;
+		if (array.back() != 98)
+			throw std::logic_error("wrong element at back after pop_back");
 
-    StackArray<ToolkitDummy, 10> array3 = array1;
-    
-    StackArray<ToolkitDummy, 10> array2;
-    array2 = array3;
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
 
-    for (size_t i = 0; i < array2.size(); i++)
-    {
-        array0[i]->print();
-        array2[i].~ToolkitDummy();
-    }
+	/******************* TEST 4 ************************/
 
-    StackArray<int, 10> arr;
+	try
+	{
+		std::cout << "TEST 4: ";
+		StackArray<int, 100> array;
+		for (int i = 0; i < 100; ++i)
+		{
+			array.emplace_back(i);
+		}
 
-    for(size_t i = 0; i < arr.size(); i++)
-    {
-        arr[i] = i;
-    }
+		// Check front and back
+		if (array.front() != 0)
+			throw std::logic_error("incorrect front element");
+		if (array.back() != 99)
+			throw std::logic_error("incorrect back element");
 
-    for(size_t i = 0; i < arr.size(); i++)
-    {
-        std::cout << arr[i] << std::endl;
-    }
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 5 ************************/
+
+	try
+	{
+		std::cout << "TEST 5: ";
+		StackArray<int, 5> array;
+		array.emplace_back(1);
+		array.emplace_back(2);
+		array.emplace_back(3);
+		if (array.size() != 3)
+			throw std::logic_error("size mismatch");
+
+		array.emplace_back(4);
+		array.emplace_back(5);
+		if (array.size() != 5)
+			throw std::logic_error("size mismatch after adding 5 elements");
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+
+	/******************* TEST 6 ************************/
+
+	try
+	{
+		std::cout << "TEST 6: ";
+		StackArray<int, 5> array;
+		array.emplace_back(1);
+		array.emplace_back(2);
+		array.emplace_back(3);
+
+		// Test iterator
+		StackArray<int, 5>::iterator it = array.begin();
+		if (*it != 1)
+			throw std::logic_error("incorrect value at iterator begin");
+
+		it++;
+		if (*it != 2)
+			throw std::logic_error("incorrect value at iterator second element");
+
+		it++;
+		if (*it != 3)
+			throw std::logic_error("incorrect value at iterator third element");
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	/******************* TEST 7 ************************/
+
+	try
+	{
+		std::cout << "TEST 7: ";
+		StackArray<std::string, 3> array;
+		array.emplace_back("Hello");
+		array.emplace_back("World");
+		array.emplace_back("StackArray");
+
+		if (array[0] != "Hello" || array[1] != "World" || array[2] != "StackArray")
+			throw std::logic_error("value mismatch");
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	std::cout << "*********************************************\n" << std::endl;
 
     return (0);
 }

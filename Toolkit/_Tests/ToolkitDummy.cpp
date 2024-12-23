@@ -17,26 +17,26 @@
 # include <iostream>
 
 ToolkitDummy::ToolkitDummy() 
-    : value(0), m_data(new int[4]), _name("i am a string so long that deffinitely allocates memory on the heap myself") 
+    : m_value(0), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
 {
     // Constructor
 }
 
 ToolkitDummy::ToolkitDummy(int value) 
-    : value(0), m_data(new int[4]), _name("i am a string so long that deffinitely allocates memory on the heap myself") 
+    : m_value(0), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
 {
-    this->value = value;
+    this->m_value = value;
 }
 
 ToolkitDummy::~ToolkitDummy() 
 {
-    if (m_data) 
+    if (m_data)
         delete[] m_data;
     m_data = NULL;
 }
 
 ToolkitDummy::ToolkitDummy(const ToolkitDummy& other) 
-    : value(other.value), m_data(new int[4]), _name(other._name) 
+    : m_value(other.m_value), m_data(new int[4]), m_name(other.m_name) 
 {
     std::memcpy(m_data, other.m_data, 4 * sizeof(int));
 }
@@ -46,20 +46,20 @@ ToolkitDummy& ToolkitDummy::operator=(const ToolkitDummy& other)
     if (!m_data) 
         m_data = new int[4];
 
-    value = other.value;
-    _name = other._name;
+    m_value = other.m_value;
+    m_name = other.m_name;
     std::memcpy(m_data, other.m_data, 4 * sizeof(int));
     return *this;
 }
 
 bool ToolkitDummy::operator==(const ToolkitDummy& other) 
 {
-    return (value == other.value && _name == other._name);
+    return (m_value == other.m_value && m_name == other.m_name);
 }
 
 bool ToolkitDummy::operator!=(const ToolkitDummy& other) 
 {
-    return !(value == other.value && _name == other._name);
+    return !(m_value == other.m_value && m_name == other.m_name);
 }
 
 const char* ToolkitDummy::print() const

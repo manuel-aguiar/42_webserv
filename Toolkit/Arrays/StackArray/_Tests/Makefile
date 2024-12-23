@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 10:48:32 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 11:22:44 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 run: $(NAME)
-	valgrind ./$(NAME)
+	valgrind --leak-check=full ./$(NAME)
 
 clean:
 	rm -rf $(NAME) vgcore*
