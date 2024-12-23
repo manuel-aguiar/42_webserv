@@ -32,6 +32,8 @@ class CgiModule::InternalCgiWorker
 	public:
 		InternalCgiWorker(CgiModule& manager, Globals& globals);
 		~InternalCgiWorker();
+		InternalCgiWorker(const InternalCgiWorker &other);
+		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 
 
 		void    execute(InternalCgiRequestData& request);
@@ -62,8 +64,6 @@ class CgiModule::InternalCgiWorker
 		bool						mf_prepareExecve();
 		void						mf_closeFd(t_fd& fd);
 
-		InternalCgiWorker(const InternalCgiWorker &other);
-		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 15:46:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 16:18:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ class EmplaceTwo
 {
     public:
         EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number) {};
-
+		~EmplaceTwo() {};
+		
         bool operator==(const EmplaceTwo& other)
         {
             return (m_name == other.m_name && m_number == other.m_number);
@@ -219,10 +220,31 @@ int TestPart2(int testNumber)
 		std::vector<EmplaceTwo> 		std;
 		DynArray<EmplaceTwo> 			array;
 		
-		for (int i = 0; i < 100; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			std.push_back(EmplaceTwo("name", i));
 			array.push_back(EmplaceTwo("name", i));
+
+			/*
+				Fails because std::string didn't malloc and the destructor thinks
+				it still lives in the same place before the vector reallocated........
+
+				Which means, my dynAarray cannot reallocate using memmove because some underlying
+				variable may be referencing itself, and then it would point to an invalid location
+				(as a std::string that doesn't allocate memory has to do, pointing to itself, without
+				move semantics it invalidates itself. so i have a problem with my current setup)
+
+				It works if the string is long enough such that it pointes to a malloc'ed place.
+				But as long as it points to itself, i have a problem.
+
+				So, i cannot use memmove after all and do have to deep copy everything.
+				All i get is emplace_back, everything else, it must be a c++98 vector.
+
+
+
+				but then....... why is a std::string calling free on a buffer inside the stack.....????
+			*/
+
 		}
 /*
 		if (std.size() != array.size())
