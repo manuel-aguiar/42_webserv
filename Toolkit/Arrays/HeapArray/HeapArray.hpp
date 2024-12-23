@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYNARRAY_HPP
+#ifndef HEAPARRAY_HPP
 
-# define DYNARRAY_HPP
+# define HEAPARRAY_HPP
 
 #include <memory>
 template <typename T, typename Allocator = std::allocator<T> >
-class DynArray;
+class HeapArray;
 
-# include "DynArray.tpp"
+# include "HeapArray.tpp"
 
 #endif

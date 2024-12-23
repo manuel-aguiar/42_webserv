@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 16:40:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 17:19:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERVER_VECTOR_TPP
+#ifndef DYNARRAY_TPP
 
-# define WEBSERVER_VECTOR_TPP
+# define DYNARRAY_TPP
 
 // C++ headers
 # include <cstdlib>
