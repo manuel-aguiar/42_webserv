@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 10:47:09 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 13:47:46 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ DEPS					=		$(OBJS:.o=.d)
 #####################################################
 
 $(NAME): $(OBJS)
-	@$(MAKE) -C $(MEMORYPOOL_PATH)
+	@$(MAKE) -C $(MEMORYPOOL_PATH) --quiet
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LIB_MEMORYPOOL) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
@@ -54,7 +54,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 run: $(NAME)
-	valgrind ./$(NAME)
+	valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
 
 clean:
 	rm -rf $(NAME) vgcore*

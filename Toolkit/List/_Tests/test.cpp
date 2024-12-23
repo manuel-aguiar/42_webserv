@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/23 10:42:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 13:47:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@
 
 int main(void)
 {
+	std::cout << "\n*************** List tests ***************" << std::endl;
 
 	/******************* TEST 1 ************************/
-	std::cout << "\n*************** List tests ***************" << std::endl;
 	try
 	{
 		std::cout << "TEST 1: ";
 		std::list<ToolkitDummy> 	std;
-		List<ToolkitDummy> 		list;
+		List<ToolkitDummy> 			list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -677,7 +677,3 @@ int main(void)
 
 	return (0);
 }
-
-/*
-c++ -Wall -Wextra -Werror -std=c++98 -g main.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp ../../MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp -o main && valgrind ./main
-*/
