@@ -1,62 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   test.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 09:08:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:01:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:30:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
+// Project headers
 #include "../HeapArray.hpp"
+#include "../../../_Tests/ToolkitDummy.hpp"
 
-class ToolkitDummy
-{
-    public:
-        ToolkitDummy() : _someref(*(int *)NULL), _value(0) {std::cout << "constructor" << std::endl;};
-        ToolkitDummy(int value, int& someref) : _someref(someref), _value(value) {std::cout << "constructor" << std::endl;};
-        ToolkitDummy(int value) : _someref(*(int *)NULL), _value(value) {std::cout << "constructor" << std::endl;};
-        ~ToolkitDummy() {std::cout << "destructor" << std::endl;};;
-        ToolkitDummy(const ToolkitDummy& other) : _someref(other._someref), _value(other._value) {std::cout << "copy" << std::endl;};;
-        
-        ToolkitDummy& operator=(const ToolkitDummy& other)
-        {
-            {std::cout << "assign" << std::endl;};
-            if (this == &other)
-                return (*this);
-            _value = other._value;
-            _someref = other._someref;
-            return (*this);
-        }
-
-        int getValue() const
-        {
-            return (_value);
-        }
-
-        void present() const
-        {
-            std::cout << "yoyo " << _value << std::endl;
-        }
-
-        void setValue(int value)
-        {
-            _value = value;
-        }
-
-    private:
-        int&    _someref;
-        int     _value;
-};
-
-std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy)
-{
-    os << "yoyo " << dummy.getValue();
-    return (os);
-}
+// C++ headers
+#include <iostream>
 
 int main(void)
 {   
@@ -68,7 +27,7 @@ int main(void)
     for (size_t i = 0; i < array1.size(); i++)
     {
         array0[i] = &array1[i];
-        new (&(*array0[i])) ToolkitDummy(i, array4[i]);
+        new (&(*array0[i])) ToolkitDummy(i);
     }
 
     ToolkitDummy cenas = array1[3];
@@ -90,12 +49,12 @@ int main(void)
 
     for (size_t i = 0; i < array0.size(); i++)
     {
-        array0[i]->present();
+        array0[i]->print();
     }
 
     for (size_t i = 0; i < array2.size(); i++)
     {
-        array2[i].present();
+        array2[i].print();
         array2[i].~ToolkitDummy();
     }
 

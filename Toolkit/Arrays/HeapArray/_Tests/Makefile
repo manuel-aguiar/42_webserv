@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 10:46:59 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 10:47:15 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME					=		test.out
 
 # Paths
-ROOT_PATH				=		../../../Toolkit
+ROOT_PATH				=		../../../../Toolkit
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
@@ -28,9 +28,11 @@ MEMORYPOOL_LINKER 		=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
 LIB_MEMORYPOOL 			=		-L$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
 
 # Sources
-SRCS					=		$(SRC_PATH)/List/_Tests/test.cpp	\
+SRCS					=		$(SRC_PATH)/Arrays/HeapArray/_Tests/test.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp
+								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
+								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
+								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

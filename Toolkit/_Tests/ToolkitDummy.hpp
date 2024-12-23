@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:00:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:05:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:26:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class ToolkitDummy
         bool operator==(const ToolkitDummy& other);
         bool operator!=(const ToolkitDummy& other);
 
-        const char* print();
+        const char* print() const;
 
     private:
         int             value;
@@ -38,6 +38,6 @@ class ToolkitDummy
         std::string     _name;
 };
 
-
+std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy);
 
 #endif

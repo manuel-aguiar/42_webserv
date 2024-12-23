@@ -10,7 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// Project headers
 #include "ToolkitDummy.hpp"
+
+// C++ headers
+# include <iostream>
 
 ToolkitDummy::ToolkitDummy() 
     : value(0), m_data(new int[4]), _name("i am a string so long that deffinitely allocates memory on the heap myself") 
@@ -58,7 +62,13 @@ bool ToolkitDummy::operator!=(const ToolkitDummy& other)
     return !(value == other.value && _name == other._name);
 }
 
-const char* ToolkitDummy::print() 
+const char* ToolkitDummy::print() const
 {
     return "ToolkitDummy: hey there ";
+}
+
+std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy) 
+{
+    os << dummy.print() << std::endl;
+    return (os);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 12:03:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:27:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <cstring>
 #include <cassert>
+#include <cstddef>
 
 
 template <typename T, size_t ElemCount>

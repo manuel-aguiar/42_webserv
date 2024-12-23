@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 10:11:11 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 10:47:09 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ LIB_MEMORYPOOL 			=		-L$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
 
 # Sources
 SRCS					=		$(SRC_PATH)/Arrays/DynArray/_Tests/test.cpp	\
+								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
@@ -53,7 +54,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 run: $(NAME)
-	valgrind --track-fds=yes ./$(NAME)
+	valgrind ./$(NAME)
 
 clean:
 	rm -rf $(NAME) vgcore*

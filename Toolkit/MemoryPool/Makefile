@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/27 14:13:01 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/22 11:02:17 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/23 10:44:23 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 INC_PATH			=	.
 SRC_PATH			=	.
-OBJ_PATH			=	objs
+OBJ_PATH			=	_build
 
 
 ## Add Paths

@@ -1,1 +1,0 @@
-c++ -Wall -Wextra -Werror -std=c++98 -g *.cpp -o a.out && ./a.out
