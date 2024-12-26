@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 15:40:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 16:07:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ ThreadPool::ThreadPool(size_t InitialThreads, size_t maxThreads) :
 
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
-		m_threads.emplace_back(*this, m_taskQueue, m_statusLock, m_exitSignal);
+		m_threads.emplace_back(*this);
 		m_threads.back().setLocation(--m_threads.end());
 		m_threads.back().start();
 	}
@@ -51,6 +51,7 @@ void	ThreadPool::destroy(bool waitForCompletion)
 {
 	if (!waitForCompletion)
 		m_taskQueue.clear();
+
 	m_taskQueue.waitForCompletion();
 	
 	while (m_threads.size())
@@ -64,9 +65,23 @@ void	ThreadPool::destroy(bool waitForCompletion)
 	}
 }
 
+void	ThreadPool::forceDestroy()
+{
+	m_taskQueue.clear();
+	
+	pthread_mutex_lock(&m_statusLock);
+	
+	for (List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
+		pthread_kill(it->getThreadID(), SIGKILL);
+
+	pthread_mutex_unlock(&m_statusLock);
+}
+
+
+
 void	ThreadPool::addThread()
 {
-	m_threads.emplace_back(*this, m_taskQueue, m_statusLock, m_exitSignal);
+	m_threads.emplace_back(*this);
 	m_threads.back().setLocation(--m_threads.end());
 	m_threads.back().start();
 }

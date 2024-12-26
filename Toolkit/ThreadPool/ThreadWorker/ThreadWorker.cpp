@@ -18,14 +18,10 @@
 // C++ headers
 # include <iostream>
 
-ThreadPool::ThreadWorker::ThreadWorker(ThreadPool& pool, TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal) :
+ThreadPool::ThreadWorker::ThreadWorker(ThreadPool& pool) :
 	m_state(EThread_Unitialized),
 	m_thread(0),
-	m_pool(pool),
-	m_queue(queue),
-	m_curTask(NULL),
-	m_statusLock(statusLock),
-	m_exitSignal(exitSignal)
+	m_pool(pool)
 {
 	#ifdef DEBUG_CONSTRUCTOR
 		std::cout << "ThreadWorker Constructor Called" << std::endl;
@@ -41,19 +37,19 @@ ThreadPool::ThreadWorker::~ThreadWorker()
 
 void	ThreadPool::ThreadWorker::run()
 {   
-	//pthread_mutex_lock(&m_statusLock);
-	//pthread_mutex_unlock(&m_statusLock);
-	while ((m_curTask = m_queue.getTask()))
+	IThreadTask* curTask = NULL;
+
+	while ((curTask = m_pool.m_taskQueue.getTask()))
 	{
-		m_curTask->execute();
-		m_queue.finishTask(m_curTask);
+		curTask->execute();
+		m_pool.m_taskQueue.finishTask(curTask);
 	}
-	pthread_mutex_lock(&m_statusLock);
+	pthread_mutex_lock(&m_pool.m_statusLock);
 
 	m_pool.mf_InternalRemoveThread(*this);
 
-	pthread_cond_signal(&m_exitSignal);
-	pthread_mutex_unlock(&m_statusLock);
+	pthread_cond_signal(&m_pool.m_exitSignal);
+	pthread_mutex_unlock(&m_pool.m_statusLock);
 }
 
 void	ThreadPool::ThreadWorker::setLocation(List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator location)
@@ -65,6 +61,11 @@ const List<ThreadPool::ThreadWorker, MPool_FixedElem<ThreadPool::ThreadWorker> >
 				ThreadPool::ThreadWorker::getLocation() const
 {
 	return (m_location);
+}
+
+pthread_t ThreadPool::ThreadWorker::getThreadID() const
+{
+	return (m_thread);
 }
 
 void	ThreadPool::ThreadWorker::start()
@@ -100,11 +101,7 @@ void*   ThreadPool::ThreadWorker::ThreadFunction(void* args)
 ThreadPool::ThreadWorker::ThreadWorker(const ThreadWorker& copy) : 
 	m_state(copy.m_state),
 	m_thread(copy.m_thread),
-	m_pool(copy.m_pool),
-	m_queue(copy.m_queue),
-	m_curTask(NULL),
-	m_statusLock(copy.m_statusLock),
-	m_exitSignal(copy.m_exitSignal) {}
+	m_pool(copy.m_pool) {}
 	
 ThreadPool::ThreadWorker& ThreadPool::ThreadWorker::operator=(const ThreadWorker& assign)  {(void)assign; return (*this);}
 

@@ -15,11 +15,13 @@
 # define THREADPOOL_HPP
 
 // Project headers
-
 # include "../../MemoryPool/Fixed_Elements/MPool_FixedElements.hpp"
 # include "../../Arrays/HeapArray/HeapArray.hpp"
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
+
+// C headers
+# include <signal.h>
 
 class ThreadPool
 {
@@ -29,6 +31,7 @@ class ThreadPool
 
 		void	waitForCompletion();
 		void	destroy(bool waitForCompletion);
+		void	forceDestroy();
 
 		void	addThread();
 		void	removeThread();
