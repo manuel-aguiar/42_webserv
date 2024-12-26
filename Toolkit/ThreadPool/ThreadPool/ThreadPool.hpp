@@ -20,9 +20,6 @@
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
-// C++ headers
-# include <vector>
-
 class ThreadPool
 {
 	public:
@@ -41,6 +38,32 @@ class ThreadPool
 
 		class ThreadWorker;
 
+		class TaskQueue
+		{
+			public:
+				TaskQueue();
+				~TaskQueue();
+
+				void				addTask(IThreadTask* newTask);
+				void				clear();
+				void				waitForCompletion();		
+				void				finishTask(IThreadTask* delTask);
+				IThreadTask*		getTask();
+
+				int				 	taskCount();
+
+			private:
+				
+				List<IThreadTask*>								m_tasks;
+				unsigned int									m_tasksExecuting;
+				pthread_mutex_t									m_taskAccess;
+				pthread_cond_t									m_newTaskSignal;								   
+				pthread_cond_t									m_allTasksDone;										 
+
+				TaskQueue(const TaskQueue& copy);
+				TaskQueue& operator=(const TaskQueue& assign);
+		};
+
 		TaskQueue							m_taskQueue;
 		DynArray<ThreadWorker>				m_threads;
 		pthread_mutex_t						m_statusLock;
@@ -50,6 +73,7 @@ class ThreadPool
 
 	//public template specializations for ThreadTask
 	public:
+
 			template<typename Return, typename Args>
 			void addTask(Return (*function)(Args), Args args, Return* placeReturn = NULL)
 			{

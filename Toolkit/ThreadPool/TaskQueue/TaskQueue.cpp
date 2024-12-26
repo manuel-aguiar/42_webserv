@@ -10,9 +10,9 @@
 /*																			*/
 /* ************************************************************************** */
 
-#include "TaskQueue.hpp"
+#include "../ThreadPool/ThreadPool.hpp"
 
-TaskQueue::TaskQueue() :
+ThreadPool::TaskQueue::TaskQueue() :
 	m_tasksExecuting(0)
 {
 	pthread_mutex_init(&m_taskAccess, NULL);
@@ -20,17 +20,17 @@ TaskQueue::TaskQueue() :
 	pthread_cond_init(&m_allTasksDone, NULL);
 }
 
-TaskQueue::~TaskQueue()
+ThreadPool::TaskQueue::~TaskQueue()
 {
 	pthread_mutex_destroy(&m_taskAccess);
 	pthread_cond_destroy(&m_newTaskSignal);
 	pthread_cond_destroy(&m_allTasksDone);
 }
 
-TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
-TaskQueue& TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
+ThreadPool::TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
+ThreadPool::TaskQueue& ThreadPool::TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
 
-void			TaskQueue::finishTask(IThreadTask* delTask)
+void	ThreadPool::TaskQueue::finishTask(IThreadTask* delTask)
 {
 	if (delTask)
 		delete (delTask);
@@ -41,7 +41,7 @@ void			TaskQueue::finishTask(IThreadTask* delTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	TaskQueue::addTask(IThreadTask* newTask)
+void	ThreadPool::TaskQueue::addTask(IThreadTask* newTask)
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.push_back(newTask);
@@ -49,7 +49,7 @@ void	TaskQueue::addTask(IThreadTask* newTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-IThreadTask*	 TaskQueue::getTask()
+IThreadTask*	 ThreadPool::TaskQueue::getTask()
 {
 	IThreadTask *toExecute;
 
@@ -63,14 +63,14 @@ IThreadTask*	 TaskQueue::getTask()
 	return (toExecute);
 }
 
-void	TaskQueue::clear()
+void	ThreadPool::TaskQueue::clear()
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.clear();
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	TaskQueue::waitForCompletion()
+void	ThreadPool::TaskQueue::waitForCompletion()
 {   
 	pthread_mutex_lock(&m_taskAccess);
 	while (m_tasks.size() != 0 || m_tasksExecuting)
@@ -78,7 +78,7 @@ void	TaskQueue::waitForCompletion()
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-int	 TaskQueue::taskCount()
+int	 ThreadPool::TaskQueue::taskCount()
 {
 	int result;
 	
