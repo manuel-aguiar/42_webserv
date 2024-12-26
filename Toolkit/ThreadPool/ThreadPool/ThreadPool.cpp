@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:43:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:54:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
-# include "ThreadPool.hpp"
 # include "../ThreadWorker/ThreadWorker.hpp"
+# include "ThreadPool.hpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
 // C headers

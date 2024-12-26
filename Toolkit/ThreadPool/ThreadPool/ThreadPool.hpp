@@ -20,13 +20,8 @@
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
-
-
 // C++ headers
 # include <vector>
-
-class IThreadTask;
-class ThreadWorker;
 
 class ThreadPool
 {
@@ -44,6 +39,8 @@ class ThreadPool
 
 	private:
 
+		class ThreadWorker;
+
 		TaskQueue							m_taskQueue;
 		DynArray<ThreadWorker>				m_threads;
 		pthread_mutex_t						m_statusLock;
@@ -56,32 +53,32 @@ class ThreadPool
 			template<typename Return, typename Args>
 			void addTask(Return (*function)(Args), Args args, Return* placeReturn = NULL)
 			{
-				ThreadTask<Return (*)(Args)> task(function, args, placeReturn);
-				m_taskQueue.addTask(&task);
+				IThreadTask* task = new ThreadTask<Return (*)(Args)>(function, args, placeReturn);
+				m_taskQueue.addTask(task);
 			}
 					template<typename Return, typename Arg1, typename Arg2>
 					void addTask(Return (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (*)(Arg1, Arg2)> task(function, arg1, arg2, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (*)(Arg1, Arg2)>(function, arg1, arg2, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 					template<typename Return, typename Arg1, typename Arg2, typename Arg3>
 					void addTask(Return (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (*)(Arg1, Arg2, Arg3)> task(function, arg1, arg2, arg3, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (*)(Arg1, Arg2, Arg3)>(function, arg1, arg2, arg3, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 					template<typename Return, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 					void addTask(Return (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4)> task(function, arg1, arg2, arg3, arg4, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4)>(function, arg1, arg2, arg3, arg4, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 					template<typename Return, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 					void addTask(Return (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> task(function, arg1, arg2, arg3, arg4, arg5, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4, Arg5)>(function, arg1, arg2, arg3, arg4, arg5, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 
 
@@ -92,53 +89,53 @@ class ThreadPool
 		template<typename Return>
 		void addTask(Return (*function)(void), Return* placeReturn = NULL)
 		{
-			ThreadTask<Return (*)(void)> task(function, placeReturn);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<Return (*)(void)>(function, placeReturn);
+			m_taskQueue.addTask(task);
 		}
 
 		template<typename Arg1>
 		void addTask(void (*function)(Arg1), Arg1 arg1)
 		{
-			ThreadTask<void (*)(Arg1)> task(function, arg1);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (*)(Arg1)>(function, arg1);
+			m_taskQueue.addTask(task);
 		}
 
 					// Specialization for 2 arguments
 					template<typename Arg1, typename Arg2>
 					void addTask(void (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2)
 					{
-						ThreadTask<void (*)(Arg1, Arg2)> task(function, arg1, arg2);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<void (*)(Arg1, Arg2)>(function, arg1, arg2);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for 3 arguments
 					template<typename Arg1, typename Arg2, typename Arg3>
 					void addTask(void (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3)
 					{
-						ThreadTask<void (*)(Arg1, Arg2, Arg3)> task(function, arg1, arg2, arg3);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<void (*)(Arg1, Arg2, Arg3)>(function, arg1, arg2, arg3);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for 4 arguments
 					template<typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 					void addTask(void (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 					{
-						ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4)> task(function, arg1, arg2, arg3, arg4);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4)>(function, arg1, arg2, arg3, arg4);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for 5 arguments
 					template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 					void addTask(void (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 					{
-						ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> task(function, arg1, arg2, arg3, arg4, arg5);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4, Arg5)>(function, arg1, arg2, arg3, arg4, arg5);
+						m_taskQueue.addTask(task);
 					}
 
 		void addTask(void (*function)(void))
 		{
-			ThreadTask<void (*)(void)> task(function);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (*)(void)>(function);
+			m_taskQueue.addTask(task);
 		}
 
 
@@ -147,40 +144,40 @@ class ThreadPool
 		template<typename Class, typename Arg1, typename Return>
 		void addTask(Class& instance, Return (Class::*function)(Arg1), Arg1 arg1, Return* placeReturn = NULL)
 		{
-			ThreadTask<Return (Class::*)(Arg1)> task(instance, function, arg1, placeReturn);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1)>(instance, function, arg1, placeReturn);
+			m_taskQueue.addTask(task);
 		}
 
 					// Specialization for member functions with 2 arguments
 					template<typename Class, typename Arg1, typename Arg2, typename Return>
 					void addTask(Class& instance, Return (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (Class::*)(Arg1, Arg2)> task(instance, function, arg1, arg2, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2)>(instance, function, arg1, arg2, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for member functions with 3 arguments
 					template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Return>
 					void addTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3)> task(instance, function, arg1, arg2, arg3, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3)>(instance, function, arg1, arg2, arg3, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for member functions with 4 arguments
 					template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Return>
 					void addTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4)> task(instance, function, arg1, arg2, arg3, arg4, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4)>(instance, function, arg1, arg2, arg3, arg4, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 
 					// Specialization for member functions with 5 arguments
 					template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Return>
 					void addTask(Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL)
 					{
-						ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)> task(instance, function, arg1, arg2, arg3, arg4, arg5, placeReturn);
-						m_taskQueue.addTask(&task);
+						IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)>(instance, function, arg1, arg2, arg3, arg4, arg5, placeReturn);
+						m_taskQueue.addTask(task);
 					}
 
 
@@ -193,95 +190,95 @@ class ThreadPool
 		template<typename Class, typename Arg1>
 		void addTask(Class& instance, void (Class::*function)(Arg1), Arg1 arg1)
 		{
-			ThreadTask<void (Class::*)(Arg1)> task(instance, function, arg1);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (Class::*)(Arg1)>(instance, function, arg1);
+			m_taskQueue.addTask(task);
 		}
 
 				// Specialization for member functions with 2 arguments
 				template<typename Class, typename Arg1, typename Arg2>
 				void addTask(Class& instance, void (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2)> task(instance, function, arg1, arg2);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2)>(instance, function, arg1, arg2);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 3 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3>
 				void addTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3)> task(instance, function, arg1, arg2, arg3);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3)>(instance, function, arg1, arg2, arg3);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 4 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 				void addTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4)> task(instance, function, arg1, arg2, arg3, arg4);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4)>(instance, function, arg1, arg2, arg3, arg4);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 5 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 				void addTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)> task(instance, function, arg1, arg2, arg3, arg4, arg5);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)>(instance, function, arg1, arg2, arg3, arg4, arg5);
+					m_taskQueue.addTask(task);
 				}
 
 
 		template <typename Class, typename Return>
 		void addTask(Class& instance, Return (Class::*function)(void), Return* placeReturn = NULL)
 		{
-			ThreadTask<Return (Class::*)(void)> task(instance, function, placeReturn);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<Return (Class::*)(void)>(instance, function, placeReturn);
+			m_taskQueue.addTask(task);
 		}
 
 		template<typename Class>
 		void addTask(Class& instance, void (Class::*function)(void))
 		{
-			ThreadTask<void (Class::*)(void)> task(instance, function);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (Class::*)(void)>(instance, function);
+			m_taskQueue.addTask(task);
 		}
 
 		// Specialization for member functions with 1 argument
 		template<typename Class, typename Arg1, typename Return>
 		void addTask(const Class& instance, Return (Class::*function)(Arg1) const, Arg1 arg1, Return* placeReturn = NULL)
 		{
-			ThreadTask<Return (Class::*)(Arg1) const> task(instance, function, arg1, placeReturn);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1) const>(instance, function, arg1, placeReturn);
+			m_taskQueue.addTask(task);
 		}
 
 				// Specialization for member functions with 2 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Return>
 				void addTask(const Class& instance, Return (Class::*function)(Arg1, Arg2) const, Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL)
 				{
-					ThreadTask<Return (Class::*)(Arg1, Arg2) const> task(instance, function, arg1, arg2, placeReturn);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2) const>(instance, function, arg1, arg2, placeReturn);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 3 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Return>
 				void addTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL)
 				{
-					ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3) const> task(instance, function, arg1, arg2, arg3, placeReturn);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3) const>(instance, function, arg1, arg2, arg3, placeReturn);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 4 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Return>
 				void addTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL)
 				{
-					ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4) const> task(instance, function, arg1, arg2, arg3, arg4, placeReturn);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4) const>(instance, function, arg1, arg2, arg3, arg4, placeReturn);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 5 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Return>
 				void addTask(const Class& instance, Return (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL)
 				{
-					ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const> task(instance, function, arg1, arg2, arg3, arg4, arg5, placeReturn);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const>(instance, function, arg1, arg2, arg3, arg4, arg5, placeReturn);
+					m_taskQueue.addTask(task);
 				}
 
 
@@ -289,55 +286,55 @@ class ThreadPool
 		template<typename Class, typename Arg1>
 		void addTask(const Class& instance, void (Class::*function)(Arg1) const, Arg1 arg1)
 		{
-			ThreadTask<void (Class::*)(Arg1) const> task(instance, function, arg1);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (Class::*)(Arg1) const>(instance, function, arg1);
+			m_taskQueue.addTask(task);
 		}
 
 				// Specialization for member functions with 2 arguments
 				template<typename Class, typename Arg1, typename Arg2>
 				void addTask(const Class& instance, void (Class::*function)(Arg1, Arg2) const, Arg1 arg1, Arg2 arg2)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2) const> task(instance, function, arg1, arg2);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2) const>(instance, function, arg1, arg2);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 3 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3>
 				void addTask(const Class& instance, void (Class::*function)(Arg1, Arg2, Arg3) const, Arg1 arg1, Arg2 arg2, Arg3 arg3)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3) const> task(instance, function, arg1, arg2, arg3);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3) const>(instance, function, arg1, arg2, arg3);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 4 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
 				void addTask(const Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4) const> task(instance, function, arg1, arg2, arg3, arg4);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4) const>(instance, function, arg1, arg2, arg3, arg4);
+					m_taskQueue.addTask(task);
 				}
 
 				// Specialization for member functions with 5 arguments
 				template<typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
 				void addTask(const Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5) const, Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5)
 				{
-					ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const> task(instance, function, arg1, arg2, arg3, arg4, arg5);
-					m_taskQueue.addTask(&task);
+					IThreadTask* task = new ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const>(instance, function, arg1, arg2, arg3, arg4, arg5);
+					m_taskQueue.addTask(task);
 				}
 
 
 		template <typename Class, typename Return>
 		void addTask(const Class& instance, Return (Class::*function)(void) const, Return* placeReturn = NULL)
 		{
-			ThreadTask<Return (Class::*)(void) const> task(instance, function, placeReturn);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<Return (Class::*)(void) const>(instance, function, placeReturn);
+			m_taskQueue.addTask(task);
 		}
 
 		template<typename Class>
 		void addTask(const Class& instance, void (Class::*function)(void) const)
 		{
-			ThreadTask<void (Class::*)(void) const> task(instance, function);
-			m_taskQueue.addTask(&task);
+			IThreadTask* task = new ThreadTask<void (Class::*)(void) const>(instance, function);
+			m_taskQueue.addTask(task);
 		}		 
 
 };

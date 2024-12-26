@@ -19,7 +19,6 @@ class IThreadTask
 	public:
 		virtual ~IThreadTask() {};
 		virtual void			execute() const  = 0;
-		virtual IThreadTask*	clone() const	= 0;
 };
 
 

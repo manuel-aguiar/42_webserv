@@ -14,13 +14,16 @@
 
 # define THREADWORKER_HPP
 
+// Project headers
+# include "../ThreadPool/ThreadPool.hpp"
+
 // C headers
 # include <pthread.h>
 
 class IThreadTask;
 class TaskQueue;
 
-class ThreadWorker
+class ThreadPool::ThreadWorker
 {
 	public:
 		ThreadWorker(TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);

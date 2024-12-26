@@ -30,13 +30,6 @@ TaskQueue::~TaskQueue()
 TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
 TaskQueue& TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
 
-IThreadTask*	TaskQueue::cloneTask(const IThreadTask* newTask)
-{
-	if (!newTask)
-		return (NULL);
-	return (newTask->clone());
-}
-
 void			TaskQueue::finishTask(IThreadTask* delTask)
 {
 	if (delTask)
@@ -48,10 +41,10 @@ void			TaskQueue::finishTask(IThreadTask* delTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	TaskQueue::addTask(const IThreadTask* newTask)
+void	TaskQueue::addTask(IThreadTask* newTask)
 {
 	pthread_mutex_lock(&m_taskAccess);
-	m_tasks.push_back(cloneTask(newTask));
+	m_tasks.push_back(newTask);
 	pthread_cond_signal(&m_newTaskSignal);
 	pthread_mutex_unlock(&m_taskAccess);
 }
@@ -61,7 +54,7 @@ IThreadTask*	 TaskQueue::getTask()
 	IThreadTask *toExecute;
 
 	pthread_mutex_lock(&m_taskAccess);
-	while (m_tasks.empty())
+	while (m_tasks.size() == 0)
 		pthread_cond_wait(&m_newTaskSignal, &m_taskAccess);
 	toExecute = m_tasks.front();
 	m_tasks.pop_front();
@@ -80,7 +73,7 @@ void	TaskQueue::clear()
 void	TaskQueue::waitForCompletion()
 {   
 	pthread_mutex_lock(&m_taskAccess);
-	while (!m_tasks.empty() || m_tasksExecuting)
+	while (m_tasks.size() != 0 || m_tasksExecuting)
 		pthread_cond_wait(&m_allTasksDone, &m_taskAccess);
 	pthread_mutex_unlock(&m_taskAccess);
 }

@@ -82,10 +82,8 @@ class ThreadTask<Return (*)(void)> : public IThreadTask
 			else
 				(*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		Return		  (*m_function)(void);
@@ -120,10 +118,8 @@ class ThreadTask<void (*)(void)> : public IThreadTask
 				return ;
 			(*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		void		  (*m_function)(void);
@@ -173,10 +169,8 @@ class ThreadTask<Return (Class::*)(void)> : public IThreadTask
 			else
 				(m_instance.*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		Class&		  m_instance;
@@ -214,10 +208,8 @@ class ThreadTask<void (Class::*)(void)> : public IThreadTask
 				return ;
 			(m_instance.*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		Class&		  m_instance;
@@ -277,10 +269,8 @@ class ThreadTask<Return (Class::*)(void) const> : public IThreadTask
 			else
 				(m_instance.*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		const Class&		  m_instance;
@@ -318,10 +308,8 @@ class ThreadTask<void (Class::*)(void) const> : public IThreadTask
 				return ;
 			(m_instance.*m_function)();
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		const Class&	m_instance;

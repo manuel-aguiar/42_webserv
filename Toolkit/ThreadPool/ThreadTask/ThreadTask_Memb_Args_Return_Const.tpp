@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:01:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 12:23:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,6 @@ class ThreadTask<Return (Class::*)(Arg1) const> : public IThreadTask
 				(m_instance.*m_function)(m_arg1);
 		}
 
-		IThreadTask* clone() const
-		{
-			return new ThreadTask(*this);
-		}
 
 	private:
 		const Class& m_instance;
@@ -126,10 +122,6 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2) const> : public IThreadTask
 				(m_instance.*m_function)(m_arg1, m_arg2);
 		}
 
-		IThreadTask* clone() const
-		{
-			return new ThreadTask(*this);
-		}
 
 	private:
 		const Class& m_instance;
@@ -182,10 +174,6 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3) const> : public IThreadTask
 				(m_instance.*m_function)(m_arg1, m_arg2, m_arg3);
 		}
 
-		IThreadTask* clone() const
-		{
-			return new ThreadTask(*this);
-		}
 
 	private:
 		const Class& m_instance;
@@ -241,10 +229,6 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4) const> : public IThre
 				(m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
 		}
 
-		IThreadTask* clone() const
-		{
-			return new ThreadTask(*this);
-		}
 
 	private:
 		const Class& m_instance;
@@ -303,10 +287,6 @@ class ThreadTask<Return (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5) const> : public
 				(m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
 		}
 
-		IThreadTask* clone() const
-		{
-			return new ThreadTask(*this);
-		}
 
 	private:
 		const Class& m_instance;

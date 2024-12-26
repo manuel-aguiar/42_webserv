@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:01:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 12:15:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,8 @@ class ThreadTask<Return (Class::*)(Args)> : public IThreadTask
 			else
 				(m_instance.*m_function)(m_args);
 		};
-		IThreadTask*	clone() const
-		{
-			return (new ThreadTask(*this));
-		};
+
+
 
 	private:
 		Class&		  m_instance;
@@ -127,10 +125,8 @@ public:
             (m_instance.*m_function)(m_arg1, m_arg2);
     }
 
-    IThreadTask* clone() const
-    {
-        return new ThreadTask(*this);
-    }
+
+
 
 private:
     Class& m_instance;
@@ -185,10 +181,8 @@ public:
             (m_instance.*m_function)(m_arg1, m_arg2, m_arg3);
     }
 
-    IThreadTask* clone() const
-    {
-        return new ThreadTask(*this);
-    }
+
+
 
 private:
     Class& m_instance;
@@ -248,10 +242,8 @@ public:
             (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
     }
 
-    IThreadTask* clone() const
-    {
-        return new ThreadTask(*this);
-    }
+
+
 
 private:
     Class& m_instance;
@@ -314,10 +306,8 @@ public:
             (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
     }
 
-    IThreadTask* clone() const
-    {
-        return new ThreadTask(*this);
-    }
+
+
 
 private:
     Class& m_instance;

@@ -14,12 +14,13 @@
 
 # define THREADTASKQUEUE_HPP
 
+# include "../../List/List.hpp"
+# include "../ThreadTask/IThreadTask.hpp"
+
+// C headers
 # include <pthread.h>
 # include <semaphore.h>
-# include <queue>
-# include <list>
 
-# include "../ThreadTask/IThreadTask.hpp"
 
 class TaskQueue
 {
@@ -27,7 +28,7 @@ class TaskQueue
 		TaskQueue();
 		~TaskQueue();
 
-		void				addTask(const IThreadTask* newTask);
+		void				addTask(IThreadTask* newTask);
 		IThreadTask*		getTask();
 		void				clear();
 		void				waitForCompletion();		
@@ -36,9 +37,8 @@ class TaskQueue
 		int				 	taskCount();
 
 	private:
-		IThreadTask*		cloneTask(const IThreadTask* base);
 		
-		std::list<IThreadTask*>							m_tasks;
+		List<IThreadTask*>								m_tasks;
 		unsigned int									m_tasksExecuting;
 		pthread_mutex_t									m_taskAccess;
 		pthread_cond_t									m_newTaskSignal;								   
