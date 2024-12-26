@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/22 10:46:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 13:55:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,19 @@ class List
 			DataNode() : BaseNode(), m_data () {}
 
 			template<typename Arg1>
-			DataNode(const Arg1& arg1) : BaseNode(), m_data (arg1) {}
+			DataNode(Arg1& arg1) : BaseNode(), m_data (arg1) {}
 
 			template<typename Arg1, typename Arg2>
-			DataNode(const Arg1& arg1, const Arg2& arg2) : BaseNode(), m_data (arg1, arg2) {}
+			DataNode(Arg1& arg1, Arg2& arg2) : BaseNode(), m_data (arg1, arg2) {}
 
 			template<typename Arg1, typename Arg2, typename Arg3>
-			DataNode(const Arg1& arg1, const Arg2& arg2, const Arg2& arg3) : BaseNode(), m_data(arg1, arg2, arg3) {}
+			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3) : BaseNode(), m_data(arg1, arg2, arg3) {}
+
+			template<typename Arg1, typename Arg2, typename Arg3, typename Arg4>
+			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4) : BaseNode(), m_data(arg1, arg2, arg3, arg4) {}
+
+			template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
+			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4, Arg5& arg5) : BaseNode(), m_data(arg1, arg2, arg3. arg, arg5) {}
 
 			DataNode(const DataNode& other) : BaseNode(other), m_data(other.m_data) {}
 			DataNode& operator=(const DataNode& other)
@@ -236,6 +242,23 @@ class List
 			++m_size;
 		}
 
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4 >
+		void	emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5 >
+		void	emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4, Arg5& arg5)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4, arg5);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
 
 		template <typename Arg1 >
 		void	emplace_back(const Arg1& arg1)
@@ -260,6 +283,24 @@ class List
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4 >
+		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3, const Arg4& arg4)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4);
+			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5 >
+		void	emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3, const Arg4& arg4, const Arg5& arg5)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4, arg5);
 			mf_insertAfter(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
@@ -299,6 +340,23 @@ class List
 			++m_size;
 		}
 
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4 >
+		void	emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4);
+			mf_insertBefore(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5 >
+		void	emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4, Arg5& arg5)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4, arg5);
+			mf_insertBefore(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
 
 		template <typename Arg1 >
 		void	emplace_front(const Arg1& arg1)
@@ -324,6 +382,24 @@ class List
 			DataNode* node = m_nodeAllocator.allocate(1);
 			new (node) DataNode(arg1, arg2, arg3);
 			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4 >
+		void	emplace_front(const Arg1& arg1,const Arg2& arg2, const Arg3& arg3, const Arg4& arg4)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4);
+			mf_insertBefore(m_header.m_prev, static_cast<BaseNode*>(node));
+			++m_size;
+		}
+
+		template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5 >
+		void	emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3, const Arg4& arg4, const Arg5& arg5)
+		{
+			DataNode* node = m_nodeAllocator.allocate(1);
+			new (node) DataNode(arg1, arg2, arg3, arg4, arg5);
+			mf_insertBefore(m_header.m_prev, static_cast<BaseNode*>(node));
 			++m_size;
 		}
 

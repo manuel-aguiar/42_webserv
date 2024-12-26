@@ -353,13 +353,13 @@ int main(int ac, char **av)
 	ITest*  testptr;
 
 	testptr = &dummy;
-	ThreadPool tp(numThreads);
+	ThreadPool tp(numThreads, numThreads + 1);
 
 
 	pthread_mutex_init(&globalLock, NULL);
 
-	tp.addThread();			//testing adding a thread
-	tp.removeThread();		//testing removing a thread
+	//tp.addThread();			//testing adding a thread
+	//tp.removeThread();		//testing removing a thread
 
 	{
 		unsigned int i = 0;
@@ -454,5 +454,21 @@ int main(int ac, char **av)
 	pthread_mutex_destroy(&globalLock);
 
 
+	return (0);
+}
+
+
+int main1(void)
+{
+	try
+	{
+		ThreadPool tp(100, 100);
+		tp.removeThread();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
 	return (0);
 }

@@ -18,9 +18,10 @@
 // C++ headers
 # include <iostream>
 
-ThreadPool::ThreadWorker::ThreadWorker(TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal) :
+ThreadPool::ThreadWorker::ThreadWorker(ThreadPool& pool, TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal) :
 	m_state(EThread_Unitialized),
 	m_thread(0),
+	m_pool(pool),
 	m_queue(queue),
 	m_curTask(NULL),
 	m_statusLock(statusLock),
@@ -40,26 +41,30 @@ ThreadPool::ThreadWorker::~ThreadWorker()
 
 void	ThreadPool::ThreadWorker::run()
 {   
-	pthread_mutex_lock(&m_statusLock);
-	m_exited = false;
-	pthread_mutex_unlock(&m_statusLock);
-
+	//pthread_mutex_lock(&m_statusLock);
+	//pthread_mutex_unlock(&m_statusLock);
 	while ((m_curTask = m_queue.getTask()))
 	{
 		m_curTask->execute();
 		m_queue.finishTask(m_curTask);
 	}
-
 	pthread_mutex_lock(&m_statusLock);
-	m_exited = true;
+
+	m_pool.mf_InternalRemoveThread(*this);
+
 	pthread_cond_signal(&m_exitSignal);
 	pthread_mutex_unlock(&m_statusLock);
-
 }
 
-bool	ThreadPool::ThreadWorker::exitedQueue()
+void	ThreadPool::ThreadWorker::setLocation(List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator location)
 {
-	return (m_exited);
+	m_location = location;
+}
+
+const List<ThreadPool::ThreadWorker, MPool_FixedElem<ThreadPool::ThreadWorker> >::iterator&
+				ThreadPool::ThreadWorker::getLocation() const
+{
+	return (m_location);
 }
 
 void	ThreadPool::ThreadWorker::start()
@@ -77,7 +82,7 @@ void	ThreadPool::ThreadWorker::start()
 	m_state = EThread_Initialized;
 }
 
-void	ThreadPool::ThreadWorker::join()
+void	ThreadPool::ThreadWorker::finish()
 {
 	if (m_state == EThread_Joined)
 		return ;
@@ -95,11 +100,11 @@ void*   ThreadPool::ThreadWorker::ThreadFunction(void* args)
 ThreadPool::ThreadWorker::ThreadWorker(const ThreadWorker& copy) : 
 	m_state(copy.m_state),
 	m_thread(copy.m_thread),
+	m_pool(copy.m_pool),
 	m_queue(copy.m_queue),
 	m_curTask(NULL),
 	m_statusLock(copy.m_statusLock),
-	m_exitSignal(copy.m_exitSignal),
-	m_exited(false) {}
+	m_exitSignal(copy.m_exitSignal) {}
 	
 ThreadPool::ThreadWorker& ThreadPool::ThreadWorker::operator=(const ThreadWorker& assign)  {(void)assign; return (*this);}
 

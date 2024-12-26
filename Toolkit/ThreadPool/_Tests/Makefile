@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/26 11:28:38 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/26 15:39:37 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ BUILD_FLAGS 					= 	-DNDEBUG
 THREADPOOL_PATH 				= 	$(ROOT_PATH)
 THREADPOOL_LIB					= 	libthreadpool.a
 
-MEMORYPOOL_LINKER 		=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
+MEMORYPOOL_LINKER 			=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
 
 THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
 
@@ -44,13 +44,16 @@ DEPS					=		$(OBJS:.o=.d)
 
 #####################################################
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(ROOT_PATH)/$(THREADPOOL_LIB)
 	@$(MAKE) -C $(THREADPOOL_PATH) --quiet
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(ROOT_PATH)/$(THREADPOOL_LIB):
+	@$(MAKE) -C $(THREADPOOL_PATH) --quiet
 
 -include $(DEPS)
 
@@ -59,13 +62,16 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 run: $(NAME)
-	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
+	@valgrind --quiet --tool=helgrind ./$(NAME) 10
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME) 10
 
 clean:
 	rm -rf $(NAME) vgcore*
 
 fclean: clean
 
-re: fclean all
+re: fclean
+	@$(MAKE) -C $(THREADPOOL_PATH) re --quiet
+	make
 
 .PHONY: clean fclean run

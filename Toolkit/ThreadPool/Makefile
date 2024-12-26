@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/26 11:27:29 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/26 12:37:18 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 
 ## GENERAL RULES
 NAME 				= 	libthreadpool.a
-COMP 				= 	c++ -std=c++98
+COMP 				= 	c++ -std=c++98 -g
 FLAGS 				= 	-Wall -Wextra -Werror -MMD -MP
 LIB 				= 	ar rcs
 RM					=	rm

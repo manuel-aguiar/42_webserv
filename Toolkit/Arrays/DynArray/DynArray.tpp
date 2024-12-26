@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:40:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 13:34:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ class DynArray
                 return;
             T* new_array = m_allocator.allocate(size);
             m_capacity = size;
+            
             if (m_array && m_array != new_array)
             {
                 for (size_t i = 0; i < m_size; ++i)

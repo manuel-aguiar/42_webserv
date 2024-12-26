@@ -16,14 +16,15 @@
 
 // Project headers
 
-# include "../../Arrays/DynArray/DynArray.hpp"
+# include "../../MemoryPool/Fixed_Elements/MPool_FixedElements.hpp"
+# include "../../Arrays/HeapArray/HeapArray.hpp"
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
 class ThreadPool
 {
 	public:
-		ThreadPool(unsigned int InitialNumberOfThreads);
+		ThreadPool(size_t InitialThreads, size_t maxThreads);
 		~ThreadPool();
 
 		void	waitForCompletion();
@@ -64,12 +65,15 @@ class ThreadPool
 				TaskQueue& operator=(const TaskQueue& assign);
 		};
 
+		void								mf_InternalRemoveThread(ThreadWorker& worker);
+
 		TaskQueue							m_taskQueue;
-		DynArray<ThreadWorker>				m_threads;
+		List<ThreadWorker, MPool_FixedElem< ThreadWorker> >
+											m_threads;
 		pthread_mutex_t						m_statusLock;
 		pthread_cond_t						m_exitSignal;
 
-
+		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator m_exiting;
 
 	//public template specializations for ThreadTask
 	public:

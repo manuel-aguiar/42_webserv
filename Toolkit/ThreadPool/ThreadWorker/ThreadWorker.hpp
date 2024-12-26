@@ -26,20 +26,20 @@ class TaskQueue;
 class ThreadPool::ThreadWorker
 {
 	public:
-		ThreadWorker(TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
+		ThreadWorker(ThreadPool& pool, TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
 		~ThreadWorker();
 		ThreadWorker(const ThreadWorker& copy);
 		ThreadWorker& operator=(const ThreadWorker& assign);
 
+		const List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator&
+				getLocation() const;
+		void	setLocation(List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator location);
+
 		void	start();
-		void	join();
-		bool	joinable();
-
-		bool	exitedQueue();
-
-		void	run();
+		void	finish();
 		
 	private:
+		void	run();
 
 		static void*   ThreadFunction(void* args);
 
@@ -51,16 +51,16 @@ class ThreadPool::ThreadWorker
 			EThread_Joined
 		};
 
-		EThreadState	m_state;
-		pthread_t	   	m_thread;
+		EThreadState			m_state;
+		pthread_t	   			m_thread;
 
+		ThreadPool&				m_pool;
 		TaskQueue&				m_queue;
 		IThreadTask*		 	m_curTask;
 		pthread_mutex_t&		m_statusLock;
 		pthread_cond_t&			m_exitSignal;
-		bool					m_exited;
 
-
+		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator m_location;
 };
 
 
