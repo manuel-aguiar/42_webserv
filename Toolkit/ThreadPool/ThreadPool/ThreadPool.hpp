@@ -17,8 +17,8 @@
 // Project headers
 # include "../../MemoryPool/MPool_FixedElem/MPool_FixedElem.hpp"
 # include "../../Arrays/HeapArray/HeapArray.hpp"
-# include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
+# include "../ThreadTask/IThreadTask.hpp"
 
 // C headers
 # include <signal.h>
@@ -36,7 +36,11 @@ class ThreadPool
 		void	addThread();
 		void	removeThread();
 		
-		int		threadCount() const;
+		void	addTask(IThreadTask& newTask);
+		void	addTask(const IThreadTask& newTask);
+
+		size_t	getThreadCount() const;
+		size_t	getTaskCount();
 
 	private:
 
@@ -52,9 +56,10 @@ class ThreadPool
 				void				clear();
 				void				waitForCompletion();		
 				void				finishTask(IThreadTask* delTask);
-				IThreadTask*		getTask();
 
-				int				 	taskCount();
+				IThreadTask*		acquireTask();
+
+				size_t			 	getTaskCount();
 
 			private:
 				
@@ -79,6 +84,8 @@ class ThreadPool
 
 		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator m_exiting;
 
+
+/*
 	//public template specializations for ThreadTask
 	public:
 
@@ -368,6 +375,8 @@ class ThreadPool
 			IThreadTask* task = new ThreadTask<void (Class::*)(void) const>(instance, function);
 			m_taskQueue.addTask(task);
 		}		 
+
+*/
 
 };
 

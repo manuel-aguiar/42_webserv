@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 16:15:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 18:14:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
-# include "../ThreadWorker/ThreadWorker.hpp"
 # include "ThreadPool.hpp"
+# include "../ThreadWorker/ThreadWorker.hpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
 // C headers
@@ -107,9 +107,19 @@ void	ThreadPool::removeThread()
 	pthread_mutex_unlock(&m_statusLock);
 }
 
-int	ThreadPool::threadCount() const
+size_t	ThreadPool::getThreadCount() const
 {
 	return (m_threads.size());
+}
+
+size_t	ThreadPool::getTaskCount()
+{
+	return (m_taskQueue.getTaskCount());
+}
+
+void ThreadPool::addTask(IThreadTask& newTask)
+{
+	m_taskQueue.addTask(&newTask);
 }
 
 void	ThreadPool::mf_InternalRemoveThread(ThreadWorker& worker)

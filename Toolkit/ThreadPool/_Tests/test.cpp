@@ -23,7 +23,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-
+# include "../../Arrays/StackArray/StackArray.hpp"
 # include "../../_Tests/test.h"
 
 template <typename T>
@@ -53,6 +53,20 @@ long fibGood(unsigned int n)
 	}
 	return (a);
 }
+
+class FiboTask : public IThreadTask
+{
+	public:
+		FiboTask() : m_n(0), m_result(NULL) {}
+		FiboTask(unsigned int n, long* result) : m_n(n), m_result(result) {}
+		void execute()
+		{
+			*m_result = fibGood(m_n);
+		}
+	private:
+		unsigned int 	m_n;
+		long* 			m_result;
+};
 
 
 int	TestPart1(int testNumber)
@@ -97,16 +111,18 @@ int	TestPart1(int testNumber)
 		tp.removeThread();
 		tp.removeThread();
 
-		if (tp.threadCount() != 7)
+		if (tp.getThreadCount() != 7)
 			throw std::runtime_error("Thread count is not 7");
 
 		tp.destroy(true);
 
-		if (tp.threadCount() != 0)
+		if (tp.getThreadCount() != 0)
 			throw std::runtime_error("Thread count is not 0");
 
 		long result;
-		tp.addTask(&fibGood, (unsigned int)6, &result);
+		FiboTask task(6, &result);
+
+		tp.addTask(task);
 
 
 		tp.addThread();
@@ -134,14 +150,17 @@ int TestPart2(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool 		tp(10, 100);
-		DynArray<long> 	fiboExpected(100);
-		DynArray<long>	fiboPool(100);
-		
+
+		ThreadPool 					tp(10, 20);
+		StackArray<long, 100> 		fiboExpected;
+		StackArray<long, 100>		fiboPool;
+		StackArray<FiboTask, 100> 	tasks;
+
 		for (size_t i = 0; i < fiboPool.size(); ++i)
 		{
-			fiboExpected[i] = fibGood(i);
-			tp.addTask(fibGood, (unsigned int)i, &fiboPool[i]);
+			fiboExpected.emplace_back(fibGood(i));
+			tasks.emplace_back(i, &fiboPool[i]);
+			tp.addTask(tasks[i]);
 		}
 			
 		tp.waitForCompletion();

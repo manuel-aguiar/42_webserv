@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 18:09:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 18:34:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,28 @@ void    ServerManager::mf_runSingleThreaded()
 
 	Run.
 */
+
+
+/* Lazy but it really will only be used here */
+class ServerThreadTask : public IThreadTask
+{
+	public:
+		ServerThreadTask(ServerWorker& worker) : m_worker(worker) {}
+		ServerThreadTask(const ServerThreadTask& copy) : m_worker(copy.m_worker) {}
+		~ServerThreadTask() {}
+
+		void execute() { m_worker.run(); }
+		
+	private:
+		ServerWorker& m_worker;
+
+		ServerThreadTask& operator=(const ServerThreadTask& assign) { (void)assign; return (*this); }
+};
+
 void    ServerManager::mf_runMultiThreaded()
 {
-	sigset_t threadSigSet;
+	sigset_t					threadSigSet;
+	DynArray<ServerThreadTask>	tasks;
 
 	if (::sigemptyset(&threadSigSet) != 0)
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigemptyset failed");
@@ -95,8 +114,13 @@ void    ServerManager::mf_runMultiThreaded()
 	if (::pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL))
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
 
+	tasks.reserve(m_workers.size());
+
 	for (size_t i = 0; i < m_workers.size(); ++i)
-		m_threadPool->addTask(*m_workers[i], &ServerWorker::run);
+	{
+		tasks.emplace_back(*m_workers[i]);
+		m_threadPool->addTask(tasks[i]);
+	}
 
 	while (!g_SignalHandler.getSignal())
 		::usleep(1000);

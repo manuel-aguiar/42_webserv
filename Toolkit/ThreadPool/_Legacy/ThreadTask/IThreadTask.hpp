@@ -17,8 +17,8 @@
 class IThreadTask
 {
 	public:
-		virtual 				~IThreadTask() {};
-		virtual void			execute() = 0;
+		virtual ~IThreadTask() {};
+		virtual void			execute() const  = 0;
 };
 
 

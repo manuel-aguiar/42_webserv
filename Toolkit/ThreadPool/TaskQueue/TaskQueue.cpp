@@ -32,8 +32,7 @@ ThreadPool::TaskQueue& ThreadPool::TaskQueue::operator=(const TaskQueue& assign)
 
 void	ThreadPool::TaskQueue::finishTask(IThreadTask* delTask)
 {
-	if (delTask)
-		delete (delTask);
+	(void)delTask;
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasksExecuting--;
 	if (m_tasks.size() == 0 && m_tasksExecuting == 0)
@@ -49,7 +48,7 @@ void	ThreadPool::TaskQueue::addTask(IThreadTask* newTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-IThreadTask*	 ThreadPool::TaskQueue::getTask()
+IThreadTask*	 ThreadPool::TaskQueue::acquireTask()
 {
 	IThreadTask *toExecute;
 
@@ -78,9 +77,9 @@ void	ThreadPool::TaskQueue::waitForCompletion()
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-int	 ThreadPool::TaskQueue::taskCount()
+size_t	 ThreadPool::TaskQueue::getTaskCount()
 {
-	int result;
+	size_t result;
 	
 	pthread_mutex_lock(&m_taskAccess);
 	result = m_tasks.size() + m_tasksExecuting;

@@ -439,7 +439,7 @@ int main1(int ac, char **av)
 	{
 		std::cout << "vector(" << i << ") = " << returnValues[i] << std::endl;
 	}
-	std::cout << "tp has " << tp.threadCount() << " threads" << std::endl;
+	std::cout << "tp has " << tp.getThreadCount() << " threads" << std::endl;
 	pthread_mutex_unlock(&globalLock);
 
 

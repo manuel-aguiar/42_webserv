@@ -39,7 +39,7 @@ void	ThreadPool::ThreadWorker::run()
 {   
 	IThreadTask* curTask = NULL;
 
-	while ((curTask = m_pool.m_taskQueue.getTask()))
+	while ((curTask = m_pool.m_taskQueue.acquireTask()))
 	{
 		curTask->execute();
 		m_pool.m_taskQueue.finishTask(curTask);
