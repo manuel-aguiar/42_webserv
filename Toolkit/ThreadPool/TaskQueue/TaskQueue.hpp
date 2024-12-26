@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*																			*/
 /*														:::	  ::::::::   */
-/*   ThreadTaskQueue.hpp								:+:	  :+:	:+:   */
+/*   TaskQueue.hpp								:+:	  :+:	:+:   */
 /*													+:+ +:+		 +:+	 */
 /*   By: manuel <manuel@student.42.fr>			  +#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
@@ -33,7 +33,7 @@ class TaskQueue
 		void				waitForCompletion();		
 		void				finishTask(IThreadTask* delTask);
 
-		int				 taskCount();
+		int				 	taskCount();
 
 	private:
 		IThreadTask*		cloneTask(const IThreadTask* base);

@@ -79,6 +79,8 @@ void	ThreadWorker::start()
 
 void	ThreadWorker::join()
 {
+	if (m_state == EThread_Joined)
+		return ;
 	pthread_join(m_thread, NULL);
 	m_state = EThread_Joined;
 }

@@ -15,11 +15,12 @@
 # define THREADPOOL_HPP
 
 // Project headers
+
+# include "../../Arrays/DynArray/DynArray.hpp"
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
-// C headers
-# include <pthread.h>
+
 
 // C++ headers
 # include <vector>
@@ -33,22 +34,18 @@ class ThreadPool
 		ThreadPool(unsigned int InitialNumberOfThreads);
 		~ThreadPool();
 
-		void	addTask(IThreadTask* task);
-		void	addTask(IThreadTask& task);
 		void	waitForCompletion();
 		void	destroy(bool waitForCompletion);
+
 		void	addThread();
 		void	removeThread();
-
-		//not implemented
-		//void	removeThread();
 		
-		int	 threadCount() const;
+		int		threadCount() const;
 
 	private:
 
 		TaskQueue							m_taskQueue;
-		std::vector<ThreadWorker *>			m_threads;
+		DynArray<ThreadWorker>				m_threads;
 		pthread_mutex_t						m_statusLock;
 		pthread_cond_t						m_exitSignal;
 

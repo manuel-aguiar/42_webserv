@@ -25,6 +25,8 @@ class ThreadWorker
 	public:
 		ThreadWorker(TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
 		~ThreadWorker();
+		ThreadWorker(const ThreadWorker& copy);
+		ThreadWorker& operator=(const ThreadWorker& assign);
 
 		void	start();
 		void	join();
@@ -56,8 +58,6 @@ class ThreadWorker
 		bool					m_exited;
 
 
-		ThreadWorker(const ThreadWorker& copy);
-		ThreadWorker& operator=(const ThreadWorker& assign);
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:26:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,19 @@
 // C headers
 # include <pthread.h>
 
-ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
-	m_threads(InitialNumberOfThreads)
+ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads)
 {
 	pthread_mutex_init(&m_statusLock, NULL);
 	pthread_cond_init(&m_exitSignal, NULL);
 
 	pthread_mutex_lock(&m_statusLock);
+
+	m_threads.reserve(InitialNumberOfThreads);
+
 	for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
 	{
-		m_threads[i] = new ThreadWorker(m_taskQueue, m_statusLock, m_exitSignal);
-		m_threads[i]->start();
+		m_threads.emplace_back(m_taskQueue, m_statusLock, m_exitSignal);
+		m_threads[i].start();
 	}
 	pthread_mutex_unlock(&m_statusLock);
 }
@@ -36,16 +38,6 @@ ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 ThreadPool::~ThreadPool()
 {
 	destroy(false);
-}
-
-void	ThreadPool::addTask(IThreadTask* newTask)
-{
-	m_taskQueue.addTask(newTask);
-}
-
-void	ThreadPool::addTask(IThreadTask& newTask)
-{
-	m_taskQueue.addTask(&newTask);
 }
 
 void	ThreadPool::waitForCompletion()
@@ -62,19 +54,16 @@ void	ThreadPool::destroy(bool waitForCompletion)
 		m_taskQueue.addTask(NULL);
 	for (int i = m_threads.size() - 1; i >= 0; --i)
 	{
-		m_threads[i]->join();
-		delete (m_threads[i]);
+		m_threads[i].join();
 		m_threads.pop_back();
 	}
 }
 
 void	ThreadPool::addThread()
 {
-	ThreadWorker*   newThread;
 
-	newThread = new ThreadWorker(m_taskQueue, m_statusLock, m_exitSignal);
-	m_threads.push_back(newThread);
-	newThread->start();
+	m_threads.emplace_back(m_taskQueue, m_statusLock, m_exitSignal);
+	m_threads[m_threads.size() - 1].start();
 }
 
 void	ThreadPool::removeThread()
@@ -83,13 +72,12 @@ void	ThreadPool::removeThread()
 	m_taskQueue.addTask(NULL);
 	pthread_cond_wait(&m_exitSignal, &m_statusLock);
 
-	std::vector<ThreadWorker*>::iterator curThread;	
-	for (curThread = m_threads.begin(); curThread != m_threads.end(); ++curThread)
+		
+	for (DynArray<ThreadWorker>::iterator curThread = m_threads.begin(); curThread != m_threads.end(); ++curThread)
 	{
-		if ((*curThread)->exitedQueue())
+		if ((*curThread).exitedQueue())
 		{
-			(*curThread)->join();
-			delete (*curThread);
+			(*curThread).join();
 			m_threads.erase(curThread);
 			break ;
 		}
