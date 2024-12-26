@@ -10,4 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-Need to refactor the ThreadPool a bit and get rid of the unnecessary polymorphic BS
+Given the multitude of possible functions and return combinations, const, member functions.., best to leave to the user to implement IThreadTask for their own needs and change the API such that thr ThreadPool only accepts IThreadTask pointers to add a task. that way, the user has complete freedom about what it wants to execute and we leave the unnecessary trmplate expansions behind.
+
+Ill leave just functions up to a two arguments, for demonstration purposes more than anything else.
+
+The user can take these templates, create their own for their needs, and subscribe them to the ThreadPool for execution
