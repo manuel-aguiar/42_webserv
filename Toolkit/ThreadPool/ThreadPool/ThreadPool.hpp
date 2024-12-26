@@ -15,7 +15,7 @@
 # define THREADPOOL_HPP
 
 // Project headers
-# include "../../MemoryPool/Fixed_Elements/MPool_FixedElements.hpp"
+# include "../../MemoryPool/MPool_FixedElem/MPool_FixedElem.hpp"
 # include "../../Arrays/HeapArray/HeapArray.hpp"
 # include "../ThreadTask/ThreadTask.tpp"
 # include "../TaskQueue/TaskQueue.hpp"
@@ -70,6 +70,7 @@ class ThreadPool
 
 		void								mf_InternalRemoveThread(ThreadWorker& worker);
 
+		size_t								m_maxThreads;
 		TaskQueue							m_taskQueue;
 		List<ThreadWorker, MPool_FixedElem< ThreadWorker> >
 											m_threads;

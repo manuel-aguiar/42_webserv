@@ -62,8 +62,8 @@ $(ROOT_PATH)/$(THREADPOOL_LIB):
 all: $(NAME)
 
 run: $(NAME)
-	@valgrind --quiet --tool=helgrind ./$(NAME) 10
-	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME) 10
+	@valgrind --quiet --tool=helgrind ./$(NAME)
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
 
 clean:
 	rm -rf $(NAME) vgcore*

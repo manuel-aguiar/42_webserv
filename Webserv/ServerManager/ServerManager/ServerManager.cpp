@@ -90,7 +90,7 @@ void    ServerManager::mf_runMultiThreaded()
 	if (::pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL))
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");
 
-	m_threadPool = new ThreadPool(m_workers.size());
+	m_threadPool = new ThreadPool(m_workers.size(), 100);										// à pata
 
 	if (::pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL))
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: pthread_sigmask failed");

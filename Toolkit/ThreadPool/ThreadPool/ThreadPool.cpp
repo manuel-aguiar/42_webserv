@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 16:07:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 16:15:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 # include <pthread.h>
 
 ThreadPool::ThreadPool(size_t InitialThreads, size_t maxThreads) :
-	m_threads(MPool_FixedElem<ThreadWorker>(maxThreads))
+	m_maxThreads(maxThreads),
+	m_threads(MPool_FixedElem<ThreadWorker>(m_maxThreads))
 {
 	pthread_mutex_init(&m_statusLock, NULL);
 	pthread_cond_init(&m_exitSignal, NULL);
@@ -81,13 +82,21 @@ void	ThreadPool::forceDestroy()
 
 void	ThreadPool::addThread()
 {
+	assert(m_threads.size() < m_maxThreads);
+
+	pthread_mutex_lock(&m_statusLock);
+
 	m_threads.emplace_back(*this);
 	m_threads.back().setLocation(--m_threads.end());
 	m_threads.back().start();
+	
+	pthread_mutex_unlock(&m_statusLock);
 }
 
 void	ThreadPool::removeThread()
 {
+	assert(m_threads.size() > 0);
+	
 	pthread_mutex_lock(&m_statusLock);
 	m_taskQueue.addTask(NULL);
 	pthread_cond_wait(&m_exitSignal, &m_statusLock);

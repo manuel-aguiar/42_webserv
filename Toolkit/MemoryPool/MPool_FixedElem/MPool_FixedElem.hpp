@@ -12,8 +12,8 @@
 
 
 
-#ifndef MPOOL_FIXEDELEMENTS_H
-# define MPOOL_FIXEDELEMENTS_H
+#ifndef MPOOL_FIXEDELEM_H
+# define MPOOL_FIXEDELEM_H
 
 # include <limits.h>
 # include <stddef.h>
@@ -23,6 +23,6 @@
 template <typename T>
 class MPool_FixedElem;
 
-# include "MPool_FixedElements.tpp"
+# include "MPool_FixedElem.tpp"
 
 #endif
