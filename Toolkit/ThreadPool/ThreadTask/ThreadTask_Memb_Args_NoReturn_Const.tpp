@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:24:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 08:31:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:01:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <cstring>
 # include <cassert>
 
-# include "../Abstract/IThreadTask.hpp"
+# include "IThreadTask.hpp"
 # include <vector>
 
 

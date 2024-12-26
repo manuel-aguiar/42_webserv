@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*																			*/
 /*														:::	  ::::::::   */
-/*   ThreadPoolWorker.hpp							   :+:	  :+:	:+:   */
+/*   ThreadWorker.hpp							   :+:	  :+:	:+:   */
 /*													+:+ +:+		 +:+	 */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
@@ -10,37 +10,54 @@
 /*																			*/
 /* ************************************************************************** */
 
-#ifndef THREADPOOLWORKER_HPP
+#ifndef THREADWORKER_HPP
 
-# define THREADPOOLWORKER_HPP
+# define THREADWORKER_HPP
 
-# include "../Abstract/AThread.hpp"
-# include "../Abstract/IThreadTask.hpp"
-# include "../Abstract/IThreadTaskQueue.hpp"
+// C headers
+# include <pthread.h>
 
-//knows about threads, tasks and queues
+class IThreadTask;
+class TaskQueue;
 
-class ThreadPoolWorker : public AThread
+class ThreadWorker
 {
 	public:
-		ThreadPoolWorker(IThreadTaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
-		~ThreadPoolWorker();
+		ThreadWorker(TaskQueue& queue, pthread_mutex_t& statusLock, pthread_cond_t& exitSignal);
+		~ThreadWorker();
+
+		void	start();
+		void	join();
+		bool	joinable();
 
 		bool	exitedQueue();
 
-	protected:
 		void	run();
 		
 	private:
-		IThreadTaskQueue&		m_queue;
+
+		static void*   ThreadFunction(void* args);
+
+		enum EThreadState
+		{
+			EThread_Unitialized,
+			EThread_Initialized,
+			EThread_Joinable,
+			EThread_Joined
+		};
+
+		EThreadState	m_state;
+		pthread_t	   	m_thread;
+
+		TaskQueue&				m_queue;
 		IThreadTask*		 	m_curTask;
 		pthread_mutex_t&		m_statusLock;
 		pthread_cond_t&			m_exitSignal;
 		bool					m_exited;
 
 
-		ThreadPoolWorker(const ThreadPoolWorker& copy);
-		ThreadPoolWorker& operator=(const ThreadPoolWorker& assign);
+		ThreadWorker(const ThreadWorker& copy);
+		ThreadWorker& operator=(const ThreadWorker& assign);
 };
 
 

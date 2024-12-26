@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ThreadTask_NonMemb_Args_NoReturn.tpp               :+:      :+:    :+:   */
+/*   ThreadTask_Memb_Args_NoReturn.tpp                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 08:31:38 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/09/06 11:18:20 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/26 11:01:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef THREADTASK_NONMEMB_ARGS_NORETURN_TPP
+#ifndef THREADTASK_MEMB_ARGS_NORETURN_TPP
 
-# define THREADTASK_NONMEMB_ARGS_NORETURN_TPP
+# define THREADTASK_MEMB_ARGS_NORETURN_TPP
 
 # include <pthread.h>
 # include <iostream>
 # include <cstring>
 # include <cassert>
 
-# include "../Abstract/IThreadTask.hpp"
+# include "IThreadTask.hpp"
 # include <vector>
 
 
@@ -34,60 +34,63 @@ template <
 >
 class ThreadTask;
 
-
-template <typename Args>
-class ThreadTask<void (*)(Args)> : public IThreadTask
+template <
+	typename Class,
+	typename Args
+>
+class ThreadTask<void (Class::*)(Args)> : public IThreadTask
 {
-public:
-    ThreadTask(void (*function)(Args), Args arguments) :
-        m_function(function),
-        m_args(arguments)
-    {}
-    ~ThreadTask() {}
-    ThreadTask(const ThreadTask& copy) :
-        m_function(copy.m_function),
-        m_args(copy.m_args)
-    {}
-    ThreadTask& operator=(const ThreadTask& assign)
-    {
-        if (this == &assign)
-            return *this;
-        m_function = assign.m_function;
-        m_args = assign.m_args;
-        return *this;
-    }
+	public:
+		ThreadTask(Class& instance, void (Class::*function)(Args), Args arguments) :
+			m_instance(instance),
+			m_function(function),
+			m_args(arguments)
+		{};
+		~ThreadTask() {};
+		ThreadTask(const ThreadTask& copy) :
+			m_instance(copy.m_instance),
+			m_function(copy.m_function),
+			m_args(copy.m_args)
+		{};
+		ThreadTask& operator=(const ThreadTask& assign)
+		{
+			if (this == &assign)
+				return (*this);
+			*this = assign;
+			return (*this);
+		}
 
-    void execute() const
-    {
-        if (!m_function)
-            return;
-        (*m_function)(m_args);
-    }
+		void			execute() const
+		{
+			if (!m_function)
+				return ;
+			(m_instance.*m_function)(m_args);
+		};
+		IThreadTask*	clone() const
+		{
+			return (new ThreadTask(*this));
+		};
 
-    IThreadTask* clone() const
-    {
-        return new ThreadTask(*this);
-    }
-
-private:
-    void (*m_function)(Args);
-    Args m_args;
+	private:
+		Class&		  m_instance;
+		void			(Class::*m_function)(Args);
+		Args			m_args;
 };
 
 
-
-
-template <typename Arg1, typename Arg2>
-class ThreadTask<void (*)(Arg1, Arg2)> : public IThreadTask
+template <typename Class, typename Arg1, typename Arg2>
+class ThreadTask<void (Class::*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
-    ThreadTask(void (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2) :
+    ThreadTask(Class& instance, void (Class::*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2) :
+        m_instance(instance),
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
+        m_instance(copy.m_instance),
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2)
@@ -96,6 +99,7 @@ public:
     {
         if (this == &assign)
             return *this;
+        m_instance = assign.m_instance;
         m_function = assign.m_function;
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
@@ -106,7 +110,7 @@ public:
     {
         if (!m_function)
             return;
-        (*m_function)(m_arg1, m_arg2);
+        (m_instance.*m_function)(m_arg1, m_arg2);
     }
 
     IThreadTask* clone() const
@@ -115,18 +119,19 @@ public:
     }
 
 private:
-    void (*m_function)(Arg1, Arg2);
+    Class& m_instance;
+    void (Class::*m_function)(Arg1, Arg2);
     Arg1 m_arg1;
     Arg2 m_arg2;
 };
 
 
-
-template <typename Arg1, typename Arg2, typename Arg3>
-class ThreadTask<void (*)(Arg1, Arg2, Arg3)> : public IThreadTask
+template <typename Class, typename Arg1, typename Arg2, typename Arg3>
+class ThreadTask<void (Class::*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
-    ThreadTask(void (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3) :
+    ThreadTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3) :
+        m_instance(instance),
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
@@ -134,6 +139,7 @@ public:
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
+        m_instance(copy.m_instance),
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2),
@@ -143,6 +149,7 @@ public:
     {
         if (this == &assign)
             return *this;
+        m_instance = assign.m_instance;
         m_function = assign.m_function;
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
@@ -154,7 +161,7 @@ public:
     {
         if (!m_function)
             return;
-        (*m_function)(m_arg1, m_arg2, m_arg3);
+        (m_instance.*m_function)(m_arg1, m_arg2, m_arg3);
     }
 
     IThreadTask* clone() const
@@ -163,7 +170,8 @@ public:
     }
 
 private:
-    void (*m_function)(Arg1, Arg2, Arg3);
+    Class& m_instance;
+    void (Class::*m_function)(Arg1, Arg2, Arg3);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
@@ -171,11 +179,12 @@ private:
 
 
 
-template <typename Arg1, typename Arg2, typename Arg3, typename Arg4>
-class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
+template <typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
+class ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
-    ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) :
+    ThreadTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) :
+        m_instance(instance),
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
@@ -184,6 +193,7 @@ public:
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
+        m_instance(copy.m_instance),
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2),
@@ -194,6 +204,7 @@ public:
     {
         if (this == &assign)
             return *this;
+        m_instance = assign.m_instance;
         m_function = assign.m_function;
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
@@ -206,7 +217,7 @@ public:
     {
         if (!m_function)
             return;
-        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
+        (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
     }
 
     IThreadTask* clone() const
@@ -215,7 +226,8 @@ public:
     }
 
 private:
-    void (*m_function)(Arg1, Arg2, Arg3, Arg4);
+    Class& m_instance;
+    void (Class::*m_function)(Arg1, Arg2, Arg3, Arg4);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
@@ -224,11 +236,12 @@ private:
 
 
 
-template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
+template <typename Class, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
+class ThreadTask<void (Class::*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
 {
 public:
-    ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5) :
+    ThreadTask(Class& instance, void (Class::*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5) :
+        m_instance(instance),
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
@@ -238,6 +251,7 @@ public:
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
+        m_instance(copy.m_instance),
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2),
@@ -249,6 +263,7 @@ public:
     {
         if (this == &assign)
             return *this;
+        m_instance = assign.m_instance;
         m_function = assign.m_function;
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
@@ -262,7 +277,7 @@ public:
     {
         if (!m_function)
             return;
-        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
+        (m_instance.*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
     }
 
     IThreadTask* clone() const
@@ -271,14 +286,14 @@ public:
     }
 
 private:
-    void (*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
+    Class& m_instance;
+    void (Class::*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
     Arg4 m_arg4;
     Arg5 m_arg5;
 };
-
 
 
 #endif

@@ -14,8 +14,6 @@
 
 # define ITHREADTASK_HPP
 
-// knows no interfaces, the most flexible member
-
 class IThreadTask
 {
 	public:

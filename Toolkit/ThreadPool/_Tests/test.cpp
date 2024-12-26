@@ -11,11 +11,21 @@
 /* ************************************************************************** */
 
 # include <iostream>
-# include "../include/Concrete/ThreadTask.tpp"
-# include "../include/Concrete/ThreadPool.hpp"
+# include "../ThreadPool/ThreadPool.hpp"
 //# include "_legacy/SharedTask.hpp"
 //# include "_legacy/IndependentTask.hpp"
 # include <unistd.h>
+# include <cstring>
+# include <sstream>
+# include <cstdlib>
+
+template <typename T>
+std::string to_string(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
 
 /*
 	(cd ../.. && ./gitcommit.sh)
@@ -59,13 +69,13 @@ long fib(unsigned int n)
 }
 
 long fibprint(unsigned long n) {
-	lockWrite(std::to_string(fib(n)));
+	lockWrite(to_string(fib(n)));
 	return (fib(n));
 }
 
 void	voidfibprint(unsigned long n)
 {
-	lockWrite("void " + std::to_string(fib(n)));
+	lockWrite("void " + to_string(fib(n)));
 }
 
 void	printf(const std::string& str)
@@ -91,7 +101,7 @@ unsigned int* allSameThreadUnsafe(unsigned int number)
 // Non-const methods
 int ArgYesReturnYes(unsigned int number)
 {
-	lockWrite("NON-MEMB Arg Yes Return Yes " + std::to_string(number));
+	lockWrite("NON-MEMB Arg Yes Return Yes " + to_string(number));
 	return number;
 }
 
@@ -103,7 +113,7 @@ int ArgNoReturnYes(void)
 
 void ArgYesReturnNo(int number)
 {
-	lockWrite("NON-MEMB Arg Yes, Return No " + std::to_string(number));
+	lockWrite("NON-MEMB Arg Yes, Return No " + to_string(number));
 }
 
 void ArgNoReturnNo(void)
@@ -114,7 +124,7 @@ void ArgNoReturnNo(void)
 int TwoArgReturnYes(unsigned int number, char c)
 {
 	(void)c;
-	lockWrite("NON-MEMB TWO ARGS Return Yes " + std::to_string(number));
+	lockWrite("NON-MEMB TWO ARGS Return Yes " + to_string(number));
 	return number;
 }
 
@@ -122,7 +132,7 @@ int ThreeArgReturnYes(unsigned int number, int hey, char c)
 {
 	(void)hey;
 	(void)c;
-	lockWrite("NON-MEMB THREE ARGS Return Yes " + std::to_string(number));
+	lockWrite("NON-MEMB THREE ARGS Return Yes " + to_string(number));
 	return number;
 }
 
@@ -133,7 +143,7 @@ void ThreeArgReturnNo(unsigned int number, int hey, char c)
 
 int FourArgReturnYes(unsigned int number, int hey, char c, float f)
 { (void)hey; (void)c; (void)f;
-	lockWrite("NON-MEMB FOUR ARGS Return Yes " + std::to_string(number));
+	lockWrite("NON-MEMB FOUR ARGS Return Yes " + to_string(number));
 	return number;
 }
 
@@ -144,7 +154,7 @@ void FourArgReturnNo(unsigned int number, int hey, char c, float f)
 
 int FiveArgReturnYes(unsigned int number, int hey, char c, float f, double d)
 { (void)hey; (void)c; (void)f; (void)d;
-	lockWrite("NON-MEMB FIVE ARGS Return Yes " + std::to_string(number));
+	lockWrite("NON-MEMB FIVE ARGS Return Yes " + to_string(number));
 	return number;
 }
 
@@ -172,14 +182,14 @@ public:
 
 	int derived(unsigned int number)
 	{
-		lockWrite("Derived Method " + std::to_string(number));
+		lockWrite("Derived Method " + to_string(number));
 		return (number);
 	}
 
     // Non-const methods
     int ArgYesReturnYes(unsigned int number)
     {
-        lockWrite("Arg Yes Return Yes " + std::to_string(number));
+        lockWrite("Arg Yes Return Yes " + to_string(number));
         return number;
     }
 
@@ -191,7 +201,7 @@ public:
 
     void ArgYesReturnNo(int number)
     {
-        lockWrite("Arg Yes, Return No " + std::to_string(number));
+        lockWrite("Arg Yes, Return No " + to_string(number));
     }
 
     void ArgNoReturnNo(void)
@@ -202,7 +212,7 @@ public:
     int TwoArgReturnYes(unsigned int number, char c)
     {
         (void)c;
-        lockWrite("TWO ARGS Return Yes " + std::to_string(number));
+        lockWrite("TWO ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -210,7 +220,7 @@ public:
     {
         (void)hey;
         (void)c;
-        lockWrite("THREE ARGS Return Yes " + std::to_string(number));
+        lockWrite("THREE ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -221,7 +231,7 @@ public:
 
     int FourArgReturnYes(unsigned int number, int hey, char c, float f)
     { (void)hey; (void)c; (void)f;
-        lockWrite("FOUR ARGS Return Yes " + std::to_string(number));
+        lockWrite("FOUR ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -232,7 +242,7 @@ public:
 
     int FiveArgReturnYes(unsigned int number, int hey, char c, float f, double d)
     { (void)hey; (void)c; (void)f; (void)d;
-        lockWrite("FIVE ARGS Return Yes " + std::to_string(number));
+        lockWrite("FIVE ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -244,7 +254,7 @@ public:
     // Const methods
     int ArgYesReturnYes_Const(unsigned int number) const
     {
-        lockWrite("Const: Arg Yes Return Yes " + std::to_string(number));
+        lockWrite("Const: Arg Yes Return Yes " + to_string(number));
         return number;
     }
 
@@ -256,7 +266,7 @@ public:
 
     void ArgYesReturnNo_Const(int number) const
     {
-        lockWrite("Const: Arg Yes, Return No " + std::to_string(number));
+        lockWrite("Const: Arg Yes, Return No " + to_string(number));
     }
 
     void ArgNoReturnNo_Const(void) const
@@ -267,7 +277,7 @@ public:
     int TwoArgReturnYes_Const(unsigned int number, char c) const
     {
         (void)c;
-        lockWrite("Const: TWO ARGS Return Yes " + std::to_string(number));
+        lockWrite("Const: TWO ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -275,7 +285,7 @@ public:
     {
         (void)hey;
         (void)c;
-        lockWrite("Const: THREE ARGS Return Yes " + std::to_string(number));
+        lockWrite("Const: THREE ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -286,7 +296,7 @@ public:
 
     int FourArgReturnYes_Const(unsigned int number, int hey, char c, float f) const
     { (void)hey; (void)c; (void)f;
-        lockWrite("Const: FOUR ARGS Return Yes " + std::to_string(number));
+        lockWrite("Const: FOUR ARGS Return Yes " + to_string(number));
         return number;
     }
 
@@ -297,7 +307,7 @@ public:
 
     int FiveArgReturnYes_Const(unsigned int number, int hey, char c, float f, double d) const
     { (void)hey; (void)c; (void)f; (void)d;
-        lockWrite("Const: FIVE ARGS Return Yes " + std::to_string(number));
+        lockWrite("Const: FIVE ARGS Return Yes " + to_string(number));
         return number;
     }
 

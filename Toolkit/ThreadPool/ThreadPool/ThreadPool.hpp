@@ -14,22 +14,20 @@
 
 # define THREADPOOL_HPP
 
+// Project headers
+# include "../ThreadTask/ThreadTask.tpp"
+# include "../TaskQueue/TaskQueue.hpp"
+
+// C headers
+# include <pthread.h>
+
+// C++ headers
 # include <vector>
 
-# include "../Abstract/IThreadPool.hpp"
-# include "../Abstract/IThreadTask.hpp"
+class IThreadTask;
+class ThreadWorker;
 
-# include "../Concrete/ThreadTask.tpp"
-# include "../Concrete/ThreadTaskQueue.hpp"
-# include "../Concrete/ThreadPoolWorker.hpp"
-
-// must know about threads, tasks, and queues
-// can handle any task that complies with the IThreadTask interface
-// must take a predefined queue and threadworker, both complying 
-// with IThreadTaskQueue and IThreadPoolWorker interfaces, respectively
-// queue and thread are tightely linked
-
-class ThreadPool : public IThreadPool
+class ThreadPool
 {
 	public:
 		ThreadPool(unsigned int InitialNumberOfThreads);
@@ -48,8 +46,9 @@ class ThreadPool : public IThreadPool
 		int	 threadCount() const;
 
 	private:
-		ThreadTaskQueue						m_taskQueue;
-		std::vector<ThreadPoolWorker *>		m_threads;
+
+		TaskQueue							m_taskQueue;
+		std::vector<ThreadWorker *>			m_threads;
 		pthread_mutex_t						m_statusLock;
 		pthread_cond_t						m_exitSignal;
 

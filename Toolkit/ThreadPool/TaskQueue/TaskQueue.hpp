@@ -19,15 +19,13 @@
 # include <queue>
 # include <list>
 
-# include "../Abstract/IThreadTaskQueue.hpp"
+# include "../ThreadTask/IThreadTask.hpp"
 
-
-
-class ThreadTaskQueue : public IThreadTaskQueue
+class TaskQueue
 {
 	public:
-		ThreadTaskQueue();
-		~ThreadTaskQueue();
+		TaskQueue();
+		~TaskQueue();
 
 		void				addTask(const IThreadTask* newTask);
 		IThreadTask*		getTask();
@@ -46,8 +44,8 @@ class ThreadTaskQueue : public IThreadTaskQueue
 		pthread_cond_t									m_newTaskSignal;								   
 		pthread_cond_t									m_allTasksDone;										 
 
-		ThreadTaskQueue(const ThreadTaskQueue& copy);
-		ThreadTaskQueue& operator=(const ThreadTaskQueue& assign);
+		TaskQueue(const TaskQueue& copy);
+		TaskQueue& operator=(const TaskQueue& assign);
 };
 
 

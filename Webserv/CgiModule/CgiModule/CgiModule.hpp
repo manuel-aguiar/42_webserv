@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 18:10:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:13:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class CgiModule
 		size_t																		m_backlog;
 		size_t																		m_busyWorkerCount;
 
-		HeapArray<InternalCgiWorker>													m_allWorkers;
+		HeapArray<InternalCgiWorker>												m_allWorkers;
 		HeapArray<InternalCgiRequestData>											m_allRequestData;
 		
 		

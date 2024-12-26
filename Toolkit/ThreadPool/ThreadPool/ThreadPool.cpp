@@ -1,16 +1,22 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   ThreadPool.cpp									 :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/08/27 09:30:00 by mmaria-d		  #+#	#+#			 */
-/*   Updated: 2024/08/30 09:06:43 by mmaria-d		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ThreadPool.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/26 11:15:59 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/26 11:26:54 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/Concrete/ThreadPool.hpp"
+// Project headers
+# include "ThreadPool.hpp"
+# include "../ThreadWorker/ThreadWorker.hpp"
+# include "../TaskQueue/TaskQueue.hpp"
+
+// C headers
+# include <pthread.h>
 
 ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 	m_threads(InitialNumberOfThreads)
@@ -21,7 +27,7 @@ ThreadPool::ThreadPool(unsigned int InitialNumberOfThreads) :
 	pthread_mutex_lock(&m_statusLock);
 	for (unsigned int i = 0; i < InitialNumberOfThreads; ++i)
 	{
-		m_threads[i] = new ThreadPoolWorker(m_taskQueue, m_statusLock, m_exitSignal);
+		m_threads[i] = new ThreadWorker(m_taskQueue, m_statusLock, m_exitSignal);
 		m_threads[i]->start();
 	}
 	pthread_mutex_unlock(&m_statusLock);
@@ -64,9 +70,9 @@ void	ThreadPool::destroy(bool waitForCompletion)
 
 void	ThreadPool::addThread()
 {
-	ThreadPoolWorker*   newThread;
+	ThreadWorker*   newThread;
 
-	newThread = new ThreadPoolWorker(m_taskQueue, m_statusLock, m_exitSignal);
+	newThread = new ThreadWorker(m_taskQueue, m_statusLock, m_exitSignal);
 	m_threads.push_back(newThread);
 	newThread->start();
 }
@@ -77,7 +83,7 @@ void	ThreadPool::removeThread()
 	m_taskQueue.addTask(NULL);
 	pthread_cond_wait(&m_exitSignal, &m_statusLock);
 
-	std::vector<ThreadPoolWorker*>::iterator curThread;	
+	std::vector<ThreadWorker*>::iterator curThread;	
 	for (curThread = m_threads.begin(); curThread != m_threads.end(); ++curThread)
 	{
 		if ((*curThread)->exitedQueue())

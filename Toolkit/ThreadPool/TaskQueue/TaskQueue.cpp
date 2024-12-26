@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*																			*/
 /*														:::	  ::::::::   */
-/*   ThreadTaskQueue.cpp								:+:	  :+:	:+:   */
+/*   TaskQueue.cpp								:+:	  :+:	:+:   */
 /*													+:+ +:+		 +:+	 */
 /*   By: manuel <manuel@student.42.fr>			  +#+  +:+	   +#+		*/
 /*												+#+#+#+#+#+   +#+		   */
@@ -10,9 +10,9 @@
 /*																			*/
 /* ************************************************************************** */
 
-#include "../../include/Concrete/ThreadTaskQueue.hpp"
+#include "TaskQueue.hpp"
 
-ThreadTaskQueue::ThreadTaskQueue() :
+TaskQueue::TaskQueue() :
 	m_tasksExecuting(0)
 {
 	pthread_mutex_init(&m_taskAccess, NULL);
@@ -20,24 +20,24 @@ ThreadTaskQueue::ThreadTaskQueue() :
 	pthread_cond_init(&m_allTasksDone, NULL);
 }
 
-ThreadTaskQueue::~ThreadTaskQueue()
+TaskQueue::~TaskQueue()
 {
 	pthread_mutex_destroy(&m_taskAccess);
 	pthread_cond_destroy(&m_newTaskSignal);
 	pthread_cond_destroy(&m_allTasksDone);
 }
 
-ThreadTaskQueue::ThreadTaskQueue(const ThreadTaskQueue& copy)  {(void)copy;}
-ThreadTaskQueue& ThreadTaskQueue::operator=(const ThreadTaskQueue& assign)  {(void)assign; return (*this);}
+TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
+TaskQueue& TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
 
-IThreadTask*	ThreadTaskQueue::cloneTask(const IThreadTask* newTask)
+IThreadTask*	TaskQueue::cloneTask(const IThreadTask* newTask)
 {
 	if (!newTask)
 		return (NULL);
 	return (newTask->clone());
 }
 
-void			ThreadTaskQueue::finishTask(IThreadTask* delTask)
+void			TaskQueue::finishTask(IThreadTask* delTask)
 {
 	if (delTask)
 		delete (delTask);
@@ -48,7 +48,7 @@ void			ThreadTaskQueue::finishTask(IThreadTask* delTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	ThreadTaskQueue::addTask(const IThreadTask* newTask)
+void	TaskQueue::addTask(const IThreadTask* newTask)
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.push_back(cloneTask(newTask));
@@ -56,7 +56,7 @@ void	ThreadTaskQueue::addTask(const IThreadTask* newTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-IThreadTask*	 ThreadTaskQueue::getTask()
+IThreadTask*	 TaskQueue::getTask()
 {
 	IThreadTask *toExecute;
 
@@ -70,14 +70,14 @@ IThreadTask*	 ThreadTaskQueue::getTask()
 	return (toExecute);
 }
 
-void	ThreadTaskQueue::clear()
+void	TaskQueue::clear()
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.clear();
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	ThreadTaskQueue::waitForCompletion()
+void	TaskQueue::waitForCompletion()
 {   
 	pthread_mutex_lock(&m_taskAccess);
 	while (!m_tasks.empty() || m_tasksExecuting)
@@ -85,7 +85,7 @@ void	ThreadTaskQueue::waitForCompletion()
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-int	 ThreadTaskQueue::taskCount()
+int	 TaskQueue::taskCount()
 {
 	int result;
 	

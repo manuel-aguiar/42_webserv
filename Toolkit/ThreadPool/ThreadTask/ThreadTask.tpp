@@ -21,7 +21,7 @@
 # include <cstring>
 # include <cassert>
 
-# include "../Abstract/IThreadTask.hpp"
+# include "IThreadTask.hpp"
 # include <vector>
 
 

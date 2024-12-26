@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ThreadTask_NonMemb_Args_Return.tpp                 :+:      :+:    :+:   */
+/*   ThreadTask_NonMemb_Args_NoReturn.tpp               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:03:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 08:31:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:01:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef THREADTASK_NONMEMB_ARGS_RETURN_TPP
+#ifndef THREADTASK_NONMEMB_ARGS_NORETURN_TPP
 
-# define THREADTASK_NONMEMB_ARGS_RETURN_TPP
+# define THREADTASK_NONMEMB_ARGS_NORETURN_TPP
 
 # include <pthread.h>
 # include <iostream>
 # include <cstring>
 # include <cassert>
 
-# include "../Abstract/IThreadTask.hpp"
+# include "IThreadTask.hpp"
 # include <vector>
 
 
@@ -34,20 +34,19 @@ template <
 >
 class ThreadTask;
 
-template <typename Args, typename Return>
-class ThreadTask<Return (*)(Args)> : public IThreadTask
+
+template <typename Args>
+class ThreadTask<void (*)(Args)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Args), Args arguments, Return* placeReturn = NULL) :
+    ThreadTask(void (*function)(Args), Args arguments) :
         m_function(function),
-        m_args(arguments),
-        m_placeReturn(placeReturn)
+        m_args(arguments)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
         m_function(copy.m_function),
-        m_args(copy.m_args),
-        m_placeReturn(copy.m_placeReturn)
+        m_args(copy.m_args)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
@@ -55,7 +54,6 @@ public:
             return *this;
         m_function = assign.m_function;
         m_args = assign.m_args;
-        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
@@ -63,10 +61,7 @@ public:
     {
         if (!m_function)
             return;
-        if (m_placeReturn)
-            *m_placeReturn = (*m_function)(m_args);
-        else
-            (*m_function)(m_args);
+        (*m_function)(m_args);
     }
 
     IThreadTask* clone() const
@@ -75,30 +70,27 @@ public:
     }
 
 private:
-    Return (*m_function)(Args);
+    void (*m_function)(Args);
     Args m_args;
-    Return* m_placeReturn;
 };
 
 
 
 
-template <typename Arg1, typename Arg2, typename Return>
-class ThreadTask<Return (*)(Arg1, Arg2)> : public IThreadTask
+template <typename Arg1, typename Arg2>
+class ThreadTask<void (*)(Arg1, Arg2)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2, Return* placeReturn = NULL) :
+    ThreadTask(void (*function)(Arg1, Arg2), Arg1 arg1, Arg2 arg2) :
         m_function(function),
         m_arg1(arg1),
-        m_arg2(arg2),
-        m_placeReturn(placeReturn)
+        m_arg2(arg2)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
-        m_arg2(copy.m_arg2),
-        m_placeReturn(copy.m_placeReturn)
+        m_arg2(copy.m_arg2)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
@@ -107,7 +99,6 @@ public:
         m_function = assign.m_function;
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
-        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
@@ -115,10 +106,7 @@ public:
     {
         if (!m_function)
             return;
-        if (m_placeReturn)
-            *m_placeReturn = (*m_function)(m_arg1, m_arg2);
-        else
-            (*m_function)(m_arg1, m_arg2);
+        (*m_function)(m_arg1, m_arg2);
     }
 
     IThreadTask* clone() const
@@ -127,35 +115,29 @@ public:
     }
 
 private:
-    Return (*m_function)(Arg1, Arg2);
+    void (*m_function)(Arg1, Arg2);
     Arg1 m_arg1;
     Arg2 m_arg2;
-    Return* m_placeReturn;
 };
 
 
 
-
-
-
-template <typename Arg1, typename Arg2, typename Arg3, typename Return>
-class ThreadTask<Return (*)(Arg1, Arg2, Arg3)> : public IThreadTask
+template <typename Arg1, typename Arg2, typename Arg3>
+class ThreadTask<void (*)(Arg1, Arg2, Arg3)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3, Return* placeReturn = NULL) :
+    ThreadTask(void (*function)(Arg1, Arg2, Arg3), Arg1 arg1, Arg2 arg2, Arg3 arg3) :
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
-        m_arg3(arg3),
-        m_placeReturn(placeReturn)
+        m_arg3(arg3)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
         m_function(copy.m_function),
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2),
-        m_arg3(copy.m_arg3),
-        m_placeReturn(copy.m_placeReturn)
+        m_arg3(copy.m_arg3)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
@@ -165,7 +147,6 @@ public:
         m_arg1 = assign.m_arg1;
         m_arg2 = assign.m_arg2;
         m_arg3 = assign.m_arg3;
-        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
@@ -173,10 +154,7 @@ public:
     {
         if (!m_function)
             return;
-        if (m_placeReturn)
-            *m_placeReturn = (*m_function)(m_arg1, m_arg2, m_arg3);
-        else
-            (*m_function)(m_arg1, m_arg2, m_arg3);
+        (*m_function)(m_arg1, m_arg2, m_arg3);
     }
 
     IThreadTask* clone() const
@@ -185,25 +163,24 @@ public:
     }
 
 private:
-    Return (*m_function)(Arg1, Arg2, Arg3);
+    void (*m_function)(Arg1, Arg2, Arg3);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
-    Return* m_placeReturn;
 };
 
 
-template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Return>
-class ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
+
+template <typename Arg1, typename Arg2, typename Arg3, typename Arg4>
+class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Return* placeReturn = NULL) :
+    ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4) :
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
         m_arg3(arg3),
-        m_arg4(arg4),
-        m_placeReturn(placeReturn)
+        m_arg4(arg4)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
@@ -211,8 +188,7 @@ public:
         m_arg1(copy.m_arg1),
         m_arg2(copy.m_arg2),
         m_arg3(copy.m_arg3),
-        m_arg4(copy.m_arg4),
-        m_placeReturn(copy.m_placeReturn)
+        m_arg4(copy.m_arg4)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
@@ -223,7 +199,6 @@ public:
         m_arg2 = assign.m_arg2;
         m_arg3 = assign.m_arg3;
         m_arg4 = assign.m_arg4;
-        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
@@ -231,10 +206,7 @@ public:
     {
         if (!m_function)
             return;
-        if (m_placeReturn)
-            *m_placeReturn = (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
-        else
-            (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
+        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4);
     }
 
     IThreadTask* clone() const
@@ -243,26 +215,26 @@ public:
     }
 
 private:
-    Return (*m_function)(Arg1, Arg2, Arg3, Arg4);
+    void (*m_function)(Arg1, Arg2, Arg3, Arg4);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
     Arg4 m_arg4;
-    Return* m_placeReturn;
 };
 
-template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Return>
-class ThreadTask<Return (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
+
+
+template <typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
+class ThreadTask<void (*)(Arg1, Arg2, Arg3, Arg4, Arg5)> : public IThreadTask
 {
 public:
-    ThreadTask(Return (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5, Return* placeReturn = NULL) :
+    ThreadTask(void (*function)(Arg1, Arg2, Arg3, Arg4, Arg5), Arg1 arg1, Arg2 arg2, Arg3 arg3, Arg4 arg4, Arg5 arg5) :
         m_function(function),
         m_arg1(arg1),
         m_arg2(arg2),
         m_arg3(arg3),
         m_arg4(arg4),
-        m_arg5(arg5),
-        m_placeReturn(placeReturn)
+        m_arg5(arg5)
     {}
     ~ThreadTask() {}
     ThreadTask(const ThreadTask& copy) :
@@ -271,8 +243,7 @@ public:
         m_arg2(copy.m_arg2),
         m_arg3(copy.m_arg3),
         m_arg4(copy.m_arg4),
-        m_arg5(copy.m_arg5),
-        m_placeReturn(copy.m_placeReturn)
+        m_arg5(copy.m_arg5)
     {}
     ThreadTask& operator=(const ThreadTask& assign)
     {
@@ -284,7 +255,6 @@ public:
         m_arg3 = assign.m_arg3;
         m_arg4 = assign.m_arg4;
         m_arg5 = assign.m_arg5;
-        m_placeReturn = assign.m_placeReturn;
         return *this;
     }
 
@@ -292,10 +262,7 @@ public:
     {
         if (!m_function)
             return;
-        if (m_placeReturn)
-            *m_placeReturn = (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
-        else
-            (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
+        (*m_function)(m_arg1, m_arg2, m_arg3, m_arg4, m_arg5);
     }
 
     IThreadTask* clone() const
@@ -304,13 +271,14 @@ public:
     }
 
 private:
-    Return (*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
+    void (*m_function)(Arg1, Arg2, Arg3, Arg4, Arg5);
     Arg1 m_arg1;
     Arg2 m_arg2;
     Arg3 m_arg3;
     Arg4 m_arg4;
     Arg5 m_arg5;
-    Return* m_placeReturn;
 };
+
+
 
 #endif
