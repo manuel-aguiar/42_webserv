@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 22:40:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 00:01:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:09:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 # include "../../_Tests/ToolkitDerived.hpp"
 # include "../../Arrays/StackArray/StackArray.hpp"
 # include "../../_Tests/test.h"
-
-# include "../../SmartPointers/SharedPtr.hpp"
 
 static long fibGood(unsigned int n)
 {

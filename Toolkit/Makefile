@@ -6,12 +6,12 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/23 10:33:17 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 00:02:55 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 15:03:58 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
-SUBDIRS = $(shell find . -type f -name "Makefile" ! -path "./Makefile" -exec dirname {} \;)
+SUBDIRS = $(shell find . -type f -name "Makefile" -path "*/_Tests/*" -exec dirname {} \;)
 
 # Default target
 all:
@@ -20,9 +20,9 @@ all:
 	done
 	@echo "All compiled"
 # Run tests in all subdirectories containing a Makefile
-run:
+test:
 	@for dir in $(SUBDIRS); do \
-		$(MAKE) -C $$dir run --quiet || exit 1; \
+		$(MAKE) -C $$dir test --quiet || exit 1; \
 	done
 
 # Clean all subdirectories

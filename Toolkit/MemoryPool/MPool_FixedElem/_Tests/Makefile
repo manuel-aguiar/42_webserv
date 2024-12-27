@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 13:31:27 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 15:04:23 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 
 all: $(NAME)
 
-run: $(NAME)
+test: $(NAME)
 	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
 
 clean:

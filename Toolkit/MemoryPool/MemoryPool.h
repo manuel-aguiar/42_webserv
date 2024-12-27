@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 12:20:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 13:08:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:06:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@
 //# include "Alloc/SharedMPool_Alloc.hpp"
 //# include "Dealloc/SharedMPool_Dealloc.hpp"
 //# include "AlignDealloc/SharedMPool_AlignDealloc.hpp"
-//# include "ContainerInPool/ContainerInPool.hpp"
+# include "ContainerInPool/ContainerInPool.hpp"
 
 #endif
