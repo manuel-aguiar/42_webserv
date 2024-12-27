@@ -34,7 +34,7 @@ std::string to_string(const T& value)
     return oss.str();
 }
 
-long fibGood(unsigned int n)
+static long fibGood(unsigned int n)
 {
 	long a;
 	long b;
@@ -182,6 +182,9 @@ int TestPart2(int testNumber)
 	return (testNumber);
 }
 
+extern int TestPart3(int testNumber);
+
+
 int main(void)
 {
 
@@ -191,6 +194,7 @@ int main(void)
 	
     testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
+	testNumber = TestPart3(testNumber);
 
 	std::cout << "*******************************************\n" << std::endl;
 	
