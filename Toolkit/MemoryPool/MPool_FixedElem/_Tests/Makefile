@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 12:36:36 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 13:31:27 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,6 @@ LIB_MEMORYPOOL 			=		-L$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
 # Sources
 SRCS					=		$(SRC_PATH)/MemoryPool/MPool_FixedElem/_Tests/main.cpp	\
 								$(SRC_PATH)/MemoryPool/MPool_FixedElem/_Tests/test1.cpp	\
-								$(SRC_PATH)/MemoryPool/MPool_FixedElem/_Tests/test2.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

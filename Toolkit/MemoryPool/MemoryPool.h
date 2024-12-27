@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 12:20:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 12:33:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 13:08:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "Nginx_MemoryPool/Nginx_MPool_FixedElem/Nginx_PoolAllocator_FixedElem.hpp"
 # include "Nginx_MemoryPool/Nginx_PoolAllocator.hpp"
 # include "MPool_FixedElem/MPool_FixedElem.hpp"
+# include "MPool_FixedElem/PoolAllocator_FixedElem.hpp"
 
 //Work in Progress
 
