@@ -5,207 +5,85 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 15:08:32 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/27 16:49:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../MemoryPool.h"
-#include "../../../../List/List.hpp"
-#include <list>
-#include <iostream>
+// Project headers
+
+# include "../Nginx_MPool_FixedElem.hpp"
+# include "../Nginx_PoolAllocator_FixedElem.hpp"
+
+# include "../../Nginx_MemoryPool.hpp"
+# include "../../Nginx_PoolAllocator.hpp"
+# include "../../_Tests/NginxAllocCounters.tpp"
+# include "../../../../_Tests/test.h"
+
+// C++ headers
+# include <climits>
+# include <cstddef>
+# include <exception>
+# include <stdexcept>
+# include <iostream>
+# include <cassert>
+# include <cstring>
+# include <list>
+
+
 
 int TestPart1(int testNumber)
 {
-	(void)testNumber;
-	/*
-	std::cout << "MY list with standard allcoator\n";
-	List<int>	list0;
-
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
-	list0.push_back(2);
+	std::cout << "TEST " << testNumber++ << ": ";
 	
-	for (List<int>::iterator iter = list0.begin(); iter != list0.end(); ++iter)
-		std::cout << "alloc address: " << &(*iter) << '\n';
-	*/
-	std::cout << "\nMY list with custom allcoator\n";
-	Nginx_MemoryPool *pool = Nginx_MemoryPool::create(4096, 1);
-	List<int, Nginx_MPool_FixedElem<int> > list1(Nginx_MPool_FixedElem<int>(pool, 20));
-
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-	list1.push_back(2);
-
-
-	for (List<int, Nginx_MPool_FixedElem<int> >::iterator iter = list1.begin(); iter != list1.end(); ++iter)
-		std::cout << "alloc address: " << &(*iter) << '\n';
-
-	list1.clear();
-	pool->destroy();
-/*
-	std::cout << "\nstd::list list with standard allcoator\n";
-	std::list<int>	list2;
-
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-	list2.push_back(2);
-
-	for (std::list<int>::iterator iter = list2.begin(); iter != list2.end(); ++iter)
-		std::cout << "alloc address: " << &(*iter) << '\n';
-
-
-	std::cout << "\nstd::list list with custom allcoator\n";
-	std::list<int, Nginx_MPool_FixedElem<int> > list3(Nginx_MPool_FixedElem<int>(pool, 20));
-
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-	list3.push_back(2);
-
-	for (std::list<int>::iterator iter = list3.begin(); iter != list3.end(); ++iter)
-		std::cout << "alloc address: " << &(*iter) << '\n';
-
-	list3.clear();
-	pool->destroy();
-
-
-
-	std::list<int>	list01;
-
-	list01.push_back(2);
-	list01.push_back(2);
-	list01.push_back(2);
-	list01.push_back(2);
-
-	for (std::list<int>::iterator iter = list01.begin(); iter != list01.end(); ++iter)
+	try
 	{
-		std::cout << &(*iter) << "\n";
-		std::cout << sizeof(std::list<int>::value_type) << "\n";
+
+		size_t totalAllocs = 0;
+		size_t totalBytes = 0;
+
+		size_t expectedAllocCount = 0;
+		size_t expectedBytes = 0;
+
+		const size_t loopTimes = 100;
+		const size_t poolsize = 100;
+
+		Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096, 1);
+
+		Nginx_MPool_FixedElem<int> alloc(pool, poolsize);
+
+		std::list<int, Nginx_MPool_FixedElem<int> > list1(alloc);
+
+		const size_t nodeSize = (sizeof(int) + 4 + 8 + 8); // int + 4 padding + 8 + 8 byte ptrs next and prev
+
+		for (size_t i = 0; i < loopTimes; i++)
+			list1.push_back(i);
+
+		list1.clear();
+		
+		expectedAllocCount = 1; // just for the block asked for in the FixedElem, from the nginx pool
+		expectedBytes = poolsize * nodeSize; // total nodes asked for at once by the FixedElem
+
+		pool->destroy();
+
+		if (totalBytes != expectedBytes)
+		{
+			std::cout << "expected bytes: " << expectedBytes << " got: " << totalBytes << std::endl;
+			throw std::runtime_error("total bytes dont match");
+		}
+		if (totalAllocs != expectedAllocCount)
+		{
+			std::cout << "expected allocs: " << expectedAllocCount << " got: " << totalAllocs << std::endl;
+			throw std::runtime_error("alloc count should be 1");
+		}
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
 
-	Nginx_MemoryPool *pool = Nginx_MemoryPool::create(4096, 1);
-
-	std::list<int, Nginx_MPool_FixedElem<int> > list1(Nginx_MPool_FixedElem<int>(pool, 20));
-
-    list1.push_back(1);
-
-	std::cout << "\nmylist\n\n";
-	List<int, Nginx_MPool_FixedElem<int> > list2(Nginx_MPool_FixedElem<int>(pool, 20));
-
-	std::cout << sizeof(std::list<int>) << "   " << sizeof(list1) << "   " << sizeof(list2) << std::endl;
-
-    list2.push_back(1);
-
-    list1.push_back(2);
-    list1.push_back(3);
-    list1.push_back(1);
-    list1.push_back(2);
-    list1.push_back(3);
-    list1.push_back(1);
-    list1.push_back(2);
-    list1.push_back(3);   
-    list1.push_back(3); 
-    list1.pop_front();
-    list1.pop_front();
-    list1.pop_front();
-    list1.pop_front();
-    list1.push_back(3); 
-    list1.pop_front();
-    list1.push_back(3);   
-    list1.push_back(3);
-    list1.pop_front();
-    list1.pop_front();
-    list1.pop_front();
-    list1.push_back(3);   
-    list1.push_back(3);
-
-	list1.clear();
-	list2.clear();
-
-	pool->destroy();
-*/
-
-
-	return (0);
+	return (testNumber);	
 }
-
-
-int TestPart2(int testNumber)
-{
-	(void)testNumber;
-
-	Nginx_MemoryPool* pool = Nginx_MemoryPool::create(4096, 1);
-
-
-	Nginx_PoolAllocator<std::string> alloc(pool);
-
-	DynArray<std::string, Nginx_PoolAllocator<std::string> > vec((Nginx_PoolAllocator<std::string>(pool)));
-
-	vec.reserve(1000);
-
-/*	//Nginx_MPool_FixedElem<std::string> alloc2(pool, 123);
-
-	std::cout<< "pool alive\n";
-
-	//std::list<std::string, MPool_FixedElem<std::string> > listed(alloc2);
-	//listed.push_back("cenas");
-
-	//list.resize(100);
-	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elems(alloc2);
-
-	DynArray<std::string, Nginx_PoolAllocator<std::string> > elems(12, alloc);
-	DynArray<std::string, Nginx_PoolAllocator<std::string> > elems2(12, alloc);
-
-	elems.clear();
-	elems2.clear();
-	//elems.push_back("tretas");
-*/
-
-	std::cout << "list time" << "\n";
-
-/*	*/
-	//std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3(alloc2);
-
-	// extra set of parenthesis to avoid dumb deductions...........................
-	std::list<std::string, Nginx_MPool_FixedElem<std::string> > elem3((Nginx_MPool_FixedElem<std::string>(pool, 20)));
-	
-	elem3.push_back("cenas");
-
-	std::cout << "list ready\n";
-
-
-	
-	elem3.clear();
-
-	pool->destroy();
-
-	return (0);
-}
-
-
-/*
-
-clear && rm -rf vgcore* && c++ -Wall -Wextra -Werror *.cpp ../Nginx_MemoryPool.cpp ../Nginx_MPool_Block.cpp -g --std=c++98 && valgrind ./a.out
-*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MemoryPool.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 15:38:39 by rphuyal          ###   ########.fr       */
+/*   Updated: 2024/12/27 16:48:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,11 @@ void*   Nginx_MemoryPool::allocate(size_t size)
 
 void*   Nginx_MemoryPool::allocate(size_t size, size_t alignment)
 {
+    std::cout << "alloc size: " << size << std::endl;
     assert(m_active != NULL);
 
     /*std::cout << "allocating: " << size << "\n";*/
-
+    
     t_bigBlock*                 newBig;
 
     if (size > m_blockSize  - sizeof(*m_active))  //for sure doesn't fit

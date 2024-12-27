@@ -6,12 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/21 01:31:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:43:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "A_ProtoRequest.hpp"
 # include "../../../ServerManager/EventManager/EventManager.hpp"
+# include <unistd.h>
 
 void	A_ProtoRequest::writeCgi()
 {

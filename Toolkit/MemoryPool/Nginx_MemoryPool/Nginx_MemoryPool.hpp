@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:40:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 16:45:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,14 @@ class Nginx_MemoryPool
         void                        destroy();
 
     private:
+        // private everything
+        Nginx_MemoryPool();
+        ~Nginx_MemoryPool();
+        Nginx_MemoryPool(size_t blockSize, size_t startingBlocks = 1);
+        Nginx_MemoryPool(const Nginx_MemoryPool& pool);
+        Nginx_MemoryPool& operator=(const Nginx_MemoryPool& pool);
+
+    private:
 
         class                       Nginx_MPool_Block;
 
@@ -56,12 +64,7 @@ class Nginx_MemoryPool
         t_bigBlock*            m_bigBlocks;
         size_t                 m_blockSize;
 
-        // private everything
-        Nginx_MemoryPool();
-        ~Nginx_MemoryPool();
-        Nginx_MemoryPool(size_t blockSize, size_t startingBlocks = 1);
-        Nginx_MemoryPool(const Nginx_MemoryPool& pool);
-        Nginx_MemoryPool& operator=(const Nginx_MemoryPool& pool);
+
 
 
 
