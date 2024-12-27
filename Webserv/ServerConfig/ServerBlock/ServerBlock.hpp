@@ -43,15 +43,13 @@ class ServerBlock
 		const std::map<std::string, ServerLocation>& 		getLocations() const;
 
 		void							setLocations(const std::vector<ServerLocation> &Locations);
-		void							setListener(const std::string &value, const int &flag = 0);
 		void							setRootPath(const std::string &value, const int &flag = 0);
 		void							setClientBodySize(const std::string &value, const int &flag = 0);
 		void							setClientHeaderSize(const std::string &value, const int &flag = 0);
+		void							addListener(const std::string &value, const int &flag = 0);
 		void							addServerName(const std::string &value, const int &flag = 0);
 		void							addErrorPage(const std::string &value, const int &flag = 0);
-		const std::string&				getHost() const;
-		const std::string&				getPort() const;
-		const std::set<std::string>&	getListener() const;
+		const std::set<t_listeners>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
@@ -67,16 +65,16 @@ class ServerBlock
 
 	private:
 		typedef void (ServerBlock::*f_addConfigValue)(const std::string &, const int &);
-		std::map<std::string, std::set<std::string> >	m_config;
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-		std::set<std::string>							m_ServerName;		// would be easier to only accept one name per serverblock
+		std::set<t_listeners>							m_listen;
+		std::set<std::string>							m_server_name;
+		std::string										m_client_body_size;
+		std::string										m_client_header_size;
+		std::string										m_root;
+		std::set<std::string>							m_error_pages;
+
 		std::map<t_path, ServerLocation>				m_locations;
-
-		bool							m_setHost(const std::string &value, const int &flag = 0); // Host and port are set through setListener()
-		bool							m_setPort(const std::string &value, const int &flag = 0);
 };
-
-
 
 #endif

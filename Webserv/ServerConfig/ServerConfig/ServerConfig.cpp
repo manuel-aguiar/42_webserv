@@ -23,9 +23,7 @@ ServerConfig::ServerConfig(const char* configFilePath, Globals* globals)
 
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
-
-	m_config["max_connections"];
-	m_config["max_concurrent_cgi"];
+	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
 }
 
 ServerConfig::~ServerConfig()
@@ -42,12 +40,14 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 {
 	if (this != &other)
 	{
+		m_keys = other.m_keys;
 		m_configDefault = other.m_configDefault;
 		m_configFilePath = other.m_configFilePath;
 		m_serverBlocks = other.m_serverBlocks;
 		m_serverCount = other.m_serverCount;
-		m_keys = other.m_keys;
-		m_config = other.m_config;
+		m_max_concurrent_cgi = other.m_max_concurrent_cgi;
+		m_max_connections = other.m_max_connections;
+		m_max_cgi_backlog = other.m_max_cgi_backlog;
 	}
 	return (*this);
 }
@@ -169,8 +169,8 @@ int		ServerConfig::parseConfigFile()
 {
 
 	std::string		line;
-	size_t			currentLine	= 0;
-	int				currentLevel	= PROGRAM_LEVEL;
+	size_t			currentLine = 0;
+	int				currentLevel = PROGRAM_LEVEL;
 	ServerBlock		server;
 	ServerLocation	location;
 
@@ -256,22 +256,17 @@ const std::map<std::string, ServerBlock>&	ServerConfig::getServerBlocks() const
 
 const std::string		&ServerConfig::getMaxConnections() const
 {
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("max_connections");
-
-	if (it != m_config.end())
-		return (*it->second.begin());
-	else
-		throw std::out_of_range("Key not found");
+	return (m_max_connections);
 }
 
 const std::string		&ServerConfig::getMaxConcurrentCgi() const
 {
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("max_concurrent_cgi");
+	return (m_max_concurrent_cgi);
+}
 
-	if (it != m_config.end())
-		return (*it->second.begin());
-	else
-		throw std::out_of_range("Key not found");
+const std::string		&ServerConfig::getMaxCgiBacklog() const
+{
+	return (m_max_cgi_backlog);
 }
 
 void		ServerConfig::setConfigPath(const t_path &path)
@@ -281,24 +276,47 @@ void		ServerConfig::setConfigPath(const t_path &path)
 
 void		ServerConfig::setMaxConnections(const std::string &value, const int &flag)
 {
-	if (!flag && !m_config["max_connections"].empty())
+	if (!flag && !m_max_connections.empty())
 		throw (std::invalid_argument("max_connections already set"));
-	m_config["max_connections"].clear();
-	m_config["max_connections"].insert(value);
+	if (!isNumber(value)) // && less than x?
+		throw (std::invalid_argument("max_connections must be a positive number"));
+	m_max_connections = value;
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value, const int &flag)
 {
-	if (!flag && !m_config["max_concurrent_cgi"].empty())
+	if (!flag && !m_max_concurrent_cgi.empty())
 		throw (std::invalid_argument("max_concurrent_cgi already set"));
-	m_config["max_concurrent_cgi"].clear();
-	m_config["max_concurrent_cgi"].insert(value);
+	if (!isNumber(value)) // && less than x?
+		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
+	m_max_concurrent_cgi = value;
 }
 
+void	ServerConfig::setMaxCgiBacklog(const std::string &value, const int &flag)
+{
+	if (!flag && !m_max_cgi_backlog.empty())
+		throw (std::invalid_argument("max_cgi_backlog already set"));
+	if (!isNumber(value)) // && less than x?
+		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
+	m_max_cgi_backlog = value;
+}
+
+// Set servers by hostname:port:server_name
 void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
 {
 	for (size_t i = 0; i < servers.size(); i++)
-		m_serverBlocks[*(servers[i].getListener().begin())] = servers[i]; // using first listener as key
+	{
+		std::set<t_listeners> listeners = servers[i].getListeners();
+		std::set<std::string> serverNames = servers[i].getServerNames();
+		for (std::set<t_listeners>::iterator it = listeners.begin(); it != listeners.end(); ++it)
+		{
+			for (std::set<std::string>::iterator it2 = serverNames.begin(); it2 != serverNames.end(); ++it2)
+			{
+				std::string key = it->first + ":" + it->second + ":" + *it2;
+				m_serverBlocks[key] = servers[i];
+			}
+		}
+	}
 }
 
 void	ServerConfig::m_setDefaults(const int &flag)
@@ -311,16 +329,21 @@ void	ServerConfig::m_setDefaults(const int &flag)
 		setMaxConcurrentCgi(m_configDefault.maxCGI, flag);
 	}
 	catch (std::exception &e) {}
+	try {
+		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog, flag);
+	}
+	catch (std::exception &e) {}
 }
 
 // Debug functions
 void	ServerConfig::printProgramConfig() const
 {
-	std::cout << "╔═ Program ══════════════════O" << std::endl;
-	std::cout << "║ " <<  std::endl ;
-	std::cout << "║ Maximum Concurrent CGI: " << getMaxConcurrentCgi() << std::endl;
-	std::cout << "║ Maximum Simultaneous Connections: " << getMaxConnections() << std::endl;
-	std::cout << "║ " <<  std::endl ;
+	std::cout << "╔═ Program ══════════════════O\n";
+	std::cout << "║ \n";
+	std::cout << "║ Maximum Concurrent CGI: " << getMaxConcurrentCgi() << "\n";
+	std::cout << "║ Maximum Simultaneous Connections: " << getMaxConnections() << "\n";
+	std::cout << "║ Maximum CGI Backlog: " << getMaxCgiBacklog() << "\n";
+	std::cout << "║ \n";
 }
 
 void	ServerConfig::printConfigs() const
@@ -332,7 +355,7 @@ void	ServerConfig::printConfigs() const
 		if (!it->second.getLocations().empty())
 			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->second.getLocations().begin(); it2 != it->second.getLocations().end(); it2++)
 				it2->second.printLocationConfig();
-		std::cout << "║ └──────────────────o" << std::endl;
+		std::cout << "║ └──────────────────o\n";
 	}
 	std::cout << "╚═════════════════════════════O" << std::endl;
 }

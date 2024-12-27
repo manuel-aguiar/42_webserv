@@ -61,3 +61,12 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 
 	return (tokens);
 }
+
+std::string	strToLower(const std::string& str)
+{
+	std::string lowercaseString = str;
+	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
+		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
+	
+	return (lowercaseString);
+}

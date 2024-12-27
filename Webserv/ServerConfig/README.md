@@ -38,6 +38,9 @@ The configuration file consists of several directives that define the behavior o
 - **max_concurrent_cgi**  
   - Sets the maximum number of concurrent CGI processes. The default value is `10`.
 
+- **max_cgi_backlog**
+  - Sets the maximum number of requests queued on the backlog. When this number is reached, new connections will be answered with an internal server error. The default value is `100`.
+
 - ~~**max_workers**~~
 
 ### Server Directives

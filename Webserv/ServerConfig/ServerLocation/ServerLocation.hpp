@@ -24,6 +24,7 @@
 
 // Own Headers
 # include "../../GenericUtils/Validation/Validation.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../DefaultConfig/DefaultConfig.hpp"
 
@@ -51,7 +52,7 @@ class ServerLocation
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
-		int								getType() const;
+		std::string						getType() const;
 		void							setType(const std::string &value, const int &flag = 0);
 		void							setPath(const std::string &value, const int &flag = 0);
 		void							setRoot(const std::string &value, const int &flag = 0);
@@ -69,13 +70,16 @@ class ServerLocation
 
 		// Key/value storing for config settings
 		typedef void (ServerLocation::*f_addConfigValue)(const std::string &, const int &);
-		std::map<std::string, std::set<std::string> > 	m_config;
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-		// ServerBlock&					m_block;
 		std::set<std::string> 			m_validTypes;
 		std::set<std::string>			m_validMethods;
 
+		std::string						m_path;
+		std::string						m_root;
+		std::string						m_type;
+		bool							m_autoIndex;
+		std::set<std::string>			m_methods;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };

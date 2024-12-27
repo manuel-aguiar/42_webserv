@@ -31,6 +31,7 @@ class DefaultConfig
 		// Program
 		std::string	maxConnections;
 		std::string	maxCGI;
+		std::string cgi_maxBacklog;
 
 		// Server
 		std::string serverRoot;

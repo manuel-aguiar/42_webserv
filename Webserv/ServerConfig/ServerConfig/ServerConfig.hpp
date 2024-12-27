@@ -46,9 +46,11 @@ class ServerConfig
 		const std::map<std::string, ServerBlock>&	getServerBlocks() const;
 		const std::string&							getMaxConnections() const;
 		const std::string&							getMaxConcurrentCgi() const;
+		const std::string&							getMaxCgiBacklog() const;
 		void										setConfigPath(const t_path &path);
 		void										setMaxConnections(const std::string &value, const int &flag = 0);
 		void										setMaxConcurrentCgi(const std::string &value, const int &flag = 0);
+		void										setMaxCgiBacklog(const std::string &value, const int &flag = 0);
 
 		int											parseConfigFile();
 		// Debug
@@ -56,6 +58,9 @@ class ServerConfig
 		void										printConfigs() const;
 
 	private:
+		ServerConfig();
+		ServerConfig(const ServerConfig &other);
+
 		enum config_levels
 		{
 			PROGRAM_LEVEL,
@@ -65,18 +70,19 @@ class ServerConfig
 
 		// Key/value storing for config settings
 		typedef void (ServerConfig::*f_addConfigValue)(const std::string &, const int &);
-		std::map<std::string, std::set<std::string> >		m_config;
 		std::map<std::string, f_addConfigValue>				m_keys;
 
-		ServerConfig();
-		ServerConfig(const ServerConfig &other);
 
+		std::string							m_max_connections;
+		std::string							m_max_concurrent_cgi;
+		std::string							m_max_cgi_backlog;
 		DefaultConfig						m_configDefault;
 		t_path								m_configFilePath;
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;
 		std::map<std::string, ServerBlock>	m_serverBlocks; // m_serverBlocks is the end result of the parsing process
 		Globals*							m_globals; // mostly for logs and debuging, see Globals class
+		
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
