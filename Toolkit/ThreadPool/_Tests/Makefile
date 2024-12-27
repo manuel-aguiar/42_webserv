@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 15:12:02 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 18:53:54 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,45 +16,39 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME					=		test.out
 
 # Paths
-ROOT_PATH				=		../../../Toolkit/ThreadPool
+ROOT_PATH				=		../../../Toolkit/
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-EXTERN_LINKER 					= 	-lpthread
+EXTERN_LINKER 			= 		-lpthread
 
-DEBUG_FLAGS 					= 	-g
-BUILD_FLAGS 					= 	-DNDEBUG
+DEBUG_FLAGS 			= 		-g
+BUILD_FLAGS 			= 		-DNDEBUG
 
-THREADPOOL_PATH 				= 	$(ROOT_PATH)
-THREADPOOL_LIB					= 	libthreadpool.a
 
-MEMORYPOOL_LINKER 			=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
-
-THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
-
-LIB_THREADPOOL 					= 	-L./$(THREADPOOL_PATH) $(THREADPOOL_LINKER)
-
-LIBS 							= 	$(LIB_THREADPOOL) $(EXTERN_LINKER)
+LIBS 					= 		$(EXTERN_LINKER)
 
 # Sources
-SRCS					=		$(SRC_PATH)/_Tests/test.cpp					\
-								$(SRC_PATH)/_Tests/testPromiseFuture.cpp
+SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/test.cpp					\
+								$(SRC_PATH)/ThreadPool/_Tests/testPromiseFuture.cpp		\
+								\
+								$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
+								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp					\
+								$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp					
+
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
 
 #####################################################
 
-$(NAME): $(OBJS) $(ROOT_PATH)/$(THREADPOOL_LIB)
-	@$(MAKE) -C $(THREADPOOL_PATH) --quiet
+$(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(ROOT_PATH)/$(THREADPOOL_LIB):
-	@$(MAKE) -C $(THREADPOOL_PATH) --quiet
 
 -include $(DEPS)
 
@@ -72,7 +66,6 @@ clean:
 fclean: clean
 
 re: fclean
-	@$(MAKE) -C $(THREADPOOL_PATH) re --quiet
 	make
 
 .PHONY: clean fclean run

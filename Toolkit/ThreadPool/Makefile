@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/26 18:36:05 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 19:03:05 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,12 +28,13 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 ## FOLDERS
 
-OBJ_PATH			=	_build
-SRC_PATH			=	.
+ROOT_PATH				=		../../Toolkit
+SRC_PATH				=		$(ROOT_PATH)/.
+OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS				=	$(SRC_PATH)/ThreadPool/ThreadPool.cpp					\
-						$(SRC_PATH)/ThreadWorker/ThreadWorker.cpp				\
-						$(SRC_PATH)/TaskQueue/TaskQueue.cpp							
+SRCS				=	$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
+						$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp				\
+						$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp							
 
 
 OBJS 				=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
@@ -65,9 +66,7 @@ all: $(NAME)
 debug: $(NAME)
 
 clean:
-	@if [ -d "$(OBJ_PATH)" ]; then \
-        rm -rf $(OBJ_PATH); \
-    fi
+	rm -rf $(OBJS)
 
 fclean: clean
 	@if [ -n "$(wildcard  $(NAME))" ]; then \

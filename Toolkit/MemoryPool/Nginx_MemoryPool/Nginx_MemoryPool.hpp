@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 16:45:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 18:25:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ class Nginx_MemoryPool
 
                 //leting variables public, whole class is private to memorypool anyways
                 void*                       m_data;
-                t_byte*                     _freePosition;
-                t_byte*                     _endOfBlock;
+                t_byte*                     m_freePosition;
+                t_byte*                     m_endOfBlock;
                 Nginx_MPool_Block*          m_nextBlock;
-                int                         _blockId;
+                int                         m_blockId;
 
 
             private:
