@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   test1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:57:10 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/23 13:47:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:53:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,15 @@
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
+# include "../../_Tests/test.h"
 
 
-int main(void)
+int TestPart1(int testNumber)
 {
-	std::cout << "\n*************** List tests ***************" << std::endl;
-
-	/******************* TEST 1 ************************/
+	/*********************** ************************/
 	try
 	{
-		std::cout << "TEST 1: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 			list;
 
@@ -53,13 +52,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	/******************* TEST 2 ************************/
 
 	try
 	{
-		std::cout << "TEST 2: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 		list;
 
@@ -83,13 +83,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 2 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 3: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 		list;
 
@@ -113,11 +114,12 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	try
 	{
-		std::cout << "TEST 4: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 		list;
 
@@ -141,15 +143,18 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
+	/******************* *** ************************/
 
 	Nginx_MemoryPool* memoryPool = Nginx_MemoryPool::create(4096);
 
+	
 
 	try
 	{
-		std::cout << "TEST 5: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<ToolkitDummy> alloc(memoryPool);
 		std::list<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > std(alloc);
@@ -175,11 +180,12 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	try
 	{
-		std::cout << "TEST 6: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -207,14 +213,15 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 
-	/******************* TEST 7 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 7: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 		list;
 
@@ -261,13 +268,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 8 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 8: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -319,13 +327,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 9 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 9: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
@@ -348,13 +357,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 10 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 10: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		List<ToolkitDummy> 		copy;
 		List<ToolkitDummy> 		list;
 
@@ -391,13 +401,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 11 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 11: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		List<ToolkitDummy> 		list;
 
@@ -419,13 +430,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 12 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 12: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		List<ToolkitDummy> 		copy;
 		List<ToolkitDummy> 		list;
 
@@ -462,13 +474,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 13 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 13: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -504,13 +517,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-/******************* TEST 14 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 14: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
@@ -561,13 +575,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-/******************* TEST 15 ************************/
+/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 15: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
@@ -597,13 +612,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-/******************* TEST 16 ************************/
+/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 16: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 
 		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
@@ -633,13 +649,14 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-/******************* TEST 17 ************************/
+/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 17: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 
 		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
@@ -669,11 +686,10 @@ int main(void)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	memoryPool->destroy();
 	
-	std::cout << "******************************************\n" << std::endl;
-
-	return (0);
+	return (testNumber);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/26 13:55:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:46:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,12 @@ class List
 			if (this == &other)
 				return (*this);
 
+			if (m_nodeAllocator != other.m_nodeAllocator)
+			{
+				clear();
+				m_nodeAllocator = other.m_nodeAllocator;
+			}
+
 			BaseNode* thisCur = m_header.m_next;
 			BaseNode* otherCur = other.m_header.m_next;
 
@@ -135,7 +141,7 @@ class List
 			}
 			while (otherCur != &other.m_header)
 			{
-				push_back(static_cast<DataNode*>(otherCur)->m_data);
+				emplace_back(static_cast<DataNode*>(otherCur)->m_data);
 				otherCur = otherCur->m_next;
 			}
 			return (*this);
@@ -403,6 +409,8 @@ class List
 			++m_size;
 		}
 
+		NodeAllocator& getAllocator() { return m_nodeAllocator; }
+
         class iterator
         {
             public:
@@ -464,6 +472,8 @@ class List
 			BaseNode* otherCur;
 
 			assert(mf_iterIsInList(target));
+			assert(m_nodeAllocator == other.m_nodeAllocator);   //force same allocator because of memory ownership, like same underlying memory pool
+			
 			if (other.m_size == 0)
 				return ;
 
@@ -498,6 +508,7 @@ class List
 
 			assert(mf_iterIsInList(thisTgt));
 			assert(other.mf_iterIsInList(otherTgt));
+			assert(m_nodeAllocator == other.m_nodeAllocator);	
 
 			if (other.m_size == 0)
 				return ;
@@ -519,7 +530,8 @@ class List
 			assert(other.mf_iterIsInList(start));
 			assert(other.mf_iterIsInList(end));
 			assert(other.mf_canReach(start, end));
-
+			assert(m_nodeAllocator == other.m_nodeAllocator);
+			
 			if (other.m_size == 0)
 				return ;
 

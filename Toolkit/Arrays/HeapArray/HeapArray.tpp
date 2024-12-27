@@ -41,7 +41,7 @@ class HeapArray
 		{
 			assert(capacity);
 			for (size_t i = 0; i < size; i++)
-				m_allocator.construct(reinterpret_cast<T*>(&m_array[ + i * sizeof(T)]), T());
+				m_allocator.construct(reinterpret_cast<T*>(&m_array[ + i * sizeof(T)]), T(value));
 		}
 
 
@@ -63,15 +63,25 @@ class HeapArray
 
 		HeapArray &operator=(const HeapArray &other)
 		{
+			// assignment receiver uses its own allocator to allocate memory
 			assert(m_capacity == other.m_capacity);
 			if (this == &other)
 				return (*this);
 
-			if (other.m_size > m_size)
+            if (m_allocator != other.m_allocator)
+            {
+                clear();
+               	m_allocator.deallocate(reinterpret_cast<T*>(m_array), m_capacity);
+                m_allocator = other.m_allocator;
+				m_array = reinterpret_cast<t_byte*>(m_allocator.allocate(m_capacity));
+            }
+
+			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
+			for (size_t i = 0; i < smaller; ++i)
+				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<const T*>(other.m_array[i * sizeof(T)]);
+			if (smaller == m_size)
 			{
-				for (size_t i = 0; i < m_size; ++i)
-					m_array[i * sizeof(T)] = other.m_array[i * sizeof(T)];
-				for (size_t i = m_size; i < other.m_size; ++i)
+				for (size_t i = smaller; i < other.m_size; ++i)
 					m_allocator.construct(
 						reinterpret_cast<T*>(&m_array[i * sizeof(T)]), 
 						*reinterpret_cast<T*>(&other.m_array[i * sizeof(T)])
@@ -79,11 +89,10 @@ class HeapArray
 			}
 			else
 			{
-				for (size_t i = 0; i < other.m_size; ++i)
-					m_array[i * sizeof(T)] = other.m_array[i * sizeof(T)];
-				for (size_t i = other.m_size; i < m_size; ++i)
+				for (size_t i = smaller; i < m_size; ++i)
 					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
 			}
+
 			m_size = other.m_size;
 
 			return (*this);

@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 14:08:18 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 08:48:46 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,9 @@ MEMORYPOOL_LINKER 		=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
 LIB_MEMORYPOOL 			=		-L$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
 
 # Sources
-SRCS					=		$(SRC_PATH)/Arrays/StackArray/_Tests/test.cpp	\
+SRCS					=		$(SRC_PATH)/Arrays/StackArray/_Tests/main.cpp	\
+								$(SRC_PATH)/Arrays/StackArray/_Tests/test1.cpp	\
+								$(SRC_PATH)/Arrays/StackArray/_Tests/test2.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

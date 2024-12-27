@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 13:34:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:51:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,14 @@ class DynArray
         {
             if (this == &other)
                 return (*this);
-            
+                
+            if (m_allocator != other.m_allocator)
+            {
+                clear();
+                m_allocator.deallocate(m_array, m_capacity);
+                m_allocator = other.m_allocator;
+            }
+                
             if (m_array)
             {
                 for (size_t i = 0; i < m_size; i++)

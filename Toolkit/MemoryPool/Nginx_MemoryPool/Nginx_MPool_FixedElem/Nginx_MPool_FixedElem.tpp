@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 09:57:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:07:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,15 @@ class Nginx_MPool_FixedElem
 		typedef size_t          size_type;
 		typedef ptrdiff_t       difference_type;
 
-		template <typename U> struct rebind {
+		template <typename U>
+		struct rebind {
 			typedef Nginx_MPool_FixedElem<U> other;
 		};
 
 		Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t numElems = 0) throw();
 
 		Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& copy) throw();
-		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& copy) throw();
+		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& rebind) throw();
 
 		~Nginx_MPool_FixedElem() throw();
 
@@ -114,7 +115,7 @@ Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& cop
 	m_freeSlot(copy.m_freeSlot)
 {
 	//std::cout << "copy callled " << this << " from " << &copy << std::endl;
-	m_elements.reserve(m_maxElems);
+	
 	//std::cout <<  "copy constructor: " << copy.m_elements.getAllocator().m_memoryPool << "\n";
 	//m_elements = DynArray<s_Slot, Nginx_PoolAllocator<s_Slot> >(copy.m_maxElems, m_elements.getAllocator());
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
@@ -174,6 +175,7 @@ Nginx_MPool_FixedElem<T>::allocate(size_type, const_pointer)
 	//CUSTOM_ASSERT(m_elemCount < m_maxElems, "Nginx_MPool_FixedElem is at max capacity already");
 	assert(m_elemCount < m_maxElems);
 	//std::cout << "allocate called" << std::endl;
+	m_elements.reserve(m_maxElems);
 	
 	if (m_freeSlot != 0)
 	{

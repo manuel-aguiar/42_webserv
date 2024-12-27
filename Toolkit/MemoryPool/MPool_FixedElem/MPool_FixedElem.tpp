@@ -103,7 +103,7 @@ MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& copy) throw() :
 	m_freeSlot(copy.m_freeSlot)
 {
 	//std::cout << "copy called" << std::endl;
-	m_elements.reserve(m_maxElems);
+	
 	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
 }
 
@@ -157,7 +157,7 @@ MPool_FixedElem<T>::allocate(size_type, const_pointer)
 	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
 	assert(m_elemCount < m_maxElems);
 	//std::cout << "allocate called" << std::endl;
-	
+	m_elements.reserve(m_maxElems);
 	if (m_freeSlot != 0)
 	{
 		pointer result = reinterpret_cast<pointer>(m_freeSlot);

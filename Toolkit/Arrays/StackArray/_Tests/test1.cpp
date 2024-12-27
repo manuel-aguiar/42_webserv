@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   test1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 11:38:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 08:44:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
+# include "../../../_Tests/test.h"
+
 
 template <typename T>
 std::string to_string(const T& value)
@@ -29,13 +31,13 @@ std::string to_string(const T& value)
     oss << value;
     return oss.str();
 }
-int main()
+int TestPart1(int testNumber)
 {
 	/******************* TEST 1 ************************/
-	std::cout << "\n*************** StackArray tests ***************" << std::endl;
+	std::cout << "TEST " << testNumber++ << ": ";
 	try
 	{
-		std::cout << "TEST 1: ";
+		
 		StackArray<int, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -53,13 +55,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	/******************* TEST 2 ************************/
 
 	try
 	{
-		std::cout << "TEST 2: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<ToolkitDummy, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -77,13 +80,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
 	/******************* TEST 3 ************************/
 
 	try
 	{
-		std::cout << "TEST 3: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<int, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -101,13 +105,13 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 4 ************************/
-
+/******************* *** ************************/
 	try
 	{
-		std::cout << "TEST 4: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<int, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -125,13 +129,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 5 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 5: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<int, 5> array;
 		array.emplace_back(1);
 		array.emplace_back(2);
@@ -149,14 +154,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-
-	/******************* TEST 6 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 6: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<int, 5> array;
 		array.emplace_back(1);
 		array.emplace_back(2);
@@ -180,13 +185,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 7 ************************/
+	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST 7: ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		StackArray<std::string, 3> array;
 		array.emplace_back("Hello");
 		array.emplace_back("World");
@@ -200,9 +206,8 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
 	}
 
-	std::cout << "*********************************************\n" << std::endl;
-
-    return (0);
+    return (testNumber);
 }

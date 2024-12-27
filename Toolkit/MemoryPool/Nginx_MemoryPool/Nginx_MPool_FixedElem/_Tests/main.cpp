@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/09 14:21:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 11:18:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 int main(void)
 {
+	/*
 	std::cout << "MY list with standard allcoator\n";
 	List<int>	list0;
 
@@ -28,10 +29,10 @@ int main(void)
 	list0.push_back(2);
 	list0.push_back(2);
 	list0.push_back(2);
-
+	
 	for (List<int>::iterator iter = list0.begin(); iter != list0.end(); ++iter)
 		std::cout << "alloc address: " << &(*iter) << '\n';
-
+	*/
 	std::cout << "\nMY list with custom allcoator\n";
 	Nginx_MemoryPool *pool = Nginx_MemoryPool::create(4096, 1);
 	List<int, Nginx_MPool_FixedElem<int> > list1(Nginx_MPool_FixedElem<int>(pool, 20));
@@ -44,12 +45,16 @@ int main(void)
 	list1.push_back(2);
 	list1.push_back(2);
 	list1.push_back(2);
+	list1.push_back(2);
+	list1.push_back(2);
+
 
 	for (List<int, Nginx_MPool_FixedElem<int> >::iterator iter = list1.begin(); iter != list1.end(); ++iter)
 		std::cout << "alloc address: " << &(*iter) << '\n';
 
 	list1.clear();
-
+	pool->destroy();
+/*
 	std::cout << "\nstd::list list with standard allcoator\n";
 	std::list<int>	list2;
 
@@ -64,6 +69,7 @@ int main(void)
 
 	for (std::list<int>::iterator iter = list2.begin(); iter != list2.end(); ++iter)
 		std::cout << "alloc address: " << &(*iter) << '\n';
+
 
 	std::cout << "\nstd::list list with custom allcoator\n";
 	std::list<int, Nginx_MPool_FixedElem<int> > list3(Nginx_MPool_FixedElem<int>(pool, 20));
@@ -84,7 +90,7 @@ int main(void)
 	pool->destroy();
 
 
-/*
+
 	std::list<int>	list01;
 
 	list01.push_back(2);

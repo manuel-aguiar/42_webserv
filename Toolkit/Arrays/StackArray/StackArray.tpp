@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 18:21:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 09:08:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@ class StackArray
 				new (&m_array[i * sizeof(T)]) T();
 		};
 
+        StackArray(size_t size, const T& value) : m_size(size)
+        {
+            assert (size <= ElemCount);
+            for (size_t i = 0; i < m_size; i++)
+                new (&m_array[i * sizeof(T)]) T(value);
+        }
+
 		~StackArray()
 		{
 			for (size_t i = 0; i < m_size; i++)
@@ -38,14 +45,30 @@ class StackArray
 
 		StackArray(const StackArray &other)
 		{
-			std::memcpy(m_array, other.m_array, sizeof(T) * ElemCount);
+			*this = other;
 		};
 
 		StackArray &operator=(const StackArray &other)
 		{
+            
 			if (this == &other)
 				return (*this);
-			std::memcpy(m_array, other.m_array, sizeof(T) * ElemCount);
+            
+            size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
+            for (size_t i = 0; i < smaller; i++)
+                *reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<const T*>(&other.m_array[i * sizeof(T)]);
+            if (smaller == m_size)
+            {
+                for (size_t i = m_size; i < other.m_size; i++)
+                    new (reinterpret_cast<T*>(&m_array[i * sizeof(T)])) T(*reinterpret_cast<const T*>(&other.m_array[i * sizeof(T)]));
+            }
+            else
+            {
+                for (size_t i = other.m_size; i < m_size; i++)
+                    reinterpret_cast<T*>(&m_array[i * sizeof(T)])->~T();
+            }
+
+            m_size = other.m_size;
 			return (*this);
 		};
 
