@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 15:04:39 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 19:10:16 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,17 +20,13 @@ ROOT_PATH				=		../../../../Toolkit
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-MEMORYPOOL_PATH			=	 	$(ROOT_PATH)/MemoryPool
-MEMORYPOOL_LIB			=	 	libmemorypool.a
-
-MEMORYPOOL_LINKER 		=		-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
-
-LIB_MEMORYPOOL 			=		-L$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
-
 # Sources
 SRCS					=		$(SRC_PATH)/Arrays/HeapArray/_Tests/main.cpp	\
 								$(SRC_PATH)/Arrays/HeapArray/_Tests/test1.cpp	\
 								$(SRC_PATH)/Arrays/HeapArray/_Tests/test2.cpp	\
+								\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp			\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp			\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
@@ -42,8 +38,7 @@ DEPS					=		$(OBJS:.o=.d)
 #####################################################
 
 $(NAME): $(OBJS)
-	@$(MAKE) -C $(MEMORYPOOL_PATH) --quiet
-	$(CXX) $(CXXFLAGS) $(OBJS) $(LIB_MEMORYPOOL) -o $(NAME)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
