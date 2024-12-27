@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 14:03:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:01:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include "NginxAllocCounters.tpp"
 
 extern int TestPart1(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
@@ -36,8 +37,9 @@ int main(void)
 	std::cout << "\n*************** Nginx_MemoryPool tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
+	testNumber = TestPart2(testNumber);
 
-	std::cout << "*****************************************************\n" << std::endl;
+	std::cout << "******************************************************\n" << std::endl;
 
     return 0;
 }

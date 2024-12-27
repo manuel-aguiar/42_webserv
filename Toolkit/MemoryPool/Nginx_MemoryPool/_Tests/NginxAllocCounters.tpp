@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 14:03:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 14:55:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,12 @@
 # define NGINXALLOCCOUNTERS_TPP
 
 # include "../Nginx_MemoryPool.hpp"
+# include "../Nginx_PoolAllocator.hpp"
 
 class NginxAllocCounter  : public Nginx_MemoryPool
 {
 	public:
 	
-		enum counterType
-		{
-			ALLOC = 0,
-			DEALLOC,
-			COUNT,
-		};
-
 		static NginxAllocCounter* create(size_t blockSize, size_t* placeCounters, size_t* placeTotalBytes, size_t startingBlocks = 1)
 		{
 			// First, allocate raw memory for NginxAllocCounter
@@ -44,14 +38,14 @@ class NginxAllocCounter  : public Nginx_MemoryPool
 		// Override allocate function to count allocations
 		void* allocate(size_t size)  {
 			void* ptr = m_pool->allocate(size);
-			m_placeCounters[ALLOC]++;  // Increment allocation count
+			(*m_placeCounters)++;  // Increment allocation count
 			(*m_placeTotalBytes) += size;
 			return ptr;
 		}
 
 		void* allocate(size_t size, size_t alignment)  {
 			void* ptr = m_pool->allocate(size, alignment);
-			m_placeCounters[DEALLOC]++;  // Increment allocation count
+			(*m_placeCounters)++;  // Increment allocation count
 			(*m_placeTotalBytes) += size;
 			return ptr;
 		}
@@ -73,5 +67,89 @@ class NginxAllocCounter  : public Nginx_MemoryPool
 
 };
 
+template <typename T>
+class NginxPoolAllocatorCounter : public Nginx_PoolAllocator<T>
+{
+	public:
+		enum counterType
+		{
+			ALLOC = 0,
+			DEALLOC,
+			COUNT,
+		};
+
+		typedef T					value_type;
+		typedef T*					pointer;
+		typedef const T*			const_pointer;
+		typedef T&					reference;
+		typedef const T&			const_reference;
+		typedef std::size_t			size_type;
+		typedef std::ptrdiff_t		difference_type;
+
+		template <typename U>
+		struct rebind
+		{
+			typedef NginxPoolAllocatorCounter<U> other;
+		};
+		NginxPoolAllocatorCounter(Nginx_MemoryPool* pool, size_t* placeCounters, size_t* totalBytes) : 
+			Nginx_PoolAllocator<T>(pool),
+			m_placeCounters(placeCounters),
+			m_placeTotalBytes(totalBytes)
+			{/*std::cout << "allcoator inituialzed: " << pool << std::endl;*/}
+			
+		NginxPoolAllocatorCounter(const NginxPoolAllocatorCounter& copy) : 
+			Nginx_PoolAllocator<T>(copy),
+			m_placeCounters(copy.m_placeCounters),
+			m_placeTotalBytes(copy.m_placeTotalBytes)
+			{(void)copy;}
+
+		~NginxPoolAllocatorCounter() {};
+
+		template <typename U>
+		NginxPoolAllocatorCounter(const NginxPoolAllocatorCounter<U>& other) : 
+				Nginx_PoolAllocator<T>(other), 
+				m_placeCounters(other.getAllocCounter()),
+				m_placeTotalBytes(other.getTotalBytes())
+			{(void)other;}
+
+		pointer allocate(size_type n, const void* hint = 0)
+		{
+			(void)hint;
+			m_placeCounters[ALLOC]++;
+			(*m_placeTotalBytes) += n * sizeof(T);
+			return (Nginx_PoolAllocator<T>::allocate(n * sizeof(T)));
+		}
+
+		size_t* getAllocCounter() const { return m_placeCounters; }
+		size_t* getTotalBytes() const { return m_placeTotalBytes; }
+
+		void deallocate(pointer p, size_type n)
+		{
+			m_placeCounters[DEALLOC]++;
+			(void)p;
+			(void)n;
+		}
+
+		void construct(pointer p, const_reference val)
+		{
+			new (p) value_type (val);
+		}
+
+		void destroy(pointer p)
+		{
+			p->~value_type();
+		}
+
+		bool operator==(const NginxPoolAllocatorCounter& other) const { return (Nginx_PoolAllocator<T>::operator==(other)); }
+		bool operator!=(const NginxPoolAllocatorCounter& other) const { return (Nginx_PoolAllocator<T>::operator!=(other)); }
+
+		size_type max_size() const
+		{
+			return std::numeric_limits<size_type>::max() / sizeof(T);
+		}
+
+		size_t* m_placeCounters;
+		size_t* m_placeTotalBytes;
+};
 
 #endif
