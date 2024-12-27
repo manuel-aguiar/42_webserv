@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 18:48:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 19:18:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,11 +186,11 @@ int TestPart1(int testNumber)
 			}
 		}
 
-
 		list1.clear();
 		list2.clear();
 
 		pool->destroy();
+
 
 		std::cout << "	PASSED" << std::endl;
 	}
