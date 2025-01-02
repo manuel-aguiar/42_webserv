@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 08:44:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 08:21:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ std::string to_string(const T& value)
 }
 int TestPart1(int testNumber)
 {
-	/******************* TEST 1 ************************/
+	/*********************** ************************/
 	std::cout << "TEST " << testNumber++ << ": ";
 	try
 	{
@@ -58,7 +58,73 @@ int TestPart1(int testNumber)
 		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 2 ************************/
+	/*********************** ************************/
+	std::cout << "TEST " << testNumber++ << ": ";
+	try
+	{
+		// default constructs 100 elements into the array
+		StackArray<int, 100> array(100);
+		if (array.size() != 100)
+			throw std::logic_error("size mismatch");
+		for (size_t i = 0; i < array.size(); ++i)
+		{
+			if (array[i] != 0)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
+	}
+
+	/*********************** ************************/
+	std::cout << "TEST " << testNumber++ << ": ";
+	try
+	{
+		const int arraySize = 100;
+		const int initialize = 50;
+
+		// default constructs 50 elements into the array of cap 100
+		// arraySize can be used as the template paramenter
+		// because IT IS CONST (otherwise the template cannot be expanded at compile time)
+		
+		StackArray<int, arraySize> array(initialize);
+		if (array.size() != initialize)
+			throw std::logic_error("size mismatch");
+
+		if (array.capacity() != arraySize)
+			throw std::logic_error("capacity mismatch");
+
+		for (int i = 0; i < initialize; i++)
+		{
+			array.push_back(i);
+		}
+
+		// must be full now
+		if (array.size() != arraySize)
+			throw std::logic_error("size mismatch");
+
+		for (size_t i = 0; i < initialize; ++i)
+		{
+			if (array[i] != 0)
+				throw std::logic_error("value mismatch");
+		}
+		for (size_t i = initialize; i < array.size(); ++i)
+		{
+			if (array[i] != (int)(i - 50))
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
+	}
+
+	/*************************************************/
 
 	try
 	{
@@ -83,7 +149,7 @@ int TestPart1(int testNumber)
 		TEST_FAIL_INFO();
 	}
 
-	/******************* TEST 3 ************************/
+	/******************* ***** ************************/
 
 	try
 	{
