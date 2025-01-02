@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:00:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 11:03:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		DynArray<int> 			array;
 
@@ -94,13 +94,12 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		DynArray<int> 			array;
 
@@ -142,13 +141,12 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		DynArray<int> 			array;
 
@@ -208,14 +206,13 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 /* Emplace two */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<EmplaceTwo> 		std;
 		DynArray<EmplaceTwo> 			array;
 		
@@ -223,27 +220,6 @@ int TestPart2(int testNumber)
 		{
 			std.push_back(EmplaceTwo("name", i));
 			array.push_back(EmplaceTwo("name", i));
-
-			/*
-				Fails because std::string didn't malloc and the destructor thinks
-				it still lives in the same place before the vector reallocated........
-
-				Which means, my dynAarray cannot reallocate using memmove because some underlying
-				variable may be referencing itself, and then it would point to an invalid location
-				(as a std::string that doesn't allocate memory has to do, pointing to itself, without
-				move semantics it invalidates itself. so i have a problem with my current setup)
-
-				It works if the string is long enough such that it pointes to a malloc'ed place.
-				But as long as it points to itself, i have a problem.
-
-				So, i cannot use memmove after all and do have to deep copy everything.
-				All i get is emplace_back, everything else, it must be a c++98 vector.
-
-
-
-				but then....... why is a std::string calling free on a buffer inside the stack.....????
-			*/
-
 		}
 /*
 		if (std.size() != array.size())
@@ -264,8 +240,6 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-    testNumber++;
-
 
     return (testNumber);
 }
