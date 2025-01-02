@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test4.cpp                                          :+:      :+:    :+:   */
+/*   test1.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 15:40:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include <list>
+#include <vector>
 
 // Project headers
 # include "../FixedSizeQueue.hpp"
@@ -24,30 +24,28 @@
 # include "../../../_Tests/test.h"
 
 
-int TestPart4(int testNumber)
+int TestPart1(int testNumber)
 {
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<int> 				list;
-		FixedSizeQueue<int> 			queue(200);
+		std::vector<int> 				std;
+		HeapCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
-			list.push_back(i);
+			std.push_back(i);
 			queue.push_back(i);
-
-			list.push_front(i);
-			queue.push_front(i);
 		}
-		if (list.size() != queue.size())
+		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<int>::iterator it = queue.begin();
-		std::list<int>::iterator iter = list.begin();
-		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
+		HeapCircularQueue<int>::iterator it = queue.begin();
+		std::vector<int>::iterator iter = std.begin();
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			std::cout << "list: " << *iter << " queue: " << *it << std::endl;
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -62,8 +60,8 @@ int TestPart4(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<ToolkitDummy> 		std;
-		FixedSizeQueue<ToolkitDummy> 		queue(100);
+		std::vector<ToolkitDummy> 		std;
+		HeapCircularQueue<ToolkitDummy> 		queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -73,8 +71,8 @@ int TestPart4(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<ToolkitDummy>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = std.begin();
+		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -93,8 +91,8 @@ int TestPart4(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<ToolkitDummy> 		std;
-		FixedSizeQueue<ToolkitDummy> 		queue(100);
+		std::vector<ToolkitDummy> 		std;
+		HeapCircularQueue<ToolkitDummy> 		queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -104,8 +102,8 @@ int TestPart4(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<ToolkitDummy>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = std.begin();
+		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -127,30 +125,25 @@ int TestPart4(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<ToolkitDummy> 				list;
-		FixedSizeQueue<ToolkitDummy> 			queue(200);
+		std::vector<ToolkitDummy> 			std;
+		HeapCircularQueue<ToolkitDummy> 			queue(200);
 
 		for (int i = 0; i < 100; ++i)
 		{
-			list.push_back(i);
+			std.push_back(i);
+			std.push_back(std[0]);
 			queue.emplace_back(i);
+			queue.emplace_back(queue[0]);
 		}
-		if (list.size() != queue.size())
+		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-
-		FixedSizeQueue<ToolkitDummy>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = list.begin();
-
-		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
+		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		std::vector<ToolkitDummy>::iterator iter = std.begin();
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			std::cout << "list: " << *iter <<"queue: " << *it << std::endl;
 			if (*it != *iter)
-			{
-				std::cout << "list: " << *iter << "queue: " << *it << std::endl;
 				throw std::logic_error("value mismatch");
-			}
-				
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

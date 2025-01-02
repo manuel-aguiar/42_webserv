@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 17:47:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		FixedSizeQueue<int> 			array(100);
+		HeapCircularQueue<int> 			array(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -72,7 +72,7 @@ int TestPart2(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<int>::iterator it = array.begin();
+		HeapCircularQueue<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -80,12 +80,12 @@ int TestPart2(int testNumber)
 				throw std::logic_error("value mismatch");
 		}
 
-        FixedSizeQueue<int> assign(100);
+        HeapCircularQueue<int> assign(100);
 		assign.push_front(123);
 		assign.push_front(456);
         assign = array;
 
-		FixedSizeQueue<int>::iterator itAssign = assign.begin();
+		HeapCircularQueue<int>::iterator itAssign = assign.begin();
         it = array.begin();
         iter = std.begin();
         
@@ -114,7 +114,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<std::string> 		std;
-		FixedSizeQueue<std::string> 			array(100);
+		HeapCircularQueue<std::string> 			array(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -124,7 +124,7 @@ int TestPart2(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<std::string>::iterator it = array.begin();
+		HeapCircularQueue<std::string>::iterator it = array.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -132,7 +132,7 @@ int TestPart2(int testNumber)
 				throw std::logic_error("value mismatch");
 		}
 
-        FixedSizeQueue<std::string> assign(100);
+        HeapCircularQueue<std::string> assign(100);
 		assign.push_back("big string the will require allocation on the heap ");
 		assign.push_back("big string the will require allocation on the heap ");
 
@@ -166,7 +166,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		FixedSizeQueue<int> 			array(100);
+		HeapCircularQueue<int> 			array(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -176,7 +176,7 @@ int TestPart2(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<int>::iterator it = array.begin();
+		HeapCircularQueue<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -184,7 +184,7 @@ int TestPart2(int testNumber)
 				throw std::logic_error("value mismatch");
 		}
 
-        FixedSizeQueue<int> assign(array);
+        HeapCircularQueue<int> assign(array);
 
         it = assign.begin();
         iter = std.begin();
@@ -214,7 +214,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		FixedSizeQueue<int> 			array(100);
+		HeapCircularQueue<int> 			array(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -224,7 +224,7 @@ int TestPart2(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<int>::iterator it = array.begin();
+		HeapCircularQueue<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -232,7 +232,7 @@ int TestPart2(int testNumber)
 				throw std::logic_error("value mismatch");
 		}
 
-        FixedSizeQueue<int> assign(100);
+        HeapCircularQueue<int> assign(100);
 
         assign.push_back(1);
         assign.push_back(2);
@@ -273,7 +273,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<EmplaceTwo> 		std;
-		FixedSizeQueue<EmplaceTwo> 			array(100);
+		HeapCircularQueue<EmplaceTwo> 			array(100);
 		
 		for (int i = 0; i < 2; ++i)
 		{
@@ -306,7 +306,7 @@ int TestPart2(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		FixedSizeQueue<EmplaceTwo>::iterator it = array.begin();
+		HeapCircularQueue<EmplaceTwo>::iterator it = array.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{

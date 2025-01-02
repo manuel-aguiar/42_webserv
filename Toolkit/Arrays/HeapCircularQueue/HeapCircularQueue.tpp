@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   FixedSizeQueue.tpp                                 :+:      :+:    :+:   */
+/*   HeapCircularQueue.tpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:29:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:33:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FIXEDSIZEQUEUE_TPP
+#ifndef HEAPCIRCULARQUEUE_TPP
 
-# define FIXEDSIZEQUEUE_TPP
+# define HEAPCIRCULARQUEUE_TPP
 
 # include <cassert>
 # include <iostream>
 
 template <typename T, typename Allocator>
-class FixedSizeQueue
+class HeapCircularQueue
 {
 	public:
-		FixedSizeQueue(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
+		HeapCircularQueue(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
 			m_array(m_allocator.allocate(capacity)),
 			m_frontIndex(0),
@@ -33,7 +33,7 @@ class FixedSizeQueue
 		}
 
 
-		FixedSizeQueue(const FixedSizeQueue &other) : 
+		HeapCircularQueue(const HeapCircularQueue &other) : 
 			m_allocator(other.m_allocator),
 			m_array(m_allocator.allocate(other.m_capacity)), 
 			m_capacity(other.m_capacity)
@@ -41,13 +41,13 @@ class FixedSizeQueue
 			*this = other;
 		}
 
-		~FixedSizeQueue()
+		~HeapCircularQueue()
 		{
 			clear();
 			m_allocator.deallocate(m_array, m_capacity);
 		}
 
-		FixedSizeQueue &operator=(const FixedSizeQueue &other)
+		HeapCircularQueue &operator=(const HeapCircularQueue &other)
 		{
 			assert(m_capacity == other.m_capacity);
 

@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test5.cpp                                          :+:      :+:    :+:   */
+/*   test3.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 18:41:39 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/02 10:19:53 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 // C++ headers
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <vector>
-#include <list>
 
 // Project headers
 # include "../FixedSizeQueue.hpp"
@@ -25,59 +25,52 @@
 # include "../../../_Tests/test.h"
 
 
-int TestPart5(int testNumber)
+int TestPart3(int testNumber)
 {
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-
-		FixedSizeQueue<int> 			queue(10);
-        queue.push_back(5);
-		queue.push_front(2);
-        if (queue[0] != 2)
-            throw std::logic_error("front should be 2");
-		if (queue[1] != 5)
-		{
-			throw std::logic_error("back should be 5");
-		}
-		for (FixedSizeQueue<int>::iterator it = queue.begin(); it != queue.end(); ++it)
-		{
-			std::cout << *it << std::endl;
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
-
-    try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
-
-		FixedSizeQueue<int> 			queue(200);
-		std::list<int> 					list;
+		std::vector<ToolkitBase*> 		std;
+		HeapCircularQueue<ToolkitBase*> 		array(500);
 
 		for (int i = 0; i < 100; ++i)
 		{
-			list.push_back(i);
-			queue.push_back(i);
+			std.push_back(new ToolkitBase(i));
+			array.push_back(new ToolkitBase(i));
 
-			list.push_front(i);
-			queue.push_front(i);
+			std.push_back(new ToolkitDerived(i));
+			array.push_back(new ToolkitDerived(i));
+
+			std.push_back(new ToolkitDerived(i));
+			array.push_back(new ToolkitDerived(i));
+
+			delete std.back();
+			delete array.back();
+
+			std.pop_back();
+			array.pop_back();
+			std.push_back(new ToolkitBase(i));
+			array.push_back(new ToolkitBase(i));
 		}
-		if (list.size() != queue.size())
+		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
-		
-		FixedSizeQueue<int>::iterator it = queue.begin();
-		std::list<int>::iterator iter = list.begin();
 
-		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
+		HeapCircularQueue<ToolkitBase*>::iterator it = array.begin();
+		std::vector<ToolkitBase*>::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
+			if (**it != **iter)
 				throw std::logic_error("value mismatch");
 		}
+
+		it = array.begin();
+		iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			delete (*it);
+			delete (*iter);
+		}
+
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -86,7 +79,6 @@ int TestPart5(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-
 
     return (testNumber);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:31:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:34:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <list>
 
 // Project headers
-# include "../FixedSizeQueue.hpp"
+# include "../HeapCircularQueue.hpp"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
@@ -62,7 +62,7 @@ int ThisTest(int testNumber)
         bool resultInsertion;
         bool expectedInsertion;
 
-		FixedSizeQueue<int> 			queue(queueSize);
+		HeapCircularQueue<int> 			queue(queueSize);
 
         /************* */
         
@@ -219,7 +219,7 @@ int ThisTest(int testNumber)
         bool resultInsertion;
         bool expectedInsertion;
 
-		FixedSizeQueue<int> 			queue(queueSize);
+		HeapCircularQueue<int> 			queue(queueSize);
 
         /************* */
         
@@ -365,7 +365,7 @@ int ThisTest(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::list<int> 		std;
-		FixedSizeQueue<int> 			queue(100);
+		HeapCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -376,7 +376,7 @@ int ThisTest(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-        FixedSizeQueue<int>::iterator itQueue = queue.begin();
+        HeapCircularQueue<int>::iterator itQueue = queue.begin();
         std::list<int>::iterator itList = std.begin();
         for ( ; itQueue != queue.end() && itList != std.end(); ++itQueue, ++itList)
         {
@@ -384,11 +384,11 @@ int ThisTest(int testNumber)
                 throw std::logic_error("value mismatch");
         }
 
-        FixedSizeQueue<int> assign(100);
+        HeapCircularQueue<int> assign(100);
         assign = queue;
 
-		FixedSizeQueue<int>::iterator it = queue.begin();
-		FixedSizeQueue<int>::iterator itAssign = assign.begin();
+		HeapCircularQueue<int>::iterator it = queue.begin();
+		HeapCircularQueue<int>::iterator itAssign = assign.begin();
 		std::cout << "testing copy assignment" << std::endl;
         
         for ( ; it != queue.end() && itAssign != assign.end(); ++it, ++itAssign)
@@ -417,7 +417,7 @@ int ThisTest(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::list<int> 		std;
-		FixedSizeQueue<int> 			queue(200);
+		HeapCircularQueue<int> 			queue(200);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -458,7 +458,7 @@ int ThisTest(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-        FixedSizeQueue<int>::iterator itQueue = queue.begin();
+        HeapCircularQueue<int>::iterator itQueue = queue.begin();
         std::list<int>::iterator itList = std.begin();
         for ( ; itQueue != queue.end() && itList != std.end(); ++itQueue, ++itList)
         {
@@ -466,11 +466,11 @@ int ThisTest(int testNumber)
                 throw std::logic_error("value mismatch");
         }
 
-        FixedSizeQueue<int> assign(200);
+        HeapCircularQueue<int> assign(200);
         assign = queue;
 
-		FixedSizeQueue<int>::iterator it = queue.begin();
-		FixedSizeQueue<int>::iterator itAssign = assign.begin();
+		HeapCircularQueue<int>::iterator it = queue.begin();
+		HeapCircularQueue<int>::iterator itAssign = assign.begin();
 		std::cout << "testing copy assignment" << std::endl;
         
         for ( ; it != queue.end() && itAssign != assign.end(); ++it, ++itAssign)
@@ -499,7 +499,7 @@ int main()
 {
     int testNumber = 1;
     
-	std::cout << "\n*************** FixedSizeQueue tests ***************" << std::endl;
+	std::cout << "\n*************** HeapCircularQueue tests ***************" << std::endl;
 	
     testNumber = ThisTest(testNumber);
     //testNumber = TestPart3(testNumber);
