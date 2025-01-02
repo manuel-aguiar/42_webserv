@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:34:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:35:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int ThisTest(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-        const int queueSize = 2;
+        const int queueSize = 10;
         const int frontNumber = 5;
         const int backNumber = 2;
 
@@ -211,7 +211,7 @@ int ThisTest(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-        const int queueSize = 10;
+        const int queueSize = 2;
         const int frontNumber = 5;
         const int backNumber = 2;
 
