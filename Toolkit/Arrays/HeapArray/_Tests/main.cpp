@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 17:57:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 10:24:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,25 @@
 
 // Project headers
 # include "../HeapArray.hpp"
-# include "../../../MemoryPool/MemoryPool.h"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
 # include "../../../_Tests/test.h"
 
-int TestPart1(int testNumber);
-int TestPart2(int testNumber);
+extern int TestPart1(int testNumber);
+extern int TestPart2(int testNumber);
+extern int TestPart3(int testNumber);
 
 int main()
 {
     int testNumber = 1;
-	/******************* TEST 1 ************************/
+    
 	std::cout << "\n*************** HeapArray tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
     testNumber = TestPart2(testNumber);
-
+    testNumber = TestPart3(testNumber);
 
 	std::cout << "*********************************************\n" << std::endl;
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 09:15:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 10:23:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 // Project headers
 # include "../HeapArray.hpp"
-# include "../../../MemoryPool/MemoryPool.h"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
@@ -237,6 +236,7 @@ int TestPart2(int testNumber)
 
 
 				but then....... why is a std::string calling free on a buffer inside the stack.....????
+				it is just checking if the buffer is deferent from its own address.....
 			*/
 
 		}
