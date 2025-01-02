@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 19:25:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:30:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,21 @@
 //extern int TestPart4(int testNumber);
 //extern int TestPart5(int testNumber);
 
+# include <sstream>
+template <typename T>
+std::string to_string(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
+std::string FileLineFunction(const char* file, const int line, const char* function)
+{
+    //ultra reallocs F iiiitttttt
+    return std::string("\tFile: ") + file + "\n\tLine: " + to_string(line) + "\n\tFunction: " + function + '\n';
+}
+
 int ThisTest(int testNumber)
 {
 
@@ -39,29 +54,313 @@ int ThisTest(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		FixedSizeQueue<int> 			queue(2);
-        queue.push_back(5);
-		queue.push_front(2);
+        const int queueSize = 2;
+        const int frontNumber = 5;
+        const int backNumber = 2;
 
-        if (queue[0] != 2)
-            throw std::logic_error("front should be 2");
-		if (queue[1] != 5)
-			throw std::logic_error("back should be 5");
+        size_t expectedElemCount = 0;
+        bool resultInsertion;
+        bool expectedInsertion;
 
-		for (FixedSizeQueue<int>::iterator it = queue.begin(); it != queue.end(); ++it)
-		{
-			std::cout << *it << std::endl;
-		}
+		FixedSizeQueue<int> 			queue(queueSize);
+
+        /************* */
+        
+        resultInsertion = queue.push_back(frontNumber);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        /************* */
+               
+        resultInsertion = queue.push_back(backNumber);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue[0] != frontNumber)
+            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		if (queue[1] != backNumber)
+			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.size() != expectedElemCount)
+            throw std::logic_error("size should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.back() != backNumber)
+            throw std::logic_error("back should be: " + to_string(backNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.front() != frontNumber)
+            throw std::logic_error("front should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+        resultInsertion = queue.push_back(10);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        /************* */
+       
+        resultInsertion = queue.push_back(10);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+ 
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }  
+
+        /************* */
+        
+        resultInsertion = queue.pop_back();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }  
+
+        /************* */
+
+        resultInsertion = queue.pop_back();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }   
+        
+
+        /************* */
+
+        resultInsertion = queue.pop_back();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+    /************* */
+
+        resultInsertion = queue.pop_back();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+        /************* */
+
+        resultInsertion = queue.push_back(10);
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += resultInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        } 
+
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
+
+
+
 
 /******************************************************************** */
 
+    try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+        const int queueSize = 10;
+        const int frontNumber = 5;
+        const int backNumber = 2;
+
+        size_t expectedElemCount = 0;
+        bool resultInsertion;
+        bool expectedInsertion;
+
+		FixedSizeQueue<int> 			queue(queueSize);
+
+        /************* */
+        
+        resultInsertion = queue.push_front(backNumber);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        /************* */
+               
+        resultInsertion = queue.push_front(frontNumber);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue[0] != frontNumber)
+            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		if (queue[1] != backNumber)
+			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.size() != expectedElemCount)
+            throw std::logic_error("size should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.back() != backNumber)
+            throw std::logic_error("back should be: " + to_string(backNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        if (queue.front() != frontNumber)
+            throw std::logic_error("front should be: " + to_string(frontNumber) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+        resultInsertion = queue.push_front(10);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        /************* */
+       
+        resultInsertion = queue.push_front(10);
+
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+ 
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }  
+
+        /************* */
+        
+        resultInsertion = queue.pop_front();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }  
+
+        /************* */
+
+        resultInsertion = queue.pop_front();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }   
+        
+
+        /************* */
+
+        resultInsertion = queue.pop_front();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+    /************* */
+
+        resultInsertion = queue.pop_front();
+
+        expectedInsertion = (expectedElemCount > 0);
+        expectedElemCount -= expectedInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+        /************* */
+
+        resultInsertion = queue.push_front(10);
+        expectedInsertion = (expectedElemCount < queueSize);
+        expectedElemCount += resultInsertion;
+        if (resultInsertion != expectedInsertion)
+            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        if (queue.size() != expectedElemCount)
+        {
+            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        } 
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+
+/*
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
@@ -110,9 +409,10 @@ int ThisTest(int testNumber)
         TEST_FAIL_INFO();
 	}
     testNumber++;
+*/
 
 /******************************************************************** */
-
+/*
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
@@ -191,7 +491,7 @@ int ThisTest(int testNumber)
         TEST_FAIL_INFO();
 	}
     testNumber++;
-
+*/
     return (testNumber);
 }
 

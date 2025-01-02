@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 19:16:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 22:29:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ class FixedSizeQueue
 		FixedSizeQueue(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
 			m_array(m_allocator.allocate(capacity)),
-			m_head(0),
-			m_tail(0), 
+			m_frontIndex(0),
+			m_backIndex(0), 
 			m_capacity(capacity),
 			m_isFull(false)
 		{
@@ -62,8 +62,8 @@ class FixedSizeQueue
 			if (other.size() == 0)
 			{
 				mf_destroyAll();
-				m_head = other.m_head;
-				m_tail = other.m_tail;
+				m_frontIndex = other.m_frontIndex;
+				m_backIndex = other.m_backIndex;
 
 				std::cout << "other is empty" << std::endl;
 
@@ -72,20 +72,20 @@ class FixedSizeQueue
 
 			if (size() == 0)
 			{
-				for (int i = other.m_head; i != other.m_tail;)
+				for (int i = other.m_frontIndex; i != other.m_backIndex;)
 				{
 					new (m_array + i) T(other.m_array[i]);
 					i = (i + 1) % m_capacity;
 				}
-				m_head = other.m_head;
-				m_tail = other.m_tail;
+				m_frontIndex = other.m_frontIndex;
+				m_backIndex = other.m_backIndex;
 
 				std::cout << "this is empty" << std::endl;
 				return (*this);
 			}
 
-			m_head = other.m_head;
-			m_tail = other.m_tail;
+			m_frontIndex = other.m_frontIndex;
+			m_backIndex = other.m_backIndex;
 			std::cout << "this is not empty but hey" << std::endl;
 			return (*this);
 		}
@@ -97,7 +97,7 @@ class FixedSizeQueue
 
 			size_t position;
 
-			position = (m_head + index) % m_capacity;
+			position = (m_frontIndex + index) % m_capacity;
 			return (m_array[position]);
 		}
 
@@ -107,7 +107,7 @@ class FixedSizeQueue
 			
 			size_t position;
 
-			position = (m_head + index) % m_capacity;
+			position = (m_frontIndex + index) % m_capacity;
 			return (m_array[position]);
 		}
 
@@ -115,10 +115,10 @@ class FixedSizeQueue
 		{
 			if (m_isFull)
 				return m_capacity;
-			else if (m_head <= m_tail)
-				return m_tail - m_head;
+			else if (m_frontIndex <= m_backIndex)
+				return m_backIndex - m_frontIndex;
 			else 
-				return m_capacity - (m_head - m_tail);
+				return m_capacity - (m_frontIndex - m_backIndex);
 		}
 
 		size_t capacity()
@@ -130,8 +130,8 @@ class FixedSizeQueue
 		{
 			mf_destroyAll();
 			
-			m_head = 0;
-			m_tail = 0;
+			m_frontIndex = 0;
+			m_backIndex = 0;
 		}
 
 		const Allocator& getAllocator() const
@@ -145,7 +145,7 @@ class FixedSizeQueue
 
 			size_t position;
 
-			position = (m_head + index) % m_capacity;
+			position = (m_frontIndex + index) % m_capacity;
 			return (m_array[position]);
         }
 
@@ -153,7 +153,7 @@ class FixedSizeQueue
 		{
 			assert (size() != 0);
 			
-			return (m_array[m_head]);
+			return (m_array[m_frontIndex]);
 		}
 
 		T& back()
@@ -162,51 +162,60 @@ class FixedSizeQueue
 
 			size_t position;
 
-			position = (m_tail == 0) ? m_capacity - 1 : m_tail - 1;
+			position = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
 
 			return (m_array[position]);
 		}
 
-		// m_tail is one past last (iter::end()), so the new one will be exactly there
+		// m_backIndex is one past last (iter::end()), so the new one will be exactly there
 		// so construct first, adjust after
-		void push_back(const T& value)
+		bool push_back(const T& value)
 		{
-			assert(m_array && (int)size() < m_capacity);
+			if (m_isFull)
+				return (false);
 
-			new (m_array + m_tail) T(value);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(value);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
 		}
 
-		// m_tail is one past last (iter::end()), adjust first, delete after
-		void pop_back()
+		// m_backIndex is one past last (iter::end()), adjust first, delete after
+		bool pop_back()
 		{
-			assert (size() != 0);
+			if (!m_isFull && m_frontIndex == m_backIndex)
+				return (false);
 			
-			m_tail = (m_tail == 0) ? m_capacity - 1 : m_tail - 1;
-			m_allocator.destroy(&m_array[m_tail]);
+			m_backIndex = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
+			m_allocator.destroy(&m_array[m_backIndex]);
 			m_isFull = false;
+			return (true);
 		}
 
-		//m_head is already the first, so we adjust first, construct after
-		void push_front(const T& value)
+		//m_frontIndex is already the first, so we adjust first, construct after
+		bool push_front(const T& value)
 		{
-			assert(m_array && (int)size() < m_capacity);
+			if (m_isFull)
+				return (false);
 			
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(value);
 
-			new (m_array + m_head) T(value);
-			m_isFull = (m_tail == m_head);
+			m_isFull = (m_backIndex == m_frontIndex);
+
+			return (true);
 		}
 
-		// m_head is the first, delete first, adjust after
-		void pop_front()
+		// m_frontIndex is the first, delete first, adjust after
+		bool pop_front()
 		{
-			assert (size() != 0);
+			if (!m_isFull && m_frontIndex == m_backIndex)
+				return (false);
 			
-			m_allocator.destroy(&m_array[m_head]);
-			m_head = (m_head + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			m_frontIndex = (m_frontIndex + 1) % m_capacity;
+			m_isFull = false;
+			return (true);
 		}
 
 
@@ -221,10 +230,10 @@ class FixedSizeQueue
 				typedef std::random_access_iterator_tag     iterator_category;
 
 				iterator(pointer array, size_t capacity, size_t tail, size_t index)
-					: m_array(array), m_capacity(capacity), m_tail(tail), m_index(index) {}
+					: m_array(array), m_capacity(capacity), m_backIndex(tail), m_index(index) {}
 
 				iterator(const iterator& other)
-					: m_array(other.m_array), m_capacity(other.m_capacity), m_tail(other.m_tail), m_index(other.m_index) {}
+					: m_array(other.m_array), m_capacity(other.m_capacity), m_backIndex(other.m_backIndex), m_index(other.m_index) {}
 
 				~iterator() {}
 
@@ -235,7 +244,7 @@ class FixedSizeQueue
 						m_array = other.m_array;
 						m_capacity = other.m_capacity;
 						m_index = other.m_index;
-						m_tail = other.m_tail;
+						m_backIndex = other.m_backIndex;
 					}
 					return (*this);
 				}
@@ -247,7 +256,7 @@ class FixedSizeQueue
 				{
 					assert (m_index != -1);
 					m_index = (m_index + 1) % m_capacity;
-					m_index = (m_index == m_tail) ? -1 : m_index;
+					m_index = (m_index == m_backIndex) ? -1 : m_index;
 					return (*this);
 				}
 
@@ -260,7 +269,7 @@ class FixedSizeQueue
 
 				iterator& operator--()
 				{
-					m_index = (m_index == -1) ? m_tail - 1 : m_index; // Wrap-around
+					m_index = (m_index == -1) ? m_backIndex - 1 : m_index; // Wrap-around
 					m_index = (m_index == 0) ? m_capacity - 1 : m_index - 1; // Wrap-around
 					return *(this);
 				}
@@ -278,18 +287,18 @@ class FixedSizeQueue
 			private:
 				pointer			m_array;       
 				int				m_capacity;     
-				int				m_tail;
+				int				m_backIndex;
 				int				m_index;
 		};
 
 		iterator begin() 
 		{ 
-			return iterator(m_array, m_capacity, m_tail, m_head); 
+			return iterator(m_array, m_capacity, m_backIndex, m_frontIndex); 
 		}
 
 		iterator end() 
 		{ 
-			return iterator(m_array, m_capacity, m_tail, -1); 
+			return iterator(m_array, m_capacity, m_backIndex, -1); 
 		}
 
 	private:
@@ -298,16 +307,16 @@ class FixedSizeQueue
 		Allocator					m_allocator;
 		T*							m_array;
 
-		int							m_head;
-		int							m_tail;
+		int							m_frontIndex;
+		int							m_backIndex;
 		int							m_capacity;
 		bool						m_isFull;
 
 		void	mf_destroyAll()
 		{
-			if (m_head == m_tail && !m_isFull)
+			if (m_frontIndex == m_backIndex && !m_isFull)
 				return ;
-			for (int i = m_head; i != m_tail;)
+			for (int i = m_frontIndex; i != m_backIndex;)
 			{
 				m_allocator.destroy(&m_array[i]);
 				i = (i + 1) % m_capacity;
@@ -323,9 +332,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T();
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T();
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
 		}
 
 		template <typename Arg1 >
@@ -333,9 +342,9 @@ class FixedSizeQueue
 		{
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 >
@@ -343,9 +352,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1, arg2);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
@@ -353,9 +362,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1, arg2, arg3);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
 		template <typename Arg1 >
@@ -363,9 +372,9 @@ class FixedSizeQueue
 		{
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 >
@@ -373,9 +382,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1, arg2);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
@@ -383,18 +392,18 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			new (m_array + m_tail) T(arg1, arg2, arg3);
-			m_tail = (m_tail + 1) % m_capacity;
-			m_isFull = (m_tail == m_head);
+			new (m_array + m_backIndex) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			m_isFull = (m_backIndex == m_frontIndex);
         }	
 
 		void emplace_front()
         {
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T();
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T();
+			m_isFull = (m_backIndex == m_frontIndex);
 		}
 
 		template <typename Arg1 >
@@ -402,9 +411,9 @@ class FixedSizeQueue
 		{
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1);
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 >
@@ -412,9 +421,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1, arg2);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1, arg2);
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
@@ -422,9 +431,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1, arg2, arg3);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
 		template <typename Arg1 >
@@ -432,9 +441,9 @@ class FixedSizeQueue
 		{
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1);
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 >
@@ -442,9 +451,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1, arg2);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1, arg2);
+			m_isFull = (m_backIndex == m_frontIndex);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
@@ -452,9 +461,9 @@ class FixedSizeQueue
         {
 			assert(m_array && size() < m_capacity);
 
-			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
-			new (m_array + m_head) T(arg1, arg2, arg3);
-			m_isFull = (m_tail == m_head);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
+			m_isFull = (m_backIndex == m_frontIndex);
         }	
 */
 

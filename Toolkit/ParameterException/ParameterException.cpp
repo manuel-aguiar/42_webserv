@@ -6,47 +6,47 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 10:04:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/09/13 09:04:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 21:45:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ParameterException.hpp"
 
 ParameterException::ParameterException(const char* caller, const char* syscall, const char* strerror) :
-    _totalWritten(0),
-    _curLen(0),
-    _curWriteSize(0),
-    _buffer()
+    m_totalWritten(0),
+    m_curLen(0),
+    m_curWriteSize(0),
+    m_buffer()
 {
-    _placeInBuffer(caller);
-    _placeInBuffer(": ");
-    _placeInBuffer(syscall);
-    _placeInBuffer("(): ");
-    _placeInBuffer(strerror);
-    _buffer[_totalWritten] = '\0';
+    mf_placeInBuffer(caller);
+    mf_placeInBuffer(": ");
+    mf_placeInBuffer(syscall);
+    mf_placeInBuffer("(): ");
+    mf_placeInBuffer(strerror);
+    m_buffer[m_totalWritten] = '\0';
 }
 
 ParameterException::ParameterException(const ParameterException& copy) :
-    _totalWritten(copy._totalWritten),
-    _curLen(0),
-    _curWriteSize(0)
+    m_totalWritten(copy.m_totalWritten),
+    m_curLen(0),
+    m_curWriteSize(0)
 {
-    std::memcpy(_buffer, copy._buffer, sizeof(_buffer));
+    std::memcpy(m_buffer, copy.m_buffer, sizeof(m_buffer));
 }
 
 ParameterException::~ParameterException() throw() {}
 
 const char* ParameterException::what() const throw()
 {
-    return (_buffer);
+    return (m_buffer);
 }
 
-void    ParameterException::_placeInBuffer(const char* str)
+void    ParameterException::mf_placeInBuffer(const char* str)
 {
-    _curLen = strlen(str);
-    _curWriteSize = std::min(sizeof(_buffer) - _totalWritten - 1, _curLen);
-    std::memcpy(&_buffer[_totalWritten], str, _curWriteSize);
-    _totalWritten += _curWriteSize;
+    m_curLen = strlen(str);
+    m_curWriteSize = std::min(sizeof(m_buffer) - m_totalWritten - 1, m_curLen);
+    std::memcpy(&m_buffer[m_totalWritten], str, m_curWriteSize);
+    m_totalWritten += m_curWriteSize;
 }
 
 
