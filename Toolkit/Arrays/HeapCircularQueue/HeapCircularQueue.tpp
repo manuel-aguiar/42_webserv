@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 23:26:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 23:28:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,6 +285,8 @@ class HeapCircularQueue
 				{
 					assert (m_index != -1);
 					m_index = (m_index + 1) % m_capacity;
+
+					//reached the back
 					m_index = (m_index == m_backIndex) ? -1 : m_index;
 					return (*this);
 				}
