@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                       :+:      :+:    :+:   */
+/*   test.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/08 09:55:41 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/23 15:11:38 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/12/23 15:21:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYNARRAY_HPP
+#ifndef TEST_H
 
-# define DYNARRAY_HPP
+# define TEST_H
 
-#include <memory>
-template <typename T, typename Allocator = std::allocator<T> >
-class DynArray;
+# include <iostream>
+# include <iomanip>
 
-# include "DynArray.tpp"
+#define TEST_FAIL_INFO() \
+	std::cerr   << std::setw(10) << "	File: " << __FILE__ << "\n" \
+				<< std::setw(10) << "	Line: " << __LINE__ << "\n" \
+				<< std::setw(10) << "	Function: " << __FUNCTION__ << std::endl;
 
 #endif
