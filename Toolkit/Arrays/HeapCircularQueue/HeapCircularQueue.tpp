@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 23:15:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 23:26:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,7 @@ class HeapCircularQueue
 
 			if (other.size() == 0)
 			{
-				mf_destroyAll();
-				m_frontIndex = other.m_frontIndex;
-				m_backIndex = other.m_backIndex;
+				clear();
 
 				std::cout << "other is empty" << std::endl;
 
@@ -127,10 +125,24 @@ class HeapCircularQueue
 
 		void clear()
 		{
-			mf_destroyAll();
-			
-			m_frontIndex = 0;
-			m_backIndex = 0;
+			if (mf_FrontEqualsBack())
+			{
+				// empty
+				if (m_frontIndex == -1)
+					return ;
+					
+				// array is full and not empty, set frontIndex 1 past backIndex, it will loop around
+				m_frontIndex = ((m_frontIndex + 1) % m_capacity);
+			}
+
+			for (int i = m_frontIndex; i != m_backIndex;)
+			{
+				m_allocator.destroy(&m_array[i]);
+				i = (i + 1) % m_capacity;
+			}
+
+			m_frontIndex = -1;
+			m_backIndex = -1;
 		}
 
 		const Allocator& getAllocator() const
@@ -327,18 +339,7 @@ class HeapCircularQueue
 		int							m_backIndex;
 		int							m_capacity;
 
-		// helper functions
-		
-		void	mf_destroyAll()
-		{
-			if (isEmpty())
-				return ;
-			for (int i = m_frontIndex; i != m_backIndex;)
-			{
-				m_allocator.destroy(&m_array[i]);
-				i = (i + 1) % m_capacity;
-			}
-		}
+		// helper functions		
 
 		void	mf_PopResetIndexes()
 		{
