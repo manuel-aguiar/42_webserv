@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 09:08:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 16:45:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,24 @@ template <typename T, size_t ElemCount>
 class StackArray
 {
 	public:
-		StackArray(size_t size = 0) : m_size(size)
+		StackArray(size_t construct = 0) : m_size(construct), m_internalArray(reinterpret_cast<T*>(m_array))
 		{
-			assert (size <= ElemCount);
+			assert (construct <= ElemCount);
 			for (size_t i = 0; i < m_size; i++)
-				new (&m_array[i * sizeof(T)]) T();
+				new (&m_internalArray[i]) T();
 		};
 
-        StackArray(size_t size, const T& value) : m_size(size)
+        StackArray(size_t construct, const T& value) : m_size(construct), m_internalArray(reinterpret_cast<T*>(m_array))
         {
-            assert (size <= ElemCount);
+            assert (construct <= ElemCount);
             for (size_t i = 0; i < m_size; i++)
-                new (&m_array[i * sizeof(T)]) T(value);
+                new (&m_internalArray[i]) T(value);
         }
 
 		~StackArray()
 		{
 			for (size_t i = 0; i < m_size; i++)
-				reinterpret_cast<T*>(&m_array[i * sizeof(T)])->~T();
+				m_internalArray[i].~T();
 		};
 
 		StackArray(const StackArray &other)
@@ -56,16 +56,17 @@ class StackArray
             
             size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
             for (size_t i = 0; i < smaller; i++)
-                *reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<const T*>(&other.m_array[i * sizeof(T)]);
+                m_internalArray[i] = other.m_internalArray[i];
+                
             if (smaller == m_size)
             {
                 for (size_t i = m_size; i < other.m_size; i++)
-                    new (reinterpret_cast<T*>(&m_array[i * sizeof(T)])) T(*reinterpret_cast<const T*>(&other.m_array[i * sizeof(T)]));
+                    new (&m_internalArray[i]) T(other.m_internalArray[i]);
             }
             else
             {
                 for (size_t i = other.m_size; i < m_size; i++)
-                    reinterpret_cast<T*>(&m_array[i * sizeof(T)])->~T();
+                    m_internalArray[i].~T();
             }
 
             m_size = other.m_size;
@@ -75,7 +76,7 @@ class StackArray
 		T& operator[](const size_t index)
 		{
 			assert(index < ElemCount);
-			return *(reinterpret_cast<T*>(&m_array[index * sizeof(T)]));
+			return (m_internalArray[index]);
 		}
 
 		
@@ -89,85 +90,85 @@ class StackArray
 				return (ElemCount);
 		}
 
-        T* getArray() const {return (m_array);}
+        T* getArray() const {return (m_internalArray);}
 
 
         T& at(size_t index)
         {
             assert (m_size != 0 && index < m_size);
-            return (*reinterpret_cast<T*>(m_array[index * sizeof(T)]));
+            return (m_internalArray[index]);
         }
 
 		T& front()
 		{
             assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[0]));
+			return (m_internalArray[0]);
 		}
 
 		T& back()
 		{
             assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[(m_size - 1) * sizeof(T)]));
+			return (m_internalArray[(m_size - 1)]);
 		}
 
 		void push_back(const T& value)
 		{
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(value);
+			new (m_internalArray + m_size++) T(value);
 		}
 
         void pop_back()
         {
 			assert (m_size != 0);
-            reinterpret_cast<T*>(&m_array[(m_size-- - 1) * sizeof(T)])->~T();
+            m_internalArray[(m_size-- - 1)].~T();
         }
 
 		void emplace_back()
         {
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T();
+			new (m_internalArray + m_size++) T();
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+			new (m_internalArray + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+			new (m_internalArray + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+			new (m_internalArray + m_size++) T(arg1, arg2, arg3);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+			new (m_internalArray + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+			new (m_internalArray + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
 			assert(m_size < ElemCount);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+			new (m_internalArray + m_size++) T(arg1, arg2, arg3);
         }		
 
 		class iterator
@@ -238,13 +239,14 @@ class StackArray
                 pointer m_ptr;
         };
 
-    iterator begin() { return iterator(reinterpret_cast<T*>(&m_array[0])); }
-    iterator end() { return iterator(reinterpret_cast<T*>(&m_array[m_size * sizeof(T)])); }
+    iterator begin() { return iterator(&m_internalArray[0]); }
+    iterator end() { return iterator(&m_internalArray[m_size]); }
 
 	private:
 		typedef unsigned char 		t_byte;
 		size_t 						m_size;
 		t_byte  					m_array[sizeof(T) * ElemCount];
+        T*                          m_internalArray;
 };
 
 

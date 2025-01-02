@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:45:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 09:10:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 16:45:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int TestPart2(int testNumber)
 
 		StackArray<int, 100>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
+
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -56,8 +57,8 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
         }
 
         if (std.size() != assign.size())
