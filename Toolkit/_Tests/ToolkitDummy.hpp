@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:00:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 11:00:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 15:33:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ class ToolkitDummy
         bool operator!=(const ToolkitDummy& other);
 
         const char* print() const;
+
+        int                     getValue() const;
+        const std::string&      getName() const;
 
     private:
         int             m_value;
