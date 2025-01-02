@@ -11,19 +11,18 @@
 /* ************************************************************************** */
 
 # include <iostream>
-# include "../ThreadPool/ThreadPool.hpp"
+# include "../ThreadPool.h"
 
 
 # include <unistd.h>
 # include <cstring>
 # include <sstream>
 # include <cstdlib>
+# include <vector>
 
-# include "../../MemoryPool/MemoryPool.h"
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../Arrays/StackArray/StackArray.hpp"
 # include "../../_Tests/test.h"
 
 template <typename T>
@@ -150,16 +149,21 @@ int TestPart2(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
+		const int numberOfTasks = 100;
 
 		ThreadPool 					tp(10, 20);
-		StackArray<long, 100> 		fiboExpected;
-		StackArray<long, 100>		fiboPool;
-		StackArray<FiboTask, 100> 	tasks;
+		std::vector<long> 			fiboExpected;
+		std::vector<long>			fiboPlaceResult;
+		std::vector<FiboTask> 		tasks;
 
-		for (size_t i = 0; i < fiboPool.size(); ++i)
+		fiboExpected.reserve(numberOfTasks);
+		fiboPlaceResult.reserve(numberOfTasks);
+		tasks.reserve(numberOfTasks);
+
+		for (size_t i = 0; i < numberOfTasks; ++i)
 		{
-			fiboExpected.emplace_back(fibGood(i));
-			tasks.emplace_back(i, &fiboPool[i]);
+			fiboExpected.push_back(fibGood(i));
+			tasks.push_back(FiboTask(i, &fiboPlaceResult[i]));
 			tp.addTask(tasks[i]);
 		}
 			
@@ -167,7 +171,7 @@ int TestPart2(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			if (fiboExpected[i] != fiboPool[i])
+			if (fiboExpected[i] != fiboPlaceResult[i])
 				throw std::runtime_error("Didn't calculate fibonacci right");
 		}
 
@@ -180,25 +184,6 @@ int TestPart2(int testNumber)
 	}
 	testNumber++;	
 	return (testNumber);
-}
-
-extern int TestPart3(int testNumber);
-
-
-int main(void)
-{
-
-    int testNumber = 1;
-	/******************* TEST 1 ************************/
-	std::cout << "\n************ ThreadPool tests *************" << std::endl;
-	
-    testNumber = TestPart1(testNumber);
-	testNumber = TestPart2(testNumber);
-	testNumber = TestPart3(testNumber);
-
-	std::cout << "*******************************************\n" << std::endl;
-	
-	return (0);
 }
 
 

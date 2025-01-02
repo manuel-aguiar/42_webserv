@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 18:53:54 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/02 09:56:27 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,8 +29,9 @@ BUILD_FLAGS 			= 		-DNDEBUG
 LIBS 					= 		$(EXTERN_LINKER)
 
 # Sources
-SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/test.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/testPromiseFuture.cpp		\
+SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
+								$(SRC_PATH)/ThreadPool/_Tests/test1.cpp					\
+								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
 								\
 								$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
 								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp					\
