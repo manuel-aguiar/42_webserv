@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 08:21:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 08:52:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,51 @@ int TestPart1(int testNumber)
 		if (array.size() != 100)
 			throw std::logic_error("size mismatch");
 		for (size_t i = 0; i < 100; ++i)
+		{
+			if (array[i] != i)
+				throw std::logic_error("value mismatch");
+		}
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAIL_INFO();
+	}
+
+	/*************************************************/
+
+	try
+	{
+
+		const int arraySize = 100;
+		const int initialize = 50;
+
+
+		std::cout << "TEST " << testNumber++ << ": ";
+		StackArray<ToolkitDummy, arraySize> array(initialize);
+
+		if (array.size() != initialize)
+			throw std::logic_error("size mismatch");
+
+		if (array.capacity() != arraySize)
+			throw std::logic_error("capacity mismatch");
+
+		for (int i = initialize; i < arraySize; ++i)
+		{
+			array.emplace_back(i);
+		}
+		if (array.size() != 100)
+			throw std::logic_error("size mismatch");
+		
+		for (size_t i = 0; i < initialize; ++i)
+		{
+			if (array[i] != 0)
+				throw std::logic_error("value mismatch");
+		}
+
+
+		for (size_t i = initialize; i < arraySize; ++i)
 		{
 			if (array[i] != i)
 				throw std::logic_error("value mismatch");

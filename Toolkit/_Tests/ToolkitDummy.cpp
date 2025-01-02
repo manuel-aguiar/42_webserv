@@ -23,9 +23,8 @@ ToolkitDummy::ToolkitDummy()
 }
 
 ToolkitDummy::ToolkitDummy(int value) 
-    : m_value(0), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
+    : m_value(value), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
 {
-    this->m_value = value;
 }
 
 ToolkitDummy::~ToolkitDummy() 
