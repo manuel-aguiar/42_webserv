@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 13:46:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 14:48:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,14 @@ class FixedSizeQueue
 
 		FixedSizeQueue &operator=(const FixedSizeQueue &other)
 		{
-			// assignment receiver uses its own allocator to allocate memory
 			assert(m_capacity == other.m_capacity);
+
 			if (this == &other)
 				return (*this);
+
+			
+/*
+			We'll see......
 
             if (m_allocator != other.m_allocator)
             {
@@ -82,7 +86,7 @@ class FixedSizeQueue
 			}
 
 			m_size = other.m_size;
-
+*/
 			return (*this);
 		}
 
@@ -119,9 +123,36 @@ class FixedSizeQueue
 
 		void clear()
 		{
-			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+			if (!m_size)
+				return ;
+			
+
+			/* there must be a cleaner way to do this..... */
+			if (m_head == m_tail)
+			{
+				// buffer is full
+				for (size_t i = 0; i < m_capacity; i++)
+					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+			}
+			else if (m_head < m_tail)
+			{
+				// buffer is not wrapped
+				for (size_t i = m_head; i < m_tail; i++)
+					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+			}
+			else
+			{
+				// buffer is wrapped
+				for (size_t i = 0; i < m_tail; i++)
+					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+				for (size_t i = m_head; i < m_capacity; i++)
+					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+
+			}
+			
 			m_size = 0;
+			m_head = 0;
+			m_tail = 0;
 		}
 
 		const Allocator& getAllocator() const
@@ -153,62 +184,186 @@ class FixedSizeQueue
 			return *(reinterpret_cast<T*>(&m_array[m_tail * sizeof(T)]));
 		}
 
+		// m_tail is one past last (iter::end()), so the new one will be exactly there
+		// so construct first, adjust after
 		void push_back(const T& value)
 		{
-			assert(m_size < m_capacity);
+			assert(m_array && m_size < m_capacity);
 
 			new (m_array + m_tail * sizeof(T)) T(value);
 			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
 
+		}
+
+		// m_tail is one past last (iter::end()), adjust first, delete after
+		void pop_back()
+		{
+			assert (m_size != 0);
+			
+			m_tail = ((m_tail - 1) % m_capacity + m_capacity) % m_capacity;
+			m_allocator.destroy(reinterpret_cast<T*>(&m_array[m_tail * sizeof(T)]));
+		}
+
+		//m_head is already the first, so we adjust first, construct after
+		void push_front(const T& value)
+		{
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(value);
+			m_size++;
+		}
+
+		// m_head is the first, delete first, adjust after
+		void pop_front()
+		{
+			assert (m_size != 0);
+			
+			m_allocator.destroy(reinterpret_cast<T*>(&m_array[m_head * sizeof(T)]));
+			m_head = (m_head + 1) % m_capacity;
+			m_size--;
 		}
 
 		void emplace_back()
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T();
+
+			new (m_array + m_tail * sizeof(T)) T();
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1, arg2);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1, arg2, arg3);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1, arg2);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+
+			new (m_array + m_tail * sizeof(T)) T(arg1, arg2, arg3);
+			m_tail = (m_tail + 1) % m_capacity;
+			m_size++;
         }	
+
+		void emplace_front()
+        {
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T();
+			m_size++;
+		}
+
+		template <typename Arg1 >
+		void emplace_front(Arg1& arg1)
+		{
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1);
+			m_size++;
+        }
+
+        template <typename Arg1, typename Arg2 >
+        void emplace_front(Arg1& arg1, Arg2& arg2)
+        {
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1, arg2);
+			m_size++;
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
+        {
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1, arg2, arg3);
+			m_size++;
+        }
+
+		template <typename Arg1 >
+		void emplace_front(const Arg1& arg1)
+		{
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1);
+			m_size++;
+        }
+
+        template <typename Arg1, typename Arg2 >
+        void emplace_front(const Arg1& arg1, const Arg2& arg2)
+        {
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1, arg2);
+			m_size++;
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        {
+			assert(m_array && m_size < m_capacity);
+
+			m_head = ((m_head - 1) % m_capacity + m_capacity) % m_capacity;
+			new (m_array + m_head * sizeof(T)) T(arg1, arg2, arg3);
+			m_size++;
+        }	
+
+
 
 		class iterator
 		{
@@ -219,70 +374,111 @@ class FixedSizeQueue
 				typedef std::ptrdiff_t                      difference_type;
 				typedef std::random_access_iterator_tag     iterator_category;
 
-				iterator(pointer ptr) : m_ptr(ptr) {}
-				iterator(const iterator& other) : m_ptr(other.m_ptr) {}
+				iterator(pointer array, size_t capacity, size_t index)
+					: m_array(array), m_capacity(capacity), m_index(index) {}
+
+				iterator(const iterator& other)
+					: m_array(other.m_array), m_capacity(other.m_capacity), m_index(other.m_index) {}
+
 				~iterator() {}
-				iterator& operator=(const iterator& other) { m_ptr = other.m_ptr; return *this; }
 
+				iterator& operator=(const iterator& other)
+				{
+					if (this != &other)
+					{
+						m_array = other.m_array;
+						m_capacity = other.m_capacity;
+						m_index = other.m_index;
+					}
+					return (*this);
+				}
 
-				reference operator*() const { return *m_ptr; }
-				pointer operator->() const { return m_ptr; }
+				reference operator*() const { return (m_array[m_index * sizeof(T)]); }
+				pointer operator->() const { return (&m_array[m_index * sizeof(T)]); }
 
 				iterator& operator++()
 				{
-					++m_ptr;
-					return *this;
+					m_index = (m_index + 1) % m_capacity;
+					return (*this);
 				}
 
 				iterator operator++(int)
 				{
 					iterator tmp = *this;
-					++m_ptr;
-					return tmp;
+					++(*this);
+					return (tmp);
 				}
 
 				iterator& operator--()
 				{
-					--m_ptr;
-					return *this;
+					m_index = ((m_index - 1) % m_capacity + m_capacity) % m_capacity;
+					return *(this);
 				}
 
 				iterator operator--(int)
 				{
 					iterator tmp = *this;
-					--m_ptr;
-					return tmp;
+					--(*this);
+					return (tmp);
 				}
 
-				bool operator==(const iterator& other) const { return m_ptr == other.m_ptr; }
-				bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
-
-
-				reference operator[](size_t index) const { return *(m_ptr + index); }
-				iterator operator+(size_t n) const { return iterator(m_ptr + n); }
-				iterator operator-(size_t n) const { return iterator(m_ptr - n); }
-				difference_type operator-(const iterator& other) const { return m_ptr - other.m_ptr; }
-
-				iterator& operator+=(size_t n)
+				reference operator[](difference_type offset) const
 				{
-					m_ptr += n;
-					return *this;
+					size_t logical_index = (m_index + offset) % m_capacity;
+					return (m_array[logical_index * sizeof(T)]);
 				}
-				iterator& operator-=(size_t n)
+
+				iterator operator+(difference_type offset) const
 				{
-					m_ptr -= n;
-					return *this;
+					size_t logical_index = (m_index + offset) % m_capacity;
+					return (iterator(m_array, m_capacity, logical_index));
 				}
+
+				iterator operator-(difference_type offset) const
+				{
+					size_t logical_index = ((m_index - offset) % m_capacity + m_capacity) % m_capacity; // Wrap-around
+					return (iterator(m_array, m_capacity, logical_index));
+				}
+
+				difference_type operator-(const iterator& other) const
+				{
+					return static_cast<difference_type>(m_index) - static_cast<difference_type>(other.m_index);
+				}
+
+				iterator& operator+=(difference_type offset)
+				{
+					m_index = (m_index + offset) % m_capacity; // Wrap-around
+					return (*this);
+				}
+
+				iterator& operator-=(difference_type offset)
+				{
+					m_index = ((m_index - offset) % m_capacity + m_capacity) % m_capacity; // Wrap-around
+					return (*this);
+				}
+
+				bool operator==(const iterator& other) const { return (m_index == other.m_index); }
+				bool operator!=(const iterator& other) const { return (!(*this == other)); }
 
 			private:
-				pointer m_ptr;
+				pointer m_array;       // Pointer to the array
+				size_t m_capacity;     // Capacity of the Circular Buffer
+				size_t m_index;        // Logical index within the Circular Buffer
 		};
 
-    iterator begin() { return iterator(reinterpret_cast<T*>(&m_array[0])); }
-    iterator end() { return iterator(reinterpret_cast<T*>(&m_array[m_size * sizeof(T)])); }
+		iterator begin() 
+		{ 
+			return iterator(reinterpret_cast<T*>(m_array), m_capacity, m_head); 
+		}
+
+		iterator end() 
+		{ 
+			return iterator(reinterpret_cast<T*>(m_array), m_capacity, m_tail); 
+		}
 
 	private:
 		typedef unsigned char 		t_byte;
+		
 		Allocator					m_allocator;
 		t_byte*						m_array;
 
