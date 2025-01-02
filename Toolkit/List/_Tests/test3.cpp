@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 11:33:16 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:39:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 11:43:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ int TestPart3(int testNumber)
         if (stdList.size() == 99 && list.size() != 99)
             throw std::logic_error("Erase operation did not behave as expected");
             
-        std::cout << "  PASSED" << std::endl;
+        std::cout << "	PASSED" << std::endl;
     }
     catch (const std::exception& e)
     {
