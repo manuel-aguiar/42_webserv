@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:33:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 23:13:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,9 @@ class HeapCircularQueue
 		HeapCircularQueue(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
 			m_array(m_allocator.allocate(capacity)),
-			m_frontIndex(0),
-			m_backIndex(0), 
-			m_capacity(capacity),
-			m_isFull(false)
+			m_frontIndex(-1),
+			m_backIndex(-1), 
+			m_capacity(capacity)
 		{
 			assert(capacity);
 		}
@@ -113,7 +112,7 @@ class HeapCircularQueue
 
 		size_t size() const
 		{
-			if (m_isFull)
+			if (isFull())
 				return m_capacity;
 			else if (m_frontIndex <= m_backIndex)
 				return m_backIndex - m_frontIndex;
@@ -151,14 +150,14 @@ class HeapCircularQueue
 
 		T& front()
 		{
-			assert (size() != 0);
+			assert (!isEmpty());
 			
 			return (m_array[m_frontIndex]);
 		}
 
 		T& back()
 		{
-			assert (size() != 0);
+			assert (!isEmpty());
 
 			size_t position;
 
@@ -171,37 +170,45 @@ class HeapCircularQueue
 		// so construct first, adjust after
 		bool push_back(const T& value)
 		{
-			if (m_isFull)
-				return (false);
-
+			if (mf_FrontEqualsBack())
+			{
+				if (m_frontIndex != -1)
+					return (false);
+				m_frontIndex = m_backIndex = 0;
+			}
 			new (m_array + m_backIndex) T(value);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
 			return (true);
 		}
 
 		// m_backIndex is one past last (iter::end()), adjust first, delete after
 		bool pop_back()
 		{
-			if (!m_isFull && m_frontIndex == m_backIndex)
+			if (isEmpty())
 				return (false);
 			
 			m_backIndex = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
 			m_allocator.destroy(&m_array[m_backIndex]);
-			m_isFull = false;
+			mf_PopResetIndexes();
 			return (true);
 		}
+
+
 
 		//m_frontIndex is already the first, so we adjust first, construct after
 		bool push_front(const T& value)
 		{
-			if (m_isFull)
-				return (false);
+			if (mf_FrontEqualsBack())
+			{
+				if (m_frontIndex != -1)
+					return (false);
+				m_frontIndex = m_backIndex = 0;
+			}
 			
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(value);
 
-			m_isFull = (m_backIndex == m_frontIndex);
+			//m_isFull = (m_backIndex == m_frontIndex);
 
 			return (true);
 		}
@@ -209,15 +216,25 @@ class HeapCircularQueue
 		// m_frontIndex is the first, delete first, adjust after
 		bool pop_front()
 		{
-			if (!m_isFull && m_frontIndex == m_backIndex)
+			if (isEmpty())
 				return (false);
 			
 			m_allocator.destroy(&m_array[m_frontIndex]);
 			m_frontIndex = (m_frontIndex + 1) % m_capacity;
-			m_isFull = false;
+			mf_PopResetIndexes();
 			return (true);
 		}
 
+
+		bool isEmpty() const
+		{
+			return (m_frontIndex == m_backIndex && m_frontIndex == -1);
+		}
+
+		bool isFull() const
+		{
+			return (m_frontIndex == m_backIndex && m_frontIndex != -1);
+		}
 
 
 		class iterator
@@ -302,25 +319,38 @@ class HeapCircularQueue
 		}
 
 	private:
-		typedef unsigned char 		t_byte;
-		
+		// private member variables
 		Allocator					m_allocator;
 		T*							m_array;
 
 		int							m_frontIndex;
 		int							m_backIndex;
 		int							m_capacity;
-		bool						m_isFull;
 
+		// helper functions
+		
 		void	mf_destroyAll()
 		{
-			if (m_frontIndex == m_backIndex && !m_isFull)
+			if (isEmpty())
 				return ;
 			for (int i = m_frontIndex; i != m_backIndex;)
 			{
 				m_allocator.destroy(&m_array[i]);
 				i = (i + 1) % m_capacity;
 			}
+		}
+
+		void	mf_PopResetIndexes()
+		{
+			if (m_frontIndex != m_backIndex)
+				return ;
+			m_frontIndex = -1;
+			m_backIndex = -1;
+		}
+		
+		bool mf_FrontEqualsBack() const
+		{
+			return (m_frontIndex == m_backIndex);
 		}
 };
 
