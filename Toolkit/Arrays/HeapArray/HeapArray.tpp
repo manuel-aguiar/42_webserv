@@ -26,7 +26,7 @@ class HeapArray
 	public:
 		HeapArray(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
-			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(capacity))), 
+			m_array(m_allocator.allocate(capacity)), 
 			m_size(0), 
 			m_capacity(capacity)
 		{
@@ -35,19 +35,19 @@ class HeapArray
 
 		HeapArray(const size_t capacity, const T& value, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
-			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(capacity))), 
+			m_array(m_allocator.allocate(capacity)), 
 			m_size(capacity), 
 			m_capacity(capacity)
 		{
 			assert(capacity);
 			for (size_t i = 0; i < size; i++)
-				m_allocator.construct(reinterpret_cast<T*>(&m_array[ + i * sizeof(T)]), T(value));
+				m_allocator.construct(&m_array[i], T(value));
 		}
 
 
 		HeapArray(const HeapArray &other) : 
 			m_allocator(other.m_allocator),
-			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(other.m_capacity))), 
+			m_array(m_allocator.allocate(other.m_capacity)), 
 			m_size(0), 
 			m_capacity(other.m_capacity)
 		{
@@ -57,8 +57,8 @@ class HeapArray
 		~HeapArray()
 		{
 			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
-			m_allocator.deallocate(reinterpret_cast<T*>(m_array), m_capacity);
+				m_allocator.destroy(&m_array[i]);
+			m_allocator.deallocate(m_array, m_capacity);
 		}
 
 		HeapArray &operator=(const HeapArray &other)
@@ -71,27 +71,24 @@ class HeapArray
             if (m_allocator != other.m_allocator)
             {
                 clear();
-               	m_allocator.deallocate(reinterpret_cast<T*>(m_array), m_capacity);
+               	m_allocator.deallocate(m_array, m_capacity);
                 m_allocator = other.m_allocator;
-				m_array = reinterpret_cast<t_byte*>(m_allocator.allocate(m_capacity));
+				m_array = m_allocator.allocate(m_capacity);
             }
 
 			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
 			for (size_t i = 0; i < smaller; ++i)
-				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<T*>(&other.m_array[i * sizeof(T)]);
+				m_array[i] = other.m_array[i];
 			
 			if (smaller == m_size)
 			{
 				for (size_t i = smaller; i < other.m_size; ++i)
-					m_allocator.construct(
-						reinterpret_cast<T*>(&m_array[i * sizeof(T)]), 
-						*reinterpret_cast<T*>(&other.m_array[i * sizeof(T)])
-					);
+					m_allocator.construct(&m_array[i], other.m_array[i]);
 			}
 			else
 			{
 				for (size_t i = smaller; i < m_size; ++i)
-					m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+					m_allocator.destroy(&m_array[i]);
 			}
 
 			m_size = other.m_size;
@@ -102,7 +99,7 @@ class HeapArray
 		void move(HeapArray& from)
 		{
 			clear();
-			m_allocator.deallocate(reinterpret_cast<T*>(&m_array[0]), m_capacity);
+			m_allocator.deallocate(&m_array[0], m_capacity);
 
 			m_array = from.m_array;
 			m_size = from.m_size;
@@ -113,13 +110,13 @@ class HeapArray
 		T& operator[](const size_t index)
 		{
 			assert(index < m_capacity);
-			return *(reinterpret_cast<T*>(&m_array[index * sizeof(T)]));
+			return (m_array[index]);
 		}
 
 		const T& operator[](const size_t index) const
 		{
 			assert(index < m_capacity);
-			return *(reinterpret_cast<T*>(&m_array[index * sizeof(T)]));
+			return (m_array[index]);
 		}
 
 		size_t size() const
@@ -135,7 +132,7 @@ class HeapArray
 		void clear()
 		{
 			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
+				m_allocator.destroy(&m_array[i]);
 			m_size = 0;
 		}
 
@@ -144,85 +141,92 @@ class HeapArray
 			return (m_allocator);
 		}
 
-        T* getArray() const {return reinterpret_cast<T*>(&m_array[0]);}
+        T* getArray() const {return (m_array);}
 
 
         T& at(size_t index)
         {
             assert (m_size != 0 && index < m_size);
-            return (*reinterpret_cast<T*>(m_array[index * sizeof(T)]));
+            return (m_array[index]);
         }
 
 		T& front()
 		{
             assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[0]));
+			return (m_array[0]);
 		}
 
 		T& back()
 		{
             assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[(m_size - 1) * sizeof(T)]));
+			return (m_array[(m_size - 1)]);
 		}
 
 		void push_back(const T& value)
 		{
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(value);
+
+			new (m_array + m_size++) T(value);
 		}
 
         void pop_back()
         {
 			assert (m_size != 0);
-            reinterpret_cast<T*>(&m_array[(m_size-- - 1) * sizeof(T)])->~T();
+
+			m_allocator.destroy(&m_array[(m_size-- - 1)]);
         }
 
 		void emplace_back()
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T();
+
+			new (m_array + m_size++) T();
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+
+			new (m_array + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+
+			new (m_array + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+
+			new (m_array + m_size++) T(arg1, arg2, arg3);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1);
+
+			new (m_array + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2);
+			new (m_array + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
 			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(arg1, arg2, arg3);
+			new (m_array + m_size++) T(arg1, arg2, arg3);
         }	
 
 		class iterator
@@ -293,13 +297,12 @@ class HeapArray
 				pointer m_ptr;
 		};
 
-    iterator begin() { return iterator(reinterpret_cast<T*>(&m_array[0])); }
-    iterator end() { return iterator(reinterpret_cast<T*>(&m_array[m_size * sizeof(T)])); }
+    iterator begin() { return iterator(&m_array[0]); }
+    iterator end() { return iterator(&m_array[m_size]); }
 
 	private:
-		typedef unsigned char 		t_byte;
 		Allocator					m_allocator;
-		t_byte*						m_array;
+		T*							m_array;
 		size_t						m_size;
 		const size_t				m_capacity;
 };
