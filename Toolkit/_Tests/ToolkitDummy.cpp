@@ -51,12 +51,12 @@ ToolkitDummy& ToolkitDummy::operator=(const ToolkitDummy& other)
     return *this;
 }
 
-bool ToolkitDummy::operator==(const ToolkitDummy& other) 
+bool ToolkitDummy::operator==(const ToolkitDummy& other) const
 {
     return (m_value == other.m_value && m_name == other.m_name);
 }
 
-bool ToolkitDummy::operator!=(const ToolkitDummy& other) 
+bool ToolkitDummy::operator!=(const ToolkitDummy& other) const
 {
     return !(m_value == other.m_value && m_name == other.m_name);
 }

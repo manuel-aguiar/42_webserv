@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:07:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:09:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 09:15:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ class ToolkitBase
         ToolkitBase& operator=(const ToolkitBase& other);
         virtual ~ToolkitBase();
 
-        bool operator==(const ToolkitBase& other);
-        bool operator!=(const ToolkitBase& other);
+        bool operator==(const ToolkitBase& other) const;
+        bool operator!=(const ToolkitBase& other) const;
 
         virtual void print();
 

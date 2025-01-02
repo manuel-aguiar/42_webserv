@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:00:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 11:00:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 09:15:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ class ToolkitDummy
         ToolkitDummy(const ToolkitDummy& other);
         ToolkitDummy& operator=(const ToolkitDummy& other);
 
-        bool operator==(const ToolkitDummy& other);
-        bool operator!=(const ToolkitDummy& other);
+        bool operator==(const ToolkitDummy& other) const;
+        bool operator!=(const ToolkitDummy& other) const;
 
         const char* print() const;
 
