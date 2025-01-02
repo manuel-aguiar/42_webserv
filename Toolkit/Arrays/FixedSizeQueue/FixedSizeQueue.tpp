@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 16:10:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 18:52:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 # define FIXEDSIZEQUEUE_TPP
 
-# include "../DynArray/DynArray.hpp"
-
+# include <cassert>
+# include <iostream>
 
 template <typename T, typename Allocator>
 class FixedSizeQueue
@@ -26,8 +26,8 @@ class FixedSizeQueue
 			m_array(m_allocator.allocate(capacity)),
 			m_head(0),
 			m_tail(0), 
-			m_size(0), 
-			m_capacity(capacity)
+			m_capacity(capacity),
+			m_isFull(false)
 		{
 			assert(capacity);
 		}
@@ -36,7 +36,6 @@ class FixedSizeQueue
 		FixedSizeQueue(const FixedSizeQueue &other) : 
 			m_allocator(other.m_allocator),
 			m_array(m_allocator.allocate(other.m_capacity)), 
-			m_size(0), 
 			m_capacity(other.m_capacity)
 		{
 			*this = other;
@@ -44,8 +43,7 @@ class FixedSizeQueue
 
 		~FixedSizeQueue()
 		{
-			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(&m_array[i]);
+			clear();
 			m_allocator.deallocate(m_array, m_capacity);
 		}
 
@@ -53,40 +51,42 @@ class FixedSizeQueue
 		{
 			assert(m_capacity == other.m_capacity);
 
+
+			std::cout << "my capacity: " << m_capacity << " other capacity: " << other.m_capacity << std::endl;
+			
+			std::cout << "copy assignment called" << std::endl;
+			std::cout << "mySize: " << size() << " otherSize: " << other.size() << std::endl;
 			if (this == &other)
 				return (*this);
 
-			
-/*
-			We'll see......
-
-            if (m_allocator != other.m_allocator)
-            {
-                clear();
-               	m_allocator.deallocate(reinterpret_cast<T*>(m_array), m_capacity);
-                m_allocator = other.m_allocator;
-				m_array = reinterpret_cast<t_byte*>(m_allocator.allocate(m_capacity));
-            }
-
-			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
-			for (size_t i = 0; i < smaller; ++i)
-				*&m_array[i]) = *reinterpret_cast<const T*>(other.m_array[i]);
-			if (smaller == m_size)
+			if (other.size() == 0)
 			{
-				for (size_t i = smaller; i < other.m_size; ++i)
-					m_allocator.construct(
-						&m_array[i]), 
-						*&other.m_array[i])
-					);
-			}
-			else
-			{
-				for (size_t i = smaller; i < m_size; ++i)
-					m_allocator.destroy(&m_array[i]));
+				mf_destroyAll();
+				m_head = other.m_head;
+				m_tail = other.m_tail;
+
+				std::cout << "other is empty" << std::endl;
+
+				return (*this);
 			}
 
-			m_size = other.m_size;
-*/
+			if (size() == 0)
+			{
+				for (size_t i = other.m_head; i != other.m_tail;)
+				{
+					new (m_array + i) T(other.m_array[i]);
+					i = (i + 1) % m_capacity;
+				}
+				m_head = other.m_head;
+				m_tail = other.m_tail;
+
+				std::cout << "this is empty" << std::endl;
+				return (*this);
+			}
+
+			m_head = other.m_head;
+			m_tail = other.m_tail;
+			std::cout << "this is not empty but hey" << std::endl;
 			return (*this);
 		}
 
@@ -113,7 +113,12 @@ class FixedSizeQueue
 
 		size_t size() const
 		{
-			return (m_size);
+			if (m_isFull)
+				return m_capacity;
+			else if (m_head <= m_tail)
+				return m_tail - m_head;
+			else 
+				return m_capacity - (m_head - m_tail);
 		}
 
 		size_t capacity()
@@ -123,34 +128,8 @@ class FixedSizeQueue
 
 		void clear()
 		{
-			if (!m_size)
-				return ;
+			mf_destroyAll();
 			
-
-			/* there must be a cleaner way to do this..... */
-			if (m_head == m_tail)
-			{
-				// buffer is full
-				for (size_t i = 0; i < m_capacity; i++)
-					m_allocator.destroy(&m_array[i]);
-			}
-			else if (m_head < m_tail)
-			{
-				// buffer is not wrapped
-				for (size_t i = m_head; i < m_tail; i++)
-					m_allocator.destroy(&m_array[i]);
-			}
-			else
-			{
-				// buffer is wrapped
-				for (size_t i = 0; i < m_tail; i++)
-					m_allocator.destroy(&m_array[i]);
-				for (size_t i = m_head; i < m_capacity; i++)
-					m_allocator.destroy(&m_array[i]);
-
-			}
-			
-			m_size = 0;
 			m_head = 0;
 			m_tail = 0;
 		}
@@ -162,7 +141,7 @@ class FixedSizeQueue
 
         T& at(size_t index)
         {
-            assert (m_size != 0 && index < m_size);
+            assert (size() != 0 && index < size());
 
 			size_t position;
 
@@ -172,14 +151,14 @@ class FixedSizeQueue
 
 		T& front()
 		{
-			assert (m_size != 0);
+			assert (size() != 0);
 			
 			return (m_array[m_head]);
 		}
 
 		T& back()
 		{
-			assert (m_size != 0);
+			assert (size() != 0);
 
 			size_t position;
 
@@ -192,179 +171,180 @@ class FixedSizeQueue
 		// so construct first, adjust after
 		void push_back(const T& value)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(value);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
 		}
 
 		// m_tail is one past last (iter::end()), adjust first, delete after
 		void pop_back()
 		{
-			assert (m_size != 0);
+			assert (size() != 0);
 			
 			m_tail = (m_tail == 0) ? m_capacity - 1 : m_tail - 1;
 			m_allocator.destroy(&m_array[m_tail]);
+			m_isFull = false;
 		}
 
 		//m_head is already the first, so we adjust first, construct after
 		void push_front(const T& value)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 			
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 
 			new (m_array + m_head) T(value);
-			m_size++;
+			m_isFull = (m_tail == m_head);
 		}
 
 		// m_head is the first, delete first, adjust after
 		void pop_front()
 		{
-			assert (m_size != 0);
+			assert (size() != 0);
 			
 			m_allocator.destroy(&m_array[m_head]);
 			m_head = (m_head + 1) % m_capacity;
-			m_size--;
+			m_isFull = (m_tail == m_head);
 		}
 
 		void emplace_back()
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T();
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1, arg2);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1, arg2, arg3);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1, arg2);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_tail) T(arg1, arg2, arg3);
 			m_tail = (m_tail + 1) % m_capacity;
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }	
 
 		void emplace_front()
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T();
-			m_size++;
+			m_isFull = (m_tail == m_head);
 		}
 
 		template <typename Arg1 >
 		void emplace_front(Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_front(Arg1& arg1, Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1, arg2);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1, arg2, arg3);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
 		template <typename Arg1 >
 		void emplace_front(const Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_front(const Arg1& arg1, const Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1, arg2);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
+			assert(m_array && size() < m_capacity);
 
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 			new (m_array + m_head) T(arg1, arg2, arg3);
-			m_size++;
+			m_isFull = (m_tail == m_head);
         }	
 
 
@@ -467,12 +447,12 @@ class FixedSizeQueue
 			private:
 				pointer			m_array;       
 				size_t			m_capacity;     
-				size_t			m_index;        
+				size_t			m_index;
+				size_t			m_tail;
 		};
 
 		iterator begin() 
 		{ 
-			std::cout << "m_head " << m_head << std::endl;
 			return iterator(m_array, m_capacity, m_head); 
 		}
 
@@ -489,8 +469,20 @@ class FixedSizeQueue
 
 		size_t						m_head;
 		size_t						m_tail;
-		size_t						m_size;
-		const size_t				m_capacity;
+		size_t						m_capacity;
+
+		bool						m_isFull;
+
+		void	mf_destroyAll()
+		{
+			if (m_head == m_tail && !m_isFull)
+				return ;
+			for (size_t i = m_head; i != m_tail;)
+			{
+				m_allocator.destroy(&m_array[i]);
+				i = (i + 1) % m_capacity;
+			}
+		}
 };
 
 #endif

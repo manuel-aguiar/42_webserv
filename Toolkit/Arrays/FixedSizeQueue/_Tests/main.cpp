@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 15:43:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 18:39:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,66 @@ extern int TestPart3(int testNumber);
 extern int TestPart4(int testNumber);
 extern int TestPart5(int testNumber);
 
+int ThisTest(int testNumber)
+{
+
+/******************************************************************** */
+
+    try
+	{
+		std::cout << "TEST " << testNumber << ": ";
+		std::vector<int> 		std;
+		FixedSizeQueue<int> 			queue(200);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			queue.emplace_back(i);
+		}
+		if (std.size() != queue.size())
+			throw std::logic_error("size mismatch");
+
+		FixedSizeQueue<int>::iterator it = queue.begin();
+
+        FixedSizeQueue<int> assign(200);
+		assign.push_front(123);
+		assign.push_front(456);
+        assign = queue;
+
+		FixedSizeQueue<int>::iterator itAssign = assign.begin();
+        it = queue.begin();
+        
+		std::cout << "testing copy assignment" << std::endl;
+        for ( ; it != queue.end() && itAssign != assign.end(); ++it, ++itAssign)
+        {
+			std::cout << "queue: " << *it << " assign: " << *itAssign << std::endl;
+            if (*it != *itAssign)
+                throw std::logic_error("copy assignment, value mismatch");
+        }
+
+        if (queue.size() != assign.size())
+			throw std::logic_error("copy assignment, size mismatch");
+
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
+	}
+    testNumber++;
+
+    return (testNumber);
+}
+
 int main()
 {
     int testNumber = 1;
     
 	std::cout << "\n*************** FixedSizeQueue tests ***************" << std::endl;
 	
-    //testNumber = TestPart1(testNumber);
-    //testNumber = TestPart2(testNumber);
+    //testNumber = ThisTest(testNumber);
     //testNumber = TestPart3(testNumber);
     //testNumber = TestPart4(testNumber);
     testNumber = TestPart5(testNumber);

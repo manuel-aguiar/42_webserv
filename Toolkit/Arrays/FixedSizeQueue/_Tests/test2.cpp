@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 14:47:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 17:47:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,12 @@ int TestPart2(int testNumber)
 		}
 
         FixedSizeQueue<int> assign(100);
+		assign.push_front(123);
+		assign.push_front(456);
         assign = array;
 
-        it = assign.begin();
+		FixedSizeQueue<int>::iterator itAssign = assign.begin();
+        it = array.begin();
         iter = std.begin();
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)

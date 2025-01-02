@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 15:55:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 18:41:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <list>
 
 // Project headers
 # include "../FixedSizeQueue.hpp"
@@ -37,18 +38,12 @@ int TestPart5(int testNumber)
             throw std::logic_error("front should be 2");
 		if (queue[1] != 5)
 		{
-			std::cout << "queue[1]: " << queue[1] << std::endl;
 			throw std::logic_error("back should be 5");
 		}
-		
-		FixedSizeQueue<int>::iterator it = queue.begin();
-		std::cout << "queue: " << *it << std::endl;
-		/*
-		for ( ; it != queue.end(); ++it)
+		for (FixedSizeQueue<int>::iterator it = queue.begin(); it != queue.end(); ++it)
 		{
-			std::cout << "queue: " << *it << std::endl;
+			std::cout << *it << std::endl;
 		}
-		*/
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -57,6 +52,40 @@ int TestPart5(int testNumber)
         TEST_FAIL_INFO();
 	}
 
+    try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		FixedSizeQueue<int> 			queue(200);
+		std::list<int> 					list;
+
+		for (int i = 0; i < 100; ++i)
+		{
+			list.push_back(i);
+			queue.push_back(i);
+
+			list.push_front(i);
+			queue.push_front(i);
+		}
+		if (list.size() != queue.size())
+			throw std::logic_error("size mismatch");
+		
+		FixedSizeQueue<int>::iterator it = queue.begin();
+		std::list<int>::iterator iter = list.begin();
+
+		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
+	}
 
 
     return (testNumber);
