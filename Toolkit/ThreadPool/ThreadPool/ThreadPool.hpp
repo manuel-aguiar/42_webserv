@@ -82,7 +82,6 @@ class ThreadPool
 		pthread_mutex_t						m_statusLock;
 		pthread_cond_t						m_exitSignal;
 
-		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator m_exiting;
 
 
 /*

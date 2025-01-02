@@ -1,51 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HeapArray.tpp                                       :+:      :+:    :+:   */
+/*   FixedSizeQueue.tpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 16:40:53 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/02 13:46:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEAPARRAY_TPP
+#ifndef FIXEDSIZEQUEUE_TPP
 
-# define HEAPARRAY_TPP
+# define FIXEDSIZEQUEUE_TPP
 
-// C++ headers
-# include <cstdlib>
-# include <cassert>
-# include <memory>
-# include <cstring>
+# include "../DynArray/DynArray.hpp"
+
 
 template <typename T, typename Allocator>
-class HeapArray
+class FixedSizeQueue
 {
 	public:
-		HeapArray(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
+		FixedSizeQueue(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
 			m_allocator(allocator),
-			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(capacity))), 
+			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(capacity))),
+			m_head(0),
+			m_tail(0), 
 			m_size(0), 
 			m_capacity(capacity)
 		{
 			assert(capacity);
 		}
 
-		HeapArray(const size_t capacity, const T& value, const Allocator& allocator = Allocator()) : 
-			m_allocator(allocator),
-			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(capacity))), 
-			m_size(capacity), 
-			m_capacity(capacity)
-		{
-			assert(capacity);
-			for (size_t i = 0; i < size; i++)
-				m_allocator.construct(reinterpret_cast<T*>(&m_array[ + i * sizeof(T)]), T(value));
-		}
 
-
-		HeapArray(const HeapArray &other) : 
+		FixedSizeQueue(const FixedSizeQueue &other) : 
 			m_allocator(other.m_allocator),
 			m_array(reinterpret_cast<t_byte*>(m_allocator.allocate(other.m_capacity))), 
 			m_size(0), 
@@ -54,17 +42,17 @@ class HeapArray
 			*this = other;
 		}
 
-		~HeapArray()
+		~FixedSizeQueue()
 		{
 			for (size_t i = 0; i < m_size; i++)
 				m_allocator.destroy(reinterpret_cast<T*>(&m_array[i * sizeof(T)]));
 			m_allocator.deallocate(reinterpret_cast<T*>(m_array), m_capacity);
 		}
 
-		HeapArray &operator=(const HeapArray &other)
+		FixedSizeQueue &operator=(const FixedSizeQueue &other)
 		{
+			// assignment receiver uses its own allocator to allocate memory
 			assert(m_capacity == other.m_capacity);
-			
 			if (this == &other)
 				return (*this);
 
@@ -78,8 +66,7 @@ class HeapArray
 
 			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
 			for (size_t i = 0; i < smaller; ++i)
-				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<T*>(&other.m_array[i * sizeof(T)]);
-			
+				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<const T*>(other.m_array[i * sizeof(T)]);
 			if (smaller == m_size)
 			{
 				for (size_t i = smaller; i < other.m_size; ++i)
@@ -99,27 +86,25 @@ class HeapArray
 			return (*this);
 		}
 
-		void move(HeapArray& from)
-		{
-			clear();
-			m_allocator.deallocate(reinterpret_cast<T*>(&m_array[0]), m_capacity);
-
-			m_array = from.m_array;
-			m_size = from.m_size;
-			from.m_array = NULL;
-			from.m_size = 0;
-		}
 
 		T& operator[](const size_t index)
 		{
 			assert(index < m_capacity);
-			return *(reinterpret_cast<T*>(&m_array[index * sizeof(T)]));
+
+			size_t position;
+
+			position = (m_head + index) % m_capacity;
+			return *(reinterpret_cast<T*>(&m_array[position * sizeof(T)]));
 		}
 
 		const T& operator[](const size_t index) const
 		{
 			assert(index < m_capacity);
-			return *(reinterpret_cast<T*>(&m_array[index * sizeof(T)]));
+			
+			size_t position;
+
+			position = (m_head + index) % m_capacity;
+			return *(reinterpret_cast<T*>(&m_array[position * sizeof(T)]));
 		}
 
 		size_t size() const
@@ -144,38 +129,38 @@ class HeapArray
 			return (m_allocator);
 		}
 
-        T* getArray() const {return reinterpret_cast<T*>(&m_array[0]);}
-
-
         T& at(size_t index)
         {
             assert (m_size != 0 && index < m_size);
-            return (*reinterpret_cast<T*>(m_array[index * sizeof(T)]));
+
+			size_t position;
+
+			position = (m_head + index) % m_capacity;
+			return *(reinterpret_cast<T*>(&m_array[position * sizeof(T)]));
         }
 
 		T& front()
 		{
-            assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[0]));
+			assert (m_size != 0);
+			
+			return *(reinterpret_cast<T*>(&m_array[m_head * sizeof(T)]));
 		}
 
 		T& back()
 		{
-            assert (m_size != 0);
-			return (*reinterpret_cast<T*>(&m_array[(m_size - 1) * sizeof(T)]));
+			assert (m_size != 0);
+			
+			return *(reinterpret_cast<T*>(&m_array[m_tail * sizeof(T)]));
 		}
 
 		void push_back(const T& value)
 		{
-			assert(m_array && m_size < m_capacity);
-			new (m_size++ * sizeof(T) + m_array) T(value);
-		}
+			assert(m_size < m_capacity);
 
-        void pop_back()
-        {
-			assert (m_size != 0);
-            reinterpret_cast<T*>(&m_array[(m_size-- - 1) * sizeof(T)])->~T();
-        }
+			new (m_array + m_tail * sizeof(T)) T(value);
+			m_tail = (m_tail + 1) % m_capacity;
+
+		}
 
 		void emplace_back()
         {
@@ -300,6 +285,9 @@ class HeapArray
 		typedef unsigned char 		t_byte;
 		Allocator					m_allocator;
 		t_byte*						m_array;
+
+		size_t						m_head;
+		size_t						m_tail;
 		size_t						m_size;
 		const size_t				m_capacity;
 };

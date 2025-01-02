@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Exceptions.h                                       :+:      :+:    :+:   */
+/*   FixedSizeQueue.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 16:54:39 by manuel            #+#    #+#             */
-/*   Updated: 2024/10/11 16:54:59 by manuel           ###   ########.fr       */
+/*   Created: 2025/01/02 13:04:13 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/02 13:37:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXCEPTIONS_H
+#ifndef FIXEDSIZEQUEUE_HPP
 
-# define EXCEPTIONS_H
+# define FIXEDSIZEQUEUE_HPP
 
-# include "ParameterException/ParameterException.hpp"
+#include <memory>
 
+template <typename T, typename Allocator = std::allocator<T> >
+class FixedSizeQueue;
+
+# include "FixedSizeQueue.tpp"
 
 #endif
