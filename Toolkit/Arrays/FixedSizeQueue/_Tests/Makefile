@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/02 15:17:33 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/02 18:59:01 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,11 +22,6 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
 SRCS					=		$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/test1.cpp	\
-								$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/test2.cpp	\
-								$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/test3.cpp	\
-								$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/test4.cpp	\
-								$(SRC_PATH)/Arrays/FixedSizeQueue/_Tests/test5.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

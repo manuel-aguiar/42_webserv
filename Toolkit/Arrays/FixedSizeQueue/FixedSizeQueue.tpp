@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 18:52:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 19:16:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class FixedSizeQueue
 
 			if (size() == 0)
 			{
-				for (size_t i = other.m_head; i != other.m_tail;)
+				for (int i = other.m_head; i != other.m_tail;)
 				{
 					new (m_array + i) T(other.m_array[i]);
 					i = (i + 1) % m_capacity;
@@ -93,7 +93,7 @@ class FixedSizeQueue
 
 		T& operator[](const size_t index)
 		{
-			assert(index < m_capacity);
+			assert((int)index < m_capacity);
 
 			size_t position;
 
@@ -171,7 +171,7 @@ class FixedSizeQueue
 		// so construct first, adjust after
 		void push_back(const T& value)
 		{
-			assert(m_array && size() < m_capacity);
+			assert(m_array && (int)size() < m_capacity);
 
 			new (m_array + m_tail) T(value);
 			m_tail = (m_tail + 1) % m_capacity;
@@ -191,7 +191,7 @@ class FixedSizeQueue
 		//m_head is already the first, so we adjust first, construct after
 		void push_front(const T& value)
 		{
-			assert(m_array && size() < m_capacity);
+			assert(m_array && (int)size() < m_capacity);
 			
 			m_head = (m_head == 0) ? m_capacity - 1 : m_head - 1;
 
@@ -209,6 +209,116 @@ class FixedSizeQueue
 			m_isFull = (m_tail == m_head);
 		}
 
+
+
+		class iterator
+		{
+			public:
+				typedef T                                   value_type;
+				typedef T*                                  pointer;
+				typedef T&                                  reference;
+				typedef std::ptrdiff_t                      difference_type;
+				typedef std::random_access_iterator_tag     iterator_category;
+
+				iterator(pointer array, size_t capacity, size_t tail, size_t index)
+					: m_array(array), m_capacity(capacity), m_tail(tail), m_index(index) {}
+
+				iterator(const iterator& other)
+					: m_array(other.m_array), m_capacity(other.m_capacity), m_tail(other.m_tail), m_index(other.m_index) {}
+
+				~iterator() {}
+
+				iterator& operator=(const iterator& other)
+				{
+					if (this != &other)
+					{
+						m_array = other.m_array;
+						m_capacity = other.m_capacity;
+						m_index = other.m_index;
+						m_tail = other.m_tail;
+					}
+					return (*this);
+				}
+
+				reference operator*() const { return (m_array[m_index]); }
+				pointer operator->() const { return (&m_array[m_index]); }
+
+				iterator& operator++()
+				{
+					assert (m_index != -1);
+					m_index = (m_index + 1) % m_capacity;
+					m_index = (m_index == m_tail) ? -1 : m_index;
+					return (*this);
+				}
+
+				iterator operator++(int)
+				{
+					iterator tmp = *this;
+					++(*this);
+					return (tmp);
+				}
+
+				iterator& operator--()
+				{
+					m_index = (m_index == -1) ? m_tail - 1 : m_index; // Wrap-around
+					m_index = (m_index == 0) ? m_capacity - 1 : m_index - 1; // Wrap-around
+					return *(this);
+				}
+
+				iterator operator--(int)
+				{
+					iterator tmp = *this;
+					--(*this);
+					return (tmp);
+				}
+
+				bool operator==(const iterator& other) const { return (m_index == other.m_index); }
+				bool operator!=(const iterator& other) const { return (!(*this == other)); }
+
+			private:
+				pointer			m_array;       
+				int				m_capacity;     
+				int				m_tail;
+				int				m_index;
+		};
+
+		iterator begin() 
+		{ 
+			return iterator(m_array, m_capacity, m_tail, m_head); 
+		}
+
+		iterator end() 
+		{ 
+			return iterator(m_array, m_capacity, m_tail, -1); 
+		}
+
+	private:
+		typedef unsigned char 		t_byte;
+		
+		Allocator					m_allocator;
+		T*							m_array;
+
+		int							m_head;
+		int							m_tail;
+		int							m_capacity;
+		bool						m_isFull;
+
+		void	mf_destroyAll()
+		{
+			if (m_head == m_tail && !m_isFull)
+				return ;
+			for (int i = m_head; i != m_tail;)
+			{
+				m_allocator.destroy(&m_array[i]);
+				i = (i + 1) % m_capacity;
+			}
+		}
+};
+
+#endif
+
+
+/*
 		void emplace_back()
         {
 			assert(m_array && size() < m_capacity);
@@ -346,66 +456,9 @@ class FixedSizeQueue
 			new (m_array + m_head) T(arg1, arg2, arg3);
 			m_isFull = (m_tail == m_head);
         }	
+*/
 
-
-
-		class iterator
-		{
-			public:
-				typedef T                                   value_type;
-				typedef T*                                  pointer;
-				typedef T&                                  reference;
-				typedef std::ptrdiff_t                      difference_type;
-				typedef std::random_access_iterator_tag     iterator_category;
-
-				iterator(pointer array, size_t capacity, size_t index)
-					: m_array(array), m_capacity(capacity), m_index(index) {}
-
-				iterator(const iterator& other)
-					: m_array(other.m_array), m_capacity(other.m_capacity), m_index(other.m_index) {}
-
-				~iterator() {}
-
-				iterator& operator=(const iterator& other)
-				{
-					if (this != &other)
-					{
-						m_array = other.m_array;
-						m_capacity = other.m_capacity;
-						m_index = other.m_index;
-					}
-					return (*this);
-				}
-
-				reference operator*() const { return (m_array[m_index]); }
-				pointer operator->() const { return (&m_array[m_index]); }
-
-				iterator& operator++()
-				{
-					m_index = (m_index + 1) % m_capacity;
-					return (*this);
-				}
-
-				iterator operator++(int)
-				{
-					iterator tmp = *this;
-					++(*this);
-					return (tmp);
-				}
-
-				iterator& operator--()
-				{
-					m_index = (m_index == 0) ? m_capacity - 1 : m_index - 1; // Wrap-around
-					return *(this);
-				}
-
-				iterator operator--(int)
-				{
-					iterator tmp = *this;
-					--(*this);
-					return (tmp);
-				}
-
+/*
 				reference operator[](difference_type offset) const
 				{
 					size_t logical_index = (m_index + offset) % m_capacity;
@@ -434,55 +487,10 @@ class FixedSizeQueue
 					m_index = (m_index + offset) % m_capacity;
 					return (*this);
 				}
-/*
+
 				iterator& operator-=(difference_type offset)
 				{
 					m_index = (m_index == 0) ? m_capacity - 1 : m_index - 1;
 					return (*this);
 				}
 */
-				bool operator==(const iterator& other) const { return (m_index == other.m_index); }
-				bool operator!=(const iterator& other) const { return (!(*this == other)); }
-
-			private:
-				pointer			m_array;       
-				size_t			m_capacity;     
-				size_t			m_index;
-				size_t			m_tail;
-		};
-
-		iterator begin() 
-		{ 
-			return iterator(m_array, m_capacity, m_head); 
-		}
-
-		iterator end() 
-		{ 
-			return iterator(m_array, m_capacity, m_tail); 
-		}
-
-	private:
-		typedef unsigned char 		t_byte;
-		
-		Allocator					m_allocator;
-		T*							m_array;
-
-		size_t						m_head;
-		size_t						m_tail;
-		size_t						m_capacity;
-
-		bool						m_isFull;
-
-		void	mf_destroyAll()
-		{
-			if (m_head == m_tail && !m_isFull)
-				return ;
-			for (size_t i = m_head; i != m_tail;)
-			{
-				m_allocator.destroy(&m_array[i]);
-				i = (i + 1) % m_capacity;
-			}
-		}
-};
-
-#endif
