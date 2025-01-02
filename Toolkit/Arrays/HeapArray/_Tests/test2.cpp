@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 10:23:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 13:53:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <sstream>
 
 // Project headers
 # include "../HeapArray.hpp"
@@ -22,6 +23,14 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../_Tests/test.h"
+
+template <typename T>
+std::string to_string(const T& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
 
 class EmplaceTwo
 {
@@ -72,6 +81,58 @@ int TestPart2(int testNumber)
 		}
 
         HeapArray<int> assign(100);
+        assign = array;
+
+        it = assign.begin();
+        iter = std.begin();
+        
+        for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
+        {
+            if (*it != *iter)
+                throw std::logic_error("copy assignment, value mismatch");
+        }
+
+        if (std.size() != assign.size())
+			throw std::logic_error("copy assignment, size mismatch");
+
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
+	}
+    testNumber++;
+
+/******************************************************************** */
+
+    try
+	{
+		std::cout << "TEST " << testNumber << ": ";
+		std::vector<std::string> 		std;
+		HeapArray<std::string> 			array(100);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back("big string the will require allocation on the heap " + to_string(i));
+			array.emplace_back("big string the will require allocation on the heap " + to_string(i));
+		}
+		if (std.size() != array.size())
+			throw std::logic_error("size mismatch");
+
+		HeapArray<std::string>::iterator it = array.begin();
+		std::vector<std::string>::iterator iter = std.begin();
+		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
+		}
+
+        HeapArray<std::string> assign(100);
+		assign.push_back("big string the will require allocation on the heap ");
+		assign.push_back("big string the will require allocation on the heap ");
+
         assign = array;
 
         it = assign.begin();

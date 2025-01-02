@@ -63,8 +63,8 @@ class HeapArray
 
 		HeapArray &operator=(const HeapArray &other)
 		{
-			// assignment receiver uses its own allocator to allocate memory
 			assert(m_capacity == other.m_capacity);
+			
 			if (this == &other)
 				return (*this);
 
@@ -78,7 +78,8 @@ class HeapArray
 
 			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
 			for (size_t i = 0; i < smaller; ++i)
-				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<const T*>(other.m_array[i * sizeof(T)]);
+				*reinterpret_cast<T*>(&m_array[i * sizeof(T)]) = *reinterpret_cast<T*>(&other.m_array[i * sizeof(T)]);
+			
 			if (smaller == m_size)
 			{
 				for (size_t i = smaller; i < other.m_size; ++i)
