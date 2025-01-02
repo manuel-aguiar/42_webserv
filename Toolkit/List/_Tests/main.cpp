@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 09:21:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 11:52:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 11:31:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
-extern int TestPart3(int testNumber);
 
 
 int main(void)
@@ -34,7 +33,6 @@ int main(void)
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
-	testNumber = TestPart3(testNumber);
 
 	std::cout << "******************************************\n" << std::endl;
 
