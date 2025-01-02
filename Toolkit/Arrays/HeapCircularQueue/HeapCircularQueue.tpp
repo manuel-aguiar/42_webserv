@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 23:13:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/02 23:15:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ class HeapCircularQueue
 
         T& at(size_t index)
         {
-            assert (size() != 0 && index < size());
+            assert (!isEmpty() && index < size());
 
 			size_t position;
 
