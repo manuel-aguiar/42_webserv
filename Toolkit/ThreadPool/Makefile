@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/10/01 19:41:24 by mmaria-d         ###   ########.fr        #
+#    Updated: 2024/12/27 19:07:10 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,10 @@
 
 ## GENERAL RULES
 NAME 				= 	libthreadpool.a
-COMP 				= 	c++ -std=c++98
-FLAGS 				= 	-Wall -Wextra -Werror
+COMP 				= 	c++ -std=c++98 -g
+FLAGS 				= 	-Wall -Wextra -Werror -MMD -MP
 LIB 				= 	ar rcs
-RM					=	rm
+RM					=	rm -rf
 MAKE				=	make
 
 DEBUG_FLAGS 		= 	-g #-fsanitize=address
@@ -28,53 +28,18 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 ## FOLDERS
 
-INC_PATH			=	include
-SRC_PATH			=	source
-OBJ_PATH			=	objs
+ROOT_PATH				=		../../Toolkit
+SRC_PATH				=		$(ROOT_PATH)/.
+OBJ_PATH				=		$(ROOT_PATH)/_build
 
-INC_ABST_PATH		= 	$(addprefix $(INC_PATH)/, Abstract)
-INC_CONC_PATH		=	$(addprefix $(INC_PATH)/, Concrete)
-
-SRC_ABST_PATH		= 	$(addprefix $(SRC_PATH)/, Abstract)
-SRC_CONC_PATH		=	$(addprefix $(SRC_PATH)/, Concrete)
+SRCS				=	$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
+						$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp				\
+						$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp							
 
 
+OBJS 				=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
 
-
-## FILES
-INC_ABST_FILES		=	AThread.hpp											\
-						IThreadPool.hpp										\
-						IThreadTask.hpp										\
-						IThreadTaskQueue.hpp
-
-INC_CONC_FILES		=	ThreadPool.hpp										\
-						ThreadPoolWorker.hpp								\
-						ThreadTaskQueue.hpp									\
-						ThreadTask.tpp										\
-						ThreadTask_Memb_Args_NoReturn.tpp					\
-						ThreadTask_Memb_Args_NoReturn_Const.tpp				\
-						ThreadTask_Memb_Args_Return.tpp						\
-						ThreadTask_Memb_Args_Return_Const.tpp				\
-						ThreadTask_NonMemb_Args_Return.tpp					\
-						ThreadTask_NonMemb_Args_NoReturn.tpp
-
-SRC_ABST_FILES		=	AThread.cpp
-
-SRC_CONC_FILES		=	ThreadPool.cpp										\
-						ThreadPoolWorker.cpp								\
-						ThreadTaskQueue.cpp									
-
-
-## Add Paths
-
-
-INCS				=	$(addprefix $(INC_ABST_PATH)/, $(INC_ABST_FILES))	\
-						$(addprefix $(INC_CONC_PATH)/, $(INC_CONC_FILES))	
-
-SRCS				=	$(addprefix $(SRC_ABST_PATH)/, $(SRC_ABST_FILES))	\
-						$(addprefix $(SRC_CONC_PATH)/, $(SRC_CONC_FILES))	
-
-OBJS 				:=	$(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.o,$(SRCS))
+DEPS 				= 	$(OBJS:.o=.d)
 
 BUILD 							= 
 									ifeq ($(MAKECMDGOALS),debug)
@@ -88,11 +53,11 @@ BUILD 							=
 $(NAME): $(OBJS)
 	$(LIB) $@ $(OBJS)
 
-$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(INCS)
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
-	$(COMP) $(FLAGS) $(BUILD) -I$(INC_PATH) -c $< -o $@
+	$(COMP) $(FLAGS) $(BUILD) -c $< -o $@
 	
-
+-include $(DEPS)
 
 ## Rules
 
@@ -101,9 +66,7 @@ all: $(NAME)
 debug: $(NAME)
 
 clean:
-	@if [ -d "$(OBJ_PATH)" ]; then \
-        rm -rf $(OBJ_PATH); \
-    fi
+	$(RM) $(OBJS)
 
 fclean: clean
 	@if [ -n "$(wildcard  $(NAME))" ]; then \
