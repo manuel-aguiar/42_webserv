@@ -18,7 +18,7 @@
 #include <sstream>
 
 // Project headers
-# include "../HeapCircularQueue.hpp"
+# include "../StackCircularQueue.hpp"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
@@ -64,7 +64,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		HeapCircularQueue<int> 			queue(100);
+		StackCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -75,7 +75,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
@@ -85,7 +85,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        HeapCircularQueue<int> assign(100);
+        StackCircularQueue<int> assign(100);
 		assign.push_front(123);
 		assign.push_front(456);
 		
@@ -128,7 +128,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 				std;
-		HeapCircularQueue<int> 			queue(100);
+		StackCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -139,7 +139,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -148,7 +148,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        HeapCircularQueue<int> assign(100);
+        StackCircularQueue<int> assign(100);
 		assign.push_back(123);
 		assign.push_back(234);
 
@@ -187,7 +187,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<std::string> 				std;
-		HeapCircularQueue<std::string> 			queue(100);
+		StackCircularQueue<std::string> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -198,7 +198,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<std::string>::iterator it = queue.begin();
+		StackCircularQueue<std::string>::iterator it = queue.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -207,7 +207,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        HeapCircularQueue<std::string> assign(100);
+        StackCircularQueue<std::string> assign(100);
 		assign.push_back("big string on the heap but is different from the original");
 		assign.push_back("big string on the heap but is different from the original");
 
@@ -242,7 +242,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		HeapCircularQueue<int> 			queue(100);
+		StackCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -252,7 +252,7 @@ int TestPart2(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		HeapCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -261,7 +261,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        HeapCircularQueue<int> assign(queue);
+        StackCircularQueue<int> assign(queue);
 
         it = assign.begin();
         iter = std.begin();
@@ -293,7 +293,7 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<EmplaceTwo> 		std;
-		HeapCircularQueue<EmplaceTwo> 			queue(100, EmplaceTwo("name", 0));
+		StackCircularQueue<EmplaceTwo> 			queue(100, EmplaceTwo("name", 0));
 		
 		for (int i = 0; i < 2; ++i)
 		{
@@ -327,7 +327,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<EmplaceTwo>::iterator it = queue.begin();
+		StackCircularQueue<EmplaceTwo>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
