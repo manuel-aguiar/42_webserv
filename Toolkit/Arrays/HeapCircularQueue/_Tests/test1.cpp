@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:05:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:08:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,7 +391,7 @@ int TestPart1(int testNumber)
         std::cout << "	FAILED: " << e.what()  << std::endl;
     }
 
-    // iterators, non-full queue
+    // iterators, push_back, non-full queue
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
@@ -404,19 +404,19 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
         if (it == itEnd)
-            throw std::logic_error("iterators, non-full queue, begin and end should not be equal" + '\n'
+            throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
+                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
                 + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
+            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
@@ -426,7 +426,7 @@ int TestPart1(int testNumber)
         std::cout << "	FAILED: " << e.what()  << std::endl;
     }
 
-    // iterators, full queue
+    // iterators, push_back, full queue
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
@@ -439,19 +439,89 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
         if (it == itEnd)
-            throw std::logic_error("iterators, non-full queue, begin and end should not be equal" + '\n'
+            throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
+                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
                 + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
+            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
+
+    // iterators, push_front, non-full queue
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(10);
+
+        queue.push_front(1);
+        queue.push_front(2);
+
+        HeapCircularQueue<int>::iterator it = queue.begin();
+        HeapCircularQueue<int>::iterator itEnd = queue.end();
+
+        if (it == itEnd)
+            throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        size_t i = 0;
+        for ( ; it != itEnd; ++it, ++i)
+        {
+            if (*it != queue[i])
+                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+        if (i != queue.size())
+            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
+
+    // iterators, push_front, full queue
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(2);
+
+        queue.push_front(1);
+        queue.push_front(2);
+
+        HeapCircularQueue<int>::iterator it = queue.begin();
+        HeapCircularQueue<int>::iterator itEnd = queue.end();
+
+        if (it == itEnd)
+            throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        size_t i = 0;
+        for ( ; it != itEnd; ++it, ++i)
+        {
+            if (*it != queue[i])
+                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+        if (i != queue.size())
+            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
