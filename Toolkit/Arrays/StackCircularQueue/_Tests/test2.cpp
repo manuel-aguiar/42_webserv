@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:51:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:24:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,12 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+
 		std::vector<int> 		std;
-		StackCircularQueue<int> 			queue(100);
+		StackCircularQueue<int, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -75,7 +78,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
@@ -85,7 +88,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        StackCircularQueue<int> assign(100);
+        StackCircularQueue<int, queueSize> assign;
 		assign.push_front(123);
 		assign.push_front(456);
 		
@@ -120,15 +123,17 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+
 		std::vector<int> 				std;
-		StackCircularQueue<int> 			queue(100);
+		StackCircularQueue<int, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -139,7 +144,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -148,7 +153,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        StackCircularQueue<int> assign(100);
+        StackCircularQueue<int, queueSize> assign;
 		assign.push_back(123);
 		assign.push_back(234);
 
@@ -179,15 +184,17 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
-		std::vector<std::string> 				std;
-		StackCircularQueue<std::string> 			queue(100);
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+
+		std::vector<std::string> 							std;
+		StackCircularQueue<std::string, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -198,7 +205,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<std::string>::iterator it = queue.begin();
+		StackCircularQueue<std::string, queueSize>::iterator it = queue.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -207,7 +214,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        StackCircularQueue<std::string> assign(100);
+        StackCircularQueue<std::string, queueSize> assign("i like potatos on the heap if possible");
 		assign.push_back("big string on the heap but is different from the original");
 		assign.push_back("big string on the heap but is different from the original");
 
@@ -240,9 +247,12 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+
 		std::vector<int> 		std;
-		StackCircularQueue<int> 			queue(100);
+		StackCircularQueue<int, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -252,7 +262,7 @@ int TestPart2(int testNumber)
 		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		StackCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -261,7 +271,7 @@ int TestPart2(int testNumber)
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        StackCircularQueue<int> assign(queue);
+        StackCircularQueue<int, queueSize> assign(queue);
 
         it = assign.begin();
         iter = std.begin();
@@ -283,7 +293,6 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 
 /******************************************************************** */
@@ -291,9 +300,12 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+
 		std::vector<EmplaceTwo> 		std;
-		StackCircularQueue<EmplaceTwo> 			queue(100, EmplaceTwo("name", 0));
+		StackCircularQueue<EmplaceTwo, queueSize> 			queue(EmplaceTwo("name", 0));
 		
 		for (int i = 0; i < 2; ++i)
 		{
@@ -327,7 +339,7 @@ int TestPart2(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<EmplaceTwo>::iterator it = queue.begin();
+		StackCircularQueue<EmplaceTwo, queueSize>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -342,7 +354,6 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 
     return (testNumber);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 13:11:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:29:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@
 # include "../../../_Tests/test.h"
 
 extern int TestPart1(int testNumber);
-//extern int TestPart2(int testNumber);
-//extern int TestPart3(int testNumber);
-//extern int TestPart4(int testNumber);
+extern int TestPart2(int testNumber);
+extern int TestPart3(int testNumber);
+extern int TestPart4(int testNumber);
 
 
 int main()
@@ -39,9 +39,9 @@ int main()
 	std::cout << "\n*************** StackCircularQueue tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-    //testNumber = TestPart2(testNumber);
-    //testNumber = TestPart3(testNumber);
-    //testNumber = TestPart4(testNumber);
+    testNumber = TestPart2(testNumber);
+    testNumber = TestPart3(testNumber);
+    testNumber = TestPart4(testNumber);
 
 	std::cout << "*********************************************\n" << std::endl;
 

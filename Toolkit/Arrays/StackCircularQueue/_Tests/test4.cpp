@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:51:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:28:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ int TestPart4(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 200;
 		std::list<int> 					list;
-		StackCircularQueue<int> 			queue(200);
+		StackCircularQueue<int, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -44,7 +46,7 @@ int TestPart4(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<int>::iterator it = queue.begin();
+		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::list<int>::iterator iter = list.begin();
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
 		{
@@ -57,14 +59,15 @@ int TestPart4(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
-		std::list<ToolkitDummy> 		std;
-		StackCircularQueue<ToolkitDummy> 		queue(100);
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 100;
+		std::list<ToolkitDummy> 							std;
+		StackCircularQueue<ToolkitDummy, queueSize> 		queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -75,7 +78,7 @@ int TestPart4(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -94,8 +97,10 @@ int TestPart4(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber << ": ";
+
+		const int queueSize = 100;
 		std::list<ToolkitDummy> 		std;
-		StackCircularQueue<ToolkitDummy> 		queue(100);
+		StackCircularQueue<ToolkitDummy, queueSize> 		queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -106,7 +111,7 @@ int TestPart4(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -128,8 +133,10 @@ int TestPart4(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<ToolkitDummy> 				list;
-		StackCircularQueue<ToolkitDummy> 			queue(200);
+
+		const int queueSize = 200;
+		std::list<ToolkitDummy> 								list;
+		StackCircularQueue<ToolkitDummy, queueSize> 			queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -141,7 +148,7 @@ int TestPart4(int testNumber)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
-		StackCircularQueue<ToolkitDummy>::iterator it = queue.begin();
+		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = list.begin();
 
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)

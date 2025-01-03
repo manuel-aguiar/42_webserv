@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 10:19:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:51:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:27:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,11 @@ int TestPart3(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
+
+		const int queueSize = 300;
+
 		std::list<ToolkitBase*> 				std;
-		StackCircularQueue<ToolkitBase*> 		queue(300);
+		StackCircularQueue<ToolkitBase*, queueSize> 		queue;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -56,7 +59,7 @@ int TestPart3(int testNumber)
 			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		StackCircularQueue<ToolkitBase*>::iterator it = queue.begin();
+		StackCircularQueue<ToolkitBase*, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
