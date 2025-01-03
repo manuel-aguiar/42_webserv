@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:51:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:11:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int TestPart1(int testNumber)
         bool resultInsertion;
         bool expectedInsertion;
 
-		StackCircularQueue<int> 			queue(queueSize);
+		StackCircularQueue<int, queueSize> 			queue;
 
         /************* */
         
@@ -213,7 +213,7 @@ int TestPart1(int testNumber)
         bool resultInsertion;
         bool expectedInsertion;
 
-		StackCircularQueue<int> 			queue(queueSize);
+		StackCircularQueue<int, queueSize> 			queue;
 
         /************* */
         
@@ -375,10 +375,11 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
-        StackCircularQueue<int>::iterator it = queue.begin();
-        StackCircularQueue<int>::iterator itEnd = queue.end();
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
 
         if (it != itEnd)
             throw std::logic_error("iterators, empty queue, begin and end should be equal" + '\n'
@@ -395,13 +396,14 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int>::iterator it = queue.begin();
-        StackCircularQueue<int>::iterator itEnd = queue.end();
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
@@ -430,13 +432,14 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int>::iterator it = queue.begin();
-        StackCircularQueue<int>::iterator itEnd = queue.end();
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
@@ -465,14 +468,14 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_front(1);
         queue.push_front(2);
 
-        StackCircularQueue<int>::iterator it = queue.begin();
-        StackCircularQueue<int>::iterator itEnd = queue.end();
-
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
         if (it == itEnd)
             throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
@@ -500,13 +503,14 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_front(1);
         queue.push_front(2);
 
-        StackCircularQueue<int>::iterator it = queue.begin();
-        StackCircularQueue<int>::iterator itEnd = queue.end();
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
@@ -535,19 +539,20 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> copy(queue);
+        StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
             throw std::logic_error("copy constructor, full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = copy.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
@@ -567,19 +572,20 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> copy(queue);
+        StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
             throw std::logic_error("copy constructor, not-full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = copy.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
@@ -599,16 +605,17 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
-        StackCircularQueue<int> copy(queue);
+        StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
             throw std::logic_error("copy constructor, empty copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = copy.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
@@ -628,12 +635,13 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> assign(2);
+        StackCircularQueue<int, queueSize> assign(3);   //initalize elements to '3'
 
         assign = queue;
 
@@ -641,8 +649,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -662,12 +670,13 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue(5); //initialize elements to 5
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> assign(10);
+        StackCircularQueue<int, queueSize> assign(7); //initialize elements to 7
 
         assign = queue;
 
@@ -675,8 +684,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, non-full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -696,8 +705,9 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
-        StackCircularQueue<int> assign(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
+        StackCircularQueue<int, queueSize> assign;
 
         assign = queue;
 
@@ -705,8 +715,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, empty copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -726,12 +736,13 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> assign(2);
+        StackCircularQueue<int, queueSize> assign;
         assign.push_back(123);
 
         assign = queue;
@@ -740,8 +751,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -761,12 +772,13 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> assign(10);
+        StackCircularQueue<int, queueSize> assign;
         assign.push_back(123);
 
         assign = queue;
@@ -775,8 +787,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -796,9 +808,10 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(10);
+        const int queueSize = 10;
+        StackCircularQueue<int, queueSize> queue;
 
-        StackCircularQueue<int> assign(10);
+        StackCircularQueue<int, queueSize> assign;
         assign.push_back(123);
 
         assign = queue;
@@ -807,8 +820,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, empty copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -828,12 +841,13 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
         queue.push_back(2);
 
-        StackCircularQueue<int> assign(2);
+        StackCircularQueue<int, queueSize> assign;
 
         assign.push_back(3);
         assign.push_back(4);
@@ -844,8 +858,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -865,11 +879,12 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
         queue.push_back(1);
 
-        StackCircularQueue<int> assign(2);
+        StackCircularQueue<int, queueSize> assign;
 
         assign.push_back(3);
         assign.push_back(4);
@@ -880,8 +895,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, non-full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
@@ -901,9 +916,10 @@ int TestPart1(int testNumber)
     std::cout << "TEST " << testNumber++ << ": ";
     try
     {
-        StackCircularQueue<int> queue(2);
+        const int queueSize = 2;
+        StackCircularQueue<int, queueSize> queue;
 
-        StackCircularQueue<int> assign(2);
+        StackCircularQueue<int, queueSize> assign;
 
         assign.push_back(3);
         assign.push_back(4);
@@ -914,8 +930,8 @@ int TestPart1(int testNumber)
             throw std::logic_error("assignment, empty copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        StackCircularQueue<int>::iterator itOriginal = queue.begin();
-        StackCircularQueue<int>::iterator itCopy = assign.begin();
+        StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
+        StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
 
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
