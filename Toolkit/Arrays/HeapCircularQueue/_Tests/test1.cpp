@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:08:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:31:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -595,6 +595,35 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+    //copy constructor, empty copy-from
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(10);
+
+        HeapCircularQueue<int> copy(queue);
+
+        if (queue.size() != copy.size())
+            throw std::logic_error("copy constructor, empty copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = copy.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("copy constructor, empty copy-from value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
      //copy assignment, full copy-from, empty copy-to
     std::cout << "TEST " << testNumber++ << ": ";
     try
@@ -663,6 +692,36 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+ //copy assignment, empty copy-from, empty copy-to
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(10);
+        HeapCircularQueue<int> assign(10);
+
+        assign = queue;
+
+        if (queue.size() != assign.size())
+            throw std::logic_error("assignment, empty copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("assignment, empty copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
      //copy assignment, full copy-from, non-empty copy-to
     std::cout << "TEST " << testNumber++ << ": ";
     try
@@ -673,9 +732,9 @@ int TestPart1(int testNumber)
         queue.push_back(2);
 
         HeapCircularQueue<int> assign(2);
+        assign.push_back(123);
 
         assign = queue;
-        assign.push_back(123);
 
         if (queue.size() != assign.size())
             throw std::logic_error("assignment, full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
@@ -708,9 +767,9 @@ int TestPart1(int testNumber)
         queue.push_back(2);
 
         HeapCircularQueue<int> assign(10);
+        assign.push_back(123);
 
         assign = queue;
-        assign.push_back(123);
 
         if (queue.size() != assign.size())
             throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
@@ -723,6 +782,145 @@ int TestPart1(int testNumber)
         {
             if (*itOriginal != *itCopy)
                 throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+     //copy assignment, empty copy-from, non-empty copy-to
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(10);
+
+        HeapCircularQueue<int> assign(10);
+        assign.push_back(123);
+
+        assign = queue;
+
+        if (queue.size() != assign.size())
+            throw std::logic_error("assignment, empty copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("assignment, empty copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+ //copy assignment, full copy-from, full copy-to
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(2);
+
+        queue.push_back(1);
+        queue.push_back(2);
+
+        HeapCircularQueue<int> assign(2);
+
+        assign.push_back(3);
+        assign.push_back(4);
+
+        assign = queue;
+
+        if (queue.size() != assign.size())
+            throw std::logic_error("assignment, full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("assignment, full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+ //copy assignment, non-full copy-from, full copy-to
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(2);
+
+        queue.push_back(1);
+
+        HeapCircularQueue<int> assign(2);
+
+        assign.push_back(3);
+        assign.push_back(4);
+
+        assign = queue;
+
+        if (queue.size() != assign.size())
+            throw std::logic_error("assignment, non-full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("assignment, non-full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
+                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+ //copy assignment, empty copy-from, full copy-to
+    std::cout << "TEST " << testNumber++ << ": ";
+    try
+    {
+        HeapCircularQueue<int> queue(2);
+
+        HeapCircularQueue<int> assign(2);
+
+        assign.push_back(3);
+        assign.push_back(4);
+
+        assign = queue;
+
+        if (queue.size() != assign.size())
+            throw std::logic_error("assignment, empty copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
+        {
+            if (*itOriginal != *itCopy)
+                throw std::logic_error("assignment, empty copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
                 + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 

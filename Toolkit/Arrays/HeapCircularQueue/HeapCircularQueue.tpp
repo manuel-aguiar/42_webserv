@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 11:49:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:33:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,18 @@ class HeapCircularQueue
 			}
 			else
 			{
-				m_frontIndex = (other.isFull()) ? ((other.m_frontIndex + 1) % m_capacity) : other.m_frontIndex;
-				for (int i = m_frontIndex; i != other.m_backIndex;)
+
+				size_t otherSize = other.size();
+
+				m_frontIndex = other.m_frontIndex;
+				for (size_t i = 0; i < otherSize; ++i)
 				{
-					m_array[i] = other.m_array[i];
-					i = (i + 1) % m_capacity;
+					int srcIndex = (other.m_frontIndex + i) % m_capacity;
+					int destIndex = (m_frontIndex + i) % m_capacity;
+					m_array[destIndex] = other.m_array[srcIndex];
 				}
 			}
+			
 			m_frontIndex = other.m_frontIndex;
 			m_backIndex = other.m_backIndex;
 

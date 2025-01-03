@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 11:43:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:34:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int main()
 	std::cout << "\n*************** HeapCircularQueue tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-    //testNumber = TestPart2(testNumber);
-    //testNumber = TestPart3(testNumber);
-    //testNumber = TestPart4(testNumber);
+    testNumber = TestPart2(testNumber);
+    testNumber = TestPart3(testNumber);
+    testNumber = TestPart4(testNumber);
 
 	std::cout << "*********************************************\n" << std::endl;
 

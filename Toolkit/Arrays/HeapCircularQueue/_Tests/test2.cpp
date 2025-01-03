@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 11:38:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:48:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 class EmplaceTwo
 {
     public:
-        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number) {};
+        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number), m_present (std::string(m_name) + " " + to_string(m_number)) {};
 		~EmplaceTwo() {};
 		
         bool operator==(const EmplaceTwo& other)
@@ -40,11 +40,20 @@ class EmplaceTwo
         {
             return (!(*this == other));
         }
-        
+        const std::string& present() const
+		{
+			return (m_present);
+		}
         std::string m_name;
         int         m_number;
+		std::string m_present;
 };
 
+std::ostream& operator<<(std::ostream& os, const EmplaceTwo& emplace)
+{
+	os << "Name: " << emplace.m_name << " Number: " << emplace.m_number;
+	return os;
+}
 
 int TestPart2(int testNumber)
 {
@@ -101,7 +110,8 @@ int TestPart2(int testNumber)
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
+			throw std::logic_error("copy assignment, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(std.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -186,7 +196,7 @@ int TestPart2(int testNumber)
 			queue.emplace_back("big string the will require allocation on the heap " + to_string(i));
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
 				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<std::string>::iterator it = queue.begin();
@@ -228,7 +238,7 @@ int TestPart2(int testNumber)
     testNumber++;
 
 /******************************************************************** */
-/*
+
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
@@ -248,7 +258,8 @@ int TestPart2(int testNumber)
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapCircularQueue<int> assign(queue);
@@ -259,7 +270,8 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy constructor, value mismatch");
+                throw std::logic_error("copy constructor, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
@@ -274,7 +286,7 @@ int TestPart2(int testNumber)
         TEST_FAIL_INFO();
 	}
     testNumber++;
-*/
+
 
 /******************************************************************** */
 /* Emplace two */
@@ -314,14 +326,16 @@ int TestPart2(int testNumber)
 		}
 
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch");
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<EmplaceTwo>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::logic_error("value mismatch, \ngot '" + it->present() + "'\n expected: '" + iter->present() + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		std::cout << "	PASSED" << std::endl;

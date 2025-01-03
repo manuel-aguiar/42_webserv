@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 10:52:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 12:49:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int TestPart4(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::list<int> 				list;
+		std::list<int> 					list;
 		HeapCircularQueue<int> 			queue(200);
 
 		for (int i = 0; i < 100; ++i)
@@ -41,20 +41,21 @@ int TestPart4(int testNumber)
 			queue.push_front(i);
 		}
 		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch");
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<int>::iterator it = queue.begin();
 		std::list<int>::iterator iter = list.begin();
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
 		{
-			std::cout << "list: " << *iter << " queue: " << *it << std::endl;
+			if (*it != *iter)
+				throw std::logic_error("value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
     testNumber++;
 	/******************* ***** ************************/
@@ -71,7 +72,8 @@ int TestPart4(int testNumber)
 			queue.push_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch");
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
@@ -85,7 +87,6 @@ int TestPart4(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
     testNumber++;
 	/******************* *****************************/
@@ -102,7 +103,8 @@ int TestPart4(int testNumber)
 			queue.emplace_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch");
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
@@ -116,7 +118,6 @@ int TestPart4(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
     testNumber++;
 
@@ -136,7 +137,8 @@ int TestPart4(int testNumber)
 			queue.emplace_back(i);
 		}
 		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch");
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
@@ -144,12 +146,8 @@ int TestPart4(int testNumber)
 
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
 		{
-			std::cout << "list: " << *iter <<"queue: " << *it << std::endl;
 			if (*it != *iter)
-			{
-				std::cout << "list: " << *iter << "queue: " << *it << std::endl;
 				throw std::logic_error("value mismatch");
-			}
 				
 		}
 		std::cout << "	PASSED" << std::endl;
@@ -157,7 +155,6 @@ int TestPart4(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
     testNumber++;
 
