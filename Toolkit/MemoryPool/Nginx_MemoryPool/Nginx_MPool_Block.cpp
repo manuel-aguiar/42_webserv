@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 18:25:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:20:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,7 @@ destroy(Nginx_MPool_Block**   poolPlace)
     }
 }
 
-/*
 
-    When resetting, delete the big blocks, we don't really know their size of use
-    let the m_next pool user to take care of it
-
-*/
 void
 Nginx_MemoryPool::Nginx_MPool_Block::
 reset(Nginx_MPool_Block** pool, int maxBlocks)
@@ -107,7 +102,7 @@ allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t 
     while (pool)
     {
         t_byte* aligned_position = pool->m_freePosition;
-        aligned_position = allignedAlloc(pool->m_freePosition, alignment);
+        aligned_position = mf_allignedAlloc(pool->m_freePosition, alignment);
         if (aligned_position + size <= pool->m_endOfBlock)
             break;
         pool = pool->m_nextBlock;
@@ -121,7 +116,7 @@ allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t 
         pool = newPool;
     }
     location = pool->m_freePosition;
-    location = allignedAlloc(pool->m_freePosition, alignment);
+    location = mf_allignedAlloc(pool->m_freePosition, alignment);
     pool->m_freePosition = (t_byte*)((size_t)location + size);
     return (location);
 }

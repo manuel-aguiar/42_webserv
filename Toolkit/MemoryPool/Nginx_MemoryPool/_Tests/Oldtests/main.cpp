@@ -6,18 +6,26 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:13:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:01:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
+# include <climits>
+# include <cstddef>
 # include <exception>
 # include <stdexcept>
 # include <iostream>
+# include <cassert>
+# include "../Nginx_MemoryPool.hpp"
+# include <cstring>
 
 # include "../Nginx_MemoryPool.hpp"
 # include "../Nginx_PoolAllocator.hpp"
 
+
+
+// inherits, that's the one we will use to count
+# include "NginxAllocCounters.tpp"
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
