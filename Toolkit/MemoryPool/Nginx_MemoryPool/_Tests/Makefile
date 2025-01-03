@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/03 16:41:25 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/03 17:20:52 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,9 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 SRCS					=		$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/main.cpp	\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/test1.cpp	\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/test2.cpp	\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/test3.cpp	\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/NginxMemPool_TestCounter.cpp	\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/_Tests/NginxAllocator_TestCounter.cpp	\
 								\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:22:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:14:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int TestPart1(int testNumber)
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
         //Nginx_MemoryPool copy(pool); // fails as expected, private copy constructor
 
-         Nginx_MemoryPool pool2(4096, 1);
+        Nginx_MemoryPool pool2(4096, 1);
         // pool2 = pool1; // fails as expected, private assignment operator
          
         pool.reset();       //all good
