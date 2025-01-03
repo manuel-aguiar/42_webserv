@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:07:30 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:09:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 11:00:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ ToolkitBase::~ToolkitBase()
         delete[] m_data;
         m_data = NULL;
     }
+}
+
+int ToolkitBase::getValue() const
+{
+    return value;
 }
 
 bool ToolkitBase::operator==(const ToolkitBase& other) 

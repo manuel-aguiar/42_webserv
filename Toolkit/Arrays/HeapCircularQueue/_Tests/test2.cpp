@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 11:38:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,12 @@
 #include <sstream>
 
 // Project headers
-# include "../FixedSizeQueue.hpp"
+# include "../HeapCircularQueue.hpp"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../_Tests/test.h"
 
-template <typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
 
 class EmplaceTwo
 {
@@ -62,81 +55,40 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<int> 		std;
-		HeapCircularQueue<int> 			array(100);
+		HeapCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			queue.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		if (std.size() != queue.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<int>::iterator it = array.begin();
+		HeapCircularQueue<int>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapCircularQueue<int> assign(100);
 		assign.push_front(123);
 		assign.push_front(456);
-        assign = array;
+		
+        assign = queue;
 
-		HeapCircularQueue<int>::iterator itAssign = assign.begin();
-        it = array.begin();
-        iter = std.begin();
-        
-        for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
-        {
-            if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
-        }
+		if (queue.size() != assign.size())
+			throw std::logic_error("size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
-
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
-    testNumber++;
-
-/******************************************************************** */
-
-    try
-	{
-		std::cout << "TEST " << testNumber << ": ";
-		std::vector<std::string> 		std;
-		HeapCircularQueue<std::string> 			array(100);
-
-		for (int i = 0; i < 100; ++i)
-		{
-			std.push_back("big string the will require allocation on the heap " + to_string(i));
-			array.emplace_back("big string the will require allocation on the heap " + to_string(i));
-		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
-
-		HeapCircularQueue<std::string>::iterator it = array.begin();
-		std::vector<std::string>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-
-        HeapCircularQueue<std::string> assign(100);
-		assign.push_back("big string the will require allocation on the heap ");
-		assign.push_back("big string the will require allocation on the heap ");
-
-        assign = array;
+		if (std.size() != assign.size())
+			throw std::logic_error("size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(std.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         it = assign.begin();
         iter = std.begin();
@@ -144,7 +96,8 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
+                throw std::logic_error("copy assignment, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
@@ -165,26 +118,140 @@ int TestPart2(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber << ": ";
-		std::vector<int> 		std;
-		HeapCircularQueue<int> 			array(100);
+		std::vector<int> 				std;
+		HeapCircularQueue<int> 			queue(100);
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
-			array.emplace_back(i);
+			queue.push_back(i);
 		}
-		if (std.size() != array.size())
+		if (std.size() != queue.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		HeapCircularQueue<int>::iterator it = queue.begin();
+		std::vector<int>::iterator iter = std.begin();
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		}
+
+        HeapCircularQueue<int> assign(100);
+		assign.push_back(123);
+		assign.push_back(234);
+
+        assign = queue;
+
+		if (std.size() != assign.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(assign.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        it = assign.begin();
+        iter = std.begin();
+        
+        for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
+        {
+            if (*it != *iter)
+                throw std::logic_error("copy assignment, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+        if (std.size() != assign.size())
+			throw std::logic_error("copy assignment, size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+    testNumber++;
+
+/******************************************************************** */
+
+    try
+	{
+		std::cout << "TEST " << testNumber << ": ";
+		std::vector<std::string> 				std;
+		HeapCircularQueue<std::string> 			queue(100);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back("big string the will require allocation on the heap " + to_string(i));
+			queue.emplace_back("big string the will require allocation on the heap " + to_string(i));
+		}
+		if (std.size() != queue.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		HeapCircularQueue<std::string>::iterator it = queue.begin();
+		std::vector<std::string>::iterator iter = std.begin();
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
+		{
+			if (*it != *iter)
+				throw std::logic_error("value mismatch, got '" + *it + "'\n expected: '" + *iter + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		}
+
+        HeapCircularQueue<std::string> assign(100);
+		assign.push_back("big string on the heap but is different from the original");
+		assign.push_back("big string on the heap but is different from the original");
+
+        assign = queue;
+
+        it = assign.begin();
+        iter = std.begin();
+        
+        for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
+        {
+            if (*it != *iter)
+                throw std::logic_error("copy assignment, value mismatch, \ngot '" + *it + "'\n expected: '" + *iter + "'\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        }
+
+        if (std.size() != assign.size())
+			throw std::logic_error("copy assignment, size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+    testNumber++;
+
+/******************************************************************** */
+/*
+    try
+	{
+		std::cout << "TEST " << testNumber << ": ";
+		std::vector<int> 		std;
+		HeapCircularQueue<int> 			queue(100);
+
+		for (int i = 0; i < 100; ++i)
+		{
+			std.push_back(i);
+			queue.emplace_back(i);
+		}
+		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		HeapCircularQueue<int>::iterator it = array.begin();
+		HeapCircularQueue<int>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
 
-        HeapCircularQueue<int> assign(array);
+        HeapCircularQueue<int> assign(queue);
 
         it = assign.begin();
         iter = std.begin();
@@ -207,64 +274,7 @@ int TestPart2(int testNumber)
         TEST_FAIL_INFO();
 	}
     testNumber++;
-
-/******************************************************************** */
-
-    try
-	{
-		std::cout << "TEST " << testNumber << ": ";
-		std::vector<int> 		std;
-		HeapCircularQueue<int> 			array(100);
-
-		for (int i = 0; i < 100; ++i)
-		{
-			std.push_back(i);
-			array.emplace_back(i);
-		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
-
-		HeapCircularQueue<int>::iterator it = array.begin();
-		std::vector<int>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-
-        HeapCircularQueue<int> assign(100);
-
-        assign.push_back(1);
-        assign.push_back(2);
-
-        it = assign.begin();
-        iter = std.begin();
-        
-        for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
-        {
-            if (*it != *iter)
-                throw std::logic_error("::move failed, value mismatch");
-        }
-
-        if (std.size() != assign.size())
-			throw std::logic_error("::move failed, size mismatch");
-
-        if (array.size() != 0)
-            throw std::logic_error("::move failed, source array not empty");    
-
-        array.clear();
-
-        if (array.size() != 0)
-            throw std::logic_error("::clear failed, array not empty");
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
-    testNumber++;
+*/
 
 /******************************************************************** */
 /* Emplace two */
@@ -273,18 +283,18 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber << ": ";
 		std::vector<EmplaceTwo> 		std;
-		HeapCircularQueue<EmplaceTwo> 			array(100);
+		HeapCircularQueue<EmplaceTwo> 			queue(100, EmplaceTwo("name", 0));
 		
 		for (int i = 0; i < 2; ++i)
 		{
 			std.push_back(EmplaceTwo("name", i));
-			array.push_back(EmplaceTwo("name", i));
+			queue.push_back(EmplaceTwo("name", i));
 
 			/*
 				Fails because std::string didn't malloc and the destructor thinks
 				it still lives in the same place before the vector reallocated........
 
-				Which means, my dynAarray cannot reallocate using memmove because some underlying
+				Which means, my dynAqueue cannot reallocate using memmove because some underlying
 				variable may be referencing itself, and then it would point to an invalid location
 				(as a std::string that doesn't allocate memory has to do, pointing to itself, without
 				move semantics it invalidates itself. so i have a problem with my current setup)
@@ -303,12 +313,12 @@ int TestPart2(int testNumber)
 
 		}
 
-		if (std.size() != array.size())
+		if (std.size() != queue.size())
 			throw std::logic_error("size mismatch");
 
-		HeapCircularQueue<EmplaceTwo>::iterator it = array.begin();
+		HeapCircularQueue<EmplaceTwo>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");

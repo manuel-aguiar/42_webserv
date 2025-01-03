@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 10:39:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 11:49:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,15 @@ class HeapCircularQueue
 
 
 
-		HeapCircularQueue(const HeapCircularQueue &other) : 
+		HeapCircularQueue(const HeapCircularQueue &other) :
+			m_allocator(other.m_allocator),
+			m_array(m_allocator.allocate(other.m_capacity)), 
 			m_capacity(other.m_capacity)
 		{
-			*this = other;
+			for (int i = 0; i < m_capacity; ++i)
+				m_allocator.construct(&m_array[i], other.m_array[i]);
+			m_frontIndex = other.m_frontIndex;
+			m_backIndex = other.m_backIndex;
 		}
 
 		~HeapCircularQueue()
@@ -75,7 +80,7 @@ class HeapCircularQueue
 			}
 			else
 			{
-				m_frontIndex = (other.isFull()) ? ((other.m_frontIndex + 1) % m_capacity) : m_frontIndex;
+				m_frontIndex = (other.isFull()) ? ((other.m_frontIndex + 1) % m_capacity) : other.m_frontIndex;
 				for (int i = m_frontIndex; i != other.m_backIndex;)
 				{
 					m_array[i] = other.m_array[i];

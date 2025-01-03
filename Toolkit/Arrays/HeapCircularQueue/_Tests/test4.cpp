@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:52:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <list>
 
 // Project headers
-# include "../FixedSizeQueue.hpp"
+# include "../HeapCircularQueue.hpp"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"

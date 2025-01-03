@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 10:19:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 22:32:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:59:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include <iostream>
 #include <cstring>
 #include <string>
-#include <vector>
+#include <list>
 
 // Project headers
-# include "../FixedSizeQueue.hpp"
+# include "../HeapCircularQueue.hpp"
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
@@ -30,42 +30,44 @@ int TestPart3(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitBase*> 		std;
-		HeapCircularQueue<ToolkitBase*> 		array(500);
+		std::list<ToolkitBase*> 				std;
+		HeapCircularQueue<ToolkitBase*> 		queue(300);
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(new ToolkitBase(i));
-			array.push_back(new ToolkitBase(i));
+			queue.push_back(new ToolkitBase(i));
+
+			std.push_front(new ToolkitDerived(i));
+			queue.push_front(new ToolkitDerived(i));
 
 			std.push_back(new ToolkitDerived(i));
-			array.push_back(new ToolkitDerived(i));
-
-			std.push_back(new ToolkitDerived(i));
-			array.push_back(new ToolkitDerived(i));
+			queue.push_back(new ToolkitDerived(i));
 
 			delete std.back();
-			delete array.back();
+			delete queue.back();
 
 			std.pop_back();
-			array.pop_back();
-			std.push_back(new ToolkitBase(i));
-			array.push_back(new ToolkitBase(i));
+			queue.pop_back();
+			std.push_front(new ToolkitBase(i));
+			queue.push_front(new ToolkitBase(i));
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		if (std.size() != queue.size())
+			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		HeapCircularQueue<ToolkitBase*>::iterator it = array.begin();
-		std::vector<ToolkitBase*>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		HeapCircularQueue<ToolkitBase*>::iterator it = queue.begin();
+		std::list<ToolkitBase*>::iterator iter = std.begin();
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (**it != **iter)
-				throw std::logic_error("value mismatch");
+				throw std::logic_error("value mismatch, got " + to_string((*it)->getValue()) + " expected: " + to_string((*iter)->getValue())
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-		it = array.begin();
+		it = queue.begin();
 		iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			delete (*it);
 			delete (*iter);
@@ -77,7 +79,6 @@ int TestPart3(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
     return (testNumber);
