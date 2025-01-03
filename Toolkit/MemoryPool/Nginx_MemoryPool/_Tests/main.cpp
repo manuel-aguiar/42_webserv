@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:13:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:43:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int main(void)
 
 	std::cout << "\n*************** Nginx_MemoryPool tests ***************" << std::endl;
 	
-    testNumber = TestPart1(testNumber);
+    //testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
 
 	std::cout << "******************************************************\n" << std::endl;

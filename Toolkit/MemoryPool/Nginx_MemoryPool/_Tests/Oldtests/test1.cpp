@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 14:59:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 16:51:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int TestPart1(int testNumber)
 	
 	try
 	{
-
 		size_t totalAllocs = 0;
 		size_t totalBytes = 0;
 
