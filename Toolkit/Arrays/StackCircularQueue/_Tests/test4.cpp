@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 13:28:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 13:36:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,11 @@ int TestPart4(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 	/******************* *****************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		const int queueSize = 100;
 		std::list<ToolkitDummy> 		std;
@@ -124,7 +123,6 @@ int TestPart4(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 
 
@@ -132,7 +130,7 @@ int TestPart4(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 
 		const int queueSize = 200;
 		std::list<ToolkitDummy> 								list;
@@ -163,7 +161,6 @@ int TestPart4(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    testNumber++;
 
 /***************************************** */
 
