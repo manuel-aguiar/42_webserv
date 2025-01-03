@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 16:44:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:10:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class Nginx_MPool_FixedElem
 			typedef Nginx_MPool_FixedElem<U> other;
 		};
 
-		Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t numElems = 0) throw();
+		Nginx_MPool_FixedElem(Nginx_MemoryPool& pool, size_t numElems) throw();
 
 		Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& copy) throw();
 		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U>& rebind) throw();
@@ -96,7 +96,7 @@ class Nginx_MPool_FixedElem
 
 
 template <typename T>
-Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(Nginx_MemoryPool* pool, size_t numElems) throw() :
+Nginx_MPool_FixedElem<T>::Nginx_MPool_FixedElem(Nginx_MemoryPool& pool, size_t numElems) throw() :
 	m_elements(0, Nginx_PoolAllocator<s_Slot>(pool)),
 	m_elemCount(0),
 	m_maxElems(numElems),

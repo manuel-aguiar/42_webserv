@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:21:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:07:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ Nginx_MemoryPool::Nginx_MemoryPool(size_t blockSize, size_t startingBlocks) :
 {
     Nginx_MPool_Block*          curBlock;
     Nginx_MPool_Block*          prevBlock;
+
+    if (!startingBlocks)
+        return ;
 
     curBlock = Nginx_MPool_Block::create(blockSize, 1);
     for (size_t i = 1; i < startingBlocks; ++i)

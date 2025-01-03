@@ -43,8 +43,7 @@ class MPool_FixedElem
 			typedef MPool_FixedElem<U> other;
 		};
 
-		MPool_FixedElem(size_t numElems = 0) throw();
-
+		MPool_FixedElem(size_t numElems) throw();
 		MPool_FixedElem(const MPool_FixedElem& memoryPool) throw();
 		template <class U> MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw();
 

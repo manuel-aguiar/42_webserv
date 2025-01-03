@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 19:18:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:09:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 # include "../../Nginx_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator.hpp"
-# include "../../_Tests/NginxAllocCounters.tpp"
 # include "../../../../_Tests/test.h"
 
 // C++ headers
@@ -43,13 +42,13 @@ int TestPart1(int testNumber)
 		const size_t								poolsize = 100;
 		const size_t 								nodeSize = (sizeof(int) + 4 + 8 + 8); // int + 4 padding + 8 + 8 byte ptrs next and prev
 
-		Nginx_MemoryPool* 							pool = Nginx_MemoryPool::create(4096, 1);
+		Nginx_MemoryPool 							pool(4096, 1);
 
-		size_t 										firstElement = (size_t)pool->allocate(sizeof(size_t)) + sizeof(size_t);
+		size_t 										firstElement = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
 		Nginx_MPool_FixedElem<int> 					alloc(pool, poolsize);
 		std::list<int, Nginx_MPool_FixedElem<int> > list1(alloc);
 		list1.push_back(0);
-		size_t 										lastElement = (size_t)pool->allocate(sizeof(size_t));
+		size_t 										lastElement = (size_t)pool.allocate(sizeof(size_t));
 
 
 		if (lastElement - firstElement != poolsize * nodeSize)
@@ -73,9 +72,6 @@ int TestPart1(int testNumber)
 			}
 		}
 
-		list1.clear();
-
-		pool->destroy();
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -99,27 +95,27 @@ int TestPart1(int testNumber)
 			THIS TEST ONLY WORKS BECAUSE I AM FORCING EVERYTHING TO BE ALLOCATED
 			IN THE SAME POOL BLOCK!!!!!!!!!!!!!!!!!!!!!!
 		*/
-		Nginx_MemoryPool* 							pool = Nginx_MemoryPool::create(10000, 1);
+		Nginx_MemoryPool 							pool(10000, 1);
 
 
 		// one list
-		size_t 										firstElement1 = (size_t)pool->allocate(sizeof(size_t)) + sizeof(size_t);
+		size_t 										firstElement1 = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
 		Nginx_MPool_FixedElem<int> 					alloc1(pool, poolsize);
 		std::list<int, Nginx_MPool_FixedElem<int> > list1(alloc1);
 
 		// The fixed block only gets allocated when the first element is pushed
 		list1.push_back(0);
-		size_t 										lastElement1 = (size_t)pool->allocate(sizeof(size_t));
+		size_t 										lastElement1 = (size_t)pool.allocate(sizeof(size_t));
 
 
 		// separate list
-		size_t 										firstElement2 = (size_t)pool->allocate(sizeof(size_t)) + sizeof(size_t);
+		size_t 										firstElement2 = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
 		Nginx_MPool_FixedElem<int> 					alloc2(pool, poolsize);
 		std::list<int, Nginx_MPool_FixedElem<int> > list2(alloc2);
 
 		// The fixed block only gets allocated when the first element is pushed
 		list2.push_back(0);
-		size_t 										lastElement2 = (size_t)pool->allocate(sizeof(size_t));
+		size_t 										lastElement2 = (size_t)pool.allocate(sizeof(size_t));
 
 
 
@@ -186,11 +182,6 @@ int TestPart1(int testNumber)
 			}
 		}
 
-		list1.clear();
-		list2.clear();
-
-		pool->destroy();
-
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -214,16 +205,17 @@ try
 			IN THE SAME POOL BLOCK!!!!!!!!!!!!!!!!!!!!!!
 		*/
 	
-		Nginx_MemoryPool* 										pool = Nginx_MemoryPool::create(10000, 1);
+		Nginx_MemoryPool 										pool(10000, 1);
+		
 		Nginx_MPool_FixedElem<int> 								alloc(pool, poolsize);
 		std::list<int, Nginx_PoolAllocator_FixedElem<int> >		list1(alloc);
 		std::list<int, Nginx_PoolAllocator_FixedElem<int> >		list2(alloc);
 
 
 		// The fixed block only gets allocated when the first element is pushed
-		size_t 										firstElement = (size_t)pool->allocate(sizeof(size_t)) + sizeof(size_t);
+		size_t 										firstElement = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
 		list1.push_back(0);
-		size_t 										lastElement = (size_t)pool->allocate(sizeof(size_t));
+		size_t 										lastElement = (size_t)pool.allocate(sizeof(size_t));
 
 
 
@@ -272,12 +264,6 @@ try
 				throw std::runtime_error("node address is out of bounds");
 			}
 		}
-
-
-		list1.clear();
-		list2.clear();
-
-		pool->destroy();
 
 		std::cout << "	PASSED" << std::endl;
 	}
