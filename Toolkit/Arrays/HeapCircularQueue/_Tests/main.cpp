@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:40:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 23:13:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:40:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int ThisTest(int testNumber)
 
         /************* */
                
-        resultInsertion = queue.push_back(backNumber);
+        resultInsertion = queue.emplace_back(backNumber);
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;

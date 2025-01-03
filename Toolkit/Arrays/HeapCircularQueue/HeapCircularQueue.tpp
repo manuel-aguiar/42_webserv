@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 10:18:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:39:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,12 +167,8 @@ class HeapCircularQueue
 		// so construct first, adjust after
 		bool push_back(const T& value)
 		{
-			if (mf_FrontEqualsBack())
-			{
-				if (m_frontIndex != -1)
-					return (false);
-				m_frontIndex = m_backIndex = 0;
-			}
+			if (!mf_PushPrepare())
+				return (false);
 			m_array[m_backIndex] = value;
 			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
@@ -194,12 +190,8 @@ class HeapCircularQueue
 		//m_frontIndex is already the first, so we adjust first, construct after
 		bool push_front(const T& value)
 		{
-			if (mf_FrontEqualsBack())
-			{
-				if (m_frontIndex != -1)
-					return (false);
-				m_frontIndex = m_backIndex = 0;
-			}
+			if (!mf_PushPrepare())
+				return (false);
 			
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			m_array[m_frontIndex] = value;
@@ -229,6 +221,163 @@ class HeapCircularQueue
 			return (m_frontIndex == m_backIndex && m_frontIndex != -1);
 		}
 
+		bool emplace_back()
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T();
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+		}
+
+		template <typename Arg1 >
+		bool emplace_back(Arg1& arg1)
+		{
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 >
+        bool emplace_back(Arg1& arg1, Arg2& arg2)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        bool emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }
+
+		template <typename Arg1 >
+		bool emplace_back(const Arg1& arg1)
+		{
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 >
+        bool emplace_back(const Arg1& arg1, const Arg2& arg2)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        bool emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_allocator.destroy(&m_array[m_backIndex]);
+			new (m_array + m_backIndex) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
+			return (true);
+        }	
+
+		bool emplace_front()
+        {
+			if (!mf_PushPrepare())
+				return (false);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T();
+			return (true);
+		}
+
+		template <typename Arg1 >
+		bool emplace_front(Arg1& arg1)
+		{
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1);
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 >
+        bool emplace_front(Arg1& arg1, Arg2& arg2)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1, arg2);
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        bool emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
+			return (true);
+        }
+
+		template <typename Arg1 >
+		bool emplace_front(const Arg1& arg1)
+		{
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1);
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 >
+        bool emplace_front(const Arg1& arg1, const Arg2& arg2)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1, arg2);
+			return (true);
+        }
+
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        bool emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        {
+			if (!mf_PushPrepare())
+				return (false);
+
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_allocator.destroy(&m_array[m_frontIndex]);
+			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
+			return (true);
+        }	
 
 		class iterator
 		{
@@ -343,148 +492,159 @@ class HeapCircularQueue
 		{
 			return (m_frontIndex == m_backIndex);
 		}
+
+		bool mf_PushPrepare()
+		{
+			if (mf_FrontEqualsBack())
+			{
+				if (m_frontIndex != -1)
+					return (false);
+				m_frontIndex = m_backIndex = 0;
+			}
+			return (true);
+		}
 };
 
 #endif
 
 
 /*
-		void emplace_back()
+		bool emplace_back()
         {
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T();
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
 		}
 
 		template <typename Arg1 >
-		void emplace_back(Arg1& arg1)
+		bool emplace_back(Arg1& arg1)
 		{
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_back(Arg1& arg1, Arg2& arg2)
+        bool emplace_back(Arg1& arg1, Arg2& arg2)
         {
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1, arg2);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
+        bool emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1, arg2, arg3);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
 		template <typename Arg1 >
-		void emplace_back(const Arg1& arg1)
+		bool emplace_back(const Arg1& arg1)
 		{
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2)
+        bool emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1, arg2);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        bool emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
 			assert(m_array && size() < m_capacity);
 
 			new (m_array + m_backIndex) T(arg1, arg2, arg3);
 			m_backIndex = (m_backIndex + 1) % m_capacity;
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }	
 
-		void emplace_front()
+		bool emplace_front()
         {
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T();
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
 		}
 
 		template <typename Arg1 >
-		void emplace_front(Arg1& arg1)
+		bool emplace_front(Arg1& arg1)
 		{
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_front(Arg1& arg1, Arg2& arg2)
+        bool emplace_front(Arg1& arg1, Arg2& arg2)
         {
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1, arg2);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
+        bool emplace_front(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
 		template <typename Arg1 >
-		void emplace_front(const Arg1& arg1)
+		bool emplace_front(const Arg1& arg1)
 		{
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 >
-        void emplace_front(const Arg1& arg1, const Arg2& arg2)
+        bool emplace_front(const Arg1& arg1, const Arg2& arg2)
         {
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1, arg2);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        bool emplace_front(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
 			assert(m_array && size() < m_capacity);
 
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
 			new (m_array + m_frontIndex) T(arg1, arg2, arg3);
-			m_isFull = (m_backIndex == m_frontIndex);
+			return (true);
         }	
 */
 
