@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 23:28:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:18:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,29 @@ class HeapCircularQueue
 			m_backIndex(-1), 
 			m_capacity(capacity)
 		{
-			assert(capacity);
+			for (size_t i = 0; i < capacity; ++i)
+			{
+				new(&m_array[i]) T();
+			}
+		}
+
+		// user can avoid default construction by initializing copies, buffer will stiil have "zero" elements inserted
+		HeapCircularQueue(const size_t capacity, const T& copy, const Allocator& allocator = Allocator()) : 
+			m_allocator(allocator),
+			m_array(m_allocator.allocate(capacity)),
+			m_frontIndex(-1),
+			m_backIndex(-1), 
+			m_capacity(capacity)
+		{
+			for (size_t i = 0; i < capacity; ++i)
+			{
+				new(&m_array[i]) T(copy);
+			}
 		}
 
 
+
 		HeapCircularQueue(const HeapCircularQueue &other) : 
-			m_allocator(other.m_allocator),
-			m_array(m_allocator.allocate(other.m_capacity)), 
 			m_capacity(other.m_capacity)
 		{
 			*this = other;
@@ -42,48 +58,33 @@ class HeapCircularQueue
 
 		~HeapCircularQueue()
 		{
-			clear();
-			m_allocator.deallocate(m_array, m_capacity);
+			mf_destroyAll();
 		}
 
 		HeapCircularQueue &operator=(const HeapCircularQueue &other)
 		{
 			assert(m_capacity == other.m_capacity);
 
-
-			std::cout << "my capacity: " << m_capacity << " other capacity: " << other.m_capacity << std::endl;
-			
-			std::cout << "copy assignment called" << std::endl;
-			std::cout << "mySize: " << size() << " otherSize: " << other.size() << std::endl;
-			if (this == &other)
-				return (*this);
-
-			if (other.size() == 0)
+			if (getAllocator() != other.getAllocator())
 			{
-				clear();
-
-				std::cout << "other is empty" << std::endl;
-
-				return (*this);
+				mf_destroyAll();
+				m_allocator = other.m_allocator;
+				m_array = m_allocator.allocate(m_capacity);
+				for (int i = 0; i < m_capacity; ++i)
+					m_allocator.construct(&m_array[i], other.m_array[i]);
 			}
-
-			if (size() == 0)
+			else
 			{
-				for (int i = other.m_frontIndex; i != other.m_backIndex;)
+				m_frontIndex = (other.isFull()) ? ((other.m_frontIndex + 1) % m_capacity) : m_frontIndex;
+				for (int i = m_frontIndex; i != other.m_backIndex;)
 				{
-					new (m_array + i) T(other.m_array[i]);
+					m_array[i] = other.m_array[i];
 					i = (i + 1) % m_capacity;
 				}
-				m_frontIndex = other.m_frontIndex;
-				m_backIndex = other.m_backIndex;
-
-				std::cout << "this is empty" << std::endl;
-				return (*this);
 			}
-
 			m_frontIndex = other.m_frontIndex;
 			m_backIndex = other.m_backIndex;
-			std::cout << "this is not empty but hey" << std::endl;
+
 			return (*this);
 		}
 
@@ -125,22 +126,6 @@ class HeapCircularQueue
 
 		void clear()
 		{
-			if (mf_FrontEqualsBack())
-			{
-				// empty
-				if (m_frontIndex == -1)
-					return ;
-					
-				// array is full and not empty, set frontIndex 1 past backIndex, it will loop around
-				m_frontIndex = ((m_frontIndex + 1) % m_capacity);
-			}
-
-			for (int i = m_frontIndex; i != m_backIndex;)
-			{
-				m_allocator.destroy(&m_array[i]);
-				i = (i + 1) % m_capacity;
-			}
-
 			m_frontIndex = -1;
 			m_backIndex = -1;
 		}
@@ -188,7 +173,7 @@ class HeapCircularQueue
 					return (false);
 				m_frontIndex = m_backIndex = 0;
 			}
-			new (m_array + m_backIndex) T(value);
+			m_array[m_backIndex] = value;
 			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
 		}
@@ -200,7 +185,6 @@ class HeapCircularQueue
 				return (false);
 			
 			m_backIndex = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
-			m_allocator.destroy(&m_array[m_backIndex]);
 			mf_PopResetIndexes();
 			return (true);
 		}
@@ -218,9 +202,7 @@ class HeapCircularQueue
 			}
 			
 			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
-			new (m_array + m_frontIndex) T(value);
-
-			//m_isFull = (m_backIndex == m_frontIndex);
+			m_array[m_frontIndex] = value;
 
 			return (true);
 		}
@@ -231,7 +213,6 @@ class HeapCircularQueue
 			if (isEmpty())
 				return (false);
 			
-			m_allocator.destroy(&m_array[m_frontIndex]);
 			m_frontIndex = (m_frontIndex + 1) % m_capacity;
 			mf_PopResetIndexes();
 			return (true);
@@ -342,6 +323,13 @@ class HeapCircularQueue
 		int							m_capacity;
 
 		// helper functions		
+
+		void	mf_destroyAll()
+		{
+			for (int i = 0; i < m_capacity; ++i)
+				m_allocator.destroy(&m_array[i]);
+			m_allocator.deallocate(m_array, m_capacity);
+		}
 
 		void	mf_PopResetIndexes()
 		{
