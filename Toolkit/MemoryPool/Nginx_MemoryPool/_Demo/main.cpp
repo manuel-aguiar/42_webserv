@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/04 00:43:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/04 09:37:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,39 @@ int main(void)
 
         std::cout << *str << std::endl;
 
-        /*
-            The string's destructor is not called!!!!!
+        /* 
+            you no longer need to call the string destructor, memorypool takes care of the internal buffer!!!!!!!!!!!
         */
 
-       //call the destructor
-        str->~basic_string();
+        //str->~basic_string();
 
-        //let the pool deallocate itself by going out of scope
+        /*
+            So you are handling an http request, allocating strings and so on, on the pool, request is over......
+        */
 
 
-        // you don't see it but trust me, the std::string asked for a buffer to the memorypool for its internal allocation.
-        // The downside of this approach is that there is no RAII, i "place-new", i must "place-delete".
+        // reset the pool, the memory is still allocated but all marked as free
+        pool.reset();
+    
+
+        NginxString   anotherString("another string that will be allocated on the pool", alloc);
+        NginxString   anotherString2("some other stuff, heap allocated pleasseeeeee", alloc);
+
+        std::cout << '\n';
+
+        std::cout << '\t' << anotherString << std::endl;
+        std::cout << '\t' << anotherString2 << std::endl;
+        
+        /*
+            That's it. Even though these latest strings will call their destructor (stack), it doesn't matter
+            They are recycling memory
+        */
+
+
+
+       /*
+            Everything goes out of scope, the pool is the last one, deallocates all memory, no leaks
+       */
 
     }
 
