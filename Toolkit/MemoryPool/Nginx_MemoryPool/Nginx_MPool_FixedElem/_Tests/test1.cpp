@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 17:09:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 22:06:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ int TestPart1(int testNumber)
         TEST_FAIL_INFO();
 	}
 
-try
+	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
@@ -208,8 +208,8 @@ try
 		Nginx_MemoryPool 										pool(10000, 1);
 		
 		Nginx_MPool_FixedElem<int> 								alloc(pool, poolsize);
-		std::list<int, Nginx_PoolAllocator_FixedElem<int> >		list1(alloc);
-		std::list<int, Nginx_PoolAllocator_FixedElem<int> >		list2(alloc);
+		std::list<int, Nginx_MPool_FixedElem<int> >				list1(alloc);
+		std::list<int, Nginx_MPool_FixedElem<int> >				list2(alloc);
 
 
 		// The fixed block only gets allocated when the first element is pushed
