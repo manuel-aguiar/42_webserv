@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/05 22:40:02 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/05 23:29:27 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,14 +23,14 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 # Sources
 SRCS					=		$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_FixedElem/_Tests/main.cpp	\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_FixedElem/_Tests/test1.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_FixedElem/_Tests/test2.cpp	\
 								\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
+								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		\
+								$(SRC_PATH)/_Tests/testHelpers.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 22:46:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 23:34:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ int TestPart1(int testNumber)
 
 		if (lastElement - firstElement != poolsize * nodeSize)
 		{
-			std::cout << "expected: " << poolsize * nodeSize <<", got: " << lastElement - firstElement << ", "
-			<< (unsigned char *)firstElement << ", " << (unsigned char *)lastElement << std::endl;
-			throw std::runtime_error("element size is not correct");
+			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement - firstElement) 
+			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		for (size_t i = 1; i < loopTimes; i++)
@@ -68,8 +68,9 @@ int TestPart1(int testNumber)
 			nodeAddress = (size_t)&(*it);
 			if (!(nodeAddress >= firstElement && nodeAddress < lastElement))
 			{
-				std::cout << "element at " << (void *)nodeAddress << " is outside range (" << (void *)firstElement << ", " << (void *)lastElement << ")" << std::endl;
-				throw std::runtime_error("node address is out of bounds");
+				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
+				to_string((void *)firstElement) + ", " + to_string((void *)lastElement) + ")\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 			}
 		}
 
@@ -138,24 +139,26 @@ int TestPart1(int testNumber)
 		// List 1 must be allcoated in a block of this size
 		if (lastElement1 - firstElement1 != poolsize * nodeSize)
 		{
-			std::cout << "expected: " << poolsize * nodeSize <<", got: " << lastElement1 - firstElement1 << ", "
-			<< (unsigned char *)firstElement1 << ", " << (unsigned char *)lastElement1 << std::endl;
-			throw std::runtime_error("element size is not correct");
+			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement1 - firstElement1) 
+			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		// List2 must be allcoated in a block of this size
 		if (lastElement2 - firstElement2 != poolsize * nodeSize)
 		{
-			std::cout << "expected: " << poolsize * nodeSize <<", got: " << lastElement2 - firstElement2 << ", "
-			<< (unsigned char *)firstElement2 << ", " << (unsigned char *)lastElement2 << std::endl;
-			throw std::runtime_error("element size is not correct");
+			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement2 - firstElement2) 
+			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		// blocks don't overlap
 		if (lastElement1 > firstElement2)
 		{
-			std::cout << "blocks overlap" << std::endl;
-			throw std::runtime_error("blocks overlap");
+			throw std::runtime_error(std::string("blocks are overlapping: \n")
+			+ "\tfirst block: (" + to_string((void *)firstElement1) + ", " + to_string((void *)lastElement1) + ")\n"
+			+ "\tsecnd block: (" + to_string((void *)firstElement2) + ", " + to_string((void *)lastElement2) + ")\n"
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		/////////////////////
@@ -169,8 +172,9 @@ int TestPart1(int testNumber)
 			nodeAddress = (size_t)&(*it);
 			if (!(nodeAddress >= firstElement1 && nodeAddress < lastElement1))
 			{
-				std::cout << "element at " << (void *)nodeAddress << " is outside range (" << (void *)firstElement1 << ", " << (void *)lastElement1 << ")" << std::endl;
-				throw std::runtime_error("node address is out of bounds");
+				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
+				to_string((void *)firstElement1) + ", " + to_string((void *)lastElement1) + ")\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 			}
 		}
 
@@ -183,8 +187,9 @@ int TestPart1(int testNumber)
 			nodeAddress = (size_t)&(*it);
 			if (!(nodeAddress >= firstElement2 && nodeAddress < lastElement2))
 			{
-				std::cout << "element at " << (void *)nodeAddress << " is outside range (" << (void *)firstElement2 << ", " << (void *)lastElement2 << ")" << std::endl;
-				throw std::runtime_error("node address is out of bounds");
+				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
+				to_string((void *)firstElement2) + ", " + to_string((void *)lastElement2) + ")\n"
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 			}
 		}
 
@@ -194,7 +199,6 @@ int TestPart1(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
 	return (testNumber);
