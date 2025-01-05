@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:20:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 22:49:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,11 @@ reset(Nginx_MPool_Block** pool, int maxBlocks)
     Nginx_MPool_Block*          poolCur;
     Nginx_MPool_Block*          poolNext;
 
-    assert(maxBlocks > 0);  //at least one block for the pool selfhosting, otherwise UB
     poolCur = (*pool);
     while (poolCur)
     {
         poolNext = poolCur->m_nextBlock;
         poolCur->m_freePosition = (t_byte*)poolCur + sizeof(Nginx_MPool_Block);
-        if (poolCur->m_blockId == 0)
-            poolCur->m_freePosition += sizeof(Nginx_MemoryPool);
         if (poolCur->m_blockId >= maxBlocks)
             delete [] (t_byte*)(poolCur);
         else if (poolCur->m_blockId == maxBlocks - 1)
@@ -93,7 +90,7 @@ Nginx_MemoryPool::Nginx_MPool_Block::
 allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t blockSizeAgainLol)
 {
     void*                       location;
-    Nginx_MPool_Block*     pool;
+    Nginx_MPool_Block*      pool;
 
     assert ((size_t)((*poolPlace)->m_endOfBlock) - (size_t)((*poolPlace) - (sizeof(Nginx_MPool_Block))) >= size);
     pool = *poolPlace;

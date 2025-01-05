@@ -36,9 +36,9 @@ class Nginx_PoolAllocator
 			typedef Nginx_PoolAllocator<U> other;
 		};
 
-		Nginx_PoolAllocator(Nginx_MemoryPool& pool) : m_memoryPool(pool) {/*std::cout << "allcoator inituialzed: " << pool << std::endl;*/}
+		Nginx_PoolAllocator(Nginx_MemoryPool& pool) : m_memoryPool(&pool) {/*std::cout << "allcoator inituialzed: " << pool << std::endl;*/}
 		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : m_memoryPool(copy.m_memoryPool) {(void)copy;}
-
+		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& copy) {m_memoryPool = copy.m_memoryPool; return *this;}
 		~Nginx_PoolAllocator() {};
 
 		template <typename U>
@@ -51,7 +51,7 @@ class Nginx_PoolAllocator
 				return 0;
 			if (n > max_size())
 				throw std::bad_alloc();
-			return static_cast<pointer>(m_memoryPool.allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
+			return static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
 		}
 
 		void deallocate(pointer p, size_type n)
@@ -70,8 +70,8 @@ class Nginx_PoolAllocator
 			p->~value_type();
 		}
 
-		bool operator==(const Nginx_PoolAllocator& other) const { return (&m_memoryPool == &other.m_memoryPool); }
-		bool operator!=(const Nginx_PoolAllocator& other) const { return (&m_memoryPool != &other.m_memoryPool); }
+		bool operator==(const Nginx_PoolAllocator& other) const { return (m_memoryPool == other.m_memoryPool); }
+		bool operator!=(const Nginx_PoolAllocator& other) const { return (m_memoryPool != other.m_memoryPool); }
 
 		size_type max_size() const
 		{
@@ -79,7 +79,7 @@ class Nginx_PoolAllocator
 		}
 
 	//private:
-		Nginx_MemoryPool& m_memoryPool;
+		Nginx_MemoryPool* m_memoryPool;
 };
 
 

@@ -16,8 +16,8 @@
 # define NGINX_POOLALLOCATOR_FIXEDELEM_HPP
 
 template <typename T>
-class Nginx_PoolAllocator_FixedElem;
+class Nginx_Shared_FixedElem;
 
-# include "Nginx_PoolAllocator_FixedElem.tpp"
+# include "Nginx_Shared_FixedElem.tpp"
 
 #endif

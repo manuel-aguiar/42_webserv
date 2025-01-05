@@ -29,8 +29,8 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 	m_connManager		(::atoi(m_serverManager.getConfig().getMaxConnections().c_str()), pool, globals),
 	m_eventManager		(globals),
 	m_memPool			(pool),
-	m_listeners			(m_serverManager.getListenerCount(), Nginx_PoolAllocator<ListeningSocket *>(&m_memPool)),
-	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(&m_memPool, m_serverManager.getListenerCount())),
+	m_listeners			(m_serverManager.getListenerCount(), Nginx_PoolAllocator<ListeningSocket *>(m_memPool)),
+	m_pendingAccept		(Nginx_MPool_FixedElem<ListeningSocket *>(m_memPool, m_serverManager.getListenerCount())),
 	m_isRunning			(false),
 	m_globals			(globals)
 {

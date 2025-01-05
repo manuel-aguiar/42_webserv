@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/04 09:37:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 23:14:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <iostream>
 # include <vector>
 # include <list>
+# include <set>
 
 # include "../Nginx_MemoryPool.hpp"
 # include "../Nginx_PoolAllocator.hpp"
@@ -219,6 +220,79 @@ int main(void)
             and pass a PoolAllocator to it -> smaller "nodes", no dereferencing and just pointer arithmatic,
             all packed tight together, and allocate it in your pool with the rest of the data that is frequently accessed
             All in one.
+        */
+    }
+
+
+    std::cout << "\n\nExample " << exampleNumber++ << ": UNDEFINED BEHAVIOUR, some notes and examples, see code line 226, final remarks \n";
+    {
+        Nginx_MemoryPool pool(4096, 1);
+
+        /*
+
+            Unfortunately, some particular uses result in undefined behavior simply by the way
+            that containers allocate memory.
+
+            For instance, a std::list<int> does not simply allocate ints: + it allocates a prev and a next pointer
+            for each node
+
+            A std::map<int, int> allocates a pair<int, int> for each node, but on top of that,
+            it allocates the parent node*, left child* and right child*.
+
+            They REBIND the allcoator we pass them
+        
+        */
+
+       Nginx_MPool_FixedElem<int> alloc(pool, 10);
+
+        // this will copy construct the FixedElem Pool, no problem because it doesn't allocate until the first allcoation
+        std::list<int, Nginx_MPool_FixedElem<int> > list1(alloc);
+
+
+        // this doesn't mean they are sharing........
+        std::list<int, Nginx_MPool_FixedElem<int> > list2(alloc);
+        // it will actually allocate another separate block of memory for its own nodes
+
+        // So one could expect these to share the same block, but they aren't
+
+
+        //here comes another block, separate AND OF DIFFERENT SIZE TO THAT OF A LIST NODE
+        std::set<int, Nginx_MPool_FixedElem<int> > set(alloc);
+        // nobody is sharing anything, they are all separate blocks
+
+        //I had another allocator to accomplish this but also figured: "why?, the point is to exactly stick things together"
+        // So we don't have it and won't have.
+
+
+        /******************************************** */
+
+        // while you can do this..... it is pretty useless ofc, not to mention the block will be copied from above
+        std::vector<int, Nginx_MPool_FixedElem<int> > vec(alloc);
+
+
+
+        //do this instead!!!
+        std::vector<int, Nginx_PoolAllocator<int> > vec2(10, 0, Nginx_PoolAllocator<int>(pool));
+
+        // also works with DynArray, HeapArray......
+
+
+
+
+        /*
+        
+            The point of this is not really to count how many times we called malloc and free because it is "expensive"
+            The point is to organize data, to make sure that the data the must be close together, stays together
+            Our program will allcoate memory all the time, from different places and intermediate states kept
+            on every EventPool loop.
+
+            By using memory pools, we can force each connection to ahve it's state close together and not intermingled
+            with data from other connections during runtime. So when we pull data from cache to work on a connection
+            we maximize the probability of actually using the data we are pulling in and not some other connection's data
+            that the processor will have to discard because we will not use it.
+
+            That is the MAIN take of all of this.
+        
         */
     }
 
