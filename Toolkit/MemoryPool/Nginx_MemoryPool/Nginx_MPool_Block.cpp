@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nginx_MPool_Block.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/15 20:12:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 22:49:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,7 @@ destroy(Nginx_MPool_Block**   poolPlace)
     }
 }
 
-/*
 
-    When resetting, delete the big blocks, we don't really know their size of use
-    let the m_next pool user to take care of it
-
-*/
 void
 Nginx_MemoryPool::Nginx_MPool_Block::
 reset(Nginx_MPool_Block** pool, int maxBlocks)
@@ -76,17 +71,14 @@ reset(Nginx_MPool_Block** pool, int maxBlocks)
     Nginx_MPool_Block*          poolCur;
     Nginx_MPool_Block*          poolNext;
 
-    assert(maxBlocks > 0);  //at least one block for the pool selfhosting, otherwise UB
     poolCur = (*pool);
     while (poolCur)
     {
         poolNext = poolCur->m_nextBlock;
-        poolCur->_freePosition = (t_byte*)poolCur + sizeof(Nginx_MPool_Block);
-        if (poolCur->_blockId == 0)
-            poolCur->_freePosition += sizeof(Nginx_MemoryPool);
-        if (poolCur->_blockId >= maxBlocks)
+        poolCur->m_freePosition = (t_byte*)poolCur + sizeof(Nginx_MPool_Block);
+        if (poolCur->m_blockId >= maxBlocks)
             delete [] (t_byte*)(poolCur);
-        else if (poolCur->_blockId == maxBlocks - 1)
+        else if (poolCur->m_blockId == maxBlocks - 1)
             *pool = poolCur;
         poolCur = poolNext;
     }
@@ -98,31 +90,31 @@ Nginx_MemoryPool::Nginx_MPool_Block::
 allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t blockSizeAgainLol)
 {
     void*                       location;
-    Nginx_MPool_Block*     pool;
+    Nginx_MPool_Block*      pool;
 
-    assert ((size_t)((*poolPlace)->_endOfBlock) - (size_t)((*poolPlace) - (sizeof(Nginx_MPool_Block))) >= size);
+    assert ((size_t)((*poolPlace)->m_endOfBlock) - (size_t)((*poolPlace) - (sizeof(Nginx_MPool_Block))) >= size);
     pool = *poolPlace;
 
     // try to find a good allocation position, mehh, O(n)....
     while (pool)
     {
-        t_byte* aligned_position = pool->_freePosition;
-        aligned_position = allignedAlloc(pool->_freePosition, alignment);
-        if (aligned_position + size <= pool->_endOfBlock)
+        t_byte* aligned_position = pool->m_freePosition;
+        aligned_position = mf_allignedAlloc(pool->m_freePosition, alignment);
+        if (aligned_position + size <= pool->m_endOfBlock)
             break;
         pool = pool->m_nextBlock;
     }
     if (!pool)
     {
-        Nginx_MPool_Block* newPool = Nginx_MPool_Block::allocateNewBlock(blockSizeAgainLol, (*poolPlace)->_blockId + 1);
+        Nginx_MPool_Block* newPool = Nginx_MPool_Block::allocateNewBlock(blockSizeAgainLol, (*poolPlace)->m_blockId + 1);
         newPool->m_nextBlock = *poolPlace;
         
         *poolPlace = newPool;
         pool = newPool;
     }
-    location = pool->_freePosition;
-    location = allignedAlloc(pool->_freePosition, alignment);
-    pool->_freePosition = (t_byte*)((size_t)location + size);
+    location = pool->m_freePosition;
+    location = mf_allignedAlloc(pool->m_freePosition, alignment);
+    pool->m_freePosition = (t_byte*)((size_t)location + size);
     return (location);
 }
 
@@ -154,10 +146,10 @@ allocateNewBlock(size_t blockSize, int blockId)
 {
     Nginx_MPool_Block* pool = (Nginx_MPool_Block*) new t_byte[blockSize];
     new (pool) Nginx_MPool_Block(0);
-    pool->_freePosition = (t_byte*)pool + sizeof(Nginx_MPool_Block);
-    pool->_endOfBlock = (t_byte*)pool + blockSize;
+    pool->m_freePosition = (t_byte*)pool + sizeof(Nginx_MPool_Block);
+    pool->m_endOfBlock = (t_byte*)pool + blockSize;
     pool->m_data = pool;
     pool->m_nextBlock = NULL;
-    pool->_blockId = blockId;
+    pool->m_blockId = blockId;
     return (pool);
 }

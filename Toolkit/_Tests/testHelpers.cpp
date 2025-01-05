@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                       :+:      :+:    :+:   */
+/*   testHelpers.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/08 09:55:41 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/03 10:44:52 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/03 10:51:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYNARRAY_HPP
+# include "test.h"
 
-# define DYNARRAY_HPP
-
-#include <memory>
-template <typename T, typename Allocator = std::allocator<T> >
-class DynArray;
-
-# include "DynArray.tpp"
-
-#endif
+std::string FileLineFunction(const char* file, const int line, const char* function)
+{
+    return std::string("\tFile: ") + file + "\n\tLine: " + to_string(line) + "\n\tFunction: " + function + '\n';
+}

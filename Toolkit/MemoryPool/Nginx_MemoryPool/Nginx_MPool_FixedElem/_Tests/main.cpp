@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Vector.hpp                                       :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/08 09:55:41 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/05 23:19:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYNARRAY_HPP
+//C++ headers
+#include <iostream>
 
-# define DYNARRAY_HPP
+extern int TestPart1(int testNumber);
 
-#include <memory>
-template <typename T, typename Allocator = std::allocator<T> >
-class DynArray;
+int main(void)
+{
+    int testNumber = 1;
 
-# include "DynArray.tpp"
+	std::cout << "\n*************** Nginx_MPool_FixedElem tests ***************" << std::endl;
+	
+    testNumber = TestPart1(testNumber);
 
-#endif
+	std::cout << "**********************************************************\n" << std::endl;
+
+    return 0;
+}
+
