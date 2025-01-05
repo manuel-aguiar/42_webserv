@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 23:14:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/05 23:46:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ int main(void)
     }
 
 
-    std::cout << "\n\nExample " << exampleNumber++ << ": UNDEFINED BEHAVIOUR, some notes and examples, see code line 226, final remarks \n";
+    std::cout << "\n\nExample " << exampleNumber++ << ": UNDEFINED BEHAVIOUR, some notes and examples, see code line " << __LINE__ << ", final remarks \n";
     {
         Nginx_MemoryPool pool(4096, 1);
 
@@ -243,7 +243,7 @@ int main(void)
         
         */
 
-       Nginx_MPool_FixedElem<int> alloc(pool, 10);
+        Nginx_MPool_FixedElem<int> alloc(pool, 10);
 
         // this will copy construct the FixedElem Pool, no problem because it doesn't allocate until the first allcoation
         std::list<int, Nginx_MPool_FixedElem<int> > list1(alloc);
@@ -261,7 +261,7 @@ int main(void)
         // nobody is sharing anything, they are all separate blocks
 
         //I had another allocator to accomplish this but also figured: "why?, the point is to exactly stick things together"
-        // So we don't have it and won't have.
+        // "and segregate what should not be together" So we don't have it and won't have.
 
 
         /******************************************** */
@@ -287,11 +287,11 @@ int main(void)
             on every EventPool loop.
 
             By using memory pools, we can force each connection to ahve it's state close together and not intermingled
-            with data from other connections during runtime. So when we pull data from cache to work on a connection
+            with data from other connections during runtime. So when we pull data from memory to cache to work on a connection
             we maximize the probability of actually using the data we are pulling in and not some other connection's data
             that the processor will have to discard because we will not use it.
 
-            That is the MAIN take of all of this.
+            That is the MAIN reason for all of this.
         
         */
     }
