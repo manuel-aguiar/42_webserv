@@ -21,8 +21,7 @@
 # include <pthread.h>
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
-	m_threads(0)
+ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads)
 {
 	pthread_mutex_init(&m_statusLock, NULL);
 	pthread_cond_init(&m_exitSignal, NULL);

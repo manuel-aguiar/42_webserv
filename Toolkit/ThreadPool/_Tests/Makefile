@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/02 10:03:21 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/06 13:53:17 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,6 @@ SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test3.cpp					\
 								\
-								$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
-								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp					\
-								$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp					
-
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
