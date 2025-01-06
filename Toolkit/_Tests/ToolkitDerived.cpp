@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:10:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 10:10:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:58:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,11 @@ ToolkitDerived& ToolkitDerived::operator=(const ToolkitDerived& other)
 
 ToolkitDerived::~ToolkitDerived() 
 {
+}
+
+int ToolkitDerived::getValue() const
+{
+    return value;
 }
 
 bool ToolkitDerived::operator==(const ToolkitDerived& other) 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 13:53:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 14:21:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,10 @@
 # include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../_Tests/test.h"
 
-template <typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
-
 class EmplaceTwo
 {
     public:
-        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number) {};
+        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number), m_present(m_name + " " + to_string(m_number)) {};
 		~EmplaceTwo() {};
 		
         bool operator==(const EmplaceTwo& other)
@@ -48,8 +40,11 @@ class EmplaceTwo
             return (!(*this == other));
         }
         
+		const std::string& present() const { return m_present; }
+
         std::string m_name;
         int         m_number;
+		std::string m_present;
 };
 
 
@@ -60,7 +55,7 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		HeapArray<int> 			array(100);
 
@@ -70,17 +65,23 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapArray<int> assign(100);
+		
+		assign.push_back(123);
+		assign.push_back(-456);
+		
         assign = array;
 
         it = assign.begin();
@@ -89,11 +90,13 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
+                throw std::runtime_error("copy assignment value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
+			throw std::runtime_error("copy assignment, size mismatch, got: " + to_string(assign.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -101,15 +104,13 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<std::string> 		std;
 		HeapArray<std::string> 			array(100);
 
@@ -119,14 +120,16 @@ int TestPart2(int testNumber)
 			array.emplace_back("big string the will require allocation on the heap " + to_string(i));
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<std::string>::iterator it = array.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapArray<std::string> assign(100);
@@ -141,11 +144,13 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
+                throw std::runtime_error("copy assignment, value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
+			throw std::runtime_error("copy assignment, size mismatch, got: " + to_string(assign.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -153,15 +158,13 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		HeapArray<int> 			array(100);
 
@@ -171,14 +174,16 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapArray<int> assign(array);
@@ -189,11 +194,13 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy constructor, value mismatch");
+                throw std::runtime_error("copy, constructor value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy constructor, size mismatch");
+			throw std::logic_error("copy constructor, size mismatch got: " + to_string(assign.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -201,15 +208,13 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
 		HeapArray<int> 			array(100);
 
@@ -219,14 +224,16 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         HeapArray<int> assign(100);
@@ -242,35 +249,37 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("::move failed, value mismatch");
+                throw std::logic_error("::move failed, value mismatch got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("::move failed, size mismatch");
+			throw std::logic_error("::move failed, got: " + to_string(assign.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (array.size() != 0)
-            throw std::logic_error("::move failed, source array not empty");    
+            throw std::logic_error("::move failed, source array not empty" + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));    
 
-        array.clear();
+        assign.clear();
 
-        if (array.size() != 0)
-            throw std::logic_error("::clear failed, array not empty");
+        if (assign.size() != 0)
+            throw std::logic_error("::clear failed, array not empty" + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 /******************************************************************** */
 /* Emplace two */
 
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<EmplaceTwo> 		std;
 		HeapArray<EmplaceTwo> 			array(100);
 		
@@ -303,14 +312,16 @@ int TestPart2(int testNumber)
 		}
 
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<EmplaceTwo>::iterator it = array.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::logic_error("value mismatch got: " + it->present() + " expected: " + iter->present() + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		std::cout << "	PASSED" << std::endl;
@@ -318,9 +329,7 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
-    testNumber++;
 
 
     return (testNumber);
