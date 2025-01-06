@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:07:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 09:15:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 10:58:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ class ToolkitDerived : public ToolkitBase
         ToolkitDerived& operator=(const ToolkitDerived& other);
         ~ToolkitDerived();
 
-        bool operator==(const ToolkitDerived& other) const;
-        bool operator!=(const ToolkitDerived& other) const;
+        int getValue() const;
+
+        bool operator==(const ToolkitDerived& other);
+        bool operator!=(const ToolkitDerived& other);
 
         void print();
 };

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 10:07:30 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 09:15:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/03 11:00:04 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,17 @@ ToolkitBase::~ToolkitBase()
     }
 }
 
-bool ToolkitBase::operator==(const ToolkitBase& other) const
+int ToolkitBase::getValue() const
+{
+    return value;
+}
+
+bool ToolkitBase::operator==(const ToolkitBase& other) 
 {
     return (value == other.value && _name == other._name);
 }
 
-bool ToolkitBase::operator!=(const ToolkitBase& other) const
+bool ToolkitBase::operator!=(const ToolkitBase& other) 
 {
     return !(value == other.value && _name == other._name);
 }

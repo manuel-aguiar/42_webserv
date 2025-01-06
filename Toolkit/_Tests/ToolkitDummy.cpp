@@ -51,14 +51,24 @@ ToolkitDummy& ToolkitDummy::operator=(const ToolkitDummy& other)
     return *this;
 }
 
-bool ToolkitDummy::operator==(const ToolkitDummy& other) const
+bool ToolkitDummy::operator==(const ToolkitDummy& other) 
 {
     return (m_value == other.m_value && m_name == other.m_name);
 }
 
-bool ToolkitDummy::operator!=(const ToolkitDummy& other) const
+bool ToolkitDummy::operator!=(const ToolkitDummy& other) 
 {
     return !(m_value == other.m_value && m_name == other.m_name);
+}
+
+int ToolkitDummy::getValue() const
+{
+    return m_value;
+}
+
+const std::string& ToolkitDummy::getName() const
+{
+    return m_name;
 }
 
 const char* ToolkitDummy::print() const
@@ -66,8 +76,10 @@ const char* ToolkitDummy::print() const
     return "ToolkitDummy: hey there ";
 }
 
+
+
 std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy) 
 {
-    os << dummy.print() << std::endl;
+    os << dummy.getName() << ": " << dummy.getValue() << std::endl;
     return (os);
 }
