@@ -1,25 +1,27 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   testMain.cpp									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/08/27 08:33:11 by mmaria-d		  #+#	#+#			 */
-/*   Updated: 2024/09/03 16:26:42 by mmaria-d		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test2.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/06 23:42:31 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/06 23:42:32 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
+// UnderTest
+# include "../ThreadPool.hpp"
+
+// C++ headers
 # include <iostream>
-# include "../ThreadPool.h"
-
-
 # include <unistd.h>
 # include <cstring>
 # include <sstream>
 # include <cstdlib>
 # include <vector>
 
+// Test helpers
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"

@@ -6,24 +6,26 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 22:40:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 13:04:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 23:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include "../ThreadPool/ThreadPool.hpp"
+//test target
+# include "../ThreadPool.hpp"
 
 
+// Project headers
+# include "../../_Tests/ToolkitDummy.hpp"
+# include "../../_Tests/ToolkitBase.hpp"
+# include "../../_Tests/ToolkitDerived.hpp"
+# include "../../_Tests/test.h"
+
+// C++ headers
 # include <unistd.h>
 # include <cstring>
 # include <sstream>
 # include <cstdlib>
-
-# include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/ToolkitBase.hpp"
-# include "../../_Tests/ToolkitDerived.hpp"
-# include "../../Arrays/StackArray/StackArray.hpp"
-# include "../../_Tests/test.h"
+# include <iostream>
 
 static long fibGood(unsigned int n)
 {

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 //test target
-# include "../ThreadPool.h"
+# include "../ThreadPool.hpp"
 
 
 // Project headers

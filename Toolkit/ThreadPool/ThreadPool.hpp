@@ -19,6 +19,6 @@
 template <size_t ThreadBacklog, size_t TaskBacklog>
 class ThreadPool;
 
-# include "ThreadPool.tpp"
+# include "ThreadPool/ThreadPool.tpp"
 
 #endif
