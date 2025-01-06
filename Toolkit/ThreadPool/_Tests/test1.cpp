@@ -25,13 +25,6 @@
 # include "../../_Tests/ToolkitDerived.hpp"
 # include "../../_Tests/test.h"
 
-template <typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
 
 static long fibGood(unsigned int n)
 {
@@ -73,7 +66,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<100, 1000> tp(10);
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch(const std::exception& e)
@@ -87,7 +80,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.addThread();
 
@@ -105,7 +98,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.removeThread();
 		tp.removeThread();

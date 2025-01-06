@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 16:45:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:16:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,12 @@ template <typename T, size_t ElemCount>
 class StackArray
 {
 	public:
-		StackArray(size_t construct = 0) : m_size(construct), m_internalArray(reinterpret_cast<T*>(m_array))
+		StackArray() : m_size(0), m_internalArray(reinterpret_cast<T*>(m_array))
 		{
-			assert (construct <= ElemCount);
-			for (size_t i = 0; i < m_size; i++)
-				new (&m_internalArray[i]) T();
 		};
 
-        StackArray(size_t construct, const T& value) : m_size(construct), m_internalArray(reinterpret_cast<T*>(m_array))
+        StackArray(const T& value) : m_size(ElemCount), m_internalArray(reinterpret_cast<T*>(m_array))
         {
-            assert (construct <= ElemCount);
             for (size_t i = 0; i < m_size; i++)
                 new (&m_internalArray[i]) T(value);
         }

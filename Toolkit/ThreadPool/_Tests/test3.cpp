@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 22:40:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 10:06:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:04:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <sstream>
 # include <cstdlib>
 
-# include "../../MemoryPool/MemoryPool.h"
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
@@ -152,7 +151,7 @@ int TestPart3(int testNumber)
 	try
 	{
 
-		ThreadPool 					    tp(10, 20);
+		ThreadPool<20, 1000>            tp(10);
 		size_t 		                    fiboExpected;
 
 		Promise<size_t>	                promise(50);

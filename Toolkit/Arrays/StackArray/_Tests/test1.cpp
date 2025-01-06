@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 08:21:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:15:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,7 @@
 # include "../../../_Tests/test.h"
 
 
-template <typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
+
 int TestPart1(int testNumber)
 {
 	/*********************** ************************/

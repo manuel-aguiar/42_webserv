@@ -10,27 +10,39 @@
 /*																			*/
 /* ************************************************************************** */
 
+#ifndef IMPL_TASKQUEUE_TPP
+
+# define IMPL_TASKQUEUE_TPP
+
 #include "../ThreadPool/ThreadPool.hpp"
 
-ThreadPool::TaskQueue::TaskQueue() :
-	m_tasksExecuting(0)
+template <size_t ThreadBacklog, size_t TaskBacklog>
+ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::TaskQueue()
+    : m_tasksExecuting(0)
 {
-	pthread_mutex_init(&m_taskAccess, NULL);
-	pthread_cond_init(&m_newTaskSignal, NULL);
-	pthread_cond_init(&m_allTasksDone, NULL);
+    pthread_mutex_init(&m_taskAccess, NULL);
+    pthread_cond_init(&m_newTaskSignal, NULL);
+    pthread_cond_init(&m_allTasksDone, NULL);
 }
 
-ThreadPool::TaskQueue::~TaskQueue()
+template <size_t ThreadBacklog, size_t TaskBacklog>
+ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::~TaskQueue()
 {
 	pthread_mutex_destroy(&m_taskAccess);
 	pthread_cond_destroy(&m_newTaskSignal);
 	pthread_cond_destroy(&m_allTasksDone);
 }
 
-ThreadPool::TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
-ThreadPool::TaskQueue& ThreadPool::TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
+template <size_t ThreadBacklog, size_t TaskBacklog>
+ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::TaskQueue(const TaskQueue& copy)  {(void)copy;}
 
-void	ThreadPool::TaskQueue::finishTask(IThreadTask* delTask)
+template <size_t ThreadBacklog, size_t TaskBacklog>
+typename ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue& 
+ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::operator=(const TaskQueue& assign)  {(void)assign; return (*this);}
+
+
+template <size_t ThreadBacklog, size_t TaskBacklog>
+void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::finishTask(IThreadTask* delTask)
 {
 	(void)delTask;
 	pthread_mutex_lock(&m_taskAccess);
@@ -40,7 +52,8 @@ void	ThreadPool::TaskQueue::finishTask(IThreadTask* delTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	ThreadPool::TaskQueue::addTask(IThreadTask* newTask)
+template <size_t ThreadBacklog, size_t TaskBacklog>
+void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::addTask(IThreadTask* newTask)
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.push_back(newTask);
@@ -48,7 +61,8 @@ void	ThreadPool::TaskQueue::addTask(IThreadTask* newTask)
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-IThreadTask*	 ThreadPool::TaskQueue::acquireTask()
+template <size_t ThreadBacklog, size_t TaskBacklog>
+IThreadTask*	 ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::acquireTask()
 {
 	IThreadTask *toExecute;
 
@@ -62,14 +76,16 @@ IThreadTask*	 ThreadPool::TaskQueue::acquireTask()
 	return (toExecute);
 }
 
-void	ThreadPool::TaskQueue::clear()
+template <size_t ThreadBacklog, size_t TaskBacklog>
+void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::clear()
 {
 	pthread_mutex_lock(&m_taskAccess);
 	m_tasks.clear();
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-void	ThreadPool::TaskQueue::waitForCompletion()
+template <size_t ThreadBacklog, size_t TaskBacklog>
+void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::waitForCompletion()
 {   
 	pthread_mutex_lock(&m_taskAccess);
 	while (m_tasks.size() != 0 || m_tasksExecuting)
@@ -77,7 +93,8 @@ void	ThreadPool::TaskQueue::waitForCompletion()
 	pthread_mutex_unlock(&m_taskAccess);
 }
 
-size_t	 ThreadPool::TaskQueue::getTaskCount()
+template <size_t ThreadBacklog, size_t TaskBacklog>
+size_t	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::getTaskCount()
 {
 	size_t result;
 	
@@ -86,3 +103,5 @@ size_t	 ThreadPool::TaskQueue::getTaskCount()
 	pthread_mutex_unlock(&m_taskAccess);
 	return (result);
 }
+
+#endif

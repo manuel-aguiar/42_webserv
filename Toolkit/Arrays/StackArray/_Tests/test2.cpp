@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:45:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 16:45:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:16:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
-		StackArray<int, 100> 	array(100, 5);		// default construct 100 elements with value 5
+		StackArray<int, 100> 	array(5);
 
 		for (int i = 0; i < 100; ++i)
 		{
