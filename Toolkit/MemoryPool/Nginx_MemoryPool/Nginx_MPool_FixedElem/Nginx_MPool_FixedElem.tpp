@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 22:14:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 11:35:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,13 @@ class Nginx_MPool_FixedElem
 
 		pointer newElement(const_reference val);
 		void deleteElement(pointer p);
+
+		void resize(size_t numElems)
+		{
+			// don't resize unless it is empty, will invalidate all pointers
+			assert (m_elemCount == 0);
+			m_maxElems = numElems;
+		}
 
 		union s_Slot
 		{

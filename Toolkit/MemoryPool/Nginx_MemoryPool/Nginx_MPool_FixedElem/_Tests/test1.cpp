@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 23:34:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 11:35:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,23 @@
 # include <cstring>
 # include <list>
 
-
+# include "../Nginx_Shared_FixedElem.hpp"
 
 int TestPart1(int testNumber)
 {
+	
+	{
+		Nginx_MemoryPool 							pool(4096, 1);
+		Nginx_MPool_FixedElem<int> 					alloc(pool, 0);
+
+
+		std::list<int, Nginx_Shared_FixedElem<int> > list1((Nginx_Shared_FixedElem<int>(alloc)));
+
+		alloc.resize(1);
+
+		list1.push_back(0);
+	}
+
 	std::cout << "TEST " << testNumber++ << ": ";
 	
 	try

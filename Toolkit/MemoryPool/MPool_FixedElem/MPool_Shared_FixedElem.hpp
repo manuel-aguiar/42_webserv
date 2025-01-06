@@ -11,13 +11,13 @@
 /* ************************************************************************** */
 
 
-#ifndef POOLALLOCATOR_FIXEDELEM_HPP
+#ifndef MPOOL_SHARED_FIXEDELEM_HPP
 
-# define POOLALLOCATOR_FIXEDELEM_HPP
+# define MPOOL_SHARED_FIXEDELEM_HPP
 
 template <typename T>
 class PoolAllocator_FixedElem;
 
-# include "PoolAllocator_FixedElem.tpp"
+# include "MPool_Shared_FixedElem.tpp"
 
 #endif

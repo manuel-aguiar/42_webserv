@@ -46,11 +46,9 @@ class Nginx_PoolAllocator
 
 		pointer allocate(size_type n, const void* hint = 0)
 		{
+			assert (n <= max_size());
+			
 			(void)hint;
-			if (n == 0)
-				return 0;
-			if (n > max_size())
-				throw std::bad_alloc();
 			return static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
 		}
 
