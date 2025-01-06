@@ -38,8 +38,9 @@ int main(void)
     int testNumber = 1;
 	/******************* TEST 1 ************************/
 	std::cout << "\n************ ThreadPool tests *************" << std::endl;
+	
 	(void)testNumber;
-	ThreadPool<5, 10> tp(2);
+	ThreadPool<10, 100> tp(5);
 
     //testNumber = TestPart1(testNumber);
 	//testNumber = TestPart2(testNumber);

@@ -15,7 +15,7 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "../../MemoryPool/MPool_FixedElem/MPool_Stack.hpp"
+# include "../../MemoryPool/MPool_FixedElem/StackSlotArray.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 # include "../../List/List.hpp"
 
@@ -115,7 +115,7 @@ class ThreadPool
 		void									mf_destroyExitingThread();
 
 		TaskQueue								m_taskQueue;
-		MPool_Stack<ThreadWorker, ThreadBacklog>
+		StackSlotArray<ThreadWorker, ThreadBacklog>
 												m_threads;
 		pthread_mutex_t							m_statusLock;
 		pthread_cond_t							m_exitSignal;

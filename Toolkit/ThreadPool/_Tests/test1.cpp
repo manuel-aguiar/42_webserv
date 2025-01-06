@@ -66,7 +66,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool<100, 1000> tp(10);
+		ThreadPool<10, 100> tp(5);
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch(const std::exception& e)

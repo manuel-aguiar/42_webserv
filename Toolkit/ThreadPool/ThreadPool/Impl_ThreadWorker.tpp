@@ -10,9 +10,9 @@
 /*																			*/
 /* ************************************************************************** */
 
-#ifndef IMPL_THREADWORKER_HPP
+#ifndef IMPL_THREADWORKER_TPP
 
-# define IMPL_THREADWORKER_HPP
+# define IMPL_THREADWORKER_TPP
 
 // Project headers
 # include "../ThreadPool/ThreadPool.hpp"

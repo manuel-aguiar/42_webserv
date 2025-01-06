@@ -10,9 +10,9 @@
 /*																			*/
 /* ************************************************************************** */
 
-#ifndef IMPL_THREADPOOL_HPP
+#ifndef IMPL_THREADPOOL_TPP
 
-# define IMPL_THREADPOOL_HPP
+# define IMPL_THREADPOOL_TPP
 
 // Project headers
 # include "ThreadPool.hpp"
@@ -24,6 +24,7 @@ template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
 	m_exitingThread(NULL)
 {
+	std::cout << "Threadpool constructor called" << std::endl;
 	ThreadWorker* worker;
 
 	pthread_mutex_init(&m_statusLock, NULL);
@@ -33,21 +34,17 @@ ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
 	
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
+		
 		worker = m_threads.allocate();
 		new (worker) ThreadWorker(*this);
 		worker->start();
-		std::cout << "\t\t thread success" << std::endl;
 	}
-
-	
-
 	pthread_mutex_unlock(&m_statusLock);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::~ThreadPool()
 {
-	std::cout << "destructor called" << std::endl;
 	destroy(false);
 	pthread_mutex_destroy(&m_statusLock);
 	pthread_cond_destroy(&m_exitSignal);
@@ -74,10 +71,9 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 		pthread_cond_wait(&m_exitSignal, &m_statusLock);
 
 		mf_destroyExitingThread();
-		std::cout << "Thread destroyed" << std::endl;
+
 		pthread_mutex_unlock(&m_statusLock);
 	}
-	std::cout << "thread count " << m_threads.size() << std::endl;
 }
 
 
@@ -160,8 +156,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_destroyExitingThread()
 	if (m_exitingThread == NULL)
 		return ;
 	m_exitingThread->finish();
-	m_exitingThread->~ThreadWorker();
-	m_threads.deallocate(m_exitingThread);
+	m_threads.destroy(m_exitingThread);
 	m_exitingThread = NULL;
 }
 

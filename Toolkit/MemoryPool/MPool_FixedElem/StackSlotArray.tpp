@@ -2,8 +2,8 @@
 
 
 
-#ifndef MPOOL_FIXEDELEMENTS_TCC
-#define MPOOL_FIXEDELEMENTS_TCC
+#ifndef STACKSLOTARRAY_TCC
+#define STACKSLOTARRAY_TCC
 
 #include <limits>
 #include <stdint.h>
@@ -19,14 +19,14 @@
 */
 
 template <typename T, size_t Size>
-class MPool_Stack
+class StackSlotArray
 {
 	public:
 
-		template <size_t m_Size, size_t Alignment>
+		template <size_t TSize, size_t Alignment>
 		struct AlignedSize
 		{
-			static const size_t value = (Size + Alignment - 1) & ~(Alignment - 1);
+			static const size_t value = (TSize + Alignment - 1) & ~(Alignment - 1);
 		};
 
 		typedef T               value_type;
@@ -38,19 +38,33 @@ class MPool_Stack
 		typedef ptrdiff_t       difference_type;
 
 
-		MPool_Stack() throw();
+		StackSlotArray() throw();
 
-		~MPool_Stack();
+		~StackSlotArray();
 
 		pointer allocate();
+
+		pointer emplace();
+
+		template<typename Arg1>
+		pointer emplace(Arg1 arg1);
+
+		template<typename Arg1, typename Arg2>
+		pointer emplace(Arg1 arg1, Arg2 arg2);
+
+		template<typename Arg1, typename Arg2, typename Arg3>
+		pointer emplace(Arg1 arg1, Arg2 arg2, Arg3 arg3);
+
 		void deallocate(pointer p);
+
+		void destroy(pointer p);
 
 		size_t size() const;
 
 		union s_Slot
 		{
 			char		  	m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
-			s_Slot*        m_next;
+			s_Slot*        	m_next;
 		};
 
 		typedef char*		t_data_pointer;
@@ -63,22 +77,23 @@ class MPool_Stack
 			size_t 						m_maxElems;
 			t_slot_pointer 				m_freeSlot;
 			
-			MPool_Stack(const MPool_Stack& memoryPool) throw();
+			StackSlotArray(const StackSlotArray& memoryPool) throw();
 };
 
-
+#include <iostream>
 template <typename T, size_t Size>
-MPool_Stack<T, Size>::MPool_Stack() throw() :
+StackSlotArray<T, Size>::StackSlotArray() throw() :
 	m_elemCount(0),
 	m_maxElems(Size),
 	m_freeSlot(NULL)
 {
+	std::cout << "array starts at: " << &m_elements[0] << "  size " << Size << " sizeof T " << sizeof(T) << std::endl;
 	//std::cout << "mem pool constructed: " << sizeof(T) << " array is size: " << m_elements.size() << std::endl;
 }
 
 
 template <typename T, size_t Size>
-MPool_Stack<T, Size>::MPool_Stack(const MPool_Stack& copy) throw() :
+StackSlotArray<T, Size>::StackSlotArray(const StackSlotArray& copy) throw() :
 	m_elements(0),
 	m_elemCount(copy.m_elemCount),
 	m_maxElems(Size),
@@ -91,22 +106,22 @@ MPool_Stack<T, Size>::MPool_Stack(const MPool_Stack& copy) throw() :
 
 
 template <typename T, size_t Size>
-size_t MPool_Stack<T, Size>::size() const
+size_t StackSlotArray<T, Size>::size() const
 {
 	return (m_elemCount);
 }
 
 
 template <typename T, size_t Size>
-MPool_Stack<T, Size>::~MPool_Stack()
+StackSlotArray<T, Size>::~StackSlotArray()
 {
 	//std::cout <<  " destructoed "<< std::endl;
 }
 
 
 template <typename T, size_t Size>
-inline typename MPool_Stack<T, Size>::pointer
-MPool_Stack<T, Size>::allocate()
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::allocate()
 {
 	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
 	assert(m_elemCount < m_maxElems);
@@ -119,14 +134,14 @@ MPool_Stack<T, Size>::allocate()
 		return (result);
 	}
 	else
-		return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
+		return (reinterpret_cast<pointer>(&m_elements[m_elemCount++]));
 }
 
 
 
 template <typename T, size_t Size>
 inline void
-MPool_Stack<T, Size>::deallocate(pointer p)
+StackSlotArray<T, Size>::deallocate(pointer p)
 {
 	if (p != 0)
 	{
@@ -135,5 +150,60 @@ MPool_Stack<T, Size>::deallocate(pointer p)
 		--m_elemCount;
 	}
 }
+
+template <typename T, size_t Size>
+inline void
+StackSlotArray<T, Size>::destroy(pointer p)
+{
+	if (!p)
+		return ;
+	p->~T();
+	deallocate(p);
+}
+
+template <typename T, size_t Size>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace()
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T();
+	return (ptr);
+}
+
+template <typename T, size_t Size>
+template<typename Arg1>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(Arg1 arg1)
+{
+	(void)arg1;
+	return ((pointer)1);
+}
+
+template <typename T, size_t Size>
+template<typename Arg1, typename Arg2>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2)
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1, arg2);
+	return (ptr);
+}
+
+template <typename T, size_t Size>
+template<typename Arg1, typename Arg2, typename Arg3>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2, Arg3 arg3)
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1, arg2, arg3);
+	return (ptr);
+}
+
 
 #endif // MEMORY_BLOCK_TCC
