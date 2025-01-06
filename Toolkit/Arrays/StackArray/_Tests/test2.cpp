@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:45:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 16:45:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 13:46:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,20 @@ int TestPart2(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		StackArray<int, 100> 	array;
 
-		for (int i = 0; i < 100; ++i)
+		const int arraySize = 100;
+
+		std::vector<int> 			std;
+		StackArray<int, arraySize> 	array;
+
+		for (int i = 0; i < arraySize; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackArray<int, 100>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
@@ -46,10 +50,15 @@ int TestPart2(int testNumber)
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
-        StackArray<int, 100> assign(10); // default construct 10 out of the 100 cap
+        StackArray<int, 100> assign;
+
+		assign.push_back(-123);
+		assign.push_back(-456);
+
         assign = array;
 
         it = assign.begin();
@@ -58,11 +67,13 @@ int TestPart2(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("copy assignment value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
+			throw std::runtime_error("copy assignment size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(assign.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -70,7 +81,6 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
 try
@@ -85,14 +95,16 @@ try
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackArray<int, 100>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackArray<int, 100> copy(array);
@@ -103,11 +115,13 @@ try
         for ( ; it != copy.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy constructor, value mismatch");
+                throw std::runtime_error("copy constructor value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != copy.size())
-			throw std::logic_error("copy constructor, size mismatch");
+			throw std::runtime_error("copy constructor size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(copy.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -115,14 +129,13 @@ try
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::vector<int> 		std;
-		StackArray<int, 100> 	array(100, 5);		// default construct 100 elements with value 5
+		StackArray<int, 100> 	array(5);		// all elements are copy cconstructed from "5"s
 
 		for (int i = 0; i < 100; ++i)
 		{
