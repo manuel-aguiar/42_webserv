@@ -15,7 +15,7 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "../../MemoryPool/MPool_FixedElem/MPool_FixedElem.hpp"
+# include "../../MemoryPool/MPool_FixedElem/MPool_Stack.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 # include "../../List/List.hpp"
 
@@ -60,9 +60,6 @@ class ThreadPool
 				void		start();
 				void		finish();
 
-				typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator
-							getLocation() const;
-				void		setLocation(const typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator& location);
 				pthread_t	getThreadID() const;
 
 			private:
@@ -82,9 +79,6 @@ class ThreadPool
 				pthread_t	   			m_thread;
 
 				ThreadPool&				m_pool;
-
-				typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator 					
-										m_location;
 
 		};
 
@@ -118,12 +112,15 @@ class ThreadPool
 		};
 
 		void									mf_InternalRemoveThread(ThreadWorker& worker);
+		void									mf_destroyExitingThread();
 
 		TaskQueue								m_taskQueue;
-		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >
+		MPool_Stack<ThreadWorker, ThreadBacklog>
 												m_threads;
 		pthread_mutex_t							m_statusLock;
 		pthread_cond_t							m_exitSignal;
+
+		ThreadWorker*							m_exitingThread;		
 
 
 		// Private copy and assignment

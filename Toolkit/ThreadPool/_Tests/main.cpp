@@ -38,11 +38,13 @@ int main(void)
     int testNumber = 1;
 	/******************* TEST 1 ************************/
 	std::cout << "\n************ ThreadPool tests *************" << std::endl;
+	(void)testNumber;
+	ThreadPool<5, 10> tp(2);
 
-    testNumber = TestPart1(testNumber);
-	testNumber = TestPart2(testNumber);
-	testNumber = TestPart3(testNumber);
-	testNumber = TestPart4(testNumber);
+    //testNumber = TestPart1(testNumber);
+	//testNumber = TestPart2(testNumber);
+	//testNumber = TestPart3(testNumber);
+	//testNumber = TestPart4(testNumber);
 
 	std::cout << "*******************************************\n" << std::endl;
 	

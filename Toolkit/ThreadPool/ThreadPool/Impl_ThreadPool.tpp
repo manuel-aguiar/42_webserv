@@ -22,25 +22,32 @@
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
-	m_threads(MPool_FixedElem<ThreadWorker>(ThreadBacklog))
+	m_exitingThread(NULL)
 {
+	ThreadWorker* worker;
+
 	pthread_mutex_init(&m_statusLock, NULL);
 	pthread_cond_init(&m_exitSignal, NULL);
 
 	pthread_mutex_lock(&m_statusLock);
-
+	
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
-		m_threads.emplace_back(*this);
-		m_threads.back().setLocation(--m_threads.end());
-		m_threads.back().start();
+		worker = m_threads.allocate();
+		new (worker) ThreadWorker(*this);
+		worker->start();
+		std::cout << "\t\t thread success" << std::endl;
 	}
+
+	
+
 	pthread_mutex_unlock(&m_statusLock);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::~ThreadPool()
 {
+	std::cout << "destructor called" << std::endl;
 	destroy(false);
 	pthread_mutex_destroy(&m_statusLock);
 	pthread_cond_destroy(&m_exitSignal);
@@ -65,10 +72,12 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 		pthread_mutex_lock(&m_statusLock);
 		m_taskQueue.addTask(NULL);
 		pthread_cond_wait(&m_exitSignal, &m_statusLock);
-		m_threads.back().finish();
-		m_threads.pop_back();
+
+		mf_destroyExitingThread();
+		std::cout << "Thread destroyed" << std::endl;
 		pthread_mutex_unlock(&m_statusLock);
 	}
+	std::cout << "thread count " << m_threads.size() << std::endl;
 }
 
 
@@ -88,13 +97,15 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::forceDestroy()
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 {
+	ThreadWorker* worker;
+
 	assert(m_threads.size() < ThreadBacklog);
 
 	pthread_mutex_lock(&m_statusLock);
 
-	m_threads.emplace_back(*this);
-	m_threads.back().setLocation(--m_threads.end());
-	m_threads.back().start();
+	worker = m_threads.allocate();
+	new (worker) ThreadWorker(*this);
+	worker->start();
 	
 	pthread_mutex_unlock(&m_statusLock);
 }
@@ -108,8 +119,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::removeThread()
 	m_taskQueue.addTask(NULL);
 	pthread_cond_wait(&m_exitSignal, &m_statusLock);
 	
-	m_threads.back().finish();
-	m_threads.pop_back();
+	mf_destroyExitingThread();
 	
 	pthread_mutex_unlock(&m_statusLock);
 }
@@ -141,9 +151,19 @@ bool	ThreadPool<ThreadBacklog, TaskBacklog>::addTask(const IThreadTask& newTask,
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_InternalRemoveThread(ThreadWorker& worker)
 {
-	m_threads.splice(m_threads.end(), m_threads, worker.getLocation());
+	m_exitingThread = &worker;
 }
 
+template <size_t ThreadBacklog, size_t TaskBacklog>
+void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_destroyExitingThread()
+{
+	if (m_exitingThread == NULL)
+		return ;
+	m_exitingThread->finish();
+	m_exitingThread->~ThreadWorker();
+	m_threads.deallocate(m_exitingThread);
+	m_exitingThread = NULL;
+}
 
 // private copy and assignment
 

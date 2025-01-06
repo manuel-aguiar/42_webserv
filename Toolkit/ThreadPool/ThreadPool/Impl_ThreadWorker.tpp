@@ -60,20 +60,6 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::run()
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-void	ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::setLocation(const typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator& location)
-{
-	m_location = location;
-}
-
-template <size_t ThreadBacklog, size_t TaskBacklog>
-typename List< typename ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker, 
-		MPool_FixedElem< typename ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker> >::iterator
-ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::getLocation() const
-{
-	return (m_location);
-}
-
-template <size_t ThreadBacklog, size_t TaskBacklog>
 pthread_t	ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::getThreadID() const
 {
 	return (m_thread);
@@ -116,8 +102,7 @@ template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::ThreadWorker(const ThreadWorker& copy) : 
 	m_state(copy.m_state),
 	m_thread(copy.m_thread),
-	m_pool(copy.m_pool),
-	m_location(copy.m_location) {}
+	m_pool(copy.m_pool) {}
 	
 template <size_t ThreadBacklog, size_t TaskBacklog>
 typename ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker& 	
@@ -129,7 +114,6 @@ ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::operator=(const ThreadWork
 	m_state = assign.m_state;
 	m_thread = assign.m_thread;
 	m_pool = assign.m_pool;
-	m_location = assign.m_location;
 
 	return (*this);
 }
