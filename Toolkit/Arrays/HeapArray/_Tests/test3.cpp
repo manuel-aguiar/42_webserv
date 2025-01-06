@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 10:19:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 10:23:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 14:23:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,16 @@ int TestPart3(int testNumber)
 			array.push_back(new ToolkitBase(i));
 		}
 		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (**it != **iter)
-				throw std::logic_error("value mismatch");
+				throw std::runtime_error("value mismatch " + '\n'
+				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		it = array.begin();
@@ -77,7 +79,6 @@ int TestPart3(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
     return (testNumber);
