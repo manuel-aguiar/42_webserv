@@ -15,7 +15,7 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "../../MemoryPool/MPool_FixedElem/StackSlotArray.hpp"
+# include "StackSlotArray/StackSlotArray.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 # include "../../List/List.hpp"
 
@@ -29,6 +29,9 @@ template <size_t ThreadBacklog, size_t TaskBacklog>
 class ThreadPool
 {
 	public:
+
+		/************** ThreadPool *************** */
+
 		ThreadPool(size_t InitialThreads);
 		~ThreadPool();
 
@@ -111,16 +114,17 @@ class ThreadPool
 				TaskQueue& operator=(const TaskQueue& assign);
 		};
 
-		void									mf_InternalRemoveThread(ThreadWorker& worker);
-		void									mf_destroyExitingThread();
+		void										mf_markExitingThread(ThreadWorker& worker);
+		void										mf_destroyExitingThreads();
 
-		TaskQueue								m_taskQueue;
+		TaskQueue									m_taskQueue;
 		StackSlotArray<ThreadWorker, ThreadBacklog>
-												m_threads;
-		pthread_mutex_t							m_statusLock;
-		pthread_cond_t							m_exitSignal;
+													m_threads;
+		pthread_mutex_t								m_statusLock;
+		pthread_cond_t								m_exitSignal;
 
-		ThreadWorker*							m_exitingThread;		
+		StackCircularQueue<ThreadWorker*, ThreadBacklog>
+													m_exitingThreads;		
 
 
 		// Private copy and assignment

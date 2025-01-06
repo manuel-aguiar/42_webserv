@@ -67,7 +67,7 @@ int TestPart2(int testNumber)
 	{
 		const int numberOfTasks = 100;
 
-		ThreadPool<20, 1000> tp(10);
+		ThreadPool<100, 1000> tp(20);
 		std::vector<long> 			fiboExpected;
 		std::vector<long>			fiboPlaceResult;
 		std::vector<FiboTask> 		tasks;

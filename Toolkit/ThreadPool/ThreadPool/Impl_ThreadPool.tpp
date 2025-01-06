@@ -21,10 +21,8 @@
 # include <pthread.h>
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
-	m_exitingThread(NULL)
+ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads)
 {
-	std::cout << "Threadpool constructor called" << std::endl;
 	ThreadWorker* worker;
 
 	pthread_mutex_init(&m_statusLock, NULL);
@@ -34,9 +32,7 @@ ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
 	
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
-		
-		worker = m_threads.allocate();
-		new (worker) ThreadWorker(*this);
+		worker = m_threads.emplace(*this);
 		worker->start();
 	}
 	pthread_mutex_unlock(&m_statusLock);
@@ -64,16 +60,16 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 
 	m_taskQueue.waitForCompletion();
 	
+	for (size_t i = 0; i < m_threads.size(); ++i)
+		m_taskQueue.addTask(NULL);
+	
+	pthread_mutex_lock(&m_statusLock);
 	while (m_threads.size())
 	{
-		pthread_mutex_lock(&m_statusLock);
-		m_taskQueue.addTask(NULL);
 		pthread_cond_wait(&m_exitSignal, &m_statusLock);
-
-		mf_destroyExitingThread();
-
-		pthread_mutex_unlock(&m_statusLock);
+		mf_destroyExitingThreads();		
 	}
+	pthread_mutex_unlock(&m_statusLock);
 }
 
 
@@ -99,8 +95,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 
 	pthread_mutex_lock(&m_statusLock);
 
-	worker = m_threads.allocate();
-	new (worker) ThreadWorker(*this);
+	worker = m_threads.emplace(*this);
 	worker->start();
 	
 	pthread_mutex_unlock(&m_statusLock);
@@ -115,7 +110,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::removeThread()
 	m_taskQueue.addTask(NULL);
 	pthread_cond_wait(&m_exitSignal, &m_statusLock);
 	
-	mf_destroyExitingThread();
+	mf_destroyExitingThreads();
 	
 	pthread_mutex_unlock(&m_statusLock);
 }
@@ -145,19 +140,22 @@ bool	ThreadPool<ThreadBacklog, TaskBacklog>::addTask(const IThreadTask& newTask,
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_InternalRemoveThread(ThreadWorker& worker)
+void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_markExitingThread(ThreadWorker& worker)
 {
-	m_exitingThread = &worker;
+	m_exitingThreads.push_back(&worker);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_destroyExitingThread()
+void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_destroyExitingThreads()
 {
-	if (m_exitingThread == NULL)
-		return ;
-	m_exitingThread->finish();
-	m_threads.destroy(m_exitingThread);
-	m_exitingThread = NULL;
+	size_t total = m_exitingThreads.size();
+	
+	for (size_t i = 0; i < total; ++i)
+	{
+		m_exitingThreads.front()->finish();
+		m_threads.destroy(m_exitingThreads.front());
+		m_exitingThreads.pop_front();
+	}
 }
 
 // private copy and assignment

@@ -12,7 +12,7 @@
 #include <cassert>
 
 #include <vector>
-#include "../../Arrays/StackArray/StackArray.hpp"
+#include "../../../Arrays/StackArray/StackArray.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
@@ -38,8 +38,7 @@ class StackSlotArray
 		typedef ptrdiff_t       difference_type;
 
 
-		StackSlotArray() throw();
-
+		StackSlotArray();
 		~StackSlotArray();
 
 		pointer allocate();
@@ -47,13 +46,23 @@ class StackSlotArray
 		pointer emplace();
 
 		template<typename Arg1>
-		pointer emplace(Arg1 arg1);
+		pointer emplace(Arg1& arg1);
 
 		template<typename Arg1, typename Arg2>
-		pointer emplace(Arg1 arg1, Arg2 arg2);
+		pointer emplace(Arg1& arg1, Arg2& arg2);
 
 		template<typename Arg1, typename Arg2, typename Arg3>
-		pointer emplace(Arg1 arg1, Arg2 arg2, Arg3 arg3);
+		pointer emplace(Arg1& arg1, Arg2& arg2, Arg3& arg3);
+
+
+		template<typename Arg1>
+		pointer emplace(const Arg1& arg1);
+
+		template<typename Arg1, typename Arg2>
+		pointer emplace(const Arg1& arg1, const Arg2& arg2);
+
+		template<typename Arg1, typename Arg2, typename Arg3>
+		pointer emplace(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3);
 
 		void deallocate(pointer p);
 
@@ -74,35 +83,22 @@ class StackSlotArray
 		private:
 			StackArray<s_Slot, Size> 	m_elements;
 			size_t 						m_elemCount;
-			size_t 						m_maxElems;
 			t_slot_pointer 				m_freeSlot;
 			
-			StackSlotArray(const StackSlotArray& memoryPool) throw();
+			StackSlotArray(const StackSlotArray& memoryPool);
+			StackSlotArray& operator=(const StackSlotArray& assign);
 };
 
 #include <iostream>
 template <typename T, size_t Size>
-StackSlotArray<T, Size>::StackSlotArray() throw() :
+StackSlotArray<T, Size>::StackSlotArray() :
 	m_elemCount(0),
-	m_maxElems(Size),
 	m_freeSlot(NULL)
 {
-	std::cout << "array starts at: " << &m_elements[0] << "  size " << Size << " sizeof T " << sizeof(T) << std::endl;
 	//std::cout << "mem pool constructed: " << sizeof(T) << " array is size: " << m_elements.size() << std::endl;
 }
 
 
-template <typename T, size_t Size>
-StackSlotArray<T, Size>::StackSlotArray(const StackSlotArray& copy) throw() :
-	m_elements(0),
-	m_elemCount(copy.m_elemCount),
-	m_maxElems(Size),
-	m_freeSlot(copy.m_freeSlot)
-{
-	//std::cout << "copy called" << std::endl;
-	
-	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
-}
 
 
 template <typename T, size_t Size>
@@ -115,7 +111,7 @@ size_t StackSlotArray<T, Size>::size() const
 template <typename T, size_t Size>
 StackSlotArray<T, Size>::~StackSlotArray()
 {
-	//std::cout <<  " destructoed "<< std::endl;
+
 }
 
 
@@ -123,9 +119,8 @@ template <typename T, size_t Size>
 inline typename StackSlotArray<T, Size>::pointer
 StackSlotArray<T, Size>::allocate()
 {
-	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
-	assert(m_elemCount < m_maxElems);
-	//std::cout << "allocate called" << std::endl;
+	assert(m_elemCount < Size);
+
 	if (m_freeSlot != 0)
 	{
 		pointer result = reinterpret_cast<pointer>(m_freeSlot);
@@ -175,16 +170,19 @@ StackSlotArray<T, Size>::emplace()
 template <typename T, size_t Size>
 template<typename Arg1>
 inline typename StackSlotArray<T, Size>::pointer
-StackSlotArray<T, Size>::emplace(Arg1 arg1)
+StackSlotArray<T, Size>::emplace(Arg1& arg1)
 {
-	(void)arg1;
-	return ((pointer)1);
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1);
+	return (ptr);
 }
 
 template <typename T, size_t Size>
 template<typename Arg1, typename Arg2>
 inline typename StackSlotArray<T, Size>::pointer
-StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2)
+StackSlotArray<T, Size>::emplace(Arg1& arg1, Arg2& arg2)
 {
 	pointer ptr;
 
@@ -196,7 +194,7 @@ StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2)
 template <typename T, size_t Size>
 template<typename Arg1, typename Arg2, typename Arg3>
 inline typename StackSlotArray<T, Size>::pointer
-StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2, Arg3 arg3)
+StackSlotArray<T, Size>::emplace(Arg1& arg1, Arg2& arg2, Arg3& arg3)
 {
 	pointer ptr;
 
@@ -205,5 +203,52 @@ StackSlotArray<T, Size>::emplace(Arg1 arg1, Arg2 arg2, Arg3 arg3)
 	return (ptr);
 }
 
+template <typename T, size_t Size>
+template<typename Arg1>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(const Arg1& arg1)
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1);
+	return (ptr);
+}
+
+template <typename T, size_t Size>
+template<typename Arg1, typename Arg2>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(const Arg1& arg1, const Arg2& arg2)
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1, arg2);
+	return (ptr);
+}
+
+template <typename T, size_t Size>
+template<typename Arg1, typename Arg2, typename Arg3>
+inline typename StackSlotArray<T, Size>::pointer
+StackSlotArray<T, Size>::emplace(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+{
+	pointer ptr;
+
+	ptr = allocate();
+	new (ptr) T(arg1, arg2, arg3);
+	return (ptr);
+}
+
+
+// private
+template <typename T, size_t Size>
+StackSlotArray<T, Size>::StackSlotArray(const StackSlotArray& copy) {}
+
+template <typename T, size_t Size>
+StackSlotArray<T, Size>&
+StackSlotArray<T, Size>::operator=(const StackSlotArray& assign)
+{
+	return (*this);
+}
 
 #endif // MEMORY_BLOCK_TCC
