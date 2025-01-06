@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/06 13:54:03 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/06 15:11:33 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test1.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test3.cpp					\
+								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp					\
 								\
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))

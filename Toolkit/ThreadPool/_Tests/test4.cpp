@@ -25,7 +25,6 @@
 # include "../../_Tests/ToolkitDerived.hpp"
 # include "../../_Tests/test.h"
 
-
 static long fibGood(unsigned int n)
 {
 	long a;
@@ -60,68 +59,41 @@ class FiboTask : public IThreadTask
 		long* 			m_placeResult;
 };
 
-
-int	TestPart1(int testNumber)
+int TestPart4(int testNumber)
 {
-	std::cout << "TEST " << testNumber << ": ";
-	try
-	{
-		ThreadPool<100, 1000> tp(10);
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch(const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
-	testNumber++;
-
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	std::cout << "TEST " << testNumber++ << ": ";
+
+	// Simulating a TaskQueue congestion and users waiting for a slot to execute: addTask(waitForSlot = true)
+
 	try
 	{
-		ThreadPool<100, 1000> tp(10);
-		tp.removeThread();
-		tp.addThread();
+		const int numberOfTasks = 100;
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch(const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
-	testNumber++;
+		//task queue of just 10 slots
+		ThreadPool<10, 10> tp(10);
+		std::vector<long> 			fiboExpected;
+		std::vector<long>			fiboPlaceResult;
+		std::vector<FiboTask> 		tasks;
 
+		fiboExpected.reserve(numberOfTasks);
+		fiboPlaceResult.reserve(numberOfTasks);
+		tasks.reserve(numberOfTasks);
 
-/************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
-	try
-	{
-		ThreadPool<100, 1000> tp(10);
-		tp.removeThread();
-		tp.removeThread();
-		tp.removeThread();
-
-		if (tp.getThreadCount() != 7)
-			throw std::runtime_error("Thread count is not 7");
-
-		tp.destroy(true);
-
-		if (tp.getThreadCount() != 0)
-			throw std::runtime_error("Thread count is not 0");
-
-		long placeResult;
-		FiboTask task(6, &placeResult);
-
-		tp.addTask(task);
-
-		tp.addThread();
+		for (size_t i = 0; i < numberOfTasks; ++i)
+		{
+			fiboExpected.push_back(fibGood(i));
+			tasks.push_back(FiboTask(i, &fiboPlaceResult[i]));
+			tp.addTask(tasks[i], true);
+		}
+			
 		tp.waitForCompletion();
-		tp.removeThread();
 
-		if (placeResult != 8)
-			throw std::runtime_error("Didn't calculate fibonacci right");
+		for (size_t i = 0; i < fiboExpected.size(); ++i)
+		{
+			if (fiboExpected[i] != fiboPlaceResult[i])
+				throw std::runtime_error("Didn't calculate fibonacci right");
+		}
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -130,11 +102,8 @@ int	TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-	testNumber++;
-
 	return (testNumber);
 }
-
 
 
 

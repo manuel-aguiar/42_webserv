@@ -30,7 +30,7 @@
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
 extern int TestPart3(int testNumber);
-
+extern int TestPart4(int testNumber);
 
 int main(void)
 {
@@ -38,10 +38,11 @@ int main(void)
     int testNumber = 1;
 	/******************* TEST 1 ************************/
 	std::cout << "\n************ ThreadPool tests *************" << std::endl;
-	
+
     testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
 	testNumber = TestPart3(testNumber);
+	testNumber = TestPart4(testNumber);
 
 	std::cout << "*******************************************\n" << std::endl;
 	

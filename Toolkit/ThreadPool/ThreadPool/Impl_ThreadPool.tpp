@@ -21,7 +21,8 @@
 # include <pthread.h>
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads)
+ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads) :
+	m_threads(MPool_FixedElem<ThreadWorker>(ThreadBacklog))
 {
 	pthread_mutex_init(&m_statusLock, NULL);
 	pthread_cond_init(&m_exitSignal, NULL);
@@ -31,7 +32,7 @@ ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads)
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
 		m_threads.emplace_back(*this);
-		m_threads.back().setIndex(i);
+		m_threads.back().setLocation(--m_threads.end());
 		m_threads.back().start();
 	}
 	pthread_mutex_unlock(&m_statusLock);
@@ -92,7 +93,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 	pthread_mutex_lock(&m_statusLock);
 
 	m_threads.emplace_back(*this);
-	m_threads.back().setIndex(m_threads.size() - 1);
+	m_threads.back().setLocation(--m_threads.end());
 	m_threads.back().start();
 	
 	pthread_mutex_unlock(&m_statusLock);
@@ -126,18 +127,21 @@ size_t	ThreadPool<ThreadBacklog, TaskBacklog>::getTaskCount()
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-void	ThreadPool<ThreadBacklog, TaskBacklog>::addTask(IThreadTask& newTask)
+bool	ThreadPool<ThreadBacklog, TaskBacklog>::addTask(IThreadTask& newTask, bool waitForSlot)
 {
-	m_taskQueue.addTask(&newTask);
+	return (m_taskQueue.addTask(&newTask, waitForSlot));
+}
+
+template <size_t ThreadBacklog, size_t TaskBacklog>
+bool	ThreadPool<ThreadBacklog, TaskBacklog>::addTask(const IThreadTask& newTask, bool waitForSlot)
+{
+	return (m_taskQueue.addTask(&newTask, waitForSlot));
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_InternalRemoveThread(ThreadWorker& worker)
 {
-	size_t index = worker.getIndex();
-
-	std::swap(m_threads[index], m_threads.back());
-	m_threads[index].setIndex(index);
+	m_threads.splice(m_threads.end(), m_threads, worker.getLocation());
 }
 
 

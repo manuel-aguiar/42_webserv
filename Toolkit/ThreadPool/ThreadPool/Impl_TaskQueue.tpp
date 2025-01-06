@@ -23,6 +23,7 @@ ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::TaskQueue()
     pthread_mutex_init(&m_taskAccess, NULL);
     pthread_cond_init(&m_newTaskSignal, NULL);
     pthread_cond_init(&m_allTasksDone, NULL);
+	pthread_cond_init(&m_fullQueue, NULL);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
@@ -31,6 +32,7 @@ ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::~TaskQueue()
 	pthread_mutex_destroy(&m_taskAccess);
 	pthread_cond_destroy(&m_newTaskSignal);
 	pthread_cond_destroy(&m_allTasksDone);
+	pthread_cond_destroy(&m_fullQueue);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
@@ -53,12 +55,26 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::finishTask(IThreadTask* 
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-void	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::addTask(IThreadTask* newTask)
+bool	ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::addTask(IThreadTask* newTask, bool waitForSlot)
 {
 	pthread_mutex_lock(&m_taskAccess);
+
+	if (m_tasks.size() == TaskBacklog)
+	{
+		if (!waitForSlot)
+		{
+			pthread_mutex_unlock(&m_taskAccess);
+			return (false);
+		}
+		else
+			pthread_cond_wait(&m_fullQueue, &m_taskAccess);
+	}
+
 	m_tasks.push_back(newTask);
 	pthread_cond_signal(&m_newTaskSignal);
 	pthread_mutex_unlock(&m_taskAccess);
+
+	return (true);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
@@ -72,6 +88,8 @@ IThreadTask*	 ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::acquireTask()
 	toExecute = m_tasks.front();
 	m_tasks.pop_front();
 	m_tasksExecuting += (toExecute != NULL);
+	if (m_tasks.size() == TaskBacklog - 1)
+		pthread_cond_signal(&m_fullQueue);
 	pthread_mutex_unlock(&m_taskAccess);
 	return (toExecute);
 }

@@ -17,7 +17,7 @@
 // Project headers
 # include "../../MemoryPool/MPool_FixedElem/MPool_FixedElem.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
-# include "../../Arrays/StackArray/StackArray.hpp"
+# include "../../List/List.hpp"
 
 // ThreadPool headers
 # include "../ThreadTask/IThreadTask.hpp"
@@ -39,8 +39,8 @@ class ThreadPool
 		void	addThread();
 		void	removeThread();
 		
-		void	addTask(IThreadTask& newTask);
-		void	addTask(const IThreadTask& newTask);
+		bool	addTask(IThreadTask& newTask, bool waitForSlot = false);
+		bool	addTask(const IThreadTask& newTask, bool waitForSlot = false);
 
 		size_t	getThreadCount() const;
 		size_t	getTaskCount();
@@ -60,8 +60,9 @@ class ThreadPool
 				void		start();
 				void		finish();
 
-				size_t		getIndex() const;
-				void		setIndex(const size_t index);
+				typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator
+							getLocation() const;
+				void		setLocation(const typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator& location);
 				pthread_t	getThreadID() const;
 
 			private:
@@ -82,7 +83,8 @@ class ThreadPool
 
 				ThreadPool&				m_pool;
 
-				size_t 					m_index;
+				typename List<ThreadWorker, MPool_FixedElem<ThreadWorker> >::iterator 					
+										m_location;
 
 		};
 
@@ -94,7 +96,7 @@ class ThreadPool
 				TaskQueue();
 				~TaskQueue();
 
-				void				addTask(IThreadTask* newTask);
+				bool				addTask(IThreadTask* newTask, bool waitForSlot = false);
 				void				clear();
 				void				waitForCompletion();		
 				void				finishTask(IThreadTask* delTask);
@@ -108,7 +110,8 @@ class ThreadPool
 				unsigned int									m_tasksExecuting;
 				pthread_mutex_t									m_taskAccess;
 				pthread_cond_t									m_newTaskSignal;								   
-				pthread_cond_t									m_allTasksDone;										 
+				pthread_cond_t									m_allTasksDone;
+				pthread_cond_t									m_fullQueue;									 
 
 				TaskQueue(const TaskQueue& copy);
 				TaskQueue& operator=(const TaskQueue& assign);
@@ -117,7 +120,8 @@ class ThreadPool
 		void									mf_InternalRemoveThread(ThreadWorker& worker);
 
 		TaskQueue								m_taskQueue;
-		StackArray<ThreadWorker, ThreadBacklog>	m_threads;
+		List<ThreadWorker, MPool_FixedElem<ThreadWorker> >
+												m_threads;
 		pthread_mutex_t							m_statusLock;
 		pthread_cond_t							m_exitSignal;
 
