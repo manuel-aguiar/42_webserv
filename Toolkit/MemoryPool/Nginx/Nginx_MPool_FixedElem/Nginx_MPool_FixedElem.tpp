@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 23:38:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:42:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,11 @@
 
 # include <vector>
 # include "../../../Arrays/DynArray/DynArray.hpp"
-# include "../Nginx_PoolAllocator.hpp"
+# include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
 */
-
-
 
 template <typename T>
 class Nginx_MPool_FixedElem

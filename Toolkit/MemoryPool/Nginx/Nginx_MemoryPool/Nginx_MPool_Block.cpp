@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:25 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 22:49:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:10:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ Nginx_MemoryPool::Nginx_MPool_Block::
 allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t blockSizeAgainLol)
 {
     void*                       location;
-    Nginx_MPool_Block*      pool;
+    Nginx_MPool_Block*          pool;
 
     assert ((size_t)((*poolPlace)->m_endOfBlock) - (size_t)((*poolPlace) - (sizeof(Nginx_MPool_Block))) >= size);
     pool = *poolPlace;
