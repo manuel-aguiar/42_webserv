@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 19:47:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 22:26:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 # define NGINX_MEMORYPOOL_HPP
 
 // C++ headers
-# include <limits>
 # include <climits>
 # include <cstddef>
-# include <exception>
-# include <stdexcept>
-# include <iostream>
 # include <cassert>
+# include <new>
 
 
 typedef unsigned char t_byte;

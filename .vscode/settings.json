@@ -64,6 +64,7 @@
         "cassert": "cpp",
         "buffer": "cpp",
         "netfwd": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "climits": "cpp"
     }
 }

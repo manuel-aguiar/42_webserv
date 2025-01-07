@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Nginx_PoolAllocator.hpp                            :+:      :+:    :+:   */
+/*   StackFixedBlock.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 11:35:06 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 22:25:09 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/07 22:49:28 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/07 22:50:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef STACKFIXEDBLOCK_HPP
 
-#ifndef NGINX_POOLALLOCATOR_HPP
+# define STACKFIXEDBLOCK_HPP
 
-# define NGINX_POOLALLOCATOR_HPP
+# include <cstddef>
 
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+template <size_t BlockSize>
+class StackFixedBlock;
 
-template <typename T, typename MemoryPool = Nginx_MemoryPool>
-class Nginx_PoolAllocator;
-
-# include "Nginx_PoolAllocator.tpp"
+# include "StackFixedBlock.tpp"
 
 #endif

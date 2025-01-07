@@ -14,10 +14,9 @@
 
 # define NGINX_POOLALLOCATOR_TPP
 
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
-#include <cstdio>
+# include <limits>
 
-template <typename T>
+template <typename T, typename MemoryPool>
 class Nginx_PoolAllocator
 {
 	public:
@@ -33,26 +32,37 @@ class Nginx_PoolAllocator
 		template <typename U>
 		struct rebind
 		{
-			typedef Nginx_PoolAllocator<U> other;
+			typedef Nginx_PoolAllocator<U, MemoryPool> other;
 		};
 
-		Nginx_PoolAllocator(Nginx_MemoryPool& pool) : m_memoryPool(&pool) {/*std::cout << "allcoator inituialzed: " << pool << std::endl;*/}
-		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : m_memoryPool(copy.m_memoryPool) {(void)copy;}
-		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& copy) {m_memoryPool = copy.m_memoryPool; return *this;}
+		Nginx_PoolAllocator(MemoryPool& pool) : 
+			m_memoryPool(&pool) {}
+
+		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : 
+			m_memoryPool(copy.m_memoryPool) {(void)copy;}
+
+		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& copy)
+		{
+			m_memoryPool = copy.m_memoryPool; 
+			return *this;
+		}
 		~Nginx_PoolAllocator() {};
 
 		template <typename U>
-		Nginx_PoolAllocator(const Nginx_PoolAllocator<U>& other) : m_memoryPool(other.m_memoryPool) {(void)other;}
+		Nginx_PoolAllocator(const Nginx_PoolAllocator<U, MemoryPool>& other) : 
+			m_memoryPool(&other.getMemPool()) {(void)other;}
 
 		pointer allocate(size_type n, const void* hint = 0)
 		{
 			(void)hint;
 			if (n == 0)
-				return 0;
+				return (0);
 			if (n > max_size())
 				throw std::bad_alloc();
-			return static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
+			return (static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t))));
 		}
+
+		MemoryPool& getMemPool() const {return *m_memoryPool;}
 
 		void deallocate(pointer p, size_type n)
 		{
@@ -78,8 +88,9 @@ class Nginx_PoolAllocator
 			return std::numeric_limits<size_type>::max() / sizeof(T);
 		}
 
-	//private:
-		Nginx_MemoryPool* m_memoryPool;
+	private:
+		MemoryPool*		m_memoryPool;
+		
 };
 
 
