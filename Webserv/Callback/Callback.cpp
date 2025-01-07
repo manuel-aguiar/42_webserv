@@ -1,41 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Event.cpp                                          :+:      :+:    :+:   */
+/*   Callback.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 09:53:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 11:06:53 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/20 11:42:22 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/07 10:47:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "Event.hpp"
+# include "Callback.hpp"
 # include <cassert>
 # include <cstddef>
 
-Event::Event() :
-	m_fd				(-1),
-	m_monitoredFlags	(0),
-	m_triggeredFlags	(0)
+Callback::Callback() :
+	m_data				(NULL),
+	m_handler			(NULL)
 {}
 
-Event::~Event() {}
+Callback::~Callback() {}
 
 
-void Event::handle()
+void Callback::execute()
 {
-	m_callback.execute();
+	assert (m_handler != NULL);
+	
+	(m_handler)(*this);
 }
 
-void	Event::reset()
+void	Callback::reset()
 {
-	m_fd = -1;
-	m_monitoredFlags = 0;
-	m_triggeredFlags = 0;
-	m_callback.reset();
+	m_data = NULL;
+	m_handler = NULL;
 }
 
 //private
-Event::Event(const Event& copy)  {(void)copy;}
-Event& Event::operator=(const Event& assign) {(void)assign; return (*this);}
+Callback::Callback(const Callback& copy)  {(void)copy;}
+Callback& Callback::operator=(const Callback& assign) {(void)assign; return (*this);}
+
