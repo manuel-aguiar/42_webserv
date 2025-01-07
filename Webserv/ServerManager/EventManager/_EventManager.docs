@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
-#    Updated: 2025/01/07 14:59:53 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 15:00:58 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,9 @@ Main methods:
 The event manager does not copy or even keep track of the events that are already Subscribed
 to its internal epoll. It is up to the user to make sure that the same fd doesn't get Subscribed
 twice, or not to delete an event on an fd that is not being monitor.
+
+Since we are not tracking fds and Events ourselves, there are no asserts. The syscalls will however
+fail and we are calling Globals to log an error event.
 
 Furthermore, it is up to the user to keep the actual events in scope for the callback.
 If the event triggers but the Event instance to which EventManager points get destroyed... SEGFAULT.
