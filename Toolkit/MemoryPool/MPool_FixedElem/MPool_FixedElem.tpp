@@ -43,30 +43,101 @@ class MPool_FixedElem
 			typedef MPool_FixedElem<U> other;
 		};
 
-		MPool_FixedElem(size_t numElems) throw();
-		MPool_FixedElem(const MPool_FixedElem& memoryPool) throw();
-		template <class U> MPool_FixedElem(const MPool_FixedElem<U>& memoryPool) throw();
+		MPool_FixedElem(size_t numElems) :
+			m_elements(0),
+			m_elemCount(0),
+			m_maxElems(numElems),
+			m_freeSlot(NULL) {}
 
-		~MPool_FixedElem() throw();
+		MPool_FixedElem(const MPool_FixedElem& copy)  :
+			m_elements(0),
+			m_elemCount(copy.m_elemCount),
+			m_maxElems(copy.m_maxElems),
+			m_freeSlot(copy.m_freeSlot) {}
 
-		pointer address(reference x) const throw();
-		const_pointer address(const_reference x) const throw();
+		template <class U> 
+		MPool_FixedElem(const MPool_FixedElem<U>& rebind) :
+			m_elements(0),
+			m_elemCount(0),
+			m_maxElems(rebind.m_maxElems),
+			m_freeSlot(NULL) {}
 
-		pointer allocate(size_type n = 1, const_pointer hint = 0);
-		void deallocate(pointer p, size_type n = 1);
+		~MPool_FixedElem() {}
 
-		size_type max_size() const throw();
+		pointer address(reference x) const
+		{
+			return (&x);
+		}
 
-		void construct(pointer p, const_reference val);
-		void destroy(pointer p);
+		const_pointer address(const_reference x) const
+		{
+			return (&x);
+		}
 
-		pointer newElement(const_reference val);
-		void deleteElement(pointer p);
+		pointer allocate(size_type n = 1, const_pointer hint = 0)
+		{
+			(void)hint;
+			(void)n;
+			
+			assert(m_elemCount < m_maxElems);
+			m_elements.reserve(m_maxElems);
+			if (m_freeSlot != 0)
+			{
+				pointer result = reinterpret_cast<pointer>(m_freeSlot);
+				m_freeSlot = m_freeSlot->m_next;
+				m_elemCount++;
+				return (result);
+			}
+			else
+				return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
+		}
+
+		void deallocate(pointer p, size_type n = 1)
+		{
+			(void)n;
+			if (p == NULL)
+				return ;
+
+			reinterpret_cast<t_slot_pointer>(p)->m_next = m_freeSlot;
+			m_freeSlot = reinterpret_cast<t_slot_pointer>(p);
+			--m_elemCount;
+		}
+
+		size_type max_size() const
+		{
+			return (m_maxElems);
+		}
+
+		void construct(pointer p, const_reference val)
+		{
+			new (p) value_type (val);
+		}
+		
+		void destroy(pointer p)
+		{
+			p->~value_type();
+		}
+
+		pointer newElement(const_reference val)
+		{
+			pointer result = allocate();
+			construct(result, val);
+			return result;
+		}
+
+		void deleteElement(pointer p)
+		{
+			if (p != 0)
+			{
+				p->~value_type();
+				deallocate(p);
+			}
+		}
 
 		union s_Slot
 		{
-			char		  	m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
-			s_Slot*        m_next;
+			char			m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
+			s_Slot*			m_next;
 		};
 
 		typedef char*		t_data_pointer;
@@ -74,174 +145,16 @@ class MPool_FixedElem
 		typedef s_Slot*		t_slot_pointer;
 
 		DynArray<s_Slot> 			m_elements;
-
 		size_t 						m_elemCount;
 		size_t 						m_maxElems;
 		t_slot_pointer 				m_freeSlot;
 
-		bool operator==(const MPool_FixedElem& other) const;
-		bool operator!=(const MPool_FixedElem& other) const;
+		bool operator==(const MPool_FixedElem& other) const
+		{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
+		bool operator!=(const MPool_FixedElem& other) const
+		{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 };
 
 
-template <typename T>
-MPool_FixedElem<T>::MPool_FixedElem(size_t numElems) throw() :
-	m_elements(0),
-	m_elemCount(0),
-	m_maxElems(numElems),
-	m_freeSlot(NULL)
-{
-	//std::cout << "mem pool constructed: " << sizeof(T) << " array is size: " << m_elements.size() << std::endl;
-}
 
-
-template <typename T>
-MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem& copy) throw() :
-	m_elements(0),
-	m_elemCount(copy.m_elemCount),
-	m_maxElems(copy.m_maxElems),
-	m_freeSlot(copy.m_freeSlot)
-{
-	//std::cout << "copy called" << std::endl;
-	
-	//std::cout << "mem pool copied: " << sizeof(T) << std::endl;
-}
-
-
-
-template <typename T>
-template<class U>
-MPool_FixedElem<T>::MPool_FixedElem(const MPool_FixedElem<U>& rebind) throw() :
-	m_elements(0),
-	m_elemCount(0),
-	m_maxElems(rebind.m_maxElems),
-	m_freeSlot(NULL)
-{
-	//std::cout << "rebind called" << std::endl;
-}
-
-
-
-
-template <typename T>
-MPool_FixedElem<T>::~MPool_FixedElem()
-throw()
-{
-	//std::cout <<  " destructoed "<< std::endl;
-}
-
-
-template <typename T>
-inline typename MPool_FixedElem<T>::pointer
-MPool_FixedElem<T>::address(reference x)
-const throw()
-{
-	return &x;
-}
-
-
-
-template <typename T>
-inline typename MPool_FixedElem<T>::const_pointer
-MPool_FixedElem<T>::address(const_reference x)
-const throw()
-{
-	return &x;
-}
-
-
-template <typename T>
-inline typename MPool_FixedElem<T>::pointer
-MPool_FixedElem<T>::allocate(size_type, const_pointer)
-{
-	//std::cout << "allocate called sizeofT" << sizeof(T) << ".. max elems" << m_maxElems <<  "  array size" << m_elements.size() << std::endl;
-	assert(m_elemCount < m_maxElems);
-	//std::cout << "allocate called" << std::endl;
-	m_elements.reserve(m_maxElems);
-	if (m_freeSlot != 0)
-	{
-		pointer result = reinterpret_cast<pointer>(m_freeSlot);
-		m_freeSlot = m_freeSlot->m_next;
-		m_elemCount++;
-		return (result);
-	}
-	else
-		return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
-}
-
-
-
-template <typename T>
-inline void
-MPool_FixedElem<T>::deallocate(pointer p, size_type)
-{
-	if (p == NULL)
-		return ;
-
-	reinterpret_cast<t_slot_pointer>(p)->m_next = m_freeSlot;
-	m_freeSlot = reinterpret_cast<t_slot_pointer>(p);
-	--m_elemCount;
-}
-
-template <typename T>
-inline typename MPool_FixedElem<T>::size_type
-MPool_FixedElem<T>::max_size()
-const throw()
-{
-	return (m_maxElems);
-}
-
-
-
-template <typename T>
-inline void
-MPool_FixedElem<T>::construct(pointer p, const_reference val)
-{
-	//std::cout << "construct called sizeofT" << sizeof(T) << std::endl;
-	new (p) value_type (val);
-}
-
-
-
-template <typename T>
-inline void
-MPool_FixedElem<T>::destroy(pointer p)
-{
-	p->~value_type();
-}
-
-
-
-template <typename T>
-inline typename MPool_FixedElem<T>::pointer
-MPool_FixedElem<T>::newElement(const_reference val)
-{
-	pointer result = allocate();
-	construct(result, val);
-	return result;
-}
-
-
-
-template <typename T>
-inline void
-MPool_FixedElem<T>::deleteElement(pointer p)
-{
-	if (p != 0)
-	{
-		p->~value_type();
-		deallocate(p);
-	}
-}
-
-template <typename T>
-inline bool 
-MPool_FixedElem<T>::operator==(const MPool_FixedElem& other) const
-{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
-
-template <typename T>
-inline bool 
-MPool_FixedElem<T>::operator!=(const MPool_FixedElem& other) const
-{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
-
-#endif // MEMORY_BLOCK_TCC
+#endif
