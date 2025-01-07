@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 09:49:44 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:24:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2024/12/22 10:36:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ class Globals;
 class FileDescriptor
 {
 	public:
-		static int  setNonBlocking                  (t_fd fd);
-		static int  setCloseOnExec                  (t_fd fd);
-		static int  setFdFlags                      (t_fd fd, const int flags);
-		static int  setCloseOnExec_NonBlocking      (t_fd fd);
+		static int  setNonBlocking					(t_fd fd);
+		static int  setCloseOnExec					(t_fd fd);
+		static int  setFdFlags						(t_fd fd, const int flags);
+		static int  setCloseOnExec_NonBlocking		(t_fd fd);
 	private:
-		static int _addFlags                        (t_fd fd, const int flags);
+		static int mf_addFlags						(t_fd fd, const int flags);
 };
 
 #endif
