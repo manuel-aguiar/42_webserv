@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 15:02:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:05:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 EventManager::EventManager(Globals& globals) :
 	m_subscribeCount(0),
 	m_epollfd		(-1),
-	m_waitCount		(0),
 	m_globals		(globals)
 {
 
@@ -94,22 +93,23 @@ int                 EventManager::delEvent(const Event& event)
 
 int                 EventManager::ProcessEvents(int timeOut)
 {
-	Event* event;
+	Event*	event;
+	int		waitCount;
 
-	m_waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
+	waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
 
-	if (m_waitCount == -1)
+	if (waitCount == -1)
 	{
 		m_globals.logError("EventManager::ProcessEvents, epoll_wait(): " + std::string(strerror(errno)));
-		return (0);
+		return (waitCount);
 	}
-	for (int i = 0; i < m_waitCount; i++)
+	for (int i = 0; i < waitCount; i++)
 	{
 		event = static_cast<Event*>(m_events[i].data.ptr);
 		event->setTriggeredFlags(m_events[i].events);
 		event->handle();
 	}
-	return (m_waitCount);
+	return (waitCount);
 }
 
 size_t			EventManager::getSubscribeCount() const
@@ -121,7 +121,6 @@ size_t			EventManager::getSubscribeCount() const
 
 EventManager::EventManager(const EventManager& copy) :
 	m_epollfd		(copy.m_epollfd),
-	m_waitCount		(copy.m_waitCount),
 	m_globals		(copy.m_globals)
 {}
 

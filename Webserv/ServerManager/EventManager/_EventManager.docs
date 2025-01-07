@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
-#    Updated: 2025/01/07 15:00:58 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 15:07:16 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,8 @@ it will call whatever is registered in the Event's Callback.
 
 Essentially this is the number 10 player of the Webserver -> it is the one that monitors
 and times execution (while still knowing nothing about what is actually executed)
+
+The eventManager will sit under ServerWorker (who itself sits under the ServerManager)
 
 Main methods:
 
@@ -34,4 +36,13 @@ fail and we are calling Globals to log an error event.
 
 Furthermore, it is up to the user to keep the actual events in scope for the callback.
 If the event triggers but the Event instance to which EventManager points get destroyed... SEGFAULT.
+
+
+The only "getter" that this class features is the getSubscribeCount which, to be honest is more of a debugging
+tool more than actually interesting for the runtime.
+	-  There is no particular reason to have access to the epollfd itself (actually better, the class instance manages
+	the epollfd alone without interference)
+	-  The waitCount can easily get mixed in between loops, so to avoid confusion, the only way to get the waitCount
+	is to ask for ::ProcessEvents(), so the user is sure that the waitCount refers to this particular iteration
+	of the eventloop
 

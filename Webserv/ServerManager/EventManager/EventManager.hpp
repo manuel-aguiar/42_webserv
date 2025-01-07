@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 15:01:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:04:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ class EventManager
 		t_epoll_event				m_events[MAX_EPOLL_EVENTS];
 		size_t						m_subscribeCount;
 		t_fd						m_epollfd;
-		int							m_waitCount;
 		Globals&					m_globals;
 
 		EventManager(const EventManager& copy);
