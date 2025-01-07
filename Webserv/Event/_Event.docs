@@ -6,21 +6,9 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 08:56:02 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 09:13:20 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 11:20:14 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-Event class is a vessel to associate a function and data, to be called when required.
-In our case, EventManager will be the one doing the calling, when the event is triggered.
-
-Many classes throughout the program will have to create callbacks for events:
-    ListeningSocket -> accept
-    ServerWorker -> exit 
-    etcetc.
-
-So I think it makes sense for them to be
-placed on a higher level of the folder structure (while the event manager is
-part of the server manager)
-
-Instead of centralizing eventhandlers, let each class define their required ones
-as static global functions
+Event is essentially a Callback with extra data for it to be monitored by
+EPoll :)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 11:11:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:38:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "../Callback/Callback.hpp"
-
-
 
 class Event
 {
