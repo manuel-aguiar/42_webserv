@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 14:29:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:01:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ class EventManager
 		int							delEvent(const Event& event);
 		
 		//getters
-		t_fd						getEpollFd() const;
-		int						  	getWaitCount() const;
 		size_t						getSubscribeCount() const;
 		
 	private:
