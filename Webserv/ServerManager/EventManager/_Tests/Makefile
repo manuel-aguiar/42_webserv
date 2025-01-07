@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/22 10:19:28 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/07 14:34:51 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 15:24:16 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,8 +35,6 @@ SRCS		 =  $(SRC_PATH)/Webserv/ServerManager/EventManager/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 													\
-				$(SRC_PATH)/Webserv/Connection/_Mock/MockConnection.cpp \
-				\
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/Event/Event.cpp \
 				$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
