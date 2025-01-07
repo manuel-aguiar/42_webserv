@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 16:17:15 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:53:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:38:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,44 @@
 
 # define EVENT_HPP
 
+# include "../GenericUtils/Webserver_Definitions.h"
+# include "../Callback/Callback.hpp"
+
 class Event
 {
 	public:
 		Event();
 		~Event();
-
-		//typedefs
-		typedef void	(*HandlerFunction)(Event& event);
-		typedef void*	HandlerData;
+		Event(const Event& copy);
+		Event& operator=(const Event& assign);
 
 		//methods
-		void				handle();
+		void						handle();
+		void						reset();
 
 		//getters
-		HandlerData			getData()		const;
-		HandlerFunction		getFunction()	const;
-		int					getFlags()		const;
-
+		t_fd						getFd()					const;
+		int							getMonitoredFlags()		const;
+		int							getTriggeredFlags()		const;
+		const Callback&				getCallback()			const;
+		
 		//setters
-		void				setHandlerFunction_and_Data(HandlerFunction function, HandlerData data);
-		void				setFlags(int flags);
+		void						setFd(const t_fd fd);
+		void						setMonitoredFlags(int flags);
+		void						setTriggeredFlags(int flags);
+		void						setCallback(const t_ptr_callback_data data, const t_func_callback_handler handler);
 
 
+		void						setFdFlags(const t_fd fd, int flags);
+		void						setFdFlagsCallback(const t_fd fd, int flags, const t_ptr_callback_data data, const t_func_callback_handler handler);
 
 
 	private:
-		HandlerFunction		m_function;
-		HandlerData			m_data;
-		int					m_flags;
+		t_fd						m_fd;
+		int							m_monitoredFlags;
+		int							m_triggeredFlags;
+		Callback					m_callback;
 
-		Event(const Event& copy);
-		Event& operator=(const Event& assign);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:10 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 11:53:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:04:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,25 @@ class Event;
 class EventManager
 {
 	public:
-		EventManager(Globals* globals = NULL);
+		EventManager(Globals& globals);
 		~EventManager();
 
-		int							addEvent(const t_fd fd, const Event& monitor);
-		int							modEvent(const t_fd fd, const Event& monitor);
-		int							delEvent(const t_fd fd);
-		int							waitEvents(int timeOut);
-		void						distributeEvents();
-		const t_epoll_event&		retrieveEvent(int index);
+		//methods
+		int							ProcessEvents(int timeOut);
 
-		const t_fd&					getEpollFd() const;
-		const int&				  	getWaitCount() const;
-
+		int							addEvent(const Event& event);
+		int							modEvent(const Event& event);
+		int							delEvent(const Event& event);
+		
+		//getters
+		size_t						getSubscribeCount() const;
+		
 	private:
-		t_fd						m_epollfd;
 		t_epoll_event				m_events[MAX_EPOLL_EVENTS];
-		int							m_waitCount;
-		Globals*					m_globals;
+		size_t						m_subscribeCount;
+		t_fd						m_epollfd;
+		Globals&					m_globals;
 
-	private:
 		EventManager(const EventManager& copy);
 		EventManager& operator=(const EventManager& assign);
 };
