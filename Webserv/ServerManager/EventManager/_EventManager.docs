@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
-#    Updated: 2024/12/23 09:10:05 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 14:59:53 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,5 +21,14 @@ Main methods:
 
 	addEvent/modEvent/delEvent -> to manage subscriptions to its event poll.
 
-	retrieveEvents -> gets all events that took place since the last call and
+	ProcessEvents -> gets all events that took place since the last call and
 	executes all the registered Callbacks associated with said events.
+
+
+The event manager does not copy or even keep track of the events that are already Subscribed
+to its internal epoll. It is up to the user to make sure that the same fd doesn't get Subscribed
+twice, or not to delete an event on an fd that is not being monitor.
+
+Furthermore, it is up to the user to keep the actual events in scope for the callback.
+If the event triggers but the Event instance to which EventManager points get destroyed... SEGFAULT.
+
