@@ -17,7 +17,6 @@
 // Project headers
 # include "StackSlotArray/StackSlotArray.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
-# include "../../List/List.hpp"
 
 // ThreadPool headers
 # include "../ThreadTask/IThreadTask.hpp"
