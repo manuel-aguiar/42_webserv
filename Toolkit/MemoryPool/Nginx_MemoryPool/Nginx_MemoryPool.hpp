@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 19:37:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:47:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@ class Nginx_MemoryPool
         void                        destroy();
 
     private:
-
+        // forward declarations
         class                       Nginx_MPool_Block;
-
-
         typedef struct s_bigBlock
         {
             struct s_bigBlock*  m_nextBlock;
         }   t_bigBlock;
 
+
+        //member variables
         Nginx_MPool_Block*     m_active;
         t_bigBlock*            m_bigBlocks;
         const size_t           m_blockSize;
