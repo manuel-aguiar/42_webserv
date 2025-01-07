@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/07 16:13:53 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 19:05:04 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,19 +16,19 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME					=		test.out
 
 # Paths
-ROOT_PATH				=		../../../../Toolkit
+ROOT_PATH				=		../../../Toolkit
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/MemoryPool/Nginx/_Tests/main.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx/_Tests/test1.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx/_Tests/test2.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx/_Tests/test3.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx/_Tests/NginxMemPool_TestCounter.cpp	\
+SRCS					=		$(SRC_PATH)/MemoryPool/_Tests/main.cpp	\
+								$(SRC_PATH)/MemoryPool/_Tests/test1.cpp	\
+								$(SRC_PATH)/MemoryPool/_Tests/test2.cpp	\
+								$(SRC_PATH)/MemoryPool/_Tests/test3.cpp	\
+								$(SRC_PATH)/MemoryPool/_Tests/NginxMemPool_TestCounter.cpp	\
 								\
-								$(SRC_PATH)/MemoryPool/Nginx/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
-								$(SRC_PATH)/MemoryPool/Nginx/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

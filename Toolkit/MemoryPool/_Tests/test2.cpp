@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 16:42:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:05:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "NginxMemPool_TestCounter.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../_Tests/test.h"
 
 int TestPart2(int testNumber)
 {

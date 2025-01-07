@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 23:41:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 19:29:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 # include "../Nginx_MPool_FixedElem.hpp"
 
-# include "../../Nginx_MemoryPool.hpp"
-# include "../../Nginx_PoolAllocator.hpp"
-# include "../../../../_Tests/test.h"
+# include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+# include "../../../_Tests/test.h"
 
 // C++ headers
 # include <climits>
