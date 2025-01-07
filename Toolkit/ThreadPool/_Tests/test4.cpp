@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test2.cpp                                          :+:      :+:    :+:   */
+/*   test4.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/06 23:42:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:42:32 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/06 23:42:22 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/06 23:42:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// UnderTest
+//test target
 # include "../ThreadPool.hpp"
 
-// C++ headers
-# include <iostream>
-# include <unistd.h>
-# include <cstring>
-# include <sstream>
-# include <cstdlib>
-# include <vector>
 
-// Test helpers
+// Project headers
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
 # include "../../_Tests/test.h"
+
+// C++ headers
+# include <unistd.h>
+# include <cstring>
+# include <sstream>
+# include <cstdlib>
+# include <iostream>
 
 static long fibGood(unsigned int n)
 {
@@ -61,15 +61,19 @@ class FiboTask : public IThreadTask
 		long* 			m_placeResult;
 };
 
-int TestPart2(int testNumber)
+int TestPart4(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	std::cout << "TEST " << testNumber++ << ": ";
+
+	// Simulating a TaskQueue congestion and users waiting for a slot to execute: addTask(waitForSlot = true)
+
 	try
 	{
 		const int numberOfTasks = 100;
 
-		ThreadPool<100, 1000> tp(20);
+		//task queue of just 10 slots
+		ThreadPool<10, 10> tp(10);
 		std::vector<long> 			fiboExpected;
 		std::vector<long>			fiboPlaceResult;
 		std::vector<FiboTask> 		tasks;
@@ -82,7 +86,7 @@ int TestPart2(int testNumber)
 		{
 			fiboExpected.push_back(fibGood(i));
 			tasks.push_back(FiboTask(i, &fiboPlaceResult[i]));
-			tp.addTask(tasks[i]);
+			tp.addTask(tasks[i], true);
 		}
 			
 		tp.waitForCompletion();
@@ -100,7 +104,6 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
         TEST_FAIL_INFO();
 	}
-	testNumber++;	
 	return (testNumber);
 }
 

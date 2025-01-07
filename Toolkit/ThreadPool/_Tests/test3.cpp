@@ -6,25 +6,26 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 22:40:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 10:06:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/06 23:43:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include "../ThreadPool/ThreadPool.hpp"
+//test target
+# include "../ThreadPool.hpp"
 
 
+// Project headers
+# include "../../_Tests/ToolkitDummy.hpp"
+# include "../../_Tests/ToolkitBase.hpp"
+# include "../../_Tests/ToolkitDerived.hpp"
+# include "../../_Tests/test.h"
+
+// C++ headers
 # include <unistd.h>
 # include <cstring>
 # include <sstream>
 # include <cstdlib>
-
-# include "../../MemoryPool/MemoryPool.h"
-# include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/ToolkitBase.hpp"
-# include "../../_Tests/ToolkitDerived.hpp"
-# include "../../Arrays/StackArray/StackArray.hpp"
-# include "../../_Tests/test.h"
+# include <iostream>
 
 static long fibGood(unsigned int n)
 {
@@ -152,7 +153,7 @@ int TestPart3(int testNumber)
 	try
 	{
 
-		ThreadPool 					    tp(10, 20);
+		ThreadPool<20, 1000>            tp(10);
 		size_t 		                    fiboExpected;
 
 		Promise<size_t>	                promise(50);

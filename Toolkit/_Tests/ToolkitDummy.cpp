@@ -23,9 +23,8 @@ ToolkitDummy::ToolkitDummy()
 }
 
 ToolkitDummy::ToolkitDummy(int value) 
-    : m_value(0), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
+    : m_value(value), m_data(new int[4]), m_name("i am a string so long that deffinitely allocates memory on the heap myself") 
 {
-    this->m_value = value;
 }
 
 ToolkitDummy::~ToolkitDummy() 
@@ -62,13 +61,25 @@ bool ToolkitDummy::operator!=(const ToolkitDummy& other)
     return !(m_value == other.m_value && m_name == other.m_name);
 }
 
+int ToolkitDummy::getValue() const
+{
+    return m_value;
+}
+
+const std::string& ToolkitDummy::getName() const
+{
+    return m_name;
+}
+
 const char* ToolkitDummy::print() const
 {
     return "ToolkitDummy: hey there ";
 }
 
+
+
 std::ostream& operator<<(std::ostream& os, const ToolkitDummy& dummy) 
 {
-    os << dummy.print() << std::endl;
+    os << dummy.getName() << ": " << dummy.getValue() << std::endl;
     return (os);
 }

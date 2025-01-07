@@ -1,37 +1,32 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   testMain.cpp									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com	+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/08/27 08:33:11 by mmaria-d		  #+#	#+#			 */
-/*   Updated: 2024/09/03 16:26:42 by mmaria-d		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test1.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/06 23:42:37 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/06 23:42:39 by mmaria-d         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
-# include <iostream>
-# include "../ThreadPool.h"
+//test target
+# include "../ThreadPool.hpp"
 
 
-# include <unistd.h>
-# include <cstring>
-# include <sstream>
-# include <cstdlib>
-# include <vector>
-
+// Project headers
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
 # include "../../_Tests/test.h"
 
-template <typename T>
-std::string to_string(const T& value)
-{
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
+// C++ headers
+# include <unistd.h>
+# include <cstring>
+# include <sstream>
+# include <cstdlib>
+# include <iostream>
+
 
 static long fibGood(unsigned int n)
 {
@@ -73,7 +68,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<10, 100> tp(5);
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch(const std::exception& e)
@@ -87,7 +82,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.addThread();
 
@@ -105,7 +100,7 @@ int	TestPart1(int testNumber)
 	std::cout << "TEST " << testNumber << ": ";
 	try
 	{
-		ThreadPool tp(10, 100);
+		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.removeThread();
 		tp.removeThread();
@@ -122,7 +117,6 @@ int	TestPart1(int testNumber)
 		FiboTask task(6, &placeResult);
 
 		tp.addTask(task);
-
 
 		tp.addThread();
 		tp.waitForCompletion();
