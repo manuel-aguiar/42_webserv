@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/07 11:12:58 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 11:00:36 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,7 @@ SRC_PATH = $(ROOT_PATH)/.
 OBJ_PATH = $(ROOT_PATH)/_build
 
 # Sources
-SRCS    =       $(SRC_PATH)/Event/Event.cpp \
-				$(SRC_PATH)/Event/EventGetSetAccess.cpp \
-				\
-				$(SRC_PATH)/Event/_Tests/main.cpp \
+SRCS    =       $(SRC_PATH)/Callback/_Tests/main.cpp \
                 \
                 $(SRC_PATH)/Callback/Callback.cpp \
                 $(SRC_PATH)/Callback/CallbackGetSetAccess.cpp \

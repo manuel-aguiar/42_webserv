@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:26:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:15:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	Event::setFd(const t_fd fd)
 	m_fd = fd;
 }
 
-void	Event::setMonitorFlags(int flags)
+void	Event::setMonitoredFlags(int flags)
 {
 	m_monitoredFlags = flags;
 }
@@ -69,10 +69,4 @@ void	Event::setFdFlagsCallback(const t_fd fd, int flags, const t_ptr_callback_da
 	m_monitoredFlags = flags;
 	m_callback.setData(data);
 	m_callback.setHandler(handler);
-}
-
-
-Callback&	Event::accessCallback()
-{
-	return (m_callback);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/27 15:43:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 11:09:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,11 @@ void	A_ProtoRequest::readCgi()
 void	A_ProtoRequest::executeCgi()
 {
 	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
-	m_CgiReadEvent.setMonitorFlags(EPOLLIN);
+	m_CgiReadEvent.setFlags(EPOLLIN);
 	m_CgiReadEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
 
 	m_CgiWriteEvent.setFd(m_CgiRequestData->getWriteFd());
-	m_CgiWriteEvent.setMonitorFlags(EPOLLOUT);
+	m_CgiWriteEvent.setFlags(EPOLLOUT);
 	m_CgiWriteEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
 	
 	m_manager.addEvent(m_CgiReadEvent);
@@ -101,16 +101,4 @@ void	A_ProtoRequest::cancelCgi()
 {
 	m_manager.delEvent(m_CgiReadEvent);
 	m_manager.delEvent(m_CgiWriteEvent);
-}
-
-void A_ProtoRequest::EventCallbackOnRead(Callback& event)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
-	request.readCgi();
-}
-
-void A_ProtoRequest::EventCallbackOnWrite(Callback& event)
-{
-	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(event.getData());
-	request.writeCgi();
 }

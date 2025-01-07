@@ -42,7 +42,7 @@ int main(void)
 
 		event.setFd(STDIN_FILENO);
 		FileDescriptor::setCloseOnExec_NonBlocking(event.getFd());
-		event.setMonitorFlags(EPOLLIN);
+		event.setFlags(EPOLLIN);
 		event.accessCallback().setHandler(EventHandler);
 
 

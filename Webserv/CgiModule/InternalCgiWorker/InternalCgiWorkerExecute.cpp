@@ -38,14 +38,14 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
     if (::pipe(m_ParentToChild) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
     }
 	if (::pipe(m_ChildToParent) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
@@ -55,27 +55,27 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
 
 	if (!mf_prepareExecve())
 	{
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).call();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
 	}
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
-	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).call();
+	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).execute();
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_RUNTIME).call();
+		m_curRequestData->accessCallback(E_CGI_ON_ERROR_RUNTIME).execute();
 		m_CgiModule.cancelRequest(*m_curRequestData);
 		return ;
     }
