@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 10:37:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:29:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
@@ -133,7 +133,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}

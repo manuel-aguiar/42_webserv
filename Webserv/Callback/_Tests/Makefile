@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/07 11:00:36 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 11:47:09 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,17 +16,17 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME = test.out
 
 # Paths
-ROOT_PATH = ../../../Webserv
+ROOT_PATH = ../../..
 SRC_PATH = $(ROOT_PATH)/.
-OBJ_PATH = $(ROOT_PATH)/_build
+OBJ_PATH = $(ROOT_PATH)/Webserv/_build
 
 # Sources
-SRCS    =       $(SRC_PATH)/Callback/_Tests/main.cpp \
+SRCS    =       $(SRC_PATH)/Webserv/Callback/_Tests/main.cpp \
                 \
-                $(SRC_PATH)/Callback/Callback.cpp \
-                $(SRC_PATH)/Callback/CallbackGetSetAccess.cpp \
+                $(SRC_PATH)/Webserv/Callback/Callback.cpp \
+                $(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
                 \
-                $(SRC_PATH)/../Toolkit/_Tests/testHelpers.cpp
+                $(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
 
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))

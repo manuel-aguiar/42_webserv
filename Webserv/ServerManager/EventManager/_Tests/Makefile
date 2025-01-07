@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/22 10:19:28 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/22 10:19:33 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/07 14:34:51 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,69 +18,59 @@
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
-TARGET = test.out
-
-ROOT_PATH = ../../../..
-
-EXTERN_LINKER 					= 	-lpthread
-
-THREADPOOL_PATH 				= 	$(ROOT_PATH)/Toolkit/ThreadPool
-THREADPOOL_LIB					= 	libthreadpool.a
-
-MEMORYPOOL_PATH					= 	$(ROOT_PATH)/Toolkit/MemoryPool
-MEMORYPOOL_LIB					= 	libmemorypool.a
+NAME = test.out
 
 # Paths
-
-SRC_PATH = $(ROOT_PATH)/Webserv/.
+ROOT_PATH = ../../../..
+SRC_PATH = $(ROOT_PATH)/.
 OBJ_PATH = $(ROOT_PATH)/Webserv/_build
 
 
-SRCS =  $(SRC_PATH)/ServerManager/EventManager/_Tests/test.cpp \
-											\
-		$(SRC_PATH)/ServerManager/EventManager/EventManager.cpp \
-										\
-		$(SRC_PATH)/Globals/_Mock/MockLogFile.cpp \
-		$(SRC_PATH)/Globals/_Mock/MockGlobals.cpp \
-		$(SRC_PATH)/Globals/_Mock/MockClock.cpp \
-											\
-		$(SRC_PATH)/Connection/_Mock/MockConnection.cpp \
-		\
-		$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		$(SRC_PATH)/Event/Event.cpp \
-		$(SRC_PATH)/Event/EventGetSetAccess.cpp \
-		$(SRC_PATH)/Callback/Callback.cpp \
-		$(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
+SRCS		 =  $(SRC_PATH)/Webserv/ServerManager/EventManager/_Tests/main.cpp \
+				$(SRC_PATH)/Webserv/ServerManager/EventManager/_Tests/test1.cpp \
+													\
+				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
+												\
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
+													\
+				$(SRC_PATH)/Webserv/Connection/_Mock/MockConnection.cpp \
+				\
+				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+				$(SRC_PATH)/Webserv/Event/Event.cpp \
+				$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Callback/Callback.cpp \
+				$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
+				\
+				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+DEPS 			= 	$(OBJS:.o=.d)
 
-THREADPOOL_LINKER				= 	-l$(patsubst lib%.a,%,$(THREADPOOL_LIB))
-MEMORYPOOL_LINKER 				= 	-l$(patsubst lib%.a,%,$(MEMORYPOOL_LIB))
+#####################################################
 
-LIB_THREADPOOL 					= 	-L./$(THREADPOOL_PATH) $(THREADPOOL_LINKER)
-LIB_MEMORYPOOL 					= 	-L./$(MEMORYPOOL_PATH) $(MEMORYPOOL_LINKER)
-
-LIBS 							= 	$(LIB_THREADPOOL) $(LIB_MEMORYPOOL) $(EXTERN_LINKER)
-
-$(TARGET): $(OBJS)
-
-	@$(MAKE) -C $(THREADPOOL_PATH)
-	@$(MAKE) -C $(MEMORYPOOL_PATH)
-
-	$(CXX) $(CXXFLAGS) $(OBJS) $(LIBS) -o $(TARGET)
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-all: $(TARGET)
+-include $(DEPS)
 
-run: $(TARGET)
-	valgrind --track-fds=yes ./$(TARGET)
+#####################################################
+
+all: $(NAME)
+
+test: $(NAME)
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(NAME)
 
 clean:
-	rm -rf $(TARGET) vgcore*
+	rm -rf $(NAME) vgcore*
 
 fclean: clean
 
-.PHONY: clean
+re: fclean all
+
+.PHONY: clean fclean run

@@ -142,7 +142,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
@@ -214,7 +214,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
@@ -284,7 +284,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
@@ -331,7 +331,7 @@ int main(void)
 
 		while (cgi.getBusyWorkerCount() > 0)
 		{
-			size_t waited = eventManager.retrieveEvents(1000);
+			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
 			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << std::endl;
 		}

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 15:04:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:29:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int                 EventManager::delEvent(const Event& event)
 	return (1);
 }
 
-int                 EventManager::retrieveEvents(int timeOut)
+int                 EventManager::ProcessEvents(int timeOut)
 {
 	Event* event;
 
@@ -100,7 +100,7 @@ int                 EventManager::retrieveEvents(int timeOut)
 
 	if (m_waitCount == -1)
 	{
-		m_globals.logError("EventManager::retrieveEvents, epoll_wait(): " + std::string(strerror(errno)));
+		m_globals.logError("EventManager::ProcessEvents, epoll_wait(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	for (int i = 0; i < m_waitCount; i++)

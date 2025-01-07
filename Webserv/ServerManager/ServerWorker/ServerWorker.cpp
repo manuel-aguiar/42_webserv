@@ -79,7 +79,7 @@ int ServerWorker::run()
 	while (m_isRunning)
 	{
 		// add a mechanism for figuring the right timeout to call
-		m_eventManager.retrieveEvents(-1);
+		m_eventManager.ProcessEvents(-1);
 	}
 	return (1);
 }

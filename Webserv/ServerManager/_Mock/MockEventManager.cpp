@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/16 16:30:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:29:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int                 EventManager::delEvent(const Event& event)
 	return (1);
 }
 
-int                 EventManager::retrieveEvents(int timeOut)
+int                 EventManager::ProcessEvents(int timeOut)
 {
 	//std::cout << "                waiting for events" << std::endl;
 	m_waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
