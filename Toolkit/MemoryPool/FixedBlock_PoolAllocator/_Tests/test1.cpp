@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:09:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:49:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ int TestPart1(int testNumber)
 		Nginx_MemoryPool 							pool(4096, 1);
 
 		size_t 										firstElement = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
-		FixedBlock_PoolAllocator<int> 					alloc(pool, poolsize);
+		FixedBlock_PoolAllocator<int, Nginx_MemoryPool> 					
+													alloc(pool, poolsize);
 		
-		std::list<int, FixedBlock_PoolAllocator<int> > list1(alloc);
+		std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > 
+													list1(alloc);
 		
 		list1.push_back(0);
 		size_t 										lastElement = (size_t)pool.allocate(sizeof(size_t));
@@ -62,7 +64,7 @@ int TestPart1(int testNumber)
 		for (size_t i = 1; i < loopTimes; i++)
 			list1.push_back(i);
 		
-		for (std::list<int, FixedBlock_PoolAllocator<int> >::iterator it = list1.begin(); it != list1.end(); ++it)
+		for (std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> >::iterator it = list1.begin(); it != list1.end(); ++it)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
@@ -109,7 +111,8 @@ int TestPart1(int testNumber)
 
 		// one list
 		size_t 										firstElement1 = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
-		std::list<int, FixedBlock_PoolAllocator<int> > list1(FixedBlock_PoolAllocator<int>(pool, poolsize));
+		std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > 
+													list1(FixedBlock_PoolAllocator<int, Nginx_MemoryPool>(pool, poolsize));
 
 		// The fixed block only gets allocated when the first element is pushed
 		list1.push_back(0);
@@ -118,7 +121,8 @@ int TestPart1(int testNumber)
 
 		// separate list
 		size_t 										firstElement2 = (size_t)pool.allocate(sizeof(size_t)) + sizeof(size_t);
-		std::list<int, FixedBlock_PoolAllocator<int> > list2(FixedBlock_PoolAllocator<int>(pool, poolsize));
+		std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > 
+													list2(FixedBlock_PoolAllocator<int, Nginx_MemoryPool>(pool, poolsize));
 
 		// The fixed block only gets allocated when the first element is pushed
 		list2.push_back(0);
@@ -166,7 +170,7 @@ int TestPart1(int testNumber)
 		/////////////////////
 
 		// list1 must be allocated in alloc1
-		for (std::list<int, FixedBlock_PoolAllocator<int> >::iterator it = list1.begin(); it != list1.end(); ++it)
+		for (std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> >::iterator it = list1.begin(); it != list1.end(); ++it)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
@@ -181,7 +185,7 @@ int TestPart1(int testNumber)
 
 
 		// list 2 must be allocated in alloc2
-		for (std::list<int, FixedBlock_PoolAllocator<int> >::iterator it = list2.begin(); it != list2.end(); ++it)
+		for (std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> >::iterator it = list2.begin(); it != list2.end(); ++it)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
