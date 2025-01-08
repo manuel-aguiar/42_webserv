@@ -90,7 +90,7 @@ class ServerConfig
 															ServerBlock &server, ServerLocation &location,
 															const int &currentLevel);
 		void								m_setConfigValue(const std::string &key, const std::string &value);
-		void								m_updateFile();
+		bool								m_updateFile();
 		void								m_setServers(std::vector<ServerBlock> &servers);
 		void								m_setDefaults(const int &flag);
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine, 

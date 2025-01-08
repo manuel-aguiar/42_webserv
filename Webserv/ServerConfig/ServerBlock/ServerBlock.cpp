@@ -29,17 +29,16 @@ ServerBlock::~ServerBlock()
 
 ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 {
-	if (this != &other)
-	{
-		m_listen = other.m_listen;
-		m_server_name = other.m_server_name;
-		m_client_body_size = other.m_client_body_size;
-		m_client_header_size = other.m_client_header_size;
-		m_root = other.m_root;
-		m_error_pages = other.m_error_pages;
-		m_keys = other.m_keys;
-		m_locations = other.m_locations;
-	}
+	if (this == &other)
+		return (*this);
+	m_listen = other.m_listen;
+	m_server_name = other.m_server_name;
+	m_client_body_size = other.m_client_body_size;
+	m_client_header_size = other.m_client_header_size;
+	m_root = other.m_root;
+	m_error_pages = other.m_error_pages;
+	m_keys = other.m_keys;
+	m_locations = other.m_locations;
 	return (*this);
 }
 
@@ -238,24 +237,24 @@ void	ServerBlock::printServerConfig() const
 	std::set<std::string>	server_name = getServerNames();
 	std::set<std::string>	error_pages = getErrorPages();
 	
-	std::cout << "║ ┌─ Server ─────────o" << std::endl;
-	std::cout << "║ │ " <<  std::endl ;
+	std::cout << "║ ┌─ Server ─────────o\n";
+	std::cout << "║ │ \n";
 	std::cout << "║ │ listeners: ";
 	for (std::set<t_listeners>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
 		std::cout << it->first << ":" << it->second << " ";
-	std::cout << std::endl;
+	std::cout << "\n";
 	std::cout << "║ │ server_name: ";
 	if (!server_name.size())
 		std::cout << "(empty)";
 	else
 		for (std::set<std::string>::const_iterator it = server_name.begin(); it != server_name.end(); it++)
 			std::cout << *it << " ";
-	std::cout << std::endl;
+	std::cout << "\n";
 
 	std::cout << "║ │ Client Body Size: " << getClientBodySize() << '\n';
 	std::cout << "║ │ Client Header Size: " << getClientHeaderSize() << '\n';
 
-	std::cout << "║ │ Root: " << getRoot() << std::endl;
+	std::cout << "║ │ Root: " << getRoot() << "\n";
 
 	std::cout << "║ │ Error_pages: ";
 	if (!error_pages.size())
@@ -263,7 +262,7 @@ void	ServerBlock::printServerConfig() const
 	else
 		for (std::set<std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
 			std::cout << *it << " ";
-	std::cout << std::endl;
+	std::cout << "\n";
 	std::cout << "║ │ " <<  std::endl ;
 
 }

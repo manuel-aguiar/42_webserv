@@ -12,15 +12,11 @@
 
 # include "ServerConfig.hpp"
 
-ServerConfig::ServerConfig(const char* configFilePath, Globals* globals)
+ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
+	m_configFilePath(configFilePath),
+	m_serverCount(0),
+	m_globals(globals)
 {
-	DefaultConfig	configDefault;
-
-	m_configDefault = configDefault;
-	m_globals = globals;
-	m_configFilePath = configFilePath;
-	m_serverCount = 0;
-
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
 	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
@@ -38,17 +34,16 @@ ServerConfig::ServerConfig()
 
 ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 {
-	if (this != &other)
-	{
-		m_keys = other.m_keys;
-		m_configDefault = other.m_configDefault;
-		m_configFilePath = other.m_configFilePath;
-		m_serverBlocks = other.m_serverBlocks;
-		m_serverCount = other.m_serverCount;
-		m_max_concurrent_cgi = other.m_max_concurrent_cgi;
-		m_max_connections = other.m_max_connections;
-		m_max_cgi_backlog = other.m_max_cgi_backlog;
-	}
+	if (this == &other)
+		return (*this);
+	m_keys = other.m_keys;
+	m_configDefault = other.m_configDefault;
+	m_configFilePath = other.m_configFilePath;
+	m_serverBlocks = other.m_serverBlocks;
+	m_serverCount = other.m_serverCount;
+	m_max_concurrent_cgi = other.m_max_concurrent_cgi;
+	m_max_connections = other.m_max_connections;
+	m_max_cgi_backlog = other.m_max_cgi_backlog;
 	return (*this);
 }
 
@@ -57,11 +52,15 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 	*this = other;
 }
 
-void	ServerConfig::m_updateFile()
+bool	ServerConfig::m_updateFile()
 {
 	m_configFileStream.open(m_configFilePath.c_str());
 	if (!m_configFileStream.is_open())
-		throw (std::invalid_argument("Error: Could not open configuration file."));
+	{
+		std::cerr << "Error: Could not open configuration file." << std::endl;
+		return (false);
+	}
+	return (true);
 }
 
 void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &value)
@@ -177,13 +176,8 @@ int		ServerConfig::parseConfigFile()
 	std::vector<ServerBlock>			servers;
 	std::vector<ServerLocation>			locations;
 
-	try {
-		m_updateFile();
-	}
-	catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
+	if (!m_updateFile())
 		return (0);
-	}
 	if (m_serverCount)
 	{
 		std::cerr << "Error: parsing after startup not implemented" << std::endl;
@@ -236,6 +230,11 @@ int		ServerConfig::parseConfigFile()
 	if (m_serverCount == 0)
 	{
 		std::cerr << "Error: no server configurations on config file" << std::endl;
+		return (0);
+	}
+	if (currentLevel != PROGRAM_LEVEL)
+	{
+		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
 	m_setDefaults(0);

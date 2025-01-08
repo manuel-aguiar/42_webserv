@@ -36,15 +36,14 @@ ServerLocation::~ServerLocation()
 
 ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 {
-	if (this != &other)
-	{
-		m_keys = other.m_keys;
-		m_path = other.m_path;
-		m_root = other.m_root;
-		m_type = other.m_type;
-		m_autoIndex = other.m_autoIndex;
-		m_methods = other.m_methods;
-	}
+	if (this == &other)
+		return (*this);
+	m_keys = other.m_keys;
+	m_path = other.m_path;
+	m_root = other.m_root;
+	m_type = other.m_type;
+	m_autoIndex = other.m_autoIndex;
+	m_methods = other.m_methods;
 	return (*this);
 }
 
