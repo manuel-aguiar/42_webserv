@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 15:44:00 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/08 16:02:50 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,40 +16,45 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET = test.out
 
 # Paths
-ROOT_PATH = ../../../Webserv
+ROOT_PATH = ../../..
 SRC_PATH = $(ROOT_PATH)/.
 OBJ_PATH = $(ROOT_PATH)/_build
 
 # Sources
-SRCS =  $(SRC_PATH)/CgiModule/_Tests/test.cpp \
-        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
-        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
-        $(SRC_PATH)/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestReadWrite.cpp \
+SRCS =  $(SRC_PATH)/Webserv/CgiModule/_Tests/main.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/test3.cpp \
+        \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestReadWrite.cpp \
 						\
+        $(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
 						\
-        $(SRC_PATH)/CgiModule/CgiModule/CgiModule.cpp \
-        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleExternal.cpp \
-        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleInternal.cpp \
-        $(SRC_PATH)/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
-        $(SRC_PATH)/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
-        $(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
-        $(SRC_PATH)/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
-        $(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestData.cpp \
-        $(SRC_PATH)/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
-        $(SRC_PATH)/ServerManager/EventManager/EventManager.cpp \
-        $(SRC_PATH)/Globals/_Mock/MockLogFile.cpp \
-        $(SRC_PATH)/Globals/_Mock/MockGlobals.cpp \
-        $(SRC_PATH)/Globals/_Mock/MockClock.cpp \
-        $(SRC_PATH)/Globals/SignalHandler/SignalHandler.cpp \
-        $(SRC_PATH)/HttpModule/_Mock/MockHttpModule.cpp \
-        $(SRC_PATH)/HttpModule/_Mock/MockHttpManager.cpp \
-        $(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-        $(SRC_PATH)/GenericUtils/StringUtils/StringUtils.cpp \
-        $(SRC_PATH)/GenericUtils/Validation/Validation.cpp \
-        $(SRC_PATH)/Event/Event.cpp \
-        $(SRC_PATH)/Event/EventGetSetAccess.cpp \
-        $(SRC_PATH)/Callback/Callback.cpp \
-        $(SRC_PATH)/Callback/CallbackGetSetAccess.cpp
+        $(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModule.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleInternal.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
+        $(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
+        $(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
+        $(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
+        $(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
+        $(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
+        $(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpModule.cpp \
+        $(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpManager.cpp \
+        $(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+        $(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+        $(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+        $(SRC_PATH)/Webserv/Event/Event.cpp \
+        $(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
+        $(SRC_PATH)/Webserv/Callback/Callback.cpp \
+        $(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp
 
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
@@ -75,12 +80,7 @@ all: $(TARGET)
 
 run: $(TARGET)
 	@valgrind   \
-        --gen-suppressions=all \
-        --suppressions=TestScripts/py/python.supp \
-        --suppressions=TestScripts/sh/bash.supp \
-        --suppressions=TestScripts/php/php.supp \
         --quiet \
-        --trace-children=yes \
         --leak-check=full \
         --errors-for-leak-kinds=all \
         --show-leak-kinds=all \

@@ -6,13 +6,27 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 11:09:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:40:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "A_ProtoRequest.hpp"
 # include "../../../ServerManager/EventManager/EventManager.hpp"
 # include <unistd.h>
+
+//event callbacks
+void A_ProtoRequest::EventCallbackOnRead(Callback& event)
+{
+	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
+	request->readCgi();
+}
+
+void A_ProtoRequest::EventCallbackOnWrite(Callback& event)
+{
+	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
+	request->writeCgi();
+}
+
 
 void	A_ProtoRequest::writeCgi()
 {
@@ -86,11 +100,11 @@ void	A_ProtoRequest::readCgi()
 void	A_ProtoRequest::executeCgi()
 {
 	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
-	m_CgiReadEvent.setFlags(EPOLLIN);
+	m_CgiReadEvent.setMonitoredFlags(EPOLLIN);
 	m_CgiReadEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
 
 	m_CgiWriteEvent.setFd(m_CgiRequestData->getWriteFd());
-	m_CgiWriteEvent.setFlags(EPOLLOUT);
+	m_CgiWriteEvent.setMonitoredFlags(EPOLLOUT);
 	m_CgiWriteEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
 	
 	m_manager.addEvent(m_CgiReadEvent);

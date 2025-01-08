@@ -6,13 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 11:10:13 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/13 16:59:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:37:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// Project headers
 # include "../HttpModule.hpp"
-# include "../../Connection/Connection.hpp"
 # include "../HttpConnection/HttpConnection.hpp"
+# include "../../Connection/Connection.hpp"
+
+//C++ headers
+# include <iostream>
 
 HttpModule::HttpModule(ServerManager& serverManager) :
 	m_serverManager(serverManager),

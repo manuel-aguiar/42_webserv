@@ -63,3 +63,13 @@ CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(
 	m_state = assign.m_state;
 	return (*this);
 }
+
+void	CgiModule::InternalCgiRequestData::setState(const t_CgiRequestState state)
+{
+	m_state = state;
+}
+
+CgiModule::InternalCgiRequestData::t_CgiRequestState	CgiModule::InternalCgiRequestData::getState() const
+{
+	return (m_state);
+}

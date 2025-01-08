@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
+/*   test2.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 14:29:08 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/08 15:58:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
+// Project headers
 # include "../CgiModule/CgiModule.hpp"
+
+// test helpers
+# include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
 
-# include "TestProtoConnections/A_ProtoRequest.hpp"
+//C++ headers
 # include <iostream>
 
-/************************************ */
-/*										*/	
-/************************************ */
-
+// C headers
 #include <unistd.h>
 
-const char* scriptOutput = "AUTH_TYPE: <not set>\n"
+static const char* scriptOutput = "AUTH_TYPE: <not set>\n"
 "CONTENT_LENGTH: <not set>\n"
 "CONTENT_TYPE: <not set>\n"
 "GATEWAY_INTERFACE: <not set>\n"
@@ -44,7 +43,7 @@ const char* scriptOutput = "AUTH_TYPE: <not set>\n"
 "SERVER_SOFTWARE: <not set>\n";
 
 
-int main(void)
+int TestPart2(int testNumber)
 {
 	std::cout << "Test1: ";
 	try
@@ -163,6 +162,5 @@ int main(void)
 		std::cerr << "	FAILED: " << e.what() << '\n';
 	}	
 
-	return (0);
+	return (testNumber);
 }
-

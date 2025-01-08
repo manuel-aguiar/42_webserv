@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 14:55:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 15:36:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ void	CgiModule::cancelRequest(CgiRequestData& request)
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED);
 			break ;
 		}
+		case InternalCgiRequestData::E_CGI_STATE_IDLE:
+		case InternalCgiRequestData::E_CGI_STATE_CANCELLED:
+			assert(false);
 	}
 }
 
