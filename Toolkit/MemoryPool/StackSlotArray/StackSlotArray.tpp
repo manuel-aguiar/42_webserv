@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 11:21:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 11:27:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:21:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ class StackSlotArray
 
 		~StackSlotArray() {};
 
-		pointer allocate()
+		pointer allocate(size_t n = 1)
 		{
+			(void)n;
 			assert(m_elemCount < Size);
 			if (m_freeSlot != NULL)
 			{
@@ -153,6 +154,11 @@ class StackSlotArray
 		size_t size() const
 		{
 			return m_elemCount;
+		}
+
+		size_t capacity() const
+		{
+			return Size;
 		}
 
 	private:

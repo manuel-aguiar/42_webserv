@@ -63,8 +63,9 @@ class HeapSlotArray
 
 		~HeapSlotArray() {};
 
-		pointer allocate()
+		pointer allocate(size_t n = 1)
 		{
+			(void)n;
 			assert(m_elemCount < m_elements.capacity());
 			if (m_freeSlot != NULL)
 			{
@@ -74,9 +75,7 @@ class HeapSlotArray
 				return result;
 			}
 			else
-			{
 				return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
-			}
 		}
 
 		void deallocate(pointer p)
@@ -155,6 +154,11 @@ class HeapSlotArray
 		size_t size() const
 		{
 			return (m_elemCount);
+		}
+
+		size_t capacity() const
+		{
+			return (m_elements.capacity());
 		}
 
 		const Allocator& getAllocator() const
