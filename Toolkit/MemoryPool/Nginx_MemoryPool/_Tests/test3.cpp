@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 22:03:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:14:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 // Project headers
 # include "../Nginx_MemoryPool.hpp"
-# include "../Nginx_PoolAllocator.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "NginxMemPool_TestCounter.hpp"
 # include "NginxAllocator_TestCounter.tpp"
 

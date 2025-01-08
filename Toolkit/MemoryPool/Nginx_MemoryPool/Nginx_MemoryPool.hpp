@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 16:21:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 22:26:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 # define NGINX_MEMORYPOOL_HPP
 
 // C++ headers
-# include <limits>
 # include <climits>
 # include <cstddef>
-# include <exception>
-# include <stdexcept>
-# include <iostream>
 # include <cassert>
+# include <new>
 
 
 typedef unsigned char t_byte;
@@ -44,44 +41,36 @@ class Nginx_MemoryPool
         void                        destroy();
 
     private:
-
+        // forward declarations
         class                       Nginx_MPool_Block;
-
-
         typedef struct s_bigBlock
         {
-            void*               m_data;
             struct s_bigBlock*  m_nextBlock;
         }   t_bigBlock;
 
+
+        //member variables
         Nginx_MPool_Block*     m_active;
         t_bigBlock*            m_bigBlocks;
         const size_t           m_blockSize;
-
 
         //block class of which the pool is made, private to pool
         class Nginx_MPool_Block
         {
             public:
 
-                static Nginx_MPool_Block*   create(size_t blockSize, size_t startingBlocks = 1);
-                static void                 destroy(Nginx_MPool_Block**   poolPlace);
-                static void                 reset(Nginx_MPool_Block** pool, int maxBlocks = INT_MAX);
-                static void*                allocate(Nginx_MPool_Block**   poolPlace, size_t size, size_t alignment, size_t blockSizeAgainLol);
-                static Nginx_MPool_Block*   allocateNewBlock(size_t blockSize, int blockId);
+                static Nginx_MPool_Block*   create(size_t blockSize, size_t blockId);
+                void                        destroy();
+                void                        reset();
 
-                //leting variables public, whole class is private to memorypool anyways
-                void*                       m_data;
                 t_byte*                     m_freePosition;
                 t_byte*                     m_endOfBlock;
                 Nginx_MPool_Block*          m_nextBlock;
                 int                         m_blockId;
-
-
+                
             private:
                 Nginx_MPool_Block();
                 ~Nginx_MPool_Block();
-                Nginx_MPool_Block(size_t dummy);
                 Nginx_MPool_Block(const Nginx_MPool_Block& block);
                 Nginx_MPool_Block& operator=(const Nginx_MPool_Block& block);
         };
@@ -95,6 +84,9 @@ class Nginx_MemoryPool
 
         static t_byte*      mf_allignedAlloc(void *byte, size_t alignment);
         void                mf_deleteBigBlocks();
+        void                mf_AddNewBlock();
+        void*               mf_AllocateBigBlock(size_t size);
+        void*               mf_AllocateSmall(size_t size, size_t alignment);             
 
 };
 

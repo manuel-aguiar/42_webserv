@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   NginxAllocator_TestCounter.hpp                     :+:      :+:    :+:   */
+/*   NginxAllocator_TestCounter.tpp                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 17:22:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 17:35:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:14:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define NGINXALLOCATOR_TESTCOUNTER_HPP
 
-# include "../Nginx_PoolAllocator.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "NginxMemPool_TestCounter.hpp"
 
 template <typename T>

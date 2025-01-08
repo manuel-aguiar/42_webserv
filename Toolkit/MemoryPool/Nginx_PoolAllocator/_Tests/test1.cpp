@@ -6,16 +6,21 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:14:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 23:05:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// C++ headers
 # include <exception>
 # include <stdexcept>
 # include <iostream>
+# include <vector>
 
-# include "../Nginx_MemoryPool.hpp"
+// Project headers
+# include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+# include "../../HeapFixedBlock/HeapFixedBlock.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+# include "../../../_Tests/test.h"
 
 int TestPart1(int testNumber)
 {
@@ -23,16 +28,15 @@ int TestPart1(int testNumber)
     try
     {
         std::cout << "TEST " << testNumber++ << ": ";
-        Nginx_MemoryPool pool(4096, 1);
+        HeapFixedBlock pool(4096);
         
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
         //Nginx_MemoryPool copy(pool); // fails as expected, private copy constructor
 
-        Nginx_MemoryPool pool2(4096, 1);
+        HeapFixedBlock pool2(4096);
         // pool2 = pool1; // fails as expected, private assignment operator
          
         pool.reset();       //all good
-        pool.destroy();     // all good
 
         void* ptr = pool.allocate(100);
         (void)ptr;
@@ -45,6 +49,30 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-    
+
+    try
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
+        HeapFixedBlock pool(4096);
+        
+        Nginx_PoolAllocator<int, HeapFixedBlock> alloc(pool);
+        std::vector<int, Nginx_PoolAllocator<int, HeapFixedBlock> > vec(alloc);
+        
+        vec.reserve(100);
+
+        if (pool.getFreeSpace() != 4096 - 100 * sizeof(int))
+            throw std::runtime_error("free space is not correct, got: " 
+            + to_string(pool.getFreeSpace()) + " expected: " 
+            + to_string(4096 - 100 * sizeof(int)) + '\n'
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
     return (testNumber);
 }

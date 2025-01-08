@@ -5,36 +5,26 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:13:38 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/08 00:03:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-# include <exception>
-# include <stdexcept>
-# include <iostream>
-
-# include "../Nginx_MemoryPool.hpp"
-# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-
+//C++ headers
+#include <iostream>
 
 extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
-extern int TestPart3(int testNumber);
 
 int main(void)
 {
     int testNumber = 1;
-    
 
-	std::cout << "\n*************** Nginx_MemoryPool tests ***************" << std::endl;
+	std::cout << "\n*************** FixedBlock_PoolAllocator tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-	testNumber = TestPart2(testNumber);
-    testNumber = TestPart3(testNumber);
 
-    std::cout << "******************************************************\n" << std::endl;
+	std::cout << "**********************************************************\n" << std::endl;
 
     return 0;
 }
+
