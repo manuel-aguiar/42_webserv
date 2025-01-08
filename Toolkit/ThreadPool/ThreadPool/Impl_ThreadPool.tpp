@@ -15,7 +15,7 @@
 # define IMPL_THREADPOOL_TPP
 
 // Project headers
-# include "ThreadPool.hpp"
+# include "../ThreadPool.hpp"
 
 // C headers
 # include <pthread.h>

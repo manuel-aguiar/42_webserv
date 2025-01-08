@@ -14,7 +14,7 @@
 
 # define IMPL_TASKQUEUE_TPP
 
-#include "../ThreadPool/ThreadPool.hpp"
+#include "../ThreadPool.hpp"
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 ThreadPool<ThreadBacklog, TaskBacklog>::TaskQueue::TaskQueue()

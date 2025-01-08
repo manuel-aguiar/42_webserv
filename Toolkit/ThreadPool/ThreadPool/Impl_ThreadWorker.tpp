@@ -15,7 +15,7 @@
 # define IMPL_THREADWORKER_TPP
 
 // Project headers
-# include "../ThreadPool/ThreadPool.hpp"
+# include "../ThreadPool.hpp"
 # include "../ThreadTask/IThreadTask.hpp"
 # include "Impl_TaskQueue.tpp"
 
