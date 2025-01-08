@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 18:11:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:55:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,120 +22,92 @@ CgiRequestData*	CgiModule::acquireRequestData()
 		return (NULL);
 	data = m_availableRequestData.back();
 	m_availableRequestData.pop_back();
+
+	data->setState(InternalCgiRequestData::E_CGI_STATE_POPULATING);
+	
 	return (data);
 }
 
 void	CgiModule::executeRequest(CgiRequestData& request)
 {
-/*
-	// Debug
-	#ifndef NDEBUG
-
-		// assert the requestdata belongs to this CgiModule
-
-		bool test = false;
-		for (List<InternalCgiRequestData>::iterator iter = m_allRequestData.begin(); 
-			iter != m_allRequestData.end(); 
-			++iter)
-		{
-			if (&request == &(*iter))
-			{
-				test = true;
-				break;
-			}
-		}
-		CUSTOM_ASSERT(test,
-			"CgiModule::executeRequest : CgiRequestedData is not managed by this CgiModule");
-		
-		// assert this request is not in the waiting queue already
-
-		test = true;
-		for (List<InternalCgiRequestData*>::iterator iter = m_executionQueue.begin(); 
-			iter != m_executionQueue.end(); 
-			++iter)
-		{
-			if (&request == (*iter))
-			{
-				test = false;
-				break;
-			}
-		}
-		CUSTOM_ASSERT(test,
-			"CgiModule::executeRequest : this CgiRequestedData is already queued for execution");
-		
-		// assert this request is not being executed already right now
-		test = true;
-		for (DynArray<InternalCgiWorker>::iterator iter = m_allWorkers.begin(); 
-			iter != m_allWorkers.end(); 
-			++iter)
-		{
-			if (&request == (*iter).accessCurRequestData())
-			{
-				test = false;
-				break;
-			}
-		}
-		CUSTOM_ASSERT(test,
-			"CgiModule::executeRequest : this CgiRequestedData is already being executed");
-	#endif
-
-*/
-
 	InternalCgiRequestData*					requestData;
 	InternalCgiWorker* 						worker;
-	List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator 
-											pendingIter;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
+	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_POPULATING);
+
 	if (m_availableWorkers.size() == 0)
 	{
+		requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
 		m_executionQueue.push_back(requestData);
-		pendingIter = --m_executionQueue.end();
-		requestData->setQueuePosition(pendingIter);
 		return ;
 	}
 	worker = m_availableWorkers.back();
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
-	requestData->setExecutor(worker);
-	worker->execute(*requestData);
+	
+	mf_execute(*worker, *requestData);
 }
+/*
+	There are 3 valid scenarios, for 3 request states:
 
+		Request is Populating: not in any queue (neither available or executing)
+			-> can safely reset and put back in the available list right away
+			
+		Request is Executing: worker is executing the request, not in any queue
+			-> forced close the worker
+			-> closed worker will return the request to the available list when it can
+
+		Request is Queued: request is in the execution queue
+			-> can't remove from the queue, it is in the middle
+			-> we mark it as cancelled
+			-> as workers try to get requests, they check the cancelled ones and remove them from
+				the queue back to the available list
+				(++ we don't iterate and move all elements in the middle)
+				(-- someone may not be able to subscribe, even though there is a dead request in the queue
+				it must wait a worker processes it)
+
+	There are 2 invalid scenarios that are programming errors:
+
+		Request is Idle:
+			-> THIS IS A PROGRAMMING ERROR AT THE CGI MODULE LEVEL 	-> ASSERT
+
+		Request is Cancelled:
+			-> THIS IS A PROGRAMMING ERROR AT THE USER LEVEL		-> ASSERT
+				(not problem with double cancelling, but why do that?)
+
+*/
 void	CgiModule::cancelRequest(CgiRequestData& request)
 {
-/*
-	// Debug
-	#ifndef NDEBUG
-
-
-		bool test = false;
-		for (List<InternalCgiRequestData>::iterator iter = m_allRequestData.begin(); 
-			iter != m_allRequestData.end(); 
-			++iter)
-		{
-			if (&(*iter) == &request)
-			{
-				test = true;
-				break;
-			}
-		}
-		CUSTOM_ASSERT(test,
-			"CgiModule::cancelRequest : CgiRequestedData is not managed by this CgiModule");
-	#endif
-*/	
-
-	// implementation
 	InternalCgiRequestData* requestData;
 	InternalCgiWorker*		worker;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
-	worker = requestData->accessExecutor();
 
-	if (worker)
-		worker->forcedClose();
+	//two asserts, so we know which one blows up
+	assert(requestData->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE);
+	assert(requestData->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED);
 
-	mf_returnRequestData(*requestData);
+	switch (requestData->getState())
+	{
+		case InternalCgiRequestData::E_CGI_STATE_POPULATING:
+		{
+			mf_returnRequestData(*requestData);
+			break ;
+		}
+		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
+		{
+			worker = requestData->accessExecutor();
+			worker->forcedClose();
+			break ;
+		}
+		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
+		{
+			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED);
+			break ;
+		}
+	}
 }
 
 void	CgiModule::addInterpreter(const std::string& extension, const std::string& path)

@@ -36,16 +36,16 @@ class CgiModule::InternalCgiWorker
 		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 
 
-		void    execute(InternalCgiRequestData& request);
-		void    reset();
+		void    					execute(InternalCgiRequestData& request);
+		void    					reset();
 		
-		void	cleanClose();
-		void	forcedClose();
+		void						cleanClose();
+		void						forcedClose();
 
-		InternalCgiRequestData*				accessCurRequestData();
+		InternalCgiRequestData*		accessCurRequestData();
 
 	private:
-		InternalCgiRequestData*				m_curRequestData;
+		InternalCgiRequestData*		m_curRequestData;
 
 		DynArray<std::string>		m_envStr;
 		DynArray<char *>			m_envPtr;
@@ -63,6 +63,7 @@ class CgiModule::InternalCgiWorker
 		void						mf_executeChild();
 		bool						mf_prepareExecve();
 		void						mf_closeFd(t_fd& fd);
+		void						mf_closeAllFds();
 
 };
 

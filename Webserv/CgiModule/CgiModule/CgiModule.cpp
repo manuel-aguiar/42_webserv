@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 18:11:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 13:56:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
 	m_backlog(backlog),
 	m_busyWorkerCount(0),
 	m_allWorkers(workers),
-	m_allRequestData(workers),
-	m_availableWorkers(backlog),
+	m_allRequestData(backlog),
+	m_availableWorkers(workers),
 	m_availableRequestData(backlog),
-	m_executionQueue(MPool_FixedElem<InternalCgiRequestData*>(m_backlog)),
+	m_executionQueue(backlog),
 	m_globals(globals)
 {
 	// prepare workers

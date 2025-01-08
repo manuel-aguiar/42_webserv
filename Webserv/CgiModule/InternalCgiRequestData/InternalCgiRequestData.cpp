@@ -14,33 +14,17 @@
 
 CgiModule::InternalCgiRequestData::InternalCgiRequestData() :
 	CgiRequestData(),
-	m_executor(NULL)
-{
-}
+	m_executor(NULL),
+	m_state(E_CGI_STATE_IDLE) {}
 
-CgiModule::InternalCgiRequestData::~InternalCgiRequestData()
-{
-}
+CgiModule::InternalCgiRequestData::~InternalCgiRequestData() {}
 
-CgiModule::InternalCgiRequestData::InternalCgiRequestData(const InternalCgiRequestData &copy) :
-	CgiRequestData(copy),
-	m_executor(copy.m_executor)
-{
-}
-
-CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(const InternalCgiRequestData &assign)
-{
-	if (this != &assign)
-		CgiRequestData::operator=(assign);
-	m_executor = assign.m_executor;
-	return (*this);
-}
 
 void	CgiModule::InternalCgiRequestData::reset()
 {
 	CgiRequestData::reset();
 	m_executor = NULL;
-	m_queuePosition = NULL;
+	m_state = E_CGI_STATE_IDLE;
 }
 
 
@@ -48,11 +32,6 @@ void	CgiModule::InternalCgiRequestData::reset()
 void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker* const executor)
 {
 	m_executor = executor;
-}
-
-void	CgiModule::InternalCgiRequestData::setQueuePosition(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& position)
-{
-	m_queuePosition = position;
 }
 
 void	CgiModule::InternalCgiRequestData::setReadFd(const t_fd fd)
@@ -71,8 +50,16 @@ CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor(
 	return (m_executor);
 }
 
-List<CgiModule::InternalCgiRequestData *, MPool_FixedElem<CgiModule::InternalCgiRequestData *> >::iterator&	
-CgiModule::InternalCgiRequestData::accessQueuePosition()
+CgiModule::InternalCgiRequestData::InternalCgiRequestData(const InternalCgiRequestData &copy) :
+	CgiRequestData(copy),
+	m_executor(copy.m_executor),
+	m_state(copy.m_state) {}
+
+CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(const InternalCgiRequestData &assign)
 {
-	return (m_queuePosition);
+	if (this != &assign)
+		CgiRequestData::operator=(assign);
+	m_executor = assign.m_executor;
+	m_state = assign.m_state;
+	return (*this);
 }

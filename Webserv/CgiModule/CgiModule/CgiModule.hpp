@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/26 11:13:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:12:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 // Toolkit Headers
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
+# include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 # include "../../../Toolkit/List/List.hpp"
 # include "../../../Toolkit/MemoryPool/MPool_FixedElem/MPool_FixedElem.hpp"
 
@@ -62,14 +63,14 @@ class CgiModule
 		size_t																		m_backlog;
 		size_t																		m_busyWorkerCount;
 
+		// members fixed in place
 		HeapArray<InternalCgiWorker>												m_allWorkers;
 		HeapArray<InternalCgiRequestData>											m_allRequestData;
 		
-		
-		HeapArray<InternalCgiWorker*>												m_availableWorkers;
-		HeapArray<InternalCgiRequestData*>											m_availableRequestData;
-
-		List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >	m_executionQueue;
+		// queues for available workers, request data and execution
+		HeapCircularQueue<InternalCgiWorker*>										m_availableWorkers;
+		HeapCircularQueue<InternalCgiRequestData*>									m_availableRequestData;
+		HeapCircularQueue<InternalCgiRequestData*>									m_executionQueue;
 
 		std::map<t_extension, t_path>												m_Interpreters;
 
@@ -79,6 +80,7 @@ class CgiModule
 
 		void																		mf_returnWorker(InternalCgiWorker& worker);
 		void																		mf_returnRequestData(InternalCgiRequestData& data);
+		void																		mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

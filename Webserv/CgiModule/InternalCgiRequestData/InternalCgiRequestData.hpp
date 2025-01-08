@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/21 01:18:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:30:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,30 +22,36 @@
 class CgiModule::InternalCgiRequestData : public CgiRequestData
 {
 	public:
+
+		typedef enum
+		{
+			E_CGI_STATE_IDLE,
+			E_CGI_STATE_POPULATING,
+			E_CGI_STATE_QUEUED,
+			E_CGI_STATE_EXECUTING,
+			E_CGI_STATE_CANCELLED
+		} 	t_CgiRequestState;
+
 		InternalCgiRequestData();
 		~InternalCgiRequestData();
-		InternalCgiRequestData(const InternalCgiRequestData &copy);
-		InternalCgiRequestData &operator=(const InternalCgiRequestData &assign);
 
-		void		reset();
+		void					reset();
 
-		void		setExecutor(InternalCgiWorker* const executor);
-		void		setQueuePosition(const List<InternalCgiRequestData*, MPool_FixedElem<InternalCgiRequestData*> >::iterator& position);
-		void		setReadFd(const t_fd fd);
-		void		setWriteFd(const t_fd fd);
+		void					setExecutor(InternalCgiWorker* const executor);
+		void					setReadFd(const t_fd fd);
+		void					setWriteFd(const t_fd fd);
 
-
-		InternalCgiWorker*							
-					accessExecutor();
-		List<InternalCgiRequestData *, MPool_FixedElem<InternalCgiRequestData *> >::iterator&		
-					accessQueuePosition();
-
+		void					setState(const t_CgiRequestState state);
+		t_CgiRequestState		getState() const;
+		
+		InternalCgiWorker*		accessExecutor();
 
 	private:
-		InternalCgiWorker*							m_executor;
+		InternalCgiWorker*		m_executor;
+		t_CgiRequestState		m_state;
 		
-		List<InternalCgiRequestData *, MPool_FixedElem<InternalCgiRequestData *> >::iterator		
-													m_queuePosition;
+		InternalCgiRequestData(const InternalCgiRequestData &copy);
+		InternalCgiRequestData &operator=(const InternalCgiRequestData &assign);
 };
 
 
