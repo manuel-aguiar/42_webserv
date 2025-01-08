@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/06 13:34:02 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/08 16:16:31 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,19 +16,19 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME					=		test.out
 
 # Paths
-ROOT_PATH				=		../../../../Toolkit
+ROOT_PATH				=		../../../..
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/Arrays/StackArray/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/StackArray/_Tests/test1.cpp	\
-								$(SRC_PATH)/Arrays/StackArray/_Tests/test2.cpp	\
+SRCS					=		$(SRC_PATH)/Toolkit/Arrays/StackArray/_Tests/main.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackArray/_Tests/test1.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackArray/_Tests/test2.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		\
-								$(SRC_PATH)/_Tests/testHelpers.cpp		
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDummy.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitBase.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDerived.cpp		\
+								$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp		
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
