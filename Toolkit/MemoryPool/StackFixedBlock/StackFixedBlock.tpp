@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:27 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 22:59:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:24:58 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ class StackFixedBlock
     private:
     
         typedef unsigned char       t_byte;
-        t_byte                      m_array[BlockSize];
         t_byte*                     m_freePosition;
         t_byte*                     m_endOfBlock;
+        t_byte                      m_array[BlockSize];
 
         
         StackFixedBlock(const StackFixedBlock& pool) {(void)pool;}
