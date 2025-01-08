@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 11:29:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:57:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 # define STACKARRAY_TPP
 
-#include <cstring>
 #include <cassert>
 #include <cstddef>
-
+#include <iterator>
 
 template <typename T, size_t ElemCount>
 class StackArray
