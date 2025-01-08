@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 23:42:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:42:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 16:53:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sstream>
 # include <cstdlib>
 # include <iostream>
+# include <vector>
 
 static long fibGood(unsigned int n)
 {
