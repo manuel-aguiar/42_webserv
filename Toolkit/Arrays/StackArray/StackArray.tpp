@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 13:28:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:29:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,8 +240,8 @@ class StackArray
 	private:
 		typedef unsigned char 		t_byte;
 		size_t 						m_size;
-		t_byte  					m_array[sizeof(T) * ElemCount];
         T*                          m_internalArray;
+		t_byte  					m_array[sizeof(T) * ElemCount];
 };
 
 
