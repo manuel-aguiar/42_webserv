@@ -69,7 +69,7 @@ class StackArray
 
 		T& operator[](const size_t index)
 		{
-			assert(index < ElemCount);
+			assert(index < m_size);
 			return (m_internalArray[index]);
 		}
 
