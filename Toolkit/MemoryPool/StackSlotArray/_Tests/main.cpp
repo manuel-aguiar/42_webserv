@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:40:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:36:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:55:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 
 // Project headers
 #include "../StackSlotArray.hpp"
-#include "../../../../_Tests/ToolkitDummy.hpp"
-#include "../../../../_Tests/ToolkitBase.hpp"
-#include "../../../../_Tests/ToolkitDerived.hpp"
+#include "../../../_Tests/ToolkitDummy.hpp"
+#include "../../../_Tests/ToolkitBase.hpp"
+#include "../../../_Tests/ToolkitDerived.hpp"
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
@@ -28,7 +28,7 @@ extern int TestPart2(int testNumber);
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** StackArray tests ***************" << std::endl;
+	std::cout << "\n*************** StackSlotArray tests ***************" << std::endl;
 
 	std::cout << "TEST " << testNumber++ << ": ";
 	try
@@ -37,8 +37,6 @@ int main(void)
 		StackSlotArray<ToolkitDummy, arraySize> array;
 
 		ToolkitDummy* ptr = array.emplace(5);
-
-		std::cout << "pointer is at: " << ptr << std::endl;
 
 		array.destroy(ptr);
 

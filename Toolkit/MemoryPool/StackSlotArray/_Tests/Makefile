@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/06 22:29:26 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/08 16:40:00 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,12 +16,12 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME					=		test.out
 
 # Paths
-ROOT_PATH				=		../../../../../Toolkit
-SRC_PATH				=		$(ROOT_PATH)/.
+ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
+SRC_PATH				=		$(ROOT_PATH)/Toolkit
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/ThreadPool/ThreadPool/StackSlotArray/_Tests/main.cpp	\
+SRCS					=		$(SRC_PATH)/MemoryPool/StackSlotArray/_Tests/main.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

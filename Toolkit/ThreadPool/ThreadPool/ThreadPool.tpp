@@ -15,7 +15,7 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "StackSlotArray/StackSlotArray.hpp"
+# include "../../MemoryPool/StackSlotArray/StackSlotArray.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 
 // ThreadPool headers
