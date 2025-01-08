@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 11:27:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:31:11 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:05:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,8 +196,8 @@ int ListMemPool(int testNumber)
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
-		std::list<StringInPool, Nginx_MPool_FixedElem<StringInPool> > 	std((Nginx_MPool_FixedElem<StringInPool>(memoryPool, 5000)));
-		List<StringInPool, Nginx_MPool_FixedElem<StringInPool> > 		list((Nginx_MPool_FixedElem<StringInPool>(memoryPool, 5000)));
+		std::list<StringInPool, FixedBlock_PoolAllocator<StringInPool> > 	std((FixedBlock_PoolAllocator<StringInPool>(memoryPool, 5000)));
+		List<StringInPool, FixedBlock_PoolAllocator<StringInPool> > 		list((FixedBlock_PoolAllocator<StringInPool>(memoryPool, 5000)));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -231,8 +231,8 @@ int ListMemPool(int testNumber)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		std::list<StringInPool, Nginx_MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
-		List<StringInPool, Nginx_MPool_FixedElem<StringInPool> >::iterator it = list.begin();
+		std::list<StringInPool, FixedBlock_PoolAllocator<StringInPool> >::iterator iter = std.begin();
+		List<StringInPool, FixedBlock_PoolAllocator<StringInPool> >::iterator it = list.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -255,9 +255,9 @@ int ListMemPool(int testNumber)
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
 
-		MPool_FixedElem<StringInPool> alloc(200);
-		std::list<StringInPool, MPool_FixedElem<StringInPool> > std(alloc);
-		List<StringInPool, MPool_FixedElem<StringInPool> > 		list(alloc);
+		FixedBlock_MemoryPool<StringInPool> alloc(200);
+		std::list<StringInPool, FixedBlock_MemoryPool<StringInPool> > std(alloc);
+		List<StringInPool, FixedBlock_MemoryPool<StringInPool> > 		list(alloc);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -268,8 +268,8 @@ int ListMemPool(int testNumber)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		std::list<StringInPool, MPool_FixedElem<StringInPool> >::iterator iter = std.begin();
-		List<StringInPool, MPool_FixedElem<StringInPool> >::iterator it = list.begin();
+		std::list<StringInPool, FixedBlock_MemoryPool<StringInPool> >::iterator iter = std.begin();
+		List<StringInPool, FixedBlock_MemoryPool<StringInPool> >::iterator it = list.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -290,8 +290,8 @@ int ListMemPool(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 
-		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
-		List<int, Nginx_MPool_FixedElem<int> > 			list(Nginx_MPool_FixedElem<int>(memoryPool, 100));
+		std::list<int, FixedBlock_PoolAllocator<int> > 	std(FixedBlock_PoolAllocator<int>(memoryPool, 100));
+		List<int, FixedBlock_PoolAllocator<int> > 			list(FixedBlock_PoolAllocator<int>(memoryPool, 100));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -305,8 +305,8 @@ int ListMemPool(int testNumber)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		std::list<int, Nginx_MPool_FixedElem<int> >::iterator iter = std.begin();
-		List<int, Nginx_MPool_FixedElem<int> >::iterator it = list.begin();
+		std::list<int, FixedBlock_PoolAllocator<int> >::iterator iter = std.begin();
+		List<int, FixedBlock_PoolAllocator<int> >::iterator it = list.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -327,8 +327,8 @@ int ListMemPool(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 
-		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
-		List<int, Nginx_MPool_FixedElem<int> > 			list(Nginx_MPool_FixedElem<int>(memoryPool, 100));
+		std::list<int, FixedBlock_PoolAllocator<int> > 	std(FixedBlock_PoolAllocator<int>(memoryPool, 100));
+		List<int, FixedBlock_PoolAllocator<int> > 			list(FixedBlock_PoolAllocator<int>(memoryPool, 100));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -342,8 +342,8 @@ int ListMemPool(int testNumber)
 		if (std.size() != list.size())
 			throw std::logic_error("size mismatch");
 
-		std::list<int, Nginx_MPool_FixedElem<int> >::iterator iter = std.begin();
-		List<int, Nginx_MPool_FixedElem<int> >::iterator it = list.begin();
+		std::list<int, FixedBlock_PoolAllocator<int> >::iterator iter = std.begin();
+		List<int, FixedBlock_PoolAllocator<int> >::iterator it = list.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -362,7 +362,7 @@ try
 		std::cout << "TEST " << testNumber++ << ": ";
 
 
-		Nginx_MPool_FixedElem<int> fixedElem(memoryPool, 300);
+		FixedBlock_PoolAllocator<int> fixedElem(memoryPool, 300);
 		Nginx_PoolAllocator_FixedElem<int> alloc(fixedElem);
 		
 		List<int, Nginx_PoolAllocator_FixedElem<int> > first(alloc);
@@ -424,7 +424,7 @@ try
 		std::cout << "TEST " << testNumber++ << ": ";
 
 
-		Nginx_MPool_FixedElem<int> fixedElem(memoryPool, 300);
+		FixedBlock_PoolAllocator<int> fixedElem(memoryPool, 300);
 		Nginx_PoolAllocator_FixedElem<int> alloc(fixedElem);
 		
 		List<int, Nginx_PoolAllocator_FixedElem<int> > first(alloc);
@@ -456,7 +456,7 @@ try
 
 		
 		//Copy starts by alllocating somewhere else
-		Nginx_MPool_FixedElem<int> fixedElem2(memoryPool, 100);
+		FixedBlock_PoolAllocator<int> fixedElem2(memoryPool, 100);
 		Nginx_PoolAllocator_FixedElem<int> alloc2(fixedElem2);
 
 		
@@ -549,10 +549,10 @@ try
 		std::cout << "TEST " << testNumber++ << ": ";
 
 
-		Nginx_MPool_FixedElem<ToolkitDummy> fixedElem(memoryPool, 200);
+		FixedBlock_PoolAllocator<ToolkitDummy> fixedElem(memoryPool, 200);
 
-		List<ToolkitDummy, Nginx_MPool_FixedElem<ToolkitDummy> > first(fixedElem);
-		List<ToolkitDummy, Nginx_MPool_FixedElem<ToolkitDummy> > second(fixedElem);
+		List<ToolkitDummy, FixedBlock_PoolAllocator<ToolkitDummy> > first(fixedElem);
+		List<ToolkitDummy, FixedBlock_PoolAllocator<ToolkitDummy> > second(fixedElem);
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -565,8 +565,8 @@ try
 		if (first.getAllocator() != second.getAllocator())
 			throw std::logic_error("allocator mismatch");
 
-		List<ToolkitDummy, Nginx_MPool_FixedElem<ToolkitDummy> >::iterator it = second.begin();
-		List<ToolkitDummy, Nginx_MPool_FixedElem<ToolkitDummy> >::iterator iter = first.begin();
+		List<ToolkitDummy, FixedBlock_PoolAllocator<ToolkitDummy> >::iterator it = second.begin();
+		List<ToolkitDummy, FixedBlock_PoolAllocator<ToolkitDummy> >::iterator iter = first.begin();
 		for ( ; it != second.end() && iter != first.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
@@ -575,7 +575,7 @@ try
 				throw std::logic_error("same pointer");
 		}
 
-		List<ToolkitDummy, Nginx_MPool_FixedElem<ToolkitDummy> > copy(second); /// should allocate on the same memory pool
+		List<ToolkitDummy, FixedBlock_PoolAllocator<ToolkitDummy> > copy(second); /// should allocate on the same memory pool
 
 		it = copy.begin();
 		iter = first.begin();

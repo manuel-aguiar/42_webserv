@@ -21,7 +21,7 @@
 
 
 template <typename T>
-class MPool_FixedElem
+class FixedBlock_MemoryPool
 {
 	public:
 
@@ -40,29 +40,29 @@ class MPool_FixedElem
 		typedef ptrdiff_t       difference_type;
 
 		template <typename U> struct rebind {
-			typedef MPool_FixedElem<U> other;
+			typedef FixedBlock_MemoryPool<U> other;
 		};
 
-		MPool_FixedElem(size_t numElems) :
+		FixedBlock_MemoryPool(size_t numElems) :
 			m_elements(0),
 			m_elemCount(0),
 			m_maxElems(numElems),
 			m_freeSlot(NULL) {}
 
-		MPool_FixedElem(const MPool_FixedElem& copy)  :
+		FixedBlock_MemoryPool(const FixedBlock_MemoryPool& copy)  :
 			m_elements(0),
 			m_elemCount(copy.m_elemCount),
 			m_maxElems(copy.m_maxElems),
 			m_freeSlot(copy.m_freeSlot) {}
 
 		template <class U> 
-		MPool_FixedElem(const MPool_FixedElem<U>& rebind) :
+		FixedBlock_MemoryPool(const FixedBlock_MemoryPool<U>& rebind) :
 			m_elements(0),
 			m_elemCount(0),
 			m_maxElems(rebind.m_maxElems),
 			m_freeSlot(NULL) {}
 
-		~MPool_FixedElem() {}
+		~FixedBlock_MemoryPool() {}
 
 		pointer address(reference x) const
 		{
@@ -149,9 +149,9 @@ class MPool_FixedElem
 		size_t 						m_maxElems;
 		t_slot_pointer 				m_freeSlot;
 
-		bool operator==(const MPool_FixedElem& other) const
+		bool operator==(const FixedBlock_MemoryPool& other) const
 		{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
-		bool operator!=(const MPool_FixedElem& other) const
+		bool operator!=(const FixedBlock_MemoryPool& other) const
 		{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 };
 

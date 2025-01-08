@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/06 00:30:31 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/08 00:08:22 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,10 +20,12 @@ ROOT_PATH				=		../../../../Toolkit
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-
 # Sources
-SRCS					=		$(SRC_PATH)/MemoryPool/MPool_FixedElem/_Tests/main.cpp	\
-								$(SRC_PATH)/MemoryPool/MPool_FixedElem/_Tests/test1.cpp	\
+SRCS					=		$(SRC_PATH)/MemoryPool/FixedBlock_PoolAllocator/_Tests/main.cpp	\
+								$(SRC_PATH)/MemoryPool/FixedBlock_PoolAllocator/_Tests/test1.cpp	\
+								\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
+								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
@@ -52,7 +54,7 @@ test: $(NAME)
 	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
 
 clean:
-	rm -rf $(OBJS) $(NAME) vgcore*
+	rm -rf $(NAME) vgcore*
 
 fclean: clean
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 23:51:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:11:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 // Project headers
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../Nginx_MPool_FixedElem/Nginx_MPool_FixedElem.hpp"
+# include "../../FixedBlock_PoolAllocator/FixedBlock_PoolAllocator.hpp"
 # include "../../../_Tests/test.h"
 
 int TestPart1(int testNumber)
@@ -123,9 +123,9 @@ int TestPart1(int testNumber)
 
         StackFixedBlock<poolSize> pool;
         
-        Nginx_MPool_FixedElem<std::string, StackFixedBlock<poolSize> > alloc(pool, 100);
+        FixedBlock_PoolAllocator<std::string, StackFixedBlock<poolSize> > alloc(pool, 100);
 
-        std::list<std::string, Nginx_MPool_FixedElem<std::string, StackFixedBlock<poolSize> > > list(alloc);
+        std::list<std::string, FixedBlock_PoolAllocator<std::string, StackFixedBlock<poolSize> > > list(alloc);
         
 
         if (pool.getFreeSpace() != poolSize)

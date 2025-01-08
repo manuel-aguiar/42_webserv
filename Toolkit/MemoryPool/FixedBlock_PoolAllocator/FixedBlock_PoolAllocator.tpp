@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Nginx_MPool_FixedElem.tpp                          :+:      :+:    :+:   */
+/*   FixedBlock_PoolAllocator.tpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -28,7 +28,7 @@
 */
 
 template <typename T, typename MemoryPool>
-class Nginx_MPool_FixedElem
+class FixedBlock_PoolAllocator
 {
 	public:
 
@@ -48,28 +48,28 @@ class Nginx_MPool_FixedElem
 
 		template <typename U>
 		struct rebind {
-			typedef Nginx_MPool_FixedElem<U, MemoryPool> other;
+			typedef FixedBlock_PoolAllocator<U, MemoryPool> other;
 		};
 
-		Nginx_MPool_FixedElem(MemoryPool& pool, size_t numElems) :
+		FixedBlock_PoolAllocator(MemoryPool& pool, size_t numElems) :
 			m_elements(0, Nginx_PoolAllocator<s_Slot, MemoryPool>(pool)),
 			m_elemCount(0),
 			m_maxElems(numElems),
 			m_freeSlot(NULL) {}
 
-		Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem& copy) :
+		FixedBlock_PoolAllocator(const FixedBlock_PoolAllocator& copy) :
 			m_elements(0, copy.m_elements.getAllocator()),
 			m_elemCount(copy.m_elemCount),
 			m_maxElems(copy.m_maxElems),
 			m_freeSlot(copy.m_freeSlot) {}
 			
-		template <class U> Nginx_MPool_FixedElem(const Nginx_MPool_FixedElem<U, MemoryPool>& rebind) :
+		template <class U> FixedBlock_PoolAllocator(const FixedBlock_PoolAllocator<U, MemoryPool>& rebind) :
 			m_elements(0, rebind.m_elements.getAllocator()),
 			m_elemCount(0),
 			m_maxElems(rebind.m_maxElems),
 			m_freeSlot(NULL) {}
 
-		~Nginx_MPool_FixedElem() {};
+		~FixedBlock_PoolAllocator() {};
 
 		pointer address(reference x) const
 		{
@@ -158,10 +158,10 @@ class Nginx_MPool_FixedElem
 		size_t 											m_maxElems;
 		t_slot_pointer 									m_freeSlot;
 
-		bool operator==(const Nginx_MPool_FixedElem& other) const
+		bool operator==(const FixedBlock_PoolAllocator& other) const
 		{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
 
-		bool operator!=(const Nginx_MPool_FixedElem& other) const
+		bool operator!=(const FixedBlock_PoolAllocator& other) const
 		{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 
 };

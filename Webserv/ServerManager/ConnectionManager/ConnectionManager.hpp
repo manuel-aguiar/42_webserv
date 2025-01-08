@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConnectionManager.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 15:39:51 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/08 00:03:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class ConnectionManager
 		DynArray<Connection, Nginx_MemoryPool>						m_connections;
 		DynArray<Event, Nginx_MemoryPool>							m_readEvents;
 		DynArray<Event, Nginx_MemoryPool>							m_writeEvents;
-		List<Connection*, Nginx_MPool_FixedElem<Connection*> >		m_spareConnections;
+		List<Connection*, FixedBlock_PoolAllocator<Connection*> >		m_spareConnections;
 
 		Globals*													m_globals;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pythonCgi.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/05 12:43:49 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/12 10:46:41 by codespace        ###   ########.fr       */
+/*   Updated: 2025/01/08 00:05:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ class PythonCgi
 
         typedef std::basic_string<char, std::char_traits<char>, Nginx_PoolAllocator<char> > t_poolString;
 
-        typedef std::map<t_poolString, PyCgiEnv, std::less<t_poolString>, MPool_FixedElem<std::pair<t_poolString, PyCgiEnv> > >   mapHeaderToEnum;
+        typedef std::map<t_poolString, PyCgiEnv, std::less<t_poolString>, FixedBlock_MemoryPool<std::pair<t_poolString, PyCgiEnv> > >   mapHeaderToEnum;
         typedef mapHeaderToEnum::iterator                                                                     mapHeaderToEnum_Iter;
-        typedef std::map<PyCgiEnv, t_poolString*, std::less<PyCgiEnv>, MPool_FixedElem<std::pair<PyCgiEnv, t_poolString*> > > mapEnumToHeader;
+        typedef std::map<PyCgiEnv, t_poolString*, std::less<PyCgiEnv>, FixedBlock_MemoryPool<std::pair<PyCgiEnv, t_poolString*> > > mapEnumToHeader;
         typedef mapEnumToHeader ::iterator                                                                     mapEnumToHeader_Iter;
 
 

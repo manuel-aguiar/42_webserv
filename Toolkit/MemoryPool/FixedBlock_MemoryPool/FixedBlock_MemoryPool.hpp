@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   FixedBlock_MemoryPool.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/05 23:19:16 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/08 00:09:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//C++ headers
-#include <iostream>
 
-extern int TestPart1(int testNumber);
 
-int main(void)
-{
-    int testNumber = 1;
+#ifndef FIXEDBLOCK_MEMORYPOOL_H
 
-	std::cout << "\n*************** Nginx_MPool_FixedElem tests ***************" << std::endl;
-	
-    testNumber = TestPart1(testNumber);
+# define FIXEDBLOCK_MEMORYPOOL_H
 
-	std::cout << "**********************************************************\n" << std::endl;
+# include <limits.h>
+# include <stddef.h>
+# include <cstring>
+# include <iostream>
 
-    return 0;
-}
+template <typename T>
+class FixedBlock_MemoryPool;
 
+# include "FixedBlock_MemoryPool.tpp"
+
+#endif

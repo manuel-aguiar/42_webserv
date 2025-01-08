@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MPool_FixedElements.hpp                            :+:      :+:    :+:   */
+/*   FixedBlock_PoolAllocator.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/04 11:21:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/07 23:43:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef NGINX_MPOOL_FIXEDELEM_HPP
 
+# define NGINX_MPOOL_FIXEDELEM_HPP
 
-#ifndef MPOOL_FIXEDELEM_H
-# define MPOOL_FIXEDELEM_H
-
+// C++ headers
 # include <limits.h>
 # include <stddef.h>
 # include <cstring>
 # include <iostream>
 
-template <typename T>
-class MPool_FixedElem;
+# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 
-# include "MPool_FixedElem.tpp"
+// Project headers
+template <typename T, typename MemoryPool = Nginx_MemoryPool>
+class FixedBlock_PoolAllocator;
+
+# include "FixedBlock_PoolAllocator.tpp"
 
 #endif

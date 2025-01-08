@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Nginx_MPool_FixedElem.hpp                          :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 23:43:12 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/08 00:07:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NGINX_MPOOL_FIXEDELEM_HPP
+#include "../FixedBlock_MemoryPool.hpp"
+#include <list>
 
-# define NGINX_MPOOL_FIXEDELEM_HPP
+#include "../../../_Tests/test.h"
 
-// C++ headers
-# include <limits.h>
-# include <stddef.h>
-# include <cstring>
-# include <iostream>
+extern int TestPart1(int testNumber);
 
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+int main(void)
+{
+    int testNumber = 1;
 
-// Project headers
-template <typename T, typename MemoryPool = Nginx_MemoryPool>
-class Nginx_MPool_FixedElem;
+	std::cout << "\n*************** FixedBlock MemoryPool tests ***************" << std::endl;
+	
+    testNumber = TestPart1(testNumber);
 
-# include "Nginx_MPool_FixedElem.tpp"
+	std::cout << "*****************************************************\n" << std::endl;
 
-#endif
+    return 0;
+}
