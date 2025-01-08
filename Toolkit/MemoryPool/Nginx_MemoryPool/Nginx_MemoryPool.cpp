@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 22:26:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:28:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,14 +156,6 @@ t_byte*   Nginx_MemoryPool::mf_allignedAlloc(void *byte, size_t alignment)
 }
 
 //private, no copies
-
-
-
 Nginx_MemoryPool::Nginx_MemoryPool(const Nginx_MemoryPool& copy) : m_blockSize(copy.m_blockSize) {(void)copy;}
 Nginx_MemoryPool& Nginx_MemoryPool::operator=(const Nginx_MemoryPool& assign) {(void)assign; return (*this);}
 Nginx_MemoryPool::Nginx_MemoryPool() : m_active(NULL), m_bigBlocks(NULL), m_blockSize(0) {}
-
-
-
-// helper function, looks weird here
-

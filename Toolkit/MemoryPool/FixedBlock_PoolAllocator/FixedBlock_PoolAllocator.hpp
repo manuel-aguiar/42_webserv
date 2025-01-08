@@ -23,7 +23,7 @@
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 
 // Project headers
-template <typename T, typename MemoryPool = Nginx_MemoryPool>
+template <typename T, typename MemoryPool>
 class FixedBlock_PoolAllocator;
 
 # include "FixedBlock_PoolAllocator.tpp"

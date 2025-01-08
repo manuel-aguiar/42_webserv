@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:03:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:20:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 # include <list>
 # include <set>
 
-# include "../Nginx_MemoryPool.hpp"
-# include "../Nginx_PoolAllocator.hpp"
-# include "../Nginx_MPool_FixedElem/Nginx_MPool_FixedElem.tpp"
-# include "../../../_Tests/test.h"
+# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+# include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+# include "../FixedBlock_PoolAllocator/FixedBlock_PoolAllocator.hpp"
+# include "../../_Tests/test.h"
 
 /*
 
@@ -186,10 +186,10 @@ int main(void)
             and then it keeps track of the slots as they are "allocated and freed" by the std::list
         */
         
-        FixedBlock_PoolAllocator<int> alloc(pool, 10);
+        FixedBlock_PoolAllocator<int, Nginx_MemoryPool> alloc(pool, 10);
 
         // create a list of ints, that uses the fixed block allocator
-        std::list<int, FixedBlock_PoolAllocator<int> > list(alloc);
+        std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > list(alloc);
 
         list.push_back(1);
         list.push_back(2);
@@ -202,7 +202,7 @@ int main(void)
         
         list.pop_back();
 
-        for (std::list<int, FixedBlock_PoolAllocator<int> >::iterator it = list.begin(); it != list.end(); ++it)
+        for (std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> >::iterator it = list.begin(); it != list.end(); ++it)
         {
             std::cout << *it << " ";
         }
@@ -243,21 +243,21 @@ int main(void)
         
         */
 
-        FixedBlock_PoolAllocator<int> alloc(pool, 10);
+        FixedBlock_PoolAllocator<int, Nginx_MemoryPool> alloc(pool, 10);
 
         // this will copy construct the FixedElem Pool, no problem because it doesn't allocate until the first allcoation
-        std::list<int, FixedBlock_PoolAllocator<int> > list1(alloc);
+        std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > list1(alloc);
 
 
         // this doesn't mean they are sharing........
-        std::list<int, FixedBlock_PoolAllocator<int> > list2(alloc);
+        std::list<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > list2(alloc);
         // it will actually allocate another separate block of memory for its own nodes
 
         // So one could expect these to share the same block, but they aren't
 
 
         //here comes another block, separate AND OF DIFFERENT SIZE TO THAT OF A LIST NODE
-        std::set<int, FixedBlock_PoolAllocator<int> > set(alloc);
+        std::set<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > set(alloc);
         // nobody is sharing anything, they are all separate blocks
 
         //I had another allocator to accomplish this but also figured: "why?, the point is to exactly stick things together"
@@ -267,7 +267,7 @@ int main(void)
         /******************************************** */
 
         // while you can do this..... it is pretty useless ofc, not to mention the block will be copied from above
-        std::vector<int, FixedBlock_PoolAllocator<int> > vec(alloc);
+        std::vector<int, FixedBlock_PoolAllocator<int, Nginx_MemoryPool> > vec(alloc);
 
 
 
