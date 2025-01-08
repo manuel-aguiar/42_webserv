@@ -149,5 +149,7 @@ void	CgiModule::InternalCgiWorker::mf_executeChild()
 	::close(m_ChildToParent[0]);
 
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
+
+	// probably not exit, should do something else to avoid leaks
 	::exit(EXIT_FAILURE);
 }
