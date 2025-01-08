@@ -6,12 +6,15 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/23 10:33:17 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 18:48:44 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/08 17:00:00 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 SUBDIRS = $(shell find . -type f -name "Makefile" -path "*/_Tests/*" -exec dirname {} \;)
+
+ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
+OBJ_PATH				=		$(ROOT_PATH)/_build 
 
 # Default target
 all:
@@ -36,7 +39,7 @@ fclean:
 	@for dir in $(SUBDIRS); do \
 		$(MAKE) -C $$dir fclean --quiet; \
 	done
-	@rm -rf _build
+	@rm -rf $(OBJ_PATH)
 	@echo "All fclean"
 
 .PHONY: all run_subdirs clean
