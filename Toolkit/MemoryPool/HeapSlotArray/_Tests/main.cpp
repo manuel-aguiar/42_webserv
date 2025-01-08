@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:40:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 11:55:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:54:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <sstream>
 
 // Project headers
-#include "../StackSlotArray.hpp"
+#include "../HeapSlotArray.hpp"
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
@@ -28,13 +28,15 @@ extern int TestPart2(int testNumber);
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** StackSlotArray tests ***************" << std::endl;
+	std::cout << "\n*************** HeapSlotArray tests ***************" << std::endl;
 
 	std::cout << "TEST " << testNumber++ << ": ";
 	try
 	{
-		const int arraySize = 100;
-		StackSlotArray<ToolkitDummy, arraySize> array;
+		const size_t arraySize = 100;
+		HeapSlotArray<ToolkitDummy> array(arraySize);
+
+		(void)array;
 
 		ToolkitDummy* ptr = array.emplace(5);
 
