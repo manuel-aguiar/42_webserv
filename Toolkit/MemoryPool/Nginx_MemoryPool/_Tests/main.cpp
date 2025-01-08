@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 22:25:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:13:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 # include <stdexcept>
 # include <iostream>
 
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
-# include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+# include "../Nginx_MemoryPool.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 
 
 extern int TestPart1(int testNumber);

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NGINX_MPOOL_FIXEDELEM_TPP
-# define NGINX_MPOOL_FIXEDELEM_TPP
+#ifndef FIXEDBLOCK_POOLALLOCATOR_TPP
+# define FIXEDBLOCK_POOLALLOCATOR_TPP
 
 # include <limits>
 # include <stdint.h>

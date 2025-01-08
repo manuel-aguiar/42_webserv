@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 22:25:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:14:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include <iostream>
 
 // Project headers
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
-# include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+# include "../Nginx_MemoryPool.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "NginxMemPool_TestCounter.hpp"
 
-# include "../../_Tests/test.h"
+# include "../../../_Tests/test.h"
 
 int TestPart2(int testNumber)
 {

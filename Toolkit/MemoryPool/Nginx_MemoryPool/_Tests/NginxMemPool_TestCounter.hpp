@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:28:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 16:42:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/08 00:14:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define NGINXMEMPOOL_TESTCOUNTER_HPP
 
-# include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
+# include "../Nginx_MemoryPool.hpp"
 
 struct AllocationStats
 {

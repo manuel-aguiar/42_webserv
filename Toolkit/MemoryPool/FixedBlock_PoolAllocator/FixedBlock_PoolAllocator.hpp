@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NGINX_MPOOL_FIXEDELEM_HPP
+#ifndef FIXEDBLOCK_POOLALLOCATOR_HPP
 
-# define NGINX_MPOOL_FIXEDELEM_HPP
+# define FIXEDBLOCK_POOLALLOCATOR_HPP
 
 // C++ headers
 # include <limits.h>
