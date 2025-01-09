@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #ifndef WEBSERVER_DEFINITIONS_H
-
 # define WEBSERVER_DEFINITIONS_H
 
 # include <stdint.h>
@@ -74,6 +73,5 @@ typedef union
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
-
 
 #endif
