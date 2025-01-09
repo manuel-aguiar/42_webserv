@@ -32,6 +32,11 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
+
+	m_EmergencyPhone[0] = -1;
+	m_EmergencyPhone[1] = -1;
+	m_EmergencyEvent.setCallback(this, EventCallback_OnEmergency);
+	m_EmergencyEvent.setMonitoredFlags(EPOLLIN);
 }
 
 CgiModule::InternalCgiWorker::~InternalCgiWorker()
@@ -48,13 +53,21 @@ void    CgiModule::InternalCgiWorker::reset()
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
+	mf_closeFd(m_EmergencyPhone[0]);
+	mf_closeFd(m_EmergencyPhone[1]);
 
 	m_argPtr.clear();
 	m_envPtr.clear();
 	m_envStr.clear();
+
+	m_EmergencyEvent.setFd(-1);
 }
 
-
+void	CgiModule::InternalCgiWorker::EventCallback_OnEmergency(Callback& event)
+{
+	InternalCgiWorker* worker = static_cast<InternalCgiWorker*>(event.getData());
+	worker->forcedClose();
+}
 
 void	CgiModule::InternalCgiWorker::cleanClose()
 {

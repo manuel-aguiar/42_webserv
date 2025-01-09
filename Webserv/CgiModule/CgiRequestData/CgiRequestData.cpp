@@ -52,4 +52,6 @@ void	CgiRequestData::reset()
 
 	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 		m_callbacks[i].reset();
+	
+	
 }

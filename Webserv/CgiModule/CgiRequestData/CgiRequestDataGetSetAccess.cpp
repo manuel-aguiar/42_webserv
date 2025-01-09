@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/21 01:30:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:59:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_fd										CgiRequestData::getWriteFd() const
 }
 
 // setters
-void	CgiRequestData::setCallback(const e_CgiCallbacks event, const t_ptr_callback_data data, const t_func_callback_handler handler)
+void	CgiRequestData::setCallback(const e_CgiCallback event, const t_ptr_callback_data data, const t_func_callback_handler handler)
 {
 	m_callbacks[event].setData_Handler(data, handler);
 }
@@ -64,10 +64,19 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 	m_scriptPath = path;
 }
 
+void		CgiRequestData::setEventManager(EventManager& manager)
+{
+	m_eventManager = &manager;
+}
+
 //accessors
 
-Callback&				CgiRequestData::accessCallback(const e_CgiCallbacks eventType)
+Callback&				CgiRequestData::accessCallback(const e_CgiCallback eventType)
 {
 	return (m_callbacks[eventType]);
 }
 
+EventManager*			CgiRequestData::accessEventManager()
+{
+	return (m_eventManager);
+}

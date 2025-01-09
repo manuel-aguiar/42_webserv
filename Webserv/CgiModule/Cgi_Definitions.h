@@ -35,7 +35,7 @@ typedef enum
 	E_CGI_ON_ERROR_STARTUP,
 	E_CGI_ON_ERROR_RUNTIME,
 	E_CGI_CALLBACK_COUNT
-} 	e_CgiCallbacks;
+} 	e_CgiCallback;
 
 
 typedef enum

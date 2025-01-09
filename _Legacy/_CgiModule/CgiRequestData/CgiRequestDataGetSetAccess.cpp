@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 12:08:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:31:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ const std::string&								CgiRequestData::getScriptPath() const
 
 
 // setters
-void	CgiRequestData::setCallback(const e_CgiCallbacks event, const t_ptr_event_data data, const t_func_event_handler handler)
+void	CgiRequestData::setCallback(const e_CgiCallback event, const t_ptr_event_data data, const t_func_event_handler handler)
 {
 	m_events[event].setFd_Data_Handler_Flags(0, data, handler, 0);
 }
@@ -74,7 +74,7 @@ void		CgiRequestData::setEventManager(EventManager& eventManager)
 
 //accessors
 
-Event&				CgiRequestData::accessCallbacks(const e_CgiCallbacks eventType)
+Event&				CgiRequestData::accessCallbacks(const e_CgiCallback eventType)
 {
 	return (m_events[eventType]);
 }

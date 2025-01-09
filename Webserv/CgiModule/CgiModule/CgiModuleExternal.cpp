@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 15:36:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 09:45:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	data = m_availableRequestData.back();
 	m_availableRequestData.pop_back();
 
-	data->setState(InternalCgiRequestData::E_CGI_STATE_POPULATING);
+	data->setState(InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
 	
 	return (data);
 }
@@ -35,7 +35,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
-	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_POPULATING);
+	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
 
 	if (m_availableWorkers.size() == 0)
 	{
@@ -52,7 +52,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 /*
 	There are 3 valid scenarios, for 3 request states:
 
-		Request is Populating: not in any queue (neither available or executing)
+		Request is Acquired: not in any queue (neither available or executing)
 			-> can safely reset and put back in the available list right away
 			
 		Request is Executing: worker is executing the request, not in any queue
@@ -91,7 +91,7 @@ void	CgiModule::cancelRequest(CgiRequestData& request)
 
 	switch (requestData->getState())
 	{
-		case InternalCgiRequestData::E_CGI_STATE_POPULATING:
+		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
 		{
 			mf_returnRequestData(*requestData);
 			break ;

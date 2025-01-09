@@ -35,54 +35,60 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 {
 	m_curRequestData = &request;
 
-    if (::pipe(m_ParentToChild) == -1)
+    if (::pipe(m_ParentToChild) == -1 ||
+		::pipe(m_ChildToParent) == -1 ||
+		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
-		m_CgiModule.cancelRequest(*m_curRequestData);
-		return ;
+		goto ErrorHandler;
     }
-	if (::pipe(m_ChildToParent) == -1)
-	{
-		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
-		m_CgiModule.cancelRequest(*m_curRequestData);
-		return ;
-	}
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
 		!FileDescriptor::setNonBlocking(m_ChildToParent[0]) ||
-		!FileDescriptor::setNonBlocking(m_ChildToParent[1]))
+		!FileDescriptor::setNonBlocking(m_ChildToParent[1])||
+		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]) ||
+		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
-		m_CgiModule.cancelRequest(*m_curRequestData);
-		return ;
+		goto ErrorHandler;
 	}
 
 	if (!mf_prepareExecve())
-	{
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_STARTUP).execute();
-		m_CgiModule.cancelRequest(*m_curRequestData);
-		return ;
-	}
+		goto ErrorHandler;
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
-	m_curRequestData->accessCallback(E_CGI_ON_EXECUTE).execute();
+	mf_CallTheUser(E_CGI_ON_EXECUTE);
+
+	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
+	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		m_curRequestData->accessCallback(E_CGI_ON_ERROR_RUNTIME).execute();
-		m_CgiModule.cancelRequest(*m_curRequestData);
-		return ;
+		goto ErrorHandler;
     }
     if (m_pid == 0)
 		mf_executeChild();
 	else
 		mf_executeParent();
+	
+	return ;
+
+	ErrorHandler:
+		mf_CallTheUser(E_CGI_ON_ERROR_STARTUP);
+		m_CgiModule.cancelRequest(*m_curRequestData);
+
+}
+
+void	CgiModule::InternalCgiWorker::mf_CallTheUser(const e_CgiCallback event)
+{
+	Callback& callback = m_curRequestData->accessCallback(event);
+
+	if (callback.getHandler() == NULL)
+		return ;
+	callback.execute();
 }
 
 bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
@@ -138,18 +144,44 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 	mf_closeFd(m_ChildToParent[1]);
 }
 
+/*
+	The EmergencyCode message that the Child process may send to the parent is made of 2 bytes.
+
+	The first byte is just the enum value of the syscall that failed. In our case, there are
+	two major possibilities: dup2 (failed to redirect), execve(failed to execute the script)
+
+	The second byte is the errno value recorded when the syscall failed, such that the parent worker
+	can log the info correctly and then tell the User what happened.
+
+	The parent will subscribe the emergencyphone event in the epoll, so epoll will inform it when the
+	child process exits, whether with a message or a straight EOF.
+
+	If everything goes according to plan, the process by which child is replaced in execve will close
+	the pipe as it exits, the parent will receive an EOF directly and no other info, letting the parent
+	know that everything went smoothly, and to peacefully waitpid the child.
+*/
 void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
-	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1)
+	char EmergencyCode[2];
+
+	::close(m_EmergencyPhone[0]);
+
+	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||
+		::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
+	{
+		EmergencyCode[0] = E_EMER_DUP2;
+		EmergencyCode[1] = errno;
+		write(m_EmergencyPhone[1], EmergencyCode, 2); 
 		::exit(EXIT_FAILURE);
-	if (::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
-		::exit(EXIT_FAILURE);
-	
+	}
+		
 	::close(m_ParentToChild[1]);
 	::close(m_ChildToParent[0]);
 
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
 
-	// probably not exit, should do something else to avoid leaks
+	EmergencyCode[0] = E_EMER_EXECVE;
+	EmergencyCode[1] = errno;
+	write(m_EmergencyPhone[1], EmergencyCode, 2); 
 	::exit(EXIT_FAILURE);
 }

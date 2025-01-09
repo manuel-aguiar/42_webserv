@@ -44,6 +44,8 @@ class CgiModule::InternalCgiWorker
 
 		InternalCgiRequestData*		accessCurRequestData();
 
+		static void					EventCallback_OnEmergency(Callback& event);	
+
 	private:
 		InternalCgiRequestData*		m_curRequestData;
 
@@ -53,6 +55,10 @@ class CgiModule::InternalCgiWorker
 
 		t_fd						m_ParentToChild[2];
 		t_fd						m_ChildToParent[2];
+
+		t_fd						m_EmergencyPhone[2];
+		Event						m_EmergencyEvent;
+
 		t_pid						m_pid;
 
 		CgiModule&					m_CgiModule;
@@ -62,8 +68,15 @@ class CgiModule::InternalCgiWorker
 		void						mf_executeParent();
 		void						mf_executeChild();
 		bool						mf_prepareExecve();
+		void						mf_CallTheUser(const e_CgiCallback event);
 		void						mf_closeFd(t_fd& fd);
 		void						mf_closeAllFds();
+
+		typedef enum
+		{
+			E_EMER_DUP2,
+			E_EMER_EXECVE,
+		} 	e_EmergencyCode;
 
 };
 

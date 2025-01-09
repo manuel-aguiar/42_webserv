@@ -48,9 +48,11 @@ class CgiRequestData
 		t_fd											getWriteFd() const;
 
 		// accessors
-		Callback&										accessCallback(const e_CgiCallbacks eventType);
+		Callback&										accessCallback(const e_CgiCallback eventType);
+		EventManager*									accessEventManager();
+		
 		// setters
-		void											setCallback(const e_CgiCallbacks eventType, 
+		void											setCallback(const e_CgiCallback eventType, 
 																		const t_ptr_callback_data data, 
 																		const t_func_callback_handler handler);
 
@@ -59,6 +61,7 @@ class CgiRequestData
 		void											setEnvExtra(const std::string& key, const std::string& value);
 		void											setExtension(const std::string& extension);
 		void											setScriptPath(const std::string& path);
+		void											setEventManager(EventManager& manager);
 
 	protected:
 		t_fd											m_readFd;
@@ -69,6 +72,7 @@ class CgiRequestData
 		std::string										m_extension;
 		std::string										m_scriptPath;
 		t_CgiRequestEnv									m_env;
+		EventManager*									m_eventManager;
 
 };	
 

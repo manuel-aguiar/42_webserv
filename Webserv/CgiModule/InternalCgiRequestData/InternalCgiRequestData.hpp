@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 14:30:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 10:01:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		typedef enum
 		{
 			E_CGI_STATE_IDLE,
-			E_CGI_STATE_POPULATING,
+			E_CGI_STATE_ACQUIRED,
 			E_CGI_STATE_QUEUED,
 			E_CGI_STATE_EXECUTING,
 			E_CGI_STATE_CANCELLED
@@ -45,6 +45,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		t_CgiRequestState		getState() const;
 		
 		InternalCgiWorker*		accessExecutor();
+		
 
 	private:
 		InternalCgiWorker*		m_executor;

@@ -177,7 +177,7 @@ int main(void)
 		CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			requestData1->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData1->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 		requestData1->setMsgBody("Hello World!");
 		requestData1->setExtension("py");
 		requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
@@ -188,7 +188,7 @@ int main(void)
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			requestData2->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData2->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
 		requestData2->setMsgBody("Hello World!");
 		requestData2->setExtension("py");
@@ -200,7 +200,7 @@ int main(void)
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			requestData3->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData3->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
 		requestData3->setMsgBody("Hello World!");
 		requestData3->setExtension("py");
@@ -249,7 +249,7 @@ int main(void)
 			CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 			for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-				requestData1->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+				requestData1->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 			requestData1->setMsgBody("Hello World!");
 			requestData1->setExtension("py");
 			requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
@@ -260,7 +260,7 @@ int main(void)
 
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			requestData2->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData2->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
 		requestData2->setMsgBody("Hello World!");
 		requestData2->setExtension("py");
@@ -271,7 +271,7 @@ int main(void)
 		CgiRequestData* requestData3 = cgi.acquireRequestData();
 		//subscribe event callbacks
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			requestData3->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+			requestData3->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 		
 		requestData3->setMsgBody("Hello World!");
 		requestData3->setExtension("py");
@@ -321,7 +321,7 @@ int main(void)
 			CgiRequestData* requestData1 = cgi.acquireRequestData();
 
 			for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-				requestData1->setCallback(static_cast<e_CgiCallbacks>(i), &user, CgiUserGateway::eventHandlers[i]);
+				requestData1->setCallback(static_cast<e_CgiCallback>(i), &user, CgiUserGateway::eventHandlers[i]);
 			requestData1->setMsgBody("Hello World!");
 			requestData1->setExtension("py");
 			requestData1->setScriptPath("../../../Testing/MockWebsites/Website1/cgi-bin/hello.py");
