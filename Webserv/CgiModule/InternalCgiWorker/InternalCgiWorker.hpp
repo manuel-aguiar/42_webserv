@@ -79,6 +79,7 @@ class CgiModule::InternalCgiWorker
 
 		void						mf_JustWaitChild();
 		void						mf_KillWaitChild();
+		void						mf_CheckExitStatus(const int status);
 
 		typedef enum
 		{

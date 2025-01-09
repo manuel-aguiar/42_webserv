@@ -246,7 +246,6 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 				switch (m_EmergencyBytesRead)
 				{
 					case 0:
-						//std::cout << "Emergency pipe closed, clean exit\n";
 						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
 						return (mf_JustWaitChild());
 					case 1:

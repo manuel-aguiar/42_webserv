@@ -58,6 +58,8 @@ class A_ProtoRequest
 		
 		char 			m_buffer[1024];
 		size_t			m_TotalBytesRead;
+
+		size_t			m_CancelCount;
 };
 
 class A_ProtoRequest_CgiGateway

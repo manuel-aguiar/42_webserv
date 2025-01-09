@@ -19,7 +19,8 @@ A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModul
 	m_manager(manager),
 	m_globals(globals),
 	m_cgi(cgi),
-	m_TotalBytesRead(0)
+	m_TotalBytesRead(0),
+    m_CancelCount(0)
 
 {
 

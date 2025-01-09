@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:54:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:44:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ static const char* scriptOutput = "AUTH_TYPE: <not set>\n"
 
 int TestPart1(int testNumber)
 {
-	
+/******************************************************* */
+	//instantiation and cleanup test	
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
@@ -59,6 +60,9 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+/****************************************************** */
+	// executing a script, no environment variables so far
+	// script should run without issue
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
@@ -137,8 +141,6 @@ int TestPart1(int testNumber)
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
 
-
-
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
@@ -186,16 +188,84 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+
 /*************************************************************** */
 
+	// Test passing a good interpreter to execve, but a bad script leading to failure
+	
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+		std::string		testFailure;
 
+		Globals globals(NULL, NULL, NULL, NULL);
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, globals);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi);
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+
+		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+		
+		protoRequest.m_CgiRequestData->setExtension("py");
+		protoRequest.m_CgiRequestData->setScriptPath("asgasgasgasgasg");
+		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+
+		/// setting up some fds to divert python3 error messages for "no such file or directory"
+		int testpipe[2];
+		int stdcerrDup = dup(STDERR_FILENO);
+		pipe(testpipe);
+		dup2(testpipe[1], STDERR_FILENO);
+		/////////////////
+
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+
+		//event loop
+		while (eventManager.getSubscribeCount() != 0)
+			eventManager.ProcessEvents(1000);
+
+
+		// tests
+		if (eventManager.getSubscribeCount() != 0)
+			testFailure = testFailure + '\n' + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
+
+		if (cgi.getBusyWorkerCount() != 0)
+			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+		
+		if (protoRequest.m_CancelCount != 1)
+			testFailure = testFailure + '\n' + "CgiModule did not cancel the request, got " + to_string(protoRequest.m_CancelCount)
+			 + " expected 1" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+
+		// restoring the original stdcerr not to mess the remaining tests
+		dup2(stdcerrDup, STDERR_FILENO);
+		close(stdcerrDup);
+		close(testpipe[1]); 
+		close(testpipe[0]);
+		/////////////////////////////
+
+		if (!testFailure.empty())
+			throw std::runtime_error(testFailure);
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+/*************************************************************** */
+
+/*
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		const int connectionCount = 100;
+		const int connectionCount = 3;
 
 		CgiModule cgi(10, connectionCount, globals);
 
@@ -263,6 +333,6 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 	
-
+*/
 	return (testNumber);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:01:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:39:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ EventManager::~EventManager()
 	}
 }
 
+#include <iostream>
 
 int                EventManager::addEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
-
+	//std::cout << "EventManager::addEvent fd: " << event.getFd() << std::endl;
 	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
@@ -81,6 +82,7 @@ int                EventManager::modEvent(const Event& event)
 
 int                 EventManager::delEvent(const Event& event)
 {
+	//std::cout << "EventManager::delEvent fd: " << event.getFd() << std::endl;
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));

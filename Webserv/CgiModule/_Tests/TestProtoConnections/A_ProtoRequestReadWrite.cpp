@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:10:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:39:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ void	A_ProtoRequest::readCgi()
 	
 	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
 
+	
+
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
@@ -117,9 +119,17 @@ void	A_ProtoRequest::executeCgi()
 }
 
 void	A_ProtoRequest::cancelCgi()
-{
+{	
 	if (m_CgiReadEvent.getFd() != -1)
+	{
 		m_manager.delEvent(m_CgiReadEvent);
+		m_CgiReadEvent.reset();
+	}
 	if (m_CgiWriteEvent.getFd() != -1)
+	{
 		m_manager.delEvent(m_CgiWriteEvent);
+		m_CgiWriteEvent.reset();
+	}
+	m_cgi.cancelRequest(*m_CgiRequestData);
+	m_CancelCount++;
 }

@@ -15,6 +15,7 @@
 #include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 #include "../../Globals/Globals.hpp"
 #include "../../ServerManager/EventManager/EventManager.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 //#include "../python-cgi/pythonCgi.hpp"
 
@@ -67,20 +68,32 @@ void    CgiModule::InternalCgiWorker::reset()
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
 
+void	CgiModule::InternalCgiWorker::mf_CheckExitStatus(const int status)
+{
+	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
+		mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+}
+
 void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
 {
 	int status;
 
-	::waitpid(m_pid, &status, 0);
-	m_pid = -1;
+	if (m_pid != -1)
+	{
+		::waitpid(m_pid, &status, 0);
+		m_pid = -1;
+		mf_CheckExitStatus(status);
+	}
 }
 
 void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
 {
+	int status;
+
 	if (m_pid != -1)
 	{
 		::kill(m_pid, SIGKILL);
-		::waitpid(m_pid, NULL, 0);
+		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
 	}
 }

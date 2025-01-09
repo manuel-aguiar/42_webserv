@@ -14,6 +14,14 @@ class StringUtils
 {
     public:
         static void move(std::string& dest, std::string& src);
+
+        template <typename T>
+        static std::string to_string(const T& value)
+        {
+            std::ostringstream oss;
+            oss << value;
+            return oss.str();
+        }
 };
 
 #endif

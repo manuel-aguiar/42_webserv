@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:42:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 10:47:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:28:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,8 @@ Callback::~Callback() {}
 
 void Callback::execute()
 {
-	assert (m_handler != NULL);
-	
-	(m_handler)(*this);
+	if (m_handler)
+		(m_handler)(*this);
 }
 
 void	Callback::reset()
