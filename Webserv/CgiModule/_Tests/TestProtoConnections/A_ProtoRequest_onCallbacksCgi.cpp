@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 17:11:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:39:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	A_ProtoRequest::onWrite()
 	//std::cout << "proto " << m_id << " writingCgi" << std::endl;
 	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
 	{
-		m_manager.delEvent(m_CgiWriteEvent);
+		m_eventManager.delEvent(m_CgiWriteEvent);
 		m_CgiWriteEvent.reset();
 		return ;
 	}
@@ -51,7 +51,7 @@ void	A_ProtoRequest::onWrite()
 		if (bytesWritten == -1)
 		{
 			//std::cout << "proto " << m_id << " disabling write event" << std::endl;
-			m_manager.delEvent(m_CgiWriteEvent);
+			m_eventManager.delEvent(m_CgiWriteEvent);
 			m_CgiWriteEvent.reset();
 			return ;
 		}
@@ -65,7 +65,7 @@ void	A_ProtoRequest::onWrite()
 		}
 		else
 		{
-			m_manager.delEvent(m_CgiWriteEvent);
+			m_eventManager.delEvent(m_CgiWriteEvent);
 			m_CgiWriteEvent.reset();
 		}
 	}
@@ -88,7 +88,7 @@ void	A_ProtoRequest::OnRead()
 		if (bytesRead == 0 || m_TotalBytesRead == sizeof(m_buffer) - 1)
 		{
 			//std::cout << "proto " << m_id << " disabling read event after reading" << std::endl;
-			m_manager.delEvent(m_CgiReadEvent);
+			m_eventManager.delEvent(m_CgiReadEvent);
 			m_CgiReadEvent.reset();
 			m_cgi.finishRequest(*m_CgiRequestData);
 			printBufStdout();
@@ -99,7 +99,7 @@ void	A_ProtoRequest::OnRead()
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		//std::cout << "proto " << m_id << " disabling read event after disconnection" << std::endl;
-		m_manager.delEvent(m_CgiReadEvent);
+		m_eventManager.delEvent(m_CgiReadEvent);
 		m_CgiReadEvent.reset();
 		m_cgi.finishRequest(*m_CgiRequestData);
 		printBufStdout();
@@ -121,8 +121,8 @@ void	A_ProtoRequest::executeCgi()
 	m_CgiWriteEvent.setMonitoredFlags(EPOLLOUT);
 	m_CgiWriteEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
 	
-	m_manager.addEvent(m_CgiReadEvent);
-	m_manager.addEvent(m_CgiWriteEvent);
+	m_eventManager.addEvent(m_CgiReadEvent);
+	m_eventManager.addEvent(m_CgiWriteEvent);
 }
 
 /*
@@ -133,12 +133,12 @@ void	A_ProtoRequest::cancelCgi()
 	//std::cout << "proto " << m_id << " cancelingCgi" << std::endl;
 	if (m_CgiReadEvent.getFd() != -1)
 	{
-		m_manager.delEvent(m_CgiReadEvent);
+		m_eventManager.delEvent(m_CgiReadEvent);
 		m_CgiReadEvent.reset();
 	}
 	if (m_CgiWriteEvent.getFd() != -1)
 	{
-		m_manager.delEvent(m_CgiWriteEvent);
+		m_eventManager.delEvent(m_CgiWriteEvent);
 		m_CgiWriteEvent.reset();
 	}
 	m_cgi.finishRequest(*m_CgiRequestData);

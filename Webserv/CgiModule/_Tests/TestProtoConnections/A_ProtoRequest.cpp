@@ -16,7 +16,7 @@
 #include <iomanip>
 
 A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi, int id) :
-	m_manager(manager),
+	m_eventManager(manager),
 	m_globals(globals),
 	m_cgi(cgi),
 	m_TotalBytesRead(0),
@@ -33,7 +33,7 @@ A_ProtoRequest::~A_ProtoRequest()
 }
 
 A_ProtoRequest::A_ProtoRequest(const A_ProtoRequest& copy) :
-	m_manager(copy.m_manager),
+	m_eventManager(copy.m_eventManager),
 	m_globals(copy.m_globals),
 	m_cgi(copy.m_cgi),
 	m_TotalBytesRead(copy.m_TotalBytesRead)
@@ -71,7 +71,7 @@ void A_ProtoRequest::debugPrint() const
     std::cout << std::dec << std::endl; // Reset to decimal formatting
 
     // Manager and Globals addresses
-    std::cout << "EventManager Address: " << &m_manager << std::endl;
+    std::cout << "EventManager Address: " << &m_eventManager << std::endl;
     std::cout << "Globals Address: " << &m_globals << std::endl;
     std::cout << "CgiModule Address: " << &m_cgi << std::endl;
 

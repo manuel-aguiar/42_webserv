@@ -50,7 +50,7 @@ class A_ProtoRequest
 
 		void	printBufStdout();
 
-		EventManager&	m_manager;
+		EventManager&	m_eventManager;
 		Globals&		m_globals;
 		CgiModule&		m_cgi;
 		
