@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 17:39:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:40:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	A_ProtoRequest::cancelCgi()
 	}
 	m_cgi.finishRequest(*m_CgiRequestData);
 
-	//inform client something bad happened
+	//inform your client something bad happened
 
 	m_CancelCount++;
 }
@@ -156,5 +156,5 @@ void	A_ProtoRequest::falseStartCgi()
 	//std::cout << "proto " << m_id << " falseStartCgi" << std::endl;
 	m_cgi.finishRequest(*m_CgiRequestData);
 
-	//inform client something bad happened
+	//inform your client something bad happened
 }
