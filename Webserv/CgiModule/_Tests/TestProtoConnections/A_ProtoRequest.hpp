@@ -27,7 +27,7 @@ class CgiModule;
 class A_ProtoRequest
 {
     public:
-		A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi);
+		A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi, int id);
 		~A_ProtoRequest();
 		A_ProtoRequest(const A_ProtoRequest& copy);
 		
@@ -65,6 +65,8 @@ class A_ProtoRequest
 		size_t			m_TotalBytesRead;
 
 		size_t			m_CancelCount;
+
+		int				m_id;	
 };
 
 class A_ProtoRequest_CgiGateway

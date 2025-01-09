@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 13:39:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:10:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ int                EventManager::addEvent(const Event& event)
 		return (0);
 	}
 	++m_subscribeCount;
+
+	//std::cout << "EventManager::addEvent fd: " << event.getFd() << ", subscribe count is " << m_subscribeCount << std::endl;
+
 	return (1);
 }
 
@@ -82,13 +85,20 @@ int                EventManager::modEvent(const Event& event)
 
 int                 EventManager::delEvent(const Event& event)
 {
-	//std::cout << "EventManager::delEvent fd: " << event.getFd() << std::endl;
+	//std::cout << "EventManager::delEvent fd: " << event.getFd(); 
+
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
+
+		//std::cout << " FAILED: " << std::string(strerror(errno)) << std::endl;
+
 		return (0);
 	}
 	--m_subscribeCount;
+
+	//std::cout << " passed, subscribe count is " << m_subscribeCount << std::endl;
+
 	return (1);
 }
 

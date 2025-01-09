@@ -81,6 +81,7 @@ class CgiModule::InternalCgiWorker
 
 		// Events
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
+		void						mf_disableEmergencyEvent();
 		void						mf_readEmergencyPipe();
 
 		// Other helpers

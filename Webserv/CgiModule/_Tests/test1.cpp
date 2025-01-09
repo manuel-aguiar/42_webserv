@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 15:45:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 16:21:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int TestPart1(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 		CgiModule cgi(10, 100, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
@@ -126,7 +126,7 @@ int TestPart1(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 		CgiModule cgi(10, 100, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "potato");
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
@@ -188,7 +188,7 @@ int TestPart1(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 		CgiModule cgi(10, 100, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
@@ -265,7 +265,7 @@ int TestPart1(int testNumber)
 
 		for (size_t i = 0; i < connectionCount; ++i)
 		{
-			requests.emplace_back(eventManager, globals, cgi);
+			requests.emplace_back(eventManager, globals, cgi, i);
 			requests[i].m_CgiRequestData = cgi.acquireRequestData();
 			requests[i].m_CgiRequestData->setEventManager(eventManager);
 			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)

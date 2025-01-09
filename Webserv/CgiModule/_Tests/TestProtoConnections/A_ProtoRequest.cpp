@@ -15,12 +15,13 @@
 
 #include <iomanip>
 
-A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi) :
+A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi, int id) :
 	m_manager(manager),
 	m_globals(globals),
 	m_cgi(cgi),
 	m_TotalBytesRead(0),
-    m_CancelCount(0)
+    m_CancelCount(0),
+    m_id(id)
 
 {
     m_buffer[0] = '\0';

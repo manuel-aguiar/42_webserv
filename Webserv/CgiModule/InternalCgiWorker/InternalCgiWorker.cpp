@@ -49,23 +49,28 @@ CgiModule::InternalCgiWorker::~InternalCgiWorker()
 
 void    CgiModule::InternalCgiWorker::reset()
 {
-	m_curRequestData = NULL;
 	m_pid = -1;
 
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
-	mf_closeFd(m_EmergencyPhone[0]);
-	mf_closeFd(m_EmergencyPhone[1]);
 
 	m_argPtr.clear();
 	m_envPtr.clear();
 	m_envStr.clear();
 
-	m_EmergencyEvent.setFd(-1);
 	m_EmergencyBytesRead = 0;
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
+	
+	if (m_curRequestData)
+	{
+		mf_disableEmergencyEvent();
+		m_CgiModule.mf_returnRequestData(*m_curRequestData);
+	}
+	
+	mf_closeFd(m_EmergencyPhone[0]);
+	mf_closeFd(m_EmergencyPhone[1]);
 }
 
 

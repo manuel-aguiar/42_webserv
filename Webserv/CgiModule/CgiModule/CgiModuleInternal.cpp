@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 14:56:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 16:54:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,7 @@ void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& da
 
 void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
 {
-	InternalCgiRequestData* currentData;
     InternalCgiRequestData* newData;
-
-
-	currentData = static_cast<InternalCgiRequestData*>(worker.accessCurRequestData());
-	
-	if (currentData)
-		mf_returnRequestData(*currentData);
 
     worker.reset();
 

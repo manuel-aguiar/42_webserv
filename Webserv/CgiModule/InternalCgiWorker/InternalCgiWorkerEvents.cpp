@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:44:20 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:11:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,11 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 
 	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
 
+	//std::cout << "module read emergency pipe" << std::endl;
+
+	if (m_EmergencyEvent.getFd() == -1)
+		return ;		//finish was called already
+
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
@@ -61,11 +66,12 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 				switch (m_EmergencyBytesRead)
 				{
 					case 0:
-						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+						//std::cout << "module, Child exit success, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
+						mf_disableEmergencyEvent();
 						return (mf_JustWaitChild());
 					case 1:
-
-						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+						//std::cout << "module, Incomplete exit, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
+						mf_disableEmergencyEvent();
 						mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 						return (stopExecution());
 				}
@@ -74,7 +80,8 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 
 			case 2:
 			{
-				m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+				//std::cout << "module, Bad exit, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
+				mf_disableEmergencyEvent();
 				if (m_EmergencyBuffer[0] == E_EMER_DUP2)
 					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
 					+ std::string(strerror(m_EmergencyBuffer[1])));
@@ -90,7 +97,8 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 			{
 				if (m_EmergencyBytesRead == 2)
 				{
-					m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+					//std::cout << "module, Bad exit, double read unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
+					mf_disableEmergencyEvent();
 					if (m_EmergencyBuffer[0] == E_EMER_DUP2)
 						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
 						+ std::string(strerror(m_EmergencyBuffer[1])));
@@ -118,5 +126,14 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
 		}
 			
 		return (stopExecution());
+	}
+}
+
+void	CgiModule::InternalCgiWorker::mf_disableEmergencyEvent()
+{
+	if (m_EmergencyEvent.getFd() != -1)
+	{
+		m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+		m_EmergencyEvent.setFd(-1);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 15:54:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:30:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,13 @@ int TestPart2(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		const int connectionCount = 2;
 
-		CgiModule cgi(10, connectionCount, globals);
+		const int workers = 50;
+		const int backlog = 1000;
+		const int connectionCount = 10000;
+		size_t acquireCounter = 0;
+
+		CgiModule cgi(workers, backlog, globals);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		cgi.addInterpreter("sh", "/usr/bin/bash");
@@ -67,31 +71,38 @@ int TestPart2(int testNumber)
 
 		for (size_t i = 0; i < connectionCount; ++i)
 		{
-			requests.emplace_back(eventManager, globals, cgi);
+			requests.emplace_back(eventManager, globals, cgi, i);
 
-			requests[i].m_CgiRequestData = cgi.acquireRequestData();
-
-			requests[i].m_CgiRequestData->setEventManager(eventManager);
+			requests.back().m_CgiRequestData = cgi.acquireRequestData();
+			
+			if (requests.back().m_CgiRequestData == NULL) continue;
+			
+			acquireCounter++;
+			requests.back().m_CgiRequestData->setEventManager(eventManager);
 
 			// setup callbacks and environment variables
 			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
-				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
+				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
 			switch (i % 3)
 			{
 				case 0:
-					requests[i].m_CgiRequestData->setExtension("py");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+					requests.back().m_CgiRequestData->setExtension("py");
+					requests.back().m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 					break;
 				case 1:
-					requests[i].m_CgiRequestData->setExtension("sh");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
+					requests.back().m_CgiRequestData->setExtension("sh");
+					requests.back().m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
 					break;
 				case 2:
-					requests[i].m_CgiRequestData->setExtension("php");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
+					requests.back().m_CgiRequestData->setExtension("php");
+					requests.back().m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 					break;
 			}
-			cgi.executeRequest(*requests[i].m_CgiRequestData);
+			cgi.executeRequest(*requests.back().m_CgiRequestData);
+			
+			// process events right now at each loop, that way we make room in the CgiModule
+			// to take more clients
+			eventManager.ProcessEvents(1000);
 		}
 
 
@@ -99,13 +110,20 @@ int TestPart2(int testNumber)
 		while (eventManager.getSubscribeCount() != 0)
 			eventManager.ProcessEvents(1000);
 
+		// tests
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::logic_error("eventManager still has events subscribed");
+			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		bool test = true;
 		for (size_t i = 0; i < connectionCount; ++i)
 		{
+			if (!requests[i].m_CgiRequestData)
+				continue;
 			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
 				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
 			{
@@ -119,7 +137,8 @@ int TestPart2(int testNumber)
 
 
 			
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED, served: " << acquireCounter << " out of " << connectionCount
+		<< " with " << workers << " workers and " << backlog << " backlog" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
