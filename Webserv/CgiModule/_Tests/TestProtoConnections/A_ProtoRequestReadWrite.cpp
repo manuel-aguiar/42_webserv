@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:01:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:10:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	A_ProtoRequest::writeCgi()
 	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
 	{
 		m_manager.delEvent(m_CgiWriteEvent);
+		m_CgiWriteEvent.reset();
 		return ;
 	}
 
@@ -48,6 +49,7 @@ void	A_ProtoRequest::writeCgi()
 		if (bytesWritten == -1)
 		{
 			m_manager.delEvent(m_CgiWriteEvent);
+			m_CgiWriteEvent.reset();
 			return ;
 		}
 		
@@ -61,6 +63,7 @@ void	A_ProtoRequest::writeCgi()
 		else
 		{
 			m_manager.delEvent(m_CgiWriteEvent);
+			m_CgiWriteEvent.reset();
 		}
 	}
 }
@@ -79,6 +82,7 @@ void	A_ProtoRequest::readCgi()
 		if (bytesRead == 0 || m_TotalBytesRead == sizeof(m_buffer) - 1)
 		{
 			m_manager.delEvent(m_CgiReadEvent);
+			m_CgiReadEvent.reset();
 			m_cgi.finishRequest(*m_CgiRequestData);
 			printBufStdout();
 		}
@@ -92,6 +96,7 @@ void	A_ProtoRequest::readCgi()
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		m_manager.delEvent(m_CgiReadEvent);
+		m_CgiReadEvent.reset();
 		m_cgi.finishRequest(*m_CgiRequestData);
 		printBufStdout();
 	}
@@ -113,6 +118,8 @@ void	A_ProtoRequest::executeCgi()
 
 void	A_ProtoRequest::cancelCgi()
 {
-	m_manager.delEvent(m_CgiReadEvent);
-	m_manager.delEvent(m_CgiWriteEvent);
+	if (m_CgiReadEvent.getFd() != -1)
+		m_manager.delEvent(m_CgiReadEvent);
+	if (m_CgiWriteEvent.getFd() != -1)
+		m_manager.delEvent(m_CgiWriteEvent);
 }

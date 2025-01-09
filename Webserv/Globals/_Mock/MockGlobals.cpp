@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/22 10:51:19 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:36:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	Globals::logDebug(const std::string& message)
 
 void	Globals::logError(const std::string& message)
 {
-	std::cerr << "				LOGGING ERROR: " << message << std::endl;
+	std::cerr << message << "\n";
 }
 
 void	Globals::logStatus(const char* message)
