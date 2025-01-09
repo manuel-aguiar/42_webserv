@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:46:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:54:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,83 +188,81 @@ int TestPart1(int testNumber)
 	}
 /*************************************************************** */
 
-	// Test passing a bad interpreter to execve, leading to failure
-	
+
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::string		testFailure;
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi);
+		const int connectionCount = 100;
 
-		cgi.addInterpreter("py", "potato");
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		CgiModule cgi(10, connectionCount, globals);
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
-		protoRequest.m_CgiRequestData->setExtension("py");
-		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		cgi.addInterpreter("sh", "/usr/bin/bash");
+		cgi.addInterpreter("php", "/usr/bin/php");
 
-		// setting up some fds to read the logs
-		int testpipe[2];
-		int stdcerrDup = dup(STDERR_FILENO);
-		pipe(testpipe);
-		dup2(testpipe[1], STDERR_FILENO);
+		DynArray<A_ProtoRequest> requests;
+		requests.reserve(connectionCount);
 
+		for (size_t i = 0; i < connectionCount; ++i)
+		{
+			requests.emplace_back(eventManager, globals, cgi);
+			requests[i].m_CgiRequestData = cgi.acquireRequestData();
+			requests[i].m_CgiRequestData->setEventManager(eventManager);
+			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
+				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
+			switch (i % 3)
+			{
+				case 0:
+					requests[i].m_CgiRequestData->setExtension("py");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+					break;
+				case 1:
+					requests[i].m_CgiRequestData->setExtension("sh");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
+					break;
+				case 2:
+					requests[i].m_CgiRequestData->setExtension("php");
+					requests[i].m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
+					break;
+			}
+			cgi.executeRequest(*requests[i].m_CgiRequestData);
+		}
 
-
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
 			eventManager.ProcessEvents(1000);
 
 
-		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			testFailure = testFailure + '\n' + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
-
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::logic_error("eventManager still has events subscribed");
 
-		// read actual stdcerr
-		char buffer[1024];
-		int bytesRead = read(testpipe[0], buffer, 1023);
-		buffer[bytesRead] = 0;
-		std::string expectedError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): No such file or directory\n");
-
-		if (std::strlen(buffer) != expectedError.length())
+		bool test = true;
+		for (size_t i = 0; i < connectionCount; ++i)
 		{
-			testFailure = testFailure + '\n' + "Expected message length is not the same, got: " + to_string(std::strlen(buffer)) +
-			", expected: " + to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
+				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
+			{
+				std::cout << i << " failed: " << requests[i].m_TotalBytesRead << " " << requests[i].m_buffer << "\n\n";
+				std::cout << "original: " << ::strlen(scriptOutput) << " " << scriptOutput << "\n\n";
+				test = false;
+			}
 		}
+		if (!test)
+			throw std::logic_error("script output does not match expected output, cases above");
 
-		if (std::string(buffer) != std::string(expectedError))
-			testFailure = testFailure + '\n' + "Expected error message not found in logs:\ngot:\n" 
-			+ buffer + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 			
-		// restoring the original stdcerr not to mess the remaining tests
-		dup2(stdcerrDup, STDERR_FILENO);
-		close(stdcerrDup);
-		close(testpipe[1]); 
-		close(testpipe[0]); 
-
-		if (!testFailure.empty())
-			throw std::runtime_error(testFailure);
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+	
 
 	return (testNumber);
 }

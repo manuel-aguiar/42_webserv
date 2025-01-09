@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 10:53:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 12:48:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,14 +130,13 @@ int TestPart2(int testNumber)
 		}
 
 
-		while (cgi.getBusyWorkerCount() > 0)
+		while (eventManager.getSubscribeCount() > 0)
 		{
 			size_t waited = eventManager.ProcessEvents(1000);
 			(void)waited;
-			//std::cout << " triggered events: " <<  waited << ", liverequests: " << cgi.getBusyWorkerCount() << " \n";
 		}
 
-		if (eventManager.getSubscribeCount() != 0)
+		if (cgi.getBusyWorkerCount() != 0)
 			throw std::logic_error("eventManager still has events subscribed");
 
 		bool test = true;
