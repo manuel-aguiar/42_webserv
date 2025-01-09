@@ -58,9 +58,16 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
+	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
+
+	//std::cout << "read fd: " << m_curRequestData->getReadFd() << std::endl;
+	//std::cout << "write fd: " << m_curRequestData->getWriteFd() << std::endl;
+	//std::cout << "emergency fd: " << m_EmergencyPhone[0] << std::endl;
+
 	mf_CallTheUser(E_CGI_ON_EXECUTE);
 
-	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
+
+
 	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
 
     m_pid = ::fork();
@@ -93,7 +100,10 @@ void	CgiModule::InternalCgiWorker::mf_CallTheUser(const e_CgiCallback event)
 
 bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
-	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator	t_EnvExtraIter;
+	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator
+									t_EnvExtraIter;
+
+	assert(m_curRequestData->accessEventManager() != NULL);
 
 	const t_CgiRequestEnv& 			envRequest = m_curRequestData->getEnvVars();
 	const t_CgiEnvKey*				envBase = m_CgiModule.getBaseEnvKeys();
@@ -142,6 +152,7 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 {
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ChildToParent[1]);
+	mf_closeFd(m_EmergencyPhone[1]);
 }
 
 /*
@@ -178,10 +189,120 @@ void	CgiModule::InternalCgiWorker::mf_executeChild()
 	::close(m_ParentToChild[1]);
 	::close(m_ChildToParent[0]);
 
+	//std::cerr << "checking execve"  << std::endl;
+
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
+
+	//std::cerr << "execve failed" << std::endl;
 
 	EmergencyCode[0] = E_EMER_EXECVE;
 	EmergencyCode[1] = errno;
 	write(m_EmergencyPhone[1], EmergencyCode, 2); 
 	::exit(EXIT_FAILURE);
+}
+
+
+
+
+
+void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
+{
+	InternalCgiWorker* worker = static_cast<InternalCgiWorker*>(event.getData());
+	worker->mf_readEmergencyPipe();
+}
+
+
+/*
+	Although unlikely, we may not receive the full emergency message in one go, so we need to keep reading
+	until we get the full message. We will only read 2 bytes, so we can be sure that we will get the full
+
+	So, there are various scenarios that can happen:
+
+		1. we read zero bytes (EOF), 0 emergency bytes read so far,  -> successfull exit by the child, cleanclose()
+		2. we read zero bytes (EOF), 1 emergency bytes read so far, -> incomplete message, forcedclose()
+		3. we read 1 bytes
+
+
+*/
+void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
+{
+	int		triggeredFlags;
+	int		bytesRead;
+
+	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
+
+	if (triggeredFlags & EPOLLIN)
+	{
+		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
+							&m_EmergencyBuffer[m_EmergencyBytesRead], 
+							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
+
+		m_EmergencyBytesRead += bytesRead;
+
+		switch (bytesRead)
+		{
+			case 0:
+			{
+				switch (m_EmergencyBytesRead)
+				{
+					case 0:
+						//std::cout << "Emergency pipe closed, clean exit\n";
+						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+						return (mf_JustWaitChild());
+					case 1:
+
+						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+						mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+						return (forcedClose());
+				}
+				return ;
+			}
+
+			case 2:
+			{
+				m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+				if (m_EmergencyBuffer[0] == E_EMER_DUP2)
+					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
+					+ std::string(strerror(m_EmergencyBuffer[1])));
+
+				else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
+					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
+					+ std::string(strerror(m_EmergencyBuffer[1])));
+				mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+				return (forcedClose());
+			}
+
+			case 1:
+			{
+				if (m_EmergencyBytesRead == 2)
+				{
+					m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+					if (m_EmergencyBuffer[0] == E_EMER_DUP2)
+						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
+						+ std::string(strerror(m_EmergencyBuffer[1])));
+
+					else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
+						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
+						+ std::string(strerror(m_EmergencyBuffer[1])));
+					mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+					return (forcedClose());
+				}
+			}
+		}
+	}
+
+	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	{
+		if (m_EmergencyBytesRead == 1)
+		{
+			if (m_EmergencyBuffer[0] == E_EMER_DUP2)
+				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): inconclusive error");
+			else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
+				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): inconclusive error");
+
+			mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+		}
+			
+		return (forcedClose());
+	}
 }

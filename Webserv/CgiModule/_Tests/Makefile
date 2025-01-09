@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/08 16:02:50 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/09 10:53:11 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET = test.out
 
 # Paths
-ROOT_PATH = ../../..
-SRC_PATH = $(ROOT_PATH)/.
-OBJ_PATH = $(ROOT_PATH)/_build
+ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
+SRC_PATH	=	$(ROOT_PATH)/.
+OBJ_PATH	=	$(ROOT_PATH)/_build
 
 # Sources
 SRCS =  $(SRC_PATH)/Webserv/CgiModule/_Tests/main.cpp \
@@ -78,7 +78,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 # Standard targets
 all: $(TARGET)
 
-run: $(TARGET)
+test: $(TARGET)
 	@valgrind   \
         --quiet \
         --leak-check=full \

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 15:58:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 10:53:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int TestPart2(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
 		
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -110,7 +110,7 @@ int TestPart2(int testNumber)
 			requests.emplace_back(eventManager, globals, cgi);
 			requests[i].m_CgiRequestData = cgi.acquireRequestData();
 			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
-				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
+				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
 			switch (i % 3)
 			{
 				case 0:

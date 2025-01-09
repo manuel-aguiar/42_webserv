@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 16:06:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 11:42:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,27 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallbacks>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
 		
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 
-		while (cgi.getBusyWorkerCount() > 0)
+		while (1)
+		{
 			eventManager.ProcessEvents(1000);
+			if (eventManager.getSubscribeCount() == 0)
+				break;
+		}
 
 		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events subscribed, got " + to_string(eventManager.getSubscribeCount())
+			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+
+		if (cgi.getBusyWorkerCount() != 0)
+			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != ::strlen(scriptOutput) ||

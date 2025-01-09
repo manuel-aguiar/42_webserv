@@ -16,7 +16,8 @@ CgiRequestData::CgiRequestData() :
 	m_readFd(-1),
 	m_writeFd(-1),
 	m_extension(""),
-	m_scriptPath("")
+	m_scriptPath(""),
+	m_eventManager(NULL)
 {
 	m_env.envBase.reserve(E_CGI_ENV_COUNT);
 }
@@ -53,5 +54,5 @@ void	CgiRequestData::reset()
 	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 		m_callbacks[i].reset();
 	
-	
+	m_eventManager = NULL;
 }

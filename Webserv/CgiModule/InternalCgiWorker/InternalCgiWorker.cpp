@@ -35,8 +35,10 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 
 	m_EmergencyPhone[0] = -1;
 	m_EmergencyPhone[1] = -1;
-	m_EmergencyEvent.setCallback(this, EventCallback_OnEmergency);
+	m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
 	m_EmergencyEvent.setMonitoredFlags(EPOLLIN);
+	m_EmergencyBytesRead = 0;
+	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
 
 CgiModule::InternalCgiWorker::~InternalCgiWorker()
@@ -61,34 +63,37 @@ void    CgiModule::InternalCgiWorker::reset()
 	m_envStr.clear();
 
 	m_EmergencyEvent.setFd(-1);
+	m_EmergencyBytesRead = 0;
+	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
 
-void	CgiModule::InternalCgiWorker::EventCallback_OnEmergency(Callback& event)
-{
-	InternalCgiWorker* worker = static_cast<InternalCgiWorker*>(event.getData());
-	worker->forcedClose();
-}
-
-void	CgiModule::InternalCgiWorker::cleanClose()
+void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
 {
 	int status;
 
-	if (m_pid != -1)
-	{
-		::waitpid(m_pid, &status, 0);
-		m_pid = -1;
-	}
-	m_CgiModule.mf_returnWorker(*this);
+	::waitpid(m_pid, &status, 0);
+	m_pid = -1;
 }
 
-void	CgiModule::InternalCgiWorker::forcedClose()
+void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
 {
 	if (m_pid != -1)
 	{
 		::kill(m_pid, SIGKILL);
 		::waitpid(m_pid, NULL, 0);
-		m_pid = -1;	
+		m_pid = -1;
 	}
+}
+
+void	CgiModule::InternalCgiWorker::cleanClose()
+{
+	mf_JustWaitChild();
+	m_CgiModule.mf_returnWorker(*this);
+}
+
+void	CgiModule::InternalCgiWorker::forcedClose()
+{
+	mf_KillWaitChild();
 	m_CgiModule.mf_returnWorker(*this);
 }
 
