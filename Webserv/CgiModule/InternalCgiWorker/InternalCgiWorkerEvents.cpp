@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 17:11:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:37:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
 {
 	InternalCgiWorker* worker = static_cast<InternalCgiWorker*>(event.getData());
-	worker->mf_readEmergencyPipe();
+	worker->mf_readEmergencyPhone();
 }
 
 
@@ -39,7 +39,7 @@ void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
 
 
 */
-void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
+void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 {
 	int		triggeredFlags;
 	int		bytesRead;

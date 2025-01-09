@@ -82,7 +82,7 @@ class CgiModule::InternalCgiWorker
 		// Events
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
 		void						mf_disableEmergencyEvent();
-		void						mf_readEmergencyPipe();
+		void						mf_readEmergencyPhone();
 
 		// Other helpers
 		void						mf_CallTheUser(const e_CgiCallback event);

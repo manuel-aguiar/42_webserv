@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:24:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 17:34:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,31 +54,31 @@ class CgiModule
 	private:
 
 		// internal classes, not exposed to the user
-		class 			InternalCgiWorker;
-		class			InternalCgiRequestData;
+		class 										InternalCgiWorker;
+		class										InternalCgiRequestData;
 
-		size_t																		m_numWorkers;
-		size_t																		m_backlog;
-		size_t																		m_busyWorkerCount;
+		size_t										m_numWorkers;
+		size_t										m_backlog;
+		size_t										m_busyWorkerCount;
 
 		// members fixed in place
-		HeapArray<InternalCgiWorker>												m_allWorkers;
-		HeapArray<InternalCgiRequestData>											m_allRequestData;
+		HeapArray<InternalCgiWorker>				m_allWorkers;
+		HeapArray<InternalCgiRequestData>			m_allRequestData;
 		
 		// queues for available workers, request data and execution
-		HeapCircularQueue<InternalCgiWorker*>										m_availableWorkers;
-		HeapCircularQueue<InternalCgiRequestData*>									m_availableRequestData;
-		HeapCircularQueue<InternalCgiRequestData*>									m_executionQueue;
+		HeapCircularQueue<InternalCgiWorker*>		m_availableWorkers;
+		HeapCircularQueue<InternalCgiRequestData*>	m_availableRequestData;
+		HeapCircularQueue<InternalCgiRequestData*>	m_executionQueue;
 
-		std::map<t_extension, t_path>												m_Interpreters;
+		std::map<t_extension, t_path>				m_Interpreters;
 
-		t_CgiEnvKey																	m_baseEnv[E_CGI_ENV_COUNT];
+		t_CgiEnvKey									m_baseEnv[E_CGI_ENV_COUNT];
 
-		Globals&																	m_globals;
+		Globals&									m_globals;
 
-		void																		mf_returnWorker(InternalCgiWorker& worker);
-		void																		mf_returnRequestData(InternalCgiRequestData& data);
-		void																		mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
+		void										mf_returnWorker(InternalCgiWorker& worker);
+		void										mf_returnRequestData(InternalCgiRequestData& data);
+		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);
