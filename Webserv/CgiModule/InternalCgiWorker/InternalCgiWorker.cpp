@@ -68,43 +68,8 @@ void    CgiModule::InternalCgiWorker::reset()
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
 
-void	CgiModule::InternalCgiWorker::mf_CheckExitStatus(const int status)
-{
-	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
-		mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-}
 
-void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
-{
-	int status;
-
-	if (m_pid != -1)
-	{
-		::waitpid(m_pid, &status, 0);
-		m_pid = -1;
-		mf_CheckExitStatus(status);
-	}
-}
-
-void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
-{
-	int status;
-
-	if (m_pid != -1)
-	{
-		::kill(m_pid, SIGKILL);
-		::waitpid(m_pid, &status, 0);
-		m_pid = -1;
-	}
-}
-
-void	CgiModule::InternalCgiWorker::cleanClose()
-{
-	mf_JustWaitChild();
-	m_CgiModule.mf_returnWorker(*this);
-}
-
-void	CgiModule::InternalCgiWorker::forcedClose()
+void	CgiModule::InternalCgiWorker::stopExecution()
 {
 	mf_KillWaitChild();
 	m_CgiModule.mf_returnWorker(*this);
@@ -113,13 +78,6 @@ void	CgiModule::InternalCgiWorker::forcedClose()
 CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
 {
 	return (m_curRequestData);
-}
-
-void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
-{
-	if (fd != -1 && ::close(fd) == -1)
-		m_globals.logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
-	fd = -1;
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:51:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:10:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:10:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ void A_ProtoRequest_CgiGateway::onExecute(Callback& callback)
 
 void A_ProtoRequest_CgiGateway::onErrorStartup(Callback& callback)
 {
-	(void)callback;
+	A_ProtoRequest& request = *static_cast<A_ProtoRequest*>(callback.getData());
+	request.falseStartCgi();
 }
 
 void A_ProtoRequest_CgiGateway::onErrorRuntime(Callback& callback)

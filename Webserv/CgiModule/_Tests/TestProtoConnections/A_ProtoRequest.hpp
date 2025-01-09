@@ -31,10 +31,15 @@ class A_ProtoRequest
 		~A_ProtoRequest();
 		A_ProtoRequest(const A_ProtoRequest& copy);
 		
-		void	readCgi();
-		void	writeCgi();
-		void   	executeCgi();
-		void	cancelCgi();
+
+		// Callbacks for the event manager
+		void	OnRead();
+		void	onWrite();
+
+		// Callbacks for the CGI Module
+		void   	executeCgi();		//On execute
+		void	falseStartCgi();	// on error startup
+		void	cancelCgi();		// on error runtime
 
 		void	debugPrint() const;
 

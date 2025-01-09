@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:24:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:39:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
 		{
 			worker = requestData->accessExecutor();
-			worker->forcedClose();
+			worker->stopExecution();
 			break ;
 		}
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
@@ -127,7 +127,7 @@ void	CgiModule::forceStop()
 {
 	for (HeapArray<InternalCgiWorker>::iterator it = m_allWorkers.begin(); it != m_allWorkers.end(); it++)
 	{
-		it->forcedClose();
+		it->stopExecution();
 		it->reset();
 	}
 }

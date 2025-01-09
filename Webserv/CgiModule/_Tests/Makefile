@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/09 10:53:11 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/09 15:08:11 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ SRCS =  $(SRC_PATH)/Webserv/CgiModule/_Tests/main.cpp \
         \
         $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
         $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
-        $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestReadWrite.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest_onCallbacksCgi.cpp \
 						\
         $(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
 						\
@@ -38,7 +38,9 @@ SRCS =  $(SRC_PATH)/Webserv/CgiModule/_Tests/main.cpp \
         $(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
         $(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
         $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
         $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
+        $(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
         $(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
         $(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
         $(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \

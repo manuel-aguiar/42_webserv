@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   A_ProtoRequestReadWrite.cpp                        :+:      :+:    :+:   */
+/*   A_ProtoRequest_onCallbacksCgi.cpp                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:21:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:09:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,19 @@
 void A_ProtoRequest::EventCallbackOnRead(Callback& event)
 {
 	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
-	request->readCgi();
+	request->OnRead();
 }
 
 void A_ProtoRequest::EventCallbackOnWrite(Callback& event)
 {
 	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
-	request->writeCgi();
+	request->onWrite();
 }
 
-
-void	A_ProtoRequest::writeCgi()
+/*
+	WriteCgi, to be triggered by the event manager via the Callback
+*/
+void	A_ProtoRequest::onWrite()
 {
 	int					triggeredFlags;
 	int					bytesWritten;
@@ -68,14 +70,15 @@ void	A_ProtoRequest::writeCgi()
 	}
 }
 
-void	A_ProtoRequest::readCgi()
+/*
+	ReadCgi, to be triggered by the event manager via the Callback
+*/
+void	A_ProtoRequest::OnRead()
 {
 	size_t				bytesRead;
 	int					triggeredFlags;
 	
 	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
-
-	
 
 	if (triggeredFlags & EPOLLIN)
 	{
@@ -90,11 +93,6 @@ void	A_ProtoRequest::readCgi()
 		}
 	}
 
-	/*
-		There must be some distinction between finishing reading because there is
-		no more and finish reading because there was an error..........
-	*/
-
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
 		m_manager.delEvent(m_CgiReadEvent);
@@ -104,6 +102,10 @@ void	A_ProtoRequest::readCgi()
 	}
 }
 
+/*
+	Setup events to read/write from/to the cgi script,
+	setup the callbacks to be triggered by the event manager
+*/
 void	A_ProtoRequest::executeCgi()
 {
 	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
@@ -118,6 +120,9 @@ void	A_ProtoRequest::executeCgi()
 	m_manager.addEvent(m_CgiWriteEvent);
 }
 
+/*
+	The oposite of execute Cgi, delete events and finish request
+*/
 void	A_ProtoRequest::cancelCgi()
 {	
 	if (m_CgiReadEvent.getFd() != -1)
@@ -132,5 +137,17 @@ void	A_ProtoRequest::cancelCgi()
 	}
 	m_cgi.finishRequest(*m_CgiRequestData);
 
+	//inform client something bad happened
+
 	m_CancelCount++;
+}
+
+/*
+	Not much here, just mark the request as finished
+*/
+void	A_ProtoRequest::falseStartCgi()
+{
+	m_cgi.finishRequest(*m_CgiRequestData);
+
+	//inform client something bad happened
 }

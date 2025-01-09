@@ -24,13 +24,13 @@
 # include <sys/wait.h>
 
 /*
+	Prepare pipes, prepare fds, prepare env vars and execve arguments.
 
-	If any syscall fails, we should let the caller know there was an error, cancel the CgiRequest and reset it
-	reset the InternalCgiWorker and return
+	Inform the user that execution will begin, user can prepare its setup based on the pipes provided
+	(subscribind read and write ends to its epoll, for example)
 
+	Fork, child does child, parent does parent
 */
-
-
 void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 {
 	m_curRequestData = &request;
@@ -40,7 +40,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		goto ErrorHandler;
+		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
     }
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -50,11 +50,11 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		goto ErrorHandler;
+		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
 	}
 
 	if (!mf_prepareExecve())
-		goto ErrorHandler;
+		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
@@ -66,38 +66,26 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 
 	mf_CallTheUser(E_CGI_ON_EXECUTE);
 
-
-
 	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		goto ErrorHandler;
+		return (mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME));
     }
+
     if (m_pid == 0)
 		mf_executeChild();
 	else
 		mf_executeParent();
 	
-	return ;
-
-	ErrorHandler:
-		mf_CallTheUser(E_CGI_ON_ERROR_STARTUP);
-		m_CgiModule.finishRequest(*m_curRequestData);
-
 }
 
-void	CgiModule::InternalCgiWorker::mf_CallTheUser(const e_CgiCallback event)
-{
-	Callback& callback = m_curRequestData->accessCallback(event);
-
-	if (callback.getHandler() == NULL)
-		return ;
-	callback.execute();
-}
-
+/*
+	Putting env variables in place for execution.
+	Try-catch because the DynArray may throw if it fails to allocate memory
+*/
 bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
 	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator
@@ -147,7 +135,10 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 	return (false);
 }
 
-
+/*
+	Parent just closes the pipe ends that doesn't use and simply waits for the EventManager
+	to inform it that the child process has exited -> Events
+*/
 void	CgiModule::InternalCgiWorker::mf_executeParent()
 {
 	mf_closeFd(m_ParentToChild[0]);
@@ -205,103 +196,3 @@ void	CgiModule::InternalCgiWorker::mf_executeChild()
 
 
 
-void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
-{
-	InternalCgiWorker* worker = static_cast<InternalCgiWorker*>(event.getData());
-	worker->mf_readEmergencyPipe();
-}
-
-
-/*
-	Although unlikely, we may not receive the full emergency message in one go, so we need to keep reading
-	until we get the full message. We will only read 2 bytes, so we can be sure that we will get the full
-
-	So, there are various scenarios that can happen:
-
-		1. we read zero bytes (EOF), 0 emergency bytes read so far,  -> successfull exit by the child, cleanclose()
-		2. we read zero bytes (EOF), 1 emergency bytes read so far, -> incomplete message, forcedclose()
-		3. we read 1 bytes
-
-
-*/
-void	CgiModule::InternalCgiWorker::mf_readEmergencyPipe()
-{
-	int		triggeredFlags;
-	int		bytesRead;
-
-	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
-
-	if (triggeredFlags & EPOLLIN)
-	{
-		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
-							&m_EmergencyBuffer[m_EmergencyBytesRead], 
-							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
-
-		m_EmergencyBytesRead += bytesRead;
-
-		switch (bytesRead)
-		{
-			case 0:
-			{
-				switch (m_EmergencyBytesRead)
-				{
-					case 0:
-						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-						return (mf_JustWaitChild());
-					case 1:
-
-						m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-						mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-						return (forcedClose());
-				}
-				return ;
-			}
-
-			case 2:
-			{
-				m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-				if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
-					+ std::string(strerror(m_EmergencyBuffer[1])));
-
-				else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
-					+ std::string(strerror(m_EmergencyBuffer[1])));
-				mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-				return (forcedClose());
-			}
-
-			case 1:
-			{
-				if (m_EmergencyBytesRead == 2)
-				{
-					m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-					if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
-						+ std::string(strerror(m_EmergencyBuffer[1])));
-
-					else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
-						+ std::string(strerror(m_EmergencyBuffer[1])));
-					mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-					return (forcedClose());
-				}
-			}
-		}
-	}
-
-	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
-	{
-		if (m_EmergencyBytesRead == 1)
-		{
-			if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): inconclusive error");
-			else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): inconclusive error");
-
-			mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-		}
-			
-		return (forcedClose());
-	}
-}

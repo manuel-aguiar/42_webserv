@@ -39,53 +39,58 @@ class CgiModule::InternalCgiWorker
 		void    					execute(InternalCgiRequestData& request);
 		void    					reset();
 		
-		void						cleanClose();
-		void						forcedClose();
+		void						stopExecution();
 
 		InternalCgiRequestData*		accessCurRequestData();
 
 
 
 	private:
+
 		InternalCgiRequestData*		m_curRequestData;
 
+		// scripts arguments
 		DynArray<std::string>		m_envStr;
 		DynArray<char *>			m_envPtr;
 		DynArray<char *>			m_argPtr;
 
+		// pipes and buffers
 		t_fd						m_ParentToChild[2];
 		t_fd						m_ChildToParent[2];
-
 		t_fd						m_EmergencyPhone[2];
 		char						m_EmergencyBuffer[2];
 		int							m_EmergencyBytesRead;
 		Event						m_EmergencyEvent;
-
 		t_pid						m_pid;
-
-		CgiModule&					m_CgiModule;
-		Globals&					m_globals;
-
-		// helpers
-		void						mf_executeParent();
-		void						mf_executeChild();
-		bool						mf_prepareExecve();
-		void						mf_CallTheUser(const e_CgiCallback event);
-		void						mf_closeFd(t_fd& fd);
-		void						mf_closeAllFds();
-
-		static void					mf_EventCallback_OnEmergency(Callback& event);	
-		void						mf_readEmergencyPipe();
-
-		void						mf_JustWaitChild();
-		void						mf_KillWaitChild();
-		void						mf_CheckExitStatus(const int status);
 
 		typedef enum
 		{
 			E_EMER_DUP2 = 1,
 			E_EMER_EXECVE,
 		} 	e_EmergencyCode;
+
+		
+		// External sources
+		CgiModule&					m_CgiModule;
+		Globals&					m_globals;
+
+		// execute
+		void						mf_executeParent();
+		void						mf_executeChild();
+		bool						mf_prepareExecve();
+
+		// Events
+		static void					mf_EventCallback_OnEmergency(Callback& event);	
+		void						mf_readEmergencyPipe();
+
+		// Other helpers
+		void						mf_CallTheUser(const e_CgiCallback event);
+		void						mf_closeFd(t_fd& fd);
+		void						mf_JustWaitChild();
+		void						mf_KillWaitChild();
+
+
+
 
 };
 
