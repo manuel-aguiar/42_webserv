@@ -67,11 +67,11 @@ void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &v
 {
 	if (m_keys.find(key) == m_keys.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value, 0);
+	(this->*m_keys[key])(value);
 }
 
-int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, ServerBlock &server,
-										ServerLocation &location, const int &currentLevel)
+int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, std::vector<ServerBlock> &servers,
+										std::vector<ServerLocation> &locations, const int &currentLevel)
 {
 	std::istringstream iss(line);
 	std::string key, value;
@@ -87,28 +87,29 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 		{
 			case PROGRAM_LEVEL:
 				try {
+					// std::cout << "programLevel Set!! " << value << "\n";
 					m_setConfigValue(key, value);
 				}
 				catch (std::exception &e) {
-					std::cerr << e.what() << " on line " << currentLine << std::endl;
+					std::cerr << "Error: " << e.what() << " on line " << currentLine << std::endl;
 					return (0);
 				}
 				break ;
 			case SERVER_LEVEL:
 				try {
-				server.addConfigValue(key, value);
+					servers.back().addConfigValue(key, value);
 				}
 				catch (std::exception &e) {
-					std::cerr << e.what() << " on line " << currentLine << std::endl;
+					std::cerr << "Error: " << e.what() << " on line " << currentLine << std::endl;
 					return (0);
 				}
 				break ;
 			case LOCATION_LEVEL:
 				try {
-					location.addConfigValue(key, value);
+					locations.back().addConfigValue(key, value);
 				}
 				catch (std::exception &e) {
-					std::cerr << e.what() << " on line " << currentLine << std::endl;
+					std::cerr << "Error: " << e.what() << " on line " << currentLine << std::endl;
 					return (0);
 				}
 				break ;
@@ -116,14 +117,13 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 	}
 	if (value.empty())
 	{
-		std::cerr << "key \"" << key <<  "\" with no value on line " << currentLine << std::endl;
+		std::cerr << "Error: key \"" << key <<  "\" with no value on line " << currentLine << std::endl;
 		return (0);
 	}
 	return (1);
 }
 
-bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine, 
-										ServerBlock &server, ServerLocation &location, 
+bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine,
 										std::vector<ServerBlock> &servers, 
 										std::vector<ServerLocation> &locations)
 {
@@ -135,27 +135,25 @@ bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine
 			return (0);
 		case SERVER_LEVEL:
 			currentLevel = PROGRAM_LEVEL;
-			server.setDefaults();
-			if (!server.validate())
+			servers.back().setDefaults();
+			if (!servers.back().validate())
 			{
 				std::cerr << "Error: config parsing: invalid server block closing on line "
 					<< currentLine << std::endl;
 				return (0);
 			}
-			server.setLocations(locations);
-			servers.push_back(server);
+			servers.back().setLocations(locations);
 			locations.clear();
 			break ;
 		case LOCATION_LEVEL:
 			currentLevel = SERVER_LEVEL;
-			location.setDefaults();
-			if (!location.validate())
+			locations.back().setDefaults();
+			if (!locations.back().validate())
 			{
 				std::cerr << "Error: config parsing: invalid location block closing on line "
 					<< currentLine << std::endl;
 				return (0);
 			}
-			locations.push_back(location);
 			break ;
 		default:
 			std::cerr << "Parsing: Unexpected Error" << std::endl;
@@ -170,7 +168,6 @@ int		ServerConfig::parseConfigFile()
 	std::string		line;
 	size_t			currentLine = 0;
 	int				currentLevel = PROGRAM_LEVEL;
-	ServerBlock		server;
 	ServerLocation	location;
 
 	std::vector<ServerBlock>			servers;
@@ -197,7 +194,7 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			server = ServerBlock();
+			servers.push_back(ServerBlock());
 			m_serverCount++;
 			currentLevel = SERVER_LEVEL;
 		}
@@ -209,17 +206,17 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			location = ServerLocation();
+			locations.push_back(ServerLocation());
 			currentLevel = LOCATION_LEVEL;
 		}
 		else if (line == "}")
 		{
-			if (!m_handleClosingBracket(currentLevel, currentLine, server, location, servers, locations))
+			if (!m_handleClosingBracket(currentLevel, currentLine, servers, locations))
 				return (0);
 		}
 		else
 		{
-			if (!m_parseConfigLine(line, currentLine, server, location, currentLevel))
+			if (!m_parseConfigLine(line, currentLine, servers, locations, currentLevel))
 			{
 				std::cerr << "Error: config parsing: invalid input on line "
 					<< currentLine << std::endl;
@@ -237,7 +234,7 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
-	m_setDefaults(0);
+	m_setDefaults();
 	m_setServers(servers);
 	return (1);
 }
@@ -273,28 +270,22 @@ void		ServerConfig::setConfigPath(const t_path &path)
 	m_configFilePath = path;
 }
 
-void		ServerConfig::setMaxConnections(const std::string &value, const int &flag)
+void		ServerConfig::setMaxConnections(const std::string &value)
 {
-	if (!flag && !m_max_connections.empty())
-		throw (std::invalid_argument("max_connections already set"));
 	if (!isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_connections must be a positive number"));
 	m_max_connections = value;
 }
 
-void		ServerConfig::setMaxConcurrentCgi(const std::string &value, const int &flag)
+void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	if (!flag && !m_max_concurrent_cgi.empty())
-		throw (std::invalid_argument("max_concurrent_cgi already set"));
 	if (!isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
 	m_max_concurrent_cgi = value;
 }
 
-void	ServerConfig::setMaxCgiBacklog(const std::string &value, const int &flag)
+void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	if (!flag && !m_max_cgi_backlog.empty())
-		throw (std::invalid_argument("max_cgi_backlog already set"));
 	if (!isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
 	m_max_cgi_backlog = value;
@@ -318,20 +309,14 @@ void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
 	}
 }
 
-void	ServerConfig::m_setDefaults(const int &flag)
+void	ServerConfig::m_setDefaults()
 {
-	try {
-		setMaxConnections(m_configDefault.maxConnections, flag);
-	}
-	catch (std::exception &e) {}
-	try {
-		setMaxConcurrentCgi(m_configDefault.maxCGI, flag);
-	}
-	catch (std::exception &e) {}
-	try {
-		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog, flag);
-	}
-	catch (std::exception &e) {}
+	if (m_max_connections.empty())
+		setMaxConnections(m_configDefault.maxConnections);
+	if (m_max_concurrent_cgi.empty())
+		setMaxConcurrentCgi(m_configDefault.maxCGI);
+	if (m_max_cgi_backlog.empty())
+		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
 }
 
 // Debug functions

@@ -43,12 +43,12 @@ class ServerBlock
 		const std::map<std::string, ServerLocation>& 		getLocations() const;
 
 		void							setLocations(const std::vector<ServerLocation> &Locations);
-		void							setRootPath(const std::string &value, const int &flag = 0);
-		void							setClientBodySize(const std::string &value, const int &flag = 0);
-		void							setClientHeaderSize(const std::string &value, const int &flag = 0);
-		void							addListener(const std::string &value, const int &flag = 0);
-		void							addServerName(const std::string &value, const int &flag = 0);
-		void							addErrorPage(const std::string &value, const int &flag = 0);
+		void							setRootPath(const std::string &value);
+		void							setClientBodySize(const std::string &value);
+		void							setClientHeaderSize(const std::string &value);
+		void							addListener(const std::string &value);
+		void							addServerName(const std::string &value);
+		void							addErrorPage(const std::string &value);
 		const std::set<t_listeners>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
@@ -56,7 +56,7 @@ class ServerBlock
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
 
-		void							setDefaults(const int &flag = 0);
+		void							setDefaults();
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 
@@ -64,7 +64,7 @@ class ServerBlock
 		void							printServerConfig() const;
 
 	private:
-		typedef void (ServerBlock::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
 		std::set<t_listeners>							m_listen;

@@ -135,7 +135,7 @@ int main()
 	std::cout << "=== Testing ServerConfig ===" << std::endl;
 	std::cout << "- Pass means that the output value is the expected value. Fail Means it isnt." << std::endl;
 	std::cout << "- Wether the value is correctly stored needs to be checked manually by printing the stored information." << std::endl;
-	std::cout << "- Enter 0 to do all tests, 1 to do the valid situations, 2 to do the invalid situations" << std::endl;
+	std::cout << "- Enter 0 to do all tests, 1 to do the valid situations, 2 to do the invalid situations, 3 for custom tests" << std::endl;
 	std::cin >> tests;
 	std::cout << "- Enter 0 to see only the results or 1 to print stored information" << std::endl;
 	std::cin >> printDetails;
@@ -155,6 +155,10 @@ int main()
 		case 2:
 			std::cout << std::endl << "=== INVALID TESTS ===" << std::endl;
 			testFolder(TESTFOLDER + "Fail", printDetails, testFail);
+			break;
+		case 3:
+			std::cout << std::endl << "=== CUSTOM TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Custom", printDetails, testPass);
 			break;
 	}
 	return 0;

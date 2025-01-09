@@ -53,13 +53,13 @@ class ServerLocation
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
 		std::string						getType() const;
-		void							setType(const std::string &value, const int &flag = 0);
-		void							setPath(const std::string &value, const int &flag = 0);
-		void							setRoot(const std::string &value, const int &flag = 0);
-		void							setAutoindex(const std::string &value, const int &flag = 0);
-		void							addMethod(const std::string &value, const int &flag = 0);
+		void							setType(const std::string &value);
+		void							setPath(const std::string &value);
+		void							setRoot(const std::string &value);
+		void							setAutoindex(const std::string &value);
+		void							addMethod(const std::string &value);
 
-		void							setDefaults(const int &flag = 0);
+		void							setDefaults();
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 
@@ -69,7 +69,7 @@ class ServerLocation
 	private:
 
 		// Key/value storing for config settings
-		typedef void (ServerLocation::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerLocation::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
 		std::set<std::string> 			m_validTypes;
@@ -78,7 +78,7 @@ class ServerLocation
 		std::string						m_path;
 		std::string						m_root;
 		std::string						m_type;
-		bool							m_autoIndex;
+		std::string						m_autoIndex;
 		std::set<std::string>			m_methods;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here

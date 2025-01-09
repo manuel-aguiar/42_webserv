@@ -48,9 +48,9 @@ class ServerConfig
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
 		void										setConfigPath(const t_path &path);
-		void										setMaxConnections(const std::string &value, const int &flag = 0);
-		void										setMaxConcurrentCgi(const std::string &value, const int &flag = 0);
-		void										setMaxCgiBacklog(const std::string &value, const int &flag = 0);
+		void										setMaxConnections(const std::string &value);
+		void										setMaxConcurrentCgi(const std::string &value);
+		void										setMaxCgiBacklog(const std::string &value);
 
 		int											parseConfigFile();
 		// Debug
@@ -69,7 +69,7 @@ class ServerConfig
 		};
 
 		// Key/value storing for config settings
-		typedef void (ServerConfig::*f_addConfigValue)(const std::string &, const int &);
+		typedef void (ServerConfig::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue>				m_keys;
 
 
@@ -87,14 +87,14 @@ class ServerConfig
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
 		int									m_parseConfigLine(const std::string &line, const size_t &currentLine,
-															ServerBlock &server, ServerLocation &location,
+															std::vector<ServerBlock> &servers,
+															std::vector<ServerLocation> &locations,
 															const int &currentLevel);
 		void								m_setConfigValue(const std::string &key, const std::string &value);
 		bool								m_updateFile();
 		void								m_setServers(std::vector<ServerBlock> &servers);
-		void								m_setDefaults(const int &flag);
-		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine, 
-												ServerBlock &server, ServerLocation &location, 
+		void								m_setDefaults();
+		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
 												std::vector<ServerBlock> &servers, 
 												std::vector<ServerLocation> &locations);
 };

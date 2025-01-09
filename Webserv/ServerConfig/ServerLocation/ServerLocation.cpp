@@ -17,7 +17,7 @@ ServerLocation::ServerLocation()
 	m_keys["path"]				= &ServerLocation::setPath;
 	m_keys["root"]				= &ServerLocation::setRoot;
 	m_keys["type"]				= &ServerLocation::setType;
-	m_keys["autoIndex"]			= &ServerLocation::setAutoindex;
+	m_keys["auto_index"]		= &ServerLocation::setAutoindex;
 	m_keys["methods"]			= &ServerLocation::addMethod;
 
 	m_validTypes.insert("regular"); 
@@ -44,6 +44,8 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_type = other.m_type;
 	m_autoIndex = other.m_autoIndex;
 	m_methods = other.m_methods;
+	m_validTypes = other.m_validTypes;
+	m_validMethods = other.m_validMethods;
 	return (*this);
 }
 
@@ -56,7 +58,7 @@ void	ServerLocation::addConfigValue(const std::string &key, const std::string &v
 {
 	if (m_keys.find(key) == m_keys.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value, 0);
+	(this->*m_keys[key])(value);
 }
 
 // Getters & Setters
@@ -73,7 +75,7 @@ const std::string&	ServerLocation::getRoot() const
 
 bool	ServerLocation::getAutoindex() const
 {
-	return (m_autoIndex);
+	return (m_autoIndex[0] == 1);
 }
 
 const std::set<std::string>&	ServerLocation::getMethods() const
@@ -86,50 +88,39 @@ std::string	ServerLocation::getType() const
 	return (m_type);
 }
 
-void		ServerLocation::setType(const std::string &value, const int &flag)
+void		ServerLocation::setType(const std::string &value)
 {
-	if (!flag && !m_type.empty())
-		throw (std::invalid_argument("type already set"));
 	if (m_validTypes.find(value) == m_validTypes.end())
 		throw (std::invalid_argument("invalid type value"));
 	m_type = value;
 }
 
-void		ServerLocation::setPath(const std::string &value, const int &flag)
+void		ServerLocation::setPath(const std::string &value)
 {
-	if (!flag && !m_path.empty())
-		throw (std::invalid_argument("path path already set"));
 	m_path = value;
 }
 
-void		ServerLocation::setRoot(const std::string &value, const int &flag)
+void		ServerLocation::setRoot(const std::string &value)
 {
-	if (!flag && !m_root.empty())
-		throw (std::invalid_argument("root path already set"));
 	m_root = value;
 }
 
-void		ServerLocation::setAutoindex(const std::string &value, const int &flag)
+void		ServerLocation::setAutoindex(const std::string &value)
 {
-	(void)flag;
-	// if (!flag && !m_autoIndex)
-	// 	throw (std::invalid_argument("autoIndex already set"));
 	if (value.size() != 1 || (value[0] != '0' && value[0] != '1'))
 		throw (std::invalid_argument("invalid autoIndex value"));
 	m_autoIndex = (value[0] == '1');
 }
 
-void		ServerLocation::addMethod(const std::string &value, const int &flag)
+void		ServerLocation::addMethod(const std::string &value)
 {
-	(void)flag;
 	std::string	lowercaseStr = strToLower(value);
 	
 	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
 		throw (std::invalid_argument("invalid method"));
 	if (m_methods.find(lowercaseStr) != m_methods.end())
 	{
-		if (!flag)
-			throw (std::invalid_argument("method already set"));
+		(void)lowercaseStr; // change this please
 	}
 	else
 		m_methods.insert(lowercaseStr);
@@ -151,27 +142,19 @@ bool		ServerLocation::validate() const
 	return (1);
 }
 
-void	ServerLocation::setDefaults(const int &flag)
+void	ServerLocation::setDefaults()
 {
 	DefaultConfig	defaults;
 	std::istringstream iss(defaults.methods);
 	std::string value;
 
-	try {
-		setType(defaults.type, flag);
-	}
-	catch (std::exception &e) {}
-	try {
-
-		if (getMethods().empty())
-			while (iss >> value)
-				addMethod(value, 1);
-	}
-	catch (std::exception &e) {}
-	try {
-		setAutoindex(defaults.autoIndex, flag);
-	}
-	catch (std::exception &e) {}
+	if (m_type.empty())
+		setType(defaults.type);
+	if (m_methods.empty())
+		while (iss >> value)
+			addMethod(value);
+	if (m_autoIndex.empty())
+		setAutoindex(defaults.autoIndex);
 }
 
 void		ServerLocation::printLocationConfig() const

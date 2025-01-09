@@ -47,18 +47,13 @@ ServerBlock::ServerBlock(const ServerBlock &other)
 	*this = other;
 }
 
-void	ServerBlock::setRootPath(const std::string &value, const int &flag)
+void	ServerBlock::setRootPath(const std::string &value)
 {
-	if (!flag && !m_root.empty())
-		throw (std::invalid_argument("root path already set"));
-
 	m_root = value;
 }
 
-void	ServerBlock::setClientBodySize(const std::string &value, const int &flag)
+void	ServerBlock::setClientBodySize(const std::string &value)
 {
-	if (!flag && !m_client_body_size.empty())
-		throw (std::invalid_argument("client body size already set"));
 	try {
 		parse_size(value);
 	}
@@ -68,10 +63,8 @@ void	ServerBlock::setClientBodySize(const std::string &value, const int &flag)
 	m_client_body_size = value;
 }
 
-void	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
+void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
-	if (!flag && !m_client_header_size.empty())
-		throw (std::invalid_argument("client header size already set"));
 	try {
 		parse_size(value);
 	}
@@ -81,20 +74,16 @@ void	ServerBlock::setClientHeaderSize(const std::string &value, const int &flag)
 	m_client_header_size = value;
 }
 
-void	ServerBlock::addListener(const std::string &value, const int &flag)
+void	ServerBlock::addListener(const std::string &value)
 {
-	(void)flag;
 	std::string	hostname;
 	std::string	port;
 	size_t		portValue;
 	size_t		colonPos;
 
-	// if (!flag && !m_listen)
-	// 	throw (std::invalid_argument("listener already set"));
-
 	colonPos = value.find(':');
 	if (colonPos == 0 || colonPos == value.length() - 1)
-		throw (std::invalid_argument("Error: Invalid 'listen' value. The input should be in 'hostname:port' format."));
+		throw (std::invalid_argument("Invalid 'listen' value. The input should be in 'hostname:port' format."));
 	if (colonPos == std::string::npos)
 	{
 		hostname = DEFAULTCONF_BLOCK_IP_LISTEN;
@@ -103,27 +92,25 @@ void	ServerBlock::addListener(const std::string &value, const int &flag)
 	else
 	{
 		if (value.find(':', colonPos + 1) != std::string::npos)
-			throw (std::invalid_argument("Error: Invalid 'listen' value. The input should be in 'hostname:port' format."));
+			throw (std::invalid_argument("Invalid 'listen' value. The input should be in 'hostname:port' format."));
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
 	portValue = stoull(port); // fix throw
 	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
-		throw (std::invalid_argument("Error: Invalid port number. Port must be a number between 1 and 65535."));
+		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
 	m_listen.insert(t_listeners(hostname, port));
 }
 
-void	ServerBlock::addServerName(const std::string &value, const int &flag)
+void	ServerBlock::addServerName(const std::string &value)
 {
-	(void)flag;
 	if (m_server_name.find(value) != m_server_name.end())
 		throw (std::invalid_argument("server name already set"));
 	m_server_name.insert(value);
 }
 
-void	ServerBlock::addErrorPage(const std::string &value, const int &flag)
+void	ServerBlock::addErrorPage(const std::string &value)
 {
-	(void)flag;
 	std::stringstream	ss;
 	std::string			error_code;
 	std::string			path;
@@ -145,7 +132,7 @@ void	ServerBlock::addConfigValue(const std::string &key, const std::string &valu
 {
 	if (m_keys.find(key) == m_keys.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value, 0);
+	(this->*m_keys[key])(value);
 }
 
 const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
@@ -183,22 +170,16 @@ const std::string&	ServerBlock::getRoot() const
 	return (m_root);
 }
 
-void	ServerBlock::setDefaults(const int &flag)
+void	ServerBlock::setDefaults()
 {
 	DefaultConfig	defaults;
 
-	try {
-		setRootPath(defaults.serverRoot, flag);
-	}
-	catch (std::exception &e) {}	
-	try {
-		setClientBodySize(defaults.maxClientBodySize, flag);
-	}
-	catch (std::exception &e) {}
-	try {
-		setClientHeaderSize(defaults.maxClientHeaderSize, flag);
-	}
-	catch (std::exception &e) {}
+	if (m_root.empty())
+		setRootPath(defaults.serverRoot);
+	if (m_client_body_size.empty())
+		setClientBodySize(defaults.maxClientBodySize);
+	if (m_client_header_size.empty())
+		setClientHeaderSize(defaults.maxClientHeaderSize);
 }
 
 bool	ServerBlock::validate() const
