@@ -106,6 +106,7 @@ void	ServerBlock::addServerName(const std::string &value)
 {
 	if (m_server_name.find(value) != m_server_name.end())
 		throw (std::invalid_argument("server name already set"));
+	// up to 253 characters and 1-63 characters long between dots
 	m_server_name.insert(value);
 }
 

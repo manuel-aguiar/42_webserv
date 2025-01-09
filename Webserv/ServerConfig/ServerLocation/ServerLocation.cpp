@@ -118,11 +118,7 @@ void		ServerLocation::addMethod(const std::string &value)
 	
 	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
 		throw (std::invalid_argument("invalid method"));
-	if (m_methods.find(lowercaseStr) != m_methods.end())
-	{
-		(void)lowercaseStr; // change this please
-	}
-	else
+	if (m_methods.find(lowercaseStr) == m_methods.end())
 		m_methods.insert(lowercaseStr);
 }
 
