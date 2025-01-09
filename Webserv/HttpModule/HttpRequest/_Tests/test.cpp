@@ -1,160 +1,320 @@
 #include "../HttpRequest.hpp"
 #include <iostream>
 #include <cassert>
+#include <iomanip>
 
-void test_valid_simple_request() {
-    std::cout << "\nTesting valid simple request..." << std::endl;
-
-    const std::string raw_request =
-        "GET /index.html HTTP/1.1\r\n"
-        "Host: localhost:8080\r\n"
-        "User-Agent: curl/7.68.0\r\n"
-        "Accept: */*\r\n"
-        "\r\n";
-
-    HttpRequest request;
-    int status = request.parse(raw_request);
-
-    assert(status == RequestStatus::OK);
-    assert(request.getMethod() == "GET");
-    assert(request.getUri() == "/index.html");
-    assert(request.getHttpVersion() == "HTTP/1.1");
-    assert(request.getHeaders().at("Host") == "localhost:8080");
-
-    std::cout << "  PASS" << std::endl;
+// Helper function to print request details
+void printRequest(const std::string& method, const std::string& uri, const std::string& version, const std::string& headers) {
+    std::cout << "┌──────────── Request Details ────────────┐" << std::endl;
+    std::cout << "│ Method:  " << std::left << std::setw(28) << method << "│" << std::endl;
+    std::cout << "│ URI:     " << std::left << std::setw(28) << uri << "│" << std::endl;
+    std::cout << "│ Version: " << std::left << std::setw(28) << version << "│" << std::endl;
+    std::cout << "│ Headers: " << std::left << std::setw(28) << headers << "│" << std::endl;
+    std::cout << "└─────────────────────────────────────────┘" << std::endl;
 }
 
-void test_invalid_request_line() {
-    std::cout << "\nTesting invalid request line..." << std::endl;
+void testRequestLineParsing() {
+    std::cout << "\n=== Testing Request Line Parsing ===\n";
 
-    const std::string raw_request =
-        "INVALID /index.html\r\n"  // Invalid method
-        "Host: localhost:8080\r\n"
-        "\r\n";
+    {
+        std::cout << "  Test1: Valid request line (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /index.html HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
 
-    HttpRequest request;
-    int status = request.parse(raw_request);
+            HttpRequest request;
+            int status = request.parse(raw_request);
 
-    assert(status == RequestStatus::METHOD_NOT_ALLOWED);
+            assert(status == RequestStatus::OK);
+            assert(request.getMethod() == "GET");
+            assert(request.getUri() == "/index.html");
+            assert(request.getHttpVersion() == "HTTP/1.1");
 
-    std::cout << "  PASS" << std::endl;
-}
-
-void test_post_request_with_body() {
-    std::cout << "\nTesting POST request with body..." << std::endl;
-
-    const std::string raw_request =
-        "POST /submit HTTP/1.1\r\n"
-        "Host: localhost:8080\r\n"
-        "Content-Length: 11\r\n"
-        "Content-Type: application/x-www-form-urlencoded\r\n"
-        "\r\n"
-        "name=John42";
-
-    HttpRequest request;
-    int status = request.parse(raw_request);
-
-    assert(status == RequestStatus::OK);
-    assert(request.getMethod() == "POST");
-    assert(request.getBody() == "name=John42");
-    assert(request.getHeaders().at("Content-Length") == "11");
-
-    std::cout << "  PASS" << std::endl;
-}
-
-void test_malformed_headers() {
-    std::cout << "\nTesting malformed headers..." << std::endl;
-
-    const std::string raw_request =
-        "GET / HTTP/1.1\r\n"
-        "Host: localhost:8080\r\n"
-        "Invalid-Header-Line\r\n"  // Malformed header
-        "\r\n";
-
-    HttpRequest request;
-    int status = request.parse(raw_request);
-
-    assert(status == RequestStatus::BAD_REQUEST);
-
-    std::cout << "  PASS" << std::endl;
-}
-
-void test_missing_host_header() {
-    std::cout << "\nTesting missing Host header..." << std::endl;
-
-    const std::string raw_request =
-        "GET / HTTP/1.1\r\n"
-        "Accept: */*\r\n"
-        "\r\n";
-
-    HttpRequest request;
-    int status = request.parse(raw_request);
-
-    assert(status == RequestStatus::BAD_REQUEST);
-
-    std::cout << "  PASS" << std::endl;
-}
-
-void test_uri_too_long() {
-    std::cout << "\nTesting URI length limit..." << std::endl;
-
-    // Create a very long URI
-    std::string long_uri = "/";
-    for (int i = 0; i < 2048; ++i) {
-        long_uri += "a";
+            printRequest("GET", "/index.html", "HTTP/1.1", "Host: localhost");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
     }
 
-    const std::string raw_request =
-        "GET " + long_uri + " HTTP/1.1\r\n"
-        "Host: localhost:8080\r\n"
-        "\r\n";
+    {
+        std::cout << "  Test2: Invalid method (expected: METHOD_NOT_ALLOWED):\n";
+        try {
+            const std::string raw_request =
+                "INVALID /index.html HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
 
-    HttpRequest request;
-    int status = request.parse(raw_request);
+            HttpRequest request;
+            int status = request.parse(raw_request);
 
-    assert(status == RequestStatus::URI_TOO_LONG);
-
-    std::cout << "  PASS" << std::endl;
-}
-
-void test_headers_too_large() {
-    std::cout << "\nTesting headers size limit..." << std::endl;
-
-    // Create a header with large value
-    std::string large_header_value;
-    for (int i = 0; i < 9000; ++i) {
-        large_header_value += "x";
+            assert(status == RequestStatus::METHOD_NOT_ALLOWED);
+            printRequest("INVALID", "/index.html", "HTTP/1.1", "Host: localhost");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
     }
 
-    const std::string raw_request =
-        "GET / HTTP/1.1\r\n"
-        "Host: localhost:8080\r\n"
-        "X-Large-Header: " + large_header_value + "\r\n"
-        "\r\n";
+    {
+        std::cout << "  Test3: URI too long (expected: URI_TOO_LONG):\n";
+        try {
+            std::string long_uri = "/";
+            for (int i = 0; i < 2048; ++i) {
+                long_uri += "a";
+            }
 
-    HttpRequest request;
-    int status = request.parse(raw_request);
+            const std::string raw_request =
+                "GET " + long_uri + " HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
 
-    assert(status == RequestStatus::HEADERS_TOO_LARGE);
+            HttpRequest request;
+            int status = request.parse(raw_request);
 
-    std::cout << "  PASS" << std::endl;
+            assert(status == RequestStatus::URI_TOO_LONG);
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+}
+
+void testHeaderParsing() {
+    std::cout << "\n=== Testing Header Parsing ===\n";
+
+    {
+        std::cout << "  Test1: Valid headers (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET / HTTP/1.1\r\n"
+                "Host: localhost:8080\r\n"
+                "Accept: text/html\r\n"
+                "User-Agent: curl/7.68.0\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getHeaders().at("Host") == "localhost:8080");
+            assert(request.getHeaders().at("Accept") == "text/html");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test2: Missing required Host header (expected: BAD_REQUEST):\n";
+        try {
+            const std::string raw_request =
+                "GET / HTTP/1.1\r\n"
+                "Accept: text/html\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::BAD_REQUEST);
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test3: Headers too large (expected: HEADERS_TOO_LARGE):\n";
+        try {
+            std::string large_header_value(9000, 'x');
+            const std::string raw_request =
+                "GET / HTTP/1.1\r\n"
+                "Host: localhost\r\n"
+                "X-Large-Header: " + large_header_value + "\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::HEADERS_TOO_LARGE);
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+}
+
+void testBodyParsing() {
+    std::cout << "\n=== Testing Body Parsing ===\n";
+
+    {
+        std::cout << "  Test1: Valid POST request with body (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "POST /submit HTTP/1.1\r\n"
+                "Host: localhost:8080\r\n"
+                "Content-Length: 11\r\n"
+                "Content-Type: application/x-www-form-urlencoded\r\n"
+                "\r\n"
+                "name=John42";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getBody() == "name=John42");
+            assert(request.getHeaders().at("Content-Length") == "11");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test2: Content-Length mismatch (expected: BAD_REQUEST):\n";
+        try {
+            const std::string raw_request =
+                "POST /submit HTTP/1.1\r\n"
+                "Host: localhost:8080\r\n"
+                "Content-Length: 20\r\n"
+                "\r\n"
+                "name=John42";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::BAD_REQUEST);
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+}
+
+void testEncodedRequests() {
+    std::cout << "\n=== Testing URL-Encoded Requests ===\n";
+
+    {
+        std::cout << "  Test1: URI with encoded characters (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /path%20with%20spaces/file%2Ename%2Etxt HTTP/1.1\r\n"
+                "Host: localhost\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getUri() == "/path with spaces/file.name.txt");
+            printRequest("GET", request.getUri(), "HTTP/1.1", "Host: localhost");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test2: URI with encoded special characters (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /test%3F%26%3D%23 HTTP/1.1\r\n"  // encoded "?&=#"
+                "Host: localhost\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getUri() == "/test?&=#");
+            printRequest("GET", request.getUri(), "HTTP/1.1", "Host: localhost");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test3: POST with URL-encoded form data (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "POST /submit HTTP/1.1\r\n"
+                "Host: localhost\r\n"
+                "Content-Type: application/x-www-form-urlencoded\r\n"
+                "Content-Length: 44\r\n"
+                "\r\n"
+                "user%20name=John%20Doe&email=john%40example.com";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getBody() == "user name=John Doe&email=john@example.com");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test4: Malformed URL encoding (expected: BAD_REQUEST):\n";
+        try {
+            const std::string raw_request =
+                "GET /test%2 HTTP/1.1\r\n"  // Incomplete percent encoding
+                "Host: localhost\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::BAD_REQUEST);
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
+
+    {
+        std::cout << "  Test5: URI with query parameters (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /search?q=hello%20world&lang=en%2Dus HTTP/1.1\r\n"
+                "Host: localhost\r\n"
+                "\r\n";
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            assert(status == RequestStatus::OK);
+            assert(request.getUri() == "/search?q=hello world&lang=en-us");
+            printRequest("GET", request.getUri(), "HTTP/1.1", "Host: localhost");
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+    }
 }
 
 int main() {
-    try {
-        test_valid_simple_request();
-        test_invalid_request_line();
-        test_post_request_with_body();
-        test_malformed_headers();
-        test_missing_host_header();
-        test_uri_too_long();
-        test_headers_too_large();
+    std::cout << "Starting HTTP Request Parser Tests...\n";
 
-        std::cout << "\nAll tests passed!" << std::endl;
-        return 0;
-    }
-    catch(const std::exception& e) {
-        std::cerr << "Test failed: " << e.what() << std::endl;
-        return 1;
-    }
+    testRequestLineParsing();
+    testHeaderParsing();
+    testBodyParsing();
+    testEncodedRequests();
+
+    std::cout << "\nAll tests completed!\n";
+    return 0;
 }
