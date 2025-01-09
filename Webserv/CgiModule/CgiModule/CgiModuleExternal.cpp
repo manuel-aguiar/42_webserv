@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 09:45:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:24:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 				(not problem with double cancelling, but why do that?)
 
 */
-void	CgiModule::cancelRequest(CgiRequestData& request)
+void	CgiModule::finishRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData* requestData;
 	InternalCgiWorker*		worker;
@@ -130,15 +130,4 @@ void	CgiModule::forceStop()
 		it->forcedClose();
 		it->reset();
 	}
-}
-
-void	CgiModule::finishRequest(CgiRequestData& request)
-{
-	InternalCgiRequestData* requestData;
-	InternalCgiWorker*		worker;
-
-	requestData = static_cast<InternalCgiRequestData*>(&request);
-	worker = requestData->accessExecutor();
-	if (worker)
-		worker->cleanClose();
 }

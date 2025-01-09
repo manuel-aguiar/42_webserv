@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 12:36:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:13:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "../LogFile/LogFile.hpp"
 
 #include <iostream>
+
+std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
 Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile* debugFile)
 {
@@ -44,7 +46,7 @@ void	Globals::logDebug(const std::string& message)
 
 void	Globals::logError(const std::string& message)
 {
-	std::cerr << message << "\n";
+	g_mockGlobals_ErrorMsgs.push_back(message);
 }
 
 void	Globals::logStatus(const char* message)

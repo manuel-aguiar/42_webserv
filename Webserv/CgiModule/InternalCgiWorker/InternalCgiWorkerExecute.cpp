@@ -85,7 +85,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 
 	ErrorHandler:
 		mf_CallTheUser(E_CGI_ON_ERROR_STARTUP);
-		m_CgiModule.cancelRequest(*m_curRequestData);
+		m_CgiModule.finishRequest(*m_curRequestData);
 
 }
 

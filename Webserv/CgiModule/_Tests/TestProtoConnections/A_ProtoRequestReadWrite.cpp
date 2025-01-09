@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 13:39:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:21:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ void	A_ProtoRequest::cancelCgi()
 		m_manager.delEvent(m_CgiWriteEvent);
 		m_CgiWriteEvent.reset();
 	}
-	m_cgi.cancelRequest(*m_CgiRequestData);
+	m_cgi.finishRequest(*m_CgiRequestData);
+
 	m_CancelCount++;
 }
