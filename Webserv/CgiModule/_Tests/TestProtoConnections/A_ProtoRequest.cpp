@@ -23,7 +23,7 @@ A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModul
     m_CancelCount(0)
 
 {
-
+    m_buffer[0] = '\0';
 }
 
 A_ProtoRequest::~A_ProtoRequest()

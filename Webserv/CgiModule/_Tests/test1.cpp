@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:14:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:45:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,30 +148,27 @@ int TestPart1(int testNumber)
 
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
-			testFailure = testFailure + '\n' + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::string expectedError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): No such file or directory");
 
 		if (g_mockGlobals_ErrorMsgs.size() != 1)
-			testFailure = testFailure + '\n' + "Expected 1 error message, got " + to_string(g_mockGlobals_ErrorMsgs.size())
-			 + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::runtime_error("Expected 1 error message, got " + to_string(g_mockGlobals_ErrorMsgs.size())
+			 + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0].length() != expectedError.length())
-			testFailure = testFailure + '\n' + "Expected message length is not the same, got: " + to_string(g_mockGlobals_ErrorMsgs[0].length()) +
-			", expected: " + to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::runtime_error("Expected message length is not the same, got: " + to_string(g_mockGlobals_ErrorMsgs[0].length()) +
+			", expected: " + to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0] != expectedError)
-			testFailure = testFailure + '\n' + "Expected error message not found in logs:\ngot:\n" 
-			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
+			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-
-		if (!testFailure.empty())
-			throw std::runtime_error(testFailure);
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -248,7 +245,7 @@ int TestPart1(int testNumber)
 
 /*************************************************************** */
 
-/*
+
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
@@ -323,6 +320,6 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 	
-*/
+
 	return (testNumber);
 }
