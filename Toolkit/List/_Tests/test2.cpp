@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 09:24:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:31:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <stdexcept>
 
 
-int TestPart2(int testNumber)
+int StressTest(int testNumber)
 {
 	/*********************** ************************/
 	std::cout << "TEST " << testNumber++ << ": ";

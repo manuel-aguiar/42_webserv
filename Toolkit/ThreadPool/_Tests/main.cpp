@@ -28,7 +28,7 @@
 # include <iostream>
 
 extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
+extern int StressTest(int testNumber);
 extern int TestPart3(int testNumber);
 extern int TestPart4(int testNumber);
 
@@ -42,7 +42,7 @@ int main(void)
 	
 
     testNumber = TestPart1(testNumber);
-	testNumber = TestPart2(testNumber);
+	testNumber = StressTest(testNumber);
 	testNumber = TestPart3(testNumber);
 	testNumber = TestPart4(testNumber);
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 16:21:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:32:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int TestPart1(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		CgiModule cgi(10, 100, globals);				// 10 workers, 100 backlog
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -106,7 +106,7 @@ int TestPart1(int testNumber)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
 			+ scriptOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (executing a script)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -169,7 +169,7 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
 			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (using a non-existant interpreter)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -236,7 +236,7 @@ int TestPart1(int testNumber)
 
 		if (!testFailure.empty())
 			throw std::runtime_error(testFailure);
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (valid interpreter, bad script)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -245,81 +245,6 @@ int TestPart1(int testNumber)
 
 /*************************************************************** */
 
-
-	try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
-
-		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
-		const int connectionCount = 3;
-
-		CgiModule cgi(10, connectionCount, globals);
-
-		cgi.addInterpreter("py", "/usr/bin/python3");
-		cgi.addInterpreter("sh", "/usr/bin/bash");
-		cgi.addInterpreter("php", "/usr/bin/php");
-
-		DynArray<A_ProtoRequest> requests;
-		requests.reserve(connectionCount);
-
-		for (size_t i = 0; i < connectionCount; ++i)
-		{
-			requests.emplace_back(eventManager, globals, cgi, i);
-			requests[i].m_CgiRequestData = cgi.acquireRequestData();
-			requests[i].m_CgiRequestData->setEventManager(eventManager);
-			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
-				requests[i].m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
-			switch (i % 3)
-			{
-				case 0:
-					requests[i].m_CgiRequestData->setExtension("py");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-					break;
-				case 1:
-					requests[i].m_CgiRequestData->setExtension("sh");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
-					break;
-				case 2:
-					requests[i].m_CgiRequestData->setExtension("php");
-					requests[i].m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
-					break;
-			}
-			cgi.executeRequest(*requests[i].m_CgiRequestData);
-		}
-
-
-		//event loop
-		while (eventManager.getSubscribeCount() != 0)
-			eventManager.ProcessEvents(1000);
-
-
-		if (cgi.getBusyWorkerCount() != 0)
-			throw std::logic_error("eventManager still has events subscribed");
-
-		bool test = true;
-		for (size_t i = 0; i < connectionCount; ++i)
-		{
-			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
-				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
-			{
-				std::cout << i << " failed: " << requests[i].m_TotalBytesRead << " " << requests[i].m_buffer << "\n\n";
-				std::cout << "original: " << ::strlen(scriptOutput) << " " << scriptOutput << "\n\n";
-				test = false;
-			}
-		}
-		if (!test)
-			throw std::logic_error("script output does not match expected output, cases above");
-
-
-			
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-	
 
 	return (testNumber);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/06 23:42:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:42:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class FiboTask : public IThreadTask
 		long* 			m_placeResult;
 };
 
-int TestPart2(int testNumber)
+int StressTest(int testNumber)
 {
 /************************************************************** */
 	std::cout << "TEST " << testNumber << ": ";

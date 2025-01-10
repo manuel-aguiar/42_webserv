@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:03:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class EmplaceTwo
 };
 
 
-int TestPart2(int testNumber)
+int StressTest(int testNumber)
 {
 
 /******************************************************************** */

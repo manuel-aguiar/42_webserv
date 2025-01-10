@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:40:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:36:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include "../../../../_Tests/ToolkitDerived.hpp"
 
 extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
+extern int StressTest(int testNumber);
 
 int main(void)
 {
