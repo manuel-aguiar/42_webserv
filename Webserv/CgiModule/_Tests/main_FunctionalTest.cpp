@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main_FunctionalTest.cpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:53:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:02:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ extern int TestPart2(int testNumber);
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** CgiModule tests ***************" << std::endl;
+	std::cout << "\n*************** CgiModule Functional Tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
