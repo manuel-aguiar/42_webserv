@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:17:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:24:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:57:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@
 # include <set>
 # include <map>
 
-template <typename T, typename U>
+template <typename T, typename U, typename Allocator>
 class TimerTracker
 {
 	public:
 		static const size_t nodeSetSize = sizeof(U) + sizeof(void*) * 4;
 		static const size_t nodeMapSize = sizeof(std::pair<const T, std::set<U> >) + sizeof(void*) * 4;
 
-		typedef SlabAllocator<U, HeapSlab<nodeSetSize> > setAlloc;
+		typedef SlabAllocator<U, HeapSlab<nodeSetSize, Allocator> > setAlloc;
 		typedef std::set<U, std::less<U>, setAlloc > nodeSet;
 		typedef std::pair<const T, nodeSet> timerPair;
-		typedef SlabAllocator<timerPair, HeapSlab<nodeMapSize> > mapAlloc;
+		typedef SlabAllocator<timerPair, HeapSlab<nodeMapSize, Allocator> > mapAlloc;
 		typedef std::map<T, nodeSet, std::less<T>, mapAlloc> timerMap;
 
-		TimerTracker(size_t capacity): 
-			m_setSlab(capacity),
-			m_mapSlab(capacity),
+		TimerTracker(size_t capacity, const Allocator& allocator = Allocator()) : 
+			m_setSlab(capacity, allocator),
+			m_mapSlab(capacity, allocator),
 			m_capacity(capacity), 
 			m_size(0), 
 			m_timers(std::less<T>(), mapAlloc(m_mapSlab)), 
@@ -124,12 +124,12 @@ class TimerTracker
 		}
 
 	private:
-		HeapSlab<nodeSetSize> 	m_setSlab;
-		HeapSlab<nodeMapSize> 	m_mapSlab;
-		size_t					m_capacity;
-		size_t 					m_size;
-		timerMap 				m_timers;
-		setAlloc 				m_setNodeAlloc;
+		HeapSlab<nodeSetSize, Allocator> 	m_setSlab;
+		HeapSlab<nodeMapSize, Allocator> 	m_mapSlab;
+		size_t								m_capacity;
+		size_t 								m_size;
+		timerMap 							m_timers;
+		setAlloc 							m_setNodeAlloc;
 };
 
 #endif

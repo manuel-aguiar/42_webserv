@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TimerTracker.hpp                                   :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/10 18:18:35 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:49:36 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/10 18:52:59 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/10 19:02:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TIMERTRACKER_HPP
+# include <iostream>
 
-# define TIMERTRACKER_HPP
+extern int TestPart1(int testNumber);
 
+int main(void)
+{	
+    int testNumber = 1;
+    
+    std::cout << "\n*************** TimerTracker tests ***************" << std::endl;
+	
+    testNumber = TestPart1(testNumber);
 
-# include <memory>
-
-template <typename T, typename U, typename Allocator = std::allocator<T> >
-class TimerTracker;
-
-# include "TimerTracker.tpp"
-
-#endif
+    std::cout << "******************************************************\n" << std::endl;
+    
+    return (0);
+}
