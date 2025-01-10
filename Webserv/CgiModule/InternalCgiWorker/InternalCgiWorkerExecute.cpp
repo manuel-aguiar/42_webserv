@@ -88,13 +88,12 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 */
 bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
-	typedef std::map<t_CgiEnvKey, t_CgiEnvValue>::const_iterator
-									t_EnvExtraIter;
+	typedef DynArray<std::pair<t_CgiEnvKey, t_CgiEnvValue> >::const_iterator	t_EnvExtraIter;
 
 	assert(m_curRequestData->accessEventManager() != NULL);
 
 	const t_CgiRequestEnv& 			envRequest = m_curRequestData->getEnvVars();
-	const t_CgiEnvKey*				envBase = m_CgiModule.getBaseEnvKeys();
+	const t_CgiEnvValue*				envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	std::string						temp;
 	

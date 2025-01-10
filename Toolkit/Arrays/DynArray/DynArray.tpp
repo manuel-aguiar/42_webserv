@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 16:20:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:33:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,16 @@ template <typename T, typename Allocator>
 class DynArray
 {
     public:
+        template <typename U>
+        class ArrayIterator;
+        
+        typedef ArrayIterator<T>         iterator;
+        typedef ArrayIterator<const T>   const_iterator;
+        typedef ArrayIterator<T>         reverse_iterator;
+        typedef ArrayIterator<const T>   const_reverse_iterator;
+    
+
+    
         DynArray(const Allocator& allocator = Allocator()) : m_array(NULL), m_size(0), m_capacity(0), m_allocator(allocator) {};
         DynArray(size_t size, const Allocator& allocator = Allocator()) : m_array(NULL), m_size(size), m_capacity(size), m_allocator(allocator)
         {
@@ -466,65 +476,66 @@ class DynArray
             ++m_size;
         }
 
-        class iterator
+        template <typename U>
+        class ArrayIterator
         {
             public:
-                typedef T                                   value_type;
-                typedef T*                                  pointer;
-                typedef T&                                  reference;
+                typedef U                                   value_type;
+                typedef U*                                  pointer;
+                typedef U&                                  reference;
                 typedef std::ptrdiff_t                      difference_type;
                 typedef std::random_access_iterator_tag     iterator_category;
 
-                iterator(pointer ptr) : m_ptr(ptr) {}
-                iterator(const iterator& other) : m_ptr(other.m_ptr) {}
-                ~iterator() {}
-                iterator& operator=(const iterator& other) { m_ptr = other.m_ptr; return *this; }
+                ArrayIterator(pointer ptr) : m_ptr(ptr) {}
+                ArrayIterator(const ArrayIterator& other) : m_ptr(other.m_ptr) {}
+                ~ArrayIterator() {}
+                ArrayIterator& operator=(const ArrayIterator& other) { m_ptr = other.m_ptr; return *this; }
 
 
                 reference operator*() const { return *m_ptr; }
                 pointer operator->() const { return m_ptr; }
 
-                iterator& operator++()
+                ArrayIterator& operator++()
                 {
                     ++m_ptr;
                     return *this;
                 }
 
-                iterator operator++(int)
+                ArrayIterator operator++(int)
                 {
-                    iterator tmp = *this;
+                    ArrayIterator tmp = *this;
                     ++m_ptr;
                     return tmp;
                 }
 
-                iterator& operator--()
+                ArrayIterator& operator--()
                 {
                     --m_ptr;
                     return *this;
                 }
 
-                iterator operator--(int)
+                ArrayIterator operator--(int)
                 {
-                    iterator tmp = *this;
+                    ArrayIterator tmp = *this;
                     --m_ptr;
                     return tmp;
                 }
 
-                bool operator==(const iterator& other) const { return m_ptr == other.m_ptr; }
-                bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
+                bool operator==(const ArrayIterator& other) const { return m_ptr == other.m_ptr; }
+                bool operator!=(const ArrayIterator& other) const { return m_ptr != other.m_ptr; }
 
 
                 reference operator[](size_t index) const { return *(m_ptr + index); }
-                iterator operator+(size_t n) const { return iterator(m_ptr + n); }
-                iterator operator-(size_t n) const { return iterator(m_ptr - n); }
-                difference_type operator-(const iterator& other) const { return m_ptr - other.m_ptr; }
+                ArrayIterator operator+(size_t n) const { return ArrayIterator(m_ptr + n); }
+                ArrayIterator operator-(size_t n) const { return ArrayIterator(m_ptr - n); }
+                difference_type operator-(const ArrayIterator& other) const { return m_ptr - other.m_ptr; }
 
-                iterator& operator+=(size_t n)
+                ArrayIterator& operator+=(size_t n)
                 {
                     m_ptr += n;
                     return *this;
                 }
-                iterator& operator-=(size_t n)
+                ArrayIterator& operator-=(size_t n)
                 {
                     m_ptr -= n;
                     return *this;
@@ -534,8 +545,17 @@ class DynArray
                 pointer m_ptr;
         };
 
-        iterator begin() { return iterator(&m_array[0]); }
-        iterator end() { return iterator(&m_array[m_size]); }
+        iterator begin()						 	{ return (iterator				(&m_array[0])); }
+        iterator end() 								{ return (iterator				(&m_array[m_size])); }
+
+        const_iterator begin() const 				{ return (const_iterator		(&m_array[0])); }
+        const_iterator end() const 					{ return (const_iterator		(&m_array[m_size])); }
+
+        reverse_iterator rbegin() 					{ return (reverse_iterator		(&m_array[m_size - 1])); }
+        reverse_iterator rend() 					{ return (reverse_iterator		(&m_array[-1])); }
+
+        const_reverse_iterator rbegin() const 		{ return (const_reverse_iterator(&m_array[m_size - 1])); }
+        const_reverse_iterator rend() const 		{ return (const_reverse_iterator(&m_array[-1])); }
 
         void erase(iterator iter)
         {

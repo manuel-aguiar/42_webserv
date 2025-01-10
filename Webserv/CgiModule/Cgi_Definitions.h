@@ -62,8 +62,8 @@ typedef enum
 
 typedef struct s_CgiRequestEnv
 {
-	DynArray<std::pair<e_CgiEnv, t_CgiEnvKey> >		envBase;
-	std::map<t_CgiEnvKey, t_CgiEnvValue>			envExtra;
+	DynArray<std::pair<e_CgiEnv, t_CgiEnvValue> >		envBase;
+	DynArray<std::pair<t_CgiEnvKey, t_CgiEnvValue> >	envExtra;
 }	t_CgiRequestEnv;
 
 #define STR_CGI_AUTH_TYPE "AUTH_TYPE"

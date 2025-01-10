@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/19 18:49:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:02:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CgiModule.hpp"
 
-const t_CgiEnvKey*						CgiModule::getBaseEnvKeys() const
+const t_CgiEnvValue*						CgiModule::getBaseEnvKeys() const
 {
 	return (m_baseEnv);
 }

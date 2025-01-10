@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:22:17 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:09:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int StressTest(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<int>::iterator it = array.begin();
+		DynArray<int>::Iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -111,7 +111,7 @@ int StressTest(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<int>::iterator it = array.begin();
+		DynArray<int>::Iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -158,7 +158,7 @@ int StressTest(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<int>::iterator it = array.begin();
+		DynArray<int>::Iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{

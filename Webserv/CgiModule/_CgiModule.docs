@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/22 10:50:43 by manuel            #+#    #+#              #
-#    Updated: 2024/12/20 09:39:42 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/10 10:59:33 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,14 +39,15 @@ CgiModule::executeRequest(CgiRequestData& data)
 
 **************
 
-CgiModule::cancelRequest(CgiRequestData& data)
-	-> this serves to cancel a request that was already created.
-	-> if it is executing, it stops the execution (kills underlying fork)
-	-> deletes the CgiRequestData
-		from the CgiModule internal data structures
-	
-	This will be usefull for instance if the client disconnects from the server, HttpConnection
-	calls this to cancel a potentially already running request.
+CgiModule::finishRequest(CgiRequestData& data)
+	-> this serves to finish the request in any case
+	-> the user MUST call this to release the resources associated
+		with the request -> freeing the slot on the queue, freeing the worker
+	-> so ideally, as soon as the user is finished getting the data that it needs
+		from the script, it should call this function to open space for more requests
+		to be processed
+	-> this can also be used to cancel a request for instance if the Client connection is closed
+		and therefore the execution is no longer needed.
 
 
 **********************************************************
@@ -71,29 +72,3 @@ CgiModule::removeInterpreter(const std::string& extension);
 
 
 
-
-Internally, CgiModule has a private class InternalCgiWorker that is responsible for the actual execution.
-
-CgiModule also has a private InternalCgiRequestData to access CgiRequestData protected constructors to make
-it clear that CgiRequestData cannot be spawned but must be asked for to the CgiModule via
-CgiModule::acquireRequestData.
-
-
-
-
-Request for CGI,
-	prepare environment variables
-	get an available slot
-		if not, put in queue
-	set in and out pipes, place them in the eventmanager, fork
-	ready to write, write message body into pipe
-	ready to read, read message body
-	received end of file, waitpid, mark slot as available
-
-	wait for Connection write event (to client)
-		write to Client.
-
-
-Again the design has the objective of maintaining flexibility. The CgiModule knows nothing about http
-in reality, it could be used by any protocol as long as they provide valid event handlers, and a valid
-event manager.

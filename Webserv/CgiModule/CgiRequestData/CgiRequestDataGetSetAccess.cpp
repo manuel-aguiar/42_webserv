@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:14:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:28:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void		CgiRequestData::setEnvBase(const e_CgiEnv env, const std::string& value)
 
 void		CgiRequestData::setEnvExtra(const std::string& key, const std::string& value)
 {
-	m_env.envExtra[key] = value;
+	m_env.envExtra.emplace_back(key, value);
 }
 
 void		CgiRequestData::setExtension(const std::string& extension)
