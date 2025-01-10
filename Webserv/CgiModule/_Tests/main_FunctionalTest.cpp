@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:41:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:48:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int main(void)
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
+	testNumber = TestPart3(testNumber);
 
 	std::cout << "***********************************************\n" << std::endl;
 }

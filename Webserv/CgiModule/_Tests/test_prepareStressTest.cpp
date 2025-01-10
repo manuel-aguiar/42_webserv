@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 12:29:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 13:05:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,95 @@ extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
 // Tests about the resilience of the CgiModule under heavy load
 
+void	ValidPython(A_ProtoRequest& proto)
+{
+	proto.m_CgiRequestData->setExtension("py");
+	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+
+	// some env vars
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "DoubledBasic");
+
+	prepareExpectedOutput(true, proto);
+}
+
+
+void	ValidShell(A_ProtoRequest& proto)
+{
+	proto.m_CgiRequestData->setExtension("sh");
+	proto.m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
+
+	proto.m_CgiRequestData->setEnvBase(E_CGI_PATH_INFO, "LostMyWay");
+	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY1", "hiThere");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_CONTENT_LENGTH, "321");
+
+	prepareExpectedOutput(true, proto);
+}
+
+void	ValidPHP(A_ProtoRequest& proto)
+{
+	proto.m_CgiRequestData->setExtension("php");
+	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
+
+	proto.m_CgiRequestData->setEnvBase(E_CGI_PATH_INFO, "WhereAmI");
+	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY3", "SomeHttpStuff_in_here");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_CONTENT_LENGTH, "charIsUserFault");
+
+	prepareExpectedOutput(true, proto);
+}
+
+void	InvalidInterpreter(A_ProtoRequest& proto)
+{
+	proto.m_CgiRequestData->setExtension("pyasgasg");
+	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "DoubledBasic");
+
+	prepareExpectedOutput(false, proto);
+}
+
+
+void	InvalidScript(A_ProtoRequest& proto)
+{
+	proto.m_CgiRequestData->setExtension("py");
+	proto.m_CgiRequestData->setScriptPath("thisDoesNotExist");
+
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
+	proto.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "DoubledBasic");
+
+	prepareExpectedOutput(false, proto);
+}
+
+
 int Impl_StressTest(int testNumber, const int workers, const int backlog, const int connectionCount)
 {
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
+		//setup
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
+		CgiModule cgi(workers, backlog, globals);
+
+		std::string testFailure;
 
 		size_t acquireCounter = 0;
 
-		CgiModule cgi(workers, backlog, globals);
+		/// setting up some fds to divert interpreter's error messages for "no such file or directory"
+		int testpipe[2];
+		int stdcerrDup = dup(STDERR_FILENO);
+		pipe(testpipe);
+		dup2(testpipe[1], STDERR_FILENO);
+		/////////////////
+
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		cgi.addInterpreter("sh", "/usr/bin/bash");
@@ -62,27 +139,31 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 			acquireCounter++;
 			requests.back().m_CgiRequestData->setEventManager(eventManager);
 
-			// setup callbacks and environment variables
+			// setup callbacks
 			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
 				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
-			switch (i % 3)
+			
+
+			switch (i % 5)
 			{
 				case 0:
-					requests.back().m_CgiRequestData->setExtension("py");
-					requests.back().m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+					ValidPython(requests.back());
 					break;
 				case 1:
-					requests.back().m_CgiRequestData->setExtension("sh");
-					requests.back().m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
+					ValidShell(requests.back());
 					break;
 				case 2:
-					requests.back().m_CgiRequestData->setExtension("php");
-					requests.back().m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
+					ValidPHP(requests.back());
+					break;
+				case 3:
+					InvalidInterpreter(requests.back());
+					break;
+				case 4:
+					InvalidScript(requests.back());
 					break;
 			}
 
-			prepareExpectedOutput(true, requests.back());
-
+			
 			cgi.executeRequest(*requests.back().m_CgiRequestData);
 			
 			// process events right now at each loop, that way we make room in the CgiModule
@@ -97,28 +178,35 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			testFailure = testFailure + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
-		bool test = true;
 		for (int i = 0; i < connectionCount; ++i)
 		{
-			if (!requests[i].m_CgiRequestData)
-				continue;
 			if (requests[i].m_TotalBytesRead != requests[i].m_ExpectedOutput.length() ||
 				std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 			{
-				std::cout << i << " failed: " << requests[i].m_TotalBytesRead << " " << requests[i].m_buffer << "\n\n";
-				std::cout << "original: " << requests[i].m_ExpectedOutput.length() << " " << requests[i].m_ExpectedOutput << "\n\n";
-				test = false;
+				testFailure = testFailure + '\n' + to_string(i) + " failed: " 
+				+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
+				+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
 			}
 		}
-		if (!test)
-			throw std::logic_error("script output does not match expected output, cases above");
+
+
+		// restoring the original stdcerr not to mess the remaining tests
+		dup2(stdcerrDup, STDERR_FILENO);
+		close(stdcerrDup);
+		close(testpipe[1]); 
+		close(testpipe[0]);
+		/////////////////////////////
+
+
+		if (!testFailure.empty())
+			throw std::logic_error(testFailure);
 
 
 			

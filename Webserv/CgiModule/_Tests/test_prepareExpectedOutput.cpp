@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 11:57:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 12:28:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:40:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ std::string getExtraEntry(const CgiRequestData& request, const char* textKey)
     std::string     result;
 
     result += textKey;
+    result += ": ";
     if (target)
         result += target;
     else
@@ -110,9 +111,9 @@ void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto)
     temp += getBaseEntry(*requestData, "SERVER_SOFTWARE: ", E_CGI_SERVER_SOFTWARE);
 
     // EXTRA ENTRIES
-    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY1: ");
-    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY2: ");
-    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY3: ");
+    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY1");
+    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY2");
+    temp += getExtraEntry(*requestData, "CUSTOM_ENTRY3");
     
     StringUtils::move(proto.m_ExpectedOutput, temp);
 }
