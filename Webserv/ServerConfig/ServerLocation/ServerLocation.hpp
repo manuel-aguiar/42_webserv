@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerLocation.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:56:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/20 10:18:01 by manuel           ###   ########.fr       */
+/*   Updated: 2025/01/10 11:39:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 // Own Headers
 # include "../../GenericUtils/Validation/Validation.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../DefaultConfig/DefaultConfig.hpp"
 
@@ -39,30 +40,26 @@ class ServerLocation
 			E_LOCATION_REDIRECTION,
 			E_LOCATION_CGI
 		}	t_locationType;
-
-		// ServerLocation(ServerBlock& block, t_locationType type);    //non-const, very likely location will have to update the block...?
-		
+	
 		ServerLocation();
-		ServerLocation(ServerBlock& server);
 		~ServerLocation();
 		ServerLocation &operator=(const ServerLocation &other);
 		ServerLocation(const ServerLocation &other);
 
 		// Getters & Setters
 		const ServerBlock&				getServerBlock() const;
-		t_locationType					getLocationType() const;
 		const std::string&				getPath() const;
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
-		int								getType() const;
-		void							setType(const std::string &value, const int &flag = 0);
-		void							setPath(const std::string &value, const int &flag = 0);
-		void							setRoot(const std::string &value, const int &flag = 0);
-		void							setAutoindex(const std::string &value, const int &flag = 0);
-		void							addMethod(const std::string &value, const int &flag = 0);
+		std::string						getType() const;
+		void							setType(const std::string &value);
+		void							setPath(const std::string &value);
+		void							setRoot(const std::string &value);
+		void							setAutoindex(const std::string &value);
+		void							addMethod(const std::string &value);
 
-		void							setDefaults(const int &flag = 0);
+		void							setDefaults();
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 
@@ -72,15 +69,17 @@ class ServerLocation
 	private:
 
 		// Key/value storing for config settings
-		typedef void (ServerLocation::*f_addConfigValue)(const std::string &, const int &);
-		std::map<std::string, std::set<std::string> > 	m_config;
+		typedef void (ServerLocation::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-		ServerBlock*					m_block; // this would be a reference if used
-		t_locationType					m_type;
 		std::set<std::string> 			m_validTypes;
 		std::set<std::string>			m_validMethods;
 
+		std::string						m_path;
+		std::string						m_root;
+		std::string						m_type;
+		std::string						m_autoIndex;
+		std::set<std::string>			m_methods;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };

@@ -38,6 +38,9 @@ The configuration file consists of several directives that define the behavior o
 - **max_concurrent_cgi**  
   - Sets the maximum number of concurrent CGI processes. The default value is `10`.
 
+- **max_cgi_backlog**
+  - Sets the maximum number of requests queued on the backlog. When this number is reached, new connections will be answered with an internal server error. The default value is `100`.
+
 - ~~**max_workers**~~
 
 ### Server Directives
@@ -46,7 +49,7 @@ The configuration file consists of several directives that define the behavior o
   - Specifies the IP address and port for the server in the format `[ip]:[port]`, or just `[port]`.
   - Default IP is `0.0.0.0`. There is no default port.
   
-- **server_names**  
+- **server_name**  
   - Accepts one or more server names (e.g., `example.com`, `www.example.com`).
   
 - **root**  
@@ -93,7 +96,7 @@ max_connections 10;
 max_concurrent_cgi 3;
 server {
     listen 192.168.1.53:8080;
-    server_names webserv.com www.webserv.com;
+    server_name webserv.com www.webserv.com;
     root ./webserv/;
     client_body_size 1M;
     client_header_size 1M;

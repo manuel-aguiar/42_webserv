@@ -1,15 +1,19 @@
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Validation/Validation.hpp"
 
-std::string	strtrim(const std::string &str)
+std::string strtrim(const std::string &str)
 {
 	if (str.empty())
 		return (str);
 
-	size_t	first	= str.find_first_not_of(' ');
-	size_t	last	= str.find_last_not_of(' ');
+	size_t first = 0;
+	while (first < str.size() && std::isspace(str[first]))
+		++first;
+	size_t last = str.size() - 1;
+	while (last > first && std::isspace(str[last]))
+		--last;
 
-	return (str.substr(first, (last - first + 1)));
+	return (str.substr(first, last - first + 1));
 }
 
 size_t	stoull(const std::string &str)
@@ -57,6 +61,16 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 
 	return (tokens);
 }
+
+std::string	strToLower(const std::string& str)
+{
+	std::string lowercaseString = str;
+	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
+		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
+	
+	return (lowercaseString);
+}
+
 
 void StringUtils::move(std::string& dest, std::string& src)
 {

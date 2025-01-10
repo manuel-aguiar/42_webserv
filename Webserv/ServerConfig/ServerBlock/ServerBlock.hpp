@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 10:19:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/10 10:13:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:41:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,55 +33,48 @@ class ServerLocation;
 
 class ServerBlock
 {
-    public:
-        ServerBlock();
+	public:
+		ServerBlock();
 		~ServerBlock();
 		ServerBlock &operator=(const ServerBlock &other);
 		ServerBlock(const ServerBlock &other);
 
-        const std::set<std::string>&						getDomainNames() const;
+		const std::set<std::string>&						getDomainNames() const;
 		const std::map<std::string, ServerLocation>& 		getLocations() const;
-		const std::vector<t_listeners>&						getListeners() const;
 
 		void							setLocations(const std::vector<ServerLocation> &Locations);
-
-		// premade
-		void							setListener(const std::string &value, const int &flag = 0);
-		// bool							setHost(const std::string &value, const int &flag = 0);
-		// bool							setPort(const std::string &value, const int &flag = 0);
-		void							setRootPath(const std::string &value, const int &flag = 0);
-		void							setClientBodySize(const std::string &value, const int &flag = 0);
-		void							setClientHeaderSize(const std::string &value, const int &flag = 0);
-		void							addServerName(const std::string &value, const int &flag = 0);
-		void							addErrorPage(const std::string &value, const int &flag = 0);
-        // const std::string&				getHost() const;
-		// const std::string&				getPort() const;
-		const std::set<std::string>&	getListener() const;
+		void							setRootPath(const std::string &value);
+		void							setClientBodySize(const std::string &value);
+		void							setClientHeaderSize(const std::string &value);
+		void							addListener(const std::string &value);
+		void							addServerName(const std::string &value);
+		void							addErrorPage(const std::string &value);
+		const std::set<t_listeners>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
 
-		void							setDefaults(const int &flag = 0);
+		void							setDefaults();
 		void							addConfigValue(const std::string &key, const std::string &value);
-		void							addLocations(std::vector<ServerLocation> Locations);
 		bool							validate() const;
 
 		// Debug
 		void							printServerConfig() const;
 
-    private:
-		typedef void (ServerBlock::*f_addConfigValue)(const std::string &, const int &);
-		std::map<std::string, std::set<std::string> >	m_config;
+	private:
+		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-        std::set<std::string>							m_ServerName;		// would be easier to only accept one name per serverblock
-        std::map<t_path, ServerLocation>				m_locations;
+		std::set<t_listeners>							m_listen;
+		std::set<std::string>							m_server_name;
+		std::string										m_client_body_size;
+		std::string										m_client_header_size;
+		std::string										m_root;
+		std::set<std::string>							m_error_pages;
 
-		std::vector<t_listeners>						m_listeners; // delete
+		std::map<t_path, ServerLocation>				m_locations;
 };
-
-
 
 #endif

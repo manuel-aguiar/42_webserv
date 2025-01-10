@@ -19,28 +19,32 @@ void testPass(const std::string &filePath, int testNbr, int printDetails)
 	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
 	ServerConfig config(filePath.c_str(), NULL);
 	if (config.parseConfigFile())
+	{
 		std::cout << CLR_PASS << std::endl;
+		if (printDetails)
+			config.printConfigs();
+	}
 	else
 		std::cout << CLR_FAIL << std::endl;
-	if (printDetails)
-		config.printConfigs();
 }
 
 void testFail(const std::string &filePath, int testNbr, int printDetails)
 {
-	std::cout << "Test " << testNbr << " : " << filePath << " "  << std::endl;
+	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
 	ServerConfig config(filePath.c_str(), NULL);
 	if (config.parseConfigFile())
+	{
 		std::cout << CLR_FAIL << std::endl;
+		if (printDetails)
+			config.printConfigs();
+	}
 	else
 		std::cout << CLR_PASS << std::endl;
-	if (printDetails)
-		config.printConfigs();
 }
 
 void testNoThrow(const std::string &filePath, int testNbr, int printDetails)
 {
-	std::cout << "Test " << testNbr << " : " << filePath;
+	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
 	try {
 		ServerConfig config(filePath.c_str(), NULL);
 		config.parseConfigFile();
@@ -55,7 +59,7 @@ void testNoThrow(const std::string &filePath, int testNbr, int printDetails)
 
 void testThrow(const std::string &filePath, int testNbr, int printDetails)
 {
-	std::cout << "Test " << testNbr << " : " << filePath;
+	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
 	try {
 		ServerConfig config(filePath.c_str(), NULL);
 		config.parseConfigFile();
@@ -129,11 +133,11 @@ int main()
 	int tests;
 
 	std::cout << "=== Testing ServerConfig ===" << std::endl;
-	std::cout << "Pass means that the output value is the expected value. Fail Means it isnt." << std::endl;
-	std::cout << "Wether the value is correctly stored needs to be checked manually by printing the stored information." << std::endl;
-	std::cout << "enter 0 to do all tests, 1 to do the valid situations, 2 to do the invalid situations" << std::endl;
+	std::cout << "- Pass means that the output value is the expected value. Fail Means it isnt." << std::endl;
+	std::cout << "- Wether the value is correctly stored needs to be checked manually by printing the stored information." << std::endl;
+	std::cout << "- Enter 0 to do all tests, 1 to do the valid situations, 2 to do the invalid situations, 3 for custom tests" << std::endl;
 	std::cin >> tests;
-	std::cout << "enter 0 to see only the results or 1 to print stored information" << std::endl;
+	std::cout << "- Enter 0 to see only the results or 1 to print stored information" << std::endl;
 	std::cin >> printDetails;
 	std::cout << "=== Testing ServerConfig ===" << std::endl;
 
@@ -151,6 +155,10 @@ int main()
 		case 2:
 			std::cout << std::endl << "=== INVALID TESTS ===" << std::endl;
 			testFolder(TESTFOLDER + "Fail", printDetails, testFail);
+			break;
+		case 3:
+			std::cout << std::endl << "=== CUSTOM TESTS ===" << std::endl;
+			testFolder(TESTFOLDER + "Custom", printDetails, testPass);
 			break;
 	}
 	return 0;

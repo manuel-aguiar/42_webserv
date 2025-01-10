@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 12:20:23 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/19 13:09:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:39:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,10 @@ class DefaultConfig
 		// Program
 		std::string	maxConnections;
 		std::string	maxCGI;
+		std::string cgi_maxBacklog;
 
 		// Server
+		std::string serverRoot;
 		std::string	maxClientBodySize;
 		std::string	maxClientHeaderSize;
 		std::string	IPListen;
