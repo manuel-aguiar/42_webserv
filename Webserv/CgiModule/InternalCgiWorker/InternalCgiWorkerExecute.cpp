@@ -98,8 +98,15 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	std::string						temp;
 	
+
 	try
 	{
+		std::map<t_extension, t_path>::const_iterator interpExtension 
+		= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
+
+		if (interpExtension == m_CgiModule.getInterpreters().end())
+			throw std::runtime_error("interpreter not found");
+
 		m_envStr.reserve(entryCount);
 		m_envPtr.reserve(entryCount + 1);
 		m_argPtr.reserve(3);
@@ -123,7 +130,7 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 
 		m_envPtr.push_back(NULL);
 
-		m_argPtr.push_back(const_cast<char*>(m_CgiModule.getInterpreters().find(m_curRequestData->getExtension())->second.c_str()));
+		m_argPtr.push_back(const_cast<char*>(interpExtension->second.c_str()));
 		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
 		m_argPtr.push_back(NULL);
 		return (true);

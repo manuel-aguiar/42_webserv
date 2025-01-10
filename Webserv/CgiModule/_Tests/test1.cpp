@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:09:57 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:40:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,66 @@ int TestPart1(int testNumber)
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 /*************************************************************** */
+/****************************************************** */
 
+	// passing an extension that is not registered
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		Globals globals(NULL, NULL, NULL, NULL);
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, globals);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+
+		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+
+		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+		
+		protoRequest.m_CgiRequestData->setExtension("py");
+		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+		
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+
+		//event loop
+		while (eventManager.getSubscribeCount() != 0)
+			eventManager.ProcessEvents(1000);
+
+
+		// tests
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+
+		if (cgi.getBusyWorkerCount() != 0)
+			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		std::string expectedError("InternalCgiWorker::mf_prepareExecve(): interpreter not found");
+
+		if (g_mockGlobals_ErrorMsgs.size() != 1)
+			throw std::runtime_error("Expected 1 error message, got " + to_string(g_mockGlobals_ErrorMsgs.size())
+			 + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		if (g_mockGlobals_ErrorMsgs[0].length() != expectedError.length())
+			throw std::runtime_error("Expected message length is not the same, got: " + to_string(g_mockGlobals_ErrorMsgs[0].length()) +
+			", expected: " + to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		if (g_mockGlobals_ErrorMsgs[0] != expectedError)
+			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
+			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		std::cout << "	PASSED (demanding an interpreter extension that is not set)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
 
 	return (testNumber);
 }
