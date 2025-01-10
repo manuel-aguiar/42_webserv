@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:26:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:41:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
+extern int TestPart3(int testNumber);
 
 int main(void)
 {
@@ -21,7 +22,7 @@ int main(void)
 	std::cout << "\n*************** CgiModule Functional Tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
-	//testNumber = TestPart2(testNumber);
+	testNumber = TestPart2(testNumber);
 
 	std::cout << "***********************************************\n" << std::endl;
 }

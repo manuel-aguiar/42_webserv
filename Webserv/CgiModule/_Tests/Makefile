@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/10 10:26:54 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/10 10:41:47 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,10 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 
 # Sources
 
-FUNC_SRCS =  $(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp \
+FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp \
 		$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp
+		$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
+		$(SRC_PATH)/Webserv/CgiModule/_Tests/test3.cpp
 
 STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressTest.cpp
 
