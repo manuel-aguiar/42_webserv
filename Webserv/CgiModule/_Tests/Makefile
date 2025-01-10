@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/10 10:41:47 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/10 11:56:39 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,46 +24,47 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 # Sources
 
 FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/test3.cpp
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test3.cpp
 
 STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressTest.cpp
 
 
-COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/Impl_StressTest.cpp \
-		\
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest_onCallbacksCgi.cpp \
-							\
-		$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
-							\
-		$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModule.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleInternal.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
-		$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
-		$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
-		$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
-		$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
-		$(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpModule.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpManager.cpp \
-		$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-		$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-		$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
-		$(SRC_PATH)/Webserv/Event/Event.cpp \
-		$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
-		$(SRC_PATH)/Webserv/Callback/Callback.cpp \
-		$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp
+COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/test_prepareStressTest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test_prepareExpectedOutput.cpp \
+				\
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest_onCallbacksCgi.cpp \
+									\
+				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
+									\
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModule.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleInternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
+				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
+				$(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
+				$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpModule.cpp \
+				$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpManager.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+				$(SRC_PATH)/Webserv/Event/Event.cpp \
+				$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Callback/Callback.cpp \
+				$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
 
 
 OBJS_COMMON = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(COMMON_SRCS))

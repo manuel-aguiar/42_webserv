@@ -66,7 +66,9 @@ class A_ProtoRequest
 
 		size_t			m_CancelCount;
 
-		int				m_id;	
+		int				m_id;
+
+		std::string		m_ExpectedOutput;
 };
 
 class A_ProtoRequest_CgiGateway

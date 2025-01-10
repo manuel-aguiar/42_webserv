@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Impl_StressTest.cpp                                :+:      :+:    :+:   */
+/*   test_prepareStressTest.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:10:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:29:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,7 @@
 // C headers
 #include <unistd.h>
 
-static const char* scriptOutput = "AUTH_TYPE: <not set>\n"
-"CONTENT_LENGTH: <not set>\n"
-"CONTENT_TYPE: <not set>\n"
-"GATEWAY_INTERFACE: <not set>\n"
-"PATH_INFO: <not set>\n"
-"PATH_TRANSLATED: <not set>\n"
-"QUERY_STRING: <not set>\n"
-"REMOTE_ADDR: <not set>\n"
-"REMOTE_HOST: <not set>\n"
-"REMOTE_IDENT: <not set>\n"
-"REMOTE_USER: <not set>\n"
-"REQUEST_METHOD: <not set>\n"
-"SCRIPT_NAME: <not set>\n"
-"SERVER_NAME: <not set>\n"
-"SERVER_PORT: <not set>\n"
-"SERVER_PROTOCOL: <not set>\n"
-"SERVER_SOFTWARE: <not set>\n";
+extern void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto);
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
@@ -96,6 +80,9 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 					requests.back().m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 					break;
 			}
+
+			prepareExpectedOutput(true, requests.back());
+
 			cgi.executeRequest(*requests.back().m_CgiRequestData);
 			
 			// process events right now at each loop, that way we make room in the CgiModule
@@ -122,11 +109,11 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 		{
 			if (!requests[i].m_CgiRequestData)
 				continue;
-			if (requests[i].m_TotalBytesRead != ::strlen(scriptOutput) ||
-				::strncmp(requests[i].m_buffer, scriptOutput, requests[i].m_TotalBytesRead) != 0)
+			if (requests[i].m_TotalBytesRead != requests[i].m_ExpectedOutput.length() ||
+				std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 			{
 				std::cout << i << " failed: " << requests[i].m_TotalBytesRead << " " << requests[i].m_buffer << "\n\n";
-				std::cout << "original: " << ::strlen(scriptOutput) << " " << scriptOutput << "\n\n";
+				std::cout << "original: " << requests[i].m_ExpectedOutput.length() << " " << requests[i].m_ExpectedOutput << "\n\n";
 				test = false;
 			}
 		}

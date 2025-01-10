@@ -132,6 +132,7 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 		m_argPtr.push_back(const_cast<char*>(interpExtension->second.c_str()));
 		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
 		m_argPtr.push_back(NULL);
+		
 		return (true);
 	}
 	catch(const std::exception& e)

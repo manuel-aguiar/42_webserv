@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:40:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 12:29:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,11 @@
 // C headers
 #include <unistd.h>
 
-static const char* scriptOutput = "AUTH_TYPE: <not set>\n"
-"CONTENT_LENGTH: <not set>\n"
-"CONTENT_TYPE: <not set>\n"
-"GATEWAY_INTERFACE: <not set>\n"
-"PATH_INFO: <not set>\n"
-"PATH_TRANSLATED: <not set>\n"
-"QUERY_STRING: <not set>\n"
-"REMOTE_ADDR: <not set>\n"
-"REMOTE_HOST: <not set>\n"
-"REMOTE_IDENT: <not set>\n"
-"REMOTE_USER: <not set>\n"
-"REQUEST_METHOD: <not set>\n"
-"SCRIPT_NAME: <not set>\n"
-"SERVER_NAME: <not set>\n"
-"SERVER_PORT: <not set>\n"
-"SERVER_PROTOCOL: <not set>\n"
-"SERVER_SOFTWARE: <not set>\n";
+
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
+
+extern void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto);
 
 int TestPart1(int testNumber)
 {
@@ -88,6 +74,10 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 		
+		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+
+		prepareExpectedOutput(true, protoRequest);
+
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
@@ -104,10 +94,10 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		if (protoRequest.m_TotalBytesRead != ::strlen(scriptOutput) ||
-			::strncmp(protoRequest.m_buffer, scriptOutput, protoRequest.m_TotalBytesRead) != 0)
+		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
+			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
-			+ scriptOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ protoRequest.m_ExpectedOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (executing a script)" << std::endl;
 	}
@@ -144,6 +134,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 
+		prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -210,6 +201,8 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("asgasgasgasgasg");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+
+		prepareExpectedOutput(false, protoRequest);
 
 		/// setting up some fds to divert python3 error messages for "no such file or directory"
 		int testpipe[2];
@@ -278,6 +271,8 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 		
+		prepareExpectedOutput(false, protoRequest);
+
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
