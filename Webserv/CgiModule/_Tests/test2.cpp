@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 17:30:05 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:06:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ static const char* scriptOutput = "AUTH_TYPE: <not set>\n"
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
+// Tests about the resilience of the CgiModule under heavy load
 
-int TestPart2(int testNumber)
+int StressTest(int testNumber, const int workers, const int backlog, const int connectionCount)
 {
 	try
 	{
@@ -55,9 +56,6 @@ int TestPart2(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 
-		const int workers = 50;
-		const int backlog = 1000;
-		const int connectionCount = 10000;
 		size_t acquireCounter = 0;
 
 		CgiModule cgi(workers, backlog, globals);
@@ -69,7 +67,7 @@ int TestPart2(int testNumber)
 		DynArray<A_ProtoRequest> requests;
 		requests.reserve(connectionCount);
 
-		for (size_t i = 0; i < connectionCount; ++i)
+		for (int i = 0; i < connectionCount; ++i)
 		{
 			requests.emplace_back(eventManager, globals, cgi, i);
 
@@ -120,7 +118,7 @@ int TestPart2(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		bool test = true;
-		for (size_t i = 0; i < connectionCount; ++i)
+		for (int i = 0; i < connectionCount; ++i)
 		{
 			if (!requests[i].m_CgiRequestData)
 				continue;
@@ -144,6 +142,31 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+	return (testNumber);
+}
+
+int TestPart2(int testNumber)
+{
+
+	testNumber = StressTest(testNumber, 1, 1, 1);
+	testNumber = StressTest(testNumber, 10, 100, 100);
+	testNumber = StressTest(testNumber, 5, 100, 1000);
+
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+	testNumber = StressTest(testNumber, 50, 200, 1000);
+
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	testNumber = StressTest(testNumber, 50, 500, 5000);
+	
 
 	return (testNumber);
 }
