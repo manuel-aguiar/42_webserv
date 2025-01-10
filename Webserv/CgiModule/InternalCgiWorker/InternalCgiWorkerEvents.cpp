@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 10:14:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:27:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 
 	//std::cout << "module read emergency pipe" << std::endl;
 
-	if (m_EmergencyEvent.getFd() == -1)
-		return ;		//finish was called already, but this event was already registered by the EventManager
+	//if (m_EmergencyEvent.getFd() == -1)
+	//	return ;		//finish was called already, but this event was already registered by the EventManager
 
 	if (triggeredFlags & EPOLLIN)
 	{
@@ -58,7 +58,7 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
 		m_EmergencyBytesRead += bytesRead;
-
+	
 		switch (bytesRead)
 		{
 			case 0:

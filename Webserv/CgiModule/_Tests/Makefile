@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/10 11:56:39 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/10 15:33:15 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -102,7 +102,7 @@ test: $(TARGET_FUNC) $(TARGET_STRESS)
 	--errors-for-leak-kinds=all \
 	--show-leak-kinds=all \
 	./$(TARGET_FUNC)
-##	@./$(TARGET_STRESS)
+	@./$(TARGET_STRESS)
 
 ##        --track-fds=yes 
 ##        --track-origins=yes

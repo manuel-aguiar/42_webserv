@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 13:05:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:32:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 
 //C++ headers
@@ -118,6 +119,8 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
+		FileDescriptor::setNonBlocking(testpipe[0]);
+		char pipeDrain[1024];
 		/////////////////
 
 
@@ -134,7 +137,12 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 
 			requests.back().m_CgiRequestData = cgi.acquireRequestData();
 			
-			if (requests.back().m_CgiRequestData == NULL) continue;
+			if (requests.back().m_CgiRequestData == NULL)
+			{
+				// keep processing even though this proto didn't get a connection
+				eventManager.ProcessEvents(1);
+				continue;
+			}
 			
 			acquireCounter++;
 			requests.back().m_CgiRequestData->setEventManager(eventManager);
@@ -156,27 +164,34 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 					ValidPHP(requests.back());
 					break;
 				case 3:
-					InvalidInterpreter(requests.back());
-					break;
-				case 4:
 					InvalidScript(requests.back());
 					break;
+				case 4:
+					InvalidInterpreter(requests.back());
+					break;
 			}
-
 			
 			cgi.executeRequest(*requests.back().m_CgiRequestData);
-			
+
 			// process events right now at each loop, that way we make room in the CgiModule
 			// to take more clients
-			eventManager.ProcessEvents(1000);
+			eventManager.ProcessEvents(10);
+			
+			//pipedrain not to sigpipe the failed interpreters
+			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+
+		}
+
+		while (eventManager.getSubscribeCount() != 0)
+		{
+			// process events
+			eventManager.ProcessEvents(1);
+
+			//pipedrain not to sigpipe the failed interpreters
+			while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 		}
 
 
-		//event loop
-		while (eventManager.getSubscribeCount() != 0)
-			eventManager.ProcessEvents(1000);
-
-		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	

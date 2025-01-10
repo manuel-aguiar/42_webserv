@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:02:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:32:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ class CgiModule
 
 		//getters
 		size_t									getBusyWorkerCount() const;
-		const t_CgiEnvValue*						getBaseEnvKeys() const;
+		size_t									getQueueSize() const;
+		const t_CgiEnvValue*					getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 	private:

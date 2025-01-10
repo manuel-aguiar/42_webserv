@@ -74,6 +74,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
 		return (mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME));
     }
+	
 
     if (m_pid == 0)
 		mf_executeChild();
@@ -172,7 +173,6 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
 	char EmergencyCode[2];
-
 	::close(m_EmergencyPhone[0]);
 
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||

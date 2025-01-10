@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:52:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:27:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
 
 	if (m_pid != -1)
 	{
+		//std::cout << "\t\t\t\t\t KILLING A PROCESS" << std::endl;
 		::kill(m_pid, SIGKILL);
 		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
