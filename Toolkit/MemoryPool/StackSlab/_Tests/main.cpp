@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 08:40:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:34:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:34:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <set>
 #include <map>
 // Project headers
-#include "../HeapSlab.hpp"
+#include "../StackSlab.hpp"
 
 #include "../../SlabAllocator/SlabAllocator.hpp"
 #include "../../../_Tests/ToolkitDummy.hpp"
@@ -31,7 +31,7 @@ extern int StressTest(int testNumber);
 int main(void)
 {
     int testNumber = 1;
-    std::cout << "\n*************** HeapSlab tests ***************" << std::endl;
+    std::cout << "\n*************** Stack Slab tests ***************" << std::endl;
 
     std::cout << "TEST " << testNumber++ << ": ";
     try
@@ -39,14 +39,14 @@ int main(void)
         const size_t nodeSetSize = 40;
         const size_t arraySize = 100;
 
-        // Initialize the HeapSlabs for both the set and the map
-        HeapSlab<nodeSetSize> setNodes(arraySize);
+        // Initialize the StackSlabs for both the set and the map
+        StackSlab<nodeSetSize, arraySize> setNodes;
 
         // Create SlabAllocator objects with the respective memory pools
-        SlabAllocator<int, HeapSlab<nodeSetSize> > allocSet(setNodes);
+        SlabAllocator<int, StackSlab<nodeSetSize, arraySize> > allocSet(setNodes);
 
         // Define a set using SlabAllocator
-        typedef std::set<int, std::less<int>, SlabAllocator<int, HeapSlab<nodeSetSize> > > nodeSet;
+        typedef std::set<int, std::less<int>, SlabAllocator<int, StackSlab<nodeSetSize, arraySize> > > nodeSet;
 		nodeSet set1(std::less<int>(), allocSet);
 
 		set1.insert(1);
@@ -64,14 +64,14 @@ int main(void)
         const size_t nodeSetSize = 48;
         const size_t arraySize = 100;
 
-        // Initialize the HeapSlabs for both the set and the map
-        HeapSlab<nodeSetSize> setNodes(arraySize);
+        // Initialize the StackSlabs for both the set and the map
+        StackSlab<nodeSetSize, arraySize> setNodes;
 
         // Create SlabAllocator objects with the respective memory pools
-        SlabAllocator<std::pair<int, int>, HeapSlab<nodeSetSize> > allocSet(setNodes);
+        SlabAllocator<std::pair<int, int>, StackSlab<nodeSetSize, arraySize> > allocSet(setNodes);
 
         // Define a set using SlabAllocator
-        typedef std::map<int, int, std::less<int>, SlabAllocator<std::pair<int, int>, HeapSlab<nodeSetSize> > > nodeSet;
+        typedef std::map<int, int, std::less<int>, SlabAllocator<std::pair<int, int>, StackSlab<nodeSetSize, arraySize> > > nodeSet;
 		nodeSet map1(std::less<int>(), allocSet);
 
 		map1[0] = 1;
@@ -87,22 +87,22 @@ int main(void)
 
  	try
     {
-        const size_t nodeSetSize = 40;
-        const size_t nodeMapSize = sizeof(std::pair<int, std::set<int, std::less<int>, SlabAllocator<int, HeapSlab<nodeSetSize> > > >)
-									+ 4 * sizeof(void*); 
         const size_t arraySize = 100;
+        const size_t nodeSetSize = 40;
+        const size_t nodeMapSize = sizeof(std::pair<int, std::set<int, std::less<int>, SlabAllocator<int, StackSlab<nodeSetSize, arraySize> > > >)
+									+ 4 * sizeof(void*); 
 
-        // Initialize the HeapSlabs for both the set and the map
-        HeapSlab<nodeSetSize> setNodes(arraySize);
-        HeapSlab<nodeMapSize> mapNodes(arraySize);
+        // Initialize the StackSlabs for both the set and the map
+        StackSlab<nodeSetSize, arraySize> setNodes;
+        StackSlab<nodeMapSize, arraySize> mapNodes;
 
         // Create SlabAllocator objects with the respective memory pools
-        SlabAllocator<int, HeapSlab<nodeSetSize> > allocSet(setNodes);
+        SlabAllocator<int, StackSlab<nodeSetSize, arraySize> > allocSet(setNodes);
 
         // Define a set using SlabAllocator
-        typedef std::set<int, std::less<int>, SlabAllocator<int, HeapSlab<nodeSetSize> > > 	nodeSet;
+        typedef std::set<int, std::less<int>, SlabAllocator<int, StackSlab<nodeSetSize, arraySize> > > 	nodeSet;
 		typedef std::pair<const int, nodeSet>												timerPair;
-		typedef SlabAllocator<timerPair, HeapSlab<nodeMapSize> >							timerAlloc;	
+		typedef SlabAllocator<timerPair, StackSlab<nodeMapSize, arraySize> >							timerAlloc;	
 		typedef std::map<int, nodeSet, std::less<int>, timerAlloc>							timerMap;
 
 		timerAlloc allocMap(mapNodes);
@@ -120,6 +120,7 @@ int main(void)
     {
         std::cout << "	FAILED: " << e.what() << std::endl;
     }
+
 	
     std::cout << "*********************************************\n" << std::endl;
 }
