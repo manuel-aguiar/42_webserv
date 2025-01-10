@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:32:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:09:57 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
 /****************************************************** */
 	// executing a script, no environment variables so far
 	// script should run without issue
@@ -112,6 +115,9 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
 
 /*************************************************************** */
 
@@ -169,12 +175,17 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
 			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+
+
 		std::cout << "	PASSED (using a non-existant interpreter)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
 
 /*************************************************************** */
 
@@ -243,6 +254,8 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
 /*************************************************************** */
 
 

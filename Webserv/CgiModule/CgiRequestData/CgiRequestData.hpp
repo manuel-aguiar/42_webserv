@@ -48,11 +48,11 @@ class CgiRequestData
 		t_fd											getWriteFd() const;
 
 		// accessors
-		Callback&										accessCallback(const e_CgiCallback eventType);
+		Callback&										accessCallback(const e_CgiCallback type);
 		EventManager*									accessEventManager();
 		
 		// setters
-		void											setCallback(const e_CgiCallback eventType, 
+		void											setCallback(const e_CgiCallback type, 
 																		const t_ptr_callback_data data, 
 																		const t_func_callback_handler handler);
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:52:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 10:10:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,10 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
+
 	return (testNumber);
 }
