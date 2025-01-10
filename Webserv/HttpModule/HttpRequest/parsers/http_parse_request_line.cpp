@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   http_parse_message_body.cpp                        :+:      :+:    :+:   */
+/*   http_parse_request_line.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/13 12:17:22 by codespace         #+#    #+#             */
-/*   Updated: 2024/11/15 08:29:31 by manuel           ###   ########.fr       */
+/*   Created: 2024/01/16 21:15:00 by rphuyal           #+#    #+#             */
+/*   Updated: 2025/01/16 21:42:41 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../httpStatusCodes.h"
+#include "../HttpRequest.hpp"
 
-#include "../HttpRequest/HttpRequest.hpp"
-
-t_http_parsing_status http_parse_message_body(HttpRequest& request, const std::string& line)
+int HttpRequest::mf_parseRequestLine(const std::string& line)
 {
-
+    (void)line;
+    return RequestStatus::OK;
 }

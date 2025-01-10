@@ -5,29 +5,55 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98
-TARGET = test.out
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
-SRCS = $(wildcard *.cpp)
-OBJS = $(SRCS:.cpp=.o)
+# Directories
+TEST_DIR = .
+SRC_DIR = ..
+PARSER_DIR = ../parsers
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+# Target
+NAME = test.out
 
+# Source files
+TEST_SRCS = $(TEST_DIR)/test.cpp
+MAIN_SRCS = $(SRC_DIR)/HttpRequest.cpp
+PARSER_SRCS = $(PARSER_DIR)/http_parse_request_line.cpp \
+              $(PARSER_DIR)/http_parse_header_line.cpp \
+              $(PARSER_DIR)/http_parse_message_body.cpp \
+              $(PARSER_DIR)/parser_utils.cpp
+
+# Object files
+TEST_OBJS = $(TEST_SRCS:.cpp=.o)
+MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
+PARSER_OBJS = $(PARSER_SRCS:.cpp=.o)
+
+# All objects
+OBJS = $(TEST_OBJS) $(MAIN_OBJS) $(PARSER_OBJS)
+
+# Include paths
+INCLUDES = -I$(SRC_DIR)
+
+# Rules
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
+
+# Pattern rule for object files
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-all: $(TARGET)
-
-run: $(TARGET)
-	valgrind --track-fds=yes ./$(TARGET)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	rm -rf $(OBJS) $(TARGET)
+	rm -f $(OBJS)
 
 fclean: clean
-	$(TARGET)
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: clean fclean run
+run: all
+	@echo "\nRunning tests with valgrind...\n"
+	@valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes ./$(NAME)
+
+.PHONY: all clean fclean re run

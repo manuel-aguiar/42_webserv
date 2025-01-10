@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    _HttpRequest.docs                                  :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: manuel <manuel@student.42.fr>              +#+  +:+       +#+         #
+#    By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 10:32:30 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/11/28 11:07:44 by manuel           ###   ########.fr        #
+#    Updated: 2025/01/16 21:06:34 by rphuyal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,4 +29,4 @@ to decide whether there is already a session associated or not)
 
 HttpRequest should also have a parsing timeout:
 	if we don't receive enough information to consider the request as fully received after X amount of time
-	we should close the request and POTENTIALLY, close the connection as well
+	we should close the request and POTENTIALLY, close the connection as well (rajh: NOT sure about this)

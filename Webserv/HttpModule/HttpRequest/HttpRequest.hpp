@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/16 20:46:05 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/16 21:36:42 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 // Forward declarations
 class HttpConnection;
 class HttpSession;
-class Response;
 
 // Request integrity status codes
 struct RequestStatus {
@@ -55,9 +54,7 @@ class HttpRequest {
         static const std::set<std::string> REQUIRED_HEADERS;
         static const std::set<std::string> OPTIONAL_HEADERS;
 
-        static const size_t MAX_URI_LENGTH = 2048;        // Common limit
-        static const size_t MAX_HEADER_SIZE = 8192;       // 8KB limit per header
-        static const size_t MAX_HEADERS_SIZE = 32768;     // 32KB total headers limit
+        static const size_t MAX_URI_LENGTH = 2048; // standard
 
         // Parsers
         int mf_parseRequestLine(const std::string& line);
@@ -70,9 +67,6 @@ class HttpRequest {
         bool mf_validateUri() const;
         bool mf_validateHttpVersion() const;
         bool mf_validateHeaders() const;
-
-        // corresponding response crafter
-        Response mf_craftResponse() const;
 
         // States
         int m_status;
@@ -93,41 +87,6 @@ class HttpRequest {
         // Prevent copying
         HttpRequest(const HttpRequest&);
         HttpRequest& operator=(const HttpRequest&);
-};
-
-// Static members
-const std::set<std::string> HttpRequest::ALLOWED_METHODS = {
-    "GET",
-    "POST",
-    "DELETE"
-};
-
-const std::set<std::string> HttpRequest::REQUIRED_HEADERS = {
-    "Host"
-};
-
-const std::set<std::string> HttpRequest::OPTIONAL_HEADERS = {
-    "Accept",
-    "Accept-Charset",
-    "Accept-Encoding",
-    "Accept-Language",
-    "Authorization",
-    "Content-Length",
-    "Content-Type",
-    "Cookie",
-    "Date",
-    "Host",
-    "If-Match",
-    "If-Modified-Since",
-    "If-None-Match",
-    "If-Range",
-    "If-Unmodified-Since",
-    "Max-Forwards",
-    "Proxy-Authorization",
-    "Range",
-    "Referer",
-    "TE",
-    "User-Agent"
 };
 
 #endif

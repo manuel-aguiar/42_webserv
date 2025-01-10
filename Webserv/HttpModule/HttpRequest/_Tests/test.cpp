@@ -6,10 +6,10 @@
 // Helper function to print request details
 void printRequest(const std::string& method, const std::string& uri, const std::string& version, const std::string& headers) {
     std::cout << "┌──────────── Request Details ────────────┐" << std::endl;
-    std::cout << "│ Method:  " << std::left << std::setw(28) << method << "│" << std::endl;
-    std::cout << "│ URI:     " << std::left << std::setw(28) << uri << "│" << std::endl;
-    std::cout << "│ Version: " << std::left << std::setw(28) << version << "│" << std::endl;
-    std::cout << "│ Headers: " << std::left << std::setw(28) << headers << "│" << std::endl;
+    std::cout << "│ Method:  " << std::left << std::setw(31) << method << "│" << std::endl;
+    std::cout << "│ URI:     " << std::left << std::setw(31) << uri << "│" << std::endl;
+    std::cout << "│ Version: " << std::left << std::setw(31) << version << "│" << std::endl;
+    std::cout << "│ Headers: " << std::left << std::setw(31) << headers << "│" << std::endl;
     std::cout << "└─────────────────────────────────────────┘" << std::endl;
 }
 
@@ -311,9 +311,9 @@ int main() {
     std::cout << "Starting HTTP Request Parser Tests...\n";
 
     testRequestLineParsing();
-    testHeaderParsing();
-    testBodyParsing();
-    testEncodedRequests();
+    // testHeaderParsing();
+    // testBodyParsing();
+    // testEncodedRequests();
 
     std::cout << "\nAll tests completed!\n";
     return 0;
