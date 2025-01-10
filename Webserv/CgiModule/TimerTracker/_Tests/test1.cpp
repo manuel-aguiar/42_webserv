@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 19:00:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 19:04:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 20:01:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int TestPart1(int testNumber)
     {
         std::cout << "TEST " << testNumber++ << ": ";
         
-        Nginx_MemoryPool pool(50000, 1);
+        Nginx_MemoryPool pool(20000, 1);
 
         //some BS, will just rebind for internal arrays
         Nginx_PoolAllocator<int> alloc(pool);
 
-        TimerTracker<int, int, Nginx_PoolAllocator<int> > tracker(100, alloc);
+        TimerTracker<int, int, Nginx_PoolAllocator<int> > tracker(123, alloc);
 
 
 

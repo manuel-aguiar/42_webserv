@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:17:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:57:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 20:05:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # define TIMERTRACKER_TPP
 
 // Project Headers
+# include "../../../Toolkit/MemoryPool/HeapFixedBlock/HeapFixedBlock.hpp"
+# include "../../../Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../../../Toolkit/MemoryPool/HeapSlab/HeapSlab.hpp"
 # include "../../../Toolkit/MemoryPool/SlabAllocator/SlabAllocator.hpp"
 
@@ -23,22 +25,42 @@
 # include <set>
 # include <map>
 
+
+
 template <typename T, typename U, typename Allocator>
 class TimerTracker
 {
 	public:
-		static const size_t nodeSetSize = sizeof(U) + sizeof(void*) * 4;
-		static const size_t nodeMapSize = sizeof(std::pair<const T, std::set<U> >) + sizeof(void*) * 4;
 
-		typedef SlabAllocator<U, HeapSlab<nodeSetSize, Allocator> > setAlloc;
-		typedef std::set<U, std::less<U>, setAlloc > nodeSet;
-		typedef std::pair<const T, nodeSet> timerPair;
-		typedef SlabAllocator<timerPair, HeapSlab<nodeMapSize, Allocator> > mapAlloc;
-		typedef std::map<T, nodeSet, std::less<T>, mapAlloc> timerMap;
+		template <size_t OutterSize>
+		struct AlignedStorage
+		{
+			template <size_t InnerSize, size_t Alignment>
+			struct AlignedSize
+			{
+				static const size_t value = (InnerSize + Alignment - 1) & ~(Alignment - 1);
+			};
+			static const size_t value = AlignedSize<OutterSize, __alignof__(OutterSize)>::value;
+		};
+
+		static const size_t nodeSetSize = AlignedStorage<sizeof(U) + sizeof(void*) * 3>::value;
+		static const size_t nodeMapSize = AlignedStorage<sizeof(std::pair<const T, std::set<U> >) + sizeof(void*) * 3>::value;
+
+		typedef HeapFixedBlock<typename Allocator::template rebind<unsigned char>::other>
+																			fixedBlock;
+		typedef Nginx_PoolAllocator<T, fixedBlock> 							poolAlloc;
+		typedef HeapSlab<nodeSetSize, poolAlloc>							setSlab;
+		typedef HeapSlab<nodeMapSize, poolAlloc>							mapSlab;
+		typedef SlabAllocator<U, setSlab> 									setAlloc;
+		typedef std::set<U, std::less<U>, setAlloc > 						nodeSet;
+		typedef std::pair<const T, nodeSet> 								timerPair;
+		typedef SlabAllocator<timerPair, mapSlab > 							mapAlloc;
+		typedef std::map<T, nodeSet, std::less<T>, mapAlloc> 				timerMap;
 
 		TimerTracker(size_t capacity, const Allocator& allocator = Allocator()) : 
-			m_setSlab(capacity, allocator),
-			m_mapSlab(capacity, allocator),
+			m_fixedBlock(nodeSetSize * capacity + nodeMapSize * capacity, allocator),		//check this, double capacity for nothing
+			m_setSlab(capacity, poolAlloc(m_fixedBlock)),
+			m_mapSlab(capacity, poolAlloc(m_fixedBlock)),
 			m_capacity(capacity), 
 			m_size(0), 
 			m_timers(std::less<T>(), mapAlloc(m_mapSlab)), 
@@ -124,8 +146,9 @@ class TimerTracker
 		}
 
 	private:
-		HeapSlab<nodeSetSize, Allocator> 	m_setSlab;
-		HeapSlab<nodeMapSize, Allocator> 	m_mapSlab;
+		fixedBlock 							m_fixedBlock;
+		setSlab							 	m_setSlab;
+		mapSlab							 	m_mapSlab;
 		size_t								m_capacity;
 		size_t 								m_size;
 		timerMap 							m_timers;
