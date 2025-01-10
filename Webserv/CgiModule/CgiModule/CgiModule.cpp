@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 13:56:08 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:24:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
 	m_availableWorkers(workers),
 	m_availableRequestData(backlog),
 	m_executionQueue(backlog),
-	m_globals(globals)
+	m_globals(globals),
+	m_timerTracker(backlog)
 {
 	// prepare workers
 	for (size_t i = 0; i < m_numWorkers; i++)
@@ -67,7 +68,8 @@ CgiModule::~CgiModule()
 //private as usual
 CgiModule::CgiModule(const CgiModule &copy) :
 	m_numWorkers(copy.m_numWorkers),
-	m_globals(copy.m_globals)
+	m_globals(copy.m_globals),
+	m_timerTracker(copy.m_backlog)
 {
 
 }

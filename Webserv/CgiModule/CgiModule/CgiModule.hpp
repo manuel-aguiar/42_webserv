@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 14:32:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/10 18:25:42 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../Cgi_Definitions.h"
 # include "../CgiRequestData/CgiRequestData.hpp"
+# include "../TimerTracker/TimerTracker.hpp"
 
 // C++ headers
 # include <map>
@@ -73,9 +74,13 @@ class CgiModule
 
 		std::map<t_extension, t_path>				m_Interpreters;
 
-		t_CgiEnvValue									m_baseEnv[E_CGI_ENV_COUNT];
+		t_CgiEnvValue								m_baseEnv[E_CGI_ENV_COUNT];
 
 		Globals&									m_globals;
+		
+		TimerTracker<size_t, InternalCgiRequestData*>
+													m_timerTracker;
+
 
 		void										mf_returnWorker(InternalCgiWorker& worker);
 		void										mf_returnRequestData(InternalCgiRequestData& data);
