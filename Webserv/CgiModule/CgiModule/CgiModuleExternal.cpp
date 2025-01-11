@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:11:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:58:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,35 +57,6 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 	
 	mf_execute(*worker, *requestData);
 }
-/*
-	There are 3 valid scenarios, for 3 request states:
-
-		Request is Acquired: not in any queue (neither available or executing)
-			-> can safely reset and put back in the available list right away
-			
-		Request is Executing: worker is executing the request, not in any queue
-			-> forced close the worker
-			-> closed worker will return the request to the available list when it can
-
-		Request is Queued: request is in the execution queue
-			-> can't remove from the queue, it is in the middle
-			-> we mark it as cancelled
-			-> as workers try to get requests, they check the cancelled ones and remove them from
-				the queue back to the available list
-				(++ we don't iterate and move all elements in the middle)
-				(-- someone may not be able to subscribe, even though there is a dead request in the queue
-				it must wait a worker processes it)
-
-	There are 2 invalid scenarios that are programming errors:
-
-		Request is Idle:
-			-> THIS IS A PROGRAMMING ERROR AT THE CGI MODULE LEVEL 	-> ASSERT
-
-		Request is Cancelled:
-			-> THIS IS A PROGRAMMING ERROR AT THE USER LEVEL		-> ASSERT
-				(not problem with double cancelling, but why do that?)
-
-*/
 
 int		CgiModule::finishTimedOut()
 {
@@ -123,11 +94,40 @@ int		CgiModule::finishTimedOut()
 	// return the shortest time to the next timeout
 	if (m_timerTracker.begin() == m_timerTracker.end())
 	{
-		return (-1);
+		return (-1);	//infinite
 	}
 	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());
 }
 
+/*
+	There are 3 valid scenarios, for 3 request states:
+
+		Request is Acquired: not in any queue (neither available or executing)
+			-> can safely reset and put back in the available list right away
+			
+		Request is Executing: worker is executing the request, not in any queue
+			-> forced close the worker
+			-> closed worker will return the request to the available list when it can
+
+		Request is Queued: request is in the execution queue
+			-> can't remove from the queue, it is in the middle
+			-> we mark it as cancelled
+			-> as workers try to get requests, they check the cancelled ones and remove them from
+				the queue back to the available list
+				(++ we don't iterate and move all elements in the middle)
+				(-- someone may not be able to subscribe, even though there is a dead request in the queue
+				it must wait a worker processes it)
+
+	There are 2 invalid scenarios that are programming errors:
+
+		Request is Idle:
+			-> THIS IS A PROGRAMMING ERROR AT THE CGI MODULE LEVEL 	-> ASSERT
+
+		Request is Cancelled:
+			-> THIS IS A PROGRAMMING ERROR AT THE USER LEVEL		-> ASSERT
+				(not problem with double cancelling, but why do that?)
+
+*/
 void	CgiModule::finishRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData* requestData;
