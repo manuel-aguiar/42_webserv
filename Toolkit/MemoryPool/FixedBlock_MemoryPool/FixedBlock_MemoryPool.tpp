@@ -20,7 +20,7 @@
 
 
 
-template <typename T>
+template <typename T, typename Allocator>
 class FixedBlock_MemoryPool
 {
 	public:
@@ -40,24 +40,24 @@ class FixedBlock_MemoryPool
 		typedef ptrdiff_t       difference_type;
 
 		template <typename U> struct rebind {
-			typedef FixedBlock_MemoryPool<U> other;
+			typedef FixedBlock_MemoryPool<U, Allocator> other;
 		};
 
-		FixedBlock_MemoryPool(size_t numElems) :
-			m_elements(0),
+		FixedBlock_MemoryPool(size_t numElems, const Allocator& allocator = Allocator()) :
+			m_elements(0, typename Allocator::template rebind<s_Slot>::other(allocator)),
 			m_elemCount(0),
 			m_maxElems(numElems),
 			m_freeSlot(NULL) {}
 
 		FixedBlock_MemoryPool(const FixedBlock_MemoryPool& copy)  :
-			m_elements(0),
+			m_elements(0, copy.m_elements.getAllocator()),
 			m_elemCount(copy.m_elemCount),
 			m_maxElems(copy.m_maxElems),
 			m_freeSlot(copy.m_freeSlot) {}
 
 		template <class U> 
-		FixedBlock_MemoryPool(const FixedBlock_MemoryPool<U>& rebind) :
-			m_elements(0),
+		FixedBlock_MemoryPool(const FixedBlock_MemoryPool<U, Allocator>& rebind) :
+			m_elements(0, typename Allocator::template rebind<s_Slot>::other(rebind.m_elements.getAllocator())),
 			m_elemCount(0),
 			m_maxElems(rebind.m_maxElems),
 			m_freeSlot(NULL) {}
@@ -134,6 +134,11 @@ class FixedBlock_MemoryPool
 			}
 		}
 
+		const Allocator& getAllocator() const
+		{
+			return (typename Allocator::template rebind<T>::other(m_elements.getAllocator()));
+		}
+
 		union s_Slot
 		{
 			char			m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
@@ -144,7 +149,8 @@ class FixedBlock_MemoryPool
 		typedef s_Slot		t_slot_type;
 		typedef s_Slot*		t_slot_pointer;
 
-		DynArray<s_Slot> 			m_elements;
+		DynArray<s_Slot, typename Allocator::template rebind<s_Slot>::other> 			
+									m_elements;
 		size_t 						m_elemCount;
 		size_t 						m_maxElems;
 		t_slot_pointer 				m_freeSlot;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 19:31:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 00:14:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "../../HeapFixedBlock/HeapFixedBlock.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../../../_Tests/test.h"
+# include "TimerTrackerOld.hpp"
 
 int TestPart1(int testNumber)
 {
@@ -72,6 +73,16 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+
+    try
+    {
+        TimerTrackerOld<int, int, std::allocator<int> > tracker(123);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
 
     return (testNumber);
 }

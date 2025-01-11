@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:18:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:28:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 00:15:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@ Nginx_MemoryPool::~Nginx_MemoryPool()
 {
 	destroy();
 }
-
+#include <iostream>
 void*   Nginx_MemoryPool::allocate(size_t size)
 {
+	
 	return (allocate(size, (size < sizeof(size_t)) ? size : sizeof(size_t)));
 }
 

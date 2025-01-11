@@ -65,6 +65,8 @@ class HeapFixedBlock
 
         size_t getFreeSpace() const { return (m_endOfBlock - m_freePosition); } 
 
+        const Allocator& getAllocator() const { return (m_allocator); }
+
     private:
         Allocator       m_allocator;
         t_byte*         m_array;

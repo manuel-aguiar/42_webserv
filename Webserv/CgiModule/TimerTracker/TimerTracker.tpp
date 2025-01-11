@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:17:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 20:05:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 00:18:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,61 +20,38 @@
 # include "../../../Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../../../Toolkit/MemoryPool/HeapSlab/HeapSlab.hpp"
 # include "../../../Toolkit/MemoryPool/SlabAllocator/SlabAllocator.hpp"
+# include "../../../Toolkit/MemoryPool/FixedBlock_MemoryPool/FixedBlock_MemoryPool.hpp"
 
 // C++ headers
-# include <set>
 # include <map>
 
-
+/*
+	After refactoring, it is just a multimap, sad :(
+*/
 
 template <typename T, typename U, typename Allocator>
 class TimerTracker
 {
 	public:
 
-		template <size_t OutterSize>
-		struct AlignedStorage
-		{
-			template <size_t InnerSize, size_t Alignment>
-			struct AlignedSize
-			{
-				static const size_t value = (InnerSize + Alignment - 1) & ~(Alignment - 1);
-			};
-			static const size_t value = AlignedSize<OutterSize, __alignof__(OutterSize)>::value;
-		};
-
-		static const size_t nodeSetSize = AlignedStorage<sizeof(U) + sizeof(void*) * 3>::value;
-		static const size_t nodeMapSize = AlignedStorage<sizeof(std::pair<const T, std::set<U> >) + sizeof(void*) * 3>::value;
-
-		typedef HeapFixedBlock<typename Allocator::template rebind<unsigned char>::other>
-																			fixedBlock;
-		typedef Nginx_PoolAllocator<T, fixedBlock> 							poolAlloc;
-		typedef HeapSlab<nodeSetSize, poolAlloc>							setSlab;
-		typedef HeapSlab<nodeMapSize, poolAlloc>							mapSlab;
-		typedef SlabAllocator<U, setSlab> 									setAlloc;
-		typedef std::set<U, std::less<U>, setAlloc > 						nodeSet;
-		typedef std::pair<const T, nodeSet> 								timerPair;
-		typedef SlabAllocator<timerPair, mapSlab > 							mapAlloc;
-		typedef std::map<T, nodeSet, std::less<T>, mapAlloc> 				timerMap;
+		typedef std::pair<const T, U> 										timerPair;
+		typedef FixedBlock_MemoryPool<timerPair, typename Allocator::template rebind<timerPair>::other>
+		 																	mapPool;
+		typedef std::multimap<T, U, std::less<T>, mapPool> 					timerMap;
 
 		TimerTracker(size_t capacity, const Allocator& allocator = Allocator()) : 
-			m_fixedBlock(nodeSetSize * capacity + nodeMapSize * capacity, allocator),		//check this, double capacity for nothing
-			m_setSlab(capacity, poolAlloc(m_fixedBlock)),
-			m_mapSlab(capacity, poolAlloc(m_fixedBlock)),
+			m_mapPool(capacity, typename Allocator::template rebind<timerPair>::other(allocator)),
+			m_timers(std::less<T>(), m_mapPool), 
 			m_capacity(capacity), 
-			m_size(0), 
-			m_timers(std::less<T>(), mapAlloc(m_mapSlab)), 
-			m_setNodeAlloc(m_setSlab)
+			m_size(0)
 		{
 		}
 
         TimerTracker(const TimerTracker& copy) :
-            m_setSlab(copy.m_capacity),
-            m_mapSlab(copy.m_capacity),
+			m_mapPool(copy.m_capacity, typename Allocator::template rebind<timerPair>::other(copy.m_mapPool.getAllocator())),
+            m_timers(std::less<T>(), m_mapPool),
             m_capacity(copy.m_capacity),
-            m_size(copy.m_size),
-            m_timers(std::less<T>(), mapAlloc(m_mapSlab)),
-            m_setNodeAlloc(m_setSlab)
+            m_size(copy.m_size)
         {
             *this = copy;
         }
@@ -91,39 +68,23 @@ class TimerTracker
             return (*this);
         }
 
-		void insert(T key, T value)
+		void insert(const T& key, const U& value)
 		{
-			typename timerMap::iterator it = m_timers.find(key);
-
-			if (it == m_timers.end())
-			{
-				nodeSet set1(std::less<T>(), m_setNodeAlloc);
-				set1.insert(value);
-				m_timers.insert(std::pair<T, nodeSet>(key, set1));
-			}
-			else
-			{
-				it->second.insert(value);
-			}
+			m_timers.insert(std::pair<T, U>(key, value));
 		}
 
-		void erase(T key, T value)
+		void erase(const T& key, const U& value)
 		{
-			typename timerMap::iterator it = m_timers.find(key);
-
-			if (it != m_timers.end())
+			std::pair<typename timerMap::iterator, typename timerMap::iterator> it = m_timers.equal_range(key);
+			
+			//can be multiple, but not in our case
+			for (typename timerMap::iterator start = it.first; start != it.second; ++start)
 			{
-				it->second.erase(value);
-			}
-		}
-
-		void erase(T key)
-		{
-			typename timerMap::iterator it = m_timers.find(key);
-
-			if (it != m_timers.end())
-			{
-				m_timers.erase(it);
+				if (start->second == value)
+				{
+					m_timers.erase(start);
+					break;
+				}
 			}
 		}
 
@@ -136,23 +97,16 @@ class TimerTracker
 		{
 			for (typename timerMap::iterator it = m_timers.begin(); it != m_timers.end(); ++it)
 			{
-				std::cout << it->first << ": ";
-				for (typename nodeSet::iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-				{
-					std::cout << *it2 << " ";
-				}
-				std::cout << std::endl;
+				std::cout << it->first << ": " << it->second << std::endl;
 			}
 		}
 
 	private:
-		fixedBlock 							m_fixedBlock;
-		setSlab							 	m_setSlab;
-		mapSlab							 	m_mapSlab;
+		FixedBlock_MemoryPool<std::pair<const T, U>, typename Allocator::template rebind<std::pair<const T, U> >::other>
+											m_mapPool;
+		timerMap 							m_timers;
 		size_t								m_capacity;
 		size_t 								m_size;
-		timerMap 							m_timers;
-		setAlloc 							m_setNodeAlloc;
 };
 
 #endif
