@@ -1,7 +1,1 @@
-CgiRequestData must be given an epoll to subscribe events to.
-Even though buffer reading is the responsibility of caller, CGI Module needs a way to know when the process exited, potential error codes, and the user doesn t have to warn the cgi module that it is done.
-
-So the worker sets up a safety_pipe WITHOUT close on exec flag.
-The child writes error codes that might have happened, execve s and the new orocess inherits the fd. when the new process exits, the pipe will close, sending EOF. Let the worker subscribe a read event on this pipe to EPOLL. When epoll warns of the pipe read, the worker will know the child process exited!!!!!!!!
-
-Clean shot brah
+Confirm dup2 stderror is not hiding valgrind errors!!!!!!!!
