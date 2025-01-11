@@ -1,4 +1,6 @@
 Confirm dup2 stderror is not hiding valgrind errors!!!!!!!!
 
+--log-file=valgrind_output.txt
+and then car valgrind rm -rf valgrind_output.txt
 
 Add update method to Timer
