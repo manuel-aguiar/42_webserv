@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:25:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:45:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../Cgi_Definitions.h"
 # include "../CgiRequestData/CgiRequestData.hpp"
+# include "../Timer/Timer.hpp"
 # include "../TimerTracker/TimerTracker.hpp"
 
 // C++ headers
@@ -34,7 +35,7 @@ class Globals;
 class CgiModule
 {
 	public:
-		CgiModule(size_t workerCount, size_t backlogCount, Globals& globals);
+		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, Globals& globals);
 		~CgiModule();
 
 		// methods
@@ -45,6 +46,8 @@ class CgiModule
 		void									executeRequest(CgiRequestData& data);
 		void									finishRequest(CgiRequestData& data);
 
+		int										finishTimedOut();
+		
 		void									forceStop();
 
 		//getters
@@ -53,6 +56,8 @@ class CgiModule
 		const t_CgiEnvValue*					getBaseEnvKeys() const;
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
+
+		#define									CGI_MIN_TIMEOUT 1000
 	private:
 
 		// internal classes, not exposed to the user
@@ -61,6 +66,7 @@ class CgiModule
 
 		size_t										m_numWorkers;
 		size_t										m_backlog;
+		size_t										m_maxTimeout;
 		size_t										m_busyWorkerCount;
 
 		// members fixed in place
@@ -78,7 +84,7 @@ class CgiModule
 
 		Globals&									m_globals;
 		
-		TimerTracker<size_t, InternalCgiRequestData*>
+		TimerTracker<Timer, InternalCgiRequestData*>
 													m_timerTracker;
 
 

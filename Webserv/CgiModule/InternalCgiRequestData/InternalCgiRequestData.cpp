@@ -15,7 +15,8 @@
 CgiModule::InternalCgiRequestData::InternalCgiRequestData() :
 	CgiRequestData(),
 	m_executor(NULL),
-	m_state(E_CGI_STATE_IDLE) {}
+	m_state(E_CGI_STATE_IDLE),
+	m_myTimer(TimerTracker<Timer, InternalCgiRequestData*>::iterator()) {}
 
 CgiModule::InternalCgiRequestData::~InternalCgiRequestData() {}
 
@@ -25,6 +26,7 @@ void	CgiModule::InternalCgiRequestData::reset()
 	CgiRequestData::reset();
 	m_executor = NULL;
 	m_state = E_CGI_STATE_IDLE;
+	m_myTimer = TimerTracker<Timer, InternalCgiRequestData*>::iterator();
 }
 
 
@@ -44,6 +46,16 @@ void	CgiModule::InternalCgiRequestData::setWriteFd(const t_fd fd)
 	m_writeFd = fd;
 }
 
+void	CgiModule::InternalCgiRequestData::setMyTimer(const TimerTracker<Timer, InternalCgiRequestData*>::iterator& timer)
+{
+	m_myTimer = timer;
+}
+
+TimerTracker<Timer, CgiModule::InternalCgiRequestData*>::iterator
+CgiModule::InternalCgiRequestData::getMyTimer() const
+{
+	return (m_myTimer);
+}
 
 CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor()
 {

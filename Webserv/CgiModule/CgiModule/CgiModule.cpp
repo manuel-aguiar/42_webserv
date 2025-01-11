@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:24:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 10:29:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-CgiModule::CgiModule(size_t workers, size_t backlog, Globals& globals) :
+CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, Globals& globals) :
 	m_numWorkers(workers),
 	m_backlog(backlog),
+	m_maxTimeout(maxTimeout),
 	m_busyWorkerCount(0),
 	m_allWorkers(workers),
 	m_allRequestData(backlog),

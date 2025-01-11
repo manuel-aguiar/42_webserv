@@ -43,7 +43,7 @@ class CgiRequestData
 		const t_CgiRequestEnv& 							getEnvVars() const;
 		const std::string&								getExtension() const;
 		const std::string&								getScriptPath() const;
-			
+		unsigned int									getTimeoutMs() const;
 		t_fd											getReadFd() const;
 		t_fd											getWriteFd() const;
 
@@ -62,6 +62,8 @@ class CgiRequestData
 		void											setExtension(const std::string& extension);
 		void											setScriptPath(const std::string& path);
 		void											setEventManager(EventManager& manager);
+		void											setTimeoutMs(const unsigned int timeoutMs);
+
 
 	protected:
 		t_fd											m_readFd;
@@ -71,6 +73,7 @@ class CgiRequestData
 		Callback 										m_callbacks[E_CGI_CALLBACK_COUNT];
 		std::string										m_extension;
 		std::string										m_scriptPath;
+		unsigned int									m_timeoutMs;
 		t_CgiRequestEnv									m_env;
 		EventManager*									m_eventManager;
 

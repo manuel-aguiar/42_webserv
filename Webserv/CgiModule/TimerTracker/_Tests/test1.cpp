@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 19:00:51 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:26:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 10:43:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,24 @@ int TestPart1(int testNumber)
 
         TimerTracker<int, int, Nginx_PoolAllocator<int> > tracker(123, alloc);
  
+		std::cout << "	PASSED" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+    try
+    {   //with a pool
+        std::cout << "TEST " << testNumber++ << ": ";
+        
+        Nginx_MemoryPool pool(20000, 1);
+
+        //some BS, will just rebind for internal arrays
+        Nginx_PoolAllocator<int> alloc(pool);
+
+        TimerTracker<int, int, Nginx_PoolAllocator<int> > tracker(123, alloc);
+
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 14:39:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:45:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,18 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
 	InternalCgiWorker* 						worker;
+	unsigned int							timeout;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
 	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
+
+	timeout = request.getTimeoutMs();
+	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
+	timeout = (timeout < CGI_MIN_TIMEOUT) ? CGI_MIN_TIMEOUT : timeout;
+	
+	// tell the requestData where its timer is, in case of premature finish/cancelation
+	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
 
 	if (m_availableWorkers.size() == 0)
 	{
@@ -78,6 +86,34 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 				(not problem with double cancelling, but why do that?)
 
 */
+
+int		CgiModule::finishTimedOut()
+{
+	Timer timer = Timer::now();
+
+	TimerTracker<Timer, InternalCgiRequestData*>::iterator it = m_timerTracker.begin();
+	TimerTracker<Timer, InternalCgiRequestData*>::iterator next;
+	
+	while (it != m_timerTracker.end())
+	{
+		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
+		{
+			next = ++it;
+			--it;
+			finishRequest(*it->second);
+			it = next;
+		}
+		else
+			break ;
+	}
+
+	if (m_timerTracker.begin() == m_timerTracker.end())
+	{
+		return (-1);
+	}
+	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());
+}
+
 void	CgiModule::finishRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData* requestData;

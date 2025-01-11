@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 16:54:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:41:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
 
 void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 {	
-	data.reset();
+	if (data.getMyTimer() != TimerTracker<Timer, InternalCgiRequestData*>::iterator())
+		m_timerTracker.erase(data.getMyTimer());
+
+	data.reset();	
 	m_availableRequestData.push_back(&data);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 15:32:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:42:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	InvalidScript(A_ProtoRequest& proto)
 }
 
 
-int Impl_StressTest(int testNumber, const int workers, const int backlog, const int connectionCount)
+int Impl_StressTest(int testNumber, const int workers, const int backlog, const int connectionCount, const unsigned int timeoutMs)
 {
 	try
 	{
@@ -108,7 +108,7 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 		//setup
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(workers, backlog, globals);
+		CgiModule cgi(workers, backlog, timeoutMs, globals);
 
 		std::string testFailure;
 

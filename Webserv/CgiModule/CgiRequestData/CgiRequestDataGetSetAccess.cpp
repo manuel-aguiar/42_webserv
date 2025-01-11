@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:28:01 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:46:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ t_fd										CgiRequestData::getWriteFd() const
 	return (m_writeFd);
 }
 
+unsigned int 							CgiRequestData::getTimeoutMs() const
+{
+	return (m_timeoutMs);
+}
+
 // setters
 void	CgiRequestData::setCallback(const e_CgiCallback type, const t_ptr_callback_data data, const t_func_callback_handler handler)
 {
@@ -67,6 +72,11 @@ void		CgiRequestData::setScriptPath(const std::string& path)
 void		CgiRequestData::setEventManager(EventManager& manager)
 {
 	m_eventManager = &manager;
+}
+
+void	CgiRequestData::setTimeoutMs(const unsigned int timeoutMs)
+{
+	m_timeoutMs = timeoutMs;
 }
 
 //accessors

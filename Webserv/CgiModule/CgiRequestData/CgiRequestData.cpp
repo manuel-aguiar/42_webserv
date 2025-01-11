@@ -24,6 +24,7 @@ CgiRequestData::CgiRequestData() :
 
 CgiRequestData::~CgiRequestData()
 {
+	
 }
 
 CgiRequestData::CgiRequestData(const CgiRequestData &copy) :
@@ -55,4 +56,5 @@ void	CgiRequestData::reset()
 		m_callbacks[i].reset();
 	
 	m_eventManager = NULL;
+	m_timeoutMs = 0;
 }

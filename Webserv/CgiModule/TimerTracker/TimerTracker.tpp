@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:17:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 11:30:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,6 @@
 # define TIMERTRACKER_TPP
 
 // Project Headers
-# include "../../../Toolkit/MemoryPool/Heap_MemoryPool/Heap_MemoryPool.hpp"
-# include "../../../Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../Toolkit/MemoryPool/HeapSlab/HeapSlab.hpp"
-# include "../../../Toolkit/MemoryPool/SlabAllocator/SlabAllocator.hpp"
 # include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
 
 // C++ headers
@@ -35,21 +31,22 @@ class TimerTracker
 	public:
 
 		typedef std::pair<const T, U> 										timerPair;
-		typedef Heap_ObjectPool<timerPair, typename Allocator::template rebind<timerPair>::other>
-		 																	mapPool;
+		typedef typename Allocator::template rebind<timerPair>::other		pairAllocator;
+		typedef Heap_ObjectPool<timerPair, pairAllocator>					mapPool;
 		typedef std::multimap<T, U, std::less<T>, mapPool> 					timerMap;
 
+		typedef typename timerMap::iterator iterator;
+    	typedef typename timerMap::const_iterator const_iterator;
+
 		TimerTracker(size_t capacity, const Allocator& allocator = Allocator()) : 
-			m_mapPool(capacity, typename Allocator::template rebind<timerPair>::other(allocator)),
-			m_timers(std::less<T>(), m_mapPool), 
+			m_timers(std::less<T>(), mapPool(capacity, pairAllocator(allocator))), 
 			m_capacity(capacity), 
 			m_size(0)
 		{
 		}
 
         TimerTracker(const TimerTracker& copy) :
-			m_mapPool(copy.m_capacity, typename Allocator::template rebind<timerPair>::other(copy.m_mapPool.getAllocator())),
-            m_timers(std::less<T>(), m_mapPool),
+            m_timers(std::less<T>(), mapPool(copy.m_capacity, pairAllocator(copy.m_timers.get_allocator()))),
             m_capacity(copy.m_capacity),
             m_size(copy.m_size)
         {
@@ -68,17 +65,17 @@ class TimerTracker
             return (*this);
         }
 
-		void insert(const T& key, const U& value)
+		iterator insert(const T& key, const U& value)
 		{
-			m_timers.insert(std::pair<T, U>(key, value));
+			return (m_timers.insert(std::pair<T, U>(key, value)));
 		}
 
 		void erase(const T& key, const U& value)
 		{
-			std::pair<typename timerMap::iterator, typename timerMap::iterator> it = m_timers.equal_range(key);
+			std::pair<iterator, iterator> it = m_timers.equal_range(key);
 			
 			//can be multiple, but not in our case
-			for (typename timerMap::iterator start = it.first; start != it.second; ++start)
+			for (iterator start = it.first; start != it.second; ++start)
 			{
 				if (start->second == value)
 				{
@@ -88,10 +85,20 @@ class TimerTracker
 			}
 		}
 
+		void erase(iterator it)
+		{
+			m_timers.erase(it);
+		}
+
 		void clear()
 		{
 			m_timers.clear();
 		}
+		
+		iterator begin() 				{ return (m_timers.begin()); }
+		iterator end() 					{ return (m_timers.end()); }
+		const_iterator begin() const 	{ return (m_timers.begin()); }
+		const_iterator end() const 		{ return (m_timers.end()); }
 
 		void print()
 		{
@@ -102,8 +109,6 @@ class TimerTracker
 		}
 
 	private:
-		Heap_ObjectPool<std::pair<const T, U>, typename Allocator::template rebind<std::pair<const T, U> >::other>
-											m_mapPool;
 		timerMap 							m_timers;
 		size_t								m_capacity;
 		size_t 								m_size;

@@ -40,7 +40,8 @@ class CgiModule::InternalCgiWorker
 		void    					reset();
 		
 		void						stopExecution();
-
+		void						requestTimedOut();
+		
 		InternalCgiRequestData*		accessCurRequestData();
 
 

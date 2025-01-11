@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/10 15:33:15 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/11 11:45:01 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,6 +51,7 @@ COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/test_prepareStressTest.cpp 
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
