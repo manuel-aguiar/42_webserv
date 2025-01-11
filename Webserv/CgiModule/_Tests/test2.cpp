@@ -6,12 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:20:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:48:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 # include "../CgiModule/CgiModule.hpp"
+
+# include "CgiStressTest.hpp"
 
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
@@ -25,7 +27,6 @@
 // C headers
 #include <unistd.h>
 
-extern void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto);
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
@@ -76,7 +77,7 @@ int TestPart2(int testNumber)
 
 		////////////////////////////////////////////////////////////////
 
-		prepareExpectedOutput(true, protoRequest);
+		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -150,7 +151,7 @@ int TestPart2(int testNumber)
 
 		////////////////////////////////////////////////////////////////
 
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -234,7 +235,7 @@ int TestPart2(int testNumber)
 		////////////////////////////////////////////////////////////////
 
 
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		/// setting up some fds to divert python3 error messages for "no such file or directory"
 		int testpipe[2];
@@ -259,9 +260,9 @@ int TestPart2(int testNumber)
 			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 		
-		if (protoRequest.m_CancelCount != 1)
-			testFailure = testFailure + '\n' + "CgiModule did not cancel the request, got " + to_string(protoRequest.m_CancelCount)
-			 + " expected 1" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+		if (protoRequest.m_CgiResultStatus != A_ProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
+			testFailure = testFailure + '\n' + "CgiModule did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+
 
 		// restoring the original stdcerr not to mess the remaining tests
 		dup2(stdcerrDup, STDERR_FILENO);
@@ -318,7 +319,7 @@ int TestPart2(int testNumber)
 
 		////////////////////////////////////////////////////////////////
 
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 

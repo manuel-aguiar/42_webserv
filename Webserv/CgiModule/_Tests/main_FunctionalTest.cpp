@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 13:05:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:45:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int main(void)
 	int testNumber = 1;
 	std::cout << "\n*************** CgiModule Functional Tests ***************" << std::endl;
 
-	//testNumber = TestPart1(testNumber);
-	//testNumber = TestPart2(testNumber);
+	testNumber = TestPart1(testNumber);
+	testNumber = TestPart2(testNumber);
 	testNumber = TestPart3(testNumber);
 
 	std::cout << "***********************************************\n" << std::endl;

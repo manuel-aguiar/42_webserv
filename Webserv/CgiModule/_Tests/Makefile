@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/11 13:11:50 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/11 18:50:03 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp \
 STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressTest.cpp
 
 
-COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/test_prepareStressTest.cpp \
+COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/test_prepareExpectedOutput.cpp \
 				\
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \

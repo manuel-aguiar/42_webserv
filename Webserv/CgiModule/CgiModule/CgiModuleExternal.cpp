@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 13:05:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:11:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int		CgiModule::finishTimedOut()
 			
 			// call the user if it is executing, runtime error
 			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
-				curRequest->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
 			
 			// if user doesn't cancel, we do it for them
 			finishRequest(*it->second);

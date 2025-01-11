@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_prepareStressTest.cpp                         :+:      :+:    :+:   */
+/*   CgiStressTest.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 13:14:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:43:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@
 # include "../../ServerManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
+# include "CgiStressTest.hpp"
 
 //C++ headers
 # include <iostream>
+# include <iomanip>
 
 // C headers
 #include <unistd.h>
@@ -32,7 +34,7 @@ extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
 // Tests about the resilience of the CgiModule under heavy load
 
-void	ValidPython(A_ProtoRequest& proto)
+void	CgiStressTest::ValidPython(A_ProtoRequest& proto)
 {
 	proto.m_CgiRequestData->setExtension("py");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -47,7 +49,7 @@ void	ValidPython(A_ProtoRequest& proto)
 }
 
 
-void	ValidShell(A_ProtoRequest& proto)
+void	CgiStressTest::ValidShell(A_ProtoRequest& proto)
 {
 	proto.m_CgiRequestData->setExtension("sh");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
@@ -59,7 +61,7 @@ void	ValidShell(A_ProtoRequest& proto)
 	prepareExpectedOutput(true, proto);
 }
 
-void	ValidPHP(A_ProtoRequest& proto)
+void	CgiStressTest::ValidPHP(A_ProtoRequest& proto)
 {
 	proto.m_CgiRequestData->setExtension("php");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
@@ -71,7 +73,7 @@ void	ValidPHP(A_ProtoRequest& proto)
 	prepareExpectedOutput(true, proto);
 }
 
-void	InvalidInterpreter(A_ProtoRequest& proto)
+void	CgiStressTest::InvalidInterpreter(A_ProtoRequest& proto)
 {
 	proto.m_CgiRequestData->setExtension("pyasgasg");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -85,7 +87,7 @@ void	InvalidInterpreter(A_ProtoRequest& proto)
 }
 
 
-void	InvalidScript(A_ProtoRequest& proto)
+void	CgiStressTest::InvalidScript(A_ProtoRequest& proto)
 {
 	proto.m_CgiRequestData->setExtension("py");
 	proto.m_CgiRequestData->setScriptPath("thisDoesNotExist");
@@ -99,7 +101,63 @@ void	InvalidScript(A_ProtoRequest& proto)
 }
 
 
-int Impl_StressTest(int testNumber, const int workers, const int backlog, const int connectionCount, const unsigned int timeoutMs)
+void	CgiStressTest::MixedCriteria(A_ProtoRequest& proto, int index)
+{
+	switch (index % 5)
+	{
+		case 0:
+			ValidPython(proto);
+			break;
+		case 1:
+			ValidShell(proto);
+			break;
+		case 2:
+			ValidPHP(proto);
+			break;
+		case 3:
+			InvalidScript(proto);
+			break;
+		case 4:
+			InvalidInterpreter(proto);
+			break;
+	}
+}
+
+void	CgiStressTest::AllSuccessCriteria(A_ProtoRequest& proto, int index)
+{
+	switch (index % 3)
+	{
+		case 0:
+			ValidPython(proto);
+			break;
+		case 1:
+			ValidShell(proto);
+			break;
+		case 2:
+			ValidPHP(proto);
+			break;
+	}
+}
+
+void	CgiStressTest::AllInvalidCriteria(A_ProtoRequest& proto, int index)
+{
+	switch (index % 2)
+	{
+		case 0:
+			InvalidScript(proto);
+			break;
+		case 1:
+			InvalidInterpreter(proto);
+			break;
+	}
+}
+
+int CgiStressTest::Impl_StressTest(int testNumber, 
+					const int workers, 
+					const int backlog, 
+					const int connectionCount, 
+					const unsigned int timeoutMs,
+					void (*AssignmentCriteria)(A_ProtoRequest& proto, int index))
 {
 	try
 	{
@@ -112,7 +170,8 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 
 		std::string testFailure;
 
-		size_t acquireCounter = 0;
+		size_t statusCounter[A_ProtoRequest::E_CGI_STATUS_COUNT] = {0};
+
 
 		/// setting up some fds to divert interpreter's error messages for "no such file or directory"
 		int testpipe[2];
@@ -140,37 +199,22 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 			if (requests.back().m_CgiRequestData == NULL)
 			{
 				// keep processing even though this proto didn't get a connection
+				requests.back().m_CgiResultStatus = A_ProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE;
 				cgi.finishTimedOut();
 				eventManager.ProcessEvents(10);
 				continue;
 			}
 			
-			acquireCounter++;
 			requests.back().m_CgiRequestData->setEventManager(eventManager);
-
+			requests.back().m_CgiRequestData->setTimeoutMs(timeoutMs);
+			
 			// setup callbacks
 			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
 				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
 			
 
-			switch (i % 5)
-			{
-				case 0:
-					ValidPython(requests.back());
-					break;
-				case 1:
-					ValidShell(requests.back());
-					break;
-				case 2:
-					ValidPHP(requests.back());
-					break;
-				case 3:
-					InvalidScript(requests.back());
-					break;
-				case 4:
-					InvalidInterpreter(requests.back());
-					break;
-			}
+
+			AssignmentCriteria(requests.back(), i);
 			
 			cgi.executeRequest(*requests.back().m_CgiRequestData);
 
@@ -203,14 +247,26 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 			testFailure = testFailure + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
+
+		// checking results
 		for (int i = 0; i < connectionCount; ++i)
 		{
-			if (requests[i].m_TotalBytesRead != requests[i].m_ExpectedOutput.length() ||
-				std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
+			statusCounter[requests[i].m_CgiResultStatus]++;
+			switch (requests[i].m_CgiResultStatus)
 			{
-				testFailure = testFailure + '\n' + to_string(i) + " failed: " 
-				+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
-				+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
+				case A_ProtoRequest::E_CGI_STATUS_WORKING:
+					testFailure = testFailure + to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+					break;
+				case A_ProtoRequest::E_CGI_STATUS_SUCCESS:
+					if (std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
+					{
+						testFailure = testFailure + '\n' + to_string(i) + " failed: " 
+						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
+						+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
+					}
+					break ;
+				default:
+					break ;
 			}
 		}
 
@@ -227,137 +283,22 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 			throw std::logic_error(testFailure);
 
 
-			
-		std::cout << "	PASSED [Stress Testing] served: " << acquireCounter << " out of " << connectionCount
-		<< " with " << workers << " workers and " << backlog << " backlog" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
-	// clear the error messages not to mess with the remaining tests
-	g_mockGlobals_ErrorMsgs.clear();
-
-
-	return (testNumber);
-}
-
-int Impl_StallTest(int testNumber, const int workers, const int backlog, const int connectionCount, const unsigned int timeoutMs)
-{
-	try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
-
-		//setup
-		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
-		CgiModule cgi(workers, backlog, timeoutMs, globals);
-
-		std::string testFailure;
-
-		size_t acquireCounter = 0;
-
-		/// setting up some fds to divert interpreter's error messages for "no such file or directory"
-		int testpipe[2];
-		int stdcerrDup = dup(STDERR_FILENO);
-		pipe(testpipe);
-		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor::setNonBlocking(testpipe[0]);
-		//char pipeDrain[1024];
-		/////////////////
-
-
-		cgi.addInterpreter("py", "/usr/bin/python3");
-		cgi.addInterpreter("sh", "/usr/bin/bash");
-		cgi.addInterpreter("php", "/usr/bin/php");
-
-		DynArray<A_ProtoRequest> requests;
-		requests.reserve(connectionCount);
-
-		for (int i = 0; i < connectionCount; ++i)
-		{
-			requests.emplace_back(eventManager, globals, cgi, i);
-
-			requests.back().m_CgiRequestData = cgi.acquireRequestData();
-			
-			if (requests.back().m_CgiRequestData == NULL)
-			{
-				// keep processing even though this proto didn't get a connection
-				cgi.finishTimedOut();
-				eventManager.ProcessEvents(10);
-				continue;
-			}
-			
-			acquireCounter++;
-			requests.back().m_CgiRequestData->setEventManager(eventManager);
-
-			// setup callbacks
-			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
-				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
-			
-
-			InvalidScript(requests.back());
-
-			
-			cgi.executeRequest(*requests.back().m_CgiRequestData);
-
-			// process events right now at each loop, that way we make room in the CgiModule
-			// to take more clients
-			cgi.finishTimedOut();
-			eventManager.ProcessEvents(10);
-			
-			//pipedrain not to sigpipe the failed interpreters
-			//while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
-
-		}
-
-		while (1)
-		{
-			unsigned int nextWait = cgi.finishTimedOut();
-			
-			if (eventManager.getSubscribeCount() != 0)
-				eventManager.ProcessEvents(nextWait);
-			else
-				break ;
-			//while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
-		}
-
-		if (eventManager.getSubscribeCount() != 0)
-			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
-
-		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
-
-		for (int i = 0; i < connectionCount; ++i)
-		{
-			if (requests[i].m_TotalBytesRead != requests[i].m_ExpectedOutput.length() ||
-				std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
-			{
-				testFailure = testFailure + '\n' + to_string(i) + " failed: " 
-				+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
-				+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
-			}
-		}
-
-
-		// restoring the original stdcerr not to mess the remaining tests
-		dup2(stdcerrDup, STDERR_FILENO);
-		close(stdcerrDup);
-		close(testpipe[1]); 
-		close(testpipe[0]);
-		/////////////////////////////
-
-
-		if (!testFailure.empty())
-			throw std::logic_error(testFailure);
-
-
-			
-		std::cout << "	PASSED [Stress Testing] served: " << acquireCounter << " out of " << connectionCount
-		<< " with " << workers << " workers and " << backlog << " backlog" << std::endl;
+		// me and the gpadi			
+		std::cout << "	PASSED [Stress Testing] " << '\n'
+			<< "\t=================================" << std::endl
+        	<< "\t---------------------------------" << std::endl
+        	<< "\t| success:           " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_SUCCESS] << " |\n"
+        	<< "\t| failed acquire:    " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE] << " |\n"
+        	<< "\t| timedout:          " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_TIMEOUT] << " |\n"
+        	<< "\t| error startup:     " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_ERROR_STARTUP] << " |\n"
+        	<< "\t| error runtime:     " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_ERROR_RUNTIME] << " |\n"
+        	<< "\t| working:           " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_WORKING] << " |\n"
+        	<< "\t---------------------------------" << '\n'
+        	<< "\t| Total Connections: " << std::setw(10) << connectionCount << " |\n"
+        	<< "\t| Total Workers:     " << std::setw(10) << workers << " |\n"
+			<< "\t| Total Backlog:     " << std::setw(10) << backlog << " |\n"
+			<< "\t| Req TimeOut (ms):  " << std::setw(10) << timeoutMs << " |\n"
+        	<< "\t=================================\n\n" << std::endl;
 	}
 	catch (const std::exception& e)
 	{

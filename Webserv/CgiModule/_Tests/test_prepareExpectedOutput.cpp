@@ -6,12 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 11:57:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 12:40:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:29:19 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 # include "../CgiModule/CgiModule.hpp"
+
+# include "CgiStressTest.hpp"
 
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
@@ -26,7 +28,7 @@
 // C headers
 #include <unistd.h>
 
-char* findExtraEnvVariable(const char* key, const CgiRequestData& request)
+static char* findExtraEnvVariable(const char* key, const CgiRequestData& request)
 {
     const t_CgiRequestEnv& envVars = request.getEnvVars();
 
@@ -38,7 +40,7 @@ char* findExtraEnvVariable(const char* key, const CgiRequestData& request)
     return (NULL);
 }
 
-std::string getExtraEntry(const CgiRequestData& request, const char* textKey)
+static std::string getExtraEntry(const CgiRequestData& request, const char* textKey)
 {
     char* const     target = findExtraEnvVariable(textKey, request);
     std::string     result;
@@ -53,7 +55,7 @@ std::string getExtraEntry(const CgiRequestData& request, const char* textKey)
     return (result);
 }
 
-char* findBaseEnvVariable(const e_CgiEnv& target, const CgiRequestData& request)
+static char* findBaseEnvVariable(const e_CgiEnv& target, const CgiRequestData& request)
 {
     const t_CgiRequestEnv& envVars = request.getEnvVars();
 
@@ -65,7 +67,7 @@ char* findBaseEnvVariable(const e_CgiEnv& target, const CgiRequestData& request)
     return (NULL);
 }
 
-std::string getBaseEntry(const CgiRequestData& request, const char* textKey, const e_CgiEnv& enumKey)
+static std::string getBaseEntry(const CgiRequestData& request, const char* textKey, const e_CgiEnv& enumKey)
 {
     char* const     target = findBaseEnvVariable(enumKey, request);
     std::string     result;
@@ -81,7 +83,7 @@ std::string getBaseEntry(const CgiRequestData& request, const char* textKey, con
 
 
 
-void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto)
+void CgiStressTest::prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto)
 {
     std::string     temp;
 

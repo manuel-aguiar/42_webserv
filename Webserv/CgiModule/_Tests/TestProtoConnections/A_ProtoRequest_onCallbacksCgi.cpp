@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 13:23:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:51:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,13 @@ void	A_ProtoRequest::OnRead()
 			m_CgiReadEvent.reset();
 			m_cgi.finishRequest(*m_CgiRequestData);
 			printBufStdout();
+
+
+
+
+			//internal test
+			if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+				m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
 		}
 			//std::cout << "proto " << m_id << " read " << bytesRead << " bytes" << std::endl;
 	}
@@ -103,6 +110,12 @@ void	A_ProtoRequest::OnRead()
 		m_CgiReadEvent.reset();
 		m_cgi.finishRequest(*m_CgiRequestData);
 		printBufStdout();
+
+
+
+		//internal test
+		if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+			m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
 	}
 }
 
@@ -144,7 +157,13 @@ void	A_ProtoRequest::cancelCgi()
 	m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
-	m_CancelCount++;
+
+
+
+
+	//internal test
+	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+		m_CgiResultStatus = E_CGI_STATUS_ERROR_RUNTIME;
 }
 
 /*
@@ -154,7 +173,13 @@ void	A_ProtoRequest::falseStartCgi()
 {
 	//std::cout << "proto " << m_id << " falseStartCgi" << std::endl;
 	m_cgi.finishRequest(*m_CgiRequestData);
+
 	//inform your client something bad happened
+
+
+	//internal test
+	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+		m_CgiResultStatus = E_CGI_STATUS_ERROR_STARTUP;
 }
 
 
@@ -172,10 +197,10 @@ void	A_ProtoRequest::timeoutCgi()
 		m_CgiWriteEvent.reset();
 	}
 	m_cgi.finishRequest(*m_CgiRequestData);
-
-	// no expected, disregard whatever you received because it may be incomplete or faulty
-	m_ExpectedOutput = "";
-	m_buffer[m_TotalBytesRead] = '\0';
-	m_TotalBytesRead = 0;
 	//inform your client something bad happened
+
+
+	//internal test
+	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+		m_CgiResultStatus = E_CGI_STATUS_TIMEOUT;
 }

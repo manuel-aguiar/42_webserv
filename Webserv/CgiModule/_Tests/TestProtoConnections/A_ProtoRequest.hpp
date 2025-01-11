@@ -44,6 +44,16 @@ class A_ProtoRequest
 
 		void	debugPrint() const;
 
+		enum e_CgiResultStatus
+		{
+			E_CGI_STATUS_WORKING,
+			E_CGI_STATUS_FAILED_ACQUIRE,
+			E_CGI_STATUS_SUCCESS,
+			E_CGI_STATUS_ERROR_STARTUP,
+			E_CGI_STATUS_ERROR_RUNTIME,
+			E_CGI_STATUS_TIMEOUT,
+			E_CGI_STATUS_COUNT,
+		};
 
 		//event callbacks
 		static void EventCallbackOnRead(Callback& event);
@@ -65,11 +75,11 @@ class A_ProtoRequest
 		char 			m_buffer[1024];
 		size_t			m_TotalBytesRead;
 
-		size_t			m_CancelCount;
-
 		int				m_id;
 
 		std::string		m_ExpectedOutput;
+
+		e_CgiResultStatus	m_CgiResultStatus;
 };
 
 class A_ProtoRequest_CgiGateway

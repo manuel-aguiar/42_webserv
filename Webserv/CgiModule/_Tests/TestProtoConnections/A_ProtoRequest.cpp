@@ -20,8 +20,8 @@ A_ProtoRequest::A_ProtoRequest(EventManager& manager, Globals& globals, CgiModul
 	m_globals(globals),
 	m_cgi(cgi),
 	m_TotalBytesRead(0),
-    m_CancelCount(0),
-    m_id(id)
+    m_id(id),
+    m_CgiResultStatus(E_CGI_STATUS_WORKING)
 
 {
     m_buffer[0] = '\0';

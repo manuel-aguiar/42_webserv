@@ -6,12 +6,14 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:59:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:47:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
 # include "../CgiModule/CgiModule.hpp"
+
+# include "CgiStressTest.hpp"
 
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
@@ -28,8 +30,6 @@
 
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
-
-extern void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto);
 
 int TestPart1(int testNumber)
 {
@@ -76,7 +76,7 @@ int TestPart1(int testNumber)
 		
 		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
 
-		prepareExpectedOutput(true, protoRequest);
+		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -135,7 +135,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setTimeoutMs(2000);
 		
 		// false, we will cancel
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -204,7 +204,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
@@ -272,7 +272,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("asgasgasgasgasg");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		/// setting up some fds to divert python3 error messages for "no such file or directory"
 		int testpipe[2];
@@ -297,9 +297,8 @@ int TestPart1(int testNumber)
 			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 		
-		if (protoRequest.m_CancelCount != 1)
-			testFailure = testFailure + '\n' + "CgiModule did not cancel the request, got " + to_string(protoRequest.m_CancelCount)
-			 + " expected 1" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+		if (protoRequest.m_CgiResultStatus != A_ProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
+			testFailure = testFailure + '\n' + "CgiModule did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 		// restoring the original stdcerr not to mess the remaining tests
 		dup2(stdcerrDup, STDERR_FILENO);
@@ -341,7 +340,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 		
-		prepareExpectedOutput(false, protoRequest);
+		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
