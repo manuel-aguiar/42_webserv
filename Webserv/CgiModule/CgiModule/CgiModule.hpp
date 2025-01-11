@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:17:04 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:54:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ class CgiModule
 		const std::map<t_extension, t_path>&	getInterpreters() const;
 
 
-		#define									CGI_MIN_TIMEOUT 50
+		#define									CGI_MIN_TIMEOUT 1
+
+
 	private:
 
 		// internal classes, not exposed to the user
