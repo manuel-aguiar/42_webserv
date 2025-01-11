@@ -1,1 +1,4 @@
 Confirm dup2 stderror is not hiding valgrind errors!!!!!!!!
+
+
+Add update method to Timer
