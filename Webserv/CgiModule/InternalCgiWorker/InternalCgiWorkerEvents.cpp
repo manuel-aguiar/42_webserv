@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 15:27:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:10:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 
 	//std::cout << "module read emergency pipe" << std::endl;
 
-	//if (m_EmergencyEvent.getFd() == -1)
-	//	return ;		//finish was called already, but this event was already registered by the EventManager
+	if (m_EmergencyEvent.getFd() == -1)
+		return ;		//finish was called already, but this event was already registered by the EventManager
 
 	if (triggeredFlags & EPOLLIN)
 	{
@@ -72,7 +72,7 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 					case 1:
 						//std::cout << "module, Incomplete exit, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
 						mf_disableEmergencyEvent();
-						mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+						m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 						return (stopExecution());
 				}
 				return ;
@@ -89,7 +89,7 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 				else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
 					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
 					+ std::string(strerror(m_EmergencyBuffer[1])));
-				mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+				m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 				return (stopExecution());
 			}
 
@@ -106,7 +106,7 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 					else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
 						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
 						+ std::string(strerror(m_EmergencyBuffer[1])));
-					mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+					m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 					return (stopExecution());
 				}
 			}
@@ -122,7 +122,7 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 			else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
 				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): inconclusive error");
 
-			mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+			m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 		}
 			
 		return (stopExecution());

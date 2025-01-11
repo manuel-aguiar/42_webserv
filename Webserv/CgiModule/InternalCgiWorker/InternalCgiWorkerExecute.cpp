@@ -40,7 +40,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
     }
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -50,11 +50,11 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
 	}
 
 	if (!mf_prepareExecve())
-		return (mf_CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
@@ -64,7 +64,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 	//std::cout << "write fd: " << m_curRequestData->getWriteFd() << std::endl;
 	//std::cout << "emergency fd: " << m_EmergencyPhone[0] << std::endl;
 
-	mf_CallTheUser(E_CGI_ON_EXECUTE);
+	m_curRequestData->CallTheUser(E_CGI_ON_EXECUTE);
 
 	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
 
@@ -72,7 +72,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME));
+		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME));
     }
 	
 

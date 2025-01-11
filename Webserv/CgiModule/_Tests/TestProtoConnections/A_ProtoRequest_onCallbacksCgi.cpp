@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 15:27:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:23:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	A_ProtoRequest::OnRead()
 	int					triggeredFlags;
 	//std::cout << "proto " << m_id << " readingCgi" << std::endl;
 	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
-
+	
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
@@ -142,9 +142,8 @@ void	A_ProtoRequest::cancelCgi()
 		m_CgiWriteEvent.reset();
 	}
 	m_cgi.finishRequest(*m_CgiRequestData);
-
+	
 	//inform your client something bad happened
-
 	m_CancelCount++;
 }
 
@@ -155,6 +154,28 @@ void	A_ProtoRequest::falseStartCgi()
 {
 	//std::cout << "proto " << m_id << " falseStartCgi" << std::endl;
 	m_cgi.finishRequest(*m_CgiRequestData);
+	//inform your client something bad happened
+}
 
+
+void	A_ProtoRequest::timeoutCgi()
+{
+	//std::cout << "proto " << m_id << " timeoutCgi" << std::endl;
+	if (m_CgiReadEvent.getFd() != -1)
+	{
+		m_eventManager.delEvent(m_CgiReadEvent);
+		m_CgiReadEvent.reset();
+	}
+	if (m_CgiWriteEvent.getFd() != -1)
+	{
+		m_eventManager.delEvent(m_CgiWriteEvent);
+		m_CgiWriteEvent.reset();
+	}
+	m_cgi.finishRequest(*m_CgiRequestData);
+
+	// no expected, disregard whatever you received because it may be incomplete or faulty
+	m_ExpectedOutput = "";
+	m_buffer[m_TotalBytesRead] = '\0';
+	m_TotalBytesRead = 0;
 	//inform your client something bad happened
 }

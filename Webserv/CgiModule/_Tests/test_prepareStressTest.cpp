@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:42:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:14:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,8 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 			if (requests.back().m_CgiRequestData == NULL)
 			{
 				// keep processing even though this proto didn't get a connection
-				eventManager.ProcessEvents(1);
+				cgi.finishTimedOut();
+				eventManager.ProcessEvents(10);
 				continue;
 			}
 			
@@ -175,6 +176,7 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 
 			// process events right now at each loop, that way we make room in the CgiModule
 			// to take more clients
+			cgi.finishTimedOut();
 			eventManager.ProcessEvents(10);
 			
 			//pipedrain not to sigpipe the failed interpreters
@@ -182,15 +184,144 @@ int Impl_StressTest(int testNumber, const int workers, const int backlog, const 
 
 		}
 
-		while (eventManager.getSubscribeCount() != 0)
+		while (1)
 		{
-			// process events
-			eventManager.ProcessEvents(1);
-
-			//pipedrain not to sigpipe the failed interpreters
+			unsigned int nextWait = cgi.finishTimedOut();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
 			while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 		}
 
+		if (eventManager.getSubscribeCount() != 0)
+			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
+
+		if (cgi.getBusyWorkerCount() != 0)
+			testFailure = testFailure + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+
+		for (int i = 0; i < connectionCount; ++i)
+		{
+			if (requests[i].m_TotalBytesRead != requests[i].m_ExpectedOutput.length() ||
+				std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
+			{
+				testFailure = testFailure + '\n' + to_string(i) + " failed: " 
+				+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
+				+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
+			}
+		}
+
+
+		// restoring the original stdcerr not to mess the remaining tests
+		dup2(stdcerrDup, STDERR_FILENO);
+		close(stdcerrDup);
+		close(testpipe[1]); 
+		close(testpipe[0]);
+		/////////////////////////////
+
+
+		if (!testFailure.empty())
+			throw std::logic_error(testFailure);
+
+
+			
+		std::cout << "	PASSED [Stress Testing] served: " << acquireCounter << " out of " << connectionCount
+		<< " with " << workers << " workers and " << backlog << " backlog" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
+
+	return (testNumber);
+}
+
+int Impl_StallTest(int testNumber, const int workers, const int backlog, const int connectionCount, const unsigned int timeoutMs)
+{
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		//setup
+		Globals globals(NULL, NULL, NULL, NULL);
+		EventManager eventManager(globals);
+		CgiModule cgi(workers, backlog, timeoutMs, globals);
+
+		std::string testFailure;
+
+		size_t acquireCounter = 0;
+
+		/// setting up some fds to divert interpreter's error messages for "no such file or directory"
+		int testpipe[2];
+		int stdcerrDup = dup(STDERR_FILENO);
+		pipe(testpipe);
+		dup2(testpipe[1], STDERR_FILENO);
+		FileDescriptor::setNonBlocking(testpipe[0]);
+		//char pipeDrain[1024];
+		/////////////////
+
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+		cgi.addInterpreter("sh", "/usr/bin/bash");
+		cgi.addInterpreter("php", "/usr/bin/php");
+
+		DynArray<A_ProtoRequest> requests;
+		requests.reserve(connectionCount);
+
+		for (int i = 0; i < connectionCount; ++i)
+		{
+			requests.emplace_back(eventManager, globals, cgi, i);
+
+			requests.back().m_CgiRequestData = cgi.acquireRequestData();
+			
+			if (requests.back().m_CgiRequestData == NULL)
+			{
+				// keep processing even though this proto didn't get a connection
+				cgi.finishTimedOut();
+				eventManager.ProcessEvents(10);
+				continue;
+			}
+			
+			acquireCounter++;
+			requests.back().m_CgiRequestData->setEventManager(eventManager);
+
+			// setup callbacks
+			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
+				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
+			
+
+			InvalidScript(requests.back());
+
+			
+			cgi.executeRequest(*requests.back().m_CgiRequestData);
+
+			// process events right now at each loop, that way we make room in the CgiModule
+			// to take more clients
+			cgi.finishTimedOut();
+			eventManager.ProcessEvents(10);
+			
+			//pipedrain not to sigpipe the failed interpreters
+			//while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+
+		}
+
+		while (1)
+		{
+			unsigned int nextWait = cgi.finishTimedOut();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+			//while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+		}
 
 		if (eventManager.getSubscribeCount() != 0)
 			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())

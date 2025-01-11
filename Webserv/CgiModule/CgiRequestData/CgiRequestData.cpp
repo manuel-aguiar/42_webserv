@@ -17,6 +17,7 @@ CgiRequestData::CgiRequestData() :
 	m_writeFd(-1),
 	m_extension(""),
 	m_scriptPath(""),
+	m_timeoutMs(0),
 	m_eventManager(NULL)
 {
 	m_env.envBase.reserve(E_CGI_ENV_COUNT);
@@ -24,7 +25,7 @@ CgiRequestData::CgiRequestData() :
 
 CgiRequestData::~CgiRequestData()
 {
-	
+
 }
 
 CgiRequestData::CgiRequestData(const CgiRequestData &copy) :

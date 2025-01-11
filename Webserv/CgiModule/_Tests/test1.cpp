@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:44:42 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:59:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,76 @@ int TestPart1(int testNumber)
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
+
+/****************************************************** */
+	// Testing timeout cleanup
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		Globals globals(NULL, NULL, NULL, NULL);
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, 1000, globals);
+		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+
+		cgi.addInterpreter("py", "/usr/bin/python3");
+
+		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+
+		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
+		
+		protoRequest.m_CgiRequestData->setExtension("py");
+		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
+		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+		
+		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setTimeoutMs(2000);
+		
+		// false, we will cancel
+		prepareExpectedOutput(false, protoRequest);
+
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+
+		::sleep(2); // 2ms
+
+		//event loop
+		
+		while (1)
+		{
+			unsigned int nextWait = cgi.finishTimedOut();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+		}
+
+
+		// tests
+		if (eventManager.getSubscribeCount() != 0)
+			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+
+		if (cgi.getBusyWorkerCount() != 0)
+			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
+			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
+			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
+			+ protoRequest.m_ExpectedOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		std::cout << "	PASSED (finishing requests that timed out)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
 
 /*************************************************************** */
 

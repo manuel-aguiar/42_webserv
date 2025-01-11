@@ -1,29 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_FunctionalTest.cpp                            :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 13:05:38 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/11 12:00:46 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/11 12:01:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../Timer.hpp"
 # include <iostream>
-
-extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
-extern int TestPart3(int testNumber);
 
 int main(void)
 {
-	int testNumber = 1;
-	std::cout << "\n*************** CgiModule Functional Tests ***************" << std::endl;
+    Timer timer = Timer::now();
 
-	//testNumber = TestPart1(testNumber);
-	//testNumber = TestPart2(testNumber);
-	testNumber = TestPart3(testNumber);
+    std::cout << "Seconds: " << timer.seconds() << std::endl;
 
-	std::cout << "***********************************************\n" << std::endl;
+    timer += 5000;
+
+    std::cout << "Seconds: " << timer.seconds() << std::endl;
+    return (0);
 }

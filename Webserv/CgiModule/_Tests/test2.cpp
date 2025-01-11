@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:43:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:20:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,6 +322,7 @@ int TestPart2(int testNumber)
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
+		cgi.finishTimedOut();
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
 			eventManager.ProcessEvents(1000);

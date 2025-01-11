@@ -40,6 +40,7 @@ class A_ProtoRequest
 		void   	executeCgi();		//On execute
 		void	falseStartCgi();	// on error startup
 		void	cancelCgi();		// on error runtime
+		void	timeoutCgi();
 
 		void	debugPrint() const;
 
@@ -78,6 +79,7 @@ class A_ProtoRequest_CgiGateway
 		static void onExecute(Callback& Callback);
 		static void onErrorStartup(Callback& Callback);
 		static void onErrorRuntime(Callback& callback);
+		static void onErrorTimeOut(Callback& callback);
 
 		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
 };

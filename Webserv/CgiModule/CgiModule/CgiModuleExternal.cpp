@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:45:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:05:23 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,22 +91,36 @@ int		CgiModule::finishTimedOut()
 {
 	Timer timer = Timer::now();
 
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator it = m_timerTracker.begin();
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator next;
+	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	it = m_timerTracker.begin();
+	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	next;
+	InternalCgiRequestData* 								curRequest;
 	
+
 	while (it != m_timerTracker.end())
 	{
 		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
 		{
 			next = ++it;
 			--it;
+			
+			curRequest = it->second;
+			
+			// call the user if it is executing, runtime error
+			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
+				curRequest->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+			
+			// if user doesn't cancel, we do it for them
 			finishRequest(*it->second);
+			
+			//potential iterator invalidation, we only care about the ones that are timed out now
+			// if inserted already timedout, it will be removed in the next iteration
 			it = next;
 		}
 		else
 			break ;
 	}
-
+			
+	// return the shortest time to the next timeout
 	if (m_timerTracker.begin() == m_timerTracker.end())
 	{
 		return (-1);
@@ -121,8 +135,11 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
+	// already finished
+	if (requestData->getState() == InternalCgiRequestData::E_CGI_STATE_IDLE)
+		return ;
+
 	//two asserts, so we know which one blows up
-	assert(requestData->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE);
 	assert(requestData->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED);
 
 	switch (requestData->getState())

@@ -77,13 +77,6 @@ void    CgiModule::InternalCgiWorker::reset()
 void	CgiModule::InternalCgiWorker::stopExecution()
 {
 	mf_KillWaitChild();
-	m_CgiModule.m_timerTracker.erase(m_curRequestData->getMyTimer());
-	m_CgiModule.mf_returnWorker(*this);
-}
-
-void	CgiModule::InternalCgiWorker::requestTimedOut()
-{
-	mf_KillWaitChild();
 	m_CgiModule.mf_returnWorker(*this);
 }
 

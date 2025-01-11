@@ -40,7 +40,6 @@ class CgiModule::InternalCgiWorker
 		void    					reset();
 		
 		void						stopExecution();
-		void						requestTimedOut();
 		
 		InternalCgiRequestData*		accessCurRequestData();
 
@@ -86,7 +85,6 @@ class CgiModule::InternalCgiWorker
 		void						mf_readEmergencyPhone();
 
 		// Other helpers
-		void						mf_CallTheUser(const e_CgiCallback event);
 		void						mf_closeFd(t_fd& fd);
 		void						mf_JustWaitChild();
 		void						mf_KillWaitChild();

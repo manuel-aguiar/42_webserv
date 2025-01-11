@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 15:27:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:50:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
 		::waitpid(m_pid, &status, 0);
 		m_pid = -1;
 		if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
-			mf_CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+			m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 	}
 }
 
@@ -51,14 +51,6 @@ void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
 	}
 }
 
-void	CgiModule::InternalCgiWorker::mf_CallTheUser(const e_CgiCallback event)
-{
-	Callback& callback = m_curRequestData->accessCallback(event);
-
-	if (callback.getHandler() == NULL)
-		return ;
-	callback.execute();
-}
 
 
 void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)

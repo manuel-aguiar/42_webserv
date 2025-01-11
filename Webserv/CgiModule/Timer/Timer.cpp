@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 10:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:47:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:04:56 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ Timer::Timer() :
     m_time((struct timeval){})
 
 {
+    m_time.tv_sec = 0;
+    m_time.tv_usec = 0;
 }
 
 Timer::Timer(long seconds, long microseconds)
@@ -27,7 +29,7 @@ Timer::Timer(long seconds, long microseconds)
 
 Timer::Timer(const Timer& other)
 {
-    m_time = other.m_time;
+    *this = other;
 }
 
 Timer& Timer::operator=(const Timer& other)
@@ -35,7 +37,8 @@ Timer& Timer::operator=(const Timer& other)
     if (this == &other)
         return (*this);
         
-    m_time = other.m_time;
+    m_time.tv_sec = other.m_time.tv_sec;
+    m_time.tv_usec = other.m_time.tv_usec;
     return (*this);
 }
 
@@ -87,19 +90,18 @@ bool Timer::operator>=(const Timer& other) const
 {
     return !(*this < other);
 }
-
+#include <iostream>
 Timer Timer::operator+(long milliseconds) const
 {
     long total_microseconds = milliseconds * 1000;
     long new_seconds = m_time.tv_sec + total_microseconds / 1000000;
     long new_microseconds = m_time.tv_usec + total_microseconds % 1000000;
-
+    
     if (new_microseconds >= 1000000)
     {
         new_seconds += 1;
         new_microseconds -= 1000000;
     }
-
     return Timer(new_seconds, new_microseconds);
 }
 
@@ -120,7 +122,7 @@ Timer Timer::operator-(const Timer& other) const
 Timer& Timer::operator+=(long milliseconds)
 {
     *this = *this + milliseconds;
-    return *this;
+    return (*this);
 }
 
 unsigned int Timer::getMilliseconds() const
