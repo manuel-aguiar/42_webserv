@@ -32,7 +32,8 @@ ThreadPool<ThreadBacklog, TaskBacklog>::ThreadPool(size_t InitialThreads)
 	
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
-		worker = m_threads.emplace(*this);
+		worker = m_threads.allocate();
+		new (worker) ThreadWorker(*this);
 		worker->start();
 	}
 	pthread_mutex_unlock(&m_statusLock);
@@ -60,11 +61,11 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 
 	m_taskQueue.waitForCompletion();
 	
-	for (size_t i = 0; i < m_threads.size(); ++i)
+	for (size_t i = 0; i < m_threads.getElemCount(); ++i)
 		m_taskQueue.addTask(NULL);
 	
 	pthread_mutex_lock(&m_statusLock);
-	while (m_threads.size())
+	while (m_threads.getElemCount())
 	{
 		pthread_cond_wait(&m_exitSignal, &m_statusLock);
 		mf_destroyExitingThreads();		
@@ -80,7 +81,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::forceDestroy()
 	
 	pthread_mutex_lock(&m_statusLock);
 	
-	for(size_t i = 0; i < m_threads.size(); ++i)
+	for(size_t i = 0; i < m_threads.getElemCount(); ++i)
 		pthread_kill(m_threads[i].getThreadID(), SIGKILL);
 
 	pthread_mutex_unlock(&m_statusLock);
@@ -91,11 +92,12 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 {
 	ThreadWorker* worker;
 
-	assert(m_threads.size() < ThreadBacklog);
+	assert(m_threads.getElemCount() < ThreadBacklog);
 
 	pthread_mutex_lock(&m_statusLock);
 
-	worker = m_threads.emplace(*this);
+	worker = m_threads.allocate();
+	new (worker) ThreadWorker(*this);
 	worker->start();
 	
 	pthread_mutex_unlock(&m_statusLock);
@@ -104,7 +106,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::removeThread()
 {
-	assert(m_threads.size() > 0);
+	assert(m_threads.getElemCount() > 0);
 	
 	pthread_mutex_lock(&m_statusLock);
 	m_taskQueue.addTask(NULL);
@@ -118,7 +120,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::removeThread()
 template <size_t ThreadBacklog, size_t TaskBacklog>
 size_t	ThreadPool<ThreadBacklog, TaskBacklog>::getThreadCount() const
 {
-	return (m_threads.size());
+	return (m_threads.getElemCount());
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
@@ -154,6 +156,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::mf_destroyExitingThreads()
 	{
 		m_exitingThreads.front()->finish();
 		m_threads.destroy(m_exitingThreads.front());
+		m_threads.deallocate(m_exitingThreads.front());
 		m_exitingThreads.pop_front();
 	}
 }

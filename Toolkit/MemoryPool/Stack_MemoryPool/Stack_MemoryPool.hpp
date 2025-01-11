@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Stack_MemoryPool.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:14:56 by mmaria-d         ###   ########.fr       */
+/*   Created: 2025/01/07 22:49:28 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/07 22:50:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//C++ headers
-#include <iostream>
+#ifndef Stack_MemoryPool_HPP
 
-//extern int TestPart1(int testNumber);
+# define Stack_MemoryPool_HPP
 
-int main(void)
-{
-    //int testNumber = 1;
+# include <cstddef>
 
-	std::cout << "\n*************** Heap_ObjectPool tests ***************" << std::endl;
-	
-    //testNumber = TestPart1(testNumber);
+template <size_t BlockSize>
+class Stack_MemoryPool;
 
-	std::cout << "**********************************************************\n" << std::endl;
+# include "Stack_MemoryPool.tpp"
 
-    return 0;
-}
-
+#endif

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:09:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 01:15:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int TestPart1(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<int>::Iterator it = array.begin();
+		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -72,7 +72,7 @@ int TestPart1(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<ToolkitDummy>::Iterator it = array.begin();
+		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -102,7 +102,7 @@ int TestPart1(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<ToolkitDummy>::Iterator it = array.begin();
+		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
@@ -136,7 +136,7 @@ int TestPart1(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<ToolkitDummy>::Iterator it = array.begin();
+		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{

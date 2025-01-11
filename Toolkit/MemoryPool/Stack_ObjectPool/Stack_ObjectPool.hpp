@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Stack_ObjectPool.hpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:14:56 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/04 11:21:36 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/11 00:35:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//C++ headers
-#include <iostream>
 
-//extern int TestPart1(int testNumber);
 
-int main(void)
-{
-    //int testNumber = 1;
+#ifndef Stack_ObjectPool_Hpp
 
-	std::cout << "\n*************** Heap_ObjectPool tests ***************" << std::endl;
-	
-    //testNumber = TestPart1(testNumber);
+# define Stack_ObjectPool_Hpp
 
-	std::cout << "**********************************************************\n" << std::endl;
+# include <limits.h>
+# include <stddef.h>
+# include <cstring>
+# include <iostream>
+# include <memory>
 
-    return 0;
-}
+template <typename T, size_t Size>
+class Stack_ObjectPool;
 
+# include "Stack_ObjectPool.tpp"
+
+#endif

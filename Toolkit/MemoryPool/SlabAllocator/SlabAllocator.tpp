@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FIXEDBLOCK_POOLALLOCATOR_TPP
-# define FIXEDBLOCK_POOLALLOCATOR_TPP
+#ifndef Heap_ObjectPool_TPP
+# define Heap_ObjectPool_TPP
 
 # include <limits>
 # include <stdint.h>

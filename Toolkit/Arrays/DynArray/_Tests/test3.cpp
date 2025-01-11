@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 10:59:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:09:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 01:15:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int TestPart3(int testNumber)
 		if (std.size() != array.size())
 			throw std::logic_error("size mismatch");
 
-		DynArray<ToolkitBase*>::Iterator it = array.begin();
+		DynArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{

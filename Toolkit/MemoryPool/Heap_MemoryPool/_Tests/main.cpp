@@ -5,26 +5,33 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 11:41:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:14:56 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
+/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//C++ headers
-#include <iostream>
+// C++ headers
+# include <exception>
+# include <stdexcept>
+# include <iostream>
 
-//extern int TestPart1(int testNumber);
+// Project
+# include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
+# include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
+
+
+extern int TestPart1(int testNumber);
 
 int main(void)
 {
-    //int testNumber = 1;
+    int testNumber = 1;
+    
 
-	std::cout << "\n*************** Heap_ObjectPool tests ***************" << std::endl;
+	std::cout << "\n*************** Heap_MemoryPool tests ***************" << std::endl;
 	
-    //testNumber = TestPart1(testNumber);
+    testNumber = TestPart1(testNumber);
 
-	std::cout << "**********************************************************\n" << std::endl;
+    std::cout << "******************************************************\n" << std::endl;
 
     return 0;
 }
-

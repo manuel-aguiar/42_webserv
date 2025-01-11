@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 00:10:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 // Project
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
-# include "../../HeapFixedBlock/HeapFixedBlock.hpp"
+# include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 
 

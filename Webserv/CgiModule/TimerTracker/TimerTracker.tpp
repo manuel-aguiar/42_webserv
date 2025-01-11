@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 18:17:18 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:18:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # define TIMERTRACKER_TPP
 
 // Project Headers
-# include "../../../Toolkit/MemoryPool/HeapFixedBlock/HeapFixedBlock.hpp"
+# include "../../../Toolkit/MemoryPool/Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../../Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../../../Toolkit/MemoryPool/HeapSlab/HeapSlab.hpp"
 # include "../../../Toolkit/MemoryPool/SlabAllocator/SlabAllocator.hpp"
-# include "../../../Toolkit/MemoryPool/FixedBlock_MemoryPool/FixedBlock_MemoryPool.hpp"
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
 
 // C++ headers
 # include <map>
@@ -35,7 +35,7 @@ class TimerTracker
 	public:
 
 		typedef std::pair<const T, U> 										timerPair;
-		typedef FixedBlock_MemoryPool<timerPair, typename Allocator::template rebind<timerPair>::other>
+		typedef Heap_ObjectPool<timerPair, typename Allocator::template rebind<timerPair>::other>
 		 																	mapPool;
 		typedef std::multimap<T, U, std::less<T>, mapPool> 					timerMap;
 
@@ -102,7 +102,7 @@ class TimerTracker
 		}
 
 	private:
-		FixedBlock_MemoryPool<std::pair<const T, U>, typename Allocator::template rebind<std::pair<const T, U> >::other>
+		Heap_ObjectPool<std::pair<const T, U>, typename Allocator::template rebind<std::pair<const T, U> >::other>
 											m_mapPool;
 		timerMap 							m_timers;
 		size_t								m_capacity;

@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/11 00:56:16 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,11 +21,12 @@ SRC_PATH				=		$(ROOT_PATH)/Toolkit
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/MemoryPool/Nginx_PoolAllocator/_Tests/main.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx_PoolAllocator/_Tests/test1.cpp	\
+SRCS					=		$(SRC_PATH)/MemoryPool/Heap_MemoryPool/_Tests/main.cpp	\
+								$(SRC_PATH)/MemoryPool/Heap_MemoryPool/_Tests/test1.cpp	\
 								\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp					\
 								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
+								\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FIXEDBLOCK_POOLALLOCATOR_HPP
+#ifndef Heap_ObjectPool_HPP
 
-# define FIXEDBLOCK_POOLALLOCATOR_HPP
+# define Heap_ObjectPool_HPP
 
 // C++ headers
 # include <limits.h>
