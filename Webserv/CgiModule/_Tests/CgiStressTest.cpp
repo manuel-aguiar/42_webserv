@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:43:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:05:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,35 @@
 # include <iomanip>
 
 // C headers
+#include <fstream>
 #include <unistd.h>
 
 extern void prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& proto);
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
+
+
+std::string	CgiStressTest::ValgrindReadandClear(const char* filename)
+{
+    std::ifstream logFileRead(filename);
+
+	std::string result;
+    if (!logFileRead.is_open())
+		return (result);
+	
+	std::string line;
+	while (std::getline(logFileRead, line))
+		result += line + '\n';
+	logFileRead.close();
+
+	//clear content
+	std::ofstream logFileWrite(filename, std::ios::trunc);
+	
+	if (logFileWrite.is_open())
+		logFileWrite.close(); 
+	
+	return (result);
+}
 
 // Tests about the resilience of the CgiModule under heavy load
 
@@ -152,23 +176,24 @@ void	CgiStressTest::AllInvalidCriteria(A_ProtoRequest& proto, int index)
 	}
 }
 
-int CgiStressTest::Impl_StressTest(int testNumber, 
+int CgiStressTest::StressTest(int testNumber, 
 					const int workers, 
 					const int backlog, 
 					const int connectionCount, 
 					const unsigned int timeoutMs,
-					void (*AssignmentCriteria)(A_ProtoRequest& proto, int index))
+					void (*AssignmentCriteria)(A_ProtoRequest& proto, int index),
+					const char* assignmentDescription)
 {
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		//setup
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
 		CgiModule cgi(workers, backlog, timeoutMs, globals);
 
-		std::string testFailure;
+		// collects error messages, we can't throw cause we are redirecting stderr
+		std::string FailureMessages;
 
 		size_t statusCounter[A_ProtoRequest::E_CGI_STATUS_COUNT] = {0};
 
@@ -193,15 +218,18 @@ int CgiStressTest::Impl_StressTest(int testNumber,
 		for (int i = 0; i < connectionCount; ++i)
 		{
 			requests.emplace_back(eventManager, globals, cgi, i);
-
 			requests.back().m_CgiRequestData = cgi.acquireRequestData();
 			
 			if (requests.back().m_CgiRequestData == NULL)
 			{
 				// keep processing even though this proto didn't get a connection
 				requests.back().m_CgiResultStatus = A_ProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE;
+
 				cgi.finishTimedOut();
 				eventManager.ProcessEvents(10);
+
+				//pipedrain
+				while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 				continue;
 			}
 			
@@ -228,6 +256,8 @@ int CgiStressTest::Impl_StressTest(int testNumber,
 
 		}
 
+
+		//Event loop
 		while (1)
 		{
 			unsigned int nextWait = cgi.finishTimedOut();
@@ -240,11 +270,11 @@ int CgiStressTest::Impl_StressTest(int testNumber,
 		}
 
 		if (eventManager.getSubscribeCount() != 0)
-			testFailure = testFailure + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			FailureMessages = FailureMessages + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			FailureMessages = FailureMessages + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 
@@ -255,12 +285,12 @@ int CgiStressTest::Impl_StressTest(int testNumber,
 			switch (requests[i].m_CgiResultStatus)
 			{
 				case A_ProtoRequest::E_CGI_STATUS_WORKING:
-					testFailure = testFailure + to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+					FailureMessages = FailureMessages + to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 					break;
 				case A_ProtoRequest::E_CGI_STATUS_SUCCESS:
 					if (std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
-						testFailure = testFailure + '\n' + to_string(i) + " failed: " 
+						FailureMessages = FailureMessages + '\n' + to_string(i) + " failed: " 
 						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
 						+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
 					}
@@ -278,13 +308,20 @@ int CgiStressTest::Impl_StressTest(int testNumber,
 		close(testpipe[0]);
 		/////////////////////////////
 
+		// check if valgrind found anything
+		std::string valLog = CgiStressTest::ValgrindReadandClear("valgrind_output.log");
+		if (!valLog.empty())
+			FailureMessages = FailureMessages + "Valgrind errors in this test:\n\n" + valLog + "\n\n" 
+			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+		
+		
 
-		if (!testFailure.empty())
-			throw std::logic_error(testFailure);
+		if (!FailureMessages.empty())
+			throw std::logic_error(FailureMessages);
 
 
 		// me and the gpadi			
-		std::cout << "	PASSED [Stress Testing] " << '\n'
+		std::cout << "	PASSED [Stress Testing] " << assignmentDescription << '\n'
 			<< "\t=================================" << std::endl
         	<< "\t---------------------------------" << std::endl
         	<< "\t| success:           " << std::setw(10) << statusCounter[A_ProtoRequest::E_CGI_STATUS_SUCCESS] << " |\n"

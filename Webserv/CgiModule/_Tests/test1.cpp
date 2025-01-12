@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:47:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:10:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,14 +132,14 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 		
 		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
-		protoRequest.m_CgiRequestData->setTimeoutMs(2000);
+		protoRequest.m_CgiRequestData->setTimeoutMs(200); //0.2ms
 		
 		// false, we will cancel
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
 		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
-		::sleep(2); // 2ms
+		::usleep(250000); // 0.25ms
 
 		//event loop
 		
