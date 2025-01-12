@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/12 00:16:30 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/12 00:32:40 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET_BASE = functional_test.out
 TARGET_STRESSTEST = stress_test.out
 TARGET_STRESSVALG = val_stress.out
+TARGET_STRESSCHILDREN = children_stress.out
 
 VALGRIND_OUTPUT = valgrind_output.log
 
@@ -26,16 +27,18 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 
 # Sources
 
-FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp
+FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp
 
 STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressTest.cpp
 
 STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressValgrind.cpp
 
+STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressChildren.cpp
+
 COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest_ExpectedOutput.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
 				\
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
@@ -70,17 +73,22 @@ COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
 				$(SRC_PATH)/Webserv/Callback/Callback.cpp \
 				$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
 
-
+#################################################################
 OBJS_COMMON = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(COMMON_SRCS))
 OBJS_BASE = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(FUNC_SRCS))
 OBJS_STRESS = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(STRESS_SRCS))
 OBJS_STRESSVALG = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(STRESSVALG_SRCS))
+OBJS_STRESSCHILDREN = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(STRESSCHILDREN))
 
+
+##########################################################
 DEPS_COMMON = $(OBJS_COMMON:.o=.d)
 DEPS_BASE = $(OBJS_BASE:.o=.d)
 DEPS_STRESS = $(OBJS_STRESS:.o=.d)
 DEPS_STRESSVALG = $(OBJS_STRESSVALG:.o=.d)
+DEPS_STRESSCHILDREN = $(OBJS_STRESSCHILDREN:.o=.d)
 
+###############################################################3
 $(TARGET_BASE): $(OBJS_COMMON) $(OBJS_BASE)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
@@ -90,21 +98,24 @@ $(TARGET_STRESSTEST): $(OBJS_COMMON) $(OBJS_STRESS)
 $(TARGET_STRESSVALG): $(OBJS_COMMON) $(OBJS_STRESSVALG)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Compile sources to objects, creating necessary subdirectories
+$(TARGET_STRESSCHILDREN): $(OBJS_COMMON) $(OBJS_STRESSCHILDREN)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+#################################################################
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Include dependencies
--include $(DEPS_COMMON) $(DEPS_BASE) $(DEPS_STRESS) $(DEPS_STRESSVALG)
+################################################################################################
+-include $(DEPS_COMMON) $(DEPS_BASE) $(DEPS_STRESS) $(DEPS_STRESSVALG) $(DEPS_STRESSCHILDREN)
 
 ##chatgpt magic to generate suppresion files
 #valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all python3 TestScripts/py/envPrint.py  2>&1 | awk '/^{/{flag=1} flag; /}$/ {flag=0}' > python.supp && cat python.supp
 
-# Standard targets
+##############################################################################33
 all: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG)
 
-test: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG)
+testBase: $(TARGET_BASE)
 	@rm -rf $(VALGRIND_OUTPUT)
 	@valgrind   \
 	--quiet \
@@ -112,6 +123,9 @@ test: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG)
 	--errors-for-leak-kinds=all \
 	--show-leak-kinds=all \
 	./$(TARGET_BASE)
+
+testVal: $(TARGET_STRESSVALG)
+	@rm -rf $(VALGRIND_OUTPUT)
 	@valgrind   \
 	--log-file=$(VALGRIND_OUTPUT) \
 	--quiet \
@@ -119,9 +133,24 @@ test: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG)
 	--errors-for-leak-kinds=all \
 	--show-leak-kinds=all \
 	./$(TARGET_STRESSVALG)
+
+testStress: $(TARGET_STRESSTEST)
+	@rm -rf $(VALGRIND_OUTPUT)
 	@./$(TARGET_STRESSTEST)
-##        --track-fds=yes 
-##        --track-origins=yes
+
+testChildren: $(TARGET_STRESSCHILDREN) 
+	@valgrind   \
+	--quiet \
+	--log-file=$(VALGRIND_OUTPUT) \
+	--leak-check=full \
+	--errors-for-leak-kinds=all \
+	--show-leak-kinds=all \
+	--trace-children=yes \
+	--track-origins=yes \
+	--track-fds=yes	\
+	./$(TARGET_STRESSCHILDREN)
+
+test: testBase testVal testStress testChildren
 
 clean:
 	rm -rf $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG) vgcore* $(VALGRIND_OUTPUT)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:05:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:35:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	CgiStressTest::MixedCriteria(A_ProtoRequest& proto, int index)
 	}
 }
 
-void	CgiStressTest::AllSuccessCriteria(A_ProtoRequest& proto, int index)
+void	CgiStressTest::AllValidCriteria(A_ProtoRequest& proto, int index)
 {
 	switch (index % 3)
 	{

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 10:55:48 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 11:46:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:40:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,11 @@ class Timer
         static Timer now();
 
         // Getters
-        long            seconds() const;
-        long            microseconds() const;
+
+        void            update();
+
+        long            getSeconds() const;
+        long            getMicroseconds() const;
         unsigned int    getMilliseconds() const;
         
         bool operator==(const Timer& other) const;

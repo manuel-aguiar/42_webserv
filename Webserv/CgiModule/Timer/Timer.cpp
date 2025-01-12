@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 10:56:38 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:04:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:40:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,17 @@ Timer Timer::now() {
     return t;
 }
 
-long Timer::seconds() const
+void    Timer::update()
+{
+    gettimeofday(&m_time, NULL);
+}
+
+long Timer::getSeconds() const
 {
     return m_time.tv_sec;
 }
 
-long Timer::microseconds() const   
+long Timer::getMicroseconds() const   
 {
     return m_time.tv_usec;
 }

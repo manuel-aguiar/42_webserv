@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 18:20:55 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:04:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:35:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class CgiStressTest
 
         // Assignment Criteria, between scripts, bad interpreters, a bit of everything
         static void    MixedCriteria        (A_ProtoRequest& proto, int index);
-        static void    AllSuccessCriteria   (A_ProtoRequest& proto, int index);
+        static void    AllValidCriteria   (A_ProtoRequest& proto, int index);
         static void    AllInvalidCriteria   (A_ProtoRequest& proto, int index);
         
         static std::string 
