@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/12 00:58:13 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/12 01:10:00 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,6 +89,11 @@ DEPS_STRESSVALG = $(OBJS_STRESSVALG:.o=.d)
 DEPS_STRESSCHILDREN = $(OBJS_STRESSCHILDREN:.o=.d)
 
 ###############################################################3
+
+all: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG) $(TARGET_STRESSCHILDREN)
+
+###################################################################
+
 $(TARGET_BASE): $(OBJS_COMMON) $(OBJS_BASE)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
@@ -113,7 +118,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all python3 TestScripts/py/envPrint.py  2>&1 | awk '/^{/{flag=1} flag; /}$/ {flag=0}' > python.supp && cat python.supp
 
 ##############################################################################33
-all: $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG)
+
 
 testBase: $(TARGET_BASE)
 	@rm -rf $(VALGRIND_OUTPUT)
@@ -153,11 +158,11 @@ testChildren: $(TARGET_STRESSCHILDREN)
 test: testBase testVal testStress testChildren
 
 clean:
-	rm -rf $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG) vgcore* $(VALGRIND_OUTPUT)
+	rm -rf $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG) $(TARGET_STRESSCHILDREN) vgcore* $(VALGRIND_OUTPUT)
 
 fclean: clean
 
 
 re: fclean all
 
-.PHONY: clean fclean run
+.PHONY: clean fclean run test testBase testVal testStress testChildren re

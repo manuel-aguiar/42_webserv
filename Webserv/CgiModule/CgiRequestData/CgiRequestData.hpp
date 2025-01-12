@@ -20,7 +20,6 @@
 
 // C++ headers
 # include <string>
-# include <map>
 
 // forward declarations
 class EventManager;
@@ -56,7 +55,6 @@ class CgiRequestData
 																		const t_ptr_callback_data data, 
 																		const t_func_callback_handler handler);
 
-		void											setMsgBody(const std::string& body);
 		void											setEnvBase(const e_CgiEnv env, const std::string& value);
 		void											setEnvExtra(const std::string& key, const std::string& value);
 		void											setExtension(const std::string& extension);
