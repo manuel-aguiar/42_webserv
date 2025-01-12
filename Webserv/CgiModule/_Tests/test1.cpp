@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:10:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:45:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,43 @@ int TestPart1(int testNumber)
 		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
 
 		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
+	//instantiation and cleanup test	
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+		Globals globals(NULL, NULL, NULL, NULL);
+		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
+
+		CgiRequestData* data = cgi.acquireRequestData();
+		(void)data;
+		std::cout << "	PASSED (acquiring and just going away)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+	// clear the error messages not to mess with the remaining tests
+	g_mockGlobals_ErrorMsgs.clear();
+
+	//instantiation and cleanup test	
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+		Globals globals(NULL, NULL, NULL, NULL);
+		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
+
+		cgi.finishTimedOut();
+		std::cout << "	PASSED (finish timeout with empty queues)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{

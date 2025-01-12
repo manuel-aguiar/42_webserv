@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:35:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 00:56:59 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,35 @@ std::string	CgiStressTest::ValgrindReadandClear(const char* filename)
 {
     std::ifstream logFileRead(filename);
 
+	// if the file doesn't exist, means we are not using valgrind and directing output to a file,
+	//move on
 	std::string result;
     if (!logFileRead.is_open())
 		return (result);
-	
+
+    // Skip some weird non printable characters at the beginning
+    char c;
+    while (logFileRead.get(c)) {
+        if (std::isprint(static_cast<unsigned char>(c))) {
+            logFileRead.putback(c);
+            break;
+        }
+    }
+
+	// actually read
 	std::string line;
 	while (std::getline(logFileRead, line))
 		result += line + '\n';
 	logFileRead.close();
 
 	//clear content
-	std::ofstream logFileWrite(filename, std::ios::trunc);
+	std::ofstream logFileClear(filename, std::ios::trunc);
 	
-	if (logFileWrite.is_open())
-		logFileWrite.close(); 
-	
+	if (logFileClear.is_open())
+	{
+		logFileClear.flush();
+		logFileClear.close();
+	}
 	return (result);
 }
 
@@ -308,13 +322,11 @@ int CgiStressTest::StressTest(int testNumber,
 		close(testpipe[0]);
 		/////////////////////////////
 
-		// check if valgrind found anything
+
 		std::string valLog = CgiStressTest::ValgrindReadandClear("valgrind_output.log");
 		if (!valLog.empty())
 			FailureMessages = FailureMessages + "Valgrind errors in this test:\n\n" + valLog + "\n\n" 
 			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
-		
-		
 
 		if (!FailureMessages.empty())
 			throw std::logic_error(FailureMessages);
