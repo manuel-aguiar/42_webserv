@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
+/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/06 15:39:06 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/13 00:55:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@
 # include <signal.h>
 # include <cassert>
 
-//own headers
-# include "../../Toolkit/Toolkit.h"
 
 // definitions for everyone to use
 typedef unsigned char								t_byte;
