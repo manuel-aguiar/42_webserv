@@ -1,8 +1,19 @@
 
-Nginx_PoolAllocator is expected to be used by one of three: StackMemoryPool, HeapMemoryPool and Nginx_MemoryPool
+Nginx_PoolAllocator is expected 
+to be used by one of three: StackMemoryPool, HeapMemoryPool
+and Nginx_MemoryPool
 
-add a method in each of the threee called ElementSize()
+add a method in each of the threee 
+called ElementSize()
 
-The pool allocator will adjusted the demanded size depending on the type the pool is allocating, when a called uses Allocator::allocate()
+The pool allocator will adjusted 
+the demanded size depending on the 
+type the pool is allocating, when a
+called uses Allocator::allocate()
 
-It is just a safeguard for if the pool is used for different element types than the original, to maintain internal integrity
+
+It is just a safeguard for if the 
+pool is used for different element 
+types than the original, to 
+maintain internal integrity
+
