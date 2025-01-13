@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Stack_MemoryPool.tpp                                :+:      :+:    :+:   */
+/*   Impl_Stack_MemoryPool.tpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -19,36 +19,29 @@
 # include <cassert>
 
 
-
-
-/*
-
-    Nginx-style non deallocating pool
-
-*/
-template <size_t BlockSize>
-class Stack_MemoryPool
+template <size_t BlockSize, typename T>
+class Impl_Stack_MemoryPool
 {
     public:
-        Stack_MemoryPool() :
+        Impl_Stack_MemoryPool() :
             m_freePosition(m_array),
             m_endOfBlock(m_array + BlockSize) {}
 
-        ~Stack_MemoryPool() {}
+        ~Impl_Stack_MemoryPool() {}
 
     
-		void* 						allocate(size_t size)
+		T* 						allocate(size_t size)
         {
             return (allocate(size, (size > sizeof(size_t)) ? sizeof(size_t) : size));
         }
 
-        void*                       allocate(size_t size, size_t alignment)
+        T*                       allocate(size_t size, size_t alignment)
         {
-            t_byte* location = mf_allignedAlloc(m_freePosition, alignment);
+            T* location = mf_allignedAlloc(m_freePosition, alignment);
 
             assert(location + size <= m_endOfBlock);
 
-            m_freePosition = (t_byte*)((size_t)location + size);
+            m_freePosition = location + size;
             return (location);
         }
 
@@ -66,20 +59,20 @@ class Stack_MemoryPool
             return (m_endOfBlock - m_freePosition);
         }
 
+        int getElementSize() const { return (sizeof(T)); }
+
     private:
-    
-        typedef unsigned char       t_byte;
-        t_byte*                     m_freePosition;
-        t_byte*                     m_endOfBlock;
-        t_byte                      m_array[BlockSize];
+        T*                          m_freePosition;
+        T*                          m_endOfBlock;
+        T                           m_array[BlockSize];
 
         
-        Stack_MemoryPool(const Stack_MemoryPool& pool) {(void)pool;}
-        Stack_MemoryPool& operator=(const Stack_MemoryPool& pool){(void)pool; return (*this);}
+        Impl_Stack_MemoryPool(const Impl_Stack_MemoryPool& pool) {(void)pool;}
+        Impl_Stack_MemoryPool& operator=(const Impl_Stack_MemoryPool& pool){(void)pool; return (*this);}
 
-        static t_byte*      mf_allignedAlloc(void *byte, size_t alignment)
+        static T*      mf_allignedAlloc(T *location, size_t alignment)
         {
-            return ((t_byte *) (((size_t) (byte) + ((size_t) alignment - 1)) & ~((size_t) alignment - 1)));
+            return ((T *) (((size_t) (location) + ((size_t) alignment - 1)) & ~((size_t) alignment - 1)));
         }
 
 };
