@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYNARRAY_HPP
+#ifndef WEBSERVER_VECTOR_HPP
 
-# define DYNARRAY_HPP
+# define WEBSERVER_VECTOR_HPP
 
 #include <memory>
 template <typename T, typename Allocator = std::allocator<T> >

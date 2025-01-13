@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HeapArray.tpp                                       :+:      :+:    :+:   */
+/*   HeapArray.tpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 16:40:53 by mmaria-d         ###   ########.fr       */
+/*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
+/*   Updated: 2024/10/04 09:35:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,317 +14,81 @@
 
 # define HEAPARRAY_TPP
 
-// C++ headers
-# include <cstdlib>
-# include <cassert>
-# include <memory>
-# include <cstring>
+#include <cstring>
+#include <cassert>
+#include <iostream>
 
-template <typename T, typename Allocator>
+template <typename T>
 class HeapArray
 {
 	public:
 
-        template <typename U>
-        class ArrayIterator;
-        
-        typedef ArrayIterator<T>         iterator;
-        typedef ArrayIterator<const T>   const_iterator;
-        typedef ArrayIterator<T>         reverse_iterator;
-        typedef ArrayIterator<const T>   const_reverse_iterator;
-
-		HeapArray(const size_t capacity = 0, const Allocator& allocator = Allocator()) : 
-			m_allocator(allocator),
-			m_array(m_allocator.allocate(capacity)), 
-			m_size(0), 
-			m_capacity(capacity)
+		HeapArray() : m_array(NULL), m_size(0)
 		{
-			assert(capacity);
-		}
+			//std::cout <<" heaparray constructed" << std::endl;
+		};
 
-		HeapArray(const size_t capacity, const T& value, const Allocator& allocator = Allocator()) : 
-			m_allocator(allocator),
-			m_array(m_allocator.allocate(capacity)), 
-			m_size(capacity), 
-			m_capacity(capacity)
+		HeapArray(size_t size) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * size])), m_size(size)
 		{
-			assert(capacity);
-			for (size_t i = 0; i < size; i++)
-				m_allocator.construct(&m_array[i], T(value));
-		}
-
-
-		HeapArray(const HeapArray &other) : 
-			m_allocator(other.m_allocator),
-			m_array(m_allocator.allocate(other.m_capacity)), 
-			m_size(0), 
-			m_capacity(other.m_capacity)
-		{
-			*this = other;
-		}
+			//std::cout << "heaparray constructed parameter" << std::endl;
+		};
 
 		~HeapArray()
 		{
-			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(&m_array[i]);
-			m_allocator.deallocate(m_array, m_capacity);
-		}
+			//std::cout << "heap array destroyed" << std::endl;
+			if (m_array)
+				delete [] (reinterpret_cast<t_byte*>(m_array));
+		};
+
+		HeapArray(const HeapArray &other) : m_array(reinterpret_cast<T*>(new t_byte [sizeof(T) * other.m_size])), m_size(other.m_size)
+		{
+			//std::cout << "heaparray copied" << std::endl;
+
+			std::memcpy(reinterpret_cast<t_byte*>(m_array), 
+						reinterpret_cast<t_byte*>(other.m_array), 
+						sizeof(T) * m_size);
+			
+		};
 
 		HeapArray &operator=(const HeapArray &other)
 		{
-			assert(m_capacity == other.m_capacity);
-			
+			//std::cout << "heaparray assigned" << std::endl;
 			if (this == &other)
 				return (*this);
-
-            if (m_allocator != other.m_allocator)
-            {
-                clear();
-               	m_allocator.deallocate(m_array, m_capacity);
-                m_allocator = other.m_allocator;
-				m_array = m_allocator.allocate(m_capacity);
-            }
-
-			size_t smaller = (m_size < other.m_size) ? m_size : other.m_size;
-			for (size_t i = 0; i < smaller; ++i)
-				m_array[i] = other.m_array[i];
-			
-			if (smaller == m_size)
+			if (m_size != other.m_size)
 			{
-				for (size_t i = smaller; i < other.m_size; ++i)
-					m_allocator.construct(&m_array[i], other.m_array[i]);
+				if (m_array)
+					delete [] (reinterpret_cast<t_byte*>(m_array));
+				m_size = other.m_size;
+				m_array = reinterpret_cast<T*>(new t_byte [sizeof(T) * m_size]);
 			}
-			else
-			{
-				for (size_t i = smaller; i < m_size; ++i)
-					m_allocator.destroy(&m_array[i]);
-			}
-
-			m_size = other.m_size;
-
+			std::memcpy(reinterpret_cast<t_byte*>(m_array), 
+						reinterpret_cast<t_byte*>(other.m_array), 
+						sizeof(T) * m_size);
 			return (*this);
-		}
-
-		void move(HeapArray& from)
-		{
-			clear();
-			m_allocator.deallocate(&m_array[0], m_capacity);
-
-			m_array = from.m_array;
-			m_size = from.m_size;
-			from.m_array = NULL;
-			from.m_size = 0;
-		}
+		};
 
 		T& operator[](const size_t index)
 		{
-			assert(index < m_capacity);
-			return (m_array[index]);
+			//std::cout << "index: " << index << "; size: " << m_size << std::endl;
+			assert(index < m_size);
+			return *(reinterpret_cast<T*>(&m_array[index]));
 		}
 
-		const T& operator[](const size_t index) const
-		{
-			assert(index < m_capacity);
-			return (m_array[index]);
-		}
-
+		
 		size_t size() const
 		{
 			return (m_size);
 		}
-
-		size_t capacity()
-		{
-			return (m_capacity);
-		}
-
-		void clear()
-		{
-			for (size_t i = 0; i < m_size; i++)
-				m_allocator.destroy(&m_array[i]);
-			m_size = 0;
-		}
-
-		const Allocator& getAllocator() const
-		{
-			return (m_allocator);
-		}
-
-        T* getArray() const {return (m_array);}
-
-
-        T& at(size_t index)
-        {
-            assert (m_size != 0 && index < m_size);
-            return (m_array[index]);
-        }
-
-		T& front()
-		{
-            assert (m_size != 0);
-			return (m_array[0]);
-		}
-
-		T& back()
-		{
-            assert (m_size != 0);
-			return (m_array[(m_size - 1)]);
-		}
-
-		void push_back(const T& value)
-		{
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T(value);
-		}
-
-        void pop_back()
-        {
-			assert (m_size != 0);
-
-			m_allocator.destroy(&m_array[(m_size-- - 1)]);
-        }
-
-		void emplace_back()
-        {
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T();
-		}
-
-		template <typename Arg1 >
-		void emplace_back(Arg1& arg1)
-		{
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T(arg1);
-        }
-
-        template <typename Arg1, typename Arg2 >
-        void emplace_back(Arg1& arg1, Arg2& arg2)
-        {
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T(arg1, arg2);
-        }
-
-        template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
-        {
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T(arg1, arg2, arg3);
-        }
-
-		template <typename Arg1 >
-		void emplace_back(const Arg1& arg1)
-		{
-			assert(m_array && m_size < m_capacity);
-
-			new (m_array + m_size++) T(arg1);
-        }
-
-        template <typename Arg1, typename Arg2 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2)
-        {
-			assert(m_array && m_size < m_capacity);
-			new (m_array + m_size++) T(arg1, arg2);
-        }
-
-        template <typename Arg1, typename Arg2 , typename Arg3 >
-        void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
-        {
-			assert(m_array && m_size < m_capacity);
-			new (m_array + m_size++) T(arg1, arg2, arg3);
-        }	
-
-		template <typename U>
-		class ArrayIterator
-		{
-			public:
-				typedef U                                   value_type;
-				typedef U*                                  pointer;
-				typedef U&                                  reference;
-				typedef std::ptrdiff_t                      difference_type;
-				typedef std::random_access_iterator_tag     iterator_category;
-
-				ArrayIterator(pointer ptr) : m_ptr(ptr) {}
-				ArrayIterator(const ArrayIterator& other) : m_ptr(other.m_ptr) {}
-				~ArrayIterator() {}
-				ArrayIterator& operator=(const ArrayIterator& other) { m_ptr = other.m_ptr; return *this; }
-
-
-				reference operator*() const { return *m_ptr; }
-				pointer operator->() const { return m_ptr; }
-
-				ArrayIterator& operator++()
-				{
-					++m_ptr;
-					return *this;
-				}
-
-				ArrayIterator operator++(int)
-				{
-					ArrayIterator tmp = *this;
-					++m_ptr;
-					return tmp;
-				}
-
-				ArrayIterator& operator--()
-				{
-					--m_ptr;
-					return *this;
-				}
-
-				ArrayIterator operator--(int)
-				{
-					ArrayIterator tmp = *this;
-					--m_ptr;
-					return tmp;
-				}
-
-				bool operator==(const ArrayIterator& other) const { return m_ptr == other.m_ptr; }
-				bool operator!=(const ArrayIterator& other) const { return m_ptr != other.m_ptr; }
-
-
-				reference operator[](size_t index) const { return *(m_ptr + index); }
-				ArrayIterator operator+(size_t n) const { return ArrayIterator(m_ptr + n); }
-				ArrayIterator operator-(size_t n) const { return ArrayIterator(m_ptr - n); }
-				difference_type operator-(const ArrayIterator& other) const { return m_ptr - other.m_ptr; }
-
-				ArrayIterator& operator+=(size_t n)
-				{
-					m_ptr += n;
-					return *this;
-				}
-				ArrayIterator& operator-=(size_t n)
-				{
-					m_ptr -= n;
-					return *this;
-				}
-
-			private:
-				pointer m_ptr;
-		};
-
-        iterator begin()						 	{ return (iterator				(&m_array[0])); }
-        iterator end() 								{ return (iterator				(&m_array[m_size])); }
-
-        const_iterator begin() const 				{ return (const_iterator		(&m_array[0])); }
-        const_iterator end() const 					{ return (const_iterator		(&m_array[m_size])); }
-
-        reverse_iterator rbegin() 					{ return (reverse_iterator		(&m_array[m_size - 1])); }
-        reverse_iterator rend() 					{ return (reverse_iterator		(&m_array[-1])); }
-
-        const_reverse_iterator rbegin() const 		{ return (const_reverse_iterator(&m_array[m_size - 1])); }
-        const_reverse_iterator rend() const 		{ return (const_reverse_iterator(&m_array[-1])); }
-
+		
 	private:
-		Allocator					m_allocator;
-		T*							m_array;
-		size_t						m_size;
-		const size_t				m_capacity;
+
+		typedef unsigned char   t_byte;
+		T*						m_array;
+		size_t					m_size;
 };
+
+
 
 
 #endif
