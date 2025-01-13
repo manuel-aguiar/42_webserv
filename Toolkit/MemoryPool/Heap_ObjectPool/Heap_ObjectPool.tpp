@@ -48,13 +48,20 @@ class Heap_ObjectPool
 		typedef size_t          size_type;
 		typedef ptrdiff_t       difference_type;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 		template <typename U> struct rebind {
 			typedef Heap_ObjectPool<U, Allocator> other;
 		};
 
 		Heap_ObjectPool(size_t numElems, const Allocator& allocator = Allocator()) :
+<<<<<<< HEAD
 			m_elements(0, SlotAllocator(allocator)),
+=======
+			m_elements(0, typename Allocator::template rebind<s_Slot>::other(allocator)),
+>>>>>>> main
 			m_elemCount(0),
 			m_maxElems(numElems),
 			m_freeSlot(NULL) {}
@@ -67,7 +74,11 @@ class Heap_ObjectPool
 
 		template <class U> 
 		Heap_ObjectPool(const Heap_ObjectPool<U, Allocator>& rebind) :
+<<<<<<< HEAD
 			m_elements(0, SlotAllocator(rebind.m_elements.getAllocator())),
+=======
+			m_elements(0, typename Allocator::template rebind<s_Slot>::other(rebind.m_elements.getAllocator())),
+>>>>>>> main
 			m_elemCount(0),
 			m_maxElems(rebind.m_maxElems),
 			m_freeSlot(NULL) {}
@@ -158,9 +169,14 @@ class Heap_ObjectPool
 		typedef char*		t_data_pointer;
 		typedef s_Slot		t_slot_type;
 		typedef s_Slot*		t_slot_pointer;
+<<<<<<< HEAD
 		typedef typename Allocator::template rebind<s_Slot>::other SlotAllocator;
 
 		DynArray<s_Slot, SlotAllocator> 			
+=======
+
+		DynArray<s_Slot, typename Allocator::template rebind<s_Slot>::other> 			
+>>>>>>> main
 									m_elements;
 		size_t 						m_elemCount;
 		size_t 						m_maxElems;
