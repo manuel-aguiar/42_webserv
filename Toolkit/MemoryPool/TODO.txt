@@ -52,4 +52,6 @@ and it would work out of the box
 4) Can refactor Nginx_MemoryPool to 
 separate the implementations from
 the base template file and make
-it cleaner
+it cleaner.
+Remove the T_byte typedefs outside
+.hpp files, not needed there
