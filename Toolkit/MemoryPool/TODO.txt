@@ -20,7 +20,10 @@ maintain internal integrity
 
 #################
 
-2) Heap ObjectPool, typedef the Alllocator rebind, SlotAllocator
+2) Heap ObjectPool, typedef the 
+Alllocator rebind, SlotAllocator
 
 maybe easier to read
-Heap_ObjectPool can be spawned with a rebindable allocator, so it can appear from std::allocator<T>
+Heap_ObjectPool can be spawned with 
+a rebindable allocator, so it can 
+appear from std::allocator<T>
