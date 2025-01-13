@@ -19,14 +19,6 @@
 # include <cassert>
 # include <iostream>
 
-typedef unsigned char t;
-
-/*
-
-    Nginx-style non deallocating pool
-
-*/
-
 template <typename T, typename Allocator>
 class Impl_Heap_MemoryPool
 {
@@ -43,18 +35,23 @@ class Impl_Heap_MemoryPool
 
         ~Impl_Heap_MemoryPool() { destroy(); }
 
-        void* allocate(size_t size) {
+        T*  allocate(size_t size) {
             assert(m_array != NULL);
-            return (allocate(size, (size > sizeof(size_t)) ? sizeof(size_t) : size));
+            return (allocate(size, (size * sizeof(T) > sizeof(size_t)) ? sizeof(size_t) : size * sizeof(T)));
         }
 
-        void* allocate(size_t size, size_t alignment) {
+        T*  allocate(size_t size, size_t alignment)
+        {
             assert(m_array != NULL);
-            t* location = mf_allignedAlloc(m_freePosition, alignment);
+
+            T* location = mf_allignedAlloc(m_freePosition, alignment);
+
             assert(location + size <= m_endOfBlock);
             m_freePosition = location + size;
             return (location);    
         }
+
+        int getElementSize() const { return (sizeof(T)); }
 
         void reset() { m_freePosition = m_array; }
 

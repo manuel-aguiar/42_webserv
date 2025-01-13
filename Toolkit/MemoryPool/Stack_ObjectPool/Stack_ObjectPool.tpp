@@ -102,6 +102,8 @@ class Stack_ObjectPool
 			--m_elemCount;
 		}
 
+		int getElementSize() const { return (sizeof(T)); }
+
 		size_type max_size() const
 		{
 			return (m_maxElems);
