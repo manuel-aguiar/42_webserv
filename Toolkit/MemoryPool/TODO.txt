@@ -27,3 +27,22 @@ maybe easier to read
 Heap_ObjectPool can be spawned with 
 a rebindable allocator, so it can 
 appear from std::allocator<T>
+
+############
+3) c++17 introduces node_type
+for containers, allowing to get
+the correct compiletime size
+for the HeapObjectPool
+
+Since we don't at c++98, i have to
+still with StackSlab, HeapSlab
+and the SlabAllocator
+
+It is the only viable optiob for two
+containers sharing and ObjectPool,
+and the node size must be figured
+manually
+
+With c++17, i could Heap_ObjectPool
+<std::set<whatever>::node_type> and
+and it would work out of the box
