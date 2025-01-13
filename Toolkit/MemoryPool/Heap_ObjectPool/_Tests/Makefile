@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/11 01:14:17 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/12 23:00:53 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,6 @@ SRCS					=		$(SRC_PATH)/MemoryPool/Heap_ObjectPool/_Tests/main.cpp	\
 								$(SRC_PATH)/MemoryPool/Heap_ObjectPool/_Tests/test1.cpp	\
 								$(SRC_PATH)/MemoryPool/Heap_ObjectPool/_Tests/test2.cpp	\
 								\
-								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.cpp	\
-								$(SRC_PATH)/MemoryPool/Nginx_MemoryPool/Nginx_MPool_Block.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

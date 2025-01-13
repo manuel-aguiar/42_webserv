@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:06:56 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/13 00:30:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include "../../../_Tests/test.h"
 
-//extern int TestPart1(int testNumber);
 
 int main(void)
 {
@@ -23,7 +22,6 @@ int main(void)
 
 	std::cout << "\n*************** Stack ObjectPool tests ***************" << std::endl;
 	
-    //testNumber = TestPart1(testNumber);
 
 	std::cout << "*****************************************************\n" << std::endl;
 

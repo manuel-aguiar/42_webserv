@@ -59,7 +59,7 @@ class Nginx_PoolAllocator
 				return (0);
 			if (n > max_size())
 				throw std::bad_alloc();
-			return (static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t))));
+			return (reinterpret_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t))));
 		}
 
 		MemoryPool& getMemPool() const {return *m_memoryPool;}

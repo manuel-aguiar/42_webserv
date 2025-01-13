@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/06 11:51:09 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/27 19:07:10 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/13 00:33:56 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,8 +28,8 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 ## FOLDERS
 
-ROOT_PATH				=		../../Toolkit
-SRC_PATH				=		$(ROOT_PATH)/.
+ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
+SRC_PATH				=		$(ROOT_PATH)/Toolkit
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 SRCS				=	$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\

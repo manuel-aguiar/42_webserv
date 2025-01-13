@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/13 00:19:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
-extern int TestPart3(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
@@ -31,8 +30,6 @@ int main(void)
 	std::cout << "\n*************** Nginx_MemoryPool tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-	testNumber = StressTest(testNumber);
-    testNumber = TestPart3(testNumber);
 
     std::cout << "******************************************************\n" << std::endl;
 

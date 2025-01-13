@@ -19,7 +19,7 @@
 # include <cassert>
 # include <iostream>
 
-typedef unsigned char t_byte;
+typedef unsigned char t;
 
 /*
 
@@ -27,18 +27,21 @@ typedef unsigned char t_byte;
 
 */
 
-template <typename Allocator>
-class Heap_MemoryPool
+template <typename T, typename Allocator>
+class Impl_Heap_MemoryPool
 {
     public:
-        Heap_MemoryPool(size_t blockSize, const Allocator& allocator = Allocator()) :
+
+        typedef typename Allocator::template rebind<T>::other TypeAllocator;
+
+        Impl_Heap_MemoryPool(size_t blockSize, const Allocator& allocator = Allocator()) :
             m_allocator(allocator),
-            m_array((t_byte*)m_allocator.allocate(blockSize)), 
+            m_array(m_allocator.allocate(blockSize)), 
             m_freePosition(m_array),
             m_endOfBlock(m_array + blockSize),
             m_blockSize(blockSize) {}
 
-        ~Heap_MemoryPool() { destroy(); }
+        ~Impl_Heap_MemoryPool() { destroy(); }
 
         void* allocate(size_t size) {
             assert(m_array != NULL);
@@ -47,9 +50,9 @@ class Heap_MemoryPool
 
         void* allocate(size_t size, size_t alignment) {
             assert(m_array != NULL);
-            t_byte* location = mf_allignedAlloc(m_freePosition, alignment);
+            t* location = mf_allignedAlloc(m_freePosition, alignment);
             assert(location + size <= m_endOfBlock);
-            m_freePosition = (t_byte*)((size_t)location + size);
+            m_freePosition = location + size;
             return (location);    
         }
 
@@ -68,18 +71,18 @@ class Heap_MemoryPool
         const Allocator& getAllocator() const { return (m_allocator); }
 
     private:
-        Allocator       m_allocator;
-        t_byte*         m_array;
-        t_byte*         m_freePosition;
-        t_byte*         m_endOfBlock;
+        TypeAllocator   m_allocator;
+        T*              m_array;
+        T*              m_freePosition;
+        T*              m_endOfBlock;
         const size_t    m_blockSize;
 
-        Heap_MemoryPool() : m_array(NULL), m_blockSize(0) {}
-        Heap_MemoryPool(const Heap_MemoryPool& copy) : m_blockSize(copy.m_blockSize) {(void)copy;}
-        Heap_MemoryPool& operator=(const Heap_MemoryPool& assign) {(void)assign; return (*this);}
+        Impl_Heap_MemoryPool() : m_array(NULL), m_blockSize(0) {}
+        Impl_Heap_MemoryPool(const Impl_Heap_MemoryPool& copy) : m_blockSize(copy.m_blockSize) {(void)copy;}
+        Impl_Heap_MemoryPool& operator=(const Impl_Heap_MemoryPool& assign) {(void)assign; return (*this);}
 
-        static t_byte* mf_allignedAlloc(void *byte, size_t alignment) {
-            return ((t_byte*)(((size_t)(byte) + ((size_t)alignment - 1)) & ~((size_t)alignment - 1)));
+        static T* mf_allignedAlloc(T* position, size_t alignment) {
+            return ((T*)(((size_t)(position) + ((size_t)alignment - 1)) & ~((size_t)alignment - 1)));
         }
 };
 

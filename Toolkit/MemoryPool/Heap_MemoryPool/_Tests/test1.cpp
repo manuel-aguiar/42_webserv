@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/03 16:12:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/12 23:02:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ int TestPart1(int testNumber)
     try
     {
         std::cout << "TEST " << testNumber++ << ": ";
-        Heap_MemoryPool<> pool(4096);
+        Heap_MemoryPool pool(4096);
         
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
         //Nginx_MemoryPool copy(pool); // fails as expected, private copy constructor
 
-        Heap_MemoryPool<> pool2(4096);
+        Heap_MemoryPool pool2(4096);
         // pool2 = pool1; // fails as expected, private assignment operator
          
         pool.reset();       //all good
@@ -53,10 +53,10 @@ int TestPart1(int testNumber)
     try
     {
         std::cout << "TEST " << testNumber++ << ": ";
-        Heap_MemoryPool<> pool(4096);
+        Heap_MemoryPool pool(4096);
         
-        Nginx_PoolAllocator<int, Heap_MemoryPool<> > alloc(pool);
-        std::vector<int, Nginx_PoolAllocator<int, Heap_MemoryPool<> > > vec(alloc);
+        Nginx_PoolAllocator<int, Heap_MemoryPool > alloc(pool);
+        std::vector<int, Nginx_PoolAllocator<int, Heap_MemoryPool > > vec(alloc);
         
         vec.reserve(100);
 

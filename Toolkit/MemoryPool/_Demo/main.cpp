@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:57:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/13 00:10:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,10 +186,12 @@ int main(void)
             and then it keeps track of the slots as they are "allocated and freed" by the std::list
         */
         
-        Heap_ObjectPool<int, Nginx_MemoryPool> alloc(pool, 10);
+        Nginx_PoolAllocator<int, Nginx_MemoryPool> allocator(pool);
+
+        Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > objPool(10, allocator);
 
         // create a list of ints, that uses the fixed block allocator
-        std::list<int, Heap_ObjectPool<int, Nginx_MemoryPool> > list(alloc);
+        std::list<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > > list(objPool);
 
         list.push_back(1);
         list.push_back(2);
@@ -202,7 +204,7 @@ int main(void)
         
         list.pop_back();
 
-        for (std::list<int, Heap_ObjectPool<int, Nginx_MemoryPool> >::iterator it = list.begin(); it != list.end(); ++it)
+        for (std::list<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > >::iterator it = list.begin(); it != list.end(); ++it)
         {
             std::cout << *it << " ";
         }
@@ -243,21 +245,21 @@ int main(void)
         
         */
 
-        Heap_ObjectPool<int, Nginx_MemoryPool> alloc(pool, 10);
+        Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > alloc(10, pool);
 
         // this will copy construct the FixedElem Pool, no problem because it doesn't allocate until the first allcoation
-        std::list<int, Heap_ObjectPool<int, Nginx_MemoryPool> > list1(alloc);
+        std::list<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > > list1(alloc);
 
 
         // this doesn't mean they are sharing........
-        std::list<int, Heap_ObjectPool<int, Nginx_MemoryPool> > list2(alloc);
+        std::list<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > > list2(alloc);
         // it will actually allocate another separate block of memory for its own nodes
 
         // So one could expect these to share the same block, but they aren't
 
 
         //here comes another block, separate AND OF DIFFERENT SIZE TO THAT OF A LIST NODE
-        std::set<int, Heap_ObjectPool<int, Nginx_MemoryPool> > set(alloc);
+        std::set<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > > set(alloc);
         // nobody is sharing anything, they are all separate blocks
 
         //I had another allocator to accomplish this but also figured: "why?, the point is to exactly stick things together"
@@ -267,7 +269,7 @@ int main(void)
         /******************************************** */
 
         // while you can do this..... it is pretty useless ofc, not to mention the block will be copied from above
-        std::vector<int, Heap_ObjectPool<int, Nginx_MemoryPool> > vec(alloc);
+        std::vector<int, Heap_ObjectPool<int, Nginx_PoolAllocator<int, Nginx_MemoryPool> > > vec(alloc);
 
 
 

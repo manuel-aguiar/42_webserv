@@ -1,14 +1,1 @@
-To properly test the Nginx_MemoryPool,
-make it a template based on typename
-Allocator, use the allocator to allocate intrrnal blocks
 
-Nginx_MemoryPool_Impl<Allocator >
-
-Then Nginx_MemoryPool is
-typedef Nginx_MemoryPool<std::allocator<unsigned char> >
-
-To test, create an allocator that keeps track of mallocs and frees
-Nginx_MemoryPool_Impl<trackAllocator>
-
-Use the pool normally and check how many
-calls to new and delete were made, and how many bytes were used.
