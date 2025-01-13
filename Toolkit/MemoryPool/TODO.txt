@@ -46,3 +46,10 @@ manually
 With c++17, i could Heap_ObjectPool
 <std::set<whatever>::node_type> and
 and it would work out of the box
+
+################
+
+4) Can refactor Nginx_MemoryPool to 
+separate the implementations from
+the base template file and make
+it cleaner
