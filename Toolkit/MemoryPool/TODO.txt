@@ -1,6 +1,7 @@
 
 Nginx_PoolAllocator is expected 
-to be used by one of three: StackMemoryPool, HeapMemoryPool
+to be used by one of three: 
+StackMemoryPool, HeapMemoryPool
 and Nginx_MemoryPool
 
 add a method in each of the threee 
