@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 15:05:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int TestPart1(int testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
 
-		cgi.finishTimedOut();
+		cgi.processRequests();
 		std::cout << "	PASSED (finish timeout with empty queues)" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -184,7 +184,7 @@ int TestPart1(int testNumber)
 		
 		while (1)
 		{
-			unsigned int nextWait = cgi.finishTimedOut();
+			unsigned int nextWait = cgi.processRequests();
 			
 			if (eventManager.getSubscribeCount() != 0)
 				eventManager.ProcessEvents(nextWait);

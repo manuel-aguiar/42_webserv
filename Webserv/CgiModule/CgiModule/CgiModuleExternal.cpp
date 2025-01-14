@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 13:39:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 	mf_execute(*worker, *requestData);
 }
 
-int		CgiModule::finishTimedOut()
+int		CgiModule::processRequests()
 {
 	Timer timer = Timer::now();
 

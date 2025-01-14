@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 15:31:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:22:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class CgiModule
 		void									executeRequest(CgiRequestData& data);
 		void									finishRequest(CgiRequestData& data);
 
-		int										finishTimedOut();
+		int										processRequests();
 		
 		void									forceStop();
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 15:17:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,7 +253,7 @@ int CgiStressTest::StressTest(int testNumber,
 				// keep processing even though this proto didn't get a connection
 				requests.back().m_CgiResultStatus = A_ProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE;
 
-				cgi.finishTimedOut();
+				cgi.processRequests();
 				eventManager.ProcessEvents(10);
 
 				//pipedrain
@@ -276,7 +276,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 			// process events right now at each loop, that way we make room in the CgiModule
 			// to take more clients
-			cgi.finishTimedOut();
+			cgi.processRequests();
 			eventManager.ProcessEvents(1);
 
 			//pipedrain not to sigpipe the failed interpreters
@@ -288,7 +288,7 @@ int CgiStressTest::StressTest(int testNumber,
 		//Event loop
 		while (1)
 		{
-			unsigned int nextWait = cgi.finishTimedOut();
+			unsigned int nextWait = cgi.processRequests();
 			//std::cout << "inner infinite " <<  nextWait << std::endl;
 			
 			if (eventManager.getSubscribeCount() != 0)
