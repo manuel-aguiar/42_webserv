@@ -6,19 +6,19 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/14 15:32:37 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/14 15:36:08 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Compiler and flags
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
-TARGET_BASE = functional_test.out
-TARGET_STRESSTEST = stress_test.out
-TARGET_STRESSVALG = val_stress.out
-TARGET_STRESSCHILDREN = children_stress.out
+CXX 					= 	c++
+CXXFLAGS 				= 	-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
+TARGET_BASE 			= 	functional_test.out
+TARGET_STRESSTEST 		= 	stress_test.out
+TARGET_STRESSVALG		= 	val_stress.out
+TARGET_STRESSCHILDREN 	= 	children_stress.out
 
-VALGRIND_OUTPUT = valgrind_output.log
+VALGRIND_OUTPUT 		= 	valgrind_output.log
 
 # Paths
 ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
