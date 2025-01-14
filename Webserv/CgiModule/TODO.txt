@@ -1,1 +1,17 @@
+change finishRequest function
+remove assert at thr end, replace
+with default case.
+cancelled doesn t assert
+if it is cancelled, user is not expecting anything already
 
+improve readEmergency Phone.
+
+Read/Write should still be 
+responsibility of caller.
+they detect when read is closed,
+not the CGI module
+
+caller reads, when does the cgimodule unregisters caller read?
+must be the caller who controls its
+events, we just borrow eventmanager
+for the emergency phone.
