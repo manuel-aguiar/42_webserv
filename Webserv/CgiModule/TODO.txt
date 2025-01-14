@@ -17,3 +17,5 @@ events, we just borrow eventmanager
 for the emergency phone.
 
 Separate Timer and TimerTracker to outside of CgiModule, will be used in Http
+
+CgiModule will be used by the HttpModule, must be HttpModule referencing it
