@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:35:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:43:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,16 @@ void	CgiModule::mf_reloadWorkers()
 	while (m_availableWorkers.size() > 0)
 	{
 		worker = m_availableWorkers.front();
-		m_availableWorkers.pop_front();
+		
 		while (m_executionQueue.size() > 0)
 		{
 			curRequest = m_executionQueue.front();
-			m_executionQueue.pop_front();
+			
 			if (curRequest->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED)
 			{
 				m_busyWorkerCount++;
+				m_availableWorkers.pop_front();
+				m_executionQueue.pop_front();
 				mf_execute(*worker, *curRequest);
 				break ;
 			}

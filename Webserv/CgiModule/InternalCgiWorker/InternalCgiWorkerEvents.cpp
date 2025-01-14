@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 15:12:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:45:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 {
 	std::string errorMsg;
 	
-	
 	switch (m_EmergencyBuffer[0])
 	{
 		case E_EMER_DUP2:
@@ -58,7 +57,6 @@ void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 	else
 		errorMsg += "inconclusive error";
 	m_globals.logError(errorMsg);
-	
 	mf_KillWaitChild();
 	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 	

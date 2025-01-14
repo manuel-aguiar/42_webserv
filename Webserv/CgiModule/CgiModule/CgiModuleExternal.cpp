@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:37:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:41:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ CgiRequestData*	CgiModule::acquireRequestData()
 void	CgiModule::EnqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
-	InternalCgiWorker* 						worker;
 	unsigned int							timeout;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);

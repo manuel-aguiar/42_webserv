@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:36:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:40:52 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,11 +285,10 @@ int CgiStressTest::StressTest(int testNumber,
 		}
 
 
-		//Event loop
+		//event loop
 		while (1)
 		{
 			unsigned int nextWait = cgi.processRequests();
-			//std::cout << "inner infinite " <<  nextWait << std::endl;
 			
 			if (eventManager.getSubscribeCount() != 0)
 				eventManager.ProcessEvents(nextWait);
