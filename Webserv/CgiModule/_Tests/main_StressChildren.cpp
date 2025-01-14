@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:36:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:30:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,12 @@ int main(void)
 
     testNumber = TestPart1(testNumber);
     testNumber = TestPart2(testNumber);
-	testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 2000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
-    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 2000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
-    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 2000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
+    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidInterpreterPath, "InvalidInterpreterPath");	
+    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidInterpreter, "InvalidInterpreter");	
+    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidScript, "InvalidScript");
+	testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
+    testNumber = CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
+    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
     std::cout << "\n*******************************************************************" << std::endl;
 	return (0);
 }

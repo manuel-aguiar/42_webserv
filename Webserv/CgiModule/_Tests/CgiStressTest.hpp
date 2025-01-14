@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 18:20:55 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:35:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:31:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ class A_ProtoRequest;
 class CgiStressTest
 {
     public:
-        static void    ValidPython(A_ProtoRequest& proto);
-        static void    ValidShell(A_ProtoRequest& proto);
-        static void    ValidPHP(A_ProtoRequest& proto);
-        static void    InvalidScript(A_ProtoRequest& proto);
-        static void    InvalidInterpreter(A_ProtoRequest& proto);
-
+        static void    ValidPython(A_ProtoRequest& proto, int index = 0);
+        static void    ValidShell(A_ProtoRequest& proto, int index = 0);
+        static void    ValidPHP(A_ProtoRequest& proto, int index = 0);
+        static void    InvalidScript(A_ProtoRequest& proto, int index = 0);
+        static void    InvalidInterpreter(A_ProtoRequest& proto, int index = 0);
+        static void    InvalidInterpreterPath(A_ProtoRequest& proto, int index = 0);
 
         // Assignment Criteria, between scripts, bad interpreters, a bit of everything
         static void    MixedCriteria        (A_ProtoRequest& proto, int index);

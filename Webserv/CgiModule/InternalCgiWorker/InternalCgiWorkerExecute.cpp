@@ -56,6 +56,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 	if (!mf_prepareExecve())
 		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
 
+
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
 	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
@@ -106,6 +107,8 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 
 		if (interpExtension == m_CgiModule.getInterpreters().end())
 			throw std::runtime_error("interpreter not found");
+
+		assert (m_envStr.size() == 0 && m_envPtr.size() == 0 && m_argPtr.size() == 0);
 
 		m_envStr.reserve(entryCount);
 		m_envPtr.reserve(entryCount + 1);
@@ -173,6 +176,7 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
 	char EmergencyCode[2];
+
 	::close(m_EmergencyPhone[0]);
 
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||
@@ -180,23 +184,33 @@ void	CgiModule::InternalCgiWorker::mf_executeChild()
 	{
 		EmergencyCode[0] = E_EMER_DUP2;
 		EmergencyCode[1] = errno;
-		write(m_EmergencyPhone[1], EmergencyCode, 2); 
-		::exit(EXIT_FAILURE);
+		write(m_EmergencyPhone[1], EmergencyCode, 2);
+		mf_closeFd(m_ParentToChild[0]);
+		mf_closeFd(m_ChildToParent[1]);
+		mf_closeFd(m_EmergencyPhone[1]);
+		::close(m_ParentToChild[1]);
+		::close(m_ChildToParent[0]);		
+		
+		// wait to be killed lol
+		while (1)
+			::usleep(1000);
 	}
 		
 	::close(m_ParentToChild[1]);
 	::close(m_ChildToParent[0]);
 
-	//std::cerr << "checking execve"  << std::endl;
-
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
-
-	//std::cerr << "execve failed" << std::endl;
 
 	EmergencyCode[0] = E_EMER_EXECVE;
 	EmergencyCode[1] = errno;
-	write(m_EmergencyPhone[1], EmergencyCode, 2); 
-	::exit(EXIT_FAILURE);
+	write(m_EmergencyPhone[1], EmergencyCode, 2);
+	mf_closeFd(m_ParentToChild[0]);
+	mf_closeFd(m_ChildToParent[1]);
+	mf_closeFd(m_EmergencyPhone[1]);
+	
+	//wait to be killed lol
+	while (1)
+		::usleep(1000);
 }
 
 

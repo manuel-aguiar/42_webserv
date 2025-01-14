@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 23:42:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:21:54 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,95 +39,32 @@ void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
 
 
 */
-void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
+
+void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 {
-	int		triggeredFlags;
-	int		bytesRead;
-
-	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
-
-	//std::cout << "module read emergency pipe" << std::endl;
-
-	if (m_EmergencyEvent.getFd() == -1)
-		return ;		//finish was called already, but this event was already registered by the EventManager
-
-	if (triggeredFlags & EPOLLIN)
-	{
-		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
-							&m_EmergencyBuffer[m_EmergencyBytesRead], 
-							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
-
-		m_EmergencyBytesRead += bytesRead;
+	std::string errorMsg;
 	
-		switch (bytesRead)
-		{
-			case 0:
-			{
-				switch (m_EmergencyBytesRead)
-				{
-					case 0:
-						//std::cout << "module, Child exit success, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
-						mf_disableEmergencyEvent();
-						return (mf_JustWaitChild());
-					case 1:
-						//std::cout << "module, Incomplete exit, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
-						mf_disableEmergencyEvent();
-						m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-						return (stopExecution());
-				}
-				return ;
-			}
-
-			case 2:
-			{
-				//std::cout << "module, Bad exit, unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
-				mf_disableEmergencyEvent();
-				if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
-					+ std::string(strerror(m_EmergencyBuffer[1])));
-
-				else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-					m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
-					+ std::string(strerror(m_EmergencyBuffer[1])));
-				m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-				return (stopExecution());
-			}
-
-			case 1:
-			{
-				if (m_EmergencyBytesRead == 2)
-				{
-					//std::cout << "module, Bad exit, double read unsubscribe emergency, fd " << m_EmergencyEvent.getFd() << std::endl;
-					mf_disableEmergencyEvent();
-					if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): "
-						+ std::string(strerror(m_EmergencyBuffer[1])));
-
-					else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-						m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): "
-						+ std::string(strerror(m_EmergencyBuffer[1])));
-					m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-					return (stopExecution());
-				}
-			}
-		}
-	}
-
-	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	
+	switch (m_EmergencyBuffer[0])
 	{
-		if (m_EmergencyBytesRead == 1)
-		{
-			if (m_EmergencyBuffer[0] == E_EMER_DUP2)
-				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), dup2(): inconclusive error");
-			else if (m_EmergencyBuffer[0] == E_EMER_EXECVE)
-				m_globals.logError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): inconclusive error");
-
-			m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-		}
-			
-		return (stopExecution());
+		case E_EMER_DUP2:
+			errorMsg = "InternalCgiWorker::mf_executeChild(), dup2(): "; break ;
+		case E_EMER_EXECVE:
+			errorMsg = "InternalCgiWorker::mf_executeChild(), execve(): "; break ;
+		default : break;
 	}
+	if (m_EmergencyBytesRead == 2)
+		errorMsg += ::strerror(m_EmergencyBuffer[1]);
+	else
+		errorMsg += "inconclusive error";
+	//std::cout << "execve failed " << errorMsg << "  " << m_EmergencyBytesRead << std::endl;
+	m_globals.logError(errorMsg);
+	
+	mf_KillWaitChild();
+	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+	
 }
+
 
 void	CgiModule::InternalCgiWorker::mf_disableEmergencyEvent()
 {
@@ -135,5 +72,48 @@ void	CgiModule::InternalCgiWorker::mf_disableEmergencyEvent()
 	{
 		m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
 		m_EmergencyEvent.setFd(-1);
+	}
+}
+
+void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
+{
+	int		triggeredFlags;
+	int		bytesRead;
+
+	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
+	
+	if (m_EmergencyEvent.getFd() == -1)
+		return ;		
+	if (triggeredFlags & EPOLLIN)
+	{
+		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
+							&m_EmergencyBuffer[m_EmergencyBytesRead], 
+							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
+
+		// outdated event, ignore, wait for epoll to trigger for the new file attached to this fd
+		if (bytesRead == -1)
+			return ;
+
+		m_EmergencyBytesRead += bytesRead;
+
+		// treat the event first, analyse afterwards
+		if (bytesRead == 0 || m_EmergencyBytesRead == 2)
+			mf_disableEmergencyEvent();
+
+		//nothing after read, all good
+		if (m_EmergencyBytesRead == 0)	
+			return (mf_JustWaitChild());
+
+		// full read or partial read but EOF received
+		if (bytesRead == 0 || m_EmergencyBytesRead == 2)
+			return (mf_interpretAndKill());
+	}
+
+	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	{
+		mf_disableEmergencyEvent();
+		if (m_EmergencyBytesRead != 0)
+			return (mf_interpretAndKill());
+		mf_JustWaitChild();
 	}
 }

@@ -74,7 +74,7 @@ void    CgiModule::InternalCgiWorker::reset()
 }
 
 
-void	CgiModule::InternalCgiWorker::stopExecution()
+void	CgiModule::InternalCgiWorker::KillExecution()
 {
 	mf_KillWaitChild();
 	m_CgiModule.mf_returnWorker(*this);

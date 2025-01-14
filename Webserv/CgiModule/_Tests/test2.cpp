@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:48:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:40:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest
+(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
@@ -153,7 +154,8 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest
+(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
@@ -169,7 +171,7 @@ int TestPart2(int testNumber)
 			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		std::string expectedError("InternalCgiWorker::mf_readEmergencyPipe(), execve(): No such file or directory");
+		std::string expectedError("InternalCgiWorker::mf_executeChild(), execve(): No such file or directory");
 
 		if (g_mockGlobals_ErrorMsgs.size() != 1)
 			throw std::runtime_error("Expected 1 error message, got " + to_string(g_mockGlobals_ErrorMsgs.size())
@@ -244,7 +246,8 @@ int TestPart2(int testNumber)
 		dup2(testpipe[1], STDERR_FILENO);
 		/////////////////
 
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest
+(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
@@ -321,7 +324,8 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest
+(*protoRequest.m_CgiRequestData);
 
 		cgi.finishTimedOut();
 		//event loop

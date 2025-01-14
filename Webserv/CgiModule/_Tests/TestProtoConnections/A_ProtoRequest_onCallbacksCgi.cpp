@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:51:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:24:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,12 @@ void	A_ProtoRequest::onWrite()
 
 	if (triggeredFlags & EPOLLOUT)
 	{
-		bytesWritten = ::send(m_CgiWriteEvent.getFd(), m_msgBody.c_str(), m_msgBody.size(), MSG_NOSIGNAL);
+		bytesWritten = ::write(m_CgiWriteEvent.getFd(), m_msgBody.c_str(), m_msgBody.size());
 
+		//outdated event, ignore, wait for epoll to trigger for the new file attached to this fd
 		if (bytesWritten == -1)
-		{
-			//std::cout << "proto " << m_id << " disabling write event" << std::endl;
-			m_eventManager.delEvent(m_CgiWriteEvent);
-			m_CgiWriteEvent.reset();
 			return ;
-		}
+
 		
 		if ((size_t)bytesWritten != m_msgBody.size())
 		{
@@ -76,15 +73,21 @@ void	A_ProtoRequest::onWrite()
 */
 void	A_ProtoRequest::OnRead()
 {
-	size_t				bytesRead;
+	int					bytesRead;
 	int					triggeredFlags;
-	//std::cout << "proto " << m_id << " readingCgi" << std::endl;
+	//std::cout << "proto " << m_id << " readingCgi, FD: " << m_CgiReadEvent.getFd() << std::endl;
 	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
 	
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
+		
+		//outdated event, ignore, wait for epoll to trigger for the new file attached to this fd
+		if (bytesRead == -1)
+			return ;
+		//std::cout << "is epolhup?" << (triggeredFlags & EPOLLHUP) << "attempted reading: " << sizeof(m_buffer) - m_TotalBytesRead - 1 << std::endl;
 		m_TotalBytesRead += bytesRead;
+		//std::cout << "bytes read " << bytesRead << " total bytes read " << m_TotalBytesRead << std::endl;
 		if (bytesRead == 0 || m_TotalBytesRead == sizeof(m_buffer) - 1)
 		{
 			//std::cout << "proto " << m_id << " disabling read event after reading" << std::endl;
@@ -93,12 +96,14 @@ void	A_ProtoRequest::OnRead()
 			m_cgi.finishRequest(*m_CgiRequestData);
 			printBufStdout();
 
-
-
-
 			//internal test
 			if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+			{
 				m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
+
+				//std::cout << "proto " << m_id << " set to SUCCCESS   " << m_TotalBytesRead << std::endl;
+			}
+				
 		}
 			//std::cout << "proto " << m_id << " read " << bytesRead << " bytes" << std::endl;
 	}
@@ -115,7 +120,11 @@ void	A_ProtoRequest::OnRead()
 
 		//internal test
 		if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
+		{
 			m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
+			//std::cout << "proto " << m_id << " set to SUCCCESS, EPPOLERR" << std::endl;
+		}
+			
 	}
 }
 
@@ -125,7 +134,6 @@ void	A_ProtoRequest::OnRead()
 */
 void	A_ProtoRequest::executeCgi()
 {
-	//std::cout << "proto " << m_id << " executinCgi" << std::endl;
 	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
 	m_CgiReadEvent.setMonitoredFlags(EPOLLIN);
 	m_CgiReadEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
@@ -143,7 +151,6 @@ void	A_ProtoRequest::executeCgi()
 */
 void	A_ProtoRequest::cancelCgi()
 {	
-	//std::cout << "proto " << m_id << " cancelingCgi" << std::endl;
 	if (m_CgiReadEvent.getFd() != -1)
 	{
 		m_eventManager.delEvent(m_CgiReadEvent);
@@ -158,12 +165,10 @@ void	A_ProtoRequest::cancelCgi()
 	
 	//inform your client something bad happened
 
-
-
-
 	//internal test
-	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
-		m_CgiResultStatus = E_CGI_STATUS_ERROR_RUNTIME;
+	m_CgiResultStatus = E_CGI_STATUS_ERROR_RUNTIME;
+
+	//std::cout << "proto " << m_id << " set to ERRORRUNTIME" << std::endl;
 }
 
 /*
@@ -178,8 +183,9 @@ void	A_ProtoRequest::falseStartCgi()
 
 
 	//internal test
-	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
-		m_CgiResultStatus = E_CGI_STATUS_ERROR_STARTUP;
+	m_CgiResultStatus = E_CGI_STATUS_ERROR_STARTUP;
+
+	//std::cout << "proto " << m_id << " set to ERROR STARTUP" << std::endl;
 }
 
 
@@ -201,6 +207,7 @@ void	A_ProtoRequest::timeoutCgi()
 
 
 	//internal test
-	if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
-		m_CgiResultStatus = E_CGI_STATUS_TIMEOUT;
+	m_CgiResultStatus = E_CGI_STATUS_TIMEOUT;
+
+	//std::cout << "proto " << m_id << " set to ERROR TIME OUT" << std::endl;
 }

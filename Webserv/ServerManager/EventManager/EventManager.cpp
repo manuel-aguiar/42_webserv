@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:52:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:22:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ int                 EventManager::ProcessEvents(int timeOut)
 		event = static_cast<Event*>(m_events[i].data.ptr);
 		event->setTriggeredFlags(m_events[i].events);
 		event->handle();
+
+		//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS PASSED \n\n\n" << std::endl;
 	}
 	return (waitCount);
 }

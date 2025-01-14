@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:33:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:41:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,11 +168,8 @@ class DynArray
             {
                 for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
-                m_size = 0;
-                m_allocator.deallocate(m_array, m_capacity);
-                m_array = NULL;
-                m_capacity = 0;
             }
+            m_size = 0;
         }
 
         const Allocator& getAllocator() const

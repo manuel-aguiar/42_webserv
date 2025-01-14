@@ -39,7 +39,7 @@ class CgiModule::InternalCgiWorker
 		void    					execute(InternalCgiRequestData& request);
 		void    					reset();
 		
-		void						stopExecution();
+		void						KillExecution();
 		
 		InternalCgiRequestData*		accessCurRequestData();
 
@@ -83,6 +83,7 @@ class CgiModule::InternalCgiWorker
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
 		void						mf_disableEmergencyEvent();
 		void						mf_readEmergencyPhone();
+		void						mf_interpretAndKill();
 
 		// Other helpers
 		void						mf_closeFd(t_fd& fd);

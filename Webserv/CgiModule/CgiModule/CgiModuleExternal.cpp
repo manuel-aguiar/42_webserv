@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 18:58:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:39:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,33 +136,23 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 
 	// already finished
-	if (requestData->getState() == InternalCgiRequestData::E_CGI_STATE_IDLE)
+	if (requestData->getState() == InternalCgiRequestData::E_CGI_STATE_IDLE
+	|| requestData->getState() == InternalCgiRequestData::E_CGI_STATE_CANCELLED)
 		return ;
-
-	//two asserts, so we know which one blows up
-	assert(requestData->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED);
 
 	switch (requestData->getState())
 	{
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
-		{
-			mf_returnRequestData(*requestData);
-			break ;
-		}
+			mf_returnRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
 		{
 			worker = requestData->accessExecutor();
-			worker->stopExecution();
+			worker->KillExecution();
 			break ;
 		}
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
-		{
-			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED);
-			break ;
-		}
-		case InternalCgiRequestData::E_CGI_STATE_IDLE:
-		case InternalCgiRequestData::E_CGI_STATE_CANCELLED:
-			assert(false);
+			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
+		default: break ;
 	}
 }
 
@@ -180,7 +170,7 @@ void	CgiModule::forceStop()
 {
 	for (HeapArray<InternalCgiWorker>::iterator it = m_allWorkers.begin(); it != m_allWorkers.end(); it++)
 	{
-		it->stopExecution();
+		it->KillExecution();
 		it->reset();
 	}
 }
