@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 13:40:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:12:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 
 //C++ headers
@@ -244,14 +245,20 @@ int TestPart2(int testNumber)
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
+		FileDescriptor::setNonBlocking(testpipe[0]);
+		char pipeDrain[1024];
 		/////////////////
 
-		cgi.executeRequest
-(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
+		{
 			eventManager.ProcessEvents(1000);
+
+			// pipedrain
+			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+		}
 
 
 		// tests

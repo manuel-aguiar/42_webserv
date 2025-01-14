@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 13:43:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:05:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 
 //C++ headers
@@ -175,8 +176,7 @@ int TestPart1(int testNumber)
 		// false, we will cancel
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.executeRequest
-(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		::usleep(250000); // 0.25ms
 
@@ -318,15 +318,23 @@ int TestPart1(int testNumber)
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
+		FileDescriptor::setNonBlocking(testpipe[0]);
+		char pipeDrain[1024];
 		/////////////////
 
-		cgi.executeRequest
-(*protoRequest.m_CgiRequestData);
+		cgi.executeRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
+		{
 			eventManager.ProcessEvents(1000);
 
+			// pipedrain
+			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+		}
+			
+
+		
 
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
@@ -339,6 +347,8 @@ int TestPart1(int testNumber)
 		
 		if (protoRequest.m_CgiResultStatus != A_ProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
 			testFailure = testFailure + '\n' + "CgiModule did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+
+		
 
 		// restoring the original stdcerr not to mess the remaining tests
 		dup2(stdcerrDup, STDERR_FILENO);

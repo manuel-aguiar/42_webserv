@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 13:40:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:31:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,9 @@
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../Cgi_Definitions.h"
 # include "../CgiRequestData/CgiRequestData.hpp"
-# include "../Timer/Timer.hpp"
-# include "../TimerTracker/TimerTracker.hpp"
+
+# include "../../TimerTracker/TimerTracker.hpp"
+# include "../../TimerTracker/Timer/Timer.hpp"
 
 // C++ headers
 # include <map>

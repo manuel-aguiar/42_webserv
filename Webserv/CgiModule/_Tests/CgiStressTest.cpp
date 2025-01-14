@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 14:29:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:17:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,13 +318,9 @@ int CgiStressTest::StressTest(int testNumber,
 					break;
 				case A_ProtoRequest::E_CGI_STATUS_SUCCESS:
 
-					//requests[i].m_buffer[requests[i].m_TotalBytesRead] = '\0';
-					
 					if (::strlen(requests[i].m_buffer) != requests[i].m_ExpectedOutput.size()
 					|| std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
-						//std::cout << "strlen buff" << ::strlen(requests[i].m_buffer) << ", strlen expected: " << requests[i].m_ExpectedOutput.size() << "\n";
-						//std::cout << "buff: " << requests[i].m_buffer << "\n" << "expected: " << requests[i].m_ExpectedOutput << "\n";
 						FailureMessages = FailureMessages + '\n' + to_string(i) + " failed: " 
 						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
 						+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
@@ -337,7 +333,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 
 		// restoring the original stdcerr not to mess the remaining tests
-		dup2(stdcerrDup, STDERR_FILENO);
+		dup2(testpipe[1], stdcerrDup);
 		close(stdcerrDup);
 		close(testpipe[1]); 
 		close(testpipe[0]);
@@ -362,14 +358,14 @@ int CgiStressTest::StressTest(int testNumber,
 		<< "\t| Total Workers:     " << std::setw(10) << workers << " |\n"
 		<< "\t| Total Backlog:     " << std::setw(10) << backlog << " |\n"
 		<< "\t| Req TimeOut (ms):  " << std::setw(10) << timeoutMs << " |\n"
-		<< "\t=================================\n" << std::endl;
+		<< "\t=================================" << std::endl;
 	
 		if (!FailureMessages.empty())
 			throw std::logic_error(FailureMessages);
 
 
 		// me and the gpadi			
-		std::cout << "	PASSED [Stress Testing] " << std::endl;
+		std::cout << "	PASSED [Stress Testing]\n\n" << std::endl;
 
 	}
 	catch (const std::exception& e)

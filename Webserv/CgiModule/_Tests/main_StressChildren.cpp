@@ -6,12 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 14:30:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:12:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <iostream>
 # include "CgiStressTest.hpp"
+# include <unistd.h>
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
@@ -30,6 +31,9 @@ int main(void)
 	testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
     testNumber = CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
     testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
+
+    close(STDERR_FILENO);
+
     std::cout << "\n*******************************************************************" << std::endl;
 	return (0);
 }

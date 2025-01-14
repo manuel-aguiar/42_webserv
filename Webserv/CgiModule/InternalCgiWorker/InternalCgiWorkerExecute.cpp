@@ -61,12 +61,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
 	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
 
-	//std::cout << "read fd: " << m_curRequestData->getReadFd() << std::endl;
-	//std::cout << "write fd: " << m_curRequestData->getWriteFd() << std::endl;
-	//std::cout << "emergency fd: " << m_EmergencyPhone[0] << std::endl;
-
 	m_curRequestData->CallTheUser(E_CGI_ON_EXECUTE);
-
 	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
 
     m_pid = ::fork();

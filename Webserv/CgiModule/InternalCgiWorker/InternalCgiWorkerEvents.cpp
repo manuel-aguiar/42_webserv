@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 14:21:54 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:12:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 		errorMsg += ::strerror(m_EmergencyBuffer[1]);
 	else
 		errorMsg += "inconclusive error";
-	//std::cout << "execve failed " << errorMsg << "  " << m_EmergencyBytesRead << std::endl;
 	m_globals.logError(errorMsg);
 	
 	mf_KillWaitChild();
