@@ -15,3 +15,5 @@ caller reads, when does the cgimodule unregisters caller read?
 must be the caller who controls its
 events, we just borrow eventmanager
 for the emergency phone.
+
+Separate Timer and TimerTracker to outside of CgiModule, will be used in Http
