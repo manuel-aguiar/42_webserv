@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:37:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	return (data);
 }
 
-void	CgiModule::executeRequest(CgiRequestData& request)
+void	CgiModule::EnqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
 	InternalCgiWorker* 						worker;
@@ -44,59 +44,14 @@ void	CgiModule::executeRequest(CgiRequestData& request)
 	
 	// tell the requestData where its timer is, in case of premature finish/cancelation
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
-
-	if (m_availableWorkers.size() == 0)
-	{
-		requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
-		m_executionQueue.push_back(requestData);
-		return ;
-	}
-	worker = m_availableWorkers.back();
-	m_availableWorkers.pop_back();
-	m_busyWorkerCount++;
-	
-	mf_execute(*worker, *requestData);
+	requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
+	m_executionQueue.push_back(requestData);
 }
 
 int		CgiModule::processRequests()
 {
-	Timer timer = Timer::now();
-
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	it = m_timerTracker.begin();
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	next;
-	InternalCgiRequestData* 								curRequest;
-	
-
-	while (it != m_timerTracker.end())
-	{
-		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
-		{
-			next = ++it;
-			--it;
-			
-			curRequest = it->second;
-			
-			// call the user if it is executing, runtime error
-			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
-				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
-			
-			// if user doesn't cancel, we do it for them
-			finishRequest(*it->second);
-			
-			//potential iterator invalidation, we only care about the ones that are timed out now
-			// if inserted already timedout, it will be removed in the next iteration
-			it = next;
-		}
-		else
-			break ;
-	}
-			
-	// return the shortest time to the next timeout
-	if (m_timerTracker.begin() == m_timerTracker.end())
-	{
-		return (-1);	//infinite
-	}
-	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());
+	mf_reloadWorkers();
+	return (mf_finishTimedOut());
 }
 
 /*

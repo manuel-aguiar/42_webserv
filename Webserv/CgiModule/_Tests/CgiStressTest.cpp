@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:36:09 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 			AssignmentCriteria(requests.back(), i);
 			
-			cgi.executeRequest(*requests.back().m_CgiRequestData);
+			cgi.EnqueueRequest(*requests.back().m_CgiRequestData);
 
 			// process events right now at each loop, that way we make room in the CgiModule
 			// to take more clients
