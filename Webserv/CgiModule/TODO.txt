@@ -14,11 +14,27 @@ So, processEvents:
 cleanup previous workers and 
 connections, closing fds, 
 unsubscribing emergencyphone from 
-epoll.
+epoll, close pipes. we will inform the customer to unsubscribe.
+Workers can be placed at the backend of the queue, we will loop and release resources until we
+find a worker that isn t supposed to leave.
+
+The only workers that can be recycled straight away are those that didn t subscribe/told the customer to subscribe to epoll.
+
+So until parsing of environment variables is not confirmed good, the worker can be safely reassigned.
+after telling the customer to subscribe to epoll, we can t reuse the worker. 
+
+finishRequest will put the worker associated for execution at the back of the queue to cleanup and reassign.
+So event handlers for workers can have no closure (or ar least, opening, of new pipes).
+
+Openings can only take place at the
+end of the event loop. even if 
+customer tells to finish, we move 
+the finishing to the end of the 
+queue
 
 Then, cleanup the Timed out 
 connections. again without 
-reasigning workers.
+reasigning workers, just put the workers back on queue.
 
 
 The reasign workers, open pipes, 
