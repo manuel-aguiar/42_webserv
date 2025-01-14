@@ -10,10 +10,4 @@
 #                                                                              #
 # **************************************************************************** #
 
-A Lot to do in ServerManager
-
--> deferentiate preparation from actual running, failures in preparation
-    must result in exiting.
-
-    So all opening of listening sockets and event manager subscription should be done
-    in prep and not in .run()
+Get a running version ASAP, testing or not, memory layout for later
