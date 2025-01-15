@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:36:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:51:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class CgiModule
 		void									removeInterpreter(const std::string& extension);
 		
 		CgiRequestData*							acquireRequestData();
+
 		void									EnqueueRequest(CgiRequestData& data);
 		void									finishRequest(CgiRequestData& data);
 
@@ -94,9 +95,13 @@ class CgiModule
 		void										mf_returnWorker(InternalCgiWorker& worker);
 		void										mf_returnRequestData(InternalCgiRequestData& data);
 		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
+
+		void										mf_stopRequestPrepareCleanup(InternalCgiRequestData& data);
+		void										mf_cleanupRequestData(InternalCgiRequestData& data);		
+		void										mf_cleanupFinishedRequests();
 		int											mf_finishTimedOut();
 		void										mf_reloadWorkers();
-
+		void										
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

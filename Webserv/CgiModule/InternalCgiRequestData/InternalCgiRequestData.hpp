@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:48:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 08:58:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 			E_CGI_STATE_ACQUIRED,
 			E_CGI_STATE_QUEUED,
 			E_CGI_STATE_EXECUTING,
-			E_CGI_STATE_CANCELLED
+			E_CGI_STATE_CANCELLED,
+			E_CGI_STATE_FINISH
 		} 	t_CgiRequestState;
 
 		InternalCgiRequestData();

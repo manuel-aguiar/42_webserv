@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:43:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 09:51:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,15 @@ void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
 
 void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 {	
+	mf_cleanupRequestData(data);	
+	m_availableRequestData.push_back(&data);
+}
+
+void	CgiModule::mf_cleanupRequestData(InternalCgiRequestData& data)
+{
 	if (data.getMyTimer() != TimerTracker<Timer, InternalCgiRequestData*>::iterator())
 		m_timerTracker.erase(data.getMyTimer());
-
-	data.reset();	
-	m_availableRequestData.push_back(&data);
+	data.reset();
 }
 
 int	CgiModule::mf_finishTimedOut()
@@ -60,7 +64,7 @@ int	CgiModule::mf_finishTimedOut()
 				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
 			
 			// if user doesn't cancel, we do it for them
-			finishRequest(*it->second);
+			mf_stopRequestPrepareCleanup(*curRequest);
 			
 			//potential iterator invalidation, we only care about the ones that are timed out now
 			// if inserted already timedout, it will be removed in the next iteration
@@ -103,5 +107,37 @@ void	CgiModule::mf_reloadWorkers()
 		}
 		if (m_executionQueue.size() == 0)
 			break ;
+	}
+}
+
+void	CgiModule::mf_stopRequestPrepareCleanup(InternalCgiRequestData& data)
+{
+	InternalCgiWorker*							worker;
+	
+	// already marked for cleanup
+	if (data.getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)
+		return ;
+
+	worker = data.accessExecutor();
+	worker->KillExecution();
+	data.setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
+	m_availableRequestData.push_front(&data);
+}
+
+void	CgiModule::mf_cleanupFinishedRequests()
+{
+	InternalCgiRequestData::t_CgiRequestState	state;
+	InternalCgiRequestData*						requestData;
+	InternalCgiWorker*							worker;
+
+	for (int i = 0; i < m_availableRequestData.size(); i++)
+	{
+		requestData = m_availableRequestData[i];
+		state = requestData->getState();
+		if (state != InternalCgiRequestData::E_CGI_STATE_FINISH)
+			break ;
+		worker = requestData->accessExecutor();
+		mf_cleanupRequestData(*requestData);
+		mf_returnWorker(*worker);
 	}
 }
