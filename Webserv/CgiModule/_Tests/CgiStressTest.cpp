@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 19:07:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:08:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,6 @@ int CgiStressTest::StressTest(int testNumber,
 		// collects error messages, we can't throw cause we are redirecting stderr
 		std::string FailureMessages;
 		unsigned int nextWait;
-		unsigned int nextWait;
 		size_t statusCounter[A_ProtoRequest::E_CGI_STATUS_COUNT] = {0};
 
 
@@ -277,7 +276,6 @@ int CgiStressTest::StressTest(int testNumber,
 
 			AssignmentCriteria(requests.back(), i);
 			
-			cgi.EnqueueRequest(*requests.back().m_CgiRequestData);
 			cgi.enqueueRequest(*requests.back().m_CgiRequestData);
 
 			// process events right now at each loop, that way we make room in the CgiModule
