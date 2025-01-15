@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:22:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 17:01:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	A_ProtoRequest::OnRead()
 	int					triggeredFlags;
 
 	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
+
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
@@ -135,16 +136,12 @@ void	A_ProtoRequest::executeCgi()
 */
 void	A_ProtoRequest::cancelCgi()
 {	
-	if (m_CgiReadEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiReadEvent);
-		m_CgiReadEvent.reset();
-	}
-	if (m_CgiWriteEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiWriteEvent);
-		m_CgiWriteEvent.reset();
-	}
+	m_eventManager.delEvent(m_CgiReadEvent);
+	m_CgiReadEvent.reset();
+
+	m_eventManager.delEvent(m_CgiWriteEvent);
+	m_CgiWriteEvent.reset();
+		
 	m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
@@ -171,16 +168,10 @@ void	A_ProtoRequest::falseStartCgi()
 void	A_ProtoRequest::timeoutCgi()
 {
 	//std::cout << "proto " << m_id << " timeoutCgi" << std::endl;
-	if (m_CgiReadEvent.getFd() != -1)
-	{
 		m_eventManager.delEvent(m_CgiReadEvent);
 		m_CgiReadEvent.reset();
-	}
-	if (m_CgiWriteEvent.getFd() != -1)
-	{
 		m_eventManager.delEvent(m_CgiWriteEvent);
 		m_CgiWriteEvent.reset();
-	}
 	m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
