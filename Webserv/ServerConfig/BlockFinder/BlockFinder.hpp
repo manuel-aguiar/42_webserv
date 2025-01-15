@@ -3,7 +3,11 @@
 
 // our headers
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "_Tests/TestDependencies.hpp"
+# ifndef TESTMODE
+#  include "_Tests/TestDependencies.hpp"
+# else
+#  include "../ServerBlock/ServerBlock.hpp"
+# endif
 
 // C++ headers
 # include <string>
