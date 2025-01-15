@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 17:01:14 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 18:20:08 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +136,16 @@ void	A_ProtoRequest::executeCgi()
 */
 void	A_ProtoRequest::cancelCgi()
 {	
-	m_eventManager.delEvent(m_CgiReadEvent);
-	m_CgiReadEvent.reset();
-
-	m_eventManager.delEvent(m_CgiWriteEvent);
-	m_CgiWriteEvent.reset();
+	if (m_CgiReadEvent.getFd() != -1)
+	{
+		m_eventManager.delEvent(m_CgiReadEvent);
+		m_CgiReadEvent.reset();
+	}
+	if (m_CgiWriteEvent.getFd() != -1)
+	{
+		m_eventManager.delEvent(m_CgiWriteEvent);
+		m_CgiWriteEvent.reset();
+	}
 		
 	m_cgi.finishRequest(*m_CgiRequestData);
 	
@@ -168,10 +173,16 @@ void	A_ProtoRequest::falseStartCgi()
 void	A_ProtoRequest::timeoutCgi()
 {
 	//std::cout << "proto " << m_id << " timeoutCgi" << std::endl;
+	if (m_CgiReadEvent.getFd() != -1)
+	{
 		m_eventManager.delEvent(m_CgiReadEvent);
 		m_CgiReadEvent.reset();
+	}
+	if (m_CgiWriteEvent.getFd() != -1)
+	{
 		m_eventManager.delEvent(m_CgiWriteEvent);
 		m_CgiWriteEvent.reset();
+	}
 	m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
