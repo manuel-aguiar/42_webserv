@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:14:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.executeRequest
+		cgi.EnqueueRequest
 (*protoRequest.m_CgiRequestData);
 
 		//event loop
@@ -155,7 +155,7 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.executeRequest
+		cgi.EnqueueRequest
 (*protoRequest.m_CgiRequestData);
 
 		//event loop
@@ -249,7 +249,7 @@ int TestPart2(int testNumber)
 		char pipeDrain[1024];
 		/////////////////
 
-		cgi.executeRequest(*protoRequest.m_CgiRequestData);
+		cgi.EnqueueRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
 		while (eventManager.getSubscribeCount() != 0)
@@ -331,7 +331,7 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.executeRequest
+		cgi.EnqueueRequest
 (*protoRequest.m_CgiRequestData);
 
 		cgi.processRequests();

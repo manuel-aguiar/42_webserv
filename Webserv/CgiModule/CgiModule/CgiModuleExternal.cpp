@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:22:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:14:13 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	return (data);
 }
 
-void	CgiModule::executeRequest(CgiRequestData& request)
+void	CgiModule::EnqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
 	InternalCgiWorker* 						worker;
