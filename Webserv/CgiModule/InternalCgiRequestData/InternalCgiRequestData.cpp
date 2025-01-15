@@ -90,8 +90,5 @@ CgiModule::InternalCgiRequestData::t_CgiRequestState	CgiModule::InternalCgiReque
 void	CgiModule::InternalCgiRequestData::CallTheUser(const e_CgiCallback event)
 {
 	Callback& callback = CgiRequestData::accessCallback(event);
-
-	if (callback.getHandler() == NULL)
-		return ;
 	callback.execute();
 }

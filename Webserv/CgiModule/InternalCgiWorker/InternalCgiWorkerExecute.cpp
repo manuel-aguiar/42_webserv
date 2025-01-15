@@ -31,6 +31,7 @@
 
 	Fork, child does child, parent does parent
 */
+
 void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 {
 	m_curRequestData = &request;
@@ -40,9 +41,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		m_CgiModule.mf_returnRequestData(*m_curRequestData);
-		m_CgiModule.mf_returnWorker(*this);
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleFailedStart(*this, request, E_CGI_ON_ERROR_STARTUP));
     }
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -52,17 +51,11 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		m_CgiModule.mf_returnRequestData(*m_curRequestData);
-		m_CgiModule.mf_returnWorker(*this);
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleFailedStart(*this, request, E_CGI_ON_ERROR_STARTUP));
 	}
 
 	if (!mf_prepareExecve())
-	{
-		m_CgiModule.mf_returnRequestData(*m_curRequestData);
-		m_CgiModule.mf_returnWorker(*this);
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
-	}
+		return (m_CgiModule.mf_recycleFailedStart(*this, request, E_CGI_ON_ERROR_STARTUP));
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
@@ -75,9 +68,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		m_CgiModule.mf_returnRequestData(*m_curRequestData);
-		m_CgiModule.mf_returnWorker(*this);
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME));
+		return (m_CgiModule.mf_recycleFailedStart(*this, request, E_CGI_ON_ERROR_RUNTIME));
     }
 	
 

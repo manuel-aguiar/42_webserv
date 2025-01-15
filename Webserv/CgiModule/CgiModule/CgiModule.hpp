@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 09:51:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:08:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,8 @@ class CgiModule
 		void										mf_cleanupFinishedRequests();
 		int											mf_finishTimedOut();
 		void										mf_reloadWorkers();
-		void										
+		void										mf_recycleFailedStart(InternalCgiWorker& worker, InternalCgiRequestData& data, e_CgiCallback callUser);
+		
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

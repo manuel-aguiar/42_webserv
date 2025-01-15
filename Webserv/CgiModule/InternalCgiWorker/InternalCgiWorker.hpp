@@ -91,6 +91,8 @@ class CgiModule::InternalCgiWorker
 		void						mf_KillWaitChild();
 
 
+		void						mf_closeAllPipes();
+
 
 
 };

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 09:57:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:15:50 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,12 @@ void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 
 void	CgiModule::mf_cleanupRequestData(InternalCgiRequestData& data)
 {
-	if (data.getMyTimer() != TimerTracker<Timer, InternalCgiRequestData*>::iterator())
-		m_timerTracker.erase(data.getMyTimer());
+	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	timer;
+
+	timer = data.getMyTimer();
+	if (timer != TimerTracker<Timer, InternalCgiRequestData*>::iterator())
+		m_timerTracker.erase(timer);
+
 	data.reset();
 }
 
@@ -46,29 +50,21 @@ int	CgiModule::mf_finishTimedOut()
 	Timer timer = Timer::now();
 
 	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	it = m_timerTracker.begin();
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	next;
 	InternalCgiRequestData* 								curRequest;
 	
 
-	while (it != m_timerTracker.end())
+	for (; it != m_timerTracker.end(); ++it) 
 	{
 		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
 		{
-			next = ++it;
-			--it;
-			
 			curRequest = it->second;
 			
 			// call the user if it is executing, runtime error
 			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
+			{
+				mf_stopRequestPrepareCleanup(*curRequest);
 				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
-			
-			// if user doesn't cancel, we do it for them
-			mf_stopRequestPrepareCleanup(*curRequest);
-			
-			//potential iterator invalidation, we only care about the ones that are timed out now
-			// if inserted already timedout, it will be removed in the next iteration
-			it = next;
+			}
 		}
 		else
 			break ;
@@ -130,14 +126,24 @@ void	CgiModule::mf_cleanupFinishedRequests()
 	InternalCgiRequestData*						requestData;
 	InternalCgiWorker*							worker;
 
-	for (int i = 0; i < m_availableRequestData.size(); i++)
+	for (size_t i = 0; i < m_availableRequestData.size(); i++)
 	{
 		requestData = m_availableRequestData[i];
 		state = requestData->getState();
 		if (state != InternalCgiRequestData::E_CGI_STATE_FINISH)
 			break ;
 		worker = requestData->accessExecutor();
-		mf_cleanupRequestData(*requestData);
 		mf_returnWorker(*worker);
+		mf_cleanupRequestData(*requestData);
 	}
+}
+
+void		CgiModule::mf_recycleFailedStart(InternalCgiWorker& worker, InternalCgiRequestData& data, e_CgiCallback callUser)
+{
+	Callback 	callback = data.accessCallback(callUser);
+
+	mf_returnWorker(worker);
+	mf_returnRequestData(data);
+	if (callback.getHandler() != NULL)
+		callback.execute();
 }

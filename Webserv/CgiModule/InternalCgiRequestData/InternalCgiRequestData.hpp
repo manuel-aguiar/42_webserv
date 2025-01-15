@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 08:58:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:15:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		
 		void					CallTheUser(const e_CgiCallback event);
 
+		
 	private:
 		InternalCgiWorker*		m_executor;
 		t_CgiRequestState		m_state;

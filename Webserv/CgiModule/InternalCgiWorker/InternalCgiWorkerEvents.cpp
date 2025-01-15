@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 09:37:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 12:26:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,10 @@ void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 
 void	CgiModule::InternalCgiWorker::mf_disableEmergencyEvent()
 {
-	if (m_EmergencyEvent.getFd() != -1)
-	{
-		m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-		m_EmergencyEvent.setFd(-1);
-	}
+	if (m_EmergencyEvent.getFd() == -1)
+		return ;
+	m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+	m_EmergencyEvent.setFd(-1);
 }
 
 void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 09:51:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:20:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ CgiRequestData*	CgiModule::acquireRequestData()
 void	CgiModule::EnqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
-	InternalCgiWorker* 						worker;
 	unsigned int							timeout;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
@@ -91,7 +90,6 @@ int		CgiModule::processRequests()
 void	CgiModule::finishRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*						requestData;
-	InternalCgiWorker*							worker;
 	InternalCgiRequestData::t_CgiRequestState	state;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
@@ -124,7 +122,10 @@ void	CgiModule::forceStop()
 {
 	for (HeapArray<InternalCgiWorker>::iterator it = m_allWorkers.begin(); it != m_allWorkers.end(); it++)
 	{
-		it->KillExecution();
-		it->reset();
+		if (it->accessCurRequestData() != NULL)
+		{
+			it->KillExecution();
+			it->reset();
+		}
 	}
 }
