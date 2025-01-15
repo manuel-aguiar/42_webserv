@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:20 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/16 21:37:47 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/16 22:25:19 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int HttpRequest::parse(const std::string& rawData)
     m_status = RequestStatus::OK;
 
     try {
-        size_t pos = rawData.find("\r\n"); // goes until the delimiter
+        size_t pos = rawData.find("\r\n"); // goes until the CRLF
         if (pos == std::string::npos)
             return (RequestStatus::BAD_REQUEST);
 
@@ -87,7 +87,7 @@ int HttpRequest::parse(const std::string& rawData)
         if (m_status != RequestStatus::OK)
             return m_status;
 
-        // TODO: check if below logic breaks
+        // TODO: check if logic breaks
         // Parse headers
         size_t headerStart = pos + 2;
         pos = rawData.find("\r\n\r\n", headerStart);
@@ -136,4 +136,9 @@ const std::map<std::string, std::string>& HttpRequest::getHeaders() const
 const std::string& HttpRequest::getBody() const
 {
     return m_body;
+}
+
+const std::map<std::string, std::string>& HttpRequest::getUriComponents() const
+{
+    return m_uriComponents;
 }

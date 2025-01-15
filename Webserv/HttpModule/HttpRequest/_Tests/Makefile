@@ -16,12 +16,13 @@ PARSER_DIR = ../parsers
 NAME = test.out
 
 # Source files
-TEST_SRCS = $(TEST_DIR)/test.cpp
+# TEST_SRCS = $(TEST_DIR)/test.cpp
+TEST_SRCS = $(TEST_DIR)/test_req_line.cpp
+
 MAIN_SRCS = $(SRC_DIR)/HttpRequest.cpp
 PARSER_SRCS = $(PARSER_DIR)/http_parse_request_line.cpp \
               $(PARSER_DIR)/http_parse_header_line.cpp \
-              $(PARSER_DIR)/http_parse_message_body.cpp \
-              $(PARSER_DIR)/parser_utils.cpp
+              $(PARSER_DIR)/http_parse_message_body.cpp
 
 # Object files
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)

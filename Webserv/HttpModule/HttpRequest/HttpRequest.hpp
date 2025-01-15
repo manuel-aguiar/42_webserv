@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/16 21:36:42 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/16 23:15:28 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,17 @@ class HttpRequest {
         const std::string& 							getHttpVersion() const;
         const std::map<std::string, std::string>&	getHeaders() const;
         const std::string& 							getBody() const;
+        const std::map<std::string, std::string>&   getUriComponents() const;
+
+		// Encoding exception
+		class EncodingException : public std::exception {
+			public:
+				EncodingException(const std::string& message) : m_message(message) {}
+				virtual ~EncodingException() throw() {}
+				virtual const char* what() const throw() { return m_message.c_str(); }
+			private:
+				std::string m_message;
+		};
 
     private:
         // Static validation sets
