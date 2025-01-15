@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 14:28:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:42:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,11 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 							&m_EmergencyBuffer[m_EmergencyBytesRead], 
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
-		// outdated event, ignore, wait for epoll to trigger for the new file attached to this fd
-		//if (bytesRead == -1)
-		//	return ;
-
 		m_EmergencyBytesRead += bytesRead;
 
-		// treat the event first, analyse afterwards
-		//if (bytesRead == 0 || m_EmergencyBytesRead == 2)
-		//	mf_disableEmergencyEvent();
-
-		//nothing after read, all good
 		if (m_EmergencyBytesRead == 0)	
 			return (mf_JustWaitChild());
 
-		// full read or partial read but EOF received
 		if (bytesRead == 0 || m_EmergencyBytesRead == 2)
 			return (mf_interpretAndKill());
 	}
