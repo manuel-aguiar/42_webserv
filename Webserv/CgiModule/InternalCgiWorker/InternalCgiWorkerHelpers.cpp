@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 14:42:45 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:50:41 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,39 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
+void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
+{
+	if (m_pid == -1)
+		return ;
+	::kill(m_pid, SIGKILL);
+	::waitpid(m_pid, NULL, 0);
+	m_pid = -1;
+}
+
+void	CgiModule::InternalCgiWorker::mf_childFailure()
+{
+	std::string errorMsg;
+	
+	switch (m_EmergencyBuffer[0])
+	{
+		case E_EMER_DUP2:
+			errorMsg = "InternalCgiWorker::mf_executeChild(), dup2(): "; break ;
+		case E_EMER_EXECVE:
+			errorMsg = "InternalCgiWorker::mf_executeChild(), execve(): "; break ;
+		default : break;
+	}
+	if (m_EmergencyBytesRead == 2)
+		errorMsg += ::strerror(m_EmergencyBuffer[1]);
+	else
+		errorMsg += "inconclusive error";
+	m_globals.logError(errorMsg);
+
+	m_CgiModule.mf_markWorkerForCleanup(*this);
+	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+}
 
 
-void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
+void	CgiModule::InternalCgiWorker::mf_childSuccess()
 {
 	int status;
 
@@ -36,21 +66,12 @@ void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
 	m_pid = -1;
 
 	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
+	{
+		m_globals.logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
+		m_CgiModule.mf_markWorkerForCleanup(*this);
 		m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+	}
 }
-
-void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
-{
-	int status;
-
-	if (m_pid == -1)
-		return ;
-		
-	::kill(m_pid, SIGKILL);
-	::waitpid(m_pid, &status, 0);
-	m_pid = -1;
-}
-
 
 void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
 {

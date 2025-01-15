@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:34:48 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:23:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
 			mf_returnRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
-			mf_stopExecutionPrepareCleanup(*requestData); break ;
+			mf_markRequestForCleanup(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
 		default:
@@ -118,14 +118,22 @@ void	CgiModule::removeInterpreter(const std::string& extension)
 	m_Interpreters.erase(extension);
 }
 
-void	CgiModule::forceStop()
+void	CgiModule::StopAndReset()
 {
-	for (HeapArray<InternalCgiWorker>::iterator it = m_allWorkers.begin(); it != m_allWorkers.end(); it++)
+	InternalCgiRequestData* data;
+
+	for (size_t i = 0; i < m_allWorkers.size(); ++i)
 	{
-		if (it->accessCurRequestData() != NULL)
-		{
-			it->KillExecution();
-			it->reset();
-		}
+		data = m_allWorkers[i].accessRequestData();
+		if (!data || data->getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)	
+			continue ;
+		mf_markWorkerForCleanup(m_allWorkers[i]);
+		data->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 	}
+	
+	mf_cleanupFinishedRequests();
+
+	for (size_t i = 0; i < m_executionQueue.size(); ++i)
+		m_executionQueue[i]->reset();
+	m_executionQueue.clear();
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 14:28:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:22:30 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,7 +280,7 @@ int CgiStressTest::StressTest(int testNumber,
 			nextWait = cgi.processRequests();
 			if (eventManager.getSubscribeCount() != 0)
 				eventManager.ProcessEvents(nextWait);
-
+			
 			//pipedrain not to sigpipe the failed interpreters
 			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 

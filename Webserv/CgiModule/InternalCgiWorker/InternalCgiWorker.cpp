@@ -73,12 +73,17 @@ void    CgiModule::InternalCgiWorker::reset()
 }
 
 
-void	CgiModule::InternalCgiWorker::KillExecution()
+void	CgiModule::InternalCgiWorker::stop()
 {
 	mf_KillWaitChild();
 }
 
-CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
+void	CgiModule::InternalCgiWorker::assignRequestData(InternalCgiRequestData& data)
+{
+	m_curRequestData = &data;
+}
+
+CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessRequestData()
 {
 	return (m_curRequestData);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 10:29:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:02:20 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, Globals&
 
 CgiModule::~CgiModule()
 {
-	forceStop();
+	StopAndReset();
 }
 
 //private as usual

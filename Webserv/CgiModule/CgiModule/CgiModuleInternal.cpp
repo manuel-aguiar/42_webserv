@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 14:24:36 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:38:31 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data)
 {
 	data.setState(InternalCgiRequestData::E_CGI_STATE_EXECUTING);
-	data.setExecutor(&worker);
-	worker.execute(data);
+	data.assignExecutor(worker);
+	worker.assignRequestData(data);
+	worker.execute();
 }
 
 void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
@@ -30,12 +31,6 @@ void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
 
 void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 {	
-	mf_cleanupRequestData(data);	
-	m_availableRequestData.push_back(&data);
-}
-
-void	CgiModule::mf_cleanupRequestData(InternalCgiRequestData& data)
-{
 	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	timer;
 
 	timer = data.getMyTimer();
@@ -43,7 +38,10 @@ void	CgiModule::mf_cleanupRequestData(InternalCgiRequestData& data)
 		m_timerTracker.erase(timer);
 
 	data.reset();
+
+	m_availableRequestData.push_back(&data);
 }
+
 
 int	CgiModule::mf_finishTimedOut()
 {
@@ -62,7 +60,7 @@ int	CgiModule::mf_finishTimedOut()
 			// call the user if it is executing, runtime error
 			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
 			{
-				mf_stopExecutionPrepareCleanup(*curRequest);
+				mf_markRequestForCleanup(*curRequest);
 				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
 			}
 		}
@@ -72,9 +70,7 @@ int	CgiModule::mf_finishTimedOut()
 			
 	// return the shortest time to the next timeout
 	if (m_timerTracker.begin() == m_timerTracker.end())
-	{
-		return (-1);	//infinite
-	}
+		return (-1);
 	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());	
 }
 
@@ -106,16 +102,29 @@ void	CgiModule::mf_reloadWorkers()
 	}
 }
 
-void	CgiModule::mf_stopExecutionPrepareCleanup(InternalCgiRequestData& data)
+void	CgiModule::mf_markWorkerForCleanup(InternalCgiWorker& worker)
 {
-	InternalCgiWorker*							worker;
+	InternalCgiRequestData*							data;
 	
-	// already marked for cleanup
+	data = worker.accessRequestData();
+	
+	if (data->getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)
+		return ;
+
+	worker.stop();
+	data->setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
+	m_availableWorkers.push_front(&worker);
+}
+
+void	CgiModule::mf_markRequestForCleanup(InternalCgiRequestData& data)
+{
+	InternalCgiWorker*								worker;
+	
 	if (data.getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)
 		return ;
 
 	worker = data.accessExecutor();
-	worker->KillExecution();
+	worker->stop();
 	data.setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
 	m_availableWorkers.push_front(worker);
 }
@@ -130,7 +139,7 @@ void	CgiModule::mf_cleanupFinishedRequests()
 	for (size_t i = 0; i < availWorkers; i++)
 	{
 		worker = m_availableWorkers[0];
-		requestData = worker->accessCurRequestData();
+		requestData = worker->accessRequestData();
 		if (!requestData)
 			break ;
 		m_availableWorkers.pop_front();

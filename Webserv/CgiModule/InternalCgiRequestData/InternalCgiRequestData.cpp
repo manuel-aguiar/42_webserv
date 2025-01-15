@@ -31,9 +31,9 @@ void	CgiModule::InternalCgiRequestData::reset()
 
 
 // setters
-void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker* const executor)
+void	CgiModule::InternalCgiRequestData::assignExecutor(CgiModule::InternalCgiWorker& executor)
 {
-	m_executor = executor;
+	m_executor = &executor;
 }
 
 void	CgiModule::InternalCgiRequestData::setReadFd(const t_fd fd)

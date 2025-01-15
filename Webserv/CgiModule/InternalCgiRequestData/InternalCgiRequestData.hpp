@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:15:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:22:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 
 		void					reset();
 
-		void					setExecutor(InternalCgiWorker* const executor);
+		void					assignExecutor(InternalCgiWorker& executor);
 		void					setReadFd(const t_fd fd);
 		void					setWriteFd(const t_fd fd);
 		void					setMyTimer(const TimerTracker<Timer, InternalCgiRequestData*>::iterator& timer);
