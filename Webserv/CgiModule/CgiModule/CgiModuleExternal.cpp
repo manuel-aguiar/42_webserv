@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 16:23:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:42:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
+/*
+	Provide the caller with one CgiRequestData object if available,
+	such tha the user can fill it and enqueue for execution.
+
+	This function is expected to be SAFE to be called from an event handler (Callback).
+*/
 CgiRequestData*	CgiModule::acquireRequestData()
 {
 	InternalCgiRequestData*     data;
@@ -28,7 +34,16 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	return (data);
 }
 
-void	CgiModule::EnqueueRequest(CgiRequestData& request)
+/*
+	Places a request previouesly "acquired" in the execution queue.
+	This doesn't lead to a straight execution even if the queue is empty.
+	For security reasons and to avoid errors when calling enqueue from an event handler,
+	the user MUST always call processRequests() to get the queue going.
+
+	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
+	from an event handler (Callback).
+*/
+void	CgiModule::enqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
 	unsigned int							timeout;
@@ -47,6 +62,23 @@ void	CgiModule::EnqueueRequest(CgiRequestData& request)
 	m_executionQueue.push_back(requestData);
 }
 
+/*
+	Effectively starts execution of requests in the queue.
+	Returns the shortest time until the next timeout, may be used by epoll_wait
+
+	Internally, force closes timed out requests, cleans up finished requests,
+	since the previous call to processRequests and reloads workers with requests from the queue.
+
+	To avoid stale events to get mixed up, a worker does not auto reload if there are requests in the queue
+	without calling this function.
+
+	The reason being that a request may take several epoll_wait cycles to finish,
+	we don't want to mix fds in the same epoll_wait cycle.
+
+	Having said that, because this function closes and opens fds, 
+	
+	IT IS NOT A SAFE FUNCTION TO BE CALLED FROM AN EVENT HANDLER (Callback).
+*/
 int		CgiModule::processRequests()
 {
 	int nextWait;
@@ -76,16 +108,14 @@ int		CgiModule::processRequests()
 				(++ we don't iterate and move all elements in the middle)
 				(-- someone may not be able to subscribe, even though there is a dead request in the queue
 				it must wait a worker processes it)
+		
 
-	There are 2 invalid scenarios that are programming errors:
+		For the remining, just ignore:
+			finished (already marked for cleanup)
+			idle (wtv, let it be, a user may call on an already recycled request)
+			cancelled (effective cleanup already, waiting for a worker to remove it from the executionQueue)
 
-		Request is Idle:
-			-> THIS IS A PROGRAMMING ERROR AT THE CGI MODULE LEVEL 	-> ASSERT
-
-		Request is Cancelled:
-			-> THIS IS A PROGRAMMING ERROR AT THE USER LEVEL		-> ASSERT
-				(not problem with double cancelling, but why do that?)
-
+	This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
 */
 void	CgiModule::finishRequest(CgiRequestData& request)
 {
@@ -94,7 +124,7 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
 	state = requestData->getState();
-
+	
 	switch (state)
 	{
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
@@ -108,17 +138,14 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 	}
 }
 
-void	CgiModule::addInterpreter(const std::string& extension, const std::string& path)
-{
-	m_Interpreters[extension] = path;
-}
 
-void	CgiModule::removeInterpreter(const std::string& extension)
-{
-	m_Interpreters.erase(extension);
-}
+/*
+	This function closes all runing processes, resets all requests and clears the execution queue.
 
-void	CgiModule::StopAndReset()
+	It closes fds, IT IS NOT SAFE TO BE CALLED FROM AN EVENT HANDLER (Callback).
+*/
+
+void	CgiModule::stopAndReset()
 {
 	InternalCgiRequestData* data;
 
@@ -137,3 +164,4 @@ void	CgiModule::StopAndReset()
 		m_executionQueue[i]->reset();
 	m_executionQueue.clear();
 }
+

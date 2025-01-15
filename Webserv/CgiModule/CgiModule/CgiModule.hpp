@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 16:02:21 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:45:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,20 @@ class CgiModule
 		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, Globals& globals);
 		~CgiModule();
 
-		// methods
-		void									addInterpreter(const std::string& extension, const std::string& path);
-		void									removeInterpreter(const std::string& extension);
-		
+		// request interaction
 		CgiRequestData*							acquireRequestData();
-
-		void									EnqueueRequest(CgiRequestData& data);
+		void									enqueueRequest(CgiRequestData& data);
 		void									finishRequest(CgiRequestData& data);
 
+		// processing
 		int										processRequests();
-		
-		void									StopAndReset();
+		void									stopAndReset();
 
-		//getters
+		// config
+		void									addInterpreter(const std::string& extension, const std::string& path);
+		void									removeInterpreter(const std::string& extension);
+
+		// getters
 		size_t									getBusyWorkerCount() const;
 		size_t									getQueueSize() const;
 		const t_CgiEnvValue*					getBaseEnvKeys() const;

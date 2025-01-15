@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:38:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:27:18 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,10 @@ void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
 	m_availableRequestData.push_back(&data);
 }
 
-
+/*
+	Takes all timedout requests, marks them for cleanup (internally force stops the process)
+	Returns the shortest time until the next timeout, to be used by epoll_wait
+*/
 int	CgiModule::mf_finishTimedOut()
 {
 	Timer timer = Timer::now();
@@ -56,8 +59,6 @@ int	CgiModule::mf_finishTimedOut()
 		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
 		{
 			curRequest = it->second;
-			
-			// call the user if it is executing, runtime error
 			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
 			{
 				mf_markRequestForCleanup(*curRequest);
@@ -68,7 +69,6 @@ int	CgiModule::mf_finishTimedOut()
 			break ;
 	}
 			
-	// return the shortest time to the next timeout
 	if (m_timerTracker.begin() == m_timerTracker.end())
 		return (-1);
 	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());	
