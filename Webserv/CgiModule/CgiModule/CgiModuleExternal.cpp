@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:20:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:34:48 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
 			mf_returnRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
-			mf_stopRequestPrepareCleanup(*requestData); break ;
+			mf_stopExecutionPrepareCleanup(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
 		default:

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 12:26:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:28:00 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
 	mf_KillWaitChild();
 	
 	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-	
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:15:50 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:24:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	CgiModule::mf_finishTimedOut()
 			// call the user if it is executing, runtime error
 			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
 			{
-				mf_stopRequestPrepareCleanup(*curRequest);
+				mf_stopExecutionPrepareCleanup(*curRequest);
 				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
 			}
 		}
@@ -106,7 +106,7 @@ void	CgiModule::mf_reloadWorkers()
 	}
 }
 
-void	CgiModule::mf_stopRequestPrepareCleanup(InternalCgiRequestData& data)
+void	CgiModule::mf_stopExecutionPrepareCleanup(InternalCgiRequestData& data)
 {
 	InternalCgiWorker*							worker;
 	
@@ -117,24 +117,25 @@ void	CgiModule::mf_stopRequestPrepareCleanup(InternalCgiRequestData& data)
 	worker = data.accessExecutor();
 	worker->KillExecution();
 	data.setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
-	m_availableRequestData.push_front(&data);
+	m_availableWorkers.push_front(worker);
 }
 
 void	CgiModule::mf_cleanupFinishedRequests()
 {
-	InternalCgiRequestData::t_CgiRequestState	state;
 	InternalCgiRequestData*						requestData;
 	InternalCgiWorker*							worker;
+	size_t										availWorkers;	
 
-	for (size_t i = 0; i < m_availableRequestData.size(); i++)
+	availWorkers = m_availableWorkers.size();
+	for (size_t i = 0; i < availWorkers; i++)
 	{
-		requestData = m_availableRequestData[i];
-		state = requestData->getState();
-		if (state != InternalCgiRequestData::E_CGI_STATE_FINISH)
+		worker = m_availableWorkers[0];
+		requestData = worker->accessCurRequestData();
+		if (!requestData)
 			break ;
-		worker = requestData->accessExecutor();
+		m_availableWorkers.pop_front();
 		mf_returnWorker(*worker);
-		mf_cleanupRequestData(*requestData);
+		mf_returnRequestData(*requestData);
 	}
 }
 

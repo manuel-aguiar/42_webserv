@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 10:03:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:28:40 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,28 @@ void	CgiModule::InternalCgiWorker::mf_JustWaitChild()
 {
 	int status;
 
-	if (m_pid != -1)
-	{
-		::waitpid(m_pid, &status, 0);
-		m_pid = -1;
-		if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
-			m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-	}
+	if (m_pid == -1)
+		return ;
+
+	::waitpid(m_pid, &status, 0);
+	m_pid = -1;
+
+	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
+		m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 }
 
 void	CgiModule::InternalCgiWorker::mf_KillWaitChild()
 {
 	int status;
 
-	if (m_pid != -1)
-	{
-		//std::cout << "\t\t\t\t\t KILLING A PROCESS" << std::endl;
-		::kill(m_pid, SIGKILL);
-		::waitpid(m_pid, &status, 0);
-		m_pid = -1;
-	}
+	if (m_pid == -1)
+		return ;
+		
+	::kill(m_pid, SIGKILL);
+	::waitpid(m_pid, &status, 0);
+	m_pid = -1;
+	
+	//m_CgiModule.mf_stopExecutionPrepareCleanup(*m_curRequestData);
 }
 
 

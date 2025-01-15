@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 16:57:31 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 14:28:25 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		// collects error messages, we can't throw cause we are redirecting stderr
 		std::string FailureMessages;
-
+		unsigned int nextWait;
 		size_t statusCounter[A_ProtoRequest::E_CGI_STATUS_COUNT] = {0};
 
 
@@ -253,8 +253,9 @@ int CgiStressTest::StressTest(int testNumber,
 				// keep processing even though this proto didn't get a connection
 				requests.back().m_CgiResultStatus = A_ProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE;
 
-				cgi.processRequests();
-				eventManager.ProcessEvents(10);
+				nextWait = cgi.processRequests();
+				if (eventManager.getSubscribeCount() != 0)
+					eventManager.ProcessEvents(nextWait);
 
 				//pipedrain
 				while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
@@ -276,8 +277,9 @@ int CgiStressTest::StressTest(int testNumber,
 
 			// process events right now at each loop, that way we make room in the CgiModule
 			// to take more clients
-			cgi.processRequests();
-			eventManager.ProcessEvents(1);
+			nextWait = cgi.processRequests();
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
 
 			//pipedrain not to sigpipe the failed interpreters
 			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
