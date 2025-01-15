@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 15:12:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:45:05 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,38 +40,12 @@ void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
 
 */
 
-void	CgiModule::InternalCgiWorker::mf_interpretAndKill()
-{
-	std::string errorMsg;
-	
-	
-	switch (m_EmergencyBuffer[0])
-	{
-		case E_EMER_DUP2:
-			errorMsg = "InternalCgiWorker::mf_executeChild(), dup2(): "; break ;
-		case E_EMER_EXECVE:
-			errorMsg = "InternalCgiWorker::mf_executeChild(), execve(): "; break ;
-		default : break;
-	}
-	if (m_EmergencyBytesRead == 2)
-		errorMsg += ::strerror(m_EmergencyBuffer[1]);
-	else
-		errorMsg += "inconclusive error";
-	m_globals.logError(errorMsg);
-	
-	mf_KillWaitChild();
-	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
-	
-}
-
-
 void	CgiModule::InternalCgiWorker::mf_disableEmergencyEvent()
 {
-	if (m_EmergencyEvent.getFd() != -1)
-	{
-		m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
-		m_EmergencyEvent.setFd(-1);
-	}
+	if (m_EmergencyEvent.getFd() == -1)
+		return ;
+	m_curRequestData->accessEventManager()->delEvent(m_EmergencyEvent);
+	m_EmergencyEvent.setFd(-1);
 }
 
 void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
@@ -81,38 +55,29 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 
 	triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
 	
-	if (m_EmergencyEvent.getFd() == -1)
-		return ;		
+	//if (m_EmergencyEvent.getFd() == -1)
+	//	return ;
+
 	if (triggeredFlags & EPOLLIN)
 	{
 		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
 							&m_EmergencyBuffer[m_EmergencyBytesRead], 
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
-		// outdated event, ignore, wait for epoll to trigger for the new file attached to this fd
-		if (bytesRead == -1)
-			return ;
-
 		m_EmergencyBytesRead += bytesRead;
 
-		// treat the event first, analyse afterwards
-		if (bytesRead == 0 || m_EmergencyBytesRead == 2)
-			mf_disableEmergencyEvent();
-
-		//nothing after read, all good
 		if (m_EmergencyBytesRead == 0)	
-			return (mf_JustWaitChild());
+			return (mf_childSuccess());
 
-		// full read or partial read but EOF received
 		if (bytesRead == 0 || m_EmergencyBytesRead == 2)
-			return (mf_interpretAndKill());
+			return (mf_childFailure());
 	}
 
 	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
 	{
-		mf_disableEmergencyEvent();
+		//mf_disableEmergencyEvent();
 		if (m_EmergencyBytesRead != 0)
-			return (mf_interpretAndKill());
-		mf_JustWaitChild();
+			return (mf_childFailure());
+		mf_childSuccess();
 	}
 }

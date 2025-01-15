@@ -33,9 +33,9 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 	m_ParentToChild[1] = -1;
 	m_ChildToParent[0] = -1;
 	m_ChildToParent[1] = -1;
-
 	m_EmergencyPhone[0] = -1;
 	m_EmergencyPhone[1] = -1;
+	
 	m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
 	m_EmergencyEvent.setMonitoredFlags(EPOLLIN);
 	m_EmergencyBytesRead = 0;
@@ -51,36 +51,39 @@ void    CgiModule::InternalCgiWorker::reset()
 {
 	m_pid = -1;
 
+	// close all associated fds
+	mf_disableEmergencyEvent();
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);
 	mf_closeFd(m_ChildToParent[1]);
+	mf_closeFd(m_EmergencyPhone[0]);
+	mf_closeFd(m_EmergencyPhone[1]);
 
+	// clear args for execve, keep size for reuse
 	m_argPtr.clear();
 	m_envPtr.clear();
 	m_envStr.clear();
 
+	// clear emergency buffer
 	m_EmergencyBytesRead = 0;
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 	
-	if (m_curRequestData)
-	{
-		mf_disableEmergencyEvent();
-		m_CgiModule.mf_returnRequestData(*m_curRequestData);
-	}
-	
-	mf_closeFd(m_EmergencyPhone[0]);
-	mf_closeFd(m_EmergencyPhone[1]);
+	m_curRequestData = NULL;
 }
 
 
-void	CgiModule::InternalCgiWorker::KillExecution()
+void	CgiModule::InternalCgiWorker::stop()
 {
 	mf_KillWaitChild();
-	m_CgiModule.mf_returnWorker(*this);
 }
 
-CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessCurRequestData()
+void	CgiModule::InternalCgiWorker::assignRequestData(InternalCgiRequestData& data)
+{
+	m_curRequestData = &data;
+}
+
+CgiModule::InternalCgiRequestData*	CgiModule::InternalCgiWorker::accessRequestData()
 {
 	return (m_curRequestData);
 }

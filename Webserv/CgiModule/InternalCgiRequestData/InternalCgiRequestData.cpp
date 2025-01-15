@@ -31,9 +31,9 @@ void	CgiModule::InternalCgiRequestData::reset()
 
 
 // setters
-void	CgiModule::InternalCgiRequestData::setExecutor(CgiModule::InternalCgiWorker* const executor)
+void	CgiModule::InternalCgiRequestData::assignExecutor(CgiModule::InternalCgiWorker& executor)
 {
-	m_executor = executor;
+	m_executor = &executor;
 }
 
 void	CgiModule::InternalCgiRequestData::setReadFd(const t_fd fd)
@@ -90,8 +90,5 @@ CgiModule::InternalCgiRequestData::t_CgiRequestState	CgiModule::InternalCgiReque
 void	CgiModule::InternalCgiRequestData::CallTheUser(const e_CgiCallback event)
 {
 	Callback& callback = CgiRequestData::accessCallback(event);
-
-	if (callback.getHandler() == NULL)
-		return ;
 	callback.execute();
 }

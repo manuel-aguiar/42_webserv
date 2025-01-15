@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:14:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:05:38 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, globals);
+		CgiModule cgi(10, 100, 5000, globals);
 		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
@@ -108,6 +108,7 @@ int TestPart1(int testNumber)
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
 		
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000); // 5ms
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
@@ -116,12 +117,19 @@ int TestPart1(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.EnqueueRequest
-(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+
 
 		//event loop
-		while (eventManager.getSubscribeCount() != 0)
-			eventManager.ProcessEvents(1000);
+		while (1)
+		{
+			unsigned int nextWait = cgi.processRequests();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+		}
 
 
 		// tests
@@ -176,12 +184,14 @@ int TestPart1(int testNumber)
 		// false, we will cancel
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.EnqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
 
 		::usleep(250000); // 0.25ms
 
 		//event loop
 		
+
+		//event loop
 		while (1)
 		{
 			unsigned int nextWait = cgi.processRequests();
@@ -230,7 +240,7 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, globals);
+		CgiModule cgi(10, 100, 5000, globals);
 		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "potato");
@@ -239,17 +249,26 @@ int TestPart1(int testNumber)
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
 		
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000);
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.EnqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+
 
 		//event loop
-		while (eventManager.getSubscribeCount() != 0)
-			eventManager.ProcessEvents(1000);
+		while (1)
+		{
+			unsigned int nextWait = cgi.processRequests();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+		}
 
 
 		// tests
@@ -298,7 +317,7 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, globals);
+		CgiModule cgi(10, 100, 5000, globals);
 		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
@@ -307,6 +326,7 @@ int TestPart1(int testNumber)
 		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
 			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
 		
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000);
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("asgasgasgasgasg");
 		protoRequest.m_CgiRequestData->setEventManager(eventManager);
@@ -322,14 +342,18 @@ int TestPart1(int testNumber)
 		char pipeDrain[1024];
 		/////////////////
 
-		cgi.EnqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+
 
 		//event loop
-		while (eventManager.getSubscribeCount() != 0)
+		while (1)
 		{
-			eventManager.ProcessEvents(1000);
-
-			// pipedrain
+			unsigned int nextWait = cgi.processRequests();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
 			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 		}
 			
@@ -392,12 +416,19 @@ int TestPart1(int testNumber)
 		
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.EnqueueRequest
-(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
 
 		//event loop
-		while (eventManager.getSubscribeCount() != 0)
-			eventManager.ProcessEvents(1000);
+		while (1)
+		{
+			unsigned int nextWait = cgi.processRequests();
+			
+			if (eventManager.getSubscribeCount() != 0)
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+		}
+
 
 
 		// tests

@@ -31,16 +31,15 @@
 
 	Fork, child does child, parent does parent
 */
-void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
-{
-	m_curRequestData = &request;
 
+void   CgiModule::InternalCgiWorker::execute()
+{
     if (::pipe(m_ParentToChild) == -1 ||
 		::pipe(m_ChildToParent) == -1 ||
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
     }
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -50,12 +49,11 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
 	}
 
 	if (!mf_prepareExecve())
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_STARTUP));
-
+		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
 
 	m_curRequestData->setReadFd(m_ChildToParent[0]);
 	m_curRequestData->setWriteFd(m_ParentToChild[1]);
@@ -68,7 +66,7 @@ void   CgiModule::InternalCgiWorker::execute(InternalCgiRequestData& request)
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME));
+		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_RUNTIME));
     }
 	
 

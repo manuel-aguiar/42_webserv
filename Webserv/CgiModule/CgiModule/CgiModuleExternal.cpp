@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:14:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:06:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
+/*
+	Provide the caller with one CgiRequestData object if available,
+	such tha the user can fill it and enqueue for execution.
+
+	This function is expected to be SAFE to be called from an event handler (Callback).
+*/
 CgiRequestData*	CgiModule::acquireRequestData()
 {
 	InternalCgiRequestData*     data;
@@ -28,10 +34,18 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	return (data);
 }
 
-void	CgiModule::EnqueueRequest(CgiRequestData& request)
+/*
+	Places a request previouesly "acquired" in the execution queue.
+	This doesn't lead to a straight execution even if the queue is empty.
+	For security reasons and to avoid errors when calling enqueue from an event handler,
+	the user MUST always call processRequests() to get the queue going.
+
+	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
+	from an event handler (Callback).
+*/
+void	CgiModule::enqueueRequest(CgiRequestData& request)
 {
 	InternalCgiRequestData*					requestData;
-	InternalCgiWorker* 						worker;
 	unsigned int							timeout;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
@@ -44,59 +58,36 @@ void	CgiModule::EnqueueRequest(CgiRequestData& request)
 	
 	// tell the requestData where its timer is, in case of premature finish/cancelation
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
-
-	if (m_availableWorkers.size() == 0)
-	{
-		requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
-		m_executionQueue.push_back(requestData);
-		return ;
-	}
-	worker = m_availableWorkers.back();
-	m_availableWorkers.pop_back();
-	m_busyWorkerCount++;
-	
-	mf_execute(*worker, *requestData);
+	requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
+	m_executionQueue.push_back(requestData);
 }
 
+/*
+	Effectively starts execution of requests in the queue.
+	Returns the shortest time until the next timeout, may be used by epoll_wait
+
+	Internally, force closes timed out requests, cleans up finished requests,
+	since the previous call to processRequests and reloads workers with requests from the queue.
+
+	To avoid stale events to get mixed up, a worker does not auto reload if there are requests in the queue
+	without calling this function.
+
+	The reason being that a request may take several epoll_wait cycles to finish,
+	we don't want to mix fds in the same epoll_wait cycle.
+
+	Having said that, because this function closes and opens fds, 
+	
+	IT IS NOT A SAFE FUNCTION TO BE CALLED FROM AN EVENT HANDLER (Callback).
+*/
 int		CgiModule::processRequests()
 {
-	Timer timer = Timer::now();
+	int nextWait;
 
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	it = m_timerTracker.begin();
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	next;
-	InternalCgiRequestData* 								curRequest;
-	
+	nextWait = mf_finishTimedOut();
+	mf_cleanupFinishedRequests();
+	mf_reloadWorkers();
 
-	while (it != m_timerTracker.end())
-	{
-		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
-		{
-			next = ++it;
-			--it;
-			
-			curRequest = it->second;
-			
-			// call the user if it is executing, runtime error
-			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
-				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
-			
-			// if user doesn't cancel, we do it for them
-			finishRequest(*it->second);
-			
-			//potential iterator invalidation, we only care about the ones that are timed out now
-			// if inserted already timedout, it will be removed in the next iteration
-			it = next;
-		}
-		else
-			break ;
-	}
-			
-	// return the shortest time to the next timeout
-	if (m_timerTracker.begin() == m_timerTracker.end())
-	{
-		return (-1);	//infinite
-	}
-	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());
+	return (nextWait);
 }
 
 /*
@@ -117,60 +108,60 @@ int		CgiModule::processRequests()
 				(++ we don't iterate and move all elements in the middle)
 				(-- someone may not be able to subscribe, even though there is a dead request in the queue
 				it must wait a worker processes it)
+		
 
-	There are 2 invalid scenarios that are programming errors:
+		For the remining, just ignore:
+			finished (already marked for cleanup)
+			idle (wtv, let it be, a user may call on an already recycled request)
+			cancelled (effective cleanup already, waiting for a worker to remove it from the executionQueue)
 
-		Request is Idle:
-			-> THIS IS A PROGRAMMING ERROR AT THE CGI MODULE LEVEL 	-> ASSERT
-
-		Request is Cancelled:
-			-> THIS IS A PROGRAMMING ERROR AT THE USER LEVEL		-> ASSERT
-				(not problem with double cancelling, but why do that?)
-
+	This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
 */
 void	CgiModule::finishRequest(CgiRequestData& request)
 {
-	InternalCgiRequestData* requestData;
-	InternalCgiWorker*		worker;
+	InternalCgiRequestData*						requestData;
+	InternalCgiRequestData::t_CgiRequestState	state;
 
 	requestData = static_cast<InternalCgiRequestData*>(&request);
-
-	// already finished
-	if (requestData->getState() == InternalCgiRequestData::E_CGI_STATE_IDLE
-	|| requestData->getState() == InternalCgiRequestData::E_CGI_STATE_CANCELLED)
-		return ;
-
-	switch (requestData->getState())
+	state = requestData->getState();
+	
+	switch (state)
 	{
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
 			mf_returnRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
-		{
-			worker = requestData->accessExecutor();
-			worker->KillExecution();
-			break ;
-		}
+			mf_markRequestForCleanup(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
-		default: break ;
+		default:
+			break ;
 	}
 }
 
-void	CgiModule::addInterpreter(const std::string& extension, const std::string& path)
-{
-	m_Interpreters[extension] = path;
-}
 
-void	CgiModule::removeInterpreter(const std::string& extension)
-{
-	m_Interpreters.erase(extension);
-}
+/*
+	This function closes all runing processes, resets all requests and clears the execution queue.
 
-void	CgiModule::forceStop()
+	It closes fds, IT IS NOT SAFE TO BE CALLED FROM AN EVENT HANDLER (Callback).
+*/
+
+void	CgiModule::stopAndReset()
 {
-	for (HeapArray<InternalCgiWorker>::iterator it = m_allWorkers.begin(); it != m_allWorkers.end(); it++)
+	InternalCgiRequestData* data;
+
+	for (size_t i = 0; i < m_allWorkers.size(); ++i)
 	{
-		it->KillExecution();
-		it->reset();
+		data = m_allWorkers[i].accessRequestData();
+		if (!data || data->getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)	
+			continue ;
+		mf_markWorkerForCleanup(m_allWorkers[i]);
+		data->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
 	}
+	
+	mf_cleanupFinishedRequests();
+
+	for (size_t i = 0; i < m_executionQueue.size(); ++i)
+		m_executionQueue[i]->reset();
+	m_executionQueue.clear();
 }
+

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:42:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/09 13:28:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 13:12:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,6 @@ void	Callback::reset()
 }
 
 //private
-Callback::Callback(const Callback& copy)  {(void)copy;}
+Callback::Callback(const Callback& copy) : m_data(copy.m_data), m_handler(copy.m_handler) {(void)copy;}
 Callback& Callback::operator=(const Callback& assign) {(void)assign; return (*this);}
 

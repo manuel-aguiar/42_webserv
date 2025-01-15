@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 12:48:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 15:22:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 			E_CGI_STATE_ACQUIRED,
 			E_CGI_STATE_QUEUED,
 			E_CGI_STATE_EXECUTING,
-			E_CGI_STATE_CANCELLED
+			E_CGI_STATE_CANCELLED,
+			E_CGI_STATE_FINISH
 		} 	t_CgiRequestState;
 
 		InternalCgiRequestData();
@@ -37,7 +38,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 
 		void					reset();
 
-		void					setExecutor(InternalCgiWorker* const executor);
+		void					assignExecutor(InternalCgiWorker& executor);
 		void					setReadFd(const t_fd fd);
 		void					setWriteFd(const t_fd fd);
 		void					setMyTimer(const TimerTracker<Timer, InternalCgiRequestData*>::iterator& timer);
@@ -51,6 +52,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		
 		void					CallTheUser(const e_CgiCallback event);
 
+		
 	private:
 		InternalCgiWorker*		m_executor;
 		t_CgiRequestState		m_state;

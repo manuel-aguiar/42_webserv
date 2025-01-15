@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:14:13 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/15 19:06:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,20 @@ class CgiModule
 		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, Globals& globals);
 		~CgiModule();
 
-		// methods
-		void									addInterpreter(const std::string& extension, const std::string& path);
-		void									removeInterpreter(const std::string& extension);
-		
+		// request interaction
 		CgiRequestData*							acquireRequestData();
-		void									EnqueueRequest(CgiRequestData& data);
+		void									enqueueRequest(CgiRequestData& data);
 		void									finishRequest(CgiRequestData& data);
 
+		// processing
 		int										processRequests();
-		
-		void									forceStop();
+		void									stopAndReset();
 
-		//getters
+		// config
+		void									addInterpreter(const std::string& extension, const std::string& path);
+		void									removeInterpreter(const std::string& extension);
+
+		// getters
 		size_t									getBusyWorkerCount() const;
 		size_t									getQueueSize() const;
 		const t_CgiEnvValue*					getBaseEnvKeys() const;
@@ -91,9 +92,20 @@ class CgiModule
 													m_timerTracker;
 
 
+		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
+
+		void										mf_markWorkerForCleanup(InternalCgiWorker& worker);
+		void										mf_markRequestForCleanup(InternalCgiRequestData& data);
+		
+		void										mf_recycleFailedStart(InternalCgiWorker& worker, InternalCgiRequestData& data, e_CgiCallback callUser);
+		
 		void										mf_returnWorker(InternalCgiWorker& worker);
 		void										mf_returnRequestData(InternalCgiRequestData& data);
-		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
+		
+		void										mf_cleanupFinishedRequests();
+		int											mf_finishTimedOut();
+		void										mf_reloadWorkers();
+		
 
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);

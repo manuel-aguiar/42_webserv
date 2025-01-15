@@ -36,12 +36,13 @@ class CgiModule::InternalCgiWorker
 		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 
 
-		void    					execute(InternalCgiRequestData& request);
+		void    					execute();
 		void    					reset();
 		
-		void						KillExecution();
+		void						stop();
 		
-		InternalCgiRequestData*		accessCurRequestData();
+		void						assignRequestData(InternalCgiRequestData& data);
+		InternalCgiRequestData*		accessRequestData();
 
 
 
@@ -83,13 +84,15 @@ class CgiModule::InternalCgiWorker
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
 		void						mf_disableEmergencyEvent();
 		void						mf_readEmergencyPhone();
-		void						mf_interpretAndKill();
+		void						mf_childFailure();
 
 		// Other helpers
 		void						mf_closeFd(t_fd& fd);
-		void						mf_JustWaitChild();
+		void						mf_childSuccess();
 		void						mf_KillWaitChild();
 
+
+		void						mf_closeAllPipes();
 
 
 
