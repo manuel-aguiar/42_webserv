@@ -1,9 +1,6 @@
-
-
 #include "BlockFinder.hpp"
 
-BlockFinder::BlockFinder(const ServerConfig& config):
-    m_config(config),
+BlockFinder::BlockFinder():
     m_wildcardIp("0.0.0.0"),
     m_wildcardPort("*"), // defining this even though listen directive needs to be provided
     m_wildcardServerName("*") {}
@@ -33,7 +30,7 @@ void    BlockFinder::mf_normalizeDirectives(const t_ip_str& ip, const t_port_str
 
 std::string BlockFinder::mf_hashedKey(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName) const
 {
-    return (std::string(ip + ":" + port + ":" + serverName));
+    return (ip + ":" + port + ":" + serverName);
 }
 
 /*
@@ -51,24 +48,40 @@ bool	BlockFinder::hasServerBlock(const t_ip_str& ip, const t_port_str& port, con
 
 /*
 **	addServerBlock
-**	adds a server block to the server_blocks map
+**	adds a server block to the server_blocks map for each unique combination of listeners and server names
 **	blocks are added with normalized directives
 **  if a directive is not provided, falls back to the wildcard value
 **	if the block is already in the map, it is not added again
 */
-void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+void	BlockFinder::addServerBlock(const ServerBlock& block)
 {
-    // listen directive in the config is mandatory, so asserting the port here
-    assert(!port.empty() && "Port directive is mandatory");
-    assert(port != m_wildcardPort && "Port directive cannot be a wildcard");
+    const std::set<t_listeners>& listeners = block.getListeners();
+    const std::set<std::string>& serverNames = block.getServerNames();
 
-    std::string	key;
+    // For each listener (IP:port pair)
+    for (std::set<t_listeners>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
+    {
+        const t_ip_str& ip = lit->first;
+        const t_port_str& port = lit->second;
 
-    if (this->hasServerBlock(ip, port, serverName))
-        return;
+        // Port directive is mandatory and cannot be wildcard
+        assert(!port.empty() && "Port directive is mandatory");
+        assert(port != m_wildcardPort && "Port directive cannot be a wildcard");
 
-    key = mf_hashedKey(this->m_normalizedIp, this->m_normalizedPort, this->m_normalizedServerName);
-    m_serverBlocks[key] = &block;
+        // For each server name
+        for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)
+        {
+            const t_server_name& serverName = *sit;
+
+            // Normalize and create key
+            mf_normalizeDirectives(ip, port, serverName);
+            std::string key = mf_hashedKey(m_normalizedIp, m_normalizedPort, m_normalizedServerName);
+
+            // Add to map if not already present
+            if (m_serverBlocks.find(key) == m_serverBlocks.end())
+                m_serverBlocks[key] = &block;
+        }
+    }
 }
 
 /*
@@ -85,7 +98,7 @@ void	BlockFinder::addServerBlock(const ServerBlocks& block, const t_ip_str& ip, 
 **	- IP wildcard (`0.0.0.0`), port wildcard (`*`), and server name wildcard (`*`).
 */
 
-const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
+const ServerBlock*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName)
 {
     std::string	key;
 
@@ -103,7 +116,7 @@ const ServerBlocks*	BlockFinder::findServerBlock(const t_ip_str& ip, const t_por
 
     // if the specific ip didn't match, check if wildcard matches
     key = mf_hashedKey(m_wildcardIp, this->m_normalizedPort, this->m_normalizedServerName);
-    std::map<std::string, const ServerBlocks*>::iterator it = m_serverBlocks.find(key);
+    std::map<std::string, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
 
     if (it != m_serverBlocks.end())
         return (it->second);

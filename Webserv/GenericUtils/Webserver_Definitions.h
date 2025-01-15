@@ -21,6 +21,7 @@
 # include <signal.h>
 # include <cassert>
 
+# include <string>
 
 // definitions for everyone to use
 typedef unsigned char								t_byte;
