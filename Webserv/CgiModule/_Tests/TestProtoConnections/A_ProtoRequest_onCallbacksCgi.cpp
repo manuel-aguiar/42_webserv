@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 10:10:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 10:22:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	A_ProtoRequest::OnRead()
 		}
 	}
 
-	if ((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP))
+	if (((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP)) && !(triggeredFlags & EPOLLIN))
 	{
 		//std::cout << "proto " << m_id << " disabling read event after disconnection" << std::endl;
 		m_eventManager.delEvent(m_CgiReadEvent);
