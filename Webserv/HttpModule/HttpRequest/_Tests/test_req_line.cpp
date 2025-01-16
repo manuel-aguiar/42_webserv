@@ -153,7 +153,6 @@ void testRequestLineParsing() {
                 "Host: localhost\r\n\r\n";
 
             printRequest("GET", "/index.html", "HTTP/1.1", "Host: localhost");
-            std::cout << "  Note: Request contains multiple spaces between components\n";
 
             HttpRequest request;
             int status = request.parse(raw_request);
@@ -210,6 +209,72 @@ void testRequestLineParsing() {
             const std::string raw_request = "\r\n\r\n";
 
             printRequest("(empty)", "(empty)", "(empty)", "(empty)");
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            if (status != RequestStatus::BAD_REQUEST)
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+
+        std::cout << "\n─────────────────────────────────────────\n" << std::endl;
+    }
+
+    {
+        std::cout << "  Test9: URI with encoded characters (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /search%20path/file%2B1.html?name=%4A%6F%68%6E&title=Hello%20World%21 HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
+
+            printRequest("GET", "/search%20path/file%2B1.html?name=%4A%6F%68%6E&title=Hello%20World%21", "HTTP/1.1", "Host: localhost");
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            if (status != RequestStatus::OK)
+                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+
+            const std::map<std::string, std::string>& components = request.getUriComponents();
+
+            // print all components
+            for (std::map<std::string, std::string>::const_iterator it = components.begin(); it != components.end(); ++it) {
+                std::cout << "Component: " << it->first << ", Value: " << it->second << std::endl;
+            }
+
+            // Test path decoding
+            if (components.find("path") == components.end() || components.at("path") != "/search path/file+1.html")
+                throw std::runtime_error("Expected decoded path '/search path/file+1.html', got: " + components.at("path"));
+
+            // Test query parameter decoding
+            if (components.find("name") == components.end() || components.at("name") != "John")
+                throw std::runtime_error("Expected decoded name 'John', got: " + components.at("name"));
+
+            if (components.find("title") == components.end() || components.at("title") != "Hello World!")
+                throw std::runtime_error("Expected decoded title 'Hello World!', got: " + components.at("title"));
+
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+
+        std::cout << "\n─────────────────────────────────────────\n" << std::endl;
+    }
+
+    {
+        std::cout << "  Test10: URI with invalid encoding (expected: BAD_REQUEST):\n";
+        try {
+            const std::string raw_request =
+                "GET /test%2path?param=%XX HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
+
+            printRequest("GET", "/test%2path?param=%XX", "HTTP/1.1", "Host: localhost");
 
             HttpRequest request;
             int status = request.parse(raw_request);

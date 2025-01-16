@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/16 23:15:28 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/18 13:04:40 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <string>
 # include <map>
 # include <set>
+# include <iostream>
 
 // Forward declarations
 class HttpConnection;

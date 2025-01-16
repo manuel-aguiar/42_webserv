@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 21:15:00 by rphuyal           #+#    #+#             */
-/*   Updated: 2025/01/16 22:26:46 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/18 13:10:49 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int hexToInt(char c)
     return -1;
 }
 
+// not confident
 std::string httpURIDecoder(const std::string& encoded)
 {
     std::string decodedString;
@@ -55,36 +56,45 @@ std::string httpURIDecoder(const std::string& encoded)
 // URI parsing utilities
 void parseUri(const std::string& uri, std::map<std::string, std::string>& components)
 {
-    size_t query_start = uri.find('?');
+    size_t pathLength = uri.find('?');
 
     // path can be encoded
-    components["path"] = httpURIDecoder(uri.substr(0, query_start));
+    components["path"] = httpURIDecoder(uri.substr(0, pathLength));
 
-    if (query_start == std::string::npos)
+    if (pathLength == std::string::npos)
         return;
 
-    std::string query = uri.substr(query_start + 1);
-
+    size_t equalPos;
+    size_t ampPos;
+    size_t fragPos;
+    size_t valueLength;
     size_t start = 0;
-    while (start < query.length()) {
-        size_t equals = query.find('=', start);
-        size_t amp = query.find('&', start);
+    std::string query = uri.substr(pathLength + 1);
 
-        if (equals == std::string::npos)
+    while (start < query.length()) {
+        equalPos = query.find('=', start);
+        ampPos = query.find('&', start);
+        fragPos = query.find('#', start);
+
+        if (equalPos == std::string::npos)
             break;
 
         // query keys can be encoded
-        std::string key = httpURIDecoder(query.substr(start, equals - start));
+        std::string key = httpURIDecoder(query.substr(start, equalPos - start));
 
-        // query values can also be encoded
-        size_t value_length = amp == std::string::npos ? std::string::npos : amp - equals - 1;
-        std::string value = httpURIDecoder(query.substr(equals + 1, value_length));
+        // value until the next delimiter, & or #
+        valueLength = (ampPos < fragPos ? ampPos : fragPos) - equalPos - 1;
+        std::string value = httpURIDecoder(query.substr(equalPos + 1, valueLength));
         components[key] = value;
 
-        if (amp == std::string::npos)
+        // if the next delimiter is #, break, we don't care about the fragments
+        if (fragPos < ampPos)
             break;
 
-        start = amp + 1;
+        if (ampPos == std::string::npos || fragPos == std::string::npos)
+            break;
+
+        start = ampPos + 1;
     }
 
     // get rid of the fragment, if any. server does not need it
@@ -95,20 +105,24 @@ void parseUri(const std::string& uri, std::map<std::string, std::string>& compon
 
 int HttpRequest::mf_parseRequestLine(const std::string& line)
 {
-    size_t first_space = line.find(' ');
-    size_t last_space = line.rfind(' ');
+    size_t firstSpace = line.find(' ');
+    size_t lastSpace = line.rfind(' ');
 
     // this check is important because it ensures that the request line is valid
     // and that it has at least three components
-    if (first_space == std::string::npos || \
-        last_space == std::string::npos || \
-        first_space == last_space)
+    if (firstSpace == std::string::npos || \
+        lastSpace == std::string::npos || \
+        firstSpace == lastSpace)
+        return RequestStatus::BAD_REQUEST;
+
+    // also only one space between components
+    if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
         return RequestStatus::BAD_REQUEST;
 
     // components, delimited by spaces (As per HTTP/1.1 specification)
-    m_method = line.substr(0, first_space);
-    m_uri = line.substr(first_space + 1, last_space - first_space - 1);
-    m_httpVersion = line.substr(last_space + 1);
+    m_method = line.substr(0, firstSpace);
+    m_uri = line.substr(firstSpace + 1, lastSpace - firstSpace - 1);
+    m_httpVersion = line.substr(lastSpace + 1);
 
     // accepting only valid components
     if (ALLOWED_METHODS.find(m_method) == ALLOWED_METHODS.end())
