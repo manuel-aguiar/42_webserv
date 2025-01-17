@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 17:50:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:16:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
 	from an event handler (Callback).
 */
-void	CgiModule::enqueueRequest(CgiRequestData& request)
+void	CgiModule::enqueueRequest(CgiRequestData& request, bool isCalledFromEventLoop)
 {
 	InternalCgiWorker*						worker;	
 	InternalCgiRequestData*					requestData;
@@ -69,7 +69,7 @@ void	CgiModule::enqueueRequest(CgiRequestData& request)
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	
-	mf_execute(*worker, *requestData, false);
+	mf_execute(*worker, *requestData, isCalledFromEventLoop);
 }
 
 /*
@@ -121,7 +121,7 @@ int		CgiModule::processRequests()
 
 	This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
 */
-void	CgiModule::finishRequest(CgiRequestData& request)
+void	CgiModule::finishRequest(CgiRequestData& request, bool isCalledFromEventLoop)
 {
 	InternalCgiRequestData*						requestData;
 	InternalCgiRequestData::t_CgiRequestState	state;
@@ -134,7 +134,7 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
 			mf_recycleRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
-			mf_cancelAndRecycle(*requestData); break ;
+			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
 		default:

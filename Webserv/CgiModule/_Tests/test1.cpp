@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 17:57:26 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:16:55 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int TestPart1(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 
 		//event loop
@@ -197,7 +197,7 @@ int TestPart1(int testNumber)
 		// false, we will cancel
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 		::usleep(250000); // 0.25ms
 
@@ -276,7 +276,7 @@ int TestPart1(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 
 		//event loop
@@ -369,7 +369,7 @@ int TestPart1(int testNumber)
 		char pipeDrain[1024];
 		/////////////////
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 
 		//event loop
@@ -451,7 +451,7 @@ int TestPart1(int testNumber)
 		
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 		//event loop
 		while (1)

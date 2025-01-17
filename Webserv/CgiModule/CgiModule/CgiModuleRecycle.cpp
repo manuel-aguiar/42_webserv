@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 09:50:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 18:02:17 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:16:03 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,12 @@ void		CgiModule::mf_recycleTimeoutFailure(InternalCgiWorker& worker)
 	mf_recycleExecutionUnit(worker, false, E_CGI_ON_ERROR_TIMEOUT);
 }
 
-void	CgiModule::mf_cancelAndRecycle(InternalCgiRequestData& data)
+void	CgiModule::mf_cancelAndRecycle(InternalCgiRequestData& data, bool markFdsAsStale)
 {
 	InternalCgiWorker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	mf_recycleExecutionUnit(*worker, true, E_CGI_ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(*worker, markFdsAsStale, E_CGI_ON_ERROR_RUNTIME);
 }
 
 void		CgiModule::mf_recycleExecutionUnit(InternalCgiWorker& worker, bool markFdsAsStale, e_CgiCallback callUser)

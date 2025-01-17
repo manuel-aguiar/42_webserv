@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 18:02:07 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:15:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class CgiModule
 
 		// request interaction
 		CgiRequestData*							acquireRequestData();
-		void									enqueueRequest(CgiRequestData& data);
-		void									finishRequest(CgiRequestData& data);
+		void									enqueueRequest(CgiRequestData& data, bool isCalledFromEventLoop);
+		void									finishRequest(CgiRequestData& data, bool isCalledFromEventLoop);
 
 		// processing
 		int										processRequests();
@@ -102,7 +102,7 @@ class CgiModule
 		void										mf_recycleStartupFailure(InternalCgiWorker& worker, bool markFdsAsStale);
 		void										mf_recycleTimeoutFailure(InternalCgiWorker& worker);
 		void										mf_recycleExecutionUnit(InternalCgiWorker& worker, bool markFdsAsStale, e_CgiCallback callUser);
-		void										mf_cancelAndRecycle(InternalCgiRequestData& data);
+		void										mf_cancelAndRecycle(InternalCgiRequestData& data, bool markFdsAsStale);
 		
 		void										mf_recycleWorker(InternalCgiWorker& worker, bool markFdsAsStale);
 		void										mf_recycleRequestData(InternalCgiRequestData& data);

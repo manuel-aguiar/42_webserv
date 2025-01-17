@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 17:14:02 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:17:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int TestPart2(int testNumber)
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData);
+		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
 
 		//event loop
 		while (1)
