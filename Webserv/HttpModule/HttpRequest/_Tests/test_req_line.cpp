@@ -170,7 +170,42 @@ void testRequestLineParsing() {
     }
 
     {
-        std::cout << "  Test7: URI with query and fragment (expected: OK):\n";
+        std::cout << "  Test7: URI with no value in query (expected: OK):\n";
+        try {
+            const std::string raw_request =
+                "GET /search?q=&r=v HTTP/1.1\r\n"
+                "Host: localhost\r\n\r\n";
+
+            printRequest("GET", "/search?q=&r=v", "HTTP/1.1", "Host: localhost");
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            if (status != RequestStatus::OK)
+                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+            if (request.getUri() != "/search?q=&r=v")
+                throw std::runtime_error("Expected URI /search?q=&r=v, got: " + request.getUri());
+
+            std::map<std::string, std::string> components = request.getUriComponents();
+
+            if (components.find("path") == components.end() || components.at("path") != "/search")
+                throw std::runtime_error("Expected path /search, got: " + components.at("path"));
+            if (components.find("q") == components.end() || components.at("q") != "")
+                throw std::runtime_error("Expected q=, got: " + components.at("q"));
+            if (components.find("r") == components.end() || components.at("r") != "v")
+                throw std::runtime_error("Expected r=v, got: " + components.at("r"));
+
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+
+        std::cout << "\n─────────────────────────────────────────\n" << std::endl;
+    }
+
+    {
+        std::cout << "  Test8: URI with query and fragment (expected: OK):\n";
         try {
             const std::string raw_request =
                 "GET /search?q=test&page=1#section1 HTTP/1.1\r\n"
@@ -204,7 +239,7 @@ void testRequestLineParsing() {
     }
 
     {
-        std::cout << "  Test8: Empty request line (expected: BAD_REQUEST):\n";
+        std::cout << "  Test9: Empty request line (expected: BAD_REQUEST):\n";
         try {
             const std::string raw_request = "\r\n\r\n";
 
@@ -226,7 +261,7 @@ void testRequestLineParsing() {
     }
 
     {
-        std::cout << "  Test9: URI with encoded characters (expected: OK):\n";
+        std::cout << "  Test10: URI with encoded characters (expected: OK):\n";
         try {
             const std::string raw_request =
                 "GET /search%20path/file%2B1.html?name=%4A%6F%68%6E&title=Hello%20World%21 HTTP/1.1\r\n"
@@ -241,11 +276,6 @@ void testRequestLineParsing() {
                 throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
 
             const std::map<std::string, std::string>& components = request.getUriComponents();
-
-            // print all components
-            for (std::map<std::string, std::string>::const_iterator it = components.begin(); it != components.end(); ++it) {
-                std::cout << "Component: " << it->first << ", Value: " << it->second << std::endl;
-            }
 
             // Test path decoding
             if (components.find("path") == components.end() || components.at("path") != "/search path/file+1.html")
@@ -268,7 +298,7 @@ void testRequestLineParsing() {
     }
 
     {
-        std::cout << "  Test10: URI with invalid encoding (expected: BAD_REQUEST):\n";
+        std::cout << "  Test11: URI with invalid encoding (expected: BAD_REQUEST):\n";
         try {
             const std::string raw_request =
                 "GET /test%2path?param=%XX HTTP/1.1\r\n"

@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/18 13:04:40 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/18 14:27:59 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,10 @@ class HttpRequest {
         // Prevent copying
         HttpRequest(const HttpRequest&);
         HttpRequest& operator=(const HttpRequest&);
+
+        // Helper functions for parsing
+        int mf_parseUriComponents(const std::string& uri);
+        std::string mf_decodeUri(const std::string& encoded, bool strict = true) const;
 };
 
 #endif

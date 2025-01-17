@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/16 21:15:00 by rphuyal           #+#    #+#             */
-/*   Updated: 2025/01/18 13:10:49 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/18 14:37:31 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,48 +26,54 @@ static int hexToInt(char c)
 }
 
 // not confident
-std::string httpURIDecoder(const std::string& encoded)
+std::string HttpRequest::mf_decodeUri(const std::string& encoded, bool strict) const
 {
     std::string decodedString;
 
     for (size_t i = 0; i < encoded.length(); ++i) {
         if (encoded[i] == '%') {
             if (i + 2 >= encoded.length())
-                throw HttpRequest::EncodingException("Invalid URL encoding");
+                throw EncodingException("Invalid URL encoding");
 
+            // not confident
             int hi = hexToInt(encoded[i + 1]);
             int lo = hexToInt(encoded[i + 2]);
             if (hi == -1 || lo == -1)
-                throw HttpRequest::EncodingException("Invalid URL encoding");
+                throw EncodingException("Invalid URL encoding");
 
             decodedString += static_cast<char>((hi << 4) | lo);
             i += 2;
+            continue;
         }
-        else if (encoded[i] == '+') {
+
+        if (strict && encoded[i] == '+') {
             decodedString += ' ';
+            continue;
         }
-        else {
-            decodedString += encoded[i];
-        }
+
+        decodedString += encoded[i];
     }
     return decodedString;
 }
 
 // URI parsing utilities
-void parseUri(const std::string& uri, std::map<std::string, std::string>& components)
+int HttpRequest::mf_parseUriComponents(const std::string& uri)
 {
     size_t pathLength = uri.find('?');
 
-    // path can be encoded
-    components["path"] = httpURIDecoder(uri.substr(0, pathLength));
+    // Parse path component
+    m_uriComponents["path"] = mf_decodeUri(uri.substr(0, pathLength), false);
 
     if (pathLength == std::string::npos)
-        return;
+        return RequestStatus::OK;
 
     size_t equalPos;
     size_t ampPos;
     size_t fragPos;
     size_t valueLength;
+    std::string key;
+    std::string value;
+
     size_t start = 0;
     std::string query = uri.substr(pathLength + 1);
 
@@ -76,22 +82,14 @@ void parseUri(const std::string& uri, std::map<std::string, std::string>& compon
         ampPos = query.find('&', start);
         fragPos = query.find('#', start);
 
-        if (equalPos == std::string::npos)
-            break;
-
         // query keys can be encoded
-        std::string key = httpURIDecoder(query.substr(start, equalPos - start));
+        key = mf_decodeUri(query.substr(start, equalPos - start));
+        valueLength = (ampPos < fragPos ? ampPos : fragPos) - equalPos - 1; // until & or #
+        value = mf_decodeUri(query.substr(equalPos + 1, valueLength));
 
-        // value until the next delimiter, & or #
-        valueLength = (ampPos < fragPos ? ampPos : fragPos) - equalPos - 1;
-        std::string value = httpURIDecoder(query.substr(equalPos + 1, valueLength));
-        components[key] = value;
+        m_uriComponents[key] = value;
 
-        // if the next delimiter is #, break, we don't care about the fragments
-        if (fragPos < ampPos)
-            break;
-
-        if (ampPos == std::string::npos || fragPos == std::string::npos)
+        if (ampPos == std::string::npos)
             break;
 
         start = ampPos + 1;
@@ -100,47 +98,47 @@ void parseUri(const std::string& uri, std::map<std::string, std::string>& compon
     // get rid of the fragment, if any. server does not need it
     size_t fragment_start = uri.find('#');
     if (fragment_start != std::string::npos)
-        components["path"] = components["path"].substr(0, fragment_start);
+        m_uriComponents["path"] = m_uriComponents["path"].substr(0, fragment_start);
+
+    return RequestStatus::OK;
 }
 
 int HttpRequest::mf_parseRequestLine(const std::string& line)
 {
-    size_t firstSpace = line.find(' ');
-    size_t lastSpace = line.rfind(' ');
-
-    // this check is important because it ensures that the request line is valid
-    // and that it has at least three components
-    if (firstSpace == std::string::npos || \
-        lastSpace == std::string::npos || \
-        firstSpace == lastSpace)
-        return RequestStatus::BAD_REQUEST;
-
-    // also only one space between components
-    if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
-        return RequestStatus::BAD_REQUEST;
-
-    // components, delimited by spaces (As per HTTP/1.1 specification)
-    m_method = line.substr(0, firstSpace);
-    m_uri = line.substr(firstSpace + 1, lastSpace - firstSpace - 1);
-    m_httpVersion = line.substr(lastSpace + 1);
-
-    // accepting only valid components
-    if (ALLOWED_METHODS.find(m_method) == ALLOWED_METHODS.end())
-        return RequestStatus::METHOD_NOT_ALLOWED;
-
-    if (m_uri.length() > MAX_URI_LENGTH)
-        return RequestStatus::URI_TOO_LONG;
-
-    if (m_httpVersion != "HTTP/1.1")
-        return RequestStatus::BAD_REQUEST;
-
     try {
-        // decode the URI
-        parseUri(m_uri, m_uriComponents);
+        size_t firstSpace = line.find(' ');
+        size_t lastSpace = line.rfind(' ');
+
+        // this check is important because it ensures that the request line is valid
+        // and that it has at least three components
+        if (firstSpace == std::string::npos || \
+            lastSpace == std::string::npos || \
+            firstSpace == lastSpace)
+            return RequestStatus::BAD_REQUEST;
+
+        // also only one space between components
+        if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
+            return RequestStatus::BAD_REQUEST;
+
+        m_method = line.substr(0, firstSpace);
+        m_uri = mf_decodeUri(line.substr(firstSpace + 1, lastSpace - firstSpace - 1), false);
+        m_httpVersion = line.substr(lastSpace + 1);
+
+        if (ALLOWED_METHODS.find(m_method) == ALLOWED_METHODS.end())
+            return RequestStatus::METHOD_NOT_ALLOWED;
+
+        if (m_uri.length() > MAX_URI_LENGTH)
+            return RequestStatus::URI_TOO_LONG;
+
+        if (m_httpVersion != "HTTP/1.1")
+            return RequestStatus::BAD_REQUEST;
+
+        return mf_parseUriComponents(m_uri);
     }
-    catch (const HttpRequest::EncodingException& e) {
+    catch (const EncodingException& e) {
         return RequestStatus::BAD_REQUEST;
     }
-
-    return RequestStatus::OK;
+    catch (const std::exception& e) {
+        return RequestStatus::INTERNAL_ERROR;
+    }
 }

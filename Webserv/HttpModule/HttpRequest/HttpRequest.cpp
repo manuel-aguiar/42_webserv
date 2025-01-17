@@ -6,7 +6,7 @@
 /*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:17:20 by codespace         #+#    #+#             */
-/*   Updated: 2025/01/16 22:25:19 by rphuyal          ###   ########.fr       */
+/*   Updated: 2025/01/18 14:43:19 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static std::set<std::string> initAllowedMethods()
     return methods;
 }
 
+// putting all required headers in a set, HTTP 1.1 requires Host in the header
 static std::set<std::string> initRequiredHeaders()
 {
     std::set<std::string> headers;
@@ -29,6 +30,7 @@ static std::set<std::string> initRequiredHeaders()
     return headers;
 }
 
+// putting all for now
 static std::set<std::string> initOptionalHeaders()
 {
     std::set<std::string> headers;
@@ -87,7 +89,7 @@ int HttpRequest::parse(const std::string& rawData)
         if (m_status != RequestStatus::OK)
             return m_status;
 
-        // TODO: check if logic breaks
+        // TODO: check if logic below breaks
         // Parse headers
         size_t headerStart = pos + 2;
         pos = rawData.find("\r\n\r\n", headerStart);
