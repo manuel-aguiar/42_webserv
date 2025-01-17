@@ -1,3 +1,11 @@
+/* *********************************/
+/*                                 */
+/*   http_parse_request_line.cpp   */
+/*   - the request line parser for */
+/*    an incoming http request.    */
+/*                                 */
+/* *********************************/
+
 #include "../HttpRequest.hpp"
 
 

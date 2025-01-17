@@ -1,3 +1,11 @@
+/* *********************************/
+/*                                 */
+/*   HttpRequest.cpp               */
+/*   - implements the HttpRequest  */
+/*    class.                       */
+/*                                 */
+/* *********************************/
+
 #include "HttpRequest.hpp"
 
 HttpRequest::HttpRequest()

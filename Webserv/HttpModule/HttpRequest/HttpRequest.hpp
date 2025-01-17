@@ -1,3 +1,11 @@
+/* *********************************/
+/*                                 */
+/*   HttpRequest.hpp               */
+/*   - defines the HttpRequest      */
+/*    class.                       */
+/*                                 */
+/* *********************************/
+
 #ifndef HTTPREQUEST_HPP
 # define HTTPREQUEST_HPP
 

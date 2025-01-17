@@ -1,3 +1,11 @@
+/* *********************************/
+/*                                 */
+/*   HttpDefinitions.cpp            */
+/*   - a namespace for whole http  */
+/*   module to consume from.       */
+/*                                 */
+/* *********************************/
+
 #include "HttpDefinitions.hpp"
 
 namespace Http
