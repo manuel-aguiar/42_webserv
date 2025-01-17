@@ -1,5 +1,3 @@
-
-
 #ifndef HTTPREQUEST_HPP
 # define HTTPREQUEST_HPP
 
@@ -8,21 +6,11 @@
 # include <map>
 # include <set>
 # include <iostream>
+# include "../HttpDefinitions.hpp"
 
 // Forward declarations
 class HttpConnection;
 class HttpSession;
-
-// Request integrity status codes
-struct RequestStatus {
-    static const int OK = 200;
-    static const int BAD_REQUEST = 400;
-    static const int METHOD_NOT_ALLOWED = 405;
-    static const int URI_TOO_LONG = 414;
-    static const int HEADERS_TOO_LARGE = 431;
-    static const int INTERNAL_ERROR = 500;
-};
-
 
 class HttpRequest {
     public:
@@ -51,13 +39,6 @@ class HttpRequest {
 		};
 
     private:
-        // Static validation sets
-        static const std::set<std::string> ALLOWED_METHODS;
-        static const std::set<std::string> REQUIRED_HEADERS;
-        static const std::set<std::string> OPTIONAL_HEADERS;
-
-        static const size_t MAX_URI_LENGTH = 2048; // standard
-
         // Parsers
         int mf_parseRequestLine(const std::string& line);
         int mf_parseHeaders(const std::string& line);

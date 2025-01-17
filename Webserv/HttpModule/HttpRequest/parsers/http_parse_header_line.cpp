@@ -3,5 +3,5 @@
 int HttpRequest::mf_parseHeaders(const std::string& data)
 {
     (void)data;
-    return RequestStatus::OK;
+    return Http::Status::OK;
 }

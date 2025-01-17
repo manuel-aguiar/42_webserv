@@ -9,8 +9,12 @@
 #ifndef HTTP_DEFINITIONS_HPP
 #define HTTP_DEFINITIONS_HPP
 
+#include <string>
+#include <set>
+
 namespace Http
 {
+    // All http status codes
     namespace Status
     {
         enum
@@ -59,42 +63,27 @@ namespace Http
         };
     }
 
+    // standard values for http 1.1
+    namespace HttpStandard
+    {
+        const size_t MAX_URI_LENGTH = 2048;
+        const size_t MAX_HEADERS_LENGTH = 8192;
+        const size_t MAX_BODY_LENGTH = 1024 * 1024; // 1MB
+        const size_t MAX_CHUNK_SIZE = 1024 * 1024; // 1MB
+        const std::string HTTP_VERSION = "HTTP/1.1"; // Supported http versions
+    }
+
+    // Supported request methods
     namespace AllowedRequestMethods
     {
-        enum
-        {
-            GET,
-            POST,
-            DELETE
-        };
+        const std::set<std::string>& getAllowedMethods();
     }
 
-    namespace HttpVersion
-    {
-        enum
-        {
-            HTTP_1_1
-        };
-    }
-
-    namespace HttpHeaders
-    {
-        enum
-        {
-            CONTENT_TYPE = "Content-Type",
-            CONTENT_LENGTH = "Content-Length",
-            HOST = "Host",
-            USER_AGENT = "User-Agent",
-            ACCEPT = "Accept",
-            ACCEPT_ENCODING = "Accept-Encoding",
-            ACCEPT_LANGUAGE = "Accept-Language",
-            ACCEPT_CHARSET = "Accept-Charset",
-            ACCEPT_DATETIME = "Accept-Datetime",
-            AUTHORIZATION = "Authorization",
-            COOKIE = "Cookie",
-            SET_COOKIE = "Set-Cookie"
-        };
-    }
+    // Supported Headers, un comment when used
+    // namespace AllowedHeaders
+    // {
+    //     const std::set<std::string>& getAllowedHeaders();
+    // }
 }
 
 #endif

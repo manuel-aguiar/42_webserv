@@ -53,7 +53,7 @@ int HttpRequest::mf_parseUriComponents(const std::string& uri)
     m_uriComponents["path"] = mf_decodeUri(uri.substr(0, pathLength), false);
 
     if (pathLength == std::string::npos)
-        return RequestStatus::OK;
+        return Http::Status::OK;
 
     size_t equalPos;
     size_t ampPos;
@@ -88,7 +88,7 @@ int HttpRequest::mf_parseUriComponents(const std::string& uri)
     if (fragment_start != std::string::npos)
         m_uriComponents["path"] = m_uriComponents["path"].substr(0, fragment_start);
 
-    return RequestStatus::OK;
+    return Http::Status::OK;
 }
 
 int HttpRequest::mf_parseRequestLine(const std::string& line)
@@ -102,31 +102,33 @@ int HttpRequest::mf_parseRequestLine(const std::string& line)
         if (firstSpace == std::string::npos || \
             lastSpace == std::string::npos || \
             firstSpace == lastSpace)
-            return RequestStatus::BAD_REQUEST;
+            return Http::Status::BAD_REQUEST;
 
         // also only one space between components
         if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
-            return RequestStatus::BAD_REQUEST;
+            return Http::Status::BAD_REQUEST;
 
         m_method = line.substr(0, firstSpace);
         m_uri = mf_decodeUri(line.substr(firstSpace + 1, lastSpace - firstSpace - 1), false);
         m_httpVersion = line.substr(lastSpace + 1);
 
-        if (ALLOWED_METHODS.find(m_method) == ALLOWED_METHODS.end())
-            return RequestStatus::METHOD_NOT_ALLOWED;
+        // Check if method is allowed using HttpDefinitions
+        const std::set<std::string>& allowedMethods = Http::AllowedRequestMethods::getAllowedMethods();
+        if (allowedMethods.find(m_method) == allowedMethods.end())
+            return Http::Status::METHOD_NOT_ALLOWED;
 
-        if (m_uri.length() > MAX_URI_LENGTH)
-            return RequestStatus::URI_TOO_LONG;
+        if (m_uri.length() > Http::HttpStandard::MAX_URI_LENGTH)
+            return Http::Status::URI_TOO_LONG;
 
-        if (m_httpVersion != "HTTP/1.1")
-            return RequestStatus::BAD_REQUEST;
+        if (m_httpVersion != Http::HttpStandard::HTTP_VERSION)
+            return Http::Status::BAD_REQUEST;
 
         return mf_parseUriComponents(m_uri);
     }
     catch (const EncodingException& e) {
-        return RequestStatus::BAD_REQUEST;
+        return Http::Status::BAD_REQUEST;
     }
     catch (const std::exception& e) {
-        return RequestStatus::INTERNAL_ERROR;
+        return Http::Status::INTERNAL_ERROR;
     }
 }
