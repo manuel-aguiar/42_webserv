@@ -34,51 +34,34 @@ class Nginx_PoolAllocator
 		{
 			typedef Nginx_PoolAllocator<U, MemoryPool> other;
 		};
-<<<<<<< HEAD:Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_PoolAllocator.tpp
-		Nginx_PoolAllocator() : m_memoryPool(NULL) {std::cout << "default constructor" << std::endl;}
-		Nginx_PoolAllocator(Nginx_MemoryPool* pool) : m_memoryPool(pool) {std::cout << "allcoator inituialzed: " << pool << std::endl;}
-		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : m_memoryPool(copy.m_memoryPool) {(void)copy;}
-		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& assign) { m_memoryPool = assign.m_memoryPool;}
-=======
 
-		Nginx_PoolAllocator(MemoryPool& pool) : 
+		Nginx_PoolAllocator(MemoryPool& pool) :
 			m_memoryPool(&pool) {}
 
-		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) : 
+		Nginx_PoolAllocator(const Nginx_PoolAllocator& copy) :
 			m_memoryPool(copy.m_memoryPool) {(void)copy;}
 
 		Nginx_PoolAllocator& operator=(const Nginx_PoolAllocator& copy)
 		{
-			m_memoryPool = copy.m_memoryPool; 
+			m_memoryPool = copy.m_memoryPool;
 			return *this;
 		}
 		~Nginx_PoolAllocator() {};
->>>>>>> main:Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.tpp
 
 		template <typename U>
-		Nginx_PoolAllocator(const Nginx_PoolAllocator<U, MemoryPool>& other) : 
+		Nginx_PoolAllocator(const Nginx_PoolAllocator<U, MemoryPool>& other) :
 			m_memoryPool(&other.getMemPool()) {(void)other;}
 
 		pointer allocate(size_type n, const void* hint = 0)
 		{
-<<<<<<< HEAD:Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_PoolAllocator.tpp
-			assert(m_memoryPool != NULL);
 			(void)hint;
-			if (n == 0)
-				return 0;
-			if (n > std::numeric_limits<size_type>::max() / sizeof(T))
-				throw std::bad_alloc();
-			return static_cast<pointer>(m_memoryPool->allocate(n * sizeof(T), sizeof(T) < sizeof(size_t) ? sizeof(T) : sizeof(size_t)));
-=======
-			(void)hint;
-			
+
 			int 	units;
 			size_t 	poolElemSize;
 
 			poolElemSize = m_memoryPool->getElementSize();
 			units = (poolElemSize < sizeof(T) ? sizeof(T) / poolElemSize : 1);
 			return (reinterpret_cast<pointer>(m_memoryPool->allocate(n * units)));
->>>>>>> main:Toolkit/MemoryPool/Nginx_PoolAllocator/Nginx_PoolAllocator.tpp
 		}
 
 		MemoryPool& getMemPool() const {return *m_memoryPool;}
@@ -109,7 +92,7 @@ class Nginx_PoolAllocator
 
 	private:
 		MemoryPool*		m_memoryPool;
-		
+
 };
 
 

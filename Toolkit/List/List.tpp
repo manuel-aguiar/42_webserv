@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   List.tpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 10:43:01 by manuel            #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/12/03 10:33:26 by mmaria-d         ###   ########.fr       */
-=======
-/*   Updated: 2024/12/27 11:46:31 by mmaria-d         ###   ########.fr       */
->>>>>>> main
+/*   Updated: 2025/01/18 15:22:22 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +93,7 @@ class List
 			T 		m_data;
 		};
 
-	
+
 	typedef typename Allocator::template rebind<DataNode>::other NodeAllocator;
 
 	public:
@@ -105,7 +101,7 @@ class List
 		List(const NodeAllocator& alloc = Allocator())
 			: m_size(0), m_header(), m_nodeAllocator(alloc)
 		{
-			
+
 		}
 
 
@@ -189,7 +185,7 @@ class List
 		void	push_front(const T& data)
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
-			
+
 			new (node) DataNode(data);
 			mf_insertBefore(m_header.m_next, static_cast<BaseNode*>(node));
 			++m_size;
@@ -216,7 +212,7 @@ class List
 			mf_deallocate(node);
 			--m_size;
 		}
-		
+
 		void 	emplace_back()
 		{
 			DataNode* node = m_nodeAllocator.allocate(1);
@@ -477,7 +473,7 @@ class List
 
 			assert(mf_iterIsInList(target));
 			assert(m_nodeAllocator == other.m_nodeAllocator);   //force same allocator because of memory ownership, like same underlying memory pool
-			
+
 			if (other.m_size == 0)
 				return ;
 
@@ -494,7 +490,7 @@ class List
 			other.m_header.m_next = &other.m_header;
 			other.m_header.m_prev = &other.m_header;
 		}
-		
+
 		void	erase(iterator pos)
 		{
 			BaseNode* target = pos.getPtr();
@@ -504,7 +500,7 @@ class List
 			mf_deallocate(target);
 			--m_size;
 		}
-		
+
 		void	splice(iterator pos, List& other, iterator itOther)
 		{
 			BaseNode* thisTgt = pos.getPtr();
@@ -512,7 +508,7 @@ class List
 
 			assert(mf_iterIsInList(thisTgt));
 			assert(other.mf_iterIsInList(otherTgt));
-			assert(m_nodeAllocator == other.m_nodeAllocator);	
+			assert(m_nodeAllocator == other.m_nodeAllocator);
 
 			if (other.m_size == 0)
 				return ;
@@ -535,7 +531,7 @@ class List
 			assert(other.mf_iterIsInList(end));
 			assert(other.mf_canReach(start, end));
 			assert(m_nodeAllocator == other.m_nodeAllocator);
-			
+
 			if (other.m_size == 0)
 				return ;
 
