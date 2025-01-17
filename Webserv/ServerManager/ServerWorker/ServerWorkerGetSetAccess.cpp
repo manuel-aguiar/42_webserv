@@ -3,14 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   ServerWorkerGetSetAccess.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:05:45 by manuel            #+#    #+#             */
-/*   Updated: 2024/12/03 10:00:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 14:59:21 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "ServerWorker.hpp"
+
+
+
+// getters
+
+int							ServerWorker::getID() const
+{
+	return (m_myID);
+}
+
+const ServerManager&		ServerWorker::getServerManager() const
+{
+	return (m_serverManager);
+}
+
+const CgiManager&			ServerWorker::getCgiManager() const
+{
+	return (m_cgiManager);
+}
+
+const ConnectionManager&	ServerWorker::getConnManager() const
+{
+	return (m_connManager);
+}
+
+const EventManager&			ServerWorker::getEventManager() const
+{
+	return (m_eventManager);
+}
+
+const Nginx_MemoryPool&		ServerWorker::getMemPool() const
+{
+	return (*m_memPool);
+}
+
 
 //accessors
 ServerManager&				ServerWorker::accessServerManager()
@@ -33,29 +68,12 @@ EventManager&				ServerWorker::accessEventManager()
 	return (m_eventManager);
 }
 
-DynArray<ListeningSocket>&		ServerWorker::accessListeners()
+DynArray<ListeningSocket, Nginx_PoolAllocator<ListeningSocket> >&		ServerWorker::accessListeners()
 {
 	return (m_listeners);
 }
 
-// getters
-
-const ServerManager&		ServerWorker::getServerManager() const
+Nginx_MemoryPool&			ServerWorker::accessMemPool()
 {
-	return (m_serverManager);
-}
-
-const CgiManager&			ServerWorker::getCgiManager() const
-{
-	return (m_cgiManager);
-}
-
-const ConnectionManager&	ServerWorker::getConnManager() const
-{
-	return (m_connManager);
-}
-
-const EventManager&			ServerWorker::getEventManager() const
-{
-	return (m_eventManager);
+	return (*m_memPool);
 }

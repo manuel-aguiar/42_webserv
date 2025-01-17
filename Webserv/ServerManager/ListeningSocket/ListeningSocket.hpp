@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocket.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:50:33 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/03 10:02:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 14:49:20 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,8 @@ class Globals;
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ServerWorker& worker, Globals* globals);
+		ListeningSocket(ServerWorker& worker, const t_sockaddr& listenAddr, Globals* globals);
 		~ListeningSocket();
-		ListeningSocket(const ListeningSocket& copy);
-		ListeningSocket& operator=(const ListeningSocket& assign);
 
 		// typedefs
 		typedef void 				(*t_func_initProtoConn)(Connection*);
@@ -53,16 +51,16 @@ class ListeningSocket
 
 
 		// getters
-		const ServerWorker&			getWorker()		const;
-		t_socket					getSocket()		const;
-		int							getSockType()	const;
-		int							getProtocol()	const;
-		const t_sockaddr*			getAddr()		const;
-		t_socklen					getAddrlen()	const;
-		t_port						getPort()		const;
-		int							getBacklog()	const;
-		const Event&				getEvent()		const;
-		
+		const ServerWorker&			getWorker()						const;
+		t_socket					getSocket()						const;
+		int							getSockType()					const;
+		int							getProtocol()					const;
+		const t_sockaddr*			getAddr()						const;
+		t_socklen					getAddrlen()					const;
+		t_port						getPort()						const;
+		int							getBacklog()					const;
+		const Event&				getEvent()						const;
+
 		// setters
 		void						setSocket						(const t_socket sockfd);
 		void						setSockType						(const int socktype);
@@ -101,6 +99,8 @@ class ListeningSocket
 		Globals*                    m_globals;
 
 		ListeningSocket();
+		ListeningSocket(const ListeningSocket& copy);
+		ListeningSocket& operator=(const ListeningSocket& assign);
 
 
 		void    mf_close_accepted_connection(Connection* connection);

@@ -6,12 +6,15 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/12/02 11:27:41 by mmaria-d         ###   ########.fr       */
+=======
+/*   Updated: 2025/01/13 00:55:18 by mmaria-d         ###   ########.fr       */
+>>>>>>> main
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WEBSERVER_DEFINITIONS_H
-
 # define WEBSERVER_DEFINITIONS_H
 
 # include <stdint.h>
@@ -19,13 +22,24 @@
 # include <sys/socket.h>
 # include <sys/un.h>
 # include <netdb.h>
-# include <sys/epoll.h>
+
+# ifdef __linux__
+#  include <sys/epoll.h>
+# endif
+
+# ifdef __APPLE__
+#  include <sys/event.h>
+# endif
+
 # include <cerrno>
 # include <signal.h>
 # include <cassert>
 
+<<<<<<< HEAD
 //own headers
 # include "../../Toolkit/Toolkit.h"
+=======
+>>>>>>> main
 
 // definitions for everyone to use
 typedef unsigned char								t_byte;
@@ -67,5 +81,8 @@ typedef union
 
 # define MAX_EPOLL_EVENTS 64
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 #endif

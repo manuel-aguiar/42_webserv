@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ListeningSocketGetSetAccess.cpp                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 10:33:06 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/29 10:33:24 by manuel           ###   ########.fr       */
+/*   Updated: 2025/01/18 14:58:00 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

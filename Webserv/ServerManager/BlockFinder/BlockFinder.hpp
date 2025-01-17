@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   BlockFinder.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manuel <manuel@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 09:09:59 by manuel            #+#    #+#             */
-/*   Updated: 2024/11/22 10:34:19 by manuel           ###   ########.fr       */
+/*   Updated: 2025/01/18 14:50:03 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BLOCKFINDER_HPP
-
 # define BLOCKFINDER_HPP
 
 // our headers
@@ -20,59 +19,60 @@
 // C++ headers
 # include <string>
 
-class ServerConfig;
-class ServerBlocks;
+// TODO: remove temporary declerations
+class ServerConfig {
+	public:
+		ServerConfig() {}
+		~ServerConfig() {}
+};
 
-class BlockFinder
-{
+class ServerBlocks {
+	public:
+		ServerBlocks(const std::string& id) : m_id(id) {}
+		~ServerBlocks() {}
+
+		ServerBlocks&	operator=(const ServerBlocks& other) {
+			if (this == &other)
+				return (*this);
+
+			return (*this);
+		}
+
+		// used for testing
+		std::string		id() const { return (m_id); }
+
+	private:
+		std::string		m_id;
+};
+// TODO: remove temporary declerations until here
+
+
+class BlockFinder {
 	public:
 		BlockFinder(const ServerConfig& config);
 		~BlockFinder();
 
-		void			addServerBlock(const ServerBlocks& block, t_ip_str ip, t_port_str port, t_server_name server_name);
-		ServerBlocks*	findServerBlock(t_ip_str ip, t_port_str port, t_server_name server_name);
-
-		void    findBlocks();
+		void				addServerBlock(const ServerBlocks& block, const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		const ServerBlocks*	findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		bool				hasServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		void				removeServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
 
 	private:
+		const ServerConfig&			 m_config;
+		const std::string			m_wildcardIp;
+		const std::string			m_wildcardPort;
+		const std::string			m_wildcardServerName;
 
-		/*
-			// here is some structure to map ip/port/host to serverblock
-			// can be a hashtable or a map, or nested map.....
-			// be mindfull that specific IP has precedence over wildcard IP (0.0.0.0).
-			// nginx implements wildcard ports... i think we won't need that
-			// first check a specific ip reference. if exists, check port. if exists, check host.
+		// normalized values
+		std::string					m_normalizedIp;
+		std::string					m_normalizedPort;
+		std::string					m_normalizedServerName;
 
-			we will have, as such, two maps:
+		std::map<std::string, const ServerBlocks*>	m_serverBlocks;
 
-			a specific ip map, whose first level key is the IP.
-
-			a wildcard ip map, whose first level key is a port
-
-			so a possible solution would be something like two maps:
-
-			1) std::map<t_ip_str, std::map<t_port_str, std::map<t_server_name, ServerBlocks* > > >
-			2) std::map<t_port_str, std::map<t_server_name, ServerBlocks* > >
-
-			We would need some default value to specify a wildcard ip..... Maybe std::string can be empty when
-			inserting, or t_ip_str = "0.0.0.0", we could figure that out. Not super memory efficient but hey,
-			if you want memory efficiency don't use c++98, upgrade to at least c++11 or GTFO
-
-			So, when adding to our map structure:
-				check if ip is specific -> insert at map 1
-				check if ip is wildcard -> insert at map 2
-
-			Obviously, the same entry cannot be placed in two maps simultatenously -> defeats the purpose.
-
-
-			When looking up:
-				check specific first-> nested find in map 1), if fails:
-				check wildcard -> nested find in map 2) if fails:
-					return (NULL) -> no server block was found.
-
-
-			If the http interpreter is not able to find a server block, it should return a 404 error.
-	*/
+		std::string			mf_hashedKey(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName) const;
+		void				mf_normalizeDirectives(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		bool				mf_nonEmptyDirective(const std::string& str, const std::string& wildcard) const;
 };
 
 #endif
