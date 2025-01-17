@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 19:06:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:28:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ CgiRequestData*	CgiModule::acquireRequestData()
 */
 void	CgiModule::enqueueRequest(CgiRequestData& request)
 {
+	InternalCgiWorker*						worker;	
 	InternalCgiRequestData*					requestData;
 	unsigned int							timeout;
 
@@ -52,14 +53,23 @@ void	CgiModule::enqueueRequest(CgiRequestData& request)
 
 	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
 
-	timeout = request.getTimeoutMs();
+	timeout = requestData->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
 	timeout = (timeout < CGI_MIN_TIMEOUT) ? CGI_MIN_TIMEOUT : timeout;
 	
 	// tell the requestData where its timer is, in case of premature finish/cancelation
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
-	requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
-	m_executionQueue.push_back(requestData);
+	if (m_availableWorkers.size() == 0)
+	{
+		requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
+		m_executionQueue.push_back(requestData);
+		return ;
+	}
+	worker = m_availableWorkers.back();
+	m_availableWorkers.pop_back();
+	m_busyWorkerCount++;
+	
+	mf_execute(*worker, *requestData);
 }
 
 /*
@@ -81,13 +91,7 @@ void	CgiModule::enqueueRequest(CgiRequestData& request)
 */
 int		CgiModule::processRequests()
 {
-	int nextWait;
-
-	nextWait = mf_finishTimedOut();
-	mf_cleanupFinishedRequests();
-	mf_reloadWorkers();
-
-	return (nextWait);
+	return (mf_finishTimedOut());
 }
 
 /*
@@ -128,9 +132,9 @@ void	CgiModule::finishRequest(CgiRequestData& request)
 	switch (state)
 	{
 		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
-			mf_returnRequestData(*requestData); break ;
+			mf_recycleRequestData(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
-			mf_markRequestForCleanup(*requestData); break ;
+			mf_cancelAndRecycle(*requestData); break ;
 		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
 			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
 		default:
@@ -152,16 +156,18 @@ void	CgiModule::stopAndReset()
 	for (size_t i = 0; i < m_allWorkers.size(); ++i)
 	{
 		data = m_allWorkers[i].accessRequestData();
-		if (!data || data->getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)	
+		if (!data)
 			continue ;
-		mf_markWorkerForCleanup(m_allWorkers[i]);
-		data->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+		mf_cancelAndReturn(*data); break ;
 	}
 	
-	mf_cleanupFinishedRequests();
-
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
-		m_executionQueue[i]->reset();
+	{
+		data = m_executionQueue[i];
+		data->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+		mf_returnRequestData(*data);
+	}
+		
 	m_executionQueue.clear();
 }
 

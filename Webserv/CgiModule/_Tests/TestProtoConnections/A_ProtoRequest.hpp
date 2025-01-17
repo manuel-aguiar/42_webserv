@@ -27,20 +27,19 @@ class CgiModule;
 class A_ProtoRequest
 {
     public:
-		A_ProtoRequest(EventManager& manager, Globals& globals, CgiModule& cgi, int id);
+		A_ProtoRequest(Globals& globals, CgiModule& cgi, int id);
 		~A_ProtoRequest();
 		A_ProtoRequest(const A_ProtoRequest& copy);
 		
 
-		// Callbacks for the event manager
-		void	OnRead();
-		void	onWrite();
-
 		// Callbacks for the CGI Module
-		void   	executeCgi();		//On execute
+		void   	SuccessCgi();		//On execute
 		void	falseStartCgi();	// on error startup
 		void	cancelCgi();		// on error runtime
 		void	timeoutCgi();
+
+		CgiRequestData::t_bytesRead		newCgiRead(int readFd);
+		CgiRequestData::t_bytesWritten	newCgiWrite(int writeFd);
 
 		void	debugPrint() const;
 
@@ -55,19 +54,11 @@ class A_ProtoRequest
 			E_CGI_STATUS_COUNT,
 		};
 
-		//event callbacks
-		static void EventCallbackOnRead(Callback& event);
-		static void EventCallbackOnWrite(Callback& event);
-
 		void	printBufStdout();
 
-		EventManager&	m_eventManager;
 		Globals&		m_globals;
 		CgiModule&		m_cgi;
 		
-		Event 			m_CgiReadEvent;
-		Event 			m_CgiWriteEvent;
-
 		CgiRequestData*	m_CgiRequestData;
 
 		std::string		m_msgBody;
@@ -86,12 +77,15 @@ class A_ProtoRequest_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onExecute(Callback& Callback);
-		static void onErrorStartup(Callback& Callback);
-		static void onErrorRuntime(Callback& callback);
-		static void onErrorTimeOut(Callback& callback);
+		static void onSuccess(CgiRequestData::t_ptr_CgiUser user);
+		static void onErrorStartup(CgiRequestData::t_ptr_CgiUser user);
+		static void onErrorRuntime(CgiRequestData::t_ptr_CgiUser user);
+		static void onErrorTimeOut(CgiRequestData::t_ptr_CgiUser user);
 
-		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(Callback& Callback);
+		static CgiRequestData::t_bytesRead 		onRead(CgiRequestData::t_ptr_CgiUser, int readFd);
+		static CgiRequestData::t_bytesWritten 	onWrite(CgiRequestData::t_ptr_CgiUser callback, int writeFd);
+
+		static void (*Callbacks[E_CGI_CALLBACK_COUNT])(CgiRequestData::t_ptr_CgiUser user);
 };
 
 

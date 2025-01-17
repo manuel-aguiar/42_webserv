@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 16:42:22 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:41:44 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,9 @@ void	CgiModule::addInterpreter(const std::string& extension, const std::string& 
 void	CgiModule::removeInterpreter(const std::string& extension)
 {
 	m_Interpreters.erase(extension);
+}
+
+EventManager&		CgiModule::mf_accessEventManager()
+{
+	return (m_eventManager);
 }

@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/15 12:20:03 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/17 09:53:46 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,11 +35,10 @@ STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressValgrind.cpp
 
 STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressChildren.cpp
 
-COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest_ExpectedOutput.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
+COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/specificTest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest_ExpectedOutput.cpp \
 				\
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
@@ -51,7 +50,10 @@ COMMON_SRCS =   $(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleInternal.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleRecycle.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleReturn.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestDataGetSetAccess.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 19:55:58 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:43:53 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(workers, backlog, timeoutMs, globals);
+		CgiModule cgi(workers, backlog, timeoutMs, eventManager, globals);
 
 		// collects error messages, we can't throw cause we are redirecting stderr
 		std::string FailureMessages;
@@ -245,7 +245,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		for (int i = 0; i < connectionCount; ++i)
 		{
-			requests.emplace_back(eventManager, globals, cgi, i);
+			requests.emplace_back(globals, cgi, i);
 			requests.back().m_CgiRequestData = cgi.acquireRequestData();
 			
 			if (requests.back().m_CgiRequestData == NULL)
@@ -256,23 +256,22 @@ int CgiStressTest::StressTest(int testNumber,
 				nextWait = cgi.processRequests();
 				if (eventManager.getSubscribeCount() != 0)
 					eventManager.ProcessEvents(nextWait);
-				nextWait = cgi.processRequests();
-				if (eventManager.getSubscribeCount() != 0)
-					eventManager.ProcessEvents(nextWait);
 
 				//pipedrain
 				while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 				continue;
 			}
 			
-			requests.back().m_CgiRequestData->setEventManager(eventManager);
 			requests.back().m_CgiRequestData->setTimeoutMs(timeoutMs);
 			
 			// setup callbacks
-			for (size_t j = 0; j < E_CGI_CALLBACK_COUNT; j++)
-				requests.back().m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(j), &requests[i], A_ProtoRequest_CgiGateway::Callbacks[j]);
-			
-
+			requests.back().m_CgiRequestData->setUser(&requests.back());
+			requests.back().m_CgiRequestData->setHandler(E_CGI_ON_SUCCESS, &A_ProtoRequest_CgiGateway::onSuccess);
+			requests.back().m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+			requests.back().m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+			requests.back().m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+			requests.back().m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+			requests.back().m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			
@@ -283,18 +282,14 @@ int CgiStressTest::StressTest(int testNumber,
 			nextWait = cgi.processRequests();
 			if (eventManager.getSubscribeCount() != 0)
 				eventManager.ProcessEvents(nextWait);
-			
-			nextWait = cgi.processRequests();
-			if (eventManager.getSubscribeCount() != 0)
-				eventManager.ProcessEvents(nextWait);
 
+			
 			//pipedrain not to sigpipe the failed interpreters
 			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 
 		}
 
 
-		//event loop
 		//event loop
 		while (1)
 		{
@@ -384,7 +379,6 @@ int CgiStressTest::StressTest(int testNumber,
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
-
 
 	return (testNumber);
 }

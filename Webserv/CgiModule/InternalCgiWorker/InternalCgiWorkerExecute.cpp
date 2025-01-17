@@ -39,7 +39,7 @@ void   CgiModule::InternalCgiWorker::execute()
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleStartupFailure(*this));
     }
 	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
 		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
@@ -49,24 +49,25 @@ void   CgiModule::InternalCgiWorker::execute()
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleStartupFailure(*this));
 	}
 
 	if (!mf_prepareExecve())
-		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_STARTUP));
+		return (m_CgiModule.mf_recycleStartupFailure(*this));
 
-	m_curRequestData->setReadFd(m_ChildToParent[0]);
-	m_curRequestData->setWriteFd(m_ParentToChild[1]);
 	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
+	m_readEvent.setFd(m_ChildToParent[0]);
+	m_writeEvent.setFd(m_ParentToChild[1]);
 
-	m_curRequestData->CallTheUser(E_CGI_ON_EXECUTE);
-	m_curRequestData->accessEventManager()->addEvent(m_EmergencyEvent);
+	m_CgiModule.mf_accessEventManager().addEvent(m_EmergencyEvent);
+	m_CgiModule.mf_accessEventManager().addEvent(m_readEvent);
+	m_CgiModule.mf_accessEventManager().addEvent(m_writeEvent);
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleFailedStart(*this, *m_curRequestData, E_CGI_ON_ERROR_RUNTIME));
+		return (m_CgiModule.mf_recycleStartupFailure(*this));
     }
 	
 
@@ -85,10 +86,8 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 {
 	typedef DynArray<std::pair<t_CgiEnvKey, t_CgiEnvValue> >::const_iterator	t_EnvExtraIter;
 
-	assert(m_curRequestData->accessEventManager() != NULL);
-
 	const t_CgiRequestEnv& 			envRequest = m_curRequestData->getEnvVars();
-	const t_CgiEnvValue*				envBase = m_CgiModule.getBaseEnvKeys();
+	const t_CgiEnvValue*			envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	std::string						temp;
 	

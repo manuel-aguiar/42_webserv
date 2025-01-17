@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 16:27:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 09:52:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,6 @@ void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& da
 	worker.execute();
 }
 
-void	CgiModule::mf_returnWorker(InternalCgiWorker& worker)
-{
-    worker.reset();
-	m_availableWorkers.push_back(&worker);
-	m_busyWorkerCount--;
-}
-
-void	CgiModule::mf_returnRequestData(InternalCgiRequestData& data)
-{	
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	timer;
-
-	timer = data.getMyTimer();
-	if (timer != TimerTracker<Timer, InternalCgiRequestData*>::iterator())
-		m_timerTracker.erase(timer);
-
-	data.reset();
-
-	m_availableRequestData.push_back(&data);
-}
 
 /*
 	Takes all timedout requests, marks them for cleanup (internally force stops the process)
@@ -59,11 +40,16 @@ int	CgiModule::mf_finishTimedOut()
 		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
 		{
 			curRequest = it->second;
-			if (curRequest->getState() == InternalCgiRequestData::E_CGI_STATE_EXECUTING)
+			switch (curRequest->getState())
 			{
-				mf_markRequestForCleanup(*curRequest);
-				curRequest->CallTheUser(E_CGI_ON_ERROR_TIMEOUT);
-			}
+				case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
+					mf_recycleRequestData(*curRequest); break ;
+				case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
+					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
+				case InternalCgiRequestData::E_CGI_STATE_QUEUED:
+					curRequest->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break;
+				default: break ;
+			}		
 		}
 		else
 			break ;
@@ -72,88 +58,4 @@ int	CgiModule::mf_finishTimedOut()
 	if (m_timerTracker.begin() == m_timerTracker.end())
 		return (-1);
 	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());	
-}
-
-void	CgiModule::mf_reloadWorkers()
-{
-	InternalCgiRequestData* 	curRequest;
-	InternalCgiWorker*			worker;
-
-	while (m_availableWorkers.size() > 0)
-	{
-		worker = m_availableWorkers.front();
-		
-		while (m_executionQueue.size() > 0)
-		{
-			curRequest = m_executionQueue.front();
-			
-			if (curRequest->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED)
-			{
-				m_busyWorkerCount++;
-				m_availableWorkers.pop_front();
-				m_executionQueue.pop_front();
-				mf_execute(*worker, *curRequest);
-				break ;
-			}
-			mf_returnRequestData(*curRequest);
-		}
-		if (m_executionQueue.size() == 0)
-			break ;
-	}
-}
-
-void	CgiModule::mf_markWorkerForCleanup(InternalCgiWorker& worker)
-{
-	InternalCgiRequestData*							data;
-	
-	data = worker.accessRequestData();
-	
-	if (data->getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)
-		return ;
-
-	worker.stop();
-	data->setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
-	m_availableWorkers.push_front(&worker);
-}
-
-void	CgiModule::mf_markRequestForCleanup(InternalCgiRequestData& data)
-{
-	InternalCgiWorker*								worker;
-	
-	if (data.getState() == InternalCgiRequestData::E_CGI_STATE_FINISH)
-		return ;
-
-	worker = data.accessExecutor();
-	worker->stop();
-	data.setState(InternalCgiRequestData::E_CGI_STATE_FINISH);
-	m_availableWorkers.push_front(worker);
-}
-
-void	CgiModule::mf_cleanupFinishedRequests()
-{
-	InternalCgiRequestData*						requestData;
-	InternalCgiWorker*							worker;
-	size_t										availWorkers;	
-
-	availWorkers = m_availableWorkers.size();
-	for (size_t i = 0; i < availWorkers; i++)
-	{
-		worker = m_availableWorkers[0];
-		requestData = worker->accessRequestData();
-		if (!requestData)
-			break ;
-		m_availableWorkers.pop_front();
-		mf_returnWorker(*worker);
-		mf_returnRequestData(*requestData);
-	}
-}
-
-void		CgiModule::mf_recycleFailedStart(InternalCgiWorker& worker, InternalCgiRequestData& data, e_CgiCallback callUser)
-{
-	Callback 	callback = data.accessCallback(callUser);
-
-	mf_returnWorker(worker);
-	mf_returnRequestData(data);
-	if (callback.getHandler() != NULL)
-		callback.execute();
 }

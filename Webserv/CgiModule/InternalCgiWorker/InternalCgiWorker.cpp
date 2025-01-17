@@ -36,8 +36,18 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 	m_EmergencyPhone[0] = -1;
 	m_EmergencyPhone[1] = -1;
 	
+	m_EmergencyEvent.setFd(-1);
 	m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
-	m_EmergencyEvent.setMonitoredFlags(EPOLLIN);
+	m_EmergencyEvent.setMonitoredFlags(EPOLLIN | EPOLLERR | EPOLLHUP);
+
+	m_readEvent.setFd(-1);
+	m_readEvent.setCallback(this, mf_EventCallback_onRead);
+	m_readEvent.setMonitoredFlags(EPOLLIN | EPOLLERR | EPOLLHUP);
+
+	m_writeEvent.setFd(-1);
+	m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
+	m_writeEvent.setMonitoredFlags(EPOLLOUT| EPOLLERR | EPOLLHUP);
+
 	m_EmergencyBytesRead = 0;
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
@@ -50,9 +60,8 @@ CgiModule::InternalCgiWorker::~InternalCgiWorker()
 void    CgiModule::InternalCgiWorker::reset()
 {
 	m_pid = -1;
-
-	// close all associated fds
-	mf_disableEmergencyEvent();
+	
+	// close all pipes
 	mf_closeFd(m_ParentToChild[0]);
 	mf_closeFd(m_ParentToChild[1]);
 	mf_closeFd(m_ChildToParent[0]);

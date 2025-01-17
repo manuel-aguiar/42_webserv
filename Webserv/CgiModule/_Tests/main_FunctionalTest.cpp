@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:57:28 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 13:22:59 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 12:46:15 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
-
-extern int SpecificTest(int testNumber);
+//extern int SpecificTest(int testNumber);
 
 int main(void)
 {

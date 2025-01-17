@@ -36,16 +36,6 @@ void	CgiModule::InternalCgiRequestData::assignExecutor(CgiModule::InternalCgiWor
 	m_executor = &executor;
 }
 
-void	CgiModule::InternalCgiRequestData::setReadFd(const t_fd fd)
-{
-	m_readFd = fd;
-}
-
-void	CgiModule::InternalCgiRequestData::setWriteFd(const t_fd fd)
-{
-	m_writeFd = fd;
-}
-
 void	CgiModule::InternalCgiRequestData::setMyTimer(const TimerTracker<Timer, InternalCgiRequestData*>::iterator& timer)
 {
 	m_myTimer = timer;
@@ -89,6 +79,21 @@ CgiModule::InternalCgiRequestData::t_CgiRequestState	CgiModule::InternalCgiReque
 
 void	CgiModule::InternalCgiRequestData::CallTheUser(const e_CgiCallback event)
 {
-	Callback& callback = CgiRequestData::accessCallback(event);
-	callback.execute();
+	t_func_CgiHandler	 handler = m_stateCallbacks[event];
+	if (handler)
+		(handler)(m_user);
+}
+
+CgiRequestData::t_bytesRead	CgiModule::InternalCgiRequestData::UserRead(t_fd readFd)
+{
+	if (!(m_readHandler && m_user))
+		return (0);
+	return ((m_readHandler)(m_user, readFd));
+}
+
+CgiRequestData::t_bytesWritten	CgiModule::InternalCgiRequestData::UserWrite(t_fd writeFd)
+{
+	if (!(m_writeHandler && m_user))
+		return (0);
+	return ((m_writeHandler)(m_user, writeFd));
 }

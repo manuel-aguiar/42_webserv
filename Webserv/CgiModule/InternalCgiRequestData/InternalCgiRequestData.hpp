@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:22:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:14:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 			E_CGI_STATE_QUEUED,
 			E_CGI_STATE_EXECUTING,
 			E_CGI_STATE_CANCELLED,
-			E_CGI_STATE_FINISH
 		} 	t_CgiRequestState;
 
 		InternalCgiRequestData();
@@ -39,8 +38,6 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		void					reset();
 
 		void					assignExecutor(InternalCgiWorker& executor);
-		void					setReadFd(const t_fd fd);
-		void					setWriteFd(const t_fd fd);
 		void					setMyTimer(const TimerTracker<Timer, InternalCgiRequestData*>::iterator& timer);
 		TimerTracker<Timer, InternalCgiRequestData*>::iterator
 								getMyTimer() const;
@@ -50,8 +47,13 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		
 		InternalCgiWorker*		accessExecutor();
 		
+		t_ptr_CgiUser			getUser() const;
+		t_func_CgiHandler		getHandler(const e_CgiCallback type) const;
+		
 		void					CallTheUser(const e_CgiCallback event);
 
+		t_bytesRead				UserRead(t_fd readFd);
+		t_bytesWritten			UserWrite(t_fd writeFd);
 		
 	private:
 		InternalCgiWorker*		m_executor;

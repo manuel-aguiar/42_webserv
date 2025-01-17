@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 19:06:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:50:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Globals;
 class CgiModule
 {
 	public:
-		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, Globals& globals);
+		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, EventManager& eventManager, Globals& globals);
 		~CgiModule();
 
 		// request interaction
@@ -86,25 +86,35 @@ class CgiModule
 
 		t_CgiEnvValue								m_baseEnv[E_CGI_ENV_COUNT];
 
+		EventManager&								m_eventManager;
 		Globals&									m_globals;
 		
 		TimerTracker<Timer, InternalCgiRequestData*>
 													m_timerTracker;
 
+		EventManager&								mf_accessEventManager();
 
 		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
 
-		void										mf_markWorkerForCleanup(InternalCgiWorker& worker);
-		void										mf_markRequestForCleanup(InternalCgiRequestData& data);
+		// recycle (re-use immediately)
+		void										mf_recycleSuccess(InternalCgiWorker& worker);
+		void										mf_recycleRuntimeFailure(InternalCgiWorker& worker);
+		void										mf_recycleStartupFailure(InternalCgiWorker& worker);
+		void										mf_recycleTimeoutFailure(InternalCgiWorker& worker);
+		void										mf_recycleExecutionUnit(InternalCgiWorker& worker, bool markFdsAsStale, e_CgiCallback callUser);
+		void										mf_cancelAndRecycle(InternalCgiRequestData& data);
 		
-		void										mf_recycleFailedStart(InternalCgiWorker& worker, InternalCgiRequestData& data, e_CgiCallback callUser);
+		void										mf_recycleWorker(InternalCgiWorker& worker);
+		void										mf_recycleRequestData(InternalCgiRequestData& data);
 		
+
+		// return
+		void										mf_returnExecutionUnit(InternalCgiWorker& worker, bool markFdsAsStale, e_CgiCallback callUser);
 		void										mf_returnWorker(InternalCgiWorker& worker);
 		void										mf_returnRequestData(InternalCgiRequestData& data);
-		
-		void										mf_cleanupFinishedRequests();
+		void										mf_cancelAndReturn(InternalCgiRequestData& data);
+
 		int											mf_finishTimedOut();
-		void										mf_reloadWorkers();
 		
 
 		CgiModule(const CgiModule &copy);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:48:12 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 10:22:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 09:48:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,115 +14,53 @@
 # include "../../../ServerManager/EventManager/EventManager.hpp"
 # include <unistd.h>
 
-//event callbacks
-void A_ProtoRequest::EventCallbackOnRead(Callback& event)
+
+CgiRequestData::t_bytesRead	A_ProtoRequest::newCgiRead(int readFd)
 {
-	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
-	request->OnRead();
+	int bytesRead;
+
+	bytesRead = ::read(readFd, &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
+
+	if (bytesRead == -1)
+	{
+		std::cout << "proto stale read" << std::endl;
+		return (0);
+	}
+
+	m_TotalBytesRead += bytesRead;
+	m_buffer[m_TotalBytesRead] = '\0';
+
+	return (bytesRead);
 }
 
-void A_ProtoRequest::EventCallbackOnWrite(Callback& event)
+CgiRequestData::t_bytesWritten	A_ProtoRequest::newCgiWrite(int writeFd)
 {
-	A_ProtoRequest* request = static_cast<A_ProtoRequest*>(event.getData());
-	request->onWrite();
-}
+	int bytesWritten;
 
-/*
-	WriteCgi, to be triggered by the event manager via the Callback
-*/
-void	A_ProtoRequest::onWrite()
-{
-	int					triggeredFlags;
-	int					bytesWritten;
+	if (m_msgBody.size() == 0)
+		return (0);
 
-	triggeredFlags = m_CgiWriteEvent.getTriggeredFlags();
-	if (triggeredFlags & EPOLLERR || triggeredFlags & EPOLLHUP)
+	bytesWritten = ::write(writeFd, m_msgBody.c_str(), m_msgBody.size());
+
+	if (bytesWritten == -1)
 	{
-		//std::cout << "proto " << m_id << " disabling write event after disconnection" << std::endl;
-		m_eventManager.delEvent(m_CgiWriteEvent);
-		m_CgiWriteEvent.reset();
-		return ;
+		std::cout << "proto stale read" << std::endl;
+		return (0);
 	}
 
-	if (triggeredFlags & EPOLLOUT)
-	{
-		bytesWritten = ::write(m_CgiWriteEvent.getFd(), m_msgBody.c_str(), m_msgBody.size());
-
-		if ((size_t)bytesWritten != m_msgBody.size())
-		{
-			
-			if (bytesWritten > 0)
-				m_msgBody.erase(0, bytesWritten);
-			return ;
-		}
-		//else
-		//{
-		//	m_eventManager.delEvent(m_CgiWriteEvent);
-		//	m_CgiWriteEvent.reset();
-		//}
-	}
-}
-
-/*
-	ReadCgi, to be triggered by the event manager via the Callback
-*/
-void	A_ProtoRequest::OnRead()
-{
-	int					bytesRead;
-	int					triggeredFlags;
-
-	triggeredFlags = m_CgiReadEvent.getTriggeredFlags();
-
-	if (triggeredFlags & EPOLLIN)
-	{
-		bytesRead = ::read(m_CgiReadEvent.getFd(), &m_buffer[m_TotalBytesRead], sizeof(m_buffer) - m_TotalBytesRead - 1);
-		
-		m_TotalBytesRead += bytesRead;
-		if (bytesRead == 0 || m_TotalBytesRead == sizeof(m_buffer) - 1)
-		{
-			//m_eventManager.delEvent(m_CgiReadEvent);
-			//m_CgiReadEvent.reset();
-			//m_cgi.finishRequest(*m_CgiRequestData);
-			printBufStdout();
-
-			//internal test
-			if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
-				m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
-				
-		}
-	}
-
-	if (((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP)) && !(triggeredFlags & EPOLLIN))
-	{
-		//std::cout << "proto " << m_id << " disabling read event after disconnection" << std::endl;
-		m_eventManager.delEvent(m_CgiReadEvent);
-		m_CgiReadEvent.reset();
-		m_cgi.finishRequest(*m_CgiRequestData);
-		printBufStdout();
-
-		//internal test
-		if (m_CgiResultStatus == E_CGI_STATUS_WORKING)
-			m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
-			
-	}
+	if ((size_t)bytesWritten != m_msgBody.size() && bytesWritten > 0)
+		m_msgBody.erase(0, bytesWritten);
+	return (bytesWritten);
 }
 
 /*
 	Setup events to read/write from/to the cgi script,
 	setup the callbacks to be triggered by the event manager
 */
-void	A_ProtoRequest::executeCgi()
+void	A_ProtoRequest::SuccessCgi()
 {
-	m_CgiReadEvent.setFd(m_CgiRequestData->getReadFd());
-	m_CgiReadEvent.setMonitoredFlags(EPOLLIN | EPOLLERR | EPOLLHUP);
-	m_CgiReadEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnRead);
-
-	m_CgiWriteEvent.setFd(m_CgiRequestData->getWriteFd());
-	m_CgiWriteEvent.setMonitoredFlags(EPOLLOUT | EPOLLERR | EPOLLHUP);
-	m_CgiWriteEvent.setCallback(this, &A_ProtoRequest::EventCallbackOnWrite);
-	
-	m_eventManager.addEvent(m_CgiReadEvent);
-	m_eventManager.addEvent(m_CgiWriteEvent);
+	//m_cgi.finishRequest(*m_CgiRequestData);
+	m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
 }
 
 /*
@@ -130,18 +68,7 @@ void	A_ProtoRequest::executeCgi()
 */
 void	A_ProtoRequest::cancelCgi()
 {	
-	if (m_CgiReadEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiReadEvent);
-		m_CgiReadEvent.reset();
-	}
-	if (m_CgiWriteEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiWriteEvent);
-		m_CgiWriteEvent.reset();
-	}
-		
-	m_cgi.finishRequest(*m_CgiRequestData);
+	//m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
 
@@ -155,7 +82,7 @@ void	A_ProtoRequest::cancelCgi()
 */
 void	A_ProtoRequest::falseStartCgi()
 {
-	m_cgi.finishRequest(*m_CgiRequestData);
+	//m_cgi.finishRequest(*m_CgiRequestData);
 
 	//inform your client something bad happened
 
@@ -167,17 +94,8 @@ void	A_ProtoRequest::falseStartCgi()
 void	A_ProtoRequest::timeoutCgi()
 {
 	//std::cout << "proto " << m_id << " timeoutCgi" << std::endl;
-	if (m_CgiReadEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiReadEvent);
-		m_CgiReadEvent.reset();
-	}
-	if (m_CgiWriteEvent.getFd() != -1)
-	{
-		m_eventManager.delEvent(m_CgiWriteEvent);
-		m_CgiWriteEvent.reset();
-	}
-	m_cgi.finishRequest(*m_CgiRequestData);
+	
+	//m_cgi.finishRequest(*m_CgiRequestData);
 	
 	//inform your client something bad happened
 

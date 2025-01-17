@@ -13,14 +13,16 @@
 #include "CgiRequestData.hpp"
 
 CgiRequestData::CgiRequestData() :
-	m_readFd(-1),
-	m_writeFd(-1),
+	m_user(NULL),
+	m_readHandler(NULL),
+	m_writeHandler(NULL),
 	m_extension(""),
 	m_scriptPath(""),
-	m_timeoutMs(0),
-	m_eventManager(NULL)
+	m_timeoutMs(0)
 {
 	m_env.envBase.reserve(E_CGI_ENV_COUNT);
+	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
+		m_stateCallbacks[i] = NULL;
 }
 
 CgiRequestData::~CgiRequestData()
@@ -54,8 +56,10 @@ void	CgiRequestData::reset()
 	m_env.envExtra.clear();
 
 	for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-		m_callbacks[i].reset();
+		m_stateCallbacks[i] = NULL;
 	
-	m_eventManager = NULL;
 	m_timeoutMs = 0;
+	m_user = NULL;
+	m_readHandler = NULL;
+	m_writeHandler = NULL;
 }

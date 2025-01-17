@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 19:05:38 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 09:44:37 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 int TestPart1(int testNumber)
 {
 /******************************************************* */
+/******************************************************* */
 	//instantiation and cleanup test	
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
 	}
@@ -57,7 +59,8 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		CgiRequestData* data = cgi.acquireRequestData();
 		(void)data;
@@ -76,7 +79,8 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		CgiModule cgi(10, 100, 1000, globals);				// 10 workers, 100 backlog
+		EventManager eventManager(globals);
+		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		cgi.processRequests();
 		std::cout << "	PASSED (finish timeout with empty queues)" << std::endl;
@@ -89,8 +93,7 @@ int TestPart1(int testNumber)
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 
-/****************************************************** */
-	// executing a script, no environment variables so far
+/***************************************************************************** */	
 	// script should run without issue
 	try
 	{
@@ -98,20 +101,25 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		A_ProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
+		protoRequest.m_CgiRequestData->setUser(&protoRequest);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
+
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); // 5ms
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+		
+
 		
 		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
 
@@ -156,6 +164,7 @@ int TestPart1(int testNumber)
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 
+
 /****************************************************** */
 	// Testing timeout cleanup
 	try
@@ -164,19 +173,23 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+		CgiModule cgi(10, 100, 500, eventManager, globals);
+		A_ProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
+		protoRequest.m_CgiRequestData->setUser(&protoRequest);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
+
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+
 		
 		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(200); //0.2ms
@@ -212,6 +225,9 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		if (protoRequest.m_CgiResultStatus != A_ProtoRequest::E_CGI_STATUS_TIMEOUT)
+			throw std::logic_error("ProtoRequest didn't receive timeout notice " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
 			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
@@ -228,9 +244,7 @@ int TestPart1(int testNumber)
 	g_mockGlobals_ErrorMsgs.clear();
 
 
-/*************************************************************** */
-
-	// Test passing a bad interpreter to execve, leading to failure
+// Test passing a bad interpreter to execve, leading to failure
 	
 	try
 	{
@@ -240,19 +254,25 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		A_ProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "potato");
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
-		protoRequest.m_CgiRequestData->setTimeoutMs(5000);
+		protoRequest.m_CgiRequestData->setUser(&protoRequest);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
+
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+
+		
+		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
@@ -307,7 +327,6 @@ int TestPart1(int testNumber)
 	g_mockGlobals_ErrorMsgs.clear();
 
 /*************************************************************** */
-
 	// Test passing a good interpreter to execve, but a bad script leading to failure
 	
 	try
@@ -317,19 +336,27 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		A_ProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
-		protoRequest.m_CgiRequestData->setTimeoutMs(5000);
+		protoRequest.m_CgiRequestData->setUser(&protoRequest);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
+
 		protoRequest.m_CgiRequestData->setExtension("py");
-		protoRequest.m_CgiRequestData->setScriptPath("asgasgasgasgasg");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+		protoRequest.m_CgiRequestData->setScriptPath("asfafasfasfasfasf");
+
+		
+		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
+		
+
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
@@ -393,26 +420,34 @@ int TestPart1(int testNumber)
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 /*************************************************************** */
-/****************************************************** */
 
-	// passing an extension that is not registered
+// passing an extension that is not registered
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, globals);
-		A_ProtoRequest protoRequest(eventManager, globals, cgi, 0);
+		CgiModule cgi(10, 100, 1000, eventManager, globals);
+		A_ProtoRequest protoRequest(globals, cgi, 0);
 
 		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
 
-		for (size_t i = 0; i < E_CGI_CALLBACK_COUNT; i++)
-			protoRequest.m_CgiRequestData->setCallback(static_cast<e_CgiCallback>(i), &protoRequest, A_ProtoRequest_CgiGateway::Callbacks[i]);
-		
+		protoRequest.m_CgiRequestData->setUser(&protoRequest);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_RUNTIME, &A_ProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_STARTUP, &A_ProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setHandler(E_CGI_ON_ERROR_TIMEOUT, &A_ProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setReadHandler(&A_ProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setWriteHandler(&A_ProtoRequest_CgiGateway::onWrite);
+
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		protoRequest.m_CgiRequestData->setEventManager(eventManager);
+
+		
+		protoRequest.m_CgiRequestData->setEnvBase(E_CGI_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
+		
+
 		
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
 
@@ -463,6 +498,7 @@ int TestPart1(int testNumber)
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
+
 
 	return (testNumber);
 }

@@ -41,6 +41,8 @@ class CgiModule::InternalCgiWorker
 		
 		void						stop();
 		
+		void						disableAllEvents(bool markAsStale = true);
+		
 		void						assignRequestData(InternalCgiRequestData& data);
 		InternalCgiRequestData*		accessRequestData();
 
@@ -64,6 +66,9 @@ class CgiModule::InternalCgiWorker
 		Event						m_EmergencyEvent;
 		t_pid						m_pid;
 
+		Event						m_readEvent;
+		Event						m_writeEvent;
+
 		typedef enum
 		{
 			E_EMER_DUP2 = 1,
@@ -82,13 +87,20 @@ class CgiModule::InternalCgiWorker
 
 		// Events
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
-		void						mf_disableEmergencyEvent();
+		void						mf_disableMyEvent(Event& myEvent, bool markAsStale = true);
 		void						mf_readEmergencyPhone();
 		void						mf_childFailure();
 
+		static void					mf_EventCallback_onRead(Callback& callback);
+		static void					mf_EventCallback_onWrite(Callback& callback);
+
+		void						mf_readScript();
+		void						mf_writeScript();
+
+
 		// Other helpers
 		void						mf_closeFd(t_fd& fd);
-		void						mf_childSuccess();
+		void						mf_waitChild();
 		void						mf_KillWaitChild();
 
 

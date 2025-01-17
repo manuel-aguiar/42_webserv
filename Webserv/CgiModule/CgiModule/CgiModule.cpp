@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 16:42:49 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 08:34:16 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, Globals& globals) :
+CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, EventManager& eventManager, Globals& globals) :
 	m_numWorkers(workers),
 	m_backlog(backlog),
 	m_maxTimeout(maxTimeout),
@@ -24,6 +24,7 @@ CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, Globals&
 	m_availableWorkers(workers),
 	m_availableRequestData(backlog),
 	m_executionQueue(backlog),
+	m_eventManager(eventManager),
 	m_globals(globals),
 	m_timerTracker(backlog)
 {
@@ -69,6 +70,7 @@ CgiModule::~CgiModule()
 //private as usual
 CgiModule::CgiModule(const CgiModule &copy) :
 	m_numWorkers(copy.m_numWorkers),
+	m_eventManager(copy.m_eventManager),
 	m_globals(copy.m_globals),
 	m_timerTracker(copy.m_backlog)
 {

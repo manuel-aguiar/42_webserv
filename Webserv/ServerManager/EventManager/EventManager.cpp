@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/14 14:22:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 09:53:10 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
+#include <iostream>
+
 EventManager::EventManager(Globals& globals) :
 	m_subscribeCount(0),
 	m_epollfd		(-1),
-	m_globals		(globals)
+	m_globals		(globals),
+	m_maxStaleFd	(0)
 {
 
 	m_epollfd = epoll_create(1);
@@ -34,6 +37,25 @@ EventManager::EventManager(Globals& globals) :
 		m_globals.logError("fcntl(): " + std::string(strerror(errno)));
 		throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
 	}
+
+	std::memset(m_staleEvents, 0, sizeof(m_staleEvents));
+}
+
+void EventManager::mf_markFdStale(t_fd fd)
+{
+	m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
+	size_t index = fd / 8;
+	size_t bit = fd % 8;
+    m_staleEvents[index] |= (1 << bit);
+}
+
+int	EventManager::mf_isFdStale(t_fd fd)
+{
+	if (fd == -1)
+		return (1);
+	size_t index = fd / 8;
+	size_t bit = fd % 8;
+	return ((m_staleEvents[index] & (1 << bit)) != 0);
 }
 
 EventManager::~EventManager()
@@ -47,14 +69,16 @@ EventManager::~EventManager()
 	}
 }
 
-#include <iostream>
+
 
 int                EventManager::addEvent(const Event& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
-	//std::cout << "EventManager::addEvent fd: " << event.getFd();
+	
 	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
+
+	assert(event.getFd() != -1);
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
 	{
@@ -76,6 +100,8 @@ int                EventManager::modEvent(const Event& event)
 	epollEvent.events = event.getMonitoredFlags();
 	epollEvent.data.ptr = (void *)&event;
 
+	assert(event.getFd() != -1);
+
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
 	{
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
@@ -84,11 +110,15 @@ int                EventManager::modEvent(const Event& event)
 	return (1);
 }
 
-int                 EventManager::delEvent(const Event& event)
+int                 EventManager::delEvent(const Event& event, bool markAsStale)
 {
-	//std::cout << "EventManager::delEvent fd: " << event.getFd(); 
+	t_fd fd;
+	//std::cout << "EventManager::delEvent fd: " << event.getFd();
+	fd = event.getFd();
 
-	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
+	assert(fd != -1);
+
+	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 	{
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 
@@ -96,6 +126,9 @@ int                 EventManager::delEvent(const Event& event)
 
 		return (0);
 	}
+	if (markAsStale)
+		mf_markFdStale(fd);
+
 	--m_subscribeCount;
 
 	//std::cout << " passed, subscribe count is " << m_subscribeCount << std::endl;
@@ -106,7 +139,10 @@ int                 EventManager::delEvent(const Event& event)
 int                 EventManager::ProcessEvents(int timeOut)
 {
 	Event*	event;
+	t_fd	fd;
 	int		waitCount;
+
+	//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS STARTED \n\n\n" << std::endl;
 
 	waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
 
@@ -118,11 +154,17 @@ int                 EventManager::ProcessEvents(int timeOut)
 	for (int i = 0; i < waitCount; i++)
 	{
 		event = static_cast<Event*>(m_events[i].data.ptr);
+		fd = event->getFd();
+		if (mf_isFdStale(fd))
+			continue ;
 		event->setTriggeredFlags(m_events[i].events);
 		event->handle();
 
 		//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS PASSED \n\n\n" << std::endl;
 	}
+
+	std::memset(m_staleEvents, 0, sizeof(size_t) * ((m_maxStaleFd / (sizeof(size_t) * 8)) + 1));
+	m_maxStaleFd = 0;
 	return (waitCount);
 }
 

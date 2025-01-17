@@ -29,9 +29,11 @@ typedef std::string						t_extension;
 typedef std::string						t_CgiEnvKey;
 typedef std::string						t_CgiEnvValue;
 
+
+
 typedef enum
 {
-	E_CGI_ON_EXECUTE,
+	E_CGI_ON_SUCCESS,
 	E_CGI_ON_ERROR_STARTUP,
 	E_CGI_ON_ERROR_RUNTIME,
 	E_CGI_ON_ERROR_TIMEOUT,

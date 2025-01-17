@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/15 15:50:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:32:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,14 @@ void	CgiModule::InternalCgiWorker::mf_childFailure()
 	else
 		errorMsg += "inconclusive error";
 	m_globals.logError(errorMsg);
-
-	m_CgiModule.mf_markWorkerForCleanup(*this);
-	m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+	m_CgiModule.mf_recycleRuntimeFailure(*this);
 }
 
 
-void	CgiModule::InternalCgiWorker::mf_childSuccess()
+void	CgiModule::InternalCgiWorker::mf_waitChild()
 {
 	int status;
-
+	
 	if (m_pid == -1)
 		return ;
 
@@ -68,9 +66,10 @@ void	CgiModule::InternalCgiWorker::mf_childSuccess()
 	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
 	{
 		m_globals.logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
-		m_CgiModule.mf_markWorkerForCleanup(*this);
-		m_curRequestData->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+		m_CgiModule.mf_recycleRuntimeFailure(*this);
 	}
+	else
+		m_CgiModule.mf_recycleSuccess(*this);
 }
 
 void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
