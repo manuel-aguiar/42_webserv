@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 09:53:10 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:50:32 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ EventManager::EventManager(Globals& globals) :
 
 void EventManager::mf_markFdStale(t_fd fd)
 {
+	//std::cout << ", fd marked as stale: " << fd;
 	m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 	size_t index = fd / 8;
 	size_t bit = fd % 8;
@@ -80,8 +81,11 @@ int                EventManager::addEvent(const Event& event)
 
 	assert(event.getFd() != -1);
 
+	//std::cout << "EventManager::addEvent fd: " << event.getFd();
+
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
 	{
+		assert(false);
 		//std::cout << " failed" << std::endl;
 		m_globals.logError("EventManager::addEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
@@ -122,6 +126,7 @@ int                 EventManager::delEvent(const Event& event, bool markAsStale)
 	{
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 
+		assert(false);
 		//std::cout << " FAILED: " << std::string(strerror(errno)) << std::endl;
 
 		return (0);
@@ -160,10 +165,12 @@ int                 EventManager::ProcessEvents(int timeOut)
 		event->setTriggeredFlags(m_events[i].events);
 		event->handle();
 
-		//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS PASSED \n\n\n" << std::endl;
+		
 	}
 
-	std::memset(m_staleEvents, 0, sizeof(size_t) * ((m_maxStaleFd / (sizeof(size_t) * 8)) + 1));
+	//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS ENDED \n\n\n" << std::endl;
+
+	std::memset(m_staleEvents, 0, ((m_maxStaleFd / 8)) + 1);
 	m_maxStaleFd = 0;
 	return (waitCount);
 }

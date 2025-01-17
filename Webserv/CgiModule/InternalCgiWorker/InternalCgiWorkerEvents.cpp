@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:43:11 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 18:29:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:43:21 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,17 @@ void	CgiModule::InternalCgiWorker::mf_EventCallback_OnEmergency(Callback& event)
 void	CgiModule::InternalCgiWorker::mf_readScript()
 {
 	int triggeredFlags;
+	int bytesRead;
 
 	triggeredFlags = m_readEvent.getTriggeredFlags();
 	
 	if (triggeredFlags & EPOLLIN)
 	{
-		if (m_curRequestData->UserRead(m_readEvent.getFd()) == 0)
+		bytesRead = m_curRequestData->UserRead(m_readEvent.getFd());
+		
+		assert(bytesRead != -1);
+
+		if (bytesRead == 0)
 		{
 			mf_disableMyEvent(m_readEvent, true);
 			if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
@@ -66,6 +71,7 @@ void	CgiModule::InternalCgiWorker::mf_readScript()
 void	CgiModule::InternalCgiWorker::mf_writeScript()
 {
 	int triggeredFlags;
+	int bytesWritten;
 
 	triggeredFlags = m_readEvent.getTriggeredFlags();
 	if (triggeredFlags & (EPOLLERR | EPOLLHUP))
@@ -76,7 +82,10 @@ void	CgiModule::InternalCgiWorker::mf_writeScript()
 	}
 
 	if (triggeredFlags & EPOLLOUT)
-		m_curRequestData->UserWrite(m_readEvent.getFd());
+	{
+		bytesWritten = m_curRequestData->UserWrite(m_readEvent.getFd());
+		assert(bytesWritten != -1);
+	}
 
 }
 
@@ -97,9 +106,12 @@ void	CgiModule::InternalCgiWorker::mf_writeScript()
 
 void	CgiModule::InternalCgiWorker::mf_disableMyEvent(Event& myEvent, bool markAsStale)
 {
-	if (myEvent.getFd() == -1)
+	t_fd fd = myEvent.getFd();
+
+	if (fd == -1)
 		return ;
 	m_CgiModule.mf_accessEventManager().delEvent(myEvent, markAsStale);
+	::close(fd);
 	myEvent.setFd(-1);
 }
 
@@ -119,28 +131,30 @@ void	CgiModule::InternalCgiWorker::mf_readEmergencyPhone()
 
 	if (triggeredFlags & EPOLLIN)
 	{
+
+
 		bytesRead = ::read(	m_EmergencyEvent.getFd(), 
 							&m_EmergencyBuffer[m_EmergencyBytesRead], 
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
 		if (bytesRead == -1)
 		{
-			std::cout << "emergency stale triggered, fd" << m_EmergencyEvent.getFd() << std::endl;
+			// a stale read i cannot fix, but apparently is causing no extra problems
 			return ;
 		}
-			
 
 		m_EmergencyBytesRead += bytesRead;
 
-		if (m_EmergencyBytesRead == 0)	
-			return (mf_disableMyEvent(m_EmergencyEvent));
+		if (m_EmergencyBytesRead == 0)
+			return (mf_disableMyEvent(m_EmergencyEvent, true));
+			
 		return (mf_childFailure());
 	}
 
 	if (((triggeredFlags & EPOLLERR) || (triggeredFlags & EPOLLHUP)) && !(triggeredFlags & EPOLLIN))
 	{
 		if (m_EmergencyBytesRead == 0)	
-			return (mf_disableMyEvent(m_EmergencyEvent));
+			return (mf_disableMyEvent(m_EmergencyEvent, true));
 		return (mf_childFailure());
 	}
 }

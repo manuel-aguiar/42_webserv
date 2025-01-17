@@ -52,12 +52,23 @@ void   CgiModule::InternalCgiWorker::execute()
 		return (m_CgiModule.mf_recycleStartupFailure(*this));
 	}
 
+	//std::cout << "opening fd: " << (m_ParentToChild[0]) << ", child read " << '\n';
+	//std::cout << "opening fd: " << (m_ParentToChild[1]) << ", parent write " <<  '\n';
+	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
+	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
+	//std::cout << "opening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
+	//std::cout << "opening fd: " << (m_EmergencyPhone[1]) << ", phone write " << '\n';
+
 	if (!mf_prepareExecve())
 		return (m_CgiModule.mf_recycleStartupFailure(*this));
 
 	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
 	m_readEvent.setFd(m_ChildToParent[0]);
 	m_writeEvent.setFd(m_ParentToChild[1]);
+
+	m_EmergencyPhone[0] = -1;
+	m_ChildToParent[0] = -1;
+	m_ParentToChild[1] = -1;
 
 	m_CgiModule.mf_accessEventManager().addEvent(m_EmergencyEvent);
 	m_CgiModule.mf_accessEventManager().addEvent(m_readEvent);
@@ -165,11 +176,20 @@ void	CgiModule::InternalCgiWorker::mf_executeParent()
 	the pipe as it exits, the parent will receive an EOF directly and no other info, letting the parent
 	know that everything went smoothly, and to peacefully waitpid the child.
 */
+
+static void childCloseFd(t_fd fd)
+{
+	if (fd != -1)
+		::close(fd);
+}
+
 void	CgiModule::InternalCgiWorker::mf_executeChild()
 {
 	char EmergencyCode[2];
 
-	::close(m_EmergencyPhone[0]);
+	childCloseFd(m_EmergencyPhone[0]);
+	childCloseFd(m_ParentToChild[1]);
+	childCloseFd(m_ChildToParent[0]);
 
 	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||
 		::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
@@ -177,28 +197,28 @@ void	CgiModule::InternalCgiWorker::mf_executeChild()
 		EmergencyCode[0] = E_EMER_DUP2;
 		EmergencyCode[1] = errno;
 		write(m_EmergencyPhone[1], EmergencyCode, 2);
-		mf_closeFd(m_ParentToChild[0]);
-		mf_closeFd(m_ChildToParent[1]);
-		mf_closeFd(m_EmergencyPhone[1]);
-		::close(m_ParentToChild[1]);
-		::close(m_ChildToParent[0]);		
+
+		childCloseFd(m_EmergencyPhone[1]);
+		childCloseFd(m_ParentToChild[0]);
+		childCloseFd(m_ChildToParent[1]);
+				
 		
 		// wait to be killed lol
 		while (1)
 			::usleep(1000);
 	}
 		
-	::close(m_ParentToChild[1]);
-	::close(m_ChildToParent[0]);
+	childCloseFd(m_ParentToChild[1]);
+	childCloseFd(m_ChildToParent[0]);
 
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
 
 	EmergencyCode[0] = E_EMER_EXECVE;
 	EmergencyCode[1] = errno;
 	write(m_EmergencyPhone[1], EmergencyCode, 2);
-	mf_closeFd(m_ParentToChild[0]);
-	mf_closeFd(m_ChildToParent[1]);
-	mf_closeFd(m_EmergencyPhone[1]);
+	childCloseFd(m_ParentToChild[0]);
+	childCloseFd(m_ChildToParent[1]);
+	childCloseFd(m_EmergencyPhone[1]);
 	
 	//wait to be killed lol
 	while (1)
