@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 11:33:03 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:33:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "InternalCgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
-# include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
@@ -76,5 +76,7 @@ void 	CgiModule::InternalCgiWorker::mf_closeFd(t_fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
 		m_globals.logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
+	if (fd != -1)
+		//std::cout << "parent closing fd " << fd << std::endl;
 	fd = -1;
 }

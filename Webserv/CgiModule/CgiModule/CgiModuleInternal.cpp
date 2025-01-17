@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 09:52:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:48:35 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data)
+void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data, bool markFdsAsStale)
 {
 	data.setState(InternalCgiRequestData::E_CGI_STATE_EXECUTING);
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);
-	worker.execute();
+	worker.execute(markFdsAsStale);
 }
 
 

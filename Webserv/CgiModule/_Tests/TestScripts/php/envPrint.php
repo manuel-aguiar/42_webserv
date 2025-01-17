@@ -16,4 +16,16 @@ foreach ($env_vars as $var) {
     echo "$var: " . ($value !== false ? $value : "<not set>") . "\n";
 }
 
+// Read from stdin and print the contents
+$stdin = fopen('php://stdin', 'r');
+
+if ($stdin) {
+    while ($line = fgets($stdin)) {
+        echo $line;
+    }
+    fclose($stdin);
+} else {
+    echo "Error opening stdin.\n";
+}
+
 ?>

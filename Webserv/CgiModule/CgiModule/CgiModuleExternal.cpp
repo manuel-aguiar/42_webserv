@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 17:28:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:50:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	CgiModule::enqueueRequest(CgiRequestData& request)
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	
-	mf_execute(*worker, *requestData);
+	mf_execute(*worker, *requestData, false);
 }
 
 /*

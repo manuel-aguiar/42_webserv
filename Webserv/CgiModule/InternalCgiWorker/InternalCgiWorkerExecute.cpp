@@ -14,7 +14,7 @@
 # include "InternalCgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
-# include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
@@ -32,62 +32,144 @@
 	Fork, child does child, parent does parent
 */
 
-void   CgiModule::InternalCgiWorker::execute()
+void   CgiModule::InternalCgiWorker::execute(bool markFdsAsStale)
 {
     if (::pipe(m_ParentToChild) == -1 ||
 		::pipe(m_ChildToParent) == -1 ||
 		::pipe(m_EmergencyPhone) == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this));
+		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
     }
-	if (!FileDescriptor::setNonBlocking(m_ParentToChild[0]) ||
-		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
-		!FileDescriptor::setNonBlocking(m_ChildToParent[0]) ||
-		!FileDescriptor::setNonBlocking(m_ChildToParent[1])||
-		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]) ||
-		!FileDescriptor::setNonBlocking(m_EmergencyPhone[1]))
-	{
-		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this));
-	}
 
+	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
+	//std::cout << "opening fd: " << (m_EmergencyPhone[1]) << ", phone write " << '\n';
 	//std::cout << "opening fd: " << (m_ParentToChild[0]) << ", child read " << '\n';
 	//std::cout << "opening fd: " << (m_ParentToChild[1]) << ", parent write " <<  '\n';
 	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
 	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
-	//std::cout << "opening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
-	//std::cout << "opening fd: " << (m_EmergencyPhone[1]) << ", phone write " << '\n';
+
+
+
 
 	if (!mf_prepareExecve())
-		return (m_CgiModule.mf_recycleStartupFailure(*this));
+		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
 
 	m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
 	m_readEvent.setFd(m_ChildToParent[0]);
 	m_writeEvent.setFd(m_ParentToChild[1]);
 
-	m_EmergencyPhone[0] = -1;
-	m_ChildToParent[0] = -1;
-	m_ParentToChild[1] = -1;
-
-	m_CgiModule.mf_accessEventManager().addEvent(m_EmergencyEvent);
-	m_CgiModule.mf_accessEventManager().addEvent(m_readEvent);
-	m_CgiModule.mf_accessEventManager().addEvent(m_writeEvent);
+	m_CgiModule.mf_accessEventManager().addEvent(m_EmergencyEvent, markFdsAsStale);
+	m_CgiModule.mf_accessEventManager().addEvent(m_readEvent, markFdsAsStale);
+	m_CgiModule.mf_accessEventManager().addEvent(m_writeEvent, markFdsAsStale);
 
     m_pid = ::fork();
     if (m_pid == -1)
 	{
 		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this));
+		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
     }
 	
 
     if (m_pid == 0)
 		mf_executeChild();
 	else
-		mf_executeParent();
+		mf_executeParent(markFdsAsStale);
 	
 }
+
+
+/*
+	Parent just closes the pipe ends that doesn't use and simply waits for the EventManager
+	to inform it that the child process has exited -> Events
+*/
+void	CgiModule::InternalCgiWorker::mf_executeParent(bool markFdsAsStale)
+{
+
+	if (!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]) ||
+		!FileDescriptor::setNonBlocking(m_ParentToChild[1]) ||
+		!FileDescriptor::setNonBlocking(m_ChildToParent[0]))
+	{
+		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
+		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
+	}
+
+	mf_closeFd(m_EmergencyPhone[1]);
+	mf_closeFd(m_ParentToChild[0]);
+	mf_closeFd(m_ChildToParent[1]);
+
+	m_EmergencyPhone[0] = -1;
+	m_ParentToChild[1] = -1;
+	m_ChildToParent[0] = -1;
+}
+
+/*
+	The EmergencyCode message that the Child process may send to the parent is made of 2 bytes.
+
+	The first byte is just the enum value of the syscall that failed. In our case, there are
+	two major possibilities: dup2 (failed to redirect), execve(failed to execute the script)
+
+	The second byte is the errno value recorded when the syscall failed, such that the parent worker
+	can log the info correctly and then tell the User what happened.
+
+	The parent will subscribe the emergencyphone event in the epoll, so epoll will inform it when the
+	child process exits, whether with a message or a straight EOF.
+
+	If everything goes according to plan, the process by which child is replaced in execve will close
+	the pipe as it exits, the parent will receive an EOF directly and no other info, letting the parent
+	know that everything went smoothly, and to peacefully waitpid the child.
+*/
+
+static void childCloseFd(t_fd fd)
+{
+	if (fd != -1)
+		::close(fd);
+	//std::cerr << " child closed " << fd << std::endl;
+}
+
+
+
+
+void	CgiModule::InternalCgiWorker::mf_executeChild()
+{
+	char EmergencyCode[2];
+
+	childCloseFd(m_EmergencyPhone[0]);
+	childCloseFd(m_ParentToChild[1]);
+	childCloseFd(m_ChildToParent[0]);
+
+	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||
+		::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
+	{
+		EmergencyCode[0] = E_EMER_DUP2;
+		EmergencyCode[1] = errno;
+		::write(m_EmergencyPhone[1], EmergencyCode, 2);
+
+		childCloseFd(m_EmergencyPhone[1]);
+		childCloseFd(m_ParentToChild[0]);
+		childCloseFd(m_ChildToParent[1]);
+				
+		
+		// wait to be killed lol
+		while (1)
+			::usleep(1000);
+	}
+		
+	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
+
+	EmergencyCode[0] = E_EMER_EXECVE;
+	EmergencyCode[1] = errno;
+	::write(m_EmergencyPhone[1], EmergencyCode, 2);
+	
+	childCloseFd(m_EmergencyPhone[1]);
+	childCloseFd(m_ParentToChild[0]);
+	childCloseFd(m_ChildToParent[1]);
+	
+	//wait to be killed lol
+	while (1)
+		::usleep(1000);
+}
+
 
 /*
 	Putting env variables in place for execution.
@@ -148,84 +230,6 @@ bool	CgiModule::InternalCgiWorker::mf_prepareExecve()
 	}
 	return (false);
 }
-
-/*
-	Parent just closes the pipe ends that doesn't use and simply waits for the EventManager
-	to inform it that the child process has exited -> Events
-*/
-void	CgiModule::InternalCgiWorker::mf_executeParent()
-{
-	mf_closeFd(m_ParentToChild[0]);
-	mf_closeFd(m_ChildToParent[1]);
-	mf_closeFd(m_EmergencyPhone[1]);
-}
-
-/*
-	The EmergencyCode message that the Child process may send to the parent is made of 2 bytes.
-
-	The first byte is just the enum value of the syscall that failed. In our case, there are
-	two major possibilities: dup2 (failed to redirect), execve(failed to execute the script)
-
-	The second byte is the errno value recorded when the syscall failed, such that the parent worker
-	can log the info correctly and then tell the User what happened.
-
-	The parent will subscribe the emergencyphone event in the epoll, so epoll will inform it when the
-	child process exits, whether with a message or a straight EOF.
-
-	If everything goes according to plan, the process by which child is replaced in execve will close
-	the pipe as it exits, the parent will receive an EOF directly and no other info, letting the parent
-	know that everything went smoothly, and to peacefully waitpid the child.
-*/
-
-static void childCloseFd(t_fd fd)
-{
-	if (fd != -1)
-		::close(fd);
-}
-
-void	CgiModule::InternalCgiWorker::mf_executeChild()
-{
-	char EmergencyCode[2];
-
-	childCloseFd(m_EmergencyPhone[0]);
-	childCloseFd(m_ParentToChild[1]);
-	childCloseFd(m_ChildToParent[0]);
-
-	if (::dup2(m_ParentToChild[0], STDIN_FILENO) == -1 ||
-		::dup2(m_ChildToParent[1], STDOUT_FILENO) == -1)
-	{
-		EmergencyCode[0] = E_EMER_DUP2;
-		EmergencyCode[1] = errno;
-		write(m_EmergencyPhone[1], EmergencyCode, 2);
-
-		childCloseFd(m_EmergencyPhone[1]);
-		childCloseFd(m_ParentToChild[0]);
-		childCloseFd(m_ChildToParent[1]);
-				
-		
-		// wait to be killed lol
-		while (1)
-			::usleep(1000);
-	}
-		
-	childCloseFd(m_ParentToChild[1]);
-	childCloseFd(m_ChildToParent[0]);
-
-	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
-
-	EmergencyCode[0] = E_EMER_EXECVE;
-	EmergencyCode[1] = errno;
-	write(m_EmergencyPhone[1], EmergencyCode, 2);
-	childCloseFd(m_ParentToChild[0]);
-	childCloseFd(m_ChildToParent[1]);
-	childCloseFd(m_EmergencyPhone[1]);
-	
-	//wait to be killed lol
-	while (1)
-		::usleep(1000);
-}
-
-
 
 
 

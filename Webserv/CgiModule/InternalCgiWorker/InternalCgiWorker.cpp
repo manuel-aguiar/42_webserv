@@ -14,7 +14,7 @@
 #include "InternalCgiWorker.hpp"
 #include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../ServerManager/EventManager/EventManager.hpp"
+#include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 //#include "../python-cgi/pythonCgi.hpp"
@@ -46,7 +46,7 @@ CgiModule::InternalCgiWorker::InternalCgiWorker(CgiModule& manager, Globals& glo
 
 	m_writeEvent.setFd(-1);
 	m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
-	m_writeEvent.setMonitoredFlags(EPOLLOUT| EPOLLERR | EPOLLHUP);
+	m_writeEvent.setMonitoredFlags(EPOLLOUT | EPOLLERR | EPOLLHUP);
 
 	m_EmergencyBytesRead = 0;
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));

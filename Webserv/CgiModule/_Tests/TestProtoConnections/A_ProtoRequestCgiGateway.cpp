@@ -6,12 +6,11 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 12:51:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 12:51:52 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:14:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "A_ProtoRequest.hpp"
-# include "../../../ServerManager/EventManager/EventManager.hpp"
 
 void (*A_ProtoRequest_CgiGateway::Callbacks[E_CGI_CALLBACK_COUNT])(CgiRequestData::t_ptr_CgiUser User) = {
 	A_ProtoRequest_CgiGateway::onSuccess,

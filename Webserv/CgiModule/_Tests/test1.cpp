@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 09:44:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:57:26 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
-# include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 

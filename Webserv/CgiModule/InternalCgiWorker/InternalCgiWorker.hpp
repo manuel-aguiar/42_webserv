@@ -36,12 +36,12 @@ class CgiModule::InternalCgiWorker
 		InternalCgiWorker &operator=(const InternalCgiWorker &other);
 
 
-		void    					execute();
+		void    					execute(bool markFdsAsStale);
 		void    					reset();
 		
 		void						stop();
 		
-		void						disableAllEvents(bool markAsStale = true);
+		void						disableCloseAllEvents(bool markAsStale);
 		
 		void						assignRequestData(InternalCgiRequestData& data);
 		InternalCgiRequestData*		accessRequestData();
@@ -81,13 +81,13 @@ class CgiModule::InternalCgiWorker
 		Globals&					m_globals;
 
 		// execute
-		void						mf_executeParent();
+		void						mf_executeParent(bool markFdsAsStale);
 		void						mf_executeChild();
 		bool						mf_prepareExecve();
 
 		// Events
 		static void					mf_EventCallback_OnEmergency(Callback& event);	
-		void						mf_disableMyEvent(Event& myEvent, bool markAsStale = true);
+		void						mf_disableCloseMyEvent(Event& myEvent, bool markAsStale = true);
 		void						mf_readEmergencyPhone();
 		void						mf_childFailure();
 

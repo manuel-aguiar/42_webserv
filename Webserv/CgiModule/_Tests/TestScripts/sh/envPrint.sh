@@ -11,3 +11,7 @@ env_vars=(
 for var in "${env_vars[@]}"; do
     echo "$var: ${!var:-<not set>}"
 done
+
+while IFS= read -r line; do
+    echo "$line"
+done

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 17:50:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:02:07 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,17 +94,17 @@ class CgiModule
 
 		EventManager&								mf_accessEventManager();
 
-		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data);
+		void										mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data, bool markFdsAsStale);
 
 		// recycle (re-use immediately)
 		void										mf_recycleSuccess(InternalCgiWorker& worker);
 		void										mf_recycleRuntimeFailure(InternalCgiWorker& worker);
-		void										mf_recycleStartupFailure(InternalCgiWorker& worker);
+		void										mf_recycleStartupFailure(InternalCgiWorker& worker, bool markFdsAsStale);
 		void										mf_recycleTimeoutFailure(InternalCgiWorker& worker);
 		void										mf_recycleExecutionUnit(InternalCgiWorker& worker, bool markFdsAsStale, e_CgiCallback callUser);
 		void										mf_cancelAndRecycle(InternalCgiRequestData& data);
 		
-		void										mf_recycleWorker(InternalCgiWorker& worker);
+		void										mf_recycleWorker(InternalCgiWorker& worker, bool markFdsAsStale);
 		void										mf_recycleRequestData(InternalCgiRequestData& data);
 		
 

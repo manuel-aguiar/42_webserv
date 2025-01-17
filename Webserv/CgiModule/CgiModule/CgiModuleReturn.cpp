@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 09:51:08 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 11:24:41 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:37:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void		CgiModule::mf_returnExecutionUnit(InternalCgiWorker& worker, bool markFdsA
 	InternalCgiRequestData::t_ptr_CgiUser 		user = data->getUser();
 	InternalCgiRequestData::t_func_CgiHandler 	handler = data->getHandler(callUser);
 
-	worker.disableAllEvents(markFdsAsStale);
+	worker.disableCloseAllEvents(markFdsAsStale);
 	mf_returnWorker(worker);
 	mf_returnRequestData(*data);
 	if (user && handler)

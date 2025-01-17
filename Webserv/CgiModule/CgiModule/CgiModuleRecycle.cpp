@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 09:50:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 11:24:44 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 18:02:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-void	CgiModule::mf_recycleWorker(InternalCgiWorker& worker)
+void	CgiModule::mf_recycleWorker(InternalCgiWorker& worker, bool markFdsAsStale)
 {
     InternalCgiRequestData* newData;
 
@@ -27,7 +27,7 @@ void	CgiModule::mf_recycleWorker(InternalCgiWorker& worker)
 
 		if (newData->getState() != InternalCgiRequestData::E_CGI_STATE_CANCELLED)
 		{
-			mf_execute(worker, *newData);
+			mf_execute(worker, *newData, markFdsAsStale);
 			return ;
 		}
         mf_recycleRequestData(*newData);
@@ -61,9 +61,9 @@ void		CgiModule::mf_recycleRuntimeFailure(InternalCgiWorker& worker)
 	mf_recycleExecutionUnit(worker, true, E_CGI_ON_ERROR_RUNTIME);
 }
 
-void		CgiModule::mf_recycleStartupFailure(InternalCgiWorker& worker)
+void		CgiModule::mf_recycleStartupFailure(InternalCgiWorker& worker, bool markFdsAsStale)
 {
-	mf_recycleExecutionUnit(worker, false, E_CGI_ON_ERROR_STARTUP);
+	mf_recycleExecutionUnit(worker, markFdsAsStale, E_CGI_ON_ERROR_STARTUP);
 }
 
 void		CgiModule::mf_recycleTimeoutFailure(InternalCgiWorker& worker)
@@ -85,8 +85,8 @@ void		CgiModule::mf_recycleExecutionUnit(InternalCgiWorker& worker, bool markFds
 	InternalCgiRequestData::t_ptr_CgiUser 		user = data->getUser();
 	InternalCgiRequestData::t_func_CgiHandler 	handler = data->getHandler(callUser);
 
-	worker.disableAllEvents(markFdsAsStale);
-	mf_recycleWorker(worker);
+	worker.disableCloseAllEvents(markFdsAsStale);
+	mf_recycleWorker(worker, markFdsAsStale);
 	mf_recycleRequestData(*data);
 	if (user && handler)
 		(handler)(user);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 11:57:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/12 00:09:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:14:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
-# include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 
@@ -93,6 +93,10 @@ void CgiStressTest::prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& 
     if (!isExpectedValid || !requestData)
         return ;
 
+    proto.m_msgBody = "i am proto " + StringUtils::to_string(proto.m_id) + " and i am alive "
+    "i have a lot of BS to say blabla i just want to fill the buffer a little bit and "
+    " that's it\n";
+    
     // CGI BASE ENTRIES
     temp += getBaseEntry(*requestData, "AUTH_TYPE: ", E_CGI_AUTH_TYPE);
     temp += getBaseEntry(*requestData, "CONTENT_LENGTH: ", E_CGI_CONTENT_LENGTH);
@@ -117,5 +121,7 @@ void CgiStressTest::prepareExpectedOutput(bool isExpectedValid, A_ProtoRequest& 
     temp += getExtraEntry(*requestData, "CUSTOM_ENTRY2");
     temp += getExtraEntry(*requestData, "CUSTOM_ENTRY3");
     
+    temp += proto.m_msgBody;
+
     StringUtils::move(proto.m_ExpectedOutput, temp);
 }

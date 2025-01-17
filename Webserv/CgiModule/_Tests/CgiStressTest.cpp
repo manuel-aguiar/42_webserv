@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 11:49:25 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:14:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // test helpers
 # include "TestProtoConnections/A_ProtoRequest.hpp"
 # include "../../Globals/Globals.hpp"
-# include "../../ServerManager/EventManager/EventManager.hpp"
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/_Tests/test.h"
 # include "CgiStressTest.hpp"
@@ -261,7 +261,6 @@ int CgiStressTest::StressTest(int testNumber,
 				while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 				continue;
 			}
-			
 			requests.back().m_CgiRequestData->setTimeoutMs(timeoutMs);
 			
 			// setup callbacks
@@ -326,7 +325,7 @@ int CgiStressTest::StressTest(int testNumber,
 					|| std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
 						FailureMessages = FailureMessages + '\n' + to_string(i) + " failed: " 
-						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n";
+						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n"
 						+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
 					}
 					break ;

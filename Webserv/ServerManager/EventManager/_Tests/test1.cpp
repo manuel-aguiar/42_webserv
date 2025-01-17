@@ -6,12 +6,12 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 13:50:24 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 14:55:15 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:25:01 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Project headers
-# include "../EventManager.hpp"
+# include "../EventManager/EventManager.hpp"
 # include "../../../Globals/Globals.hpp"
 # include "../../../Event/Event.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
