@@ -1,70 +1,96 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   HttpRequest.hpp                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/11 10:17:04 by codespace         #+#    #+#             */
-/*   Updated: 2024/12/02 10:20:58 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef HTTPREQUEST_HPP
-
 # define HTTPREQUEST_HPP
 
 // C++ Headers
 # include <string>
 # include <map>
+# include <set>
+# include <iostream>
 
-
+// Forward declarations
 class HttpConnection;
 class HttpSession;
 
-
-class HttpRequest
-{
-
-	public:
-		HttpRequest();
-
-
-	private:
-
-		size_t				m_timeout;
-
-		HttpConnection*		m_httpConn;
-		
-		
-		
-		//HttpSession*		m_session;				//no idea here yet
-
-
-
-		//setters forever
-
-		//variables to be filed by parsing the request
-		// ideas:    nginx-master/src/http/ngx_http_parse.c			//in reality they store pointers to where components start and end to avoid copying everything
-
-		std::string 						m_method;
-		std::string 						m_uri;
-		std::string 						m_httpVersion;
-		std::map<std::string, std::string> 	m_headers;
-
-			// URI components
-		std::string							m_host;
-		std::string							m_resource;
-		std::string							m_query;
-		std::string							m_fragment;
-
-		std::string 						m_body;
-
-
-
-		//other variables to connect to the structure
-		// ...
+// Request integrity status codes
+struct RequestStatus {
+    static const int OK = 200;
+    static const int BAD_REQUEST = 400;
+    static const int METHOD_NOT_ALLOWED = 405;
+    static const int URI_TOO_LONG = 414;
+    static const int HEADERS_TOO_LARGE = 431;
+    static const int INTERNAL_ERROR = 500;
 };
 
+
+class HttpRequest {
+    public:
+        HttpRequest();
+        ~HttpRequest();
+
+        // Main parsing interface
+        int parse(const std::string& rawData);
+
+        // Getters for components
+        const std::string& 							getMethod() const;
+        const std::string& 							getUri() const;
+        const std::string& 							getHttpVersion() const;
+        const std::map<std::string, std::string>&	getHeaders() const;
+        const std::string& 							getBody() const;
+        const std::map<std::string, std::string>&   getUriComponents() const;
+
+		// Encoding exception
+		class EncodingException : public std::exception {
+			public:
+				EncodingException(const std::string& message) : m_message(message) {}
+				virtual ~EncodingException() throw() {}
+				virtual const char* what() const throw() { return m_message.c_str(); }
+			private:
+				std::string m_message;
+		};
+
+    private:
+        // Static validation sets
+        static const std::set<std::string> ALLOWED_METHODS;
+        static const std::set<std::string> REQUIRED_HEADERS;
+        static const std::set<std::string> OPTIONAL_HEADERS;
+
+        static const size_t MAX_URI_LENGTH = 2048; // standard
+
+        // Parsers
+        int mf_parseRequestLine(const std::string& line);
+        int mf_parseHeaders(const std::string& line);
+        int mf_parseBody(const std::string& data);
+        int mf_parseChunkedBody(const std::string& data);
+
+        // Validations
+        bool mf_validateMethod() const;
+        bool mf_validateUri() const;
+        bool mf_validateHttpVersion() const;
+        bool mf_validateHeaders() const;
+
+        // States
+        int m_status;
+        size_t m_timeout;
+
+        // Connections
+        HttpConnection* m_httpConn;
+        HttpSession* m_session;
+
+        // Components
+        std::string m_method;
+        std::string m_uri;
+        std::string m_httpVersion;
+        std::map<std::string, std::string> m_headers;
+        std::map<std::string, std::string> m_uriComponents;
+        std::string m_body;
+
+        // Prevent copying
+        HttpRequest(const HttpRequest&);
+        HttpRequest& operator=(const HttpRequest&);
+
+        // Helper functions for parsing
+        int mf_parseUriComponents(const std::string& uri);
+        std::string mf_decodeUri(const std::string& encoded, bool strict = true) const;
+};
 
 #endif
