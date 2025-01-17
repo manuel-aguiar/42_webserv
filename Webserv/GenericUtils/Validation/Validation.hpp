@@ -3,7 +3,10 @@
 
 #include <string>
 
-bool			isNumber(const std::string &str);
-bool			validateIpv4(const std::string &str);
+namespace Validation
+{
+	bool	isNumber(const std::string &str);
+	bool	validateIpv4(const std::string &str);
+}
 
 #endif
