@@ -1,4 +1,5 @@
 #include "../HttpRequest.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
@@ -29,7 +30,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::OK)
-                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status OK, got: " + StringUtils::to_string(status));
             if (request.getMethod() != "GET")
                 throw std::runtime_error("Expected method GET, got: " + request.getMethod());
             if (request.getUri() != "/index.html")
@@ -59,7 +60,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::METHOD_NOT_ALLOWED)
-                throw std::runtime_error("Expected status METHOD_NOT_ALLOWED, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status METHOD_NOT_ALLOWED, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -82,13 +83,13 @@ void testRequestLineParsing() {
                 "GET " + long_uri + " HTTP/1.1\r\n"
                 "Host: localhost\r\n\r\n";
 
-            printRequest("GET", "(URI length: " + std::to_string(long_uri.length()) + ")", "HTTP/1.1", "Host: localhost");
+            printRequest("GET", "(URI length: " + StringUtils::to_string(long_uri.length()) + ")", "HTTP/1.1", "Host: localhost");
 
             HttpRequest request;
             int status = request.parse(raw_request);
 
             if (status != Http::Status::URI_TOO_LONG)
-                throw std::runtime_error("Expected status URI_TOO_LONG, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status URI_TOO_LONG, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -110,7 +111,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::BAD_REQUEST)
-                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -134,7 +135,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::BAD_REQUEST)
-                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -158,7 +159,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::BAD_REQUEST)
-                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -182,7 +183,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::OK)
-                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status OK, got: " + StringUtils::to_string(status));
             if (request.getUri() != "/search?q=&r=v")
                 throw std::runtime_error("Expected URI /search?q=&r=v, got: " + request.getUri());
 
@@ -217,7 +218,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::OK)
-                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status OK, got: " + StringUtils::to_string(status));
             if (request.getUri() != "/search?q=test&page=1#section1")
                 throw std::runtime_error("Expected URI /search?q=test&page=1#section1, got: " + request.getUri());
 
@@ -249,7 +250,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::BAD_REQUEST)
-                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
@@ -273,7 +274,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::OK)
-                throw std::runtime_error("Expected status OK, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status OK, got: " + StringUtils::to_string(status));
 
             const std::map<std::string, std::string>& components = request.getUriComponents();
 
@@ -310,7 +311,7 @@ void testRequestLineParsing() {
             int status = request.parse(raw_request);
 
             if (status != Http::Status::BAD_REQUEST)
-                throw std::runtime_error("Expected status BAD_REQUEST, got: " + std::to_string(status));
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
 
             std::cout << "      PASSED\n";
         }
