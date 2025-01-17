@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserver_Definitions.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: rphuyal <rphuyal@student.42lisboa.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:56:52 by mmaria-d          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/12/02 11:27:41 by mmaria-d         ###   ########.fr       */
-=======
-/*   Updated: 2025/01/13 00:55:18 by mmaria-d         ###   ########.fr       */
->>>>>>> main
+/*   Updated: 2025/01/18 15:33:02 by rphuyal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +31,6 @@
 # include <signal.h>
 # include <cassert>
 
-<<<<<<< HEAD
-//own headers
-# include "../../Toolkit/Toolkit.h"
-=======
->>>>>>> main
 
 // definitions for everyone to use
 typedef unsigned char								t_byte;
@@ -81,8 +72,4 @@ typedef union
 
 # define MAX_EPOLL_EVENTS 64
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 #endif
