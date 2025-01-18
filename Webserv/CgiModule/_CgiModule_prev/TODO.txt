@@ -1,0 +1,67 @@
+for safety of events and to avoid 
+checks for failed reads, all fds 
+change hands outside event 
+execution
+
+That is, workers don t reload 
+during events, that will mix fds 
+and epoll may trigger an event 
+based on and fd NUMBER that has 
+nothing to do with current fd FILE.
+
+
+So, processEvents:
+cleanup previous workers and 
+connections, closing fds, 
+unsubscribing emergencyphone from 
+epoll, close pipes. we will inform the customer to unsubscribe.
+Workers can be placed at the backend of the queue, we will loop and release resources until we
+find a worker that isn t supposed to leave.
+
+The only workers that can be recycled straight away are those that didn t subscribe/told the customer to subscribe to epoll.
+
+So until parsing of environment variables is not confirmed good, the worker can be safely reassigned.
+after telling the customer to subscribe to epoll, we can t reuse the worker. 
+
+finishRequest will put the worker associated for execution at the back of the queue to cleanup and reassign.
+So event handlers for workers can have no closure (or ar least, opening, of new pipes).
+
+Openings can only take place at the
+end of the event loop. even if 
+customer tells to finish, we move 
+the finishing to the end of the 
+queue
+
+Then, cleanup the Timed out 
+connections. again without 
+reasigning workers, just put the workers back on queue.
+
+
+The reasign workers, open pipes, 
+let the customer now execution will 
+begin. Epoll fds will for.sure be 
+all new when we call epoll wait.
+
+Same will happen in the 
+ServerWorker:
+listrningsocket events will simply 
+place the listening socket in a 
+deferred list for accepting later.
+
+Connection closing will do the 
+same, we can use the ends of the 
+circularqueues to put old 
+connections.
+
+During cleanup, close all deferred 
+closure connections, return all 
+resources. Accept all listening 
+sockets and initiate all fds and 
+subscriptions to epoll.
+
+and then call epoll_wait. all 
+events will therefore belong to a 
+currently working fd and we avoid 
+contagion from different 
+files/buffers associating with the 
+same fd
