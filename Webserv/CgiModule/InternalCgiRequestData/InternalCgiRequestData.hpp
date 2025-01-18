@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/18 20:08:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:16:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 		
 	private:
 
-		friend class 		CgiModule;
+		friend class 			CgiModule;
 
 		InternalCgiWorker*		m_executor;
 		
