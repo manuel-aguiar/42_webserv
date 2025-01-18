@@ -16,24 +16,13 @@
 
 //Project Headers
 # include "../Cgi_Definitions.h"
-# include "../../Event/Event.hpp"
 
 // C++ headers
 # include <string>
 
-// forward declarations
-class EventManager;
-
 class CgiRequestData
 {
-	protected:
-		CgiRequestData();
-		~CgiRequestData();
-		CgiRequestData(const CgiRequestData &copy);
-		CgiRequestData &operator=(const CgiRequestData &assign);
-
 	public:
-
 		typedef int		t_bytesRead;
 		typedef int		t_bytesWritten;
 		typedef int		t_bytesReadWritten;
@@ -42,7 +31,6 @@ class CgiRequestData
 		typedef t_bytesReadWritten 	(*t_cgi_IO)(t_ptr_CgiUser user, int targetFd);
 
 		// methods
-		void											reset();
 
 		const std::string&								getMsgBody() const;
 		const t_CgiRequestEnv& 							getEnvVars() const;
@@ -67,6 +55,10 @@ class CgiRequestData
 		void											setTimeoutMs(const unsigned int timeoutMs);
 
 	protected:
+		CgiRequestData();
+		~CgiRequestData();
+		CgiRequestData(const CgiRequestData &copy);
+		CgiRequestData &operator=(const CgiRequestData &assign);
 
 		// user data
 		t_ptr_CgiUser									m_user;
@@ -80,6 +72,19 @@ class CgiRequestData
 		std::string										m_scriptPath;
 		unsigned int									m_timeoutMs;
 		t_CgiRequestEnv									m_env;
+
+		typedef enum
+		{
+			E_CGI_STATE_IDLE,
+			E_CGI_STATE_ACQUIRED,
+			E_CGI_STATE_QUEUED,
+			E_CGI_STATE_EXECUTING,
+			E_CGI_STATE_CANCELLED,
+		} 	t_CgiRequestState;
+
+		t_CgiRequestState								m_state;
+
+		void											mf_reset();
 
 };	
 

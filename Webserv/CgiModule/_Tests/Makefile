@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/17 17:15:09 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/18 20:15:27 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,8 +58,8 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestData.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataInternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataExternal.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager/EventManager.cpp \

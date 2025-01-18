@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/16 17:14:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:08:43 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,6 @@
 class CgiModule::InternalCgiRequestData : public CgiRequestData
 {
 	public:
-
-		typedef enum
-		{
-			E_CGI_STATE_IDLE,
-			E_CGI_STATE_ACQUIRED,
-			E_CGI_STATE_QUEUED,
-			E_CGI_STATE_EXECUTING,
-			E_CGI_STATE_CANCELLED,
-		} 	t_CgiRequestState;
 
 		InternalCgiRequestData();
 		~InternalCgiRequestData();
@@ -54,10 +45,13 @@ class CgiModule::InternalCgiRequestData : public CgiRequestData
 
 		t_bytesRead				UserRead(t_fd readFd);
 		t_bytesWritten			UserWrite(t_fd writeFd);
+
 		
 	private:
+
+		friend class 		CgiModule;
+
 		InternalCgiWorker*		m_executor;
-		t_CgiRequestState		m_state;
 		
 		TimerTracker<Timer, InternalCgiRequestData*>::iterator	
 								m_myTimer;

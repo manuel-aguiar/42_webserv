@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 18:16:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:00:46 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,7 @@
 # include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
 # include "CgiModule.hpp"
 
-/*
-	Provide the caller with one CgiRequestData object if available,
-	such tha the user can fill it and enqueue for execution.
 
-	This function is expected to be SAFE to be called from an event handler (Callback).
-*/
 CgiRequestData*	CgiModule::acquireRequestData()
 {
 	InternalCgiRequestData*     data;
@@ -34,15 +29,6 @@ CgiRequestData*	CgiModule::acquireRequestData()
 	return (data);
 }
 
-/*
-	Places a request previouesly "acquired" in the execution queue.
-	This doesn't lead to a straight execution even if the queue is empty.
-	For security reasons and to avoid errors when calling enqueue from an event handler,
-	the user MUST always call processRequests() to get the queue going.
-
-	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
-	from an event handler (Callback).
-*/
 void	CgiModule::enqueueRequest(CgiRequestData& request, bool isCalledFromEventLoop)
 {
 	InternalCgiWorker*						worker;	

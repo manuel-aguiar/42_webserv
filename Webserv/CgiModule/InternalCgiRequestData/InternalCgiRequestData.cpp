@@ -15,7 +15,6 @@
 CgiModule::InternalCgiRequestData::InternalCgiRequestData() :
 	CgiRequestData(),
 	m_executor(NULL),
-	m_state(E_CGI_STATE_IDLE),
 	m_myTimer(TimerTracker<Timer, InternalCgiRequestData*>::iterator()) {}
 
 CgiModule::InternalCgiRequestData::~InternalCgiRequestData() {}
@@ -23,9 +22,8 @@ CgiModule::InternalCgiRequestData::~InternalCgiRequestData() {}
 
 void	CgiModule::InternalCgiRequestData::reset()
 {
-	CgiRequestData::reset();
+	CgiRequestData::mf_reset();
 	m_executor = NULL;
-	m_state = E_CGI_STATE_IDLE;
 	m_myTimer = TimerTracker<Timer, InternalCgiRequestData*>::iterator();
 }
 
@@ -52,21 +50,8 @@ CgiModule::InternalCgiWorker*	CgiModule::InternalCgiRequestData::accessExecutor(
 	return (m_executor);
 }
 
-CgiModule::InternalCgiRequestData::InternalCgiRequestData(const InternalCgiRequestData &copy) :
-	CgiRequestData(copy),
-	m_executor(copy.m_executor),
-	m_state(copy.m_state) {}
 
-CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(const InternalCgiRequestData &assign)
-{
-	if (this != &assign)
-		CgiRequestData::operator=(assign);
-	m_executor = assign.m_executor;
-	m_state = assign.m_state;
-	return (*this);
-}
-
-void	CgiModule::InternalCgiRequestData::setState(const t_CgiRequestState state)
+void	CgiModule::InternalCgiRequestData::setState(const InternalCgiRequestData::t_CgiRequestState state)
 {
 	m_state = state;
 }
@@ -96,4 +81,19 @@ CgiRequestData::t_bytesWritten	CgiModule::InternalCgiRequestData::UserWrite(t_fd
 	if (!(m_writeHandler && m_user))
 		return (0);
 	return ((m_writeHandler)(m_user, writeFd));
+}
+
+//private
+CgiModule::InternalCgiRequestData::InternalCgiRequestData(const InternalCgiRequestData &copy) :
+	CgiRequestData(copy),
+	m_executor(copy.m_executor),
+	m_myTimer(copy.m_myTimer)  {}
+
+CgiModule::InternalCgiRequestData &CgiModule::InternalCgiRequestData::operator=(const InternalCgiRequestData &assign)
+{
+	if (this != &assign)
+		CgiRequestData::operator=(assign);
+	m_executor = assign.m_executor;
+	m_myTimer = assign.m_myTimer;
+	return (*this);
 }

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 18:15:51 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/18 20:03:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
-
+# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 // C++ headers
 # include <map>
 
