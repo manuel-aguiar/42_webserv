@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 13:50:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 12:13:11 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("size mismatch, got: " + to_string(array.capacity()) + " expected: " + to_string(arraySize) + '\n'
 			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-
 		for (int i = 0; i < 100; ++i)
 		{
 			array.emplace_back(i);
 		}
+
 		if (array.size() != arraySize)
 			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
 			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));

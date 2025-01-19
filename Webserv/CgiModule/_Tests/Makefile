@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/18 20:15:27 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/01/19 14:31:09 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,22 +27,22 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 
 # Sources
 
-FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_FunctionalTest.cpp
+FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_FunctionalTest.cpp
 
-STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressTest.cpp
+STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressTest.cpp
 
-STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressValgrind.cpp
+STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressValgrind.cpp
 
-STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_Tests/main_StressChildren.cpp
+STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressChildren.cpp
 
-COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/test2.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/CgiStressTest_ExpectedOutput.cpp \
+COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test2.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/CgiStressTest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/CgiStressTest_ExpectedOutput.cpp \
 				\
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequestCgiGateway.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoConnections/A_ProtoRequest_onCallbacksCgi.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestCgiGateway.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
 									\
 				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
 									\
@@ -52,14 +52,14 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleRecycle.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleReturn.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestData.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiRequestData/InternalCgiRequestDataGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorker.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerEvents.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerExecute.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/InternalCgiWorker/InternalCgiWorkerHelpers.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataInternal.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequestData/CgiRequestDataExternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequest/CgiRequest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiRequest/CgiRequestExternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiInternalRequest/CgiInternalRequest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiInternalRequest/CgiInternalRequestGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorker.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerEvents.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerExecute.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerHelpers.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager/EventManager.cpp \
@@ -125,7 +125,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 ##############################################################################33
 
 
-testBase: $(TARGET_BASE)
+basetest: $(TARGET_BASE)
 	@rm -rf $(VALGRIND_OUTPUT)
 	@valgrind   \
 	--quiet \
@@ -134,7 +134,7 @@ testBase: $(TARGET_BASE)
 	--show-leak-kinds=all \
 	./$(TARGET_BASE)
 
-testVal: $(TARGET_STRESSVALG)
+valgrind: $(TARGET_STRESSVALG)
 	@rm -rf $(VALGRIND_OUTPUT)
 	@valgrind   \
 	--log-file=$(VALGRIND_OUTPUT) \
@@ -144,11 +144,11 @@ testVal: $(TARGET_STRESSVALG)
 	--show-leak-kinds=all \
 	./$(TARGET_STRESSVALG)
 
-testStress: $(TARGET_STRESSTEST)
+stresstest: $(TARGET_STRESSTEST)
 	@rm -rf $(VALGRIND_OUTPUT)
 	@./$(TARGET_STRESSTEST)
 
-testChildren: $(TARGET_STRESSCHILDREN) 
+children: $(TARGET_STRESSCHILDREN) 
 	@valgrind   \
 	--quiet \
 	--log-file=$(VALGRIND_OUTPUT) \
@@ -160,7 +160,7 @@ testChildren: $(TARGET_STRESSCHILDREN)
 	--track-fds=yes	\
 	./$(TARGET_STRESSCHILDREN)
 
-test: testBase testVal testStress testChildren
+test: basetest valgrind stresstest children
 
 clean:
 	rm -rf $(TARGET_BASE) $(TARGET_STRESSTEST) $(TARGET_STRESSVALG) $(TARGET_STRESSCHILDREN) vgcore* $(VALGRIND_OUTPUT)

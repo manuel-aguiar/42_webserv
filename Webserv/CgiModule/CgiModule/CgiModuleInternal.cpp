@@ -6,17 +6,17 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 13:52:47 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 17:48:35 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:20:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../InternalCgiWorker/InternalCgiWorker.hpp"
-# include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
+# include "../CgiWorker/CgiWorker.hpp"
+# include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
-void	CgiModule::mf_execute(InternalCgiWorker& worker, InternalCgiRequestData& data, bool markFdsAsStale)
+void	CgiModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
 {
-	data.setState(InternalCgiRequestData::E_CGI_STATE_EXECUTING);
+	data.setState(STATE_EXECUTING);
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);
 	worker.execute(markFdsAsStale);
@@ -31,23 +31,23 @@ int	CgiModule::mf_finishTimedOut()
 {
 	Timer timer = Timer::now();
 
-	TimerTracker<Timer, InternalCgiRequestData*>::iterator 	it = m_timerTracker.begin();
-	InternalCgiRequestData* 								curRequest;
+	TimerTracker<Timer, InternalRequest*>::iterator 	it = m_timerTracker.begin();
+	InternalRequest* 								curRequest;
 	
 
 	for (; it != m_timerTracker.end(); ++it) 
 	{
-		if (it->first < timer && it->second->getState() != InternalCgiRequestData::E_CGI_STATE_IDLE)
+		if (it->first < timer && it->second->getState() != STATE_IDLE)
 		{
 			curRequest = it->second;
 			switch (curRequest->getState())
 			{
-				case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
+				case STATE_ACQUIRED:
 					mf_recycleRequestData(*curRequest); break ;
-				case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
+				case STATE_EXECUTING:
 					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
-				case InternalCgiRequestData::E_CGI_STATE_QUEUED:
-					curRequest->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break;
+				case STATE_QUEUED:
+					curRequest->setState(STATE_CANCELLED); break;
 				default: break ;
 			}		
 		}

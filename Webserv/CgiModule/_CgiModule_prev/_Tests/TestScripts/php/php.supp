@@ -1,7 +1,0 @@
-{
-    php
-    Memcheck:Leak
-    ...
-    fun:* 
-    obj:/usr/bin/php8.3
-}

@@ -6,38 +6,52 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/18 20:00:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:20:27 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../InternalCgiWorker/InternalCgiWorker.hpp"
-# include "../InternalCgiRequestData/InternalCgiRequestData.hpp"
+# include "../CgiWorker/CgiWorker.hpp"
+# include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
+/*
+	Provide the caller with one CgiRequestData object if available,
+	such tha the user can fill it and enqueue for execution.
 
-CgiRequestData*	CgiModule::acquireRequestData()
+	This function is expected to be SAFE to be called from an event handler (Callback).
+*/
+CgiModule::Request*	CgiModule::acquireRequestData()
 {
-	InternalCgiRequestData*     data;
+	InternalRequest*     data;
 
 	if (!m_availableRequestData.size())
 		return (NULL);
 	data = m_availableRequestData.back();
 	m_availableRequestData.pop_back();
 
-	data->setState(InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
+	data->setState(STATE_ACQUIRED);
 	
 	return (data);
 }
 
-void	CgiModule::enqueueRequest(CgiRequestData& request, bool isCalledFromEventLoop)
+/*
+	Places a request previouesly "acquired" in the execution queue.
+	This doesn't lead to a straight execution even if the queue is empty.
+	For security reasons and to avoid errors when calling enqueue from an event handler,
+	the user MUST always call processRequests() to get the queue going.
+
+	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
+	from an event handler (Callback).
+*/
+void	CgiModule::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 {
-	InternalCgiWorker*						worker;	
-	InternalCgiRequestData*					requestData;
+	Worker*						worker;	
+	InternalRequest*					requestData;
 	unsigned int							timeout;
 
-	requestData = static_cast<InternalCgiRequestData*>(&request);
+	requestData = static_cast<InternalRequest*>(&request);
 
-	assert(requestData->getState() == InternalCgiRequestData::E_CGI_STATE_ACQUIRED);
+	assert(requestData->getState() == STATE_ACQUIRED);
 
 	timeout = requestData->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
@@ -47,7 +61,7 @@ void	CgiModule::enqueueRequest(CgiRequestData& request, bool isCalledFromEventLo
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
 	if (m_availableWorkers.size() == 0)
 	{
-		requestData->setState(InternalCgiRequestData::E_CGI_STATE_QUEUED);
+		requestData->setState(STATE_QUEUED);
 		m_executionQueue.push_back(requestData);
 		return ;
 	}
@@ -80,6 +94,33 @@ int		CgiModule::processRequests()
 	return (mf_finishTimedOut());
 }
 
+void	CgiModule::modifyRequest(Request& data, Options newOptions, bool isCalledFromEventLoop)
+{
+	InternalRequest*	requestData;
+	RequestState		state;
+
+	requestData = static_cast<InternalRequest*>(&data);
+	state = requestData->getState();
+	
+	if (state == STATE_ACQUIRED || state == STATE_QUEUED)
+	{
+		data.setRuntimeOptions(newOptions);
+		return ;
+	}
+	if (newOptions & CANCEL_READ)
+		requestData->accessExecutor()->disableReadEvent(isCalledFromEventLoop);
+	if (newOptions & CANCEL_WRITE)
+		requestData->accessExecutor()->disableWriteEvent(isCalledFromEventLoop);
+	if (newOptions & HOLD_READ)
+		requestData->accessExecutor()->disableReadHandler();
+	if (newOptions & HOLD_WRITE)
+		requestData->accessExecutor()->disableWriteHandler();
+	if (newOptions & RESTART_READ)
+		requestData->accessExecutor()->enableReadHandler();
+	if (newOptions & RESTART_WRITE)
+		requestData->accessExecutor()->enableWriteHandler();
+}
+
 /*
 	There are 3 valid scenarios, for 3 request states:
 
@@ -107,22 +148,22 @@ int		CgiModule::processRequests()
 
 	This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
 */
-void	CgiModule::finishRequest(CgiRequestData& request, bool isCalledFromEventLoop)
+void	CgiModule::finishRequest(Request& request, bool isCalledFromEventLoop)
 {
-	InternalCgiRequestData*						requestData;
-	InternalCgiRequestData::t_CgiRequestState	state;
+	InternalRequest*	requestData;
+	RequestState		state;
 
-	requestData = static_cast<InternalCgiRequestData*>(&request);
+	requestData = static_cast<InternalRequest*>(&request);
 	state = requestData->getState();
 	
 	switch (state)
 	{
-		case InternalCgiRequestData::E_CGI_STATE_ACQUIRED:
+		case STATE_ACQUIRED:
 			mf_recycleRequestData(*requestData); break ;
-		case InternalCgiRequestData::E_CGI_STATE_EXECUTING:
+		case STATE_EXECUTING:
 			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
-		case InternalCgiRequestData::E_CGI_STATE_QUEUED:
-			requestData->setState(InternalCgiRequestData::E_CGI_STATE_CANCELLED); break ;
+		case STATE_QUEUED:
+			requestData->setState(STATE_CANCELLED); break ;
 		default:
 			break ;
 	}
@@ -137,7 +178,7 @@ void	CgiModule::finishRequest(CgiRequestData& request, bool isCalledFromEventLoo
 
 void	CgiModule::stopAndReset()
 {
-	InternalCgiRequestData* data;
+	InternalRequest* data;
 
 	for (size_t i = 0; i < m_allWorkers.size(); ++i)
 	{
@@ -150,7 +191,7 @@ void	CgiModule::stopAndReset()
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
-		data->CallTheUser(E_CGI_ON_ERROR_RUNTIME);
+		data->CallTheUser(CALLBACK_ON_ERROR_RUNTIME);
 		mf_returnRequestData(*data);
 	}
 		
