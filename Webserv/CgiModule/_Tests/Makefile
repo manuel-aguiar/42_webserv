@@ -58,8 +58,6 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 				$(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
-				$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpModule.cpp \
-				$(SRC_PATH)/Webserv/HttpModule/_Mock/MockHttpManager.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
