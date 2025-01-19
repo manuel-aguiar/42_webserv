@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:20:27 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:33:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 	This function is expected to be SAFE to be called from an event handler (Callback).
 */
-CgiModule::Request*	CgiModule::acquireRequestData()
+CgiModule::Request*	CgiModule::acquireRequest()
 {
 	InternalRequest*     data;
 
@@ -94,7 +94,7 @@ int		CgiModule::processRequests()
 	return (mf_finishTimedOut());
 }
 
-void	CgiModule::modifyRequest(Request& data, Options newOptions, bool isCalledFromEventLoop)
+void	CgiModule::modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
 	RequestState		state;

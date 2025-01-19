@@ -13,14 +13,14 @@
 #include "CgiRequest.hpp"
 
 CgiModule::Request::Request() :
-	m_user(NULL),
-	m_readHandler(NULL),
-	m_writeHandler(NULL),
-	m_timeoutMs(0),
-	m_extension(""),
-	m_scriptPath(""),
-	m_state(STATE_IDLE),
-	m_options(RUNTIME_BASE)
+	m_user			(NULL),
+	m_readHandler	(NULL),
+	m_writeHandler	(NULL),
+	m_timeoutMs		(0),
+	m_extension		(""),
+	m_scriptPath	(""),
+	m_state			(STATE_IDLE),
+	m_options		(RUNTIME_BASE)
 {
 	m_env.envBase.reserve(Cgi::ENV_COUNT);
 	for (size_t i = 0; i < CALLBACK_COUNT; i++)

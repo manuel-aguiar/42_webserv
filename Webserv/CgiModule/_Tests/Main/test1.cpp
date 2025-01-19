@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:30:30 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:29:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int TestPart1(int testNumber)
 		EventManager eventManager(globals);
 		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
-		CgiModule::Request* data = cgi.acquireRequestData();
+		CgiModule::Request* data = cgi.acquireRequest();
 		(void)data;
 		std::cout << "	PASSED (acquiring and just going away)" << std::endl;
 	}
@@ -106,7 +106,7 @@ int TestPart1(int testNumber)
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
@@ -181,7 +181,7 @@ int TestPart1(int testNumber)
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
@@ -263,7 +263,7 @@ int TestPart1(int testNumber)
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "potato");
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
@@ -346,7 +346,7 @@ int TestPart1(int testNumber)
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
@@ -438,7 +438,7 @@ int TestPart1(int testNumber)
 		CgiModule cgi(10, 100, 1000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);

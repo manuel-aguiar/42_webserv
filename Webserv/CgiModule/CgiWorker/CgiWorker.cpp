@@ -23,11 +23,10 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-CgiModule::Worker::Worker(CgiModule& manager, Globals& globals) :
-	m_curRequestData(NULL),
-	m_pid(-1),
-	m_CgiModule(manager),
-	m_globals(globals)
+CgiModule::Worker::Worker(CgiModule& cgi) :
+	m_curRequestData	(NULL),
+	m_pid				(-1),
+	m_CgiModule			(cgi)
 {
 	m_ParentToChild[0] = -1;
 	m_ParentToChild[1] = -1;
@@ -170,19 +169,10 @@ CgiModule::Worker::enableAllHandlers()
 	enableEmergencyHandler();
 }
 
-
+// private, bare minimum to compile
 CgiModule::Worker::Worker(const Worker &other) :
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
-	m_CgiModule(other.m_CgiModule),
-	m_globals(other.m_globals)
-{
-    *this = other;
-}
+	m_CgiModule(other.m_CgiModule) {}
 
-CgiModule::Worker& CgiModule::Worker::operator=(const Worker &other)
-{
-    if (this == &other)
-        return (*this);
-    return (*this);
-}
+CgiModule::Worker& CgiModule::Worker::operator=(const Worker &assign){(void)assign; return (*this);}

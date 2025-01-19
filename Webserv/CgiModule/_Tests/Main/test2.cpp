@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:47:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:30:40 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:29:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int TestPart2(int testNumber)
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
-		protoRequest.m_CgiRequestData = cgi.acquireRequestData();
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);

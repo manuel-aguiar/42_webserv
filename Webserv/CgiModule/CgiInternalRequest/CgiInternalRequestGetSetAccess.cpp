@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 10:30:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:18:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:33:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ CgiModule::InternalRequest::getScriptPath() const
 	return (m_scriptPath);
 }
 
-CgiModule::Options
+CgiModule::RuntimeOptions
 CgiModule::InternalRequest::getOptions() const
 {
 	return (m_options);

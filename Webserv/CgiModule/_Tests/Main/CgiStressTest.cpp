@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 15:46:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:29:32 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:29:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ int CgiStressTest::StressTest(int testNumber,
 		for (int i = 0; i < connectionCount; ++i)
 		{
 			requests.emplace_back(globals, cgi, i);
-			requests.back().m_CgiRequestData = cgi.acquireRequestData();
+			requests.back().m_CgiRequestData = cgi.acquireRequest();
 			
 			if (requests.back().m_CgiRequestData == NULL)
 			{

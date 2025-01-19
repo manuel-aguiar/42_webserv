@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 11:51:00 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:39:22 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,10 @@ EventManager&
 CgiModule::mf_accessEventManager()
 {
 	return (m_eventManager);
+}
+
+Globals&
+CgiModule::mf_accessGlobals()
+{
+	return (m_globals);
 }

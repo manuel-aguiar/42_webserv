@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/09 14:41:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:19:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:47:45 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	CgiModule::Worker::mf_childFailure()
 		errorMsg += ::strerror(m_EmergencyBuffer[1]);
 	else
 		errorMsg += "inconclusive error";
-	m_globals.logError(errorMsg);
+	m_CgiModule.mf_accessGlobals().logError(errorMsg);
 	m_CgiModule.mf_recycleRuntimeFailure(*this);
 }
 
@@ -65,7 +65,7 @@ void	CgiModule::Worker::mf_waitChild()
 
 	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
 	{
-		m_globals.logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
 		m_CgiModule.mf_recycleRuntimeFailure(*this);
 	}
 	else
@@ -75,6 +75,6 @@ void	CgiModule::Worker::mf_waitChild()
 void 	CgiModule::Worker::mf_closeFd(t_fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
-		m_globals.logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
 	fd = -1;
 }

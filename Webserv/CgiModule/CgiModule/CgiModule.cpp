@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:20:18 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:46:51 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,24 @@
 # include "CgiModule.hpp"
 
 CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, EventManager& eventManager, Globals& globals) :
-	m_numWorkers(workers),
-	m_backlog(backlog),
-	m_maxTimeout(maxTimeout),
-	m_busyWorkerCount(0),
-	m_allWorkers(workers),
-	m_allRequestData(backlog),
-	m_availableWorkers(workers),
-	m_availableRequestData(backlog),
-	m_executionQueue(backlog),
-	m_baseEnv(""),
-	m_eventManager(eventManager),
-	m_globals(globals),
-	m_timerTracker(backlog)
+	m_numWorkers			(workers),
+	m_backlog				(backlog),
+	m_maxTimeout			(maxTimeout),
+	m_busyWorkerCount		(0),
+	m_allWorkers			(workers),
+	m_allRequestData		(backlog),
+	m_availableWorkers		(workers),
+	m_availableRequestData	(backlog),
+	m_executionQueue		(backlog),
+	m_baseEnv				(""),
+	m_timerTracker			(backlog),
+	m_eventManager			(eventManager),
+	m_globals				(globals)
 {
 	// prepare workers
 	for (size_t i = 0; i < m_numWorkers; i++)
 	{
-		m_allWorkers.emplace_back(*this, globals);
+		m_allWorkers.emplace_back(*this);
 		m_availableWorkers.push_back(&m_allWorkers[i]);
 	}
 	
@@ -68,23 +68,13 @@ CgiModule::~CgiModule()
 	stopAndReset();
 }
 
-//private as usual
+//private as usual, bare minimum implementation to compile
 CgiModule::CgiModule(const CgiModule &copy) :
-	m_numWorkers(copy.m_numWorkers),
-	m_eventManager(copy.m_eventManager),
-	m_globals(copy.m_globals),
-	m_timerTracker(copy.m_backlog)
-{
+	m_timerTracker			(0),
+	m_eventManager			(copy.m_eventManager),
+	m_globals				(copy.m_globals) {}
 
-}
-
-CgiModule& CgiModule::operator=(const CgiModule &assign)
-{
-	if (this == &assign)
-		return (*this);
-	m_numWorkers = assign.m_numWorkers;
-	return (*this);
-}
+CgiModule& CgiModule::operator=(const CgiModule &assign) {(void)assign; return (*this);}
 
 
 

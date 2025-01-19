@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 08:51:39 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:01:16 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:39:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,34 @@ class EventManager;
 class CgiModule
 {
 	public:
-		CgiModule(size_t workerCount, size_t backlogCount, size_t maxTimeout, EventManager& eventManager, Globals& globals);
-		~CgiModule();
 
 		class 						Request;
-		
+
 		typedef std::string			InterpExtension;
 		typedef std::string			InterpPath;
+		typedef int 				RuntimeOptions;
+		
+		CgiModule(	size_t workerCount, 
+					size_t backlogCount, 
+					size_t maxTimeout, 
+					EventManager& eventManager, 
+					Globals& globals);
+		~CgiModule();
+
+		// request interaction
+		Request*					acquireRequest();
+		void						enqueueRequest(Request& data, bool isCalledFromEventLoop);
+		void						modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop);
+		void						finishRequest(Request& data, bool isCalledFromEventLoop);
+		
+		// processing
+		int							processRequests();
+		void						stopAndReset();
+
+		// configuring interpreters
+		void						addInterpreter(const InterpExtension& extension, const InterpPath& path);
+		void						removeInterpreter(const InterpExtension& extension);
+
 		typedef std::string			EnvKey;
 		typedef std::string			EnvValue;
 
@@ -73,40 +94,25 @@ class CgiModule
 		typedef enum
 		{
 			RUNTIME_BASE = 0,
-			HOLD_READ = (1 << 3),
-			RESTART_READ = (1 << 5),
-			CANCEL_READ = (1 << 1),
+			HOLD_READ = (1 << 1),
+			RESTART_READ = (1 << 2),
+			CANCEL_READ = (1 << 3),
 			HOLD_WRITE = (1 << 4),
-			RESTART_WRITE = (1 << 6),
-			CANCEL_WRITE = (1 << 2),
-		} 	RuntimeOptions;
+			RESTART_WRITE = (1 << 5),
+			CANCEL_WRITE = (1 << 6),
+		} 	e_RuntimeOptions;
 
-		typedef int Options;
-
-		// request interaction
-		Request*								acquireRequestData();
-		void									enqueueRequest(Request& data, bool isCalledFromEventLoop);
-		void									modifyRequest(Request& data, Options newOptions, bool isCalledFromEventLoop);
-		void									finishRequest(Request& data, bool isCalledFromEventLoop);
-
-		// processing
-		int										processRequests();
-		void									stopAndReset();
-
-		// config
-		void									addInterpreter(const InterpExtension& extension, const InterpPath& path);
-		void									removeInterpreter(const InterpExtension& extension);
 
 		// getters
-		size_t									getBusyWorkerCount() const;
-		size_t									getQueueSize() const;
+		size_t						getBusyWorkerCount() const;
+		size_t						getQueueSize() const;
 		const StackArray<EnvKey, Cgi::ENV_COUNT>&
-												getBaseEnvKeys() const;
+									getBaseEnvKeys() const;
 		const std::map<InterpExtension, InterpPath>&	
-												getInterpreters() const;
+									getInterpreters() const;
 
 
-		#define									CGI_MIN_TIMEOUT 1
+		#define						CGI_MIN_TIMEOUT 1
 
 
 	private:
@@ -126,16 +132,13 @@ class CgiModule
 		HeapCircularQueue<InternalRequest*>		m_availableRequestData;
 		HeapCircularQueue<InternalRequest*>		m_executionQueue;
 
-		std::map<InterpExtension, InterpPath>	
-												m_Interpreters;
+		std::map<InterpExtension, InterpPath>	m_Interpreters;
 
 		StackArray<EnvKey,Cgi::ENV_COUNT>		m_baseEnv;
 
+		TimerTracker<Timer, InternalRequest*>	m_timerTracker;
 		EventManager&							m_eventManager;
 		Globals&								m_globals;
-		
-		TimerTracker<Timer, InternalRequest*>
-												m_timerTracker;
 
 		//enums for private coordination
 		typedef enum
@@ -147,31 +150,31 @@ class CgiModule
 			STATE_CANCELLED,
 		} 	RequestState;
 
-		EventManager&								mf_accessEventManager();
+		EventManager&		mf_accessEventManager();
+		Globals&			mf_accessGlobals();
 
-		void										mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
+		int					mf_finishTimedOut();
+		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
 
 		// recycle (re-use immediately)
-		void										mf_recycleSuccess(Worker& worker);
-		void										mf_recycleRuntimeFailure(Worker& worker);
-		void										mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
-		void										mf_recycleTimeoutFailure(Worker& worker);
-		void										mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
-		void										mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
+		void				mf_recycleSuccess(Worker& worker);
+		void				mf_recycleRuntimeFailure(Worker& worker);
+		void				mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
+		void				mf_recycleTimeoutFailure(Worker& worker);
+		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
+		void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
 		
-		void										mf_recycleWorker(Worker& worker, bool markFdsAsStale);
-		void										mf_recycleRequestData(InternalRequest& data);
+		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
+		void				mf_recycleRequestData(InternalRequest& data);
 		
-
 		// return
-		void										mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
-		void										mf_returnWorker(Worker& worker);
-		void										mf_returnRequestData(InternalRequest& data);
-		void										mf_cancelAndReturn(InternalRequest& data);
+		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
+		void				mf_returnWorker(Worker& worker);
+		void				mf_returnRequestData(InternalRequest& data);
+		void				mf_cancelAndReturn(InternalRequest& data);
 
-		int											mf_finishTimedOut();
 		
-
+		// private copy/assignment
 		CgiModule(const CgiModule &copy);
 		CgiModule &operator=(const CgiModule &assign);
 

@@ -24,24 +24,24 @@
 class CgiModule::Request
 {
 	public:
-		void						setUser(CgiModule::User user);
-		void						setUserCallback(const CgiModule::CallbackType type, const CgiModule::Callback handler);
-		void						setReadHandler(CgiModule::IO_Handler handler);
-		void						setWriteHandler(CgiModule::IO_Handler handler);
-		void						setEnvBase(const Cgi::EnvType env, const CgiModule::EnvValue& value);
-		void						setEnvExtra(const CgiModule::EnvKey& key, const CgiModule::EnvValue& value);
-		void						setExtension(const CgiModule::InterpExtension& extension);
-		void						setScriptPath(const std::string& path);
-		void						setTimeoutMs(const unsigned int timeoutMs);
-		void						setRuntimeOptions(CgiModule::Options options);		
+	
+		void				setUser(CgiModule::User user);
+		void				setUserCallback(const CgiModule::CallbackType type, const CgiModule::Callback handler);
+		void				setReadHandler(CgiModule::IO_Handler handler);
+		void				setWriteHandler(CgiModule::IO_Handler handler);
+		void				setEnvBase(const Cgi::EnvType env, const CgiModule::EnvValue& value);
+		void				setEnvExtra(const CgiModule::EnvKey& key, const CgiModule::EnvValue& value);
+		void				setExtension(const CgiModule::InterpExtension& extension);
+		void				setScriptPath(const std::string& path);
+		void				setTimeoutMs(const unsigned int timeoutMs);
+		void				setRuntimeOptions(CgiModule::RuntimeOptions options);		
 
-		const EnvVariables& 		getEnvVars() const;
-		const std::string&			getExtension() const;
-		const std::string&			getScriptPath() const;
-		unsigned int				getTimeoutMs() const;
+		const EnvVariables& getEnvVars() const;
+		const std::string&	getExtension() const;
+		const std::string&	getScriptPath() const;
+		unsigned int		getTimeoutMs() const;
 
 	protected:
-
 		Request();
 		~Request();
 		Request(const Request &copy);
@@ -59,9 +59,9 @@ class CgiModule::Request
 		CgiModule::EnvVariables		m_env;
 
 		CgiModule::RequestState		m_state;
-		CgiModule::Options			m_options;
+		CgiModule::RuntimeOptions	m_options;
 
-		void					mf_reset();
+		void						mf_reset();
 };	
 
 

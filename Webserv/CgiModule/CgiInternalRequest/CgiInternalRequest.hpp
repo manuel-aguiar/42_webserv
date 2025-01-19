@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:15:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:23:34 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:33:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class CgiModule::InternalRequest : public CgiModule::Request
 		Worker*					accessExecutor();
 		TimerTracker<Timer, InternalRequest*>::iterator
 								getMyTimer() const;
-		Options					getOptions() const;
+		RuntimeOptions					getOptions() const;
 
 		void					assignExecutor(Worker& executor);
 		void					setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:33:50 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 14:22:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:33:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ CgiModule::Request::setTimeoutMs(const unsigned int timeoutMs)
 }
 
 void
-CgiModule::Request::setRuntimeOptions(CgiModule::Options options)
+CgiModule::Request::setRuntimeOptions(CgiModule::RuntimeOptions options)
 {
 	assert(m_state == STATE_ACQUIRED);
 	m_options = options;

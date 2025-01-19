@@ -34,7 +34,7 @@
 
 void   CgiModule::Worker::execute(bool markFdsAsStale)
 {
-	Options options;
+	RuntimeOptions options;
 
 	options = m_curRequestData->getOptions();
 
@@ -45,7 +45,7 @@ void   CgiModule::Worker::execute(bool markFdsAsStale)
 		::pipe(m_ChildToParent) == -1 ||
 		::pipe(m_EmergencyPhone) == -1)
 	{
-		m_globals.logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
 		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
     }
 
@@ -82,7 +82,7 @@ void   CgiModule::Worker::execute(bool markFdsAsStale)
     m_pid = ::fork();
     if (m_pid == -1)
 	{
-		m_globals.logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
 		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
     }
 	
@@ -101,7 +101,7 @@ void   CgiModule::Worker::execute(bool markFdsAsStale)
 */
 void	CgiModule::Worker::mf_executeParent(bool markFdsAsStale)
 {
-	Options options;
+	RuntimeOptions options;
 
 	options = m_curRequestData->getOptions();
 
@@ -109,7 +109,7 @@ void	CgiModule::Worker::mf_executeParent(bool markFdsAsStale)
 		(!(options & CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]))
 	{
-		m_globals.logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
 		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 
@@ -255,7 +255,7 @@ bool	CgiModule::Worker::mf_prepareExecve()
 	}
 	catch(const std::exception& e)
 	{
-		m_globals.logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
+		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
 	}
 	return (false);
 }
