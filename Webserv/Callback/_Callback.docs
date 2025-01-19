@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    _Callback.docs                                     :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/23 09:13:30 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 09:17:26 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 The Callback is an essential piece of the program. What it is is literally a function pointer
 plus a data pointer to be passed to said function

@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CgiModule.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 09:19:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 19:46:51 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 # include "../CgiWorker/CgiWorker.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"

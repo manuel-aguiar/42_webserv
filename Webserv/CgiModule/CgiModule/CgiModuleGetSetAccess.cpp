@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CgiModuleGetSetAccess.cpp                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 15:03:02 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 19:39:22 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "CgiModule.hpp"
 #include "../../ServerManager/EventManager/EventManager/EventManager.hpp"

@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    _Cgi_generic.docs                                  :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/17 09:29:43 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/17 13:09:17 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 So, the CgiLivequest may take the HttpRequest's buffer and write to it, call onWrite,
 which will call the httpRequest to call the Connection:

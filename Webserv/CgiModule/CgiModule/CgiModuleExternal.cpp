@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   CgiModuleExternal.cpp                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 15:05:26 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 19:33:36 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 # include "../CgiWorker/CgiWorker.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"

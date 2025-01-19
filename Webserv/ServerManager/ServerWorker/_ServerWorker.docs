@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    _ServerWorker.docs                                 :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/29 10:12:29 by manuel            #+#    #+#              #
-#    Updated: 2024/12/23 09:12:48 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 The ServerWorker will house all the components required for a single server to run:
     ListeningSockets;

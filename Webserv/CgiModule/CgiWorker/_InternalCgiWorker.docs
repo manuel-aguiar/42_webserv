@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    _InternalCgiWorker.docs                               :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/16 08:56:22 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/16 11:58:55 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 Just like the class Connection, InternalCgiWorker instance are going to be recycled
 after use, with the CgiModule acting as the ConnectionManager for Cgi Requests.
