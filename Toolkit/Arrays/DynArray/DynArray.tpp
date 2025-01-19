@@ -158,11 +158,8 @@ class DynArray
             {
                 for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
-                m_size = 0;
-                m_allocator.deallocate(m_array, m_capacity);
-                m_array = NULL;
-                m_capacity = 0;
             }
+            m_size = 0;
         }
 
         const Allocator& getAllocator() const
