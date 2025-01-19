@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Heap_ObjectPool.tpp                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 00:28:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:35:27 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 
 #ifndef HEAP_OBJECTPOOL_TPP
@@ -26,8 +16,6 @@
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
 */
-
-
 
 template <typename T, typename Allocator>
 class Heap_ObjectPool
@@ -47,7 +35,6 @@ class Heap_ObjectPool
 		typedef const T&        const_reference;
 		typedef size_t          size_type;
 		typedef ptrdiff_t       difference_type;
-
 
 		template <typename U> struct rebind {
 			typedef Heap_ObjectPool<U, Allocator> other;

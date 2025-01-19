@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   StackArray.tpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/19 12:35:23 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef STACKARRAY_TPP
 
@@ -72,13 +62,14 @@ class StackArray
 			assert(index < ElemCount);
 			return (m_internalArray[index]);
 		}
-        
-		const T& operator[](const size_t index) const
+
+        const T& operator[](const size_t index) const
 		{
 			assert(index < ElemCount);
 			return (m_internalArray[index]);
 		}
 
+		
 		size_t size() const
 		{
 			return (m_size);
