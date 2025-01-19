@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/17 17:54:23 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:55:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ int                EventManager::addEvent(Event& event, bool markAsStale)
 	fd = internal->getFd();
 	assert(fd != -1);
 
-	//std::cout << "EventManager::addEvent fd: " << internal->getFd();
-
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 	{
 		m_globals.logError("EventManager::addEvent, epoll_ctl(): " + std::string(strerror(errno)));
@@ -166,6 +164,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 		m_globals.logError("EventManager::ProcessEvents, epoll_wait(): " + std::string(strerror(errno)));
 		return (waitCount);
 	}
+	
 	for (int i = 0; i < waitCount; i++)
 	{
 		event = static_cast<InternalEvent*>(m_events[i].data.ptr);
@@ -175,8 +174,6 @@ int                 EventManager::ProcessEvents(int timeOut)
 		event->setTriggeredFlags(m_events[i].events);
 		event->handle();
 	}
-
-	//std::cout << "\n\n\t\t\t\t\t EVENT LOOP TURN HAS ENDED \n\n\n" << std::endl;
 
 	std::memset(m_staleEvents, 0, ((m_maxStaleFd / 8)) + 1);
 	m_maxStaleFd = 0;
@@ -188,15 +185,10 @@ size_t			EventManager::getSubscribeCount() const
 	return (m_subscribeCount);
 }
 
-//private
-
+//private, bare minimum to compile
 EventManager::EventManager(const EventManager& copy) :
-	m_epollfd		(copy.m_epollfd),
 	m_globals		(copy.m_globals)
 {}
 
-EventManager& EventManager::operator=(const EventManager& assign)
-{
-	(void)assign;
-	return (*this);
-}
+// private, bare minimum to compile
+EventManager& EventManager::operator=(const EventManager& assign) {(void)assign; return (*this);}
