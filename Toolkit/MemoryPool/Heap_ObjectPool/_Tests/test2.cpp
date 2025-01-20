@@ -6,7 +6,7 @@
 
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <climits>
@@ -43,13 +43,7 @@ int TestPart2(int testNumber)
 		list1.push_back(0);
 		size_t 										lastElement = (size_t)pool.allocate(sizeof(size_t));
 
-
-		if (lastElement - firstElement != poolsize * nodeSize)
-		{
-			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement - firstElement) 
-			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
+		TestHelpers::assertEqual(lastElement - firstElement, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		for (size_t i = 1; i < loopTimes; i++)
 			list1.push_back(i);
@@ -58,12 +52,7 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			if (!(nodeAddress >= firstElement && nodeAddress < lastElement))
-			{
-				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
-				to_string((void *)firstElement) + ", " + to_string((void *)lastElement) + ")\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-			}
+			TestHelpers::assertEqual(nodeAddress >= firstElement && nodeAddress < lastElement, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 
@@ -72,7 +61,6 @@ int TestPart2(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
 	std::cout << "TEST " << testNumber++ << ": ";
@@ -131,29 +119,13 @@ int TestPart2(int testNumber)
 		/////////////////
 		
 		// List 1 must be allcoated in a block of this size
-		if (lastElement1 - firstElement1 != poolsize * nodeSize)
-		{
-			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement1 - firstElement1) 
-			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
+		TestHelpers::assertEqual(lastElement1 - firstElement1, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		// List2 must be allcoated in a block of this size
-		if (lastElement2 - firstElement2 != poolsize * nodeSize)
-		{
-			throw std::runtime_error("element size is not correct, got: " + to_string( lastElement2 - firstElement2) 
-			+ " expected: " + to_string( poolsize * nodeSize ) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
+		TestHelpers::assertEqual(lastElement2 - firstElement2, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		// blocks don't overlap
-		if (lastElement1 > firstElement2)
-		{
-			throw std::runtime_error(std::string("blocks are overlapping: \n")
-			+ "\tfirst block: (" + to_string((void *)firstElement1) + ", " + to_string((void *)lastElement1) + ")\n"
-			+ "\tsecnd block: (" + to_string((void *)firstElement2) + ", " + to_string((void *)lastElement2) + ")\n"
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
+		TestHelpers::assertEqual(lastElement1 <= firstElement2, true, "blocks are overlapping", __FILE__, __LINE__, __FUNCTION__);
 
 		/////////////////////
 		//Elements in block//
@@ -164,14 +136,8 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			if (!(nodeAddress >= firstElement1 && nodeAddress < lastElement1))
-			{
-				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
-				to_string((void *)firstElement1) + ", " + to_string((void *)lastElement1) + ")\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-			}
+			TestHelpers::assertEqual(nodeAddress >= firstElement1 && nodeAddress < lastElement1, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
 		}
-
 
 
 		// list 2 must be allocated in alloc2
@@ -179,12 +145,7 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			if (!(nodeAddress >= firstElement2 && nodeAddress < lastElement2))
-			{
-				throw std::runtime_error("element  " + to_string((void *)nodeAddress) + " is outside range(" +
-				to_string((void *)firstElement2) + ", " + to_string((void *)lastElement2) + ")\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-			}
+			TestHelpers::assertEqual(nodeAddress >= firstElement2 && nodeAddress < lastElement2, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 

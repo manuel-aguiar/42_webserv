@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -84,8 +84,7 @@ int TestPart4(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			if (fiboExpected[i] != fiboPlaceResult[i])
-				throw std::runtime_error("Didn't calculate fibonacci right");
+			TestHelpers::assertEqual(fiboExpected[i], fiboPlaceResult[i], "Fibonacci value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 		std::cout << "	PASSED" << std::endl;
@@ -93,7 +92,6 @@ int TestPart4(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	return (testNumber);
 }

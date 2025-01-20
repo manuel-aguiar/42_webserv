@@ -3,7 +3,7 @@
 #include "../Stack_ObjectPool.hpp"
 #include <list>
 
-#include "../../../_Tests/test.h"
+#include "../../../TestHelpers/TestHelpers.h"
 
 
 int main(void)

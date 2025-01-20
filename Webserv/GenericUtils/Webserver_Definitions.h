@@ -61,6 +61,15 @@ typedef union
 	t_sockaddr_un      sockaddr_un;
 }   u_sockaddr;
 
+typedef struct s_BindAddress
+{
+	int					addrFamily;
+	int					socktype;
+	int					protocol;
+	u_sockaddr			address;
+	t_socklen			addrlen;
+}	BindAddress; 
+
 # define MAX_EPOLL_EVENTS 64
 
 #endif

@@ -62,6 +62,8 @@
         "set": "cpp",
         "cerrno": "cpp",
         "cassert": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "buffer": "cpp",
+        "netfwd": "cpp"
     }
 }

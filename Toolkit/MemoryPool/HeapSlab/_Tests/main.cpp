@@ -16,7 +16,7 @@
 #include "../../../_Tests/ToolkitDerived.hpp"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {

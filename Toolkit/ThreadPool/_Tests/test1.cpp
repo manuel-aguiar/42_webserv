@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -64,7 +64,6 @@ int	TestPart1(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	testNumber++;
 
@@ -81,7 +80,6 @@ int	TestPart1(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	testNumber++;
 
@@ -112,15 +110,13 @@ int	TestPart1(int testNumber)
 		tp.waitForCompletion();
 		tp.removeThread();
 
-		if (placeResult != 8)
-			throw std::runtime_error("Didn't calculate fibonacci right");
+		TestHelpers::assertEqual(placeResult, (long)8, "Didn't calculate fibonacci right", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	testNumber++;
 

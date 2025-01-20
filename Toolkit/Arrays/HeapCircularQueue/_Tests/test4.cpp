@@ -11,7 +11,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 
 int TestPart4(int testNumber)
@@ -30,16 +30,14 @@ int TestPart4(int testNumber)
 			list.push_front(i);
 			queue.push_front(i);
 		}
-		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		HeapCircularQueue<int>::iterator it = queue.begin();
 		std::list<int>::iterator iter = list.begin();
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -61,16 +59,13 @@ int TestPart4(int testNumber)
 			std.push_back(i);
 			queue.push_back(i);
 		}
-		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -92,16 +87,13 @@ int TestPart4(int testNumber)
 			std.push_back(i);
 			queue.emplace_back(i);
 		}
-		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -126,19 +118,14 @@ int TestPart4(int testNumber)
 			list.push_back(i);
 			queue.emplace_back(i);
 		}
-		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+		TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		HeapCircularQueue<ToolkitDummy>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = list.begin();
 
 		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-				
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

@@ -27,7 +27,7 @@ class StackArray
 				m_internalArray[i].~T();
 		};
 
-		StackArray(const StackArray &other)
+		StackArray(const StackArray &other) : m_size(0), m_internalArray(reinterpret_cast<T*>(m_array)) 
 		{
 			*this = other;
 		};

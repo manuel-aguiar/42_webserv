@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -155,8 +155,7 @@ int TestPart3(int testNumber)
 
         size_t result = future.get();           // code blocks until this value is available
 
-        if (result != fiboExpected)
-            throw std::runtime_error("Didn't calculate fibonacci right");
+        TestHelpers::assertEqual(result, fiboExpected, "Didn't calculate fibonacci right", __FILE__, __LINE__, __FUNCTION__);
 
         tp.waitForCompletion();
 
@@ -165,7 +164,6 @@ int TestPart3(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	testNumber++;	
 	return (testNumber);

@@ -1,5 +1,3 @@
-
-
 // C++ headers
 #include <iostream>
 #include <cstring>
@@ -11,149 +9,142 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 
 int TestPart4(int testNumber)
 {
     try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
 
-		const int queueSize = 200;
-		std::list<int> 					list;
-		StackCircularQueue<int, queueSize> 			queue;
+        const int queueSize = 200;
+        std::list<int> list;
+        StackCircularQueue<int, queueSize> queue;
 
-		for (int i = 0; i < 100; ++i)
-		{
-			list.push_back(i);
-			queue.push_back(i);
+        for (int i = 0; i < 100; ++i)
+        {
+            list.push_back(i);
+            queue.push_back(i);
 
-			list.push_front(i);
-			queue.push_front(i);
-		}
-		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            list.push_front(i);
+            queue.push_front(i);
+        }
 
-		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
-		std::list<int>::iterator iter = list.begin();
-		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-	/******************* ***** ************************/
+        TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch in first test", __FILE__, __LINE__, __FUNCTION__);
 
-	try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
+        StackCircularQueue<int, queueSize>::iterator it = queue.begin();
+        std::list<int>::iterator iter = list.begin();
+        for (; it != queue.end() && iter != list.end(); ++it, ++iter)
+        {
+            TestHelpers::assertEqual(*it, *iter, "value mismatch in first test", __FILE__, __LINE__, __FUNCTION__);
+        }
 
-		const int queueSize = 100;
-		std::list<ToolkitDummy> 							std;
-		StackCircularQueue<ToolkitDummy, queueSize> 		queue;
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
 
-		for (int i = 0; i < 100; ++i)
-		{
-			std.push_back(i);
-			queue.push_back(i);
-		}
-		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    /******************* ***** ************************/
 
-		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-	/******************* *****************************/
+    try
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
 
-	try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
+        const int queueSize = 100;
+        std::list<ToolkitDummy> std;
+        StackCircularQueue<ToolkitDummy, queueSize> queue;
 
-		const int queueSize = 100;
-		std::list<ToolkitDummy> 		std;
-		StackCircularQueue<ToolkitDummy, queueSize> 		queue;
+        for (int i = 0; i < 100; ++i)
+        {
+            std.push_back(i);
+            queue.push_back(i);
+        }
 
-		for (int i = 0; i < 100; ++i)
-		{
-			std.push_back(i);
-			queue.emplace_back(i);
-		}
-		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch in second test", __FILE__, __LINE__, __FUNCTION__);
 
-		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+        StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
+        std::list<ToolkitDummy>::iterator iter = std.begin();
+        for (; it != queue.end() && iter != std.end(); ++it, ++iter)
+        {
+            TestHelpers::assertEqual(*it, *iter, "value mismatch in second test", __FILE__, __LINE__, __FUNCTION__);
+        }
 
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
 
+    /******************* *****************************/
 
-/******************* ***** ************************/
+    try
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
 
-	try
-	{
-		std::cout << "TEST " << testNumber++ << ": ";
+        const int queueSize = 100;
+        std::list<ToolkitDummy> std;
+        StackCircularQueue<ToolkitDummy, queueSize> queue;
 
-		const int queueSize = 200;
-		std::list<ToolkitDummy> 								list;
-		StackCircularQueue<ToolkitDummy, queueSize> 			queue;
+        for (int i = 0; i < 100; ++i)
+        {
+            std.push_back(i);
+            queue.emplace_back(i);
+        }
 
-		for (int i = 0; i < 100; ++i)
-		{
-			list.push_back(i);
-			queue.emplace_back(i);
-		}
-		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch in third test", __FILE__, __LINE__, __FUNCTION__);
 
+        StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
+        std::list<ToolkitDummy>::iterator iter = std.begin();
+        for (; it != queue.end() && iter != std.end(); ++it, ++iter)
+        {
+            TestHelpers::assertEqual(*it, *iter, "value mismatch in third test", __FILE__, __LINE__, __FUNCTION__);
+        }
 
-		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
-		std::list<ToolkitDummy>::iterator iter = list.begin();
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
 
-		for ( ; it != queue.end() && iter != list.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-				
-		}
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    /******************* ***** ************************/
 
-/***************************************** */
+    try
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
 
+        const int queueSize = 200;
+        std::list<ToolkitDummy> list;
+        StackCircularQueue<ToolkitDummy, queueSize> queue;
+
+        for (int i = 0; i < 100; ++i)
+        {
+            list.push_back(i);
+            queue.emplace_back(i);
+        }
+
+        TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch in fourth test", __FILE__, __LINE__, __FUNCTION__);
+
+        StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
+        std::list<ToolkitDummy>::iterator iter = list.begin();
+
+        for (; it != queue.end() && iter != list.end(); ++it, ++iter)
+        {
+            TestHelpers::assertEqual(*it, *iter, "value mismatch in fourth test", __FILE__, __LINE__, __FUNCTION__);
+        }
+
+        std::cout << "	PASSED" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "	FAILED: " << e.what()  << std::endl;
+    }
+
+    /***************************************** */
 
     return (testNumber);
 }

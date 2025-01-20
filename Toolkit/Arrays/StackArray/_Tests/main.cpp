@@ -12,7 +12,7 @@
 #include "../../../_Tests/ToolkitDerived.hpp"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
@@ -20,7 +20,7 @@ int main(void)
 	std::cout << "\n*************** StackArray tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
-	testNumber = StressTest(testNumber);
+	testNumber = TestPart2(testNumber);
 
 	std::cout << "*********************************************\n" << std::endl;
 }
