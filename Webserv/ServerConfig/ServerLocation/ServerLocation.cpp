@@ -104,7 +104,7 @@ void		ServerLocation::setAutoindex(const std::string &value)
 
 void		ServerLocation::addMethod(const std::string &value)
 {
-	std::string	lowercaseStr = strToLower(value);
+	std::string	lowercaseStr = StringUtils::strToLower(value);
 	
 	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
 		throw (std::invalid_argument("invalid method"));

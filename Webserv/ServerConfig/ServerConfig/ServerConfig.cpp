@@ -173,7 +173,7 @@ int		ServerConfig::parseConfigFile()
 	while (std::getline(m_configFileStream, line))
 	{
 		currentLine++;
-		line = strtrim(line);
+		line = StringUtils::strtrim(line);
 		if (line.empty() || line[0] == '#')
 			continue ;
 		if (line == "server {")
@@ -262,21 +262,21 @@ void		ServerConfig::setConfigPath(const t_path &path)
 
 void		ServerConfig::setMaxConnections(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
+	if (!Validation::isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_connections must be a positive number"));
 	m_max_connections = value;
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
+	if (!Validation::isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
 	m_max_concurrent_cgi = value;
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
+	if (!Validation::isNumber(value)) // && less than x?
 		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
 	m_max_cgi_backlog = value;
 }

@@ -36,7 +36,7 @@ StringUtils::parse_size(const std::string &size_str)
 	std::reverse_iterator<std::string::const_iterator>	it;
 	std::string	value = size_str.substr(0, size_str.size() - 1);
 
-	if (!isNumber(value))
+	if (!Validation::isNumber(value))
 		throw (std::invalid_argument("Invalid value: " + size_str));
 
 	it = size_str.rbegin();
@@ -46,7 +46,7 @@ StringUtils::parse_size(const std::string &size_str)
 		multiplier = 1024 * 1024;
 	else if (*it == 'G')
 		multiplier = 1024 * 1024 * 1024;
-	else if (!isdigit(*it))
+	else if (!std::isdigit(*it))
 		throw (std::invalid_argument("Invalid unit "));
 	else
 		return (StringUtils::stoull(size_str) * multiplier);
