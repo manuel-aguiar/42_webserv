@@ -3,6 +3,7 @@
 
 // our headers
 # include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Choose between mock and real implementation
 # ifdef TESTMODE
@@ -25,25 +26,29 @@ class BlockFinder {
 		~BlockFinder();
 
 		void				addServerBlock(const ServerBlock& block);
-		const ServerBlock*	findServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
-		bool				hasServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
-		void				removeServerBlock(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
+		const ServerBlock*	findServerBlock(struct sockaddr* address, const std::string& serverName);
+		bool				hasServerBlock(struct sockaddr* address, const std::string& serverName);
+		void				removeServerBlock(struct sockaddr* address, const std::string& serverName);
 
 	private:
-		const std::string			m_wildcardIp;
-		const std::string			m_wildcardPort;
-		const std::string			m_wildcardServerName;
+		struct BlockIdentifier {
+			uint32_t    ip;
+			uint16_t    port;
+			std::string serverName;
 
-		// normalized values
-		std::string					m_normalizedIp;
-		std::string					m_normalizedPort;
-		std::string					m_normalizedServerName;
+			// Add comparison operator for map
+			bool operator<(const BlockIdentifier& other) const {
+				if (ip != other.ip) return ip < other.ip;
+				if (port != other.port) return port < other.port;
+				return serverName < other.serverName;
+			}
+		};
 
-		std::map<std::string, const ServerBlock*>	m_serverBlocks;
+		BlockIdentifier                              m_wildcardKey;
+		std::map<BlockIdentifier, const ServerBlock*>      m_serverBlocks;
 
-		std::string			mf_hashedKey(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName) const;
-		void				mf_normalizeDirectives(const t_ip_str& ip, const t_port_str& port, const t_server_name& serverName);
-		bool				mf_nonEmptyDirective(const std::string& str, const std::string& wildcard) const;
+		std::pair<uint32_t, uint16_t>	mf_extractIpPort(const struct sockaddr* addr) const;
+		BlockIdentifier				 	 mf_createIdentifier(const struct sockaddr* addr, const std::string& serverName) const;
 };
 
 #endif
