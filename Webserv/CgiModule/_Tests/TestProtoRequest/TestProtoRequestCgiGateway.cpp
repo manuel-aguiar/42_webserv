@@ -3,7 +3,7 @@
 # include "TestProtoRequest.hpp"
 
 void
-(*TestProtoRequest_CgiGateway::Callbacks[Cgi::Module::Runtime_Callback::COUNT])(Cgi::Module::User user) = {
+(*TestProtoRequest_CgiGateway::Callbacks[CgiRuntime_Callback::COUNT])(CgiUser user) = {
 	TestProtoRequest_CgiGateway::onSuccess,
 	TestProtoRequest_CgiGateway::onErrorStartup,
 	TestProtoRequest_CgiGateway::onErrorRuntime,
@@ -11,38 +11,38 @@ void
 };
 
 void
-TestProtoRequest_CgiGateway::onSuccess(Cgi::Module::User user)
+TestProtoRequest_CgiGateway::onSuccess(CgiUser user)
 {
 	reinterpret_cast<TestProtoRequest*>(user)->SuccessCgi();
 }
 
 void
-TestProtoRequest_CgiGateway::onErrorStartup(Cgi::Module::User user)
+TestProtoRequest_CgiGateway::onErrorStartup(CgiUser user)
 {
 	reinterpret_cast<TestProtoRequest*>(user)->falseStartCgi();
 }
 
 void
-TestProtoRequest_CgiGateway::onErrorRuntime(Cgi::Module::User user)
+TestProtoRequest_CgiGateway::onErrorRuntime(CgiUser user)
 {
 	reinterpret_cast<TestProtoRequest*>(user)->cancelCgi();
 }
 
 void
-TestProtoRequest_CgiGateway::onErrorTimeOut(Cgi::Module::User user)
+TestProtoRequest_CgiGateway::onErrorTimeOut(CgiUser user)
 {
 	reinterpret_cast<TestProtoRequest*>(user)->timeoutCgi();
 }
 
 
-Cgi::Module::IO_Callback::BytesCount
-TestProtoRequest_CgiGateway::onWrite(Cgi::Module::User user, int writeFd)
+CgiIO_Callback::BytesCount
+TestProtoRequest_CgiGateway::onWrite(CgiUser user, int writeFd)
 {
 	return (reinterpret_cast<TestProtoRequest*>(user)->CgiWrite(writeFd));
 }
 
-Cgi::Module::IO_Callback::BytesCount
-TestProtoRequest_CgiGateway::onRead(Cgi::Module::User user, int readFd)
+CgiIO_Callback::BytesCount
+TestProtoRequest_CgiGateway::onRead(CgiUser user, int readFd)
 {
 	return (reinterpret_cast<TestProtoRequest*>(user)->CgiRead(readFd));
 }

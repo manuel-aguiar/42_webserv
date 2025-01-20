@@ -4,7 +4,7 @@
 # include <unistd.h>
 
 
-Cgi::Module::IO_Callback::BytesCount
+CgiIO_Callback::BytesCount
 TestProtoRequest::CgiRead(int readFd)
 {
 	int bytesRead;
@@ -16,7 +16,7 @@ TestProtoRequest::CgiRead(int readFd)
 	return (bytesRead);
 }
 
-Cgi::Module::IO_Callback::BytesCount
+CgiIO_Callback::BytesCount
 TestProtoRequest::CgiWrite(int writeFd)
 {
 	int bytesWritten;

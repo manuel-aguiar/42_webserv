@@ -6,7 +6,7 @@
 
 #include "../../../Callback/Callback.hpp"
 #include "../../CgiRequest/CgiRequest.hpp"
-#include "../../CgiModule/CgiModule.hpp"
+#include "../../CgiModule.h"
 
 class Globals;
 
@@ -63,15 +63,15 @@ class TestProtoRequest_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onSuccess(Cgi::Module::User user);
-		static void onErrorStartup(Cgi::Module::User user);
-		static void onErrorRuntime(Cgi::Module::User user);
-		static void onErrorTimeOut(Cgi::Module::User user);
+		static void onSuccess(CgiUser user);
+		static void onErrorStartup(CgiUser user);
+		static void onErrorRuntime(CgiUser user);
+		static void onErrorTimeOut(CgiUser user);
 
-		static Cgi::Module::IO_Callback::BytesCount 		onRead(Cgi::Module::User user, int readFd);
-		static Cgi::Module::IO_Callback::BytesCount 		onWrite(Cgi::Module::User user, int writeFd);
+		static CgiIO_Callback::BytesCount 		onRead(CgiUser user, int readFd);
+		static CgiIO_Callback::BytesCount 		onWrite(CgiUser user, int writeFd);
 
-		static void (*Callbacks[Cgi::Module::Runtime_Callback::COUNT])(Cgi::Module::User user);
+		static void (*Callbacks[CgiRuntime_Callback::COUNT])(CgiUser user);
 };
 
 
