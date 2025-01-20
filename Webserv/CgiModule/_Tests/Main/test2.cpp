@@ -40,7 +40,7 @@ int TestPart2(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
@@ -48,9 +48,9 @@ int TestPart2(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -63,14 +63,14 @@ int TestPart2(int testNumber)
 		///////////////// Setting Variables ////////////////////
 
 		// normal ones
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "123");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 
 		// custom
 		protoRequest.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
 
 		// doubled entry, the first should prevail
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "DoubledBasic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 
 		////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ int TestPart2(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||

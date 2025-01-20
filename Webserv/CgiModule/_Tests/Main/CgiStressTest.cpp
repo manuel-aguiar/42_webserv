@@ -61,7 +61,7 @@ std::string	CgiStressTest::ValgrindReadandClear(const char* filename)
 	return (result);
 }
 
-// Tests about the resilience of the CgiModule under heavy load
+// Tests about the resilience of the Module under heavy load
 
 void	CgiStressTest::ValidPython(TestProtoRequest& proto, int index)
 {
@@ -70,10 +70,10 @@ void	CgiStressTest::ValidPython(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 	// some env vars
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -85,9 +85,9 @@ void	CgiStressTest::ValidShell(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("sh");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
 
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_PATH_INFO, "LostMyWay");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "LostMyWay");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY1", "hiThere");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "321");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "321");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -98,9 +98,9 @@ void	CgiStressTest::ValidPHP(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("php");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_PATH_INFO, "WhereAmI");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "WhereAmI");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY3", "SomeHttpStuff_in_here");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "charIsUserFault");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "charIsUserFault");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -111,10 +111,10 @@ void	CgiStressTest::InvalidInterpreter(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("pyasgasg");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -125,10 +125,10 @@ void	CgiStressTest::InvalidInterpreterPath(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("phpbad");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -140,10 +140,10 @@ void	CgiStressTest::InvalidScript(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("py");
 	proto.m_CgiRequestData->setScriptPath("thisDoesNotExist");
 
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -208,7 +208,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(workers, backlog, timeoutMs, eventManager, globals);
+		Cgi::Module cgi(workers, backlog, timeoutMs, eventManager, globals);
 
 		// collects error messages, we can't throw cause we are redirecting stderr
 		std::string FailureMessages;
@@ -256,10 +256,10 @@ int CgiStressTest::StressTest(int testNumber,
 			
 			// setup callbacks
 			requests.back().m_CgiRequestData->setUser(&requests.back());
-			requests.back().m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
-			requests.back().m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			requests.back().m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			requests.back().m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
 			requests.back().m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 			requests.back().m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -267,7 +267,7 @@ int CgiStressTest::StressTest(int testNumber,
 			
 			cgi.enqueueRequest(*requests.back().m_CgiRequestData, false);
 
-			// process events right now at each loop, that way we make room in the CgiModule
+			// process events right now at each loop, that way we make room in the Module
 			// to take more clients
 			nextWait = cgi.processRequests();
 			if (eventManager.getSubscribeCount() != 0)
@@ -297,7 +297,7 @@ int CgiStressTest::StressTest(int testNumber,
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			FailureMessages = FailureMessages + "CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			FailureMessages = FailureMessages + "Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 

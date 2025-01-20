@@ -4,7 +4,10 @@
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
-void	CgiModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
+namespace Cgi
+{
+
+void	Module::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
 {
 	data.setState(STATE_EXECUTING);
 	data.assignExecutor(worker);
@@ -17,7 +20,7 @@ void	CgiModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAs
 	Takes all timedout requests, marks them for cleanup (internally force stops the process)
 	Returns the shortest time until the next timeout, to be used by epoll_wait
 */
-int	CgiModule::mf_finishTimedOut()
+int	Module::mf_finishTimedOut()
 {
 	Timer timer = Timer::now();
 
@@ -49,3 +52,5 @@ int	CgiModule::mf_finishTimedOut()
 		return (-1);
 	return ((timer < m_timerTracker.begin()->first) ? 1 : (m_timerTracker.begin()->first - timer).getMilliseconds());	
 }
+
+}; // namespace Cgi

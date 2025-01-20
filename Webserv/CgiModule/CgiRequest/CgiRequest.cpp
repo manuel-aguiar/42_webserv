@@ -2,7 +2,10 @@
 
 #include "CgiRequest.hpp"
 
-CgiModule::Request::Request() :
+namespace Cgi
+{
+
+Module::Request::Request() :
 	m_user			(NULL),
 	m_readHandler	(NULL),
 	m_writeHandler	(NULL),
@@ -12,19 +15,19 @@ CgiModule::Request::Request() :
 	m_state			(STATE_IDLE),
 	m_options		(RUNTIME_BASE)
 {
-	m_env.envBase.reserve(Cgi::ENV_COUNT);
+	m_env.envBase.reserve(Cgi::Env::Enum::COUNT);
 	for (size_t i = 0; i < CALLBACK_COUNT; i++)
 		m_userCallbacks[i] = NULL;
 }
 
-CgiModule::Request::~Request()
+Module::Request::~Request()
 {
 
 }
 
 
 
-void	CgiModule::Request::mf_reset()
+void	Module::Request::mf_reset()
 {
 	m_extension.clear();
 	m_scriptPath.clear();
@@ -42,7 +45,7 @@ void	CgiModule::Request::mf_reset()
 	m_options = RUNTIME_BASE;
 }
 
-CgiModule::Request::Request(const Request &copy) :
+Module::Request::Request(const Request &copy) :
 	m_user(copy.m_user),
 	m_readHandler(copy.m_readHandler),
 	m_writeHandler(copy.m_writeHandler),
@@ -54,7 +57,7 @@ CgiModule::Request::Request(const Request &copy) :
 	m_env.envExtra = copy.m_env.envExtra;
 }
 
-CgiModule::Request&	CgiModule::Request::operator=(const Request &assign)
+Module::Request&	Module::Request::operator=(const Request &assign)
 {
 	if (this == &assign)
 		return (*this);
@@ -70,3 +73,5 @@ CgiModule::Request&	CgiModule::Request::operator=(const Request &assign)
 	
 	return (*this);
 }
+
+}; // namespace Cgi

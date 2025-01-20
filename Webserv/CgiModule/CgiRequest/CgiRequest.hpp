@@ -5,54 +5,57 @@
 # define CGIREQUEST_HPP
 
 //Project Headers
-# include "../Cgi_Definitions.h"
+# include "../CgiNamespace.h"
 # include "../CgiModule/CgiModule.hpp"
 
 // C++ headers
 # include <string>
 
-class CgiModule::Request
+namespace Cgi
 {
-	public:
-	
-		void				setUser(CgiModule::User user);
-		void				setUserCallback(const CgiModule::CallbackType type, const CgiModule::Callback handler);
-		void				setReadHandler(CgiModule::IO_Handler handler);
-		void				setWriteHandler(CgiModule::IO_Handler handler);
-		void				setEnvBase(const Cgi::EnvType env, const CgiModule::EnvValue& value);
-		void				setEnvExtra(const CgiModule::EnvKey& key, const CgiModule::EnvValue& value);
-		void				setExtension(const CgiModule::InterpExtension& extension);
-		void				setScriptPath(const std::string& path);
-		void				setTimeoutMs(const unsigned int timeoutMs);
-		void				setRuntimeOptions(CgiModule::RuntimeOptions options);		
+	class Module::Request
+	{
+		public:
+		
+			void				setUser(Module::User user);
+			void				setUserCallback(const Module::CallbackType type, const Module::Callback handler);
+			void				setReadHandler(Module::IO_Handler handler);
+			void				setWriteHandler(Module::IO_Handler handler);
+			void				setEnvBase(const Cgi::Env::Enum::Type env, const Module::EnvValue& value);
+			void				setEnvExtra(const Module::EnvKey& key, const Module::EnvValue& value);
+			void				setExtension(const Module::InterpExtension& extension);
+			void				setScriptPath(const std::string& path);
+			void				setTimeoutMs(const unsigned int timeoutMs);
+			void				setRuntimeOptions(Module::RuntimeOptions options);		
 
-		const EnvVariables& getEnvVars() const;
-		const std::string&	getExtension() const;
-		const std::string&	getScriptPath() const;
-		unsigned int		getTimeoutMs() const;
+			const EnvVariables& getEnvVars() const;
+			const std::string&	getExtension() const;
+			const std::string&	getScriptPath() const;
+			unsigned int		getTimeoutMs() const;
 
-	protected:
-		Request();
-		~Request();
-		Request(const Request &copy);
-		Request &operator=(const Request &assign);
+		protected:
+			Request();
+			~Request();
+			Request(const Request &copy);
+			Request &operator=(const Request &assign);
 
-		CgiModule::User				m_user;
-		CgiModule::IO_Handler		m_readHandler;
-		CgiModule::IO_Handler		m_writeHandler;
-		CgiModule::Callback 		m_userCallbacks[CALLBACK_COUNT];
+			Module::User				m_user;
+			Module::IO_Handler		m_readHandler;
+			Module::IO_Handler		m_writeHandler;
+			Module::Callback 		m_userCallbacks[CALLBACK_COUNT];
 
-		unsigned int				m_timeoutMs;
-		CgiModule::InterpExtension		
-									m_extension;
-		std::string					m_scriptPath;
-		CgiModule::EnvVariables		m_env;
+			unsigned int				m_timeoutMs;
+			Module::InterpExtension		
+										m_extension;
+			std::string					m_scriptPath;
+			Module::EnvVariables		m_env;
 
-		CgiModule::RequestState		m_state;
-		CgiModule::RuntimeOptions	m_options;
+			Module::RequestState		m_state;
+			Module::RuntimeOptions	m_options;
 
-		void						mf_reset();
-};	
-
+			void						mf_reset();
+	};
+	typedef Module::Request Request;
+};
 
 #endif

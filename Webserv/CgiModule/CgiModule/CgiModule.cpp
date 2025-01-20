@@ -4,7 +4,10 @@
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
-CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, EventManager& eventManager, Globals& globals) :
+namespace Cgi
+{
+
+Module::Module(size_t workers, size_t backlog, size_t maxTimeout, EventManager& eventManager, Globals& globals) :
 	m_numWorkers			(workers),
 	m_backlog				(backlog),
 	m_maxTimeout			(maxTimeout),
@@ -34,39 +37,39 @@ CgiModule::CgiModule(size_t workers, size_t backlog, size_t maxTimeout, EventMan
 	}
 		
 	
-	m_baseEnv[Cgi::ENV_AUTH_TYPE] = STR_CGI_AUTH_TYPE;
-	m_baseEnv[Cgi::ENV_CONTENT_LENGTH] = STR_CGI_CONTENT_LENGTH;
-	m_baseEnv[Cgi::ENV_CONTENT_TYPE] = STR_CGI_CONTENT_TYPE;
-	m_baseEnv[Cgi::ENV_GATEWAY_INTERFACE] = STR_CGI_GATEWAY_INTERFACE;
-	m_baseEnv[Cgi::ENV_PATH_INFO] = STR_CGI_PATH_INFO;
-	m_baseEnv[Cgi::ENV_PATH_TRANSLATED] = STR_CGI_PATH_TRANSLATED;
-	m_baseEnv[Cgi::ENV_QUERY_STRING] = STR_CGI_QUERY_STRING;
-	m_baseEnv[Cgi::ENV_REMOTE_ADDR] = STR_CGI_REMOTE_ADDR;
-	m_baseEnv[Cgi::ENV_REMOTE_HOST] = STR_CGI_REMOTE_HOST;
-	m_baseEnv[Cgi::ENV_REMOTE_IDENT] = STR_CGI_REMOTE_IDENT;
-	m_baseEnv[Cgi::ENV_REMOTE_USER] = STR_CGI_REMOTE_USER;
-	m_baseEnv[Cgi::ENV_REQUEST_METHOD] = STR_CGI_REQUEST_METHOD;
-	m_baseEnv[Cgi::ENV_SCRIPT_NAME] = STR_CGI_SCRIPT_NAME;
-	m_baseEnv[Cgi::ENV_SERVER_NAME] = STR_CGI_SERVER_NAME;
-	m_baseEnv[Cgi::ENV_SERVER_PORT] = STR_CGI_SERVER_PORT;
-	m_baseEnv[Cgi::ENV_SERVER_PROTOCOL] = STR_CGI_SERVER_PROTOCOL;
-	m_baseEnv[Cgi::ENV_SERVER_SOFTWARE] = STR_CGI_SERVER_SOFTWARE;
+	m_baseEnv[Cgi::Env::Enum::AUTH_TYPE] 			= Cgi::Env::Str::AUTH_TYPE;
+	m_baseEnv[Cgi::Env::Enum::CONTENT_LENGTH] 		= Cgi::Env::Str::CONTENT_LENGTH;
+	m_baseEnv[Cgi::Env::Enum::CONTENT_TYPE] 		= Cgi::Env::Str::CONTENT_TYPE;
+	m_baseEnv[Cgi::Env::Enum::GATEWAY_INTERFACE] 	= Cgi::Env::Str::GATEWAY_INTERFACE;
+	m_baseEnv[Cgi::Env::Enum::PATH_INFO] 			= Cgi::Env::Str::PATH_INFO;
+	m_baseEnv[Cgi::Env::Enum::PATH_TRANSLATED] 		= Cgi::Env::Str::PATH_TRANSLATED;
+	m_baseEnv[Cgi::Env::Enum::QUERY_STRING] 		= Cgi::Env::Str::QUERY_STRING;
+	m_baseEnv[Cgi::Env::Enum::REMOTE_ADDR] 			= Cgi::Env::Str::REMOTE_ADDR;
+	m_baseEnv[Cgi::Env::Enum::REMOTE_HOST] 			= Cgi::Env::Str::REMOTE_HOST;
+	m_baseEnv[Cgi::Env::Enum::REMOTE_IDENT] 		= Cgi::Env::Str::REMOTE_IDENT;
+	m_baseEnv[Cgi::Env::Enum::REMOTE_USER] 			= Cgi::Env::Str::REMOTE_USER;
+	m_baseEnv[Cgi::Env::Enum::REQUEST_METHOD] 		= Cgi::Env::Str::REQUEST_METHOD;
+	m_baseEnv[Cgi::Env::Enum::SCRIPT_NAME] 			= Cgi::Env::Str::SCRIPT_NAME;
+	m_baseEnv[Cgi::Env::Enum::SERVER_NAME] 			= Cgi::Env::Str::SERVER_NAME;
+	m_baseEnv[Cgi::Env::Enum::SERVER_PORT] 			= Cgi::Env::Str::SERVER_PORT;
+	m_baseEnv[Cgi::Env::Enum::SERVER_PROTOCOL] 		= Cgi::Env::Str::SERVER_PROTOCOL;
+	m_baseEnv[Cgi::Env::Enum::SERVER_SOFTWARE] 		= Cgi::Env::Str::SERVER_SOFTWARE;
 }
 
-CgiModule::~CgiModule()
+Module::~Module()
 {
 	stopAndReset();
 }
 
 //private as usual, bare minimum implementation to compile
-CgiModule::CgiModule(const CgiModule &copy) :
+Module::Module(const Module &copy) :
 	m_timerTracker			(0),
 	m_eventManager			(copy.m_eventManager),
 	m_globals				(copy.m_globals) {}
 
-CgiModule& CgiModule::operator=(const CgiModule &assign) {(void)assign; return (*this);}
+Module& Module::operator=(const Module &assign) {(void)assign; return (*this);}
 
-
+}; // namespace Cgi
 
 
 

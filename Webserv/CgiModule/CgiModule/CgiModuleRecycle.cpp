@@ -4,8 +4,11 @@
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
+namespace Cgi
+{
+
 void
-CgiModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
+Module::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 {
     InternalRequest* newData;
 
@@ -28,7 +31,7 @@ CgiModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 }
 
 void
-CgiModule::mf_recycleRequestData(InternalRequest& data)
+Module::mf_recycleRequestData(InternalRequest& data)
 {	
 	TimerTracker<Timer, InternalRequest*>::iterator 	timer;
 
@@ -42,34 +45,34 @@ CgiModule::mf_recycleRequestData(InternalRequest& data)
 }
 
 void
-CgiModule::mf_recycleSuccess(Worker& worker)
+Module::mf_recycleSuccess(Worker& worker)
 {
 	mf_recycleExecutionUnit(worker, true, CALLBACK_ON_SUCCESS);
 }
 
 
 void
-CgiModule::mf_recycleRuntimeFailure(Worker& worker)
+Module::mf_recycleRuntimeFailure(Worker& worker)
 {
 	worker.stop();
 	mf_recycleExecutionUnit(worker, true, CALLBACK_ON_ERROR_RUNTIME);
 }
 
 void
-CgiModule::mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale)
+Module::mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale)
 {
 	mf_recycleExecutionUnit(worker, markFdsAsStale, CALLBACK_ON_ERROR_STARTUP);
 }
 
 void
-CgiModule::mf_recycleTimeoutFailure(Worker& worker)
+Module::mf_recycleTimeoutFailure(Worker& worker)
 {
 	worker.stop();
 	mf_recycleExecutionUnit(worker, false, CALLBACK_ON_ERROR_TIMEOUT);
 }
 
 void
-CgiModule::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
+Module::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
 {
 	Worker*		worker = data.accessExecutor();
 	
@@ -78,7 +81,7 @@ CgiModule::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
 }
 
 void
-CgiModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser)
+Module::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser)
 {
 	InternalRequest* 	data = worker.accessRequestData();
 	User 				user = data->getUser();
@@ -90,3 +93,5 @@ CgiModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, Callback
 	if (user && handler)
 		(handler)(user);
 }
+
+}; // namespace Cgi

@@ -22,7 +22,10 @@
 	Fork, child does child, parent does parent
 */
 
-void   CgiModule::Worker::execute(bool markFdsAsStale)
+namespace Cgi
+{
+
+void   Module::Worker::execute(bool markFdsAsStale)
 {
 	RuntimeOptions options;
 
@@ -89,7 +92,7 @@ void   CgiModule::Worker::execute(bool markFdsAsStale)
 	Parent just closes the pipe ends that doesn't use and simply waits for the EventManager
 	to inform it that the child process has exited -> Events
 */
-void	CgiModule::Worker::mf_executeParent(bool markFdsAsStale)
+void	Module::Worker::mf_executeParent(bool markFdsAsStale)
 {
 	RuntimeOptions options;
 
@@ -148,7 +151,7 @@ static void childCloseFd(t_fd fd)
 
 
 
-void	CgiModule::Worker::mf_executeChild()
+void	Module::Worker::mf_executeChild()
 {
 	char EmergencyCode[2];
 
@@ -193,12 +196,12 @@ void	CgiModule::Worker::mf_executeChild()
 	Putting env variables in place for execution.
 	Try-catch because the DynArray may throw if it fails to allocate memory
 */
-bool	CgiModule::Worker::mf_prepareExecve()
+bool	Module::Worker::mf_prepareExecve()
 {
 	typedef DynArray<std::pair<EnvKey, EnvValue> >::const_iterator	t_EnvExtraIter;
 
 	const EnvVariables& 			envRequest = m_curRequestData->getEnvVars();
-	const StackArray<EnvKey, Cgi::ENV_COUNT>&
+	const StackArray<EnvKey, Cgi::Env::Enum::COUNT>&
 									envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	std::string						temp;
@@ -250,5 +253,5 @@ bool	CgiModule::Worker::mf_prepareExecve()
 	return (false);
 }
 
-
+}; // namespace Cgi
 

@@ -3,32 +3,34 @@
 // Project Headers
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
-#include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
 
+namespace Cgi
+{
 
-void	CgiModule::Worker::mf_EventCallback_onRead(::Callback& callback)
+void	Module::Worker::mf_EventCallback_onRead(::Callback& callback)
 {
 	Worker* worker = static_cast<Worker*>(callback.getData());
 	worker->mf_readScript();
 }
 
-void	CgiModule::Worker::mf_EventCallback_onWrite(::Callback& callback)
+void	Module::Worker::mf_EventCallback_onWrite(::Callback& callback)
 {
 	Worker* worker = static_cast<Worker*>(callback.getData());
 	worker->mf_writeScript();
 }
 
-void	CgiModule::Worker::mf_EventCallback_OnEmergency(::Callback& event)
+void	Module::Worker::mf_EventCallback_OnEmergency(::Callback& event)
 {
 	Worker* worker = static_cast<Worker*>(event.getData());
 	worker->mf_readEmergencyPhone();
 }
 
-void	CgiModule::Worker::mf_readScript()
+void	Module::Worker::mf_readScript()
 {
 	int triggeredFlags;
 	int bytesRead;
@@ -58,7 +60,7 @@ void	CgiModule::Worker::mf_readScript()
 	}
 }
 
-void	CgiModule::Worker::mf_writeScript()
+void	Module::Worker::mf_writeScript()
 {
 	int bytesWritten;
 	int triggeredFlags;
@@ -105,7 +107,7 @@ void	CgiModule::Worker::mf_writeScript()
 
 */
 
-void	CgiModule::Worker::mf_disableCloseMyEvent(Event& myEvent, bool markAsStale)
+void	Module::Worker::mf_disableCloseMyEvent(Event& myEvent, bool markAsStale)
 {
 	t_fd fd = myEvent.getFd();
 
@@ -116,14 +118,14 @@ void	CgiModule::Worker::mf_disableCloseMyEvent(Event& myEvent, bool markAsStale)
 	myEvent.setFd(-1);
 }
 
-void	CgiModule::Worker::disableCloseAllEvents(bool markAsStale)
+void	Module::Worker::disableCloseAllEvents(bool markAsStale)
 {
 	mf_disableCloseMyEvent(m_EmergencyEvent, markAsStale);
 	mf_disableCloseMyEvent(m_readEvent, markAsStale);
 	mf_disableCloseMyEvent(m_writeEvent, markAsStale);
 }
 
-void	CgiModule::Worker::mf_readEmergencyPhone()
+void	Module::Worker::mf_readEmergencyPhone()
 {
 	int		triggeredFlags;
 	int		bytesRead;
@@ -161,3 +163,5 @@ void	CgiModule::Worker::mf_readEmergencyPhone()
 		return (mf_childFailure());
 	}
 }
+
+}; // namespace Cgi

@@ -4,20 +4,16 @@
 
 # define TESTPROTOREQUEST_HPP
 
-
-#include "../../Cgi_Definitions.h"
 #include "../../../Callback/Callback.hpp"
 #include "../../CgiRequest/CgiRequest.hpp"
 #include "../../CgiModule/CgiModule.hpp"
 
-class EventManager;
 class Globals;
-class CgiModule;
 
 class TestProtoRequest
 {
     public:
-		TestProtoRequest(Globals& globals, CgiModule& cgi, int id);
+		TestProtoRequest(Globals& globals, Cgi::Module& cgi, int id);
 		~TestProtoRequest();
 		TestProtoRequest(const TestProtoRequest& copy);
 		
@@ -28,8 +24,8 @@ class TestProtoRequest
 		void	cancelCgi();		// on error runtime
 		void	timeoutCgi();
 
-		CgiModule::BytesRead		CgiRead(int readFd);
-		CgiModule::BytesWritten		CgiWrite(int writeFd);
+		Cgi::Module::BytesRead		CgiRead(int readFd);
+		Cgi::Module::BytesWritten		CgiWrite(int writeFd);
 
 		void	debugPrint() const;
 
@@ -47,9 +43,9 @@ class TestProtoRequest
 		void	printBufStdout();
 
 		Globals&			m_globals;
-		CgiModule&			m_cgi;
+		Cgi::Module&			m_cgi;
 		
-		CgiModule::Request*	m_CgiRequestData;
+		Cgi::Request*		m_CgiRequestData;
 
 		std::string			m_msgBody;
 		
@@ -67,15 +63,15 @@ class TestProtoRequest_CgiGateway
 {
 	public:
 		// Generic handlers to provide to CgiRequestData
-		static void onSuccess(CgiModule::User user);
-		static void onErrorStartup(CgiModule::User user);
-		static void onErrorRuntime(CgiModule::User user);
-		static void onErrorTimeOut(CgiModule::User user);
+		static void onSuccess(Cgi::Module::User user);
+		static void onErrorStartup(Cgi::Module::User user);
+		static void onErrorRuntime(Cgi::Module::User user);
+		static void onErrorTimeOut(Cgi::Module::User user);
 
-		static CgiModule::BytesRead 		onRead(CgiModule::User user, int readFd);
-		static CgiModule::BytesWritten 		onWrite(CgiModule::User user, int writeFd);
+		static Cgi::Module::BytesRead 		onRead(Cgi::Module::User user, int readFd);
+		static Cgi::Module::BytesWritten 		onWrite(Cgi::Module::User user, int writeFd);
 
-		static void (*Callbacks[CgiModule::CALLBACK_COUNT])(CgiModule::User user);
+		static void (*Callbacks[Cgi::Module::CALLBACK_COUNT])(Cgi::Module::User user);
 };
 
 

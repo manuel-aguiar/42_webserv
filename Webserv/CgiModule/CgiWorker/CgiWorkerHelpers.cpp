@@ -13,7 +13,10 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-void	CgiModule::Worker::mf_KillWaitChild()
+namespace Cgi
+{
+
+void	Module::Worker::mf_KillWaitChild()
 {
 	if (m_pid == -1)
 		return ;
@@ -22,7 +25,7 @@ void	CgiModule::Worker::mf_KillWaitChild()
 	m_pid = -1;
 }
 
-void	CgiModule::Worker::mf_childFailure()
+void	Module::Worker::mf_childFailure()
 {
 	std::string errorMsg;
 	
@@ -43,7 +46,7 @@ void	CgiModule::Worker::mf_childFailure()
 }
 
 
-void	CgiModule::Worker::mf_waitChild()
+void	Module::Worker::mf_waitChild()
 {
 	int status;
 	
@@ -62,9 +65,11 @@ void	CgiModule::Worker::mf_waitChild()
 		m_CgiModule.mf_recycleSuccess(*this);
 }
 
-void 	CgiModule::Worker::mf_closeFd(t_fd& fd)
+void 	Module::Worker::mf_closeFd(t_fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
 		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
 	fd = -1;
 }
+
+}; // namespace Cgi

@@ -4,13 +4,16 @@
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
 # include "CgiModule.hpp"
 
+namespace Cgi
+{
+
 /*
 	Provide the caller with one CgiRequestData object if available,
 	such tha the user can fill it and enqueue for execution.
 
 	This function is expected to be SAFE to be called from an event handler (Callback).
 */
-CgiModule::Request*	CgiModule::acquireRequest()
+Module::Request*	Module::acquireRequest()
 {
 	InternalRequest*     data;
 
@@ -33,7 +36,7 @@ CgiModule::Request*	CgiModule::acquireRequest()
 	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
 	from an event handler (Callback).
 */
-void	CgiModule::enqueueRequest(Request& request, bool isCalledFromEventLoop)
+void	Module::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 {
 	Worker*						worker;	
 	InternalRequest*					requestData;
@@ -79,12 +82,12 @@ void	CgiModule::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 	
 	IT IS NOT A SAFE FUNCTION TO BE CALLED FROM AN EVENT HANDLER (Callback).
 */
-int		CgiModule::processRequests()
+int		Module::processRequests()
 {
 	return (mf_finishTimedOut());
 }
 
-void	CgiModule::modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop)
+void	Module::modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
 	RequestState		state;
@@ -138,7 +141,7 @@ void	CgiModule::modifyRequest(Request& data, RuntimeOptions newOptions, bool isC
 
 	This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
 */
-void	CgiModule::finishRequest(Request& request, bool isCalledFromEventLoop)
+void	Module::finishRequest(Request& request, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
 	RequestState		state;
@@ -166,7 +169,7 @@ void	CgiModule::finishRequest(Request& request, bool isCalledFromEventLoop)
 	It closes fds, IT IS NOT SAFE TO BE CALLED FROM AN EVENT HANDLER (Callback).
 */
 
-void	CgiModule::stopAndReset()
+void	Module::stopAndReset()
 {
 	InternalRequest* data;
 
@@ -188,3 +191,4 @@ void	CgiModule::stopAndReset()
 	m_executionQueue.clear();
 }
 
+}; // namespace Cgi

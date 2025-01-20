@@ -10,7 +10,7 @@ extern int TestPart2(int testNumber);
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** CgiModule Functional Tests ***************" << std::endl;
+	std::cout << "\n*************** Module Functional Tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
 	//testNumber = TestPart2(testNumber);

@@ -33,7 +33,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
 	}
@@ -51,9 +51,9 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
-		CgiModule::Request* data = cgi.acquireRequest();
+		Cgi::Request* data = cgi.acquireRequest();
 		(void)data;
 		std::cout << "	PASSED (acquiring and just going away)" << std::endl;
 	}
@@ -71,7 +71,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		cgi.processRequests();
 		std::cout << "	PASSED (finish timeout with empty queues)" << std::endl;
@@ -92,7 +92,7 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
@@ -100,14 +100,14 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
-		protoRequest.m_CgiRequestData->setRuntimeOptions(CgiModule::HOLD_WRITE);
+		protoRequest.m_CgiRequestData->setRuntimeOptions(Cgi::Module::HOLD_WRITE);
 
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); // 5ms
 		protoRequest.m_CgiRequestData->setExtension("py");
@@ -115,12 +115,12 @@ int TestPart1(int testNumber)
 		
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
-		cgi.modifyRequest(*protoRequest.m_CgiRequestData, CgiModule::RESTART_WRITE, false);
+		cgi.modifyRequest(*protoRequest.m_CgiRequestData, Cgi::Module::RESTART_WRITE, false);
 
 		//event loop
 		while (1)
@@ -140,7 +140,7 @@ int TestPart1(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
@@ -167,7 +167,7 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 500, eventManager, globals);
+		Cgi::Module cgi(10, 100, 500, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
@@ -175,10 +175,10 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -187,7 +187,7 @@ int TestPart1(int testNumber)
 
 		
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(200); //0.2ms
 		
 		// false, we will cancel
@@ -218,7 +218,7 @@ int TestPart1(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_TIMEOUT)
@@ -250,17 +250,17 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "potato");
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -268,7 +268,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
@@ -294,7 +294,7 @@ int TestPart1(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::string expectedError("InternalCgiWorker::mf_executeChild(), execve(): No such file or directory");
@@ -333,17 +333,17 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 5000, eventManager, globals);
+		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		cgi.addInterpreter("py", "/usr/bin/python3");
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -351,7 +351,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("asfafasfasfasfasf");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 
@@ -391,11 +391,11 @@ int TestPart1(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + '\n' + "CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			testFailure = testFailure + '\n' + "Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 		
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
-			testFailure = testFailure + '\n' + "CgiModule did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			testFailure = testFailure + '\n' + "Cgi::Module did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 		
 
@@ -426,16 +426,16 @@ int TestPart1(int testNumber)
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		CgiModule cgi(10, 100, 1000, eventManager, globals);
+		Cgi::Module cgi(10, 100, 1000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setUserCallback(CgiModule::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
 		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
 
@@ -443,7 +443,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::ENV_AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 
@@ -471,7 +471,7 @@ int TestPart1(int testNumber)
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::string expectedError("InternalCgiWorker::mf_prepareExecve(): interpreter not found");

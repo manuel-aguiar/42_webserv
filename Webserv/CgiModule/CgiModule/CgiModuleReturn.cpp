@@ -5,21 +5,24 @@
 # include "CgiModule.hpp"
 
 
+namespace Cgi
+{
+
 void
-CgiModule::mf_returnWorker(Worker& worker)
+Module::mf_returnWorker(Worker& worker)
 {
 	m_availableWorkers.push_back(&worker);
 	m_busyWorkerCount--;
 }
 
 void
-CgiModule::mf_returnRequestData(InternalRequest& data)
+Module::mf_returnRequestData(InternalRequest& data)
 {
 	mf_recycleRequestData(data);
 }
 
 void
-CgiModule::mf_cancelAndReturn(InternalRequest& data)
+Module::mf_cancelAndReturn(InternalRequest& data)
 {
 	Worker*		worker = data.accessExecutor();
 	
@@ -28,7 +31,7 @@ CgiModule::mf_cancelAndReturn(InternalRequest& data)
 }
 
 void
-CgiModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, CgiModule::CallbackType callUser)
+Module::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, Module::CallbackType callUser)
 {
 	InternalRequest* 	data = worker.accessRequestData();
 	User 				user = data->getUser();
@@ -40,3 +43,5 @@ CgiModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, CgiModule
 	if (user && handler)
 		(handler)(user);
 }
+
+}; // namespace Cgi

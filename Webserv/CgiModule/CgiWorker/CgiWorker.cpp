@@ -7,13 +7,14 @@
 #include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
-//#include "../python-cgi/pythonCgi.hpp"
-
 // C Headers
 # include <unistd.h>
 # include <sys/wait.h>
 
-CgiModule::Worker::Worker(CgiModule& cgi) :
+namespace Cgi
+{
+
+Module::Worker::Worker(Module& cgi) :
 	m_curRequestData	(NULL),
 	m_pid				(-1),
 	m_CgiModule			(cgi)
@@ -41,12 +42,12 @@ CgiModule::Worker::Worker(CgiModule& cgi) :
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
 }
 
-CgiModule::Worker::~Worker()
+Module::Worker::~Worker()
 {
 
 }
 
-void    CgiModule::Worker::reset()
+void    Module::Worker::reset()
 {
 	m_pid = -1;
 	
@@ -73,59 +74,59 @@ void    CgiModule::Worker::reset()
 }
 
 
-void	CgiModule::Worker::stop()
+void	Module::Worker::stop()
 {
 	mf_KillWaitChild();
 }
 
-void	CgiModule::Worker::assignRequestData(InternalRequest& data)
+void	Module::Worker::assignRequestData(InternalRequest& data)
 {
 	m_curRequestData = &data;
 }
 
-CgiModule::InternalRequest*	CgiModule::Worker::accessRequestData()
+Module::InternalRequest*	Module::Worker::accessRequestData()
 {
 	return (m_curRequestData);
 }
 
 void
-CgiModule::Worker::disableReadEvent(bool markAsStale)
+Module::Worker::disableReadEvent(bool markAsStale)
 {
 	mf_disableCloseMyEvent(m_readEvent, markAsStale);
 }
 
 void
-CgiModule::Worker::disableWriteEvent(bool markAsStale)
+Module::Worker::disableWriteEvent(bool markAsStale)
 {
 	mf_disableCloseMyEvent(m_writeEvent, markAsStale);
 }
 
 void
-CgiModule::Worker::disableEmergencyEvent(bool markAsStale)
+Module::Worker::disableEmergencyEvent(bool markAsStale)
 {
 	mf_disableCloseMyEvent(m_EmergencyEvent, markAsStale);
 }
 
 void
-CgiModule::Worker::disableReadHandler()
+Module::Worker::disableReadHandler()
 {
 	m_readEvent.setCallback(NULL, NULL);
 }
 
 void
-CgiModule::Worker::disableWriteHandler()
+Module::Worker::disableWriteHandler()
 {
 	m_writeEvent.setCallback(NULL, NULL);
 }
 
 void
-CgiModule::Worker::disableEmergencyHandler()
+Module::Worker::disableEmergencyHandler()
 {
 	m_EmergencyEvent.setCallback(NULL, NULL);
 }
 
 void
-CgiModule::Worker::disableAllHandlers()
+Module::Worker::disableAllHandlers()
 {
 	disableReadHandler();
 	disableWriteHandler();
@@ -134,25 +135,25 @@ CgiModule::Worker::disableAllHandlers()
 
 
 void
-CgiModule::Worker::enableReadHandler()
+Module::Worker::enableReadHandler()
 {
 	m_readEvent.setCallback(this, mf_EventCallback_onRead);
 }
 
 void
-CgiModule::Worker::enableWriteHandler()
+Module::Worker::enableWriteHandler()
 {
 	m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
 }
 
 void
-CgiModule::Worker::enableEmergencyHandler()
+Module::Worker::enableEmergencyHandler()
 {
 	m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
 }
 
 void
-CgiModule::Worker::enableAllHandlers()
+Module::Worker::enableAllHandlers()
 {
 	enableReadHandler();
 	enableWriteHandler();
@@ -160,9 +161,11 @@ CgiModule::Worker::enableAllHandlers()
 }
 
 // private, bare minimum to compile
-CgiModule::Worker::Worker(const Worker &other) :
+Module::Worker::Worker(const Worker &other) :
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
 	m_CgiModule(other.m_CgiModule) {}
 
-CgiModule::Worker& CgiModule::Worker::operator=(const Worker &assign){(void)assign; return (*this);}
+Module::Worker& Module::Worker::operator=(const Worker &assign){(void)assign; return (*this);}
+
+}; // namespace Cgi

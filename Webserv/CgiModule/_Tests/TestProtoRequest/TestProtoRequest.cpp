@@ -5,7 +5,7 @@
 
 #include <iomanip>
 
-TestProtoRequest::TestProtoRequest(Globals& globals, CgiModule& cgi, int id) :
+TestProtoRequest::TestProtoRequest(Globals& globals, Cgi::Module& cgi, int id) :
 	m_globals(globals),
 	m_cgi(cgi),
 	m_TotalBytesRead(0),
@@ -60,7 +60,7 @@ void TestProtoRequest::debugPrint() const
 
     // Manager and Globals addresses
     std::cout << "Globals Address: " << &m_globals << std::endl;
-    std::cout << "CgiModule Address: " << &m_cgi << std::endl;
+    std::cout << "Cgi::Module Address: " << &m_cgi << std::endl;
 
     std::cout << "========================================" << std::endl;
 }
