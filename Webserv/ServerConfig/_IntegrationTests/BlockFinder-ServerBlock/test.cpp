@@ -1,5 +1,6 @@
 #include "TestDependencies.hpp"
 #include <arpa/inet.h>
+#include <cstdlib>
 
 // Helper function to create sockaddr
 static struct sockaddr_in* createSockAddr(const std::string& ip, const std::string& port) {

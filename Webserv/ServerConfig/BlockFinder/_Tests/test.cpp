@@ -1,6 +1,7 @@
 #include "BlockFinder.hpp"
 #include <iomanip>
 #include <arpa/inet.h>
+#include <cstdlib>
 
 // Helper functions for testing
 static struct sockaddr_in* createSockAddr(const std::string& ip, const std::string& port) {

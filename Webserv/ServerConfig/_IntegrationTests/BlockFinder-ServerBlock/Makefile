@@ -8,10 +8,10 @@ CXX			= c++
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g
 
 # Directories
-ROOT_DIR	= ../../..
-UTILS_DIR	= $(ROOT_DIR)/GenericUtils
-CONFIG_DIR	= $(ROOT_DIR)/ServerConfig
-TEST_DIR	= .
+ROOT_PATH = $(shell git rev-parse --show-toplevel)
+UTILS_DIR = $(ROOT_PATH)/Webserv/GenericUtils
+CONFIG_DIR = $(ROOT_PATH)/Webserv/ServerConfig
+TEST_DIR = .
 
 # Target
 NAME		= test.out
@@ -60,7 +60,7 @@ $(NAME): $(OBJS)
 
 clean:
 	rm -f $(OBJS)
-	find $(ROOT_DIR) -type d -empty -delete 2>/dev/null || true
+	find $(ROOT_PATH) -type d -empty -delete 2>/dev/null || true
 
 fclean: clean
 	rm -f $(NAME)

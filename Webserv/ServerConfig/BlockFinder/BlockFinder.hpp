@@ -37,11 +37,7 @@ class BlockFinder {
 			std::string serverName;
 
 			// comparison operator
-			bool operator<(const BlockIdentifier& other) const {
-				if (ip != other.ip) return ip < other.ip;
-				if (port != other.port) return port < other.port;
-				return serverName < other.serverName;
-			}
+			bool operator<(const BlockIdentifier& other) const;
 		};
 
 		BlockIdentifier                              		m_wildcardKey;

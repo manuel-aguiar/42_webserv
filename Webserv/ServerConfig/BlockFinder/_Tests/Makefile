@@ -8,6 +8,8 @@ CXX			= c++
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g -DTESTMODE
 
 # Directories
+ROOT_PATH = $(shell git rev-parse --show-toplevel)
+UTILS_DIR = $(ROOT_PATH)/Webserv/GenericUtils
 TEST_DIR = .
 SRC_DIR = ..
 PARSER_DIR = ../parsers

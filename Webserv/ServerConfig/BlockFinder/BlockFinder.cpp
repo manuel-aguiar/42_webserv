@@ -127,3 +127,9 @@ void	BlockFinder::removeServerBlock(struct sockaddr* address, const std::string&
     if (it != m_serverBlocks.end())
         m_serverBlocks.erase(it);
 }
+
+bool BlockFinder::BlockIdentifier::operator<(const BlockIdentifier& other) const {
+    if (ip != other.ip) return ip < other.ip;
+    if (port != other.port) return port < other.port;
+    return serverName < other.serverName;
+}
