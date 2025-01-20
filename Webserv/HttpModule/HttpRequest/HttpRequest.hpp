@@ -14,15 +14,23 @@ class HttpConnection;
 class HttpSession;
 
 // Request integrity status codes
-struct RequestStatus {
-    static const int OK = 200;
-    static const int BAD_REQUEST = 400;
-    static const int METHOD_NOT_ALLOWED = 405;
-    static const int URI_TOO_LONG = 414;
-    static const int HEADERS_TOO_LARGE = 431;
-    static const int INTERNAL_ERROR = 500;
+namespace Http
+{
+    namespace Status
+    {
+        enum
+        {
+            OK = 200,
+            BAD_REQUEST = 400,
+            METHOD_NOT_ALLOWED = 405,
+            URI_TOO_LONG = 414,
+            HEADERS_TOO_LARGE = 431,
+            INTERNAL_ERROR = 500
+        };
+    }
+    
+    // more http stuff
 };
-
 
 class HttpRequest {
     public:

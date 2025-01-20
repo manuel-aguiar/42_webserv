@@ -55,7 +55,7 @@ const std::set<std::string> HttpRequest::OPTIONAL_HEADERS = initOptionalHeaders(
 
 
 HttpRequest::HttpRequest()
-    : m_status(RequestStatus::OK)
+    : m_status(Http::Status::OK)
     , m_timeout(30) // 30 seconds default timeout
     , m_httpConn(NULL)
     , m_session(NULL)
@@ -67,16 +67,16 @@ HttpRequest::~HttpRequest()
 int HttpRequest::parse(const std::string& rawData)
 {
     // Reset state before parsing
-    m_status = RequestStatus::OK;
+    m_status = Http::Status::OK;
 
     try {
         size_t pos = rawData.find("\r\n"); // goes until the CRLF
         if (pos == std::string::npos)
-            return (RequestStatus::BAD_REQUEST);
+            return (Http::Status::BAD_REQUEST);
 
         // Parse request line
         m_status = mf_parseRequestLine(rawData.substr(0, pos));
-        if (m_status != RequestStatus::OK)
+        if (m_status != Http::Status::OK)
             return m_status;
 
         // TODO: check if logic below breaks
@@ -84,11 +84,11 @@ int HttpRequest::parse(const std::string& rawData)
         size_t headerStart = pos + 2;
         pos = rawData.find("\r\n\r\n", headerStart);
         if (pos == std::string::npos)
-            return (RequestStatus::BAD_REQUEST);
+            return (Http::Status::BAD_REQUEST);
 
         // Parse headers section
         m_status = mf_parseHeaders(rawData.substr(headerStart, pos - headerStart));
-        if (m_status != RequestStatus::OK)
+        if (m_status != Http::Status::OK)
             return m_status;
 
         // On POST request, parse the body
@@ -100,7 +100,7 @@ int HttpRequest::parse(const std::string& rawData)
         return m_status;
     }
     catch (const std::exception& e) {
-        return RequestStatus::INTERNAL_ERROR;
+        return Http::Status::INTERNAL_ERROR;
     }
 }
 
