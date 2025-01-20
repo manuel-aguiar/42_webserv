@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 15:52:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/20 16:38:12 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:08:28 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ typedef Cgi::Module::Request					CgiRequest;
 typedef Cgi::Module::Options					CgiOptions;
 typedef Cgi::Module::User						CgiUser;
 typedef Cgi::Module::IO_Callback				CgiIO_Callback;
-typedef Cgi::Module::IO_Callback::BytesCount	CgiIO_BytesCount;
 typedef Cgi::Module::Runtime_Callback			CgiRuntime_Callback;
 typedef Cgi::Module::EnvKey						CgiEnvKey;
 typedef Cgi::Module::EnvValue					CgiEnvValue;
