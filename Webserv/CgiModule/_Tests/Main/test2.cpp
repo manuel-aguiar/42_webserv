@@ -10,6 +10,7 @@
 # include "../../../Globals/Globals.hpp"
 # include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/_Tests/test.h"
 
 //C++ headers
@@ -92,11 +93,11 @@ int TestPart2(int testNumber)
 
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			throw std::runtime_error("CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||

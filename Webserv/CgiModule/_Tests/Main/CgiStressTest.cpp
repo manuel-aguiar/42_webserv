@@ -8,6 +8,7 @@
 # include "../../../Globals/Globals.hpp"
 # include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/_Tests/test.h"
 # include "CgiStressTest.hpp"
 
@@ -292,11 +293,11 @@ int CgiStressTest::StressTest(int testNumber,
 		}
 
 		if (eventManager.getSubscribeCount() != 0)
-			FailureMessages = FailureMessages + "EventManager still has events, got " + to_string(eventManager.getSubscribeCount())
+			FailureMessages = FailureMessages + "EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
-			FailureMessages = FailureMessages + "CgiModule still has workers rolling, got " + to_string(cgi.getBusyWorkerCount())
+			FailureMessages = FailureMessages + "CgiModule still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
 			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 
@@ -307,16 +308,16 @@ int CgiStressTest::StressTest(int testNumber,
 			switch (requests[i].m_CgiResultStatus)
 			{
 				case TestProtoRequest::E_CGI_STATUS_WORKING:
-					FailureMessages = FailureMessages + to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+					FailureMessages = FailureMessages + StringUtils::to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 					break;
 				case TestProtoRequest::E_CGI_STATUS_SUCCESS:
 
 					if (::strlen(requests[i].m_buffer) != requests[i].m_ExpectedOutput.size()
 					|| std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
-						FailureMessages = FailureMessages + '\n' + to_string(i) + " failed: " 
-						+ to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n"
-						+ "expected:\n" + to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
+						FailureMessages = FailureMessages + '\n' + StringUtils::to_string(i) + " failed: " 
+						+ StringUtils::to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n"
+						+ "expected:\n" + StringUtils::to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
 					}
 					break ;
 				default:
