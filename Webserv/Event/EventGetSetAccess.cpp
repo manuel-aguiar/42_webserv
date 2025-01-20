@@ -4,7 +4,7 @@
 
 // getters
 
-t_fd						Event::getFd() const
+Ws::fd						Event::getFd() const
 {
 	return (m_fd);
 }
@@ -26,7 +26,7 @@ int							Event::getTriggeredFlags() const
 
 // setters
 
-void	Event::setFd(const t_fd fd)
+void	Event::setFd(const Ws::fd fd)
 {
 	m_fd = fd;
 }
@@ -41,22 +41,8 @@ void	Event::setTriggeredFlags(int flags)
 	m_triggeredFlags = flags;
 }
 
-void	Event::setFdFlags(const t_fd fd, int flags)
+void	Event::setCallback(const Callback::Data data, const Callback::Handler handler)
 {
-	m_fd = fd;
-	m_monitoredFlags = flags;
-}
-
-void	Event::setCallback(const t_ptr_callback_data data, const t_func_callback_handler handler)
-{
-	m_callback.setData(data);
-	m_callback.setHandler(handler);
-}
-
-void	Event::setFdFlagsCallback(const t_fd fd, int flags, const t_ptr_callback_data data, const t_func_callback_handler handler)
-{
-	m_fd = fd;
-	m_monitoredFlags = flags;
 	m_callback.setData(data);
 	m_callback.setHandler(handler);
 }

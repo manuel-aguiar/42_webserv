@@ -65,7 +65,7 @@ void	Module::Worker::mf_waitChild()
 		m_CgiModule.mf_recycleSuccess(*this);
 }
 
-void 	Module::Worker::mf_closeFd(t_fd& fd)
+void 	Module::Worker::mf_closeFd(Ws::fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
 		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));

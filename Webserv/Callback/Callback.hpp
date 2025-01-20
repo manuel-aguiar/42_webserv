@@ -4,34 +4,33 @@
 
 # define CALLBACK_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
-
-//callback typedefs
-
 class Callback
 {
 	public:
+		typedef void* Data;
+		typedef void (*Handler)(Callback& callback);
+
 		Callback();
 		~Callback();
 		Callback(const Callback& copy);
 		Callback& operator=(const Callback& assign);
 
 		//methods
-		void						execute();
-		void						reset();
+		void		execute();
+		void		reset();
 
 		//getters
-		t_ptr_callback_data			getData()				const;
-		t_func_callback_handler		getHandler()			const;
+		Data		getData()		const;
+		Handler		getHandler()	const;
 
 		//setters
-		void						setData(const t_ptr_callback_data data);
-		void						setHandler(const t_func_callback_handler handler);
-		void						setData_Handler(const t_ptr_callback_data data, const t_func_callback_handler handler);
+		void		setData(const Callback::Data data);
+		void		setHandler(const Callback::Handler handler);
+		void		setData_Handler(const Callback::Data data, const Callback::Handler handler);
 
 	private:
-		t_ptr_callback_data			m_data;
-		t_func_callback_handler		m_handler;
+		Data		m_data;
+		Handler		m_handler;
 
 };
 

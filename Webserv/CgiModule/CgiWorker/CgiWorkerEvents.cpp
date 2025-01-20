@@ -109,7 +109,7 @@ void	Module::Worker::mf_writeScript()
 
 void	Module::Worker::mf_disableCloseMyEvent(Event& myEvent, bool markAsStale)
 {
-	t_fd fd = myEvent.getFd();
+	Ws::fd fd = myEvent.getFd();
 
 	if (fd == -1)
 		return ;

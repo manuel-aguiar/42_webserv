@@ -141,7 +141,7 @@ void	Module::Worker::mf_executeParent(bool markFdsAsStale)
 	know that everything went smoothly, and to peacefully waitpid the child.
 */
 
-static void childCloseFd(t_fd fd)
+static void childCloseFd(Ws::fd fd)
 {
 	if (fd != -1)
 		::close(fd);

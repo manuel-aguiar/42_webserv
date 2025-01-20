@@ -55,9 +55,9 @@ namespace Cgi
 			DynArray<char *>	m_argPtr;
 
 			// pipes and buffers
-			t_fd				m_ParentToChild[2];
-			t_fd				m_ChildToParent[2];
-			t_fd				m_EmergencyPhone[2];
+			Ws::fd				m_ParentToChild[2];
+			Ws::fd				m_ChildToParent[2];
+			Ws::fd				m_EmergencyPhone[2];
 			char				m_EmergencyBuffer[2];
 			int					m_EmergencyBytesRead;
 			Event				m_EmergencyEvent;
@@ -93,7 +93,7 @@ namespace Cgi
 			void				mf_disableCloseMyEvent(::Event& myEvent, bool markAsStale = true);
 
 			// Other helpers
-			void				mf_closeFd(t_fd& fd);
+			void				mf_closeFd(Ws::fd& fd);
 			void				mf_childFailure();
 			void				mf_waitChild();
 			void				mf_KillWaitChild();

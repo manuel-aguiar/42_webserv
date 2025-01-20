@@ -14,30 +14,25 @@ class Event
 		~Event();
 
 		//methods
-		void						handle();
-		void						reset();
+		void		handle();
+		void		reset();
 
 		//getters
-		t_fd						getFd()					const;
-		int							getMonitoredFlags()		const;
-		int							getTriggeredFlags()		const;
+		Ws::fd						getFd()					const;
+		Ws::Epoll::Flags			getMonitoredFlags()		const;
+		Ws::Epoll::Flags			getTriggeredFlags()		const;
 		const Callback&				getCallback()			const;
 		
 		//setters
-		void						setFd(const t_fd fd);
-		void						setMonitoredFlags(int flags);
-		void						setTriggeredFlags(int flags);
-		void						setCallback(const t_ptr_callback_data data, const t_func_callback_handler handler);
-
-
-		void						setFdFlags(const t_fd fd, int flags);
-		void						setFdFlagsCallback(const t_fd fd, int flags, const t_ptr_callback_data data, const t_func_callback_handler handler);
-
+		void						setFd				(const Ws::fd fd);
+		void						setMonitoredFlags	(Ws::Epoll::Flags flags);
+		void						setTriggeredFlags	(Ws::Epoll::Flags flags);
+		void						setCallback			(const Callback::Data data, const Callback::Handler handler);
 
 	protected:
-		t_fd						m_fd;
-		int							m_monitoredFlags;
-		int							m_triggeredFlags;
+		Ws::fd						m_fd;
+		Ws::Epoll::Flags			m_monitoredFlags;
+		Ws::Epoll::Flags			m_triggeredFlags;
 		Callback					m_callback;
 		
 		Event(const Event& copy);
@@ -45,8 +40,8 @@ class Event
 
 
 		//for internal use
-		t_fd						m_subscribedFd;
-		int							m_subscribedFlags;
+		Ws::fd						m_subscribedFd;
+		Ws::Epoll::Flags			m_subscribedFlags;
 };
 
 #endif

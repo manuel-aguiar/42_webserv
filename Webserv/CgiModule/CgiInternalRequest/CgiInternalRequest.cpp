@@ -30,7 +30,7 @@ Module::InternalRequest::CallTheUser(const CallbackType event)
 }
 
 Module::BytesRead
-Module::InternalRequest::UserRead(t_fd readFd)
+Module::InternalRequest::UserRead(Ws::fd readFd)
 {
 	if (!(m_readHandler && m_user))
 		return (0);
@@ -38,7 +38,7 @@ Module::InternalRequest::UserRead(t_fd readFd)
 }
 
 Module::BytesWritten
-Module::InternalRequest::UserWrite(t_fd writeFd)
+Module::InternalRequest::UserWrite(Ws::fd writeFd)
 {
 	if (!(m_writeHandler && m_user))
 		return (0);

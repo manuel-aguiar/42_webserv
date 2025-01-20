@@ -18,8 +18,8 @@ namespace Cgi
 
 			void					reset();
 			void					CallTheUser(const CallbackType type);
-			BytesRead				UserRead(t_fd readFd);
-			BytesWritten			UserWrite(t_fd writeFd);
+			BytesRead				UserRead(Ws::fd readFd);
+			BytesWritten			UserWrite(Ws::fd writeFd);
 
 			User					getUser() const;
 			Callback				getUserCallback(const CallbackType type) const;

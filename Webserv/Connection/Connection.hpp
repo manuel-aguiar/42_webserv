@@ -23,6 +23,8 @@ class Connection
 		Connection& operator=(const Connection& other);
 
 	public:
+
+		typedef void 			(*Init)(Connection*);
 	//methods
 		void    				init();
 		void    				reset();

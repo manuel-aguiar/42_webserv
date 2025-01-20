@@ -50,14 +50,6 @@ typedef sigset_t									t_sigset;
 typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
 
-// Connection typedefs
-class Connection;
-typedef void 										(*t_func_initProtoConn)(Connection*);
-
-class Callback;
-typedef void										(*t_func_callback_handler)(Callback& callback);
-typedef void*										t_ptr_callback_data;
-
 
 typedef union
 {
@@ -68,5 +60,26 @@ typedef union
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
+
+namespace Ws
+{
+	typedef int			fd;
+	typedef pid_t		pid;
+
+	namespace Epoll
+	{
+		enum
+		{
+			READ = EPOLLIN,
+			WRITE = EPOLLOUT,
+			ERROR = EPOLLERR,
+			HANGUP = EPOLLHUP,
+			RHANGUP = EPOLLRDHUP,
+			EDGE_T = EPOLLET
+		};
+
+		typedef int Flags;
+	}
+}
 
 #endif
