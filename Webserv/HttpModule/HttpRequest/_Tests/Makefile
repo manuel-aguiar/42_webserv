@@ -5,7 +5,7 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g -MMD -MP
 
 # Directories
 TEST_DIR = .
@@ -31,6 +31,7 @@ PARSER_OBJS = $(PARSER_SRCS:.cpp=.o)
 
 # All objects
 OBJS = $(TEST_OBJS) $(MAIN_OBJS) $(PARSER_OBJS)
+DEPS = $(OBJS:.o=.d)
 
 # Include paths
 INCLUDES = -I$(SRC_DIR)
@@ -44,6 +45,7 @@ $(NAME): $(OBJS)
 # Pattern rule for object files
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+-include $(DEPS)
 
 clean:
 	rm -f $(OBJS)

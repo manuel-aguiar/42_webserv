@@ -28,7 +28,7 @@ namespace Http
             INTERNAL_ERROR = 500
         };
     }
-    
+
     // more http stuff
 };
 
