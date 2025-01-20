@@ -155,7 +155,7 @@ namespace Cgi
 			Globals&								m_globals;
 
 			//enums for private coordination
-			class RequestState
+			class RequestStateEnum
 			{
 				public:
 				typedef enum
@@ -168,8 +168,7 @@ namespace Cgi
 				} 	Type;
 			};
 
-			typedef Module::RequestState::Type			mt_RequestState;
-			typedef Module::RequestState				mt_RequestStateEnum;
+			typedef Module::RequestStateEnum				RequestState;
 
 			typedef Module::Worker						mt_CgiWorker;
 			typedef Module::InternalRequest				mt_CgiInternalRequest;

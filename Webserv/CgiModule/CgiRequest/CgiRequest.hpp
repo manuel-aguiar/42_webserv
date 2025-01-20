@@ -49,7 +49,7 @@ namespace Cgi
 			std::string							m_scriptPath;
 			CgiEnvVariables						m_env;
 
-			mt_RequestState						m_state;
+			Cgi::Module::RequestState::Type		m_state;
 			CgiOptions::Flags					m_options;
 
 			void								mf_reset();

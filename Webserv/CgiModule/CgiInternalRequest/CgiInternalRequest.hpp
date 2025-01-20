@@ -23,7 +23,8 @@ namespace Cgi
 			CgiUser						getUser() const;
 			CgiRuntime_Callback::Handler
 										getRuntime_Handler(const CgiRuntime_Callback::Type type) const;
-			mt_RequestState				getState() const;
+			CgiModule::Module::RequestState::Type
+										getState() const;
 			const EnvVariables& 		getEnvVars() const;
 			const CgiExtension&			getExtension() const;
 			const std::string&			getScriptPath() const;
@@ -35,7 +36,7 @@ namespace Cgi
 
 			void						assignExecutor(Worker& executor);
 			void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
-			void						setState(const mt_RequestState state);
+			void						setState(const CgiModule::Module::RequestState::Type state);
 			
 		private:
 			mt_CgiWorker*				m_executor;
