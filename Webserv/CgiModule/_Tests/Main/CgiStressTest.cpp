@@ -208,7 +208,9 @@ int CgiStressTest::StressTest(int testNumber,
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
+
 		Cgi::Module cgi(workers, backlog, timeoutMs, eventManager, globals);
+		Cgi::Request* current;
 
 		// collects error messages, we can't throw cause we are redirecting stderr
 		std::string FailureMessages;
@@ -253,22 +255,24 @@ int CgiStressTest::StressTest(int testNumber,
 				while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 				continue;
 			}
-			requests.back().m_CgiRequestData->setTimeoutMs(timeoutMs);
+
+			current = requests.back().m_CgiRequestData;
+			current->setTimeoutMs(timeoutMs);
 			
 			// setup callbacks
-			requests.back().m_CgiRequestData->setUser(&requests.back());
+			current->setUser(&requests.back());
 			
-			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			current->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-			requests.back().m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-			requests.back().m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+			current->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+			current->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			
-			cgi.enqueueRequest(*requests.back().m_CgiRequestData, false);
+			cgi.enqueueRequest(*current, false);
 
 			// process events right now at each loop, that way we make room in the Module
 			// to take more clients

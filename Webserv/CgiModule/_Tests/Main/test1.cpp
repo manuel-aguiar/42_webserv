@@ -98,30 +98,27 @@ int TestPart1(int testNumber)
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
-
-		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		Cgi::Request& request = *protoRequest.m_CgiRequestData;
 
-		protoRequest.m_CgiRequestData->setRuntimeOptions(CgiOptions::HOLD_WRITE);
-
-		protoRequest.m_CgiRequestData->setTimeoutMs(5000); // 5ms
-		protoRequest.m_CgiRequestData->setExtension("py");
-		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
-		
-
-		
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		// preparing request with relevant data
+		request.setUser(&protoRequest);
+		request.setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		request.setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		request.setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		request.setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		request.setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		request.setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		request.setRuntimeOptions(CgiOptions::HOLD_WRITE);
+		request.setTimeoutMs(5000); // 5ms
+		request.setExtension("py");
+		request.setScriptPath("TestScripts/py/envPrint.py");
+		request.setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
-		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
-		cgi.modifyRequest(*protoRequest.m_CgiRequestData, CgiOptions::RESTART_WRITE, false);
+		cgi.enqueueRequest(request, false);
+		cgi.modifyRequest(request, CgiOptions::RESTART_WRITE, false);
 
 		//event loop
 		while (1)
