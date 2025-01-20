@@ -37,7 +37,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /********************************************* */
@@ -72,7 +71,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /******************* *** ************************/
@@ -131,8 +129,7 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
-    }
+		    }
 
 
 /******************* *** ************************/
@@ -175,7 +172,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 	/******************* *** ************************/
@@ -233,7 +229,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /******************* *** ************************/
@@ -270,7 +265,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /******************* *** ************************/
@@ -307,7 +301,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /******************* *** ************************/
@@ -344,7 +337,6 @@ int ListMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 try
@@ -404,7 +396,6 @@ try
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /****************************************************** */
@@ -477,7 +468,6 @@ try
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /********************************************************* */
@@ -529,7 +519,6 @@ try
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 /******************************************************** */
@@ -586,7 +575,6 @@ try
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 

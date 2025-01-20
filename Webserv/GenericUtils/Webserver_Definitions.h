@@ -20,7 +20,6 @@
 # include <cerrno>
 # include <signal.h>
 # include <cassert>
-
 # include <string>
 
 // definitions for everyone to use
@@ -52,7 +51,6 @@ typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
 
 
-
 typedef union
 {
 	t_sockaddr         sockaddr;
@@ -68,8 +66,14 @@ typedef struct s_BindAddress
 	int					protocol;
 	u_sockaddr			address;
 	t_socklen			addrlen;
-}	BindAddress; 
+}	BindAddress;
 
 # define MAX_EPOLL_EVENTS 64
+
+namespace Ws
+{
+	typedef int			fd;
+	typedef pid_t		pid;
+}
 
 #endif

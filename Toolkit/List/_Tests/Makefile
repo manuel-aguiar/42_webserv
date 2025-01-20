@@ -16,8 +16,7 @@ SRCS					=		$(SRC_PATH)/List/_Tests/main.cpp	\
 								$(SRC_PATH)/List/_Tests/test2.cpp	\
 								$(SRC_PATH)/List/_Tests/test3.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp \
-								$(SRC_PATH)/_Tests/testHelpers.cpp
+								$(SRC_PATH)/_Tests/ToolkitDummy.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
