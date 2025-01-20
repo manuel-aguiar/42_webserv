@@ -5,7 +5,7 @@
 
 # Compiler and flags
 CXX			= c++
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g -DTESTMODE
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g
 
 # Directories
 ROOT_DIR	= ../../..

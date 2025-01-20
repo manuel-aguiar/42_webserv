@@ -3,7 +3,9 @@
 
 // our headers
 # include "../../GenericUtils/Webserver_Definitions.h"
-# ifndef TESTMODE
+
+// Choose between mock and real implementation
+# ifdef TESTMODE
 #  include "_Tests/TestDependencies.hpp"
 # else
 #  include "../ServerBlock/ServerBlock.hpp"

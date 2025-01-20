@@ -1,20 +1,17 @@
 #
 # This is just a Makefile to compile tests
-# It must be adjusted acoording to dependencies of tests themselves
+# It must be adjusted according to dependencies of tests themselves
 #
 
-NAME		= blockfinder_test
+NAME		= test.out
 CXX			= c++
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g -DTESTMODE
 
 # Directories
 TEST_DIR = .
 SRC_DIR = ..
 PARSER_DIR = ../parsers
 HTTP_MODULE_DIR = ../..
-
-# Target
-NAME = test.out
 
 # Source files
 SRCS		= test.cpp \
@@ -29,7 +26,7 @@ INCLUDES = -I$(SRC_DIR) \
            -I.
 
 # Rules
-all: $(NAME)
+all: clean_objs $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
@@ -38,11 +35,13 @@ $(NAME): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-clean:
+clean_objs:
 	rm -f $(OBJS)
 
-fclean: clean
+clean: clean_objs
 	rm -f $(NAME)
+
+fclean: clean
 
 re: fclean all
 
@@ -53,4 +52,4 @@ run: all
 test: all
 	./$(NAME)
 
-.PHONY: all clean fclean re run test
+.PHONY: all clean clean_objs fclean re run test
