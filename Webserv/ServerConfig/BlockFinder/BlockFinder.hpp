@@ -36,7 +36,7 @@ class BlockFinder {
 			uint16_t    port;
 			std::string serverName;
 
-			// Add comparison operator for map
+			// comparison operator
 			bool operator<(const BlockIdentifier& other) const {
 				if (ip != other.ip) return ip < other.ip;
 				if (port != other.port) return port < other.port;
@@ -44,8 +44,8 @@ class BlockFinder {
 			}
 		};
 
-		BlockIdentifier                              m_wildcardKey;
-		std::map<BlockIdentifier, const ServerBlock*>      m_serverBlocks;
+		BlockIdentifier                              		m_wildcardKey;
+		std::map<BlockIdentifier, const ServerBlock*>		m_serverBlocks;
 
 		std::pair<uint32_t, uint16_t>	mf_extractIpPort(const struct sockaddr* addr) const;
 		BlockIdentifier				 	 mf_createIdentifier(const struct sockaddr* addr, const std::string& serverName) const;

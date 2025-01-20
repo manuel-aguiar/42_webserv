@@ -17,16 +17,20 @@ std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const struct sockadd
     return std::make_pair(ipv4->sin_addr.s_addr, ipv4->sin_port);
 }
 
+/*
+**	mf_createIdentifier
+**	creates a BlockIdentifier struct for a given address and server name
+**	uses normalized directives
+*/
 BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const struct sockaddr* addr, const std::string& serverName) const {
     assert(addr != NULL && "Address is NULL");
-    assert(!serverName.empty() && "Server name is empty");
 
     BlockIdentifier key;
     std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(addr);
 
     key.ip = ipPort.first;
     key.port = ipPort.second;
-    key.serverName = serverName;
+    key.serverName = serverName.empty() ? m_wildcardKey.serverName : serverName;
 
     return key;
 }
@@ -38,8 +42,7 @@ BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const struct socka
 */
 bool	BlockFinder::hasServerBlock(struct sockaddr* address, const std::string& serverName)
 {
-    BlockIdentifier key = mf_createIdentifier(address, serverName);
-    return (m_serverBlocks.find(key) != m_serverBlocks.end());
+    return (findServerBlock(address, serverName) != NULL);
 }
 
 /*

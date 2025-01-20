@@ -167,7 +167,7 @@ void reviewTests()
 
         // test
         const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
-        const ServerBlock* expected = &block2;
+        const ServerBlock* expected = &block1;
 
         if (result != expected)
             throw std::runtime_error("Expected block2 to be found, most specific is available");
@@ -192,7 +192,7 @@ void reviewTests()
 
         //test
         const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
-        const ServerBlock* expected = NULL;
+        const ServerBlock* expected = &block1;
 
         checkIfFound(result, (struct sockaddr*)addr1, "example.com");
         if (result != expected)
