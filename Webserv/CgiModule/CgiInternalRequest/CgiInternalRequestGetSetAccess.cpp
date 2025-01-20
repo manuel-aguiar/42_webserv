@@ -6,13 +6,13 @@ namespace Cgi
 {
 
 //getters
-Module::User
+CgiUser
 Module::InternalRequest::getUser() const
 {
     return (m_user);
 }
 
-Module::Runtime_Callback::Handler
+CgiRuntime_Callback::Handler
 Module::InternalRequest::getRuntime_Handler(const Module::Runtime_Callback::Type type) const
 {
     return (m_runtime_Handlers[type]);
@@ -20,13 +20,13 @@ Module::InternalRequest::getRuntime_Handler(const Module::Runtime_Callback::Type
 
 
 
-const Module::EnvVariables& 
+const CgiEnvVariables& 
 Module::InternalRequest::getEnvVars() const
 {
 	return (m_env);
 }
 
-const Module::InterpExtension&
+const CgiExtension&
 Module::InternalRequest::getExtension() const
 {
 	return (m_extension);
@@ -38,7 +38,7 @@ Module::InternalRequest::getScriptPath() const
 	return (m_scriptPath);
 }
 
-Module::Options::Flags
+CgiOptions::Flags
 Module::InternalRequest::getOptions() const
 {
 	return (m_options);
@@ -56,12 +56,12 @@ Module::InternalRequest::getMyTimer() const
 	return (m_myTimer);
 }
 
-Module::Worker*	Module::InternalRequest::accessExecutor()
+Cgi::Module::mt_CgiWorker*	Module::InternalRequest::accessExecutor()
 {
 	return (m_executor);
 }
 
-Module::RequestState::Type	Module::InternalRequest::getState() const
+Cgi::Module::mt_RequestState	Module::InternalRequest::getState() const
 {
 	return (m_state);
 }
@@ -69,7 +69,7 @@ Module::RequestState::Type	Module::InternalRequest::getState() const
 
 
 //setters
-void	Module::InternalRequest::setState(const Module::RequestState::Type state)
+void	Module::InternalRequest::setState(const mt_RequestState state)
 {
 	m_state = state;
 }

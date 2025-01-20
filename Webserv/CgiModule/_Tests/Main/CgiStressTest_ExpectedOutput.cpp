@@ -1,7 +1,7 @@
 
 
 // Project headers
-# include "../../CgiModule/CgiModule.hpp"
+# include "../../CgiModule.h"
 
 # include "CgiStressTest.hpp"
 

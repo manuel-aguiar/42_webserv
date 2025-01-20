@@ -1,7 +1,7 @@
 
 
 // Project headers
-# include "../../CgiModule/CgiModule.hpp"
+# include "../../CgiModule.h"
 
 # include "CgiStressTest.hpp"
 
@@ -51,8 +51,8 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
 		EventManager eventManager(globals);
-		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
+		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 		Cgi::Request* data = cgi.acquireRequest();
 		(void)data;
 		std::cout << "	PASSED (acquiring and just going away)" << std::endl;
@@ -100,15 +100,15 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
-		protoRequest.m_CgiRequestData->setRuntimeOptions(Cgi::Module::Options::HOLD_WRITE);
+		protoRequest.m_CgiRequestData->setRuntimeOptions(CgiOptions::HOLD_WRITE);
 
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); // 5ms
 		protoRequest.m_CgiRequestData->setExtension("py");
@@ -176,13 +176,13 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -260,13 +260,13 @@ int TestPart1(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -345,13 +345,13 @@ int TestPart1(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("asfafasfasfasfasf");
@@ -439,13 +439,13 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
-
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");

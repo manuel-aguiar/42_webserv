@@ -53,6 +53,7 @@ namespace Cgi
 			const char* const SERVER_SOFTWARE = "SERVER_SOFTWARE";
 		}
 	}
+	typedef Cgi::Env::Enum::Type		CgiEnvEnum;
 }
 
 #endif

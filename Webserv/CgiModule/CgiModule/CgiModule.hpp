@@ -28,6 +28,7 @@ namespace Cgi
 {
 	class Module
 	{
+
 		public:
 			Module(		size_t workerCount, 
 						size_t backlogCount, 
@@ -167,6 +168,12 @@ namespace Cgi
 				} 	Type;
 			};
 
+			typedef Module::RequestState::Type			mt_RequestState;
+			typedef Module::RequestState				mt_RequestStateEnum;
+
+			typedef Module::Worker						mt_CgiWorker;
+			typedef Module::InternalRequest				mt_CgiInternalRequest;
+
 			EventManager&		mf_accessEventManager();
 			Globals&			mf_accessGlobals();
 
@@ -194,8 +201,23 @@ namespace Cgi
 			// private copy/assignment
 			Module(const Module &copy);
 			Module &operator=(const Module &assign);
-
 	};
+
+	typedef Cgi::Module								CgiModule;
+	typedef Cgi::Module::Request					Request;
+	typedef Cgi::Module::Request					CgiRequest;
+	typedef Cgi::Module::Options					CgiOptions;
+	typedef Cgi::Module::User						CgiUser;
+	typedef Cgi::Module::IO_Callback				CgiIO_Callback;
+	typedef Cgi::Module::IO_Callback::BytesCount	CgiIO_BytesCount;
+	typedef Cgi::Module::Runtime_Callback			CgiRuntime_Callback;
+	typedef Cgi::Module::EnvKey						CgiEnvKey;
+	typedef Cgi::Module::EnvValue					CgiEnvValue;
+	
+	typedef Cgi::Module::InterpExtension			CgiExtension;
+	typedef Cgi::Module::InterpPath					CgiPath;
+	typedef Cgi::Module::EnvVariables				CgiEnvVariables;
+
 };
 
 

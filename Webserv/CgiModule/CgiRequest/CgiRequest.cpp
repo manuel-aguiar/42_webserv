@@ -10,15 +10,15 @@ Module::Request::Request() :
 	m_timeoutMs		(0),
 	m_extension		(""),
 	m_scriptPath	(""),
-	m_state			(RequestState::IDLE),
-	m_options		(Options::RUNTIME_BASE)
+	m_state			(mt_RequestStateEnum::IDLE),
+	m_options		(Cgi::Module::Options::RUNTIME_BASE)
 {
 	m_env.envBase.reserve(Cgi::Env::Enum::COUNT);
 
-	for (size_t i = 0; i < Runtime_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiRuntime_Callback::COUNT; i++)
 		m_runtime_Handlers[i] = NULL;
 
-	for (size_t i = 0; i < IO_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiIO_Callback::COUNT; i++)
 		m_IO_Handlers[i] = NULL;
 
 }
@@ -37,15 +37,15 @@ void	Module::Request::mf_reset()
 	m_env.envBase.clear();
 	m_env.envExtra.clear();
 
-	for (size_t i = 0; i < Runtime_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiRuntime_Callback::COUNT; i++)
 		m_runtime_Handlers[i] = NULL;
-	for (size_t i = 0; i < IO_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiIO_Callback::COUNT; i++)
 		m_IO_Handlers[i] = NULL;
 	
 	m_timeoutMs = 0;
 	m_user = NULL;
-	m_state = RequestState::IDLE;
-	m_options = Options::RUNTIME_BASE;
+	m_state = mt_RequestStateEnum::IDLE;
+	m_options = Cgi::Module::Options::RUNTIME_BASE;
 }
 
 Module::Request::Request(const Request &copy) :
@@ -64,9 +64,9 @@ Module::Request&	Module::Request::operator=(const Request &assign)
 
 	m_user = assign.m_user;
 
-	for (size_t i = 0; i < Runtime_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiRuntime_Callback::COUNT; i++)
 		m_runtime_Handlers[i] = assign.m_runtime_Handlers[i];
-	for (size_t i = 0; i < IO_Callback::COUNT; i++)
+	for (size_t i = 0; i < CgiIO_Callback::COUNT; i++)
 		m_IO_Handlers[i] = assign.m_IO_Handlers[i];
 
 	m_timeoutMs = assign.m_timeoutMs;

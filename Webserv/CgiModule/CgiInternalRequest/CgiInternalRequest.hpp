@@ -17,28 +17,28 @@ namespace Cgi
 			~InternalRequest();
 
 			void						reset();
-			void						Runtime_CallTheUser(const Module::Runtime_Callback::Type type);
-			IO_Callback::BytesCount		IO_CallTheUser(const Module::IO_Callback::Type, Ws::fd readFd);
+			void						Runtime_CallTheUser(const CgiRuntime_Callback::Type type);
+			IO_Callback::BytesCount		IO_CallTheUser(const CgiIO_Callback::Type, Ws::fd readFd);
 
-			Module::User				getUser() const;
-			Module::Runtime_Callback::Handler
-										getRuntime_Handler(const Module::Runtime_Callback::Type type) const;
-			Module::RequestState::Type	getState() const;
+			CgiUser						getUser() const;
+			CgiRuntime_Callback::Handler
+										getRuntime_Handler(const CgiRuntime_Callback::Type type) const;
+			mt_RequestState				getState() const;
 			const EnvVariables& 		getEnvVars() const;
-			const std::string&			getExtension() const;
+			const CgiExtension&			getExtension() const;
 			const std::string&			getScriptPath() const;
 			unsigned int				getTimeoutMs() const;
-			Worker*						accessExecutor();
+			mt_CgiWorker*				accessExecutor();
 			TimerTracker<Timer, InternalRequest*>::iterator
 										getMyTimer() const;
-			Module::Options::Flags		getOptions() const;
+			CgiOptions::Flags			getOptions() const;
 
 			void						assignExecutor(Worker& executor);
 			void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
-			void						setState(const RequestState::Type state);
+			void						setState(const mt_RequestState state);
 			
 		private:
-			Worker*						m_executor;
+			mt_CgiWorker*				m_executor;
 			
 			TimerTracker<Timer, InternalRequest*>::iterator	
 										m_myTimer;

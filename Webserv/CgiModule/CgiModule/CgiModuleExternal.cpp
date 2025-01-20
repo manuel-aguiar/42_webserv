@@ -144,18 +144,18 @@ void	Module::modifyRequest(Request& data, Module::Options::Flags newOptions, boo
 void	Module::finishRequest(Request& request, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
-	RequestState::Type	state;
+	mt_RequestState		state;
 
 	requestData = static_cast<InternalRequest*>(&request);
 	state = requestData->getState();
 	
 	switch (state)
 	{
-		case RequestState::ACQUIRED:
+		case mt_RequestStateEnum::ACQUIRED:
 			mf_recycleRequestData(*requestData); break ;
-		case RequestState::EXECUTING:
+		case mt_RequestStateEnum::EXECUTING:
 			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
-		case RequestState::QUEUED:
+		case mt_RequestStateEnum::QUEUED:
 			requestData->setState(RequestState::CANCELLED); break ;
 		default:
 			break ;

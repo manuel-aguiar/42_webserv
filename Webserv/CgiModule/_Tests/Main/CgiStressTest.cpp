@@ -1,7 +1,7 @@
 
 
 // Project headers
-# include "../../CgiModule/CgiModule.hpp"
+# include "../../CgiModule.h"
 
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
@@ -258,13 +258,13 @@ int CgiStressTest::StressTest(int testNumber,
 			// setup callbacks
 			requests.back().m_CgiRequestData->setUser(&requests.back());
 			
-			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
-			
-			requests.back().m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-			requests.back().m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			requests.back().m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		
+			requests.back().m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+			requests.back().m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			
