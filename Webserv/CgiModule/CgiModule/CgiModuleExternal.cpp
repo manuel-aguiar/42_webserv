@@ -22,7 +22,7 @@ Module::Request*	Module::acquireRequest()
 	data = m_availableRequestData.back();
 	m_availableRequestData.pop_back();
 
-	data->setState(STATE_ACQUIRED);
+	data->setState(RequestState::ACQUIRED);
 	
 	return (data);
 }
@@ -44,7 +44,7 @@ void	Module::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 
 	requestData = static_cast<InternalRequest*>(&request);
 
-	assert(requestData->getState() == STATE_ACQUIRED);
+	assert(requestData->getState() == RequestState::ACQUIRED);
 
 	timeout = requestData->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
@@ -54,7 +54,7 @@ void	Module::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
 	if (m_availableWorkers.size() == 0)
 	{
-		requestData->setState(STATE_QUEUED);
+		requestData->setState(RequestState::QUEUED);
 		m_executionQueue.push_back(requestData);
 		return ;
 	}
@@ -87,30 +87,30 @@ int		Module::processRequests()
 	return (mf_finishTimedOut());
 }
 
-void	Module::modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop)
+void	Module::modifyRequest(Request& data, Module::Options::Flags newOptions, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
-	RequestState		state;
+	RequestState::Type	state;
 
 	requestData = static_cast<InternalRequest*>(&data);
 	state = requestData->getState();
 	
-	if (state == STATE_ACQUIRED || state == STATE_QUEUED)
+	if (state == RequestState::ACQUIRED || state == RequestState::QUEUED)
 	{
 		data.setRuntimeOptions(newOptions);
 		return ;
 	}
-	if (newOptions & CANCEL_READ)
+	if (newOptions & Options::CANCEL_READ)
 		requestData->accessExecutor()->disableReadEvent(isCalledFromEventLoop);
-	if (newOptions & CANCEL_WRITE)
+	if (newOptions & Options::CANCEL_WRITE)
 		requestData->accessExecutor()->disableWriteEvent(isCalledFromEventLoop);
-	if (newOptions & HOLD_READ)
+	if (newOptions & Options::HOLD_READ)
 		requestData->accessExecutor()->disableReadHandler();
-	if (newOptions & HOLD_WRITE)
+	if (newOptions & Options::HOLD_WRITE)
 		requestData->accessExecutor()->disableWriteHandler();
-	if (newOptions & RESTART_READ)
+	if (newOptions & Options::RESTART_READ)
 		requestData->accessExecutor()->enableReadHandler();
-	if (newOptions & RESTART_WRITE)
+	if (newOptions & Options::RESTART_WRITE)
 		requestData->accessExecutor()->enableWriteHandler();
 }
 
@@ -144,19 +144,19 @@ void	Module::modifyRequest(Request& data, RuntimeOptions newOptions, bool isCall
 void	Module::finishRequest(Request& request, bool isCalledFromEventLoop)
 {
 	InternalRequest*	requestData;
-	RequestState		state;
+	RequestState::Type	state;
 
 	requestData = static_cast<InternalRequest*>(&request);
 	state = requestData->getState();
 	
 	switch (state)
 	{
-		case STATE_ACQUIRED:
+		case RequestState::ACQUIRED:
 			mf_recycleRequestData(*requestData); break ;
-		case STATE_EXECUTING:
+		case RequestState::EXECUTING:
 			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
-		case STATE_QUEUED:
-			requestData->setState(STATE_CANCELLED); break ;
+		case RequestState::QUEUED:
+			requestData->setState(RequestState::CANCELLED); break ;
 		default:
 			break ;
 	}
@@ -184,7 +184,7 @@ void	Module::stopAndReset()
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
-		data->CallTheUser(CALLBACK_ON_ERROR_RUNTIME);
+		data->Runtime_CallTheUser(Runtime_Callback::ON_ERROR_RUNTIME);
 		mf_returnRequestData(*data);
 	}
 		

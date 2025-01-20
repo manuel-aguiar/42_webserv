@@ -18,9 +18,9 @@ class EventManager::InternalEvent : public Event
         void    updateSubscription();
         void    unsubscribe();
 
-        void    setSubscribedFd(t_fd fd);
+        void    setSubscribedFd(Ws::fd fd);
         void    setSubscribedFlags(int flags);
-        t_fd    getSubscribedFd() const;
+        Ws::fd  getSubscribedFd() const;
         int     getSubscribedFlags() const;
         
     private:

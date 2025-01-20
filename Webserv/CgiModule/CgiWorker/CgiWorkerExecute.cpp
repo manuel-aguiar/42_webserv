@@ -27,7 +27,7 @@ namespace Cgi
 
 void   Module::Worker::execute(bool markFdsAsStale)
 {
-	RuntimeOptions options;
+	Options::Flags options;
 
 	options = m_curRequestData->getOptions();
 
@@ -49,13 +49,13 @@ void   Module::Worker::execute(bool markFdsAsStale)
 	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
 	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
 
-	if (!(options & CANCEL_WRITE))
+	if (!(options & Options::CANCEL_WRITE))
 	{
 		m_writeEvent.setFd(m_ParentToChild[1]);
 		m_CgiModule.mf_accessEventManager().addEvent(m_writeEvent, markFdsAsStale);
 	}
 
-	if (!(options & CANCEL_READ))
+	if (!(options & Options::CANCEL_READ))
 	{
 		m_readEvent.setFd(m_ChildToParent[0]);
 		m_CgiModule.mf_accessEventManager().addEvent(m_readEvent, markFdsAsStale);
@@ -94,25 +94,25 @@ void   Module::Worker::execute(bool markFdsAsStale)
 */
 void	Module::Worker::mf_executeParent(bool markFdsAsStale)
 {
-	RuntimeOptions options;
+	Module::Options::Flags options;
 
 	options = m_curRequestData->getOptions();
 
-	if ((!(options & CANCEL_WRITE) && !FileDescriptor::setNonBlocking(m_ParentToChild[1])) ||
-		(!(options & CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
+	if ((!(options & Options::CANCEL_WRITE) && !FileDescriptor::setNonBlocking(m_ParentToChild[1])) ||
+		(!(options & Options::CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]))
 	{
 		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
 		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 
-	if (options & CANCEL_WRITE)
+	if (options & Options::CANCEL_WRITE)
 		mf_closeFd(m_ParentToChild[1]);
-	if (options & CANCEL_READ)
+	if (options & Options::CANCEL_READ)
 		mf_closeFd(m_ChildToParent[0]);
-	if (options & HOLD_READ)
+	if (options & Options::HOLD_READ)
 		disableReadHandler();
-	if (options & HOLD_WRITE)
+	if (options & Options::HOLD_WRITE)
 		disableWriteHandler();
 
 	mf_closeFd(m_EmergencyPhone[1]);

@@ -33,7 +33,7 @@ class LogFile
 
 
 	private:
-		t_fd		m_fd;
+		Ws::fd		m_fd;
 		Globals*	m_globals;
 
 

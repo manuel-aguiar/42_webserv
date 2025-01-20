@@ -48,11 +48,14 @@ int TestPart2(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
+
+		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");

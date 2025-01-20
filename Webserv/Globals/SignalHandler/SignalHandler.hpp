@@ -27,11 +27,11 @@ class SignalHandler
 
 		// getters
 		int										getSignal();
-		const std::vector<std::pair<t_fd, t_fd> >&		
+		const std::vector<std::pair<Ws::fd, Ws::fd> >&		
 												getPipes();
 
-		t_fd									getPipeRead(int serverID);
-		t_fd									getPipeWrite(int serverID);
+		Ws::fd									getPipeRead(int serverID);
+		Ws::fd									getPipeWrite(int serverID);
 		
 
 		//setters
@@ -39,7 +39,7 @@ class SignalHandler
 
 	private:
 		Globals*								m_globals;
-		std::vector<std::pair<t_fd, t_fd> >		m_pipes;
+		std::vector<std::pair<Ws::fd, Ws::fd> >	m_pipes;
 		int 									m_signal;
 		t_sigaction								m_sigact;
 

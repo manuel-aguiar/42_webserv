@@ -9,7 +9,7 @@ namespace Cgi
 
 void	Module::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
 {
-	data.setState(STATE_EXECUTING);
+	data.setState(RequestState::EXECUTING);
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);
 	worker.execute(markFdsAsStale);
@@ -30,17 +30,17 @@ int	Module::mf_finishTimedOut()
 
 	for (; it != m_timerTracker.end(); ++it) 
 	{
-		if (it->first < timer && it->second->getState() != STATE_IDLE)
+		if (it->first < timer && it->second->getState() != RequestState::IDLE)
 		{
 			curRequest = it->second;
 			switch (curRequest->getState())
 			{
-				case STATE_ACQUIRED:
+				case RequestState::ACQUIRED:
 					mf_recycleRequestData(*curRequest); break ;
-				case STATE_EXECUTING:
+				case RequestState::EXECUTING:
 					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
-				case STATE_QUEUED:
-					curRequest->setState(STATE_CANCELLED); break;
+				case RequestState::QUEUED:
+					curRequest->setState(RequestState::CANCELLED); break;
 				default: break ;
 			}		
 		}

@@ -28,17 +28,17 @@ bool EventManager::InternalEvent::isInvalid() const
         && m_fd != -1));
 }
 
-void EventManager::InternalEvent::setSubscribedFd(t_fd fd)
+void EventManager::InternalEvent::setSubscribedFd(Ws::fd fd)
 {
     m_subscribedFd = fd;
 }
 
-void EventManager::InternalEvent::setSubscribedFlags(int flags)
+void EventManager::InternalEvent::setSubscribedFlags(Ws::Epoll::Flags flags)
 {
     m_subscribedFlags = flags;
 }
 
-t_fd EventManager::InternalEvent::getSubscribedFd() const
+Ws::fd EventManager::InternalEvent::getSubscribedFd() const
 {
     return (m_subscribedFd);
 }

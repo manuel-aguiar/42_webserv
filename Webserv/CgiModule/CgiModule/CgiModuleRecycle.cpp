@@ -19,7 +19,7 @@ Module::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
         newData = m_executionQueue.front();
         m_executionQueue.pop_front();
 
-		if (newData->getState() != STATE_CANCELLED)
+		if (newData->getState() != RequestState::CANCELLED)
 		{
 			mf_execute(worker, *newData, markFdsAsStale);
 			return ;
@@ -47,7 +47,7 @@ Module::mf_recycleRequestData(InternalRequest& data)
 void
 Module::mf_recycleSuccess(Worker& worker)
 {
-	mf_recycleExecutionUnit(worker, true, CALLBACK_ON_SUCCESS);
+	mf_recycleExecutionUnit(worker, true, Runtime_Callback::ON_SUCCESS);
 }
 
 
@@ -55,20 +55,20 @@ void
 Module::mf_recycleRuntimeFailure(Worker& worker)
 {
 	worker.stop();
-	mf_recycleExecutionUnit(worker, true, CALLBACK_ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(worker, true, Runtime_Callback::ON_ERROR_RUNTIME);
 }
 
 void
 Module::mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale)
 {
-	mf_recycleExecutionUnit(worker, markFdsAsStale, CALLBACK_ON_ERROR_STARTUP);
+	mf_recycleExecutionUnit(worker, markFdsAsStale, Runtime_Callback::ON_ERROR_STARTUP);
 }
 
 void
 Module::mf_recycleTimeoutFailure(Worker& worker)
 {
 	worker.stop();
-	mf_recycleExecutionUnit(worker, false, CALLBACK_ON_ERROR_TIMEOUT);
+	mf_recycleExecutionUnit(worker, false, Runtime_Callback::ON_ERROR_TIMEOUT);
 }
 
 void
@@ -77,15 +77,15 @@ Module::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
 	Worker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	mf_recycleExecutionUnit(*worker, markFdsAsStale, CALLBACK_ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(*worker, markFdsAsStale, Runtime_Callback::ON_ERROR_RUNTIME);
 }
 
 void
-Module::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser)
+Module::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Runtime_Callback::Type callUser)
 {
-	InternalRequest* 	data = worker.accessRequestData();
-	User 				user = data->getUser();
-	Callback			handler = data->getUserCallback(callUser);
+	InternalRequest* 			data = worker.accessRequestData();
+	User 						user = data->getUser();
+	Runtime_Callback::Handler	handler = data->getRuntime_Handler(callUser);
 
 	worker.disableCloseAllEvents(markFdsAsStale);
 	mf_recycleWorker(worker, markFdsAsStale);

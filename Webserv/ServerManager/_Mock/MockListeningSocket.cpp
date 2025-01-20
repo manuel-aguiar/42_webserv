@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/20 11:52:55 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:04:47 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ int		ListeningSocket::open()
 		return (0);
 	}
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
+	if (!FileDescriptor
+::setCloseOnExec_NonBlocking(m_sockfd))
 	{
 		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (0);
@@ -145,7 +146,8 @@ int    ListeningSocket::accept()
 
 	connection->setSocket(sockfd);
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
+	if (!FileDescriptor
+::setCloseOnExec_NonBlocking(sockfd))
 	{
 		m_globals.logError("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (mf_close_accepted_connection(*connection));

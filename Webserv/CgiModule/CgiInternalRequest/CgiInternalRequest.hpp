@@ -16,32 +16,32 @@ namespace Cgi
 			InternalRequest();
 			~InternalRequest();
 
-			void					reset();
-			void					CallTheUser(const CallbackType type);
-			BytesRead				UserRead(Ws::fd readFd);
-			BytesWritten			UserWrite(Ws::fd writeFd);
+			void						reset();
+			void						Runtime_CallTheUser(const Module::Runtime_Callback::Type type);
+			IO_Callback::BytesCount		IO_CallTheUser(const Module::IO_Callback::Type, Ws::fd readFd);
 
-			User					getUser() const;
-			Callback				getUserCallback(const CallbackType type) const;
-			RequestState			getState() const;
-			const EnvVariables& 	getEnvVars() const;
-			const std::string&		getExtension() const;
-			const std::string&		getScriptPath() const;
-			unsigned int			getTimeoutMs() const;
-			Worker*					accessExecutor();
+			Module::User				getUser() const;
+			Module::Runtime_Callback::Handler
+										getRuntime_Handler(const Module::Runtime_Callback::Type type) const;
+			Module::RequestState::Type	getState() const;
+			const EnvVariables& 		getEnvVars() const;
+			const std::string&			getExtension() const;
+			const std::string&			getScriptPath() const;
+			unsigned int				getTimeoutMs() const;
+			Worker*						accessExecutor();
 			TimerTracker<Timer, InternalRequest*>::iterator
-									getMyTimer() const;
-			RuntimeOptions			getOptions() const;
+										getMyTimer() const;
+			Module::Options::Flags		getOptions() const;
 
-			void					assignExecutor(Worker& executor);
-			void					setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
-			void					setState(const RequestState state);
+			void						assignExecutor(Worker& executor);
+			void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
+			void						setState(const RequestState::Type state);
 			
 		private:
-			Worker*					m_executor;
+			Worker*						m_executor;
 			
 			TimerTracker<Timer, InternalRequest*>::iterator	
-									m_myTimer;
+										m_myTimer;
 			
 			InternalRequest(const InternalRequest &copy);
 			InternalRequest &operator=(const InternalRequest &assign);

@@ -18,15 +18,16 @@ namespace Cgi
 		public:
 		
 			void				setUser(Module::User user);
-			void				setUserCallback(const Module::CallbackType type, const Module::Callback handler);
-			void				setReadHandler(Module::IO_Handler handler);
-			void				setWriteHandler(Module::IO_Handler handler);
+			void				setRuntime_Callback(const Module::Runtime_Callback::Type type, 
+												const Module::Runtime_Callback::Handler handler);
+			void				setIO_Callback(	const Module::IO_Callback::Type type, 
+												const Module::IO_Callback::Handler handler);
 			void				setEnvBase(const Cgi::Env::Enum::Type env, const Module::EnvValue& value);
 			void				setEnvExtra(const Module::EnvKey& key, const Module::EnvValue& value);
 			void				setExtension(const Module::InterpExtension& extension);
 			void				setScriptPath(const std::string& path);
 			void				setTimeoutMs(const unsigned int timeoutMs);
-			void				setRuntimeOptions(Module::RuntimeOptions options);		
+			void				setRuntimeOptions(Module::Options::Flags options);		
 
 			const EnvVariables& getEnvVars() const;
 			const std::string&	getExtension() const;
@@ -39,21 +40,20 @@ namespace Cgi
 			Request(const Request &copy);
 			Request &operator=(const Request &assign);
 
-			Module::User				m_user;
-			Module::IO_Handler		m_readHandler;
-			Module::IO_Handler		m_writeHandler;
-			Module::Callback 		m_userCallbacks[CALLBACK_COUNT];
+			Module::User					m_user;
+			Module::IO_Callback::Handler	m_IO_Handlers[Module::IO_Callback::COUNT];
+			Module::Runtime_Callback::Handler	m_runtime_Handlers[Module::Runtime_Callback::COUNT];
 
-			unsigned int				m_timeoutMs;
+			unsigned int					m_timeoutMs;
 			Module::InterpExtension		
-										m_extension;
-			std::string					m_scriptPath;
-			Module::EnvVariables		m_env;
+											m_extension;
+			std::string						m_scriptPath;
+			Module::EnvVariables			m_env;
 
-			Module::RequestState		m_state;
-			Module::RuntimeOptions	m_options;
+			Module::RequestState::Type		m_state;
+			Module::Options::Flags			m_options;
 
-			void						mf_reset();
+			void							mf_reset();
 	};
 	typedef Module::Request Request;
 };

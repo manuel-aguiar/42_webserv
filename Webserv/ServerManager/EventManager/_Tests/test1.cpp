@@ -117,12 +117,14 @@ int TestPart1(int testNumber)
 
 		// preparing the write event
 		readEvent.setFdFlagsCallback(sockfd[0], EPOLLIN | EPOLLET, &readCalculate, &CalcFibo::onReadFibonacci);
-		FileDescriptor::setCloseOnExec_NonBlocking(readEvent.getFd());
+		FileDescriptor
+::setCloseOnExec_NonBlocking(readEvent.getFd());
 		manager.addEvent(readEvent);
 
 
 		writeEvent.setFdFlagsCallback(sockfd[1], EPOLLOUT | EPOLLET, &writeHello, &WriteHello::onWriteHello);
-		FileDescriptor::setCloseOnExec_NonBlocking(writeEvent.getFd());
+		FileDescriptor
+::setCloseOnExec_NonBlocking(writeEvent.getFd());
 		manager.addEvent(writeEvent);
 
 		// while we don't have a result, wait and indefinitely until there are events, and process them

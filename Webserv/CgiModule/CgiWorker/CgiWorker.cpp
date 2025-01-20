@@ -28,15 +28,15 @@ Module::Worker::Worker(Module& cgi) :
 	
 	m_EmergencyEvent.setFd(-1);
 	m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
-	m_EmergencyEvent.setMonitoredFlags(EPOLLIN | EPOLLERR | EPOLLHUP);
+	m_EmergencyEvent.setMonitoredFlags(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 	m_readEvent.setFd(-1);
 	m_readEvent.setCallback(this, mf_EventCallback_onRead);
-	m_readEvent.setMonitoredFlags(EPOLLIN | EPOLLERR | EPOLLHUP);
+	m_readEvent.setMonitoredFlags(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 	m_writeEvent.setFd(-1);
 	m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
-	m_writeEvent.setMonitoredFlags(EPOLLOUT | EPOLLERR | EPOLLHUP);
+	m_writeEvent.setMonitoredFlags(Ws::Epoll::WRITE | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 	m_EmergencyBytesRead = 0;
 	std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));

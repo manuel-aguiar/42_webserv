@@ -22,29 +22,20 @@ Module::InternalRequest::reset()
 }
 
 void
-Module::InternalRequest::CallTheUser(const CallbackType event)
+Module::InternalRequest::Runtime_CallTheUser(const Module::Runtime_Callback::Type event)
 {
-	Callback	 handler = m_userCallbacks[event];
+	Runtime_Callback::Handler	 handler = m_runtime_Handlers[event];
 	if (handler)
 		(handler)(m_user);
 }
 
-Module::BytesRead
-Module::InternalRequest::UserRead(Ws::fd readFd)
+Module::IO_Callback::BytesCount
+Module::InternalRequest::IO_CallTheUser(const Module::IO_Callback::Type type, Ws::fd targetFd)
 {
-	if (!(m_readHandler && m_user))
+	if (!(m_IO_Handlers[type] && m_user))
 		return (0);
-	return ((m_readHandler)(m_user, readFd));
+	return ((m_IO_Handlers[type])(m_user, targetFd));
 }
-
-Module::BytesWritten
-Module::InternalRequest::UserWrite(Ws::fd writeFd)
-{
-	if (!(m_writeHandler && m_user))
-		return (0);
-	return ((m_writeHandler)(m_user, writeFd));
-}
-
 
 Module::InternalRequest::InternalRequest(const InternalRequest &copy) :
 	Request(copy),

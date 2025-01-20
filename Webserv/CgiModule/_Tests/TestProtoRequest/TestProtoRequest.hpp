@@ -24,8 +24,8 @@ class TestProtoRequest
 		void	cancelCgi();		// on error runtime
 		void	timeoutCgi();
 
-		Cgi::Module::BytesRead		CgiRead(int readFd);
-		Cgi::Module::BytesWritten		CgiWrite(int writeFd);
+		Cgi::Module::IO_Callback::BytesCount		CgiRead(int readFd);
+		Cgi::Module::IO_Callback::BytesCount		CgiWrite(int writeFd);
 
 		void	debugPrint() const;
 
@@ -68,10 +68,10 @@ class TestProtoRequest_CgiGateway
 		static void onErrorRuntime(Cgi::Module::User user);
 		static void onErrorTimeOut(Cgi::Module::User user);
 
-		static Cgi::Module::BytesRead 		onRead(Cgi::Module::User user, int readFd);
-		static Cgi::Module::BytesWritten 		onWrite(Cgi::Module::User user, int writeFd);
+		static Cgi::Module::IO_Callback::BytesCount 		onRead(Cgi::Module::User user, int readFd);
+		static Cgi::Module::IO_Callback::BytesCount 		onWrite(Cgi::Module::User user, int writeFd);
 
-		static void (*Callbacks[Cgi::Module::CALLBACK_COUNT])(Cgi::Module::User user);
+		static void (*Callbacks[Cgi::Module::Runtime_Callback::COUNT])(Cgi::Module::User user);
 };
 
 

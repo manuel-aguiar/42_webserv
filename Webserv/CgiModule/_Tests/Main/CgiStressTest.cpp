@@ -221,7 +221,8 @@ int CgiStressTest::StressTest(int testNumber,
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor::setNonBlocking(testpipe[0]);
+		FileDescriptor
+::setNonBlocking(testpipe[0]);
 		char pipeDrain[1024];
 		/////////////////
 
@@ -256,12 +257,14 @@ int CgiStressTest::StressTest(int testNumber,
 			
 			// setup callbacks
 			requests.back().m_CgiRequestData->setUser(&requests.back());
-			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
-			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			requests.back().m_CgiRequestData->setUserCallback(Cgi::Module::CALLBACK_ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-			requests.back().m_CgiRequestData->setReadHandler(&TestProtoRequest_CgiGateway::onRead);
-			requests.back().m_CgiRequestData->setWriteHandler(&TestProtoRequest_CgiGateway::onWrite);
+			
+			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			requests.back().m_CgiRequestData->setRuntime_Callback(Cgi::Module::Runtime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+			
+			requests.back().m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
+			requests.back().m_CgiRequestData->setIO_Callback(Cgi::Module::IO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			

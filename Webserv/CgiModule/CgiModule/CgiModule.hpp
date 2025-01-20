@@ -29,24 +29,40 @@ namespace Cgi
 	class Module
 	{
 		public:
-
-			class 						Request;
-
-			typedef std::string			InterpExtension;
-			typedef std::string			InterpPath;
-			typedef int 				RuntimeOptions;
-			
-			Module(	size_t workerCount, 
+			Module(		size_t workerCount, 
 						size_t backlogCount, 
 						size_t maxTimeout, 
 						EventManager& eventManager, 
 						Globals& globals);
 			~Module();
 
+			class 						Request;
+
+			typedef std::string			InterpExtension;
+			typedef std::string			InterpPath;
+			
+
+			class Options
+			{
+				public:
+					enum
+					{
+						RUNTIME_BASE 	= (0),
+						HOLD_READ 		= (1 << 1),
+						RESTART_READ 	= (1 << 2),
+						CANCEL_READ 	= (1 << 3),
+						HOLD_WRITE 		= (1 << 4),
+						RESTART_WRITE 	= (1 << 5),
+						CANCEL_WRITE 	= (1 << 6),
+					};
+				typedef int 	Flags;
+			};
+
+
 			// request interaction
 			Request*					acquireRequest();
 			void						enqueueRequest(Request& data, bool isCalledFromEventLoop);
-			void						modifyRequest(Request& data, RuntimeOptions newOptions, bool isCalledFromEventLoop);
+			void						modifyRequest(Request& data, Options::Flags newOptions, bool isCalledFromEventLoop);
 			void						finishRequest(Request& data, bool isCalledFromEventLoop);
 			
 			// processing
@@ -60,39 +76,43 @@ namespace Cgi
 			typedef std::string			EnvKey;
 			typedef std::string			EnvValue;
 
-			typedef int					BytesRead;
-			typedef int					BytesWritten;
-			typedef int					BytesReadWritten;
-			typedef void*				User;
 
-			typedef void 				(*Callback)	(User user);
-			typedef BytesReadWritten 	(*IO_Handler)		(User user, int targetFd);
 
 			typedef struct s_CgiRequestEnv
 			{
-				DynArray<std::pair<Cgi::Env::Enum::Type, EnvValue> >	envBase;
-				DynArray<std::pair<EnvKey, EnvValue> >			envExtra;
+				DynArray<std::pair<Cgi::Env::Enum::Type, 	EnvValue> >	envBase;
+				DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
 			}	EnvVariables;
 
-			typedef enum
-			{
-				CALLBACK_ON_SUCCESS,
-				CALLBACK_ON_ERROR_STARTUP,
-				CALLBACK_ON_ERROR_RUNTIME,
-				CALLBACK_ON_ERROR_TIMEOUT,
-				CALLBACK_COUNT
-			} 	CallbackType;
+			typedef void*				User;
 
-			typedef enum
+			class Runtime_Callback
 			{
-				RUNTIME_BASE = 0,
-				HOLD_READ = (1 << 1),
-				RESTART_READ = (1 << 2),
-				CANCEL_READ = (1 << 3),
-				HOLD_WRITE = (1 << 4),
-				RESTART_WRITE = (1 << 5),
-				CANCEL_WRITE = (1 << 6),
-			} 	e_RuntimeOptions;
+				public:
+					typedef enum
+					{
+						ON_SUCCESS,
+						ON_ERROR_STARTUP,
+						ON_ERROR_RUNTIME,
+						ON_ERROR_TIMEOUT,
+						COUNT
+					} 	Type;
+					typedef void	(*Handler)	(User user);
+			};
+
+			class IO_Callback
+			{
+				public:
+					typedef enum
+					{
+						READ,
+						WRITE,
+						COUNT
+					} 	Type;
+					typedef int     	BytesCount;
+					typedef BytesCount	(*Handler)	(User user, int targetFd);
+			};
+
 
 
 			// getters
@@ -134,14 +154,18 @@ namespace Cgi
 			Globals&								m_globals;
 
 			//enums for private coordination
-			typedef enum
+			class RequestState
 			{
-				STATE_IDLE,
-				STATE_ACQUIRED,
-				STATE_QUEUED,
-				STATE_EXECUTING,
-				STATE_CANCELLED,
-			} 	RequestState;
+				public:
+				typedef enum
+				{
+					IDLE,
+					ACQUIRED,
+					QUEUED,
+					EXECUTING,
+					CANCELLED,
+				} 	Type;
+			};
 
 			EventManager&		mf_accessEventManager();
 			Globals&			mf_accessGlobals();
@@ -154,14 +178,14 @@ namespace Cgi
 			void				mf_recycleRuntimeFailure(Worker& worker);
 			void				mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
 			void				mf_recycleTimeoutFailure(Worker& worker);
-			void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
+			void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Runtime_Callback::Type callUser);
 			void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
 			
 			void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
 			void				mf_recycleRequestData(InternalRequest& data);
 			
 			// return
-			void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, CallbackType callUser);
+			void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Runtime_Callback::Type callUser);
 			void				mf_returnWorker(Worker& worker);
 			void				mf_returnRequestData(InternalRequest& data);
 			void				mf_cancelAndReturn(InternalRequest& data);

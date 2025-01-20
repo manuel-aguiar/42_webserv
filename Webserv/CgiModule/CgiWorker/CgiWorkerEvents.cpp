@@ -32,15 +32,15 @@ void	Module::Worker::mf_EventCallback_OnEmergency(::Callback& event)
 
 void	Module::Worker::mf_readScript()
 {
-	int triggeredFlags;
-	int bytesRead;
+	int 				bytesRead;
+	Ws::Epoll::Flags 	triggeredFlags;
 
 	triggeredFlags = m_readEvent.getTriggeredFlags();
 	//std::cout << "\t\t\tread called" << std::endl;
 	
-	if (triggeredFlags & EPOLLIN)
+	if (triggeredFlags & Ws::Epoll::READ)
 	{
-		bytesRead = m_curRequestData->UserRead(m_readEvent.getFd());
+		bytesRead = m_curRequestData->IO_CallTheUser(IO_Callback::READ, m_readEvent.getFd());
 
 		assert(bytesRead != -1);
 
@@ -52,7 +52,7 @@ void	Module::Worker::mf_readScript()
 		}
 	}
 	
-	if ((triggeredFlags & (EPOLLERR | EPOLLHUP)) && !(triggeredFlags & EPOLLIN))
+	if ((triggeredFlags & (Ws::Epoll::ERROR | Ws::Epoll::HANGUP)) && !(triggeredFlags & Ws::Epoll::READ))
 	{
 		mf_disableCloseMyEvent(m_readEvent, true);
 		if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
@@ -62,16 +62,16 @@ void	Module::Worker::mf_readScript()
 
 void	Module::Worker::mf_writeScript()
 {
-	int bytesWritten;
-	int triggeredFlags;
+	int 				bytesWritten;
+	Ws::Epoll::Flags 	triggeredFlags;
 	
 	triggeredFlags = m_writeEvent.getTriggeredFlags();
 	
 	//std::cout << "write triggered" << std::endl;
 	
-	if (triggeredFlags & EPOLLOUT)
+	if (triggeredFlags & Ws::Epoll::WRITE)
 	{
-		bytesWritten = m_curRequestData->UserWrite(m_writeEvent.getFd());
+		bytesWritten = m_curRequestData->IO_CallTheUser(IO_Callback::WRITE, m_writeEvent.getFd());
 
 		assert(bytesWritten != -1);	
 
@@ -83,7 +83,7 @@ void	Module::Worker::mf_writeScript()
 		}
 	}
 	
-	if (triggeredFlags & (EPOLLERR | EPOLLHUP))
+	if (triggeredFlags & (Ws::Epoll::ERROR | Ws::Epoll::HANGUP))
 	{
 		mf_disableCloseMyEvent(m_writeEvent, true);
 		if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)

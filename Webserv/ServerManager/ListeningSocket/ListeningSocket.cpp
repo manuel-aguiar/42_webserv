@@ -77,7 +77,8 @@ int		ListeningSocket::open()
 		return (0);
 	}
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
+	if (!FileDescriptor
+::setCloseOnExec_NonBlocking(m_sockfd))
 	{
 		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (0);
@@ -143,7 +144,8 @@ int    ListeningSocket::accept()
 
 	connection->setSocket(sockfd);
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
+	if (!FileDescriptor
+::setCloseOnExec_NonBlocking(sockfd))
 	{
 		m_globals.logError("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (mf_close_accepted_connection(*connection));

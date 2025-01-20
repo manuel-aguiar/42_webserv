@@ -30,12 +30,12 @@ SignalHandler::~SignalHandler()
 	m_pipes.clear();	
 }
 
-t_fd		SignalHandler::getPipeRead(int serverID)
+Ws::fd		SignalHandler::getPipeRead(int serverID)
 {
 	return (m_pipes[serverID].first);
 }
 
-t_fd		SignalHandler::getPipeWrite(int serverID)
+Ws::fd		SignalHandler::getPipeWrite(int serverID)
 {
 	return (m_pipes[serverID].second);
 }

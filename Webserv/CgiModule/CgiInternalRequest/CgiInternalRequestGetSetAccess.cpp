@@ -12,10 +12,10 @@ Module::InternalRequest::getUser() const
     return (m_user);
 }
 
-Module::Callback
-Module::InternalRequest::getUserCallback(const CallbackType type) const
+Module::Runtime_Callback::Handler
+Module::InternalRequest::getRuntime_Handler(const Module::Runtime_Callback::Type type) const
 {
-    return (m_userCallbacks[type]);
+    return (m_runtime_Handlers[type]);
 }
 
 
@@ -38,7 +38,7 @@ Module::InternalRequest::getScriptPath() const
 	return (m_scriptPath);
 }
 
-Module::RuntimeOptions
+Module::Options::Flags
 Module::InternalRequest::getOptions() const
 {
 	return (m_options);
@@ -61,7 +61,7 @@ Module::Worker*	Module::InternalRequest::accessExecutor()
 	return (m_executor);
 }
 
-Module::RequestState	Module::InternalRequest::getState() const
+Module::RequestState::Type	Module::InternalRequest::getState() const
 {
 	return (m_state);
 }
@@ -69,7 +69,7 @@ Module::RequestState	Module::InternalRequest::getState() const
 
 
 //setters
-void	Module::InternalRequest::setState(const RequestState state)
+void	Module::InternalRequest::setState(const Module::RequestState::Type state)
 {
 	m_state = state;
 }
