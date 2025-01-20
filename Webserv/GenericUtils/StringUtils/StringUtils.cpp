@@ -1,7 +1,8 @@
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Validation/Validation.hpp"
 
-std::string strtrim(const std::string &str)
+std::string
+StringUtils::strtrim(const std::string &str)
 {
 	if (str.empty())
 		return (str);
@@ -16,7 +17,8 @@ std::string strtrim(const std::string &str)
 	return (str.substr(first, last - first + 1));
 }
 
-size_t	stoull(const std::string &str)
+size_t
+StringUtils::stoull(const std::string &str)
 {
 	std::stringstream	ss(str);
 	size_t				value;
@@ -27,7 +29,8 @@ size_t	stoull(const std::string &str)
 	return (value);
 }
 
-size_t	parse_size(const std::string &size_str)
+size_t
+StringUtils::parse_size(const std::string &size_str)
 {
 	size_t	multiplier = 1;
 	std::reverse_iterator<std::string::const_iterator>	it;
@@ -46,11 +49,12 @@ size_t	parse_size(const std::string &size_str)
 	else if (!isdigit(*it))
 		throw (std::invalid_argument("Invalid unit "));
 	else
-		return (stoull(size_str) * multiplier);
-	return (stoull(value) * multiplier);
+		return (StringUtils::stoull(size_str) * multiplier);
+	return (StringUtils::stoull(value) * multiplier);
 }
 
-std::vector<std::string> split(const std::string &str, char delimiter)
+std::vector<std::string>
+StringUtils::split(const std::string &str, char delimiter)
 {
 	std::vector<std::string>	tokens;
 	std::string					token;
@@ -62,11 +66,19 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 	return (tokens);
 }
 
-std::string	strToLower(const std::string& str)
+std::string
+StringUtils::strToLower(const std::string& str)
 {
 	std::string lowercaseString = str;
 	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
 		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
 	
 	return (lowercaseString);
+}
+
+void
+StringUtils::move(std::string& dest, std::string& src)
+{
+	dest.swap(src);
+	src.clear();
 }
