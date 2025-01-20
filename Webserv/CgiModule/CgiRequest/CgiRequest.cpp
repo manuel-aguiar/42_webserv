@@ -11,7 +11,7 @@ namespace Cgi
 		m_extension		(""),
 		m_scriptPath	(""),
 		m_state			(RequestState::IDLE),
-		m_options		(Cgi::Module::Options::RUNTIME_BASE)
+		m_options		(0)
 	{
 		m_env.envBase.reserve(Cgi::Env::Enum::COUNT);
 
@@ -45,7 +45,7 @@ namespace Cgi
 		m_timeoutMs = 0;
 		m_user = NULL;
 		m_state = RequestState::IDLE;
-		m_options = Cgi::Module::Options::RUNTIME_BASE;
+		m_options = 0;
 	}
 
 	Cgi::Module::Request::Request(const Request &copy) :

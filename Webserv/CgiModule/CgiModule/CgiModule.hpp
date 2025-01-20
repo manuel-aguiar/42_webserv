@@ -48,7 +48,6 @@ namespace Cgi
 				public:
 					enum
 					{
-						RUNTIME_BASE 	= (0),
 						HOLD_READ 		= (1 << 1),
 						RESTART_READ 	= (1 << 2),
 						CANCEL_READ 	= (1 << 3),
