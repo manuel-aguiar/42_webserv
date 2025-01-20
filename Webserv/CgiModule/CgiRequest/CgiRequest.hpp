@@ -22,7 +22,7 @@ namespace Cgi
 														const CgiRuntime_Callback::Handler handler);
 			void					setIO_Callback		(const CgiIO_Callback::Type type, 
 														const CgiIO_Callback::Handler handler);
-			void					setEnvBase			(const CgiEnvEnum env, const CgiEnvValue& value);
+			void					setEnvBase			(const CgiEnvEnum::Type env, const CgiEnvValue& value);
 			void					setEnvExtra			(const CgiEnvKey& key, const CgiEnvValue& value);
 			void					setExtension		(const CgiExtension& extension);
 			void					setScriptPath		(const std::string& path);

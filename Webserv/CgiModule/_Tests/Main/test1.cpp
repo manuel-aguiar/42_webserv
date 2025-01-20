@@ -116,12 +116,12 @@ int TestPart1(int testNumber)
 		
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
-		cgi.modifyRequest(*protoRequest.m_CgiRequestData, Cgi::Module::Options::RESTART_WRITE, false);
+		cgi.modifyRequest(*protoRequest.m_CgiRequestData, CgiOptions::RESTART_WRITE, false);
 
 		//event loop
 		while (1)
@@ -189,7 +189,7 @@ int TestPart1(int testNumber)
 
 		
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(200); //0.2ms
 		
 		// false, we will cancel
@@ -272,7 +272,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
@@ -357,7 +357,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("asfafasfasfasfasf");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 
@@ -451,7 +451,7 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 

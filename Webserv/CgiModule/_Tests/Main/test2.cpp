@@ -66,14 +66,14 @@ int TestPart2(int testNumber)
 		///////////////// Setting Variables ////////////////////
 
 		// normal ones
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
 
 		// custom
 		protoRequest.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
 
 		// doubled entry, the first should prevail
-		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
+		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
 
 
 		////////////////////////////////////////////////////////////////

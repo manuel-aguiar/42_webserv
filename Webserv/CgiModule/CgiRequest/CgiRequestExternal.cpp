@@ -28,7 +28,7 @@ namespace Cgi
 
 
 	void
-	Cgi::Module::Request::setEnvBase(const Cgi::Env::Enum::Type env, const Module::EnvValue& value)
+	Cgi::Module::Request::setEnvBase(const CgiEnvEnum::Type env, const Module::EnvValue& value)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_env.envBase.emplace_back(env, value);

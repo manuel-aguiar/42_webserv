@@ -8,30 +8,32 @@ namespace Cgi
 {
 	namespace Env
 	{
-		namespace Enum
+		class Enum
 		{
-			typedef enum
-			{
-				AUTH_TYPE,
-				CONTENT_LENGTH,
-				CONTENT_TYPE,
-				GATEWAY_INTERFACE,
-				PATH_INFO,
-				PATH_TRANSLATED,
-				QUERY_STRING,
-				REMOTE_ADDR,
-				REMOTE_HOST,
-				REMOTE_IDENT,
-				REMOTE_USER,
-				REQUEST_METHOD,
-				SCRIPT_NAME,
-				SERVER_NAME,
-				SERVER_PORT,
-				SERVER_PROTOCOL,
-				SERVER_SOFTWARE,
-				COUNT
-			}	Type;
-		}
+			public:
+				typedef enum
+				{
+					AUTH_TYPE,
+					CONTENT_LENGTH,
+					CONTENT_TYPE,
+					GATEWAY_INTERFACE,
+					PATH_INFO,
+					PATH_TRANSLATED,
+					QUERY_STRING,
+					REMOTE_ADDR,
+					REMOTE_HOST,
+					REMOTE_IDENT,
+					REMOTE_USER,
+					REQUEST_METHOD,
+					SCRIPT_NAME,
+					SERVER_NAME,
+					SERVER_PORT,
+					SERVER_PROTOCOL,
+					SERVER_SOFTWARE,
+					COUNT
+				}	Type;
+		};
+
 		namespace Str
 		{
 			const char* const AUTH_TYPE = "AUTH_TYPE";
@@ -53,7 +55,7 @@ namespace Cgi
 			const char* const SERVER_SOFTWARE = "SERVER_SOFTWARE";
 		}
 	}
-	typedef Cgi::Env::Enum::Type		CgiEnvEnum;
+	typedef Cgi::Env::Enum				CgiEnvEnum;
 }
 
 #endif

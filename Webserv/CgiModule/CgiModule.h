@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 15:52:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/20 16:20:53 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/20 16:38:12 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@ typedef Cgi::Module::EnvValue					CgiEnvValue;
 typedef Cgi::Module::InterpExtension			CgiExtension;
 typedef Cgi::Module::InterpPath					CgiPath;
 typedef Cgi::Module::EnvVariables				CgiEnvVariables;
+
+typedef Cgi::Env::Enum							CgiEnvEnum;
 
 #endif
