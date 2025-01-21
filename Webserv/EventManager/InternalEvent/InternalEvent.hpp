@@ -13,16 +13,21 @@ class EventManager::InternalEvent : public EventCallback
         InternalEvent();
         ~InternalEvent();
 
-        void    setTriggeredFlags(Ws::Epoll::Events flags);
+        //informing public event of the events that took place on the target fd
+        void                    setTriggeredEvents(const Ws::Epoll::Events flags);
 
-        bool    isInvalid() const;
-        void    updateSubscription();
-        void    unsubscribe();
+        //validation
+        bool                    isInvalid() const;
 
-        void    setSubscribedFd(Ws::fd fd);
-        void    setsubscribedEvents(int flags);
-        Ws::fd  getSubscribedFd() const;
-        int     getsubscribedEvents() const;
+
+        //internal bookkeeping
+        void                    updateSubscription();
+        void                    unSubscribe();
+        void                    setSubscribedFd(const Ws::fd fd);
+        void                    setSubscribedEvents(const Ws::Epoll::Events flags);
+
+        Ws::fd                  getSubscribedFd() const;
+        Ws::Epoll::Events       getSubscribedEvents() const;
         
     private:
         InternalEvent(const InternalEvent& copy);

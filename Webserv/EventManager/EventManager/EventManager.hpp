@@ -20,9 +20,9 @@ class EventManager
 		//methods
 		int				ProcessEvents(int timeOut);
 
-		int				addEvent(EventCallback& event, bool markAsStale = true);
-		int				modEvent(EventCallback& event, bool markAsStale = true);
-		int				delEvent(EventCallback& event, bool markAsStale = true);
+		int				addEvent(EventCallback& event, bool markAsStale);
+		int				modEvent(EventCallback& event, bool markAsStale);
+		int				delEvent(EventCallback& event, bool markAsStale);
 		
 		//getters
 		size_t			getSubscribeCount() const;

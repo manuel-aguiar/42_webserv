@@ -11,25 +11,24 @@ CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 NAME = test.out
 
 # Paths
-ROOT_PATH = ../../../..
-SRC_PATH = $(ROOT_PATH)/.
-OBJ_PATH = $(ROOT_PATH)/Webserv/_build
+ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
+SRC_PATH	=	$(ROOT_PATH)/.
+OBJ_PATH	=	$(ROOT_PATH)/_build
 
 
-SRCS		 =  $(SRC_PATH)/Webserv/ServerManager/EventManager/_Tests/main.cpp \
-				$(SRC_PATH)/Webserv/ServerManager/EventManager/_Tests/test1.cpp \
+SRCS		 =  $(SRC_PATH)/Webserv/EventManager/EventManager/EventManager.cpp \
+				$(SRC_PATH)/Webserv/EventManager/InternalEvent/InternalEvent.cpp \
+				$(SRC_PATH)/Webserv/EventManager/_Tests/main.cpp \
+				$(SRC_PATH)/Webserv/EventManager/_Tests/test1.cpp \
+				$(SRC_PATH)/Webserv/EventManager/_Tests/test2.cpp \
 													\
-				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager.cpp \
-												\
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 													\
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-				$(SRC_PATH)/Webserv/Event/Event.cpp \
-				$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/Callback/Callback.cpp \
-				$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
+				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp \
 				\
 				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
 

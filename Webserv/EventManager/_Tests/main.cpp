@@ -1,14 +1,11 @@
 
-// Project headers
-# include "../EventManager.hpp"
-# include "../../../Globals/Globals.hpp"
-# include "../../../EventCallback/EventCallback.hpp"
-# include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+
 
 // C++ headers
 # include <iostream>
 
 extern int TestPart1(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
@@ -17,6 +14,7 @@ int main(void)
 	std::cout << "\n*************** EventManager tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
+	testNumber = TestPart2(testNumber);
 
 	std::cout << "**************************************************\n" << std::endl;
 

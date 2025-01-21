@@ -23,8 +23,7 @@ EventManager::EventManager(Globals& globals) :
 		throw std::runtime_error("epoll_create(), critical error: " + std::string(strerror(errno)));
 	}
 
-	if (!FileDescriptor
-::setCloseOnExec_NonBlocking(m_epollfd))
+	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_epollfd))
 	{
 		m_globals.logError("fcntl(): " + std::string(strerror(errno)));
 		throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
@@ -35,7 +34,6 @@ EventManager::EventManager(Globals& globals) :
 
 void EventManager::mf_markFdStale(t_fd fd)
 {
-	//std::cout << ", fd marked as stale: " << fd;
 	m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 	size_t index = fd / 8;
 	size_t bit = fd % 8;
@@ -79,6 +77,7 @@ int                EventManager::addEvent(EventCallback& event, bool markAsStale
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 	{
+		assert(false); // this should never happen
 		m_globals.logError("EventManager::addEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
@@ -106,6 +105,7 @@ int                EventManager::modEvent(EventCallback& event, bool markAsStale
 	
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 	{
+		assert(false); // this should never happen
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
@@ -130,13 +130,14 @@ int                 EventManager::delEvent(EventCallback& event, bool markAsStal
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 	{
+		assert(false); // this should never happen
 		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	
 	if (markAsStale)
 		mf_markFdStale(fd);
-	internal->unsubscribe();
+	internal->unSubscribe();
 
 	--m_subscribeCount;
 
@@ -162,7 +163,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 
 		if (event->isInvalid() || mf_isFdStale(event->getFd()))
 			continue ;
-		event->setTriggeredFlags(m_events[i].events);
+		event->setTriggeredEvents(m_events[i].events);
 		event->handle();
 	}
 

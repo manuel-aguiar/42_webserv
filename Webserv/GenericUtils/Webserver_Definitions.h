@@ -76,7 +76,7 @@ namespace Ws
 			ERROR = EPOLLERR,
 			HANGUP = EPOLLHUP,
 			RHANGUP = EPOLLRDHUP,
-			EDGE_T = EPOLLET
+			EDGE_TRIGGERED = EPOLLET
 		};
 		typedef int Events;
 	}

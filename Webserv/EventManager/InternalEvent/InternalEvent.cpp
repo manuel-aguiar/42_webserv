@@ -14,10 +14,10 @@ void EventManager::InternalEvent::updateSubscription()
     m_subscribedEvents = m_monitoredEvents;
 }
 
-void    EventManager::InternalEvent::unsubscribe()
+void    EventManager::InternalEvent::unSubscribe()
 {
     m_subscribedFd = -1;
-    m_subscribedEvents = -1;
+    m_subscribedEvents = Ws::Epoll::NONE;
 }
 
 bool EventManager::InternalEvent::isInvalid() const
@@ -26,7 +26,7 @@ bool EventManager::InternalEvent::isInvalid() const
     return (!(m_subscribedFd == m_fd && m_fd != -1));
 }
 
-void    EventManager::InternalEvent::setTriggeredFlags(const Ws::Epoll::Events flags)
+void    EventManager::InternalEvent::setTriggeredEvents(const Ws::Epoll::Events flags)
 {
     m_triggeredEvents = flags;
 }
@@ -36,7 +36,7 @@ void EventManager::InternalEvent::setSubscribedFd(const Ws::fd fd)
     m_subscribedFd = fd;
 }
 
-void EventManager::InternalEvent::setsubscribedEvents(const Ws::Epoll::Events flags)
+void EventManager::InternalEvent::setSubscribedEvents(const Ws::Epoll::Events flags)
 {
     m_subscribedEvents = flags;
 }
@@ -46,7 +46,7 @@ Ws::fd EventManager::InternalEvent::getSubscribedFd() const
     return (m_subscribedFd);
 }
 
-int EventManager::InternalEvent::getsubscribedEvents() const 
+int EventManager::InternalEvent::getSubscribedEvents() const 
 {
     return (m_subscribedEvents);
 }

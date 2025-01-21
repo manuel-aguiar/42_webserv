@@ -2,10 +2,13 @@
 
 // Project headers
 # include "../EventManager/EventManager.hpp"
-# include "../../../Globals/Globals.hpp"
-# include "../../../EventCallback/EventCallback.hpp"
-# include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
-# include "../../../../Toolkit/_Tests/TestHelpers.h"
+# include "../../Globals/Globals.hpp"
+# include "../../EventCallback/EventCallback.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
+// Test helpers
+# include "../../../Toolkit/_Tests/TestHelpers.h"
 
 // C++ headers
 # include <iostream>
@@ -36,9 +39,7 @@ struct CalcFibo
 
 	static void onReadFibonacci(EventCallback& cb)
 	{
-		assert(cb.getData() != NULL);
-
-		CalcFibo* calcfibo = reinterpret_cast<CalcFibo*>(cb.getData());
+		CalcFibo* calcfibo = reinterpret_cast<CalcFibo*>(cb.accessUser());
 		calcfibo->result = fibonacci(calcfibo->number);
 	}
 
@@ -52,7 +53,7 @@ struct WriteHello
 
 	static void onWriteHello(EventCallback& cb)
 	{
-		WriteHello* writeHello = reinterpret_cast<WriteHello*>(cb.getData());
+		WriteHello* writeHello = reinterpret_cast<WriteHello*>(cb.accessUser());
 		write(writeHello->m_fd, "Hello", 5);
 	}
 
@@ -70,7 +71,7 @@ int TestPart1(int testNumber)
 
 		EventManager manager(globals);
 		
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (instantiation test)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -87,18 +88,24 @@ int TestPart1(int testNumber)
 
 		int sockfd[2];
 
-		// create a tcp socket pair for communication
+		// create a unix socket pair for communication
 		if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd) != 0)
 			throw std::runtime_error("Failed to create socket pair" + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		// set the sockets to non-blocking
+		if (!FileDescriptor::setNonBlocking(sockfd[0]) 
+		|| !FileDescriptor::setNonBlocking(sockfd[1]))
+			throw std::runtime_error("Fcntl failed" + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
 		//reader
-		EventCallback			readEvent;
+		EventCallback	readEvent;
 		CalcFibo		readCalculate(5);
 		long			readExpectedResult = fibonacci(5);
 
 		//writer
-		EventCallback			writeEvent;
+		EventCallback	writeEvent;
 		WriteHello		writeHello(sockfd[1]);
 
 		/*
@@ -115,17 +122,24 @@ int TestPart1(int testNumber)
 			On the next epoll iteration, the readEvent is received, calculating fibonacci.
 		*/
 
+
+
 		// preparing the write event
-		readEvent.setFdFlagsCallback(sockfd[0], EPOLLIN | EPOLLET, &readCalculate, &CalcFibo::onReadFibonacci);
-		FileDescriptor
-::setCloseOnExec_NonBlocking(readEvent.getFd());
-		manager.addEvent(readEvent);
+		readEvent.setFd(sockfd[0]);
+		readEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::EDGE_TRIGGERED);
+		readEvent.setUser(&readCalculate);
+		readEvent.setHandler(&CalcFibo::onReadFibonacci);
 
+		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
+		manager.addEvent(readEvent, false);
 
-		writeEvent.setFdFlagsCallback(sockfd[1], EPOLLOUT | EPOLLET, &writeHello, &WriteHello::onWriteHello);
-		FileDescriptor
-::setCloseOnExec_NonBlocking(writeEvent.getFd());
-		manager.addEvent(writeEvent);
+		writeEvent.setFd(sockfd[1]);
+		writeEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
+		writeEvent.setUser(&writeHello);
+		writeEvent.setHandler(&WriteHello::onWriteHello);
+
+		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
+		manager.addEvent(writeEvent, false);
 
 		// while we don't have a result, wait and indefinitely until there are events, and process them
 		while (readCalculate.result == 0)
@@ -136,8 +150,9 @@ int TestPart1(int testNumber)
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
 		// remove the write event from monitoring, which should lower the subscribe count
-		manager.delEvent(writeEvent);
+		manager.delEvent(writeEvent, false);
 
+		// there should only 1 subscribed
 		if (manager.getSubscribeCount() != 1)
 			throw std::runtime_error("Events were not deleted correctly, got left " + TestHelpers::to_string(manager.getSubscribeCount())  + ", expected: " + TestHelpers::to_string(1) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));		
@@ -146,8 +161,10 @@ int TestPart1(int testNumber)
 		// write should be available write away
 
 		readCalculate.result = 0;
-		readEvent.setMonitoredEvents(EPOLLOUT | EPOLLET);
-		manager.modEvent(readEvent);
+
+		// setting read to write because.... we can
+		readEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
+		manager.modEvent(readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
 
@@ -159,8 +176,9 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		manager.delEvent(readEvent);
+		manager.delEvent(readEvent, false);
 
+		// should be 0 subcribed
 		if (manager.getSubscribeCount() != 0)
 			throw std::runtime_error("Events were not deleted correctly got left " + TestHelpers::to_string(manager.getSubscribeCount())  + ", expected: " + TestHelpers::to_string(0) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
@@ -170,7 +188,7 @@ int TestPart1(int testNumber)
 		close(sockfd[0]);
 		close(sockfd[1]);
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "	PASSED (handling communication between a writer and a reader)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
