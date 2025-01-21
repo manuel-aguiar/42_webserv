@@ -14,11 +14,13 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 SRCS	    =   $(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
 				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp \
 				\
-				$(SRC_PATH)/Webserv/EventCallback/_Tests/main.cpp
+				$(SRC_PATH)/Webserv/EventCallback/_Tests/main.cpp \
+				\
+				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
 
 
-OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
-DEPS 			= 	$(OBJS:.o=.d)
+OBJS 		= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+DEPS 		= 	$(OBJS:.o=.d)
 
 #####################################################
 

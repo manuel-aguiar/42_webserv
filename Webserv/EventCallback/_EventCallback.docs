@@ -68,3 +68,90 @@ So like this, we decoupled the EventCallback from the actual users.
 
 Notice though, THERE IS NO TYPESAFETY HERE.
 The programmer must supply a user and a handler that match, otherwise be ready for chaos.
+
+
+###################################
+
+In handle, the EventCallback just checks that a handler exists and not a User.
+The reason being, maybe the handler does not need any external data to do what it has to do.
+Maybe it accesses globals, or maybe it just prints to std::cout.
+
+so if you want to pass a handler say:
+
+void	SomeHandler(EventCallback& callback)
+{
+	(void)callback;
+
+	std::cout << "Hello World!" << std::endl;
+}
+
+EventCallback callback;
+
+callback.setHandler(&SomeHandler);
+
+callback.handle();
+
+##################################
+
+Ok so the above is the callback part. Now we get to the event part.
+This class serves to execute an action based on an event that happpened.
+In our setup, the "events" are simply, input and output on file descriptors.
+This class doesn't track anything, simple "reactsJS" to an event that happened.
+
+Still whoever tracks the event must have a file descriptor to monitor and some
+event types to monitor (read, write, hang-up).
+
+We are using epoll as our event monitor so we pass the relevant file descriptor
+and the epollflags we want to monitor (Ws::Epoll).
+
+In a real context, the EventCallback::Handler would be something like HttpRead,
+the EventCallback::User would be HttpConnection, the fd would be the Client socket,
+and the flags would be Ws::Epoll::READ and Ws::Epoll::WRITE.
+
+######################################
+
+Member Functions:
+
+		//methods
+		void						handle();			//handles the subscribed event
+		void						reset();			//sets all internals back to "empty"
+
+		// accessors
+		EventCallback::User			accessUser();		//allow the caller to access the User and then typecast it
+		EventCallback::Handler		accessHandler();	//The function pointer that will be called
+
+		//getters
+		Ws::fd						getFd()						const;		
+		Ws::Epoll::Events			getMonitoredEvents()		const;		//the events we are asking to monitor (read, write)
+		Ws::Epoll::Events			getTriggeredEvents()		const;		//the events that resulted in the EventCallback being called
+																			//(this value will be set by EventManager, letting us know "what happened")
+
+		//setters
+		void						setFd				(const Ws::fd fd);
+		void						setMonitoredEvents	(const Ws::Epoll::Events flags);
+		void						setUser				(const EventCallback::User data);
+		void						setHandler			(const EventCallback::Handler handler);
+		void						setUserHandler		(const EventCallback::User data, const EventCallback::Handler handler);	
+
+
+##############################################
+
+Design considerations
+
+No setters for triggered flags are provided:
+the user is not supposed to set this value.
+
+Internally, our EventsManager will set these flags when processing events, by having
+an InternalEventCallback that inherits from this one and adds the relevant flags to it.
+
+We do opt to still allocate space for these extra member variables in the base class itself
+just not to have to copy events all the time, we use the same base instance and
+inherit from it to modify the remaining parts.
+
+So, a user could still messup the class but either the EventManager would have to be the sole supplier
+of Events or we would have to do a lot of copying for very little gain.
+
+In CgiModule, the Cgi::Module will be the sole supplier of Cgi::Request which allows a more clear separation
+as we expose the public part of Request to the User while having access to extra internals.
+
+##########################################
