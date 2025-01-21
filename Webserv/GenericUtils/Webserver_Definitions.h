@@ -20,6 +20,7 @@
 # include <cerrno>
 # include <signal.h>
 # include <cassert>
+# include <string>
 
 
 // definitions for everyone to use
@@ -61,5 +62,26 @@ typedef union
 }   u_sockaddr;
 
 # define MAX_EPOLL_EVENTS 64
+
+namespace Ws
+{
+	typedef int			fd;
+	typedef pid_t		pid;
+
+	namespace Epoll
+	{
+		enum
+		{
+			NONE = 0,
+			READ = EPOLLIN,
+			WRITE = EPOLLOUT,
+			ERROR = EPOLLERR,
+			HANGUP = EPOLLHUP,
+			RHANGUP = EPOLLRDHUP,
+			EDGE_T = EPOLLET
+		};
+		typedef int Events;
+	}
+}
 
 #endif

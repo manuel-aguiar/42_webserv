@@ -1,8 +1,8 @@
 
 
-# include "test.h"
+# include "TestHelpers.h"
 
-std::string FileLineFunction(const char* file, const int line, const char* function)
+std::string TestHelpers::FileLineFunction(const char* file, const int line, const char* function)
 {
-    return std::string("\tFile: ") + file + "\n\tLine: " + to_string(line) + "\n\tFunction: " + function + '\n';
+    return std::string("\tFile: ") + file + "\n\tLine: " + TestHelpers::to_string(line) + "\n\tFunction: " + function + '\n';
 }

@@ -10,7 +10,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 int TestPart1(int testNumber)
@@ -27,16 +27,16 @@ int TestPart1(int testNumber)
 			array.push_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -59,16 +59,16 @@ int TestPart1(int testNumber)
 			array.push_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -90,16 +90,16 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -126,16 +126,16 @@ int TestPart1(int testNumber)
 			array.emplace_back(array[0]);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

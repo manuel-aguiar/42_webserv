@@ -14,7 +14,7 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
@@ -40,12 +40,12 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
                
@@ -54,34 +54,34 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
 
         if (queue[0] != frontNumber)
-            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("index 0 is: " + TestHelpers::to_string(queue[0]) + " but should be: " + TestHelpers::to_string(frontNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
         if (queue[1] != backNumber)
-			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("index 1 is: " + TestHelpers::to_string(queue[1]) + " but should be: " + TestHelpers::to_string(frontNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         if (queue.back() != backNumber)
-            throw std::logic_error("back is " + to_string(queue.back()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("back is " + TestHelpers::to_string(queue.back()) + " but should be: " + TestHelpers::to_string(backNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         if (queue.front() != frontNumber)
-            throw std::logic_error("back is " + to_string(queue.front()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("back is " + TestHelpers::to_string(queue.front()) + " but should be: " + TestHelpers::to_string(backNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 
@@ -90,8 +90,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
        
@@ -100,14 +100,14 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
  
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }  
 
         /************* */
@@ -117,13 +117,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }  
 
         /************* */
@@ -133,13 +133,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }   
         
 
@@ -150,8 +150,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
     /************* */
 
@@ -160,8 +160,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
         /************* */
@@ -170,13 +170,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         } 
 
 		std::cout << "	PASSED" << std::endl;
@@ -212,12 +212,12 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
                
@@ -226,38 +226,38 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
 
         if (queue[0] != frontNumber)
-            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("index 0 is: " + TestHelpers::to_string(queue[0]) + " but should be: " + TestHelpers::to_string(frontNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
         
         if (queue[1] != backNumber)
-			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("index 1 is: " + TestHelpers::to_string(queue[1]) + " but should be: " + TestHelpers::to_string(frontNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         
         if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size is " + TestHelpers::to_string(queue.size()) + " but should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         
         if (queue.back() != backNumber)
-            throw std::logic_error("back is " + to_string(queue.back()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("back is " + TestHelpers::to_string(queue.back()) + " but should be: " + TestHelpers::to_string(backNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         
         if (queue.front() != frontNumber)
-            throw std::logic_error("back is " + to_string(queue.front()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("back is " + TestHelpers::to_string(queue.front()) + " but should be: " + TestHelpers::to_string(backNumber) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
         resultInsertion = queue.push_front(10);
@@ -265,8 +265,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         /************* */
        
@@ -275,14 +275,14 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
  
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }  
 
         /************* */
@@ -292,13 +292,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }  
 
         /************* */
@@ -308,13 +308,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }   
         
 
@@ -325,8 +325,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
     /************* */
 
@@ -335,8 +335,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
         /************* */
@@ -345,13 +345,13 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
         if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("result was " + TestHelpers::to_string(resultInsertion) + " but expected: " + TestHelpers::to_string(expectedInsertion) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         if (queue.size() != expectedElemCount)
         {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("size doesn't match, size is: " + TestHelpers::to_string(queue.size()) + ", should be: " + TestHelpers::to_string(expectedElemCount) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         } 
 
 		std::cout << "	PASSED" << std::endl;
@@ -373,7 +373,7 @@ int TestPart1(int testNumber)
 
         if (it != itEnd)
             throw std::logic_error("iterators, empty queue, begin and end should be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -397,19 +397,19 @@ int TestPart1(int testNumber)
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(queue[i]) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + TestHelpers::to_string(i) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -433,19 +433,19 @@ int TestPart1(int testNumber)
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(queue[i]) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + TestHelpers::to_string(i) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -468,19 +468,19 @@ int TestPart1(int testNumber)
         StackCircularQueue<int, queueSize>::iterator itEnd = queue.end();
         if (it == itEnd)
             throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(queue[i]) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + TestHelpers::to_string(i) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -504,19 +504,19 @@ int TestPart1(int testNumber)
 
         if (it == itEnd)
             throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
             if (*it != queue[i])
-                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(queue[i]) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (i != queue.size())
-            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + TestHelpers::to_string(i) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -538,8 +538,8 @@ int TestPart1(int testNumber)
         StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("copy constructor, full copy-from, size mismatch, got " + TestHelpers::to_string(copy.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
@@ -547,8 +547,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, full copy-from, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy constructor, full copy-from, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -571,8 +571,8 @@ int TestPart1(int testNumber)
         StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, not-full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("copy constructor, not-full copy-from, size mismatch, got " + TestHelpers::to_string(copy.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
@@ -580,8 +580,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, not-full copy-from value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy constructor, not-full copy-from value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -601,8 +601,8 @@ int TestPart1(int testNumber)
         StackCircularQueue<int, queueSize> copy(queue);
 
         if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, empty copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("copy constructor, empty copy-from, size mismatch, got " + TestHelpers::to_string(copy.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = copy.begin();
@@ -610,8 +610,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, empty copy-from value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy constructor, empty copy-from value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -636,8 +636,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, full copy-from, empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -645,8 +645,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, full copy-from, empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -671,8 +671,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, non-full copy-from, empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -680,8 +680,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, non-full copy-from, empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -702,8 +702,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, empty copy-from, empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -711,8 +711,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, empty copy-from, empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -738,8 +738,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, full copy-from, non-empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -747,8 +747,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, full copy-from, non-empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -774,8 +774,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -783,8 +783,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -807,8 +807,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, empty copy-from, non-empty copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -816,8 +816,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, empty copy-from, non-empty copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -845,8 +845,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, full copy-from, full copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -854,8 +854,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, full copy-from, full copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -882,8 +882,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, non-full copy-from, full copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -891,8 +891,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, non-full copy-from, full copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;
@@ -917,8 +917,8 @@ int TestPart1(int testNumber)
         assign = queue;
 
         if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            throw std::logic_error("assignment, empty copy-from, full copy-to, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         StackCircularQueue<int, queueSize>::iterator itOriginal = queue.begin();
         StackCircularQueue<int, queueSize>::iterator itCopy = assign.begin();
@@ -926,8 +926,8 @@ int TestPart1(int testNumber)
         for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
         {
             if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("assignment, empty copy-from, full copy-to, value mismatch, got " + TestHelpers::to_string(*itCopy) + " expected: " + TestHelpers::to_string(*itOriginal) + '\n'
+                + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
 		std::cout << "	PASSED" << std::endl;

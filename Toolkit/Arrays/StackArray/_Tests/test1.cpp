@@ -11,7 +11,7 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 int TestPart1(int testNumber)
@@ -24,8 +24,8 @@ int TestPart1(int testNumber)
 		StackArray<int, arraySize> array;
 
 		if (array.capacity() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.capacity()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.capacity()) + " expected: " + TestHelpers::to_string(arraySize) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		for (int i = 0; i < 100; ++i)
@@ -33,13 +33,13 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 		if (array.size() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(arraySize) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		for (int i = 0; i < 100; ++i)
 		{
 			if (array[i] != i)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(i) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(array[i]) + " expected: " + TestHelpers::to_string(i) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -59,14 +59,14 @@ int TestPart1(int testNumber)
 		StackArray<int, arraySize> array(copyInit);
 		if (array.size() != arraySize)
 
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(arraySize) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		for (size_t i = 0; i < array.size(); ++i)
 		{
 			if (array[i] != copyInit)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(copyInit) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(array[i]) + " expected: " + TestHelpers::to_string(copyInit) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -92,14 +92,14 @@ int TestPart1(int testNumber)
 		}
 
 		if (array.size() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(arraySize) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 			
 		for (size_t i = 0; i < array.size(); ++i)
 		{
 			if (array[i] != i)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(i) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(array[i]) + " expected: " + TestHelpers::to_string(i) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -121,12 +121,12 @@ int TestPart1(int testNumber)
 		}
 		array.pop_back();
 		if (array.size() != 99)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(99) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(99) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (array.back() != 98)
-			throw std::runtime_error("value mismatch, got: " + to_string(array.back()) + " expected: " + to_string(98) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(array.back()) + " expected: " + TestHelpers::to_string(98) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -147,11 +147,11 @@ int TestPart1(int testNumber)
 
 		// Check front and back
 		if (array.front() != 0)
-			throw std::runtime_error("incorrect front element, got: " + to_string(array.front()) + " expected: " + to_string(0) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("incorrect front element, got: " + TestHelpers::to_string(array.front()) + " expected: " + TestHelpers::to_string(0) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		if (array.back() != 99)
-			throw std::runtime_error("incorrect back element, got: " + to_string(array.back()) + " expected: " + to_string(99) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("incorrect back element, got: " + TestHelpers::to_string(array.back()) + " expected: " + TestHelpers::to_string(99) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -171,14 +171,14 @@ int TestPart1(int testNumber)
 		array.emplace_back(3);
 
 		if (array.size() != 3)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(3) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(3) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		array.emplace_back(4);
 		array.emplace_back(5);
 		if (array.size() != 5)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(5) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(5) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -201,18 +201,18 @@ int TestPart1(int testNumber)
 		// Test iterator
 		StackArray<int, 5>::iterator it = array.begin();
 		if (*it != 1)
-			throw std::runtime_error("incorrect value at iterator begin, got: " + to_string(*it) + " expected: " + to_string(1) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("incorrect value at iterator begin, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(1) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		it++;
 		if (*it != 2)
-		throw std::runtime_error("incorrect value at second iterator, got: " + to_string(*it) + " expected: " + to_string(2) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		throw std::runtime_error("incorrect value at second iterator, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(2) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		it++;
 		if (*it != 3)
-			throw std::runtime_error("incorrect value at third iterator, got: " + to_string(*it) + " expected: " + to_string(3) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("incorrect value at third iterator, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(3) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		it++;
 
@@ -237,7 +237,7 @@ int TestPart1(int testNumber)
 		array.emplace_back("StackArray");
 
 		if (array[0] != "Hello" || array[1] != "World" || array[2] != "StackArray")
-			throw std::logic_error("value mismatch\n" + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("value mismatch\n" + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
