@@ -70,7 +70,7 @@ int TestPart2(int testNumber)
 			+ StringUtils::to_string(0) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
-		//after processing events, all fds are marked as good again, until proven otherwise
+		// after processing events, all fds are marked as good again, until proven otherwise
 		manager.ProcessEvents(-1);
 
 		// handler should be called now, and user data should be 42
