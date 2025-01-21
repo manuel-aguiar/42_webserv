@@ -22,7 +22,6 @@
 # include <cassert>
 # include <string>
 
-
 // definitions for everyone to use
 typedef unsigned char								t_byte;
 typedef uint16_t									t_port;
@@ -52,7 +51,6 @@ typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
 
 
-
 typedef union
 {
 	t_sockaddr         sockaddr;
@@ -78,7 +76,7 @@ namespace Ws
 			ERROR = EPOLLERR,
 			HANGUP = EPOLLHUP,
 			RHANGUP = EPOLLRDHUP,
-			EDGE_T = EPOLLET
+			EDGE_TRIGGERED = EPOLLET
 		};
 		typedef int Events;
 	}

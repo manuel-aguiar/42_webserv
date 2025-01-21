@@ -1,0 +1,136 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _EventManager.docs                                 :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
+#    Updated: 2025/01/21 16:16:44 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+The eventManager is what monitors events. The events monitored concern file descriptors
+and readibiity for reading and writing from/to them.
+These file descriptors are provided by EventCallback instances.
+
+##################################################################
+Methods
+
+addEvent/modEvent/delEvent -> to manage subscriptions to its event poll.
+	-> these methods take 2 parameters: EventCallback instance + boolean "markFdAsStale"
+	-> the first provides: the file descriptor, the events to monitor,
+		the handler to be called if an event (among those subscribed) occurs.
+	-> the second concerns stale events, that are "old".
+
+processEvents(int timeout) -> this loops through all events that triggered since the last call
+gets all the EventCallbacks associated with them, informs them of the actual events that got triggered
+and calls EventCallback::handle(), exporting the responsibiility to EventCallbnack (which in turn exports
+it to the user inputs). The timeout is part of the Epoll API: code blocks at most timeout miliseconds
+after which, if not events triggered, return from the call.
+The timeout will be a variable in our case: we will set timeouts according to our objects internal timeouts,
+more on that when the CgiModule comes along.
+
+getSubscribeCount -> just tells you how many events are subscribed to epoll at any moment
+more of a debugging/testing tool, to be honest
+
+##################################################################
+Stale events:
+
+Consider a case where an event handler adds/removes file descriptors from EventManager's epoll.
+This means such a handler is called in the middle of EventManager::ProcessEvents.
+You are iterating through events, you are currently on number 5, and the handler leads to
+closing and unsubscribing the fd that triggers event number 9.
+Number 6 event handler opens new sockets, it just happens the fd NUMBER is the same
+that triggers event number 9.
+...
+Keep iterating....
+....
+Event number 9, "It is active! Call the handler!" and in reality the new file with the same FD NUMBER
+is not ready to read/write, so you fail to read/write, oh no downfall.
+
+Because we have the CgiModule, the same event hander will potentially change multiple file descriptors
+(pipes to/from the script, and more, in due time i'll explain).
+So this is something very likely to occur.
+
+So we have two choices:
+	-> do not subscribe/unsubcribe (or open/close, because you may miss activity) file descriptors from and event handler,
+	so, DURING EventManager::ProcessEvents.
+		-> all at the end, no conflicts, you delete and re-add, so when you call ProcessEvents you are sure that all events
+		are "up to date"
+	-> add a way to monitor if an event has gone "stale", that is: "i closed and unsubscribed this file descriptor.
+	if anybody subscribes it again, and coincidently there is an old event associated with it in this ProcessEvents
+	iterator, DO NOT CALL THE HANDLER"
+
+###############################################################
+
+General Design considerations:
+
+The event manager does not copy or even keep track of the events that are already Subscribed
+to its internal epoll. It is up to the user to make sure that the same fd doesn't get Subscribed
+twice, or not to delete an event on an fd that is not being monitor.
+
+Furthermore, it is up to the user to keep the actual events in scope for the callback.
+If the event triggers but the Event instance to which EventManager points get destroyed... SEGFAULT.
+
+
+The only "getter" that this class features is the getSubscribeCount which, to be honest is more of a debugging
+tool more than actually interesting for the runtime.
+	-  There is no particular reason to have access to the epollfd itself (actually better, the class instance manages
+	the epollfd alone without interference)
+	-  The waitCount can easily get mixed in between loops, so to avoid confusion, the only way to get the waitCount
+	is to ask for ::ProcessEvents(), so the user is sure that the waitCount refers to this particular iteration
+	of the eventloop
+
+InternalEvent:
+
+	This class is private to the EventManager and it derives from base EventCallback. 
+	It does so in order to set the triggeredEvents for the user, as the user shoould not set triggered events
+	on the base.
+
+	Not the perfect design but avoids allocating memory or pre-allocating a certain amount of events.
+	It is probably not impossible to figure out the max number of EventCallback subscriptions,
+	It should be: number of connections + number of cgi workers * 3. So for 1000 connections and 50 workers, 1150.
+	These could be heapallocated at the start.
+	
+	We could allocate InternalEvent, require the user to ask us for an instance, and we would show them
+	EventCallback, just the public part. Not impossible but i think this is not critical for now.
+	Should not be difficult to implement if we so consider.
+
+	We did follow this pattern in CgiModule, more on that later, could be implemented here.
+	Same pattern on ConnectionManager, more on that later.
+	Could consider applying it here.
+
+####################################################
+
+Design stale events:
+
+I decided to go for the second option, monitoring stale events. To make sure things go fast, i want to start new processes
+and open new connections (accept()) as fast as possible, i don't want to memorize all the changes and apply them all at the end.
+So we MONITOR stale file descriptors.
+
+There are various ways to do it. I decided to invest memory and go for O(1) lookup.
+We have an array m_stalefds, with size MAX_EPOLL_FDS / 8 bytes. Why?
+I don't need a full BYTE to flag, just a BIT. and we save a little space.
+In constant time we can mark and check if an fd is stale or not.
+
+The OS will try to attribute the lowest possible fd when you open one, so they will be at the start of the array
+However, we don't know the max. I placed MAX_EPOLL_FDS at 1000000, meaning 125kb array for monitoring lol
+This code be decreased by heapallocating where the total number of file descriptors will never exceed:
+
+	number of connections * (1 socket + 6 Cgi fds)
+
+So, 1000 connections, 7000 max fds, 100 bytes array. So yes, this is a potential change. I like having the array
+stacked because of locality against the remaining EventManager components but this is up for debate.
+As you notice, on the class, the arrays are AT THE END. so the first few fd indexes will be close to all other data.
+(no unnecessary jumps if the array was the first of member variables)
+
+To avoid memset'ing an array of 125kb when we just opened 100 fds, i mark max_stale as i go along to calculate
+how many i have to erased but to be clear, THERE IS QUITE SOME MEMORY CONSUMPTION HERE, although not
+critical at all for our target machines.
+
+But hey, no runtime dynamic allocations, O(1) lookup, could be worse!
+
+######################################################################
+
+The design considerations are up for debate as always, let me know.

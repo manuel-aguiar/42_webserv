@@ -7,6 +7,7 @@
 # include "../GenericUtils/Webserver_Definitions.h"
 # include "LogFile/LogFile.hpp"
 # include "Clock/Clock.hpp"
+# include "SignalHandler/SignalHandler.hpp"
 
 class Globals
 {

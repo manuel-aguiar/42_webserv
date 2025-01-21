@@ -11,22 +11,45 @@
 
 
 class Globals;
+class SignalHandler;
+
+extern SignalHandler 	g_SignalHandler;
 
 class SignalHandler
 {
 	public:
-		static int			PipeRead(int serverID);
-		static int			PipeWrite(int serverID);
-		static int			getSignal();
-		static void			signal_handler(int sigNum);
-		static int			prepare_signal(t_sigaction *sigact, void (*handler)(int), int numServers, Globals* globals);
-		static void			destroy_signal(t_sigaction *sigact);
+		SignalHandler();
+		~SignalHandler();
+
+		void									prepare_signal(void (*handler)(int), size_t numServers, Globals& globals);
+
+		static void								signal_handler(int sigNum);
+
+		// getters
+		int										getSignal();
+		const std::vector<std::pair<Ws::fd, Ws::fd> >&		
+												getPipes();
+
+		Ws::fd									getPipeRead(int serverID);
+		Ws::fd									getPipeWrite(int serverID);
+		
+
+		//setters
+		void									setSignal(int sig);
 
 	private:
-		static Globals*								gm_globals;
-		static std::vector<std::pair<int, int> >	gm_pipes;
-		static int 									gm_signal;
+		Globals*								m_globals;
+		std::vector<std::pair<Ws::fd, Ws::fd> >	m_pipes;
+		int 									m_signal;
+		t_sigaction								m_sigact;
 
+		//shared to all instances
+		static size_t							gm_counter;
+
+
+		//private
+		SignalHandler(const SignalHandler& copy);
+		SignalHandler& operator=(const SignalHandler& assign);
 };
 
 
