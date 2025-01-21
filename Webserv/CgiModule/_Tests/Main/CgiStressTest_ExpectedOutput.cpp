@@ -8,9 +8,9 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
+# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../../Toolkit/_Tests/test.h"
+# include "../../../../Toolkit/_Tests/TestHelpers.h"
 
 //C++ headers
 # include <iostream>

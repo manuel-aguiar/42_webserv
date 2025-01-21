@@ -4,10 +4,10 @@
 
 # define EVENTMANAGER_HPP
 
-# include "../../../GenericUtils/Webserver_Definitions.h"
+# include "../../GenericUtils/Webserver_Definitions.h"
 
 class Globals;
-class Event;
+class EventCallback;
 
 # define MAX_EPOLL_FDS 1000000
 
@@ -20,9 +20,9 @@ class EventManager
 		//methods
 		int				ProcessEvents(int timeOut);
 
-		int				addEvent(Event& event, bool markAsStale = true);
-		int				modEvent(Event& event, bool markAsStale = true);
-		int				delEvent(Event& event, bool markAsStale = true);
+		int				addEvent(EventCallback& event, bool markAsStale = true);
+		int				modEvent(EventCallback& event, bool markAsStale = true);
+		int				delEvent(EventCallback& event, bool markAsStale = true);
 		
 		//getters
 		size_t			getSubscribeCount() const;

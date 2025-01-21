@@ -1,16 +1,8 @@
 
 
-# include "test.h"
+# include "TestHelpers.h"
 
-template <typename T>
-std::string to_string(const T& value)
+std::string TestHelpers::FileLineFunction(const char* file, const int line, const char* function)
 {
-    std::ostringstream oss;
-    oss << value;
-    return oss.str();
-}
-
-std::string FileLineFunction(const char* file, const int line, const char* function)
-{
-    return std::string("\tFile: ") + file + "\n\tLine: " + to_string(line) + "\n\tFunction: " + function + '\n';
+    return std::string("\tFile: ") + file + "\n\tLine: " + TestHelpers::to_string(line) + "\n\tFunction: " + function + '\n';
 }

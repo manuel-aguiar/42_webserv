@@ -8,10 +8,10 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
+# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../../Toolkit/_Tests/test.h"
+# include "../../../../Toolkit/_Tests/TestHelpers.h"
 
 //C++ headers
 # include <iostream>
@@ -97,16 +97,16 @@ int TestPart2(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
 			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
-			+ protoRequest.m_ExpectedOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ protoRequest.m_ExpectedOutput + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (env vars + testing env variables)" << std::endl;
 	}

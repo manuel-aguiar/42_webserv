@@ -70,6 +70,7 @@ namespace Ws
 	{
 		enum
 		{
+			NONE = 0,
 			READ = EPOLLIN,
 			WRITE = EPOLLOUT,
 			ERROR = EPOLLERR,
@@ -77,8 +78,7 @@ namespace Ws
 			RHANGUP = EPOLLRDHUP,
 			EDGE_T = EPOLLET
 		};
-
-		typedef int Flags;
+		typedef int Events;
 	}
 }
 

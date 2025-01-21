@@ -25,7 +25,7 @@ namespace Cgi
 		return (m_env);
 	}
 
-	const CgiExtension&
+	const CgiInterpExtension&
 	Cgi::Module::InternalRequest::getExtension() const
 	{
 		return (m_extension);

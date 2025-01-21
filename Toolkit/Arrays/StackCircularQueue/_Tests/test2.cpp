@@ -12,13 +12,13 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 class EmplaceTwo
 {
     public:
-        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number), m_present (std::string(m_name) + " " + to_string(m_number)) {};
+        EmplaceTwo(const std::string& name, const int number) : m_name(name), m_number(number), m_present (std::string(m_name) + " " + TestHelpers::to_string(m_number)) {};
 		~EmplaceTwo() {};
 		
         bool operator==(const EmplaceTwo& other)
@@ -65,8 +65,8 @@ int StressTest(int testNumber)
 			queue.emplace_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(queue.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
@@ -74,8 +74,8 @@ int StressTest(int testNumber)
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::logic_error("value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackCircularQueue<int, queueSize> assign;
@@ -85,12 +85,12 @@ int StressTest(int testNumber)
         assign = queue;
 
 		if (queue.size() != assign.size())
-			throw std::logic_error("size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(queue.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (std.size() != assign.size())
-			throw std::logic_error("size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(std.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(std.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         it = assign.begin();
         iter = std.begin();
@@ -98,13 +98,13 @@ int StressTest(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy assignment, value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(std.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("copy assignment, size mismatch, got " + TestHelpers::to_string(assign.size()) + " expected: " + TestHelpers::to_string(std.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -131,16 +131,16 @@ int StressTest(int testNumber)
 			queue.push_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(queue.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::logic_error("value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackCircularQueue<int, queueSize> assign;
@@ -150,8 +150,8 @@ int StressTest(int testNumber)
         assign = queue;
 
 		if (std.size() != assign.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(assign.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(assign.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         it = assign.begin();
         iter = std.begin();
@@ -159,13 +159,13 @@ int StressTest(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy assignment, value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("copy assignment, size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(queue.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -188,12 +188,12 @@ int StressTest(int testNumber)
 
 		for (int i = 0; i < 100; ++i)
 		{
-			std.push_back("big string the will require allocation on the heap " + to_string(i));
-			queue.emplace_back("big string the will require allocation on the heap " + to_string(i));
+			std.push_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
+			queue.emplace_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(std.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<std::string, queueSize>::iterator it = queue.begin();
 		std::vector<std::string>::iterator iter = std.begin();
@@ -201,7 +201,7 @@ int StressTest(int testNumber)
 		{
 			if (*it != *iter)
 				throw std::logic_error("value mismatch, got '" + *it + "'\n expected: '" + *iter + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackCircularQueue<std::string, queueSize> assign("i like potatos on the heap if possible");
@@ -217,12 +217,12 @@ int StressTest(int testNumber)
         {
             if (*it != *iter)
                 throw std::logic_error("copy assignment, value mismatch, \ngot '" + *it + "'\n expected: '" + *iter + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(queue.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("copy assignment, size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(queue.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -256,8 +256,8 @@ int StressTest(int testNumber)
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::logic_error("value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::logic_error("value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackCircularQueue<int, queueSize> assign(queue);
@@ -268,8 +268,8 @@ int StressTest(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::logic_error("copy constructor, value mismatch, \ngot '" + to_string(*it) + "'\n expected: '" + to_string(*iter) + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::logic_error("copy constructor, value mismatch, \ngot '" + TestHelpers::to_string(*it) + "'\n expected: '" + TestHelpers::to_string(*iter) + "'\n"
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
@@ -325,8 +325,8 @@ int StressTest(int testNumber)
 		}
 
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(std.size())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<EmplaceTwo, queueSize>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
@@ -334,7 +334,7 @@ int StressTest(int testNumber)
 		{
 			if (*it != *iter)
 				throw std::logic_error("value mismatch, \ngot '" + it->present() + "'\n expected: '" + iter->present() + "'\n"
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		std::cout << "	PASSED" << std::endl;

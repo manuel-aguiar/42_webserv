@@ -26,7 +26,7 @@ namespace Cgi
 			CgiModule::Module::RequestState::Type
 										getState() const;
 			const EnvVariables& 		getEnvVars() const;
-			const CgiExtension&			getExtension() const;
+			const CgiInterpExtension&			getExtension() const;
 			const std::string&			getScriptPath() const;
 			unsigned int				getTimeoutMs() const;
 			mt_CgiWorker*				accessExecutor();

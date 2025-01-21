@@ -1,9 +1,9 @@
 
 
 # include "ServerWorker.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 
-void ServerWorker::EventCallbackExit(Callback& callback)
+void ServerWorker::EventCallbackExit(EventCallback& callback)
 {
     ServerWorker* server;
 

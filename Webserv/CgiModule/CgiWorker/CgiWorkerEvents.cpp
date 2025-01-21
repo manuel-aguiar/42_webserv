@@ -4,7 +4,7 @@
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
-# include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
+# include "../../EventManager/EventManager/EventManager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
@@ -12,30 +12,30 @@
 namespace Cgi
 {
 
-	void	Cgi::Module::Worker::mf_EventCallback_onRead(::Callback& callback)
+	void	Cgi::Module::Worker::mf_EventCallback_onRead(EventCallback& event)
 	{
-		Worker* worker = static_cast<Worker*>(callback.getData());
+		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_onWrite(::Callback& callback)
+	void	Cgi::Module::Worker::mf_EventCallback_onWrite(EventCallback& event)
 	{
-		Worker* worker = static_cast<Worker*>(callback.getData());
+		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_writeScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(::Callback& event)
+	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(EventCallback& event)
 	{
-		Worker* worker = static_cast<Worker*>(event.getData());
+		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readEmergencyPhone();
 	}
 
 	void	Cgi::Module::Worker::mf_readScript()
 	{
 		int 				bytesRead;
-		Ws::Epoll::Flags 	triggeredFlags;
+		Ws::Epoll::Events 	triggeredFlags;
 
-		triggeredFlags = m_readEvent.getTriggeredFlags();
+		triggeredFlags = m_readEvent.getTriggeredEvents();
 		//std::cout << "\t\t\tread called" << std::endl;
 		
 		if (triggeredFlags & Ws::Epoll::READ)
@@ -63,9 +63,9 @@ namespace Cgi
 	void	Cgi::Module::Worker::mf_writeScript()
 	{
 		int 				bytesWritten;
-		Ws::Epoll::Flags 	triggeredFlags;
+		Ws::Epoll::Events 	triggeredFlags;
 		
-		triggeredFlags = m_writeEvent.getTriggeredFlags();
+		triggeredFlags = m_writeEvent.getTriggeredEvents();
 		
 		//std::cout << "write triggered" << std::endl;
 		
@@ -107,7 +107,7 @@ namespace Cgi
 
 	*/
 
-	void	Cgi::Module::Worker::mf_disableCloseMyEvent(Event& myEvent, bool markAsStale)
+	void	Cgi::Module::Worker::mf_disableCloseMyEvent(EventCallback& myEvent, bool markAsStale)
 	{
 		Ws::fd fd = myEvent.getFd();
 
@@ -130,7 +130,7 @@ namespace Cgi
 		int		triggeredFlags;
 		int		bytesRead;
 
-		triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
+		triggeredFlags = m_EmergencyEvent.getTriggeredEvents();
 		
 		if (triggeredFlags & EPOLLIN)
 		{

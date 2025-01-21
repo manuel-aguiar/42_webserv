@@ -4,7 +4,7 @@
 #include "CgiWorker.hpp"
 #include "../CgiInternalRequest/CgiInternalRequest.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
+#include "../../EventManager/EventManager/EventManager.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C Headers
@@ -27,16 +27,16 @@ namespace Cgi
 		m_EmergencyPhone[1] = -1;
 		
 		m_EmergencyEvent.setFd(-1);
-		m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
-		m_EmergencyEvent.setMonitoredFlags(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_EmergencyEvent.setUserHandler(this, mf_EventCallback_OnEmergency);
+		m_EmergencyEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 		m_readEvent.setFd(-1);
-		m_readEvent.setCallback(this, mf_EventCallback_onRead);
-		m_readEvent.setMonitoredFlags(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_readEvent.setUserHandler(this, mf_EventCallback_onRead);
+		m_readEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 		m_writeEvent.setFd(-1);
-		m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
-		m_writeEvent.setMonitoredFlags(Ws::Epoll::WRITE | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_writeEvent.setUserHandler(this, mf_EventCallback_onWrite);
+		m_writeEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
 
 		m_EmergencyBytesRead = 0;
 		std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
@@ -110,19 +110,19 @@ namespace Cgi
 	void
 	Cgi::Module::Worker::disableReadHandler()
 	{
-		m_readEvent.setCallback(NULL, NULL);
+		m_readEvent.setUserHandler(NULL, NULL);
 	}
 
 	void
 	Cgi::Module::Worker::disableWriteHandler()
 	{
-		m_writeEvent.setCallback(NULL, NULL);
+		m_writeEvent.setUserHandler(NULL, NULL);
 	}
 
 	void
 	Cgi::Module::Worker::disableEmergencyHandler()
 	{
-		m_EmergencyEvent.setCallback(NULL, NULL);
+		m_EmergencyEvent.setUserHandler(NULL, NULL);
 	}
 
 	void
@@ -137,19 +137,19 @@ namespace Cgi
 	void
 	Cgi::Module::Worker::enableReadHandler()
 	{
-		m_readEvent.setCallback(this, mf_EventCallback_onRead);
+		m_readEvent.setUserHandler(this, mf_EventCallback_onRead);
 	}
 
 	void
 	Cgi::Module::Worker::enableWriteHandler()
 	{
-		m_writeEvent.setCallback(this, mf_EventCallback_onWrite);
+		m_writeEvent.setUserHandler(this, mf_EventCallback_onWrite);
 	}
 
 	void
 	Cgi::Module::Worker::enableEmergencyHandler()
 	{
-		m_EmergencyEvent.setCallback(this, mf_EventCallback_OnEmergency);
+		m_EmergencyEvent.setUserHandler(this, mf_EventCallback_OnEmergency);
 	}
 
 	void

@@ -11,7 +11,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 int TestPart4(int testNumber)
@@ -33,8 +33,8 @@ int TestPart4(int testNumber)
 			queue.push_front(i);
 		}
 		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(list.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::list<int>::iterator iter = list.begin();
@@ -65,8 +65,8 @@ int TestPart4(int testNumber)
 			queue.push_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
@@ -97,8 +97,8 @@ int TestPart4(int testNumber)
 			queue.emplace_back(i);
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
@@ -132,8 +132,8 @@ int TestPart4(int testNumber)
 			queue.emplace_back(i);
 		}
 		if (list.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(list.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(list.size()) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();

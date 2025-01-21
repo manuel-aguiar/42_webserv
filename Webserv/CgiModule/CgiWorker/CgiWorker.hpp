@@ -7,7 +7,7 @@
 //Project Headers
 # include "../CgiModule/CgiModule.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 
 // implement some timeout for script execution, if nothing then kill
 namespace Cgi
@@ -60,11 +60,11 @@ namespace Cgi
 			Ws::fd				m_EmergencyPhone[2];
 			char				m_EmergencyBuffer[2];
 			int					m_EmergencyBytesRead;
-			Event				m_EmergencyEvent;
+			EventCallback		m_EmergencyEvent;
 			t_pid				m_pid;
 
-			Event				m_readEvent;
-			Event				m_writeEvent;
+			EventCallback		m_readEvent;
+			EventCallback		m_writeEvent;
 
 			typedef enum
 			{
@@ -82,15 +82,15 @@ namespace Cgi
 			bool				mf_prepareExecve();
 
 			// Events
-			static void			mf_EventCallback_OnEmergency(::Callback& event);	
-			static void			mf_EventCallback_onRead(::Callback& callback);
-			static void			mf_EventCallback_onWrite(::Callback& callback);
+			static void			mf_EventCallback_OnEmergency(EventCallback& event);	
+			static void			mf_EventCallback_onRead(EventCallback& event);
+			static void			mf_EventCallback_onWrite(EventCallback& event);
 
-			// Event Handlers
+			// Callback Handlers
 			void				mf_readEmergencyPhone();
 			void				mf_readScript();
 			void				mf_writeScript();
-			void				mf_disableCloseMyEvent(::Event& myEvent, bool markAsStale = true);
+			void				mf_disableCloseMyEvent(::EventCallback& myEvent, bool markAsStale = true);
 
 			// Other helpers
 			void				mf_closeFd(Ws::fd& fd);

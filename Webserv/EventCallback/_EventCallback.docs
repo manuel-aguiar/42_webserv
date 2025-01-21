@@ -1,0 +1,70 @@
+
+
+EventCallback is what wraps the handling of events.
+
+EventCallbacks are to be subscribed to the EventManager to monitor.
+
+When the EventManager detects an event on the file descriptor
+to which EventCallback is assigned, it calls EventCallback::handle()
+to execute the action (Callback) as a response to that event.
+
+This "action" is essentially a function pointer that takes the EventCallback itself as an argument.
+"Why?" to retain flexibility and allow us to use void* without pissing off the compiler.
+
+EventCallback::Handler is [void (*Handler)(EventCallback& event)]
+
+We need this intermediary step because the EventCallback knows nothing about its users:
+	-> it can't typecast the m_user to the correct type.
+
+So flexibility implies the user must actually follow something along these lines:
+
+Example:
+
+
+#################################
+class User
+{
+	public:
+		void doSomething()
+		{
+			m_data = 42;
+		}
+
+		static void MyCallback_doSomething(EventCallback& event)
+		{
+			user* me = reinterpret_cast<user*>(&event.accessUser());
+			me->doSomething();
+		}
+
+		int getData() const
+		{
+			return (m_data);
+		}
+	private
+		int	m_data;
+}
+
+when we setup the EventCallback, we will do:
+
+User			user;
+EventCallback 	callback;
+
+callback.setUser(user);
+callback.setHandler(&User::MyCallback_doSomething);
+
+callback.handle();
+
+assert(user.getData() == 42); <- should be true
+
+#####################################
+
+So the function pointer cannot be a member function. We could do this with polymorphism but
+no thanks.
+
+The user supplies a static member function that internally typecasts the EventCallback::m_user
+to its own type and calls its own method to be executed.
+
+So like this, we decoupled the EventCallback from the actual users.
+
+Notice though, THERE IS NO TYPESAFETY HERE.
+The programmer must supply a user and a handler that match, otherwise be ready for chaos.

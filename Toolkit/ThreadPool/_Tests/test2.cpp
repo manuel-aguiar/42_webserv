@@ -15,7 +15,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../_Tests/TestHelpers.h"
 
 static long fibGood(unsigned int n)
 {
@@ -88,7 +88,6 @@ int StressTest(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	testNumber++;	
 	return (testNumber);

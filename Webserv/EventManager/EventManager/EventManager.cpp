@@ -2,9 +2,9 @@
 
 # include "EventManager.hpp"
 # include "../InternalEvent/InternalEvent.hpp"
-# include "../../../Event/Event.hpp"
-# include "../../../Globals/Globals.hpp"
-# include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../EventCallback/EventCallback.hpp"
+# include "../../Globals/Globals.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 #include <iostream>
 
@@ -64,14 +64,14 @@ EventManager::~EventManager()
 
 
 
-int                EventManager::addEvent(Event& event, bool markAsStale)
+int                EventManager::addEvent(EventCallback& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;
 	t_epoll_event	epollEvent = (t_epoll_event){};
 	
 	internal = static_cast<InternalEvent*>(&event);
-	epollEvent.events = internal->getMonitoredFlags();
+	epollEvent.events = internal->getMonitoredEvents();
 	epollEvent.data.ptr = (void *)internal;
 
 	fd = internal->getFd();
@@ -92,14 +92,14 @@ int                EventManager::addEvent(Event& event, bool markAsStale)
 	return (1);
 }
 
-int                EventManager::modEvent(Event& event, bool markAsStale)
+int                EventManager::modEvent(EventCallback& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;
 	t_epoll_event	epollEvent = (t_epoll_event){};
 
 	internal = static_cast<InternalEvent*>(&event);
-	epollEvent.events = internal->getMonitoredFlags();
+	epollEvent.events = internal->getMonitoredEvents();
 	epollEvent.data.ptr = (void *)internal;
 	
 	fd = internal->getFd();
@@ -118,7 +118,7 @@ int                EventManager::modEvent(Event& event, bool markAsStale)
 	return (1);
 }
 
-int                 EventManager::delEvent(Event& event, bool markAsStale)
+int                 EventManager::delEvent(EventCallback& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;

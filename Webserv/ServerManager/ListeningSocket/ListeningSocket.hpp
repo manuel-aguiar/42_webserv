@@ -9,7 +9,7 @@
 # include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 # include "../EventManager/EventManager.hpp"
 
 // C headers
@@ -18,7 +18,7 @@
 # include <arpa/inet.h>
 
 //forward declarations
-class Event;
+class EventCallback;
 class ServerWorker;
 class Connection;
 class Globals;
@@ -42,7 +42,7 @@ class ListeningSocket
 		void                        closeConnection(Connection& connection);
 
 		// events callbacks
-		static void                 EventCallbackAccept(Callback& callback);
+		static void                 EventCallbackAccept(EventCallback& callback);
 
 
 		// getters
@@ -54,7 +54,7 @@ class ListeningSocket
 		t_socklen					getAddrlen()					const;
 		t_port						getPort()						const;
 		int							getBacklog()					const;
-		const Event&				getEvent()						const;
+		const EventCallback&				getEvent()						const;
 
 		// setters
 		void						setProtoModule					(const t_ptr_ProtoModule& module);
@@ -62,7 +62,7 @@ class ListeningSocket
 
 		// accessors
 		ServerWorker&				accessWorker();
-		Event&						accessEvent();
+		EventCallback&						accessEvent();
 
 	private:
 
@@ -72,7 +72,7 @@ class ListeningSocket
 
 		t_func_initProtoConn		m_initConnection;
 		t_ptr_ProtoModule			m_protoModule;
-		Event						m_event;
+		EventCallback						m_event;
 		ServerWorker&				m_worker;
 		Globals&                    m_globals;
 

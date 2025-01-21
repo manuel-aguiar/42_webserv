@@ -6,7 +6,7 @@ namespace Cgi
 {
 
 	void
-	Cgi::Module::Request::setUser(CgiUser user)
+	Cgi::Module::Request::setUser(const CgiUser user)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_user = user;
@@ -42,7 +42,7 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::Request::setExtension(const CgiExtension& extension)
+	Cgi::Module::Request::setExtension(const CgiInterpExtension& extension)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_extension = extension;
@@ -64,7 +64,7 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::Request::setRuntimeOptions(CgiOptions::Flags options)
+	Cgi::Module::Request::setRuntimeOptions(const CgiOptions::Flags options)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_options = options;
@@ -76,7 +76,7 @@ namespace Cgi
 		return (m_env);
 	}
 
-	const CgiExtension&
+	const CgiInterpExtension&
 	Cgi::Module::Request::getExtension() const
 	{
 		return (m_extension);

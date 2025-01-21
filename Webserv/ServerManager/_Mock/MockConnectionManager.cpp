@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 # include "../ConnectionManager/ConnectionManager.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 
 ConnectionManager::~ConnectionManager()
 {
@@ -21,8 +21,8 @@ ConnectionManager::~ConnectionManager()
 ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
     m_maxConnections(maxConnections),
     m_connections(Nginx_PoolAllocator<Connection>(&borrowedPool)),
-    m_readEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
-    m_writeEvents(Nginx_PoolAllocator<Event>(&borrowedPool)),
+    m_readEvents(Nginx_PoolAllocator<EventCallback>(&borrowedPool)),
+    m_writeEvents(Nginx_PoolAllocator<EventCallback>(&borrowedPool)),
     m_spareConnections(Nginx_MPool_FixedElem<Connection*>(&borrowedPool, maxConnections)),
     m_globals(globals)
 {

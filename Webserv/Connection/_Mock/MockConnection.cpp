@@ -1,7 +1,7 @@
 
 
 # include "../Connection.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 # include "../../Globals/LogFile/LogFile.hpp"
 # include "../../ServerManager/ListeningSocket/ListeningSocket.hpp"
 
@@ -65,12 +65,12 @@ t_socklen				Connection::getAddrlen() const
 	return (m_addrlen);
 }
 
-const Event&			Connection::getReadEvent() const
+const EventCallback&			Connection::getReadEvent() const
 {
 	return (*m_readEvent);
 }
 
-const Event&			Connection::getWriteEvent() const
+const EventCallback&			Connection::getWriteEvent() const
 {
 	return (*m_writeEvent);
 }
@@ -107,12 +107,12 @@ void					Connection::setAddrlen(const t_socklen addrlen)
 	m_addrlen = addrlen;
 }
 
-void					Connection::setReadEvent(Event& event)
+void					Connection::setReadEvent(EventCallback& event)
 {
 	m_readEvent = &event;
 }
 
-void					Connection::setWriteEvent(Event& event)
+void					Connection::setWriteEvent(EventCallback& event)
 {
 	m_writeEvent = &event;
 }

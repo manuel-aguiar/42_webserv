@@ -2,7 +2,7 @@
 // Project headers
 # include "../EventManager.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../Event/Event.hpp"
+# include "../../../EventCallback/EventCallback.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 // C++ headers

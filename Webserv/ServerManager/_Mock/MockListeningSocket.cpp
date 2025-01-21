@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/20 13:04:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/21 10:40:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "../ConnectionManager/ConnectionManager.hpp"
 #include "../EventManager/EventManager.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../Event/Event.hpp"
+#include "../../EventCallback/EventCallback.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
@@ -212,11 +212,11 @@ ListeningSocket::ListeningSocket() :
 
 }
 
-void ListeningSocket::EventCallbackAccept(Event& event)
+void ListeningSocket::EventCallbackAccept(EventCallback& event)
 {
 	ListeningSocket*	listener;
 
-	listener = reinterpret_cast<ListeningSocket*>(event.getData());
+	listener = reinterpret_cast<ListeningSocket*>(event.accessUser());
 	listener->accept();
 }
 
@@ -261,7 +261,7 @@ int							ListeningSocket::getBacklog()					const
 	return (m_backlog);
 }
 
-const Event&				ListeningSocket::getEvent()						const
+const EventCallback&				ListeningSocket::getEvent()						const
 {
 	return (m_event);
 }
@@ -283,7 +283,7 @@ ServerWorker&				ListeningSocket::accessWorker()
 	return (m_worker);
 }
 
-Event&						ListeningSocket::accessEvent()
+EventCallback&						ListeningSocket::accessEvent()
 {
 	return (m_event);
 }

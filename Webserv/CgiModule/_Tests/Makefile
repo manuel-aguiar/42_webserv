@@ -52,8 +52,8 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerHelpers.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
-				$(SRC_PATH)/Webserv/ServerManager/EventManager/EventManager/EventManager.cpp \
-				$(SRC_PATH)/Webserv/ServerManager/EventManager/InternalEvent/InternalEvent.cpp \
+				$(SRC_PATH)/Webserv/EventManager/EventManager/EventManager.cpp \
+				$(SRC_PATH)/Webserv/EventManager/InternalEvent/InternalEvent.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
@@ -61,10 +61,8 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
-				$(SRC_PATH)/Webserv/Event/Event.cpp \
-				$(SRC_PATH)/Webserv/Event/EventGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/Callback/Callback.cpp \
-				$(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
+				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp
 
 #################################################################
 OBJS_COMMON = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(COMMON_SRCS))

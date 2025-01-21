@@ -17,17 +17,17 @@ namespace Cgi
 	{
 		public:
 		
-			void					setUser				(CgiUser user);
+			void					setUser				(const CgiUser user);
 			void					setRuntime_Callback	(const CgiRuntime_Callback::Type type, 
 														const CgiRuntime_Callback::Handler handler);
 			void					setIO_Callback		(const CgiIO_Callback::Type type, 
 														const CgiIO_Callback::Handler handler);
 			void					setEnvBase			(const CgiEnvEnum::Type env, const CgiEnvValue& value);
 			void					setEnvExtra			(const CgiEnvKey& key, const CgiEnvValue& value);
-			void					setExtension		(const CgiExtension& extension);
-			void					setScriptPath		(const std::string& path);
+			void					setExtension		(const CgiInterpExtension& extension);
+			void					setScriptPath		(const CgiScriptPath& path);
 			void					setTimeoutMs		(const unsigned int timeoutMs);
-			void					setRuntimeOptions	(CgiOptions::Flags options);		
+			void					setRuntimeOptions	(const CgiOptions::Flags options);		
 
 			const CgiEnvVariables&	getEnvVars() const;
 			const std::string&		getExtension() const;
@@ -45,7 +45,7 @@ namespace Cgi
 			CgiRuntime_Callback::Handler		m_runtime_Handlers[CgiRuntime_Callback::COUNT];
 
 			unsigned int						m_timeoutMs;
-			CgiExtension						m_extension;
+			CgiInterpExtension					m_extension;
 			std::string							m_scriptPath;
 			CgiEnvVariables						m_env;
 

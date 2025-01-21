@@ -1,7 +1,7 @@
 
 
 #include "CgiModule.hpp"
-#include "../../ServerManager/EventManager/EventManager/EventManager.hpp"
+#include "../../EventManager/EventManager/EventManager.hpp"
 
 namespace Cgi
 {
@@ -12,7 +12,7 @@ namespace Cgi
 		return (m_baseEnv);
 	}
 
-	const std::map<CgiExtension, CgiPath>&
+	const std::map<CgiInterpExtension, CgiInterpPath>&
 	Cgi::Module::getInterpreters() const
 	{
 		return (m_Interpreters);

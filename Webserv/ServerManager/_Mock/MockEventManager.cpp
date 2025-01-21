@@ -6,13 +6,13 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/20 13:04:47 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/21 10:40:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../EventManager/EventManager.hpp"
 # include "../../Connection/Connection.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
@@ -50,7 +50,7 @@ EventManager::~EventManager()
 }
 
 
-int                EventManager::addEvent(const Event& event)
+int                EventManager::addEvent(const EventCallback& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
@@ -65,7 +65,7 @@ int                EventManager::addEvent(const Event& event)
 	return (1);
 }
 
-int                EventManager::modEvent(const Event& event)
+int                EventManager::modEvent(const EventCallback& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
@@ -80,7 +80,7 @@ int                EventManager::modEvent(const Event& event)
 	return (1);
 }
 
-int                 EventManager::delEvent(const Event& event)
+int                 EventManager::delEvent(const EventCallback& event)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
@@ -97,7 +97,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 	//std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
 	//for (int i = 0; i < m_waitCount; i++)
 	//{
-	// std::cout << " " << ((Event*)m_events[i].data.ptr);
+	// std::cout << " " << ((EventCallback*)m_events[i].data.ptr);
 	//}
 	//std::cout << std::endl;
 	return (m_waitCount);
@@ -111,11 +111,11 @@ const   t_epoll_event&     EventManager::retrieveEvent(int index)
 
 void    EventManager::distributeEvents()
 {
-	Event* event;
+	EventCallback* event;
 
 	for (int i = 0; i < m_waitCount; i++)
 	{
-		event = (Event*)m_events[i].data.ptr;
+		event = (EventCallback*)m_events[i].data.ptr;
 
 		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
 		{

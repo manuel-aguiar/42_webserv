@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 15:52:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/20 17:08:28 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/21 10:50:02 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ typedef Cgi::Module::Runtime_Callback			CgiRuntime_Callback;
 typedef Cgi::Module::EnvKey						CgiEnvKey;
 typedef Cgi::Module::EnvValue					CgiEnvValue;
 
-typedef Cgi::Module::InterpExtension			CgiExtension;
-typedef Cgi::Module::InterpPath					CgiPath;
+typedef Cgi::Module::ScriptPath					CgiScriptPath;
+typedef Cgi::Module::InterpExtension			CgiInterpExtension;
+typedef Cgi::Module::InterpPath					CgiInterpPath;
 typedef Cgi::Module::EnvVariables				CgiEnvVariables;
 
 typedef Cgi::Env::Enum							CgiEnvEnum;

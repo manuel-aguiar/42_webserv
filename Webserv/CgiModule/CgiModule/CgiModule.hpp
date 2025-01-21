@@ -41,7 +41,7 @@ namespace Cgi
 
 			typedef std::string			InterpExtension;
 			typedef std::string			InterpPath;
-			
+			typedef std::string			ScriptPath;
 
 			class Options
 			{
@@ -62,7 +62,7 @@ namespace Cgi
 			// request interaction
 			Request*					acquireRequest();
 			void						enqueueRequest(Request& data, bool isCalledFromEventLoop);
-			void						modifyRequest(Request& data, Options::Flags newOptions, bool isCalledFromEventLoop);
+			void						modifyRequest(Request& data, bool isCalledFromEventLoop, Options::Flags newOptions);
 			void						finishRequest(Request& data, bool isCalledFromEventLoop);
 			
 			// processing
@@ -211,9 +211,9 @@ namespace Cgi
 	typedef Cgi::Module::Runtime_Callback			CgiRuntime_Callback;
 	typedef Cgi::Module::EnvKey						CgiEnvKey;
 	typedef Cgi::Module::EnvValue					CgiEnvValue;
-	
-	typedef Cgi::Module::InterpExtension			CgiExtension;
-	typedef Cgi::Module::InterpPath					CgiPath;
+	typedef Cgi::Module::ScriptPath					CgiScriptPath;
+	typedef Cgi::Module::InterpExtension			CgiInterpExtension;
+	typedef Cgi::Module::InterpPath					CgiInterpPath;
 	typedef Cgi::Module::EnvVariables				CgiEnvVariables;
 
 };

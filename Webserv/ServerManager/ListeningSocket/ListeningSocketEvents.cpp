@@ -1,9 +1,9 @@
 
 
 # include "ListeningSocket.hpp"
-# include "../../Event/Event.hpp"
+# include "../../EventCallback/EventCallback.hpp"
 
-void ListeningSocket::EventCallbackAccept(Callback& callback)
+void ListeningSocket::EventCallbackAccept(EventCallback& callback)
 {
 	ListeningSocket*	listener;
 

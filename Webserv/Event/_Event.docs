@@ -1,4 +1,0 @@
-
-
-Event is essentially a Callback with extra data for it to be monitored by
-EPoll :)

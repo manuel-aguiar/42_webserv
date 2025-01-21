@@ -11,7 +11,7 @@ namespace Cgi
 		Provide the caller with one CgiRequestData object if available,
 		such tha the user can fill it and enqueue for execution.
 
-		This function is expected to be SAFE to be called from an event handler (Callback).
+		This function is expected to be SAFE to be called from an event handler (EventCallback).
 	*/
 	Cgi::Module::Request*	Cgi::Module::acquireRequest()
 	{
@@ -34,7 +34,7 @@ namespace Cgi
 		the user MUST always call processRequests() to get the queue going.
 
 		Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
-		from an event handler (Callback).
+		from an event handler (EventCallback).
 	*/
 	void	Cgi::Module::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 	{
@@ -80,14 +80,14 @@ namespace Cgi
 
 		Having said that, because this function closes and opens fds, 
 		
-		IT IS NOT A SAFE FUNCTION TO BE CALLED FROM AN EVENT HANDLER (Callback).
+		IT IS NOT A SAFE FUNCTION TO BE CALLED FROM AN EVENT HANDLER (EventCallback).
 	*/
 	int		Cgi::Module::processRequests()
 	{
 		return (mf_finishTimedOut());
 	}
 
-	void	Cgi::Module::modifyRequest(Request& data, Module::Options::Flags newOptions, bool isCalledFromEventLoop)
+	void	Cgi::Module::modifyRequest(Request& data, bool isCalledFromEventLoop, Module::Options::Flags newOptions)
 	{
 		InternalRequest*	requestData;
 		RequestStateEnum::Type	state;
@@ -139,7 +139,7 @@ namespace Cgi
 				idle (wtv, let it be, a user may call on an already recycled request)
 				cancelled (effective cleanup already, waiting for a worker to remove it from the executionQueue)
 
-		This function does not close any fds, so it is SAFE to be called from an event handler (Callback).
+		This function does not close any fds, so it is SAFE to be called from an event handler (EventCallback).
 	*/
 	void	Cgi::Module::finishRequest(Request& request, bool isCalledFromEventLoop)
 	{
@@ -166,7 +166,7 @@ namespace Cgi
 	/*
 		This function closes all runing processes, resets all requests and clears the execution queue.
 
-		It closes fds, IT IS NOT SAFE TO BE CALLED FROM AN EVENT HANDLER (Callback).
+		It closes fds, IT IS NOT SAFE TO BE CALLED FROM AN EVENT HANDLER (EventCallback).
 	*/
 
 	void	Cgi::Module::stopAndReset()

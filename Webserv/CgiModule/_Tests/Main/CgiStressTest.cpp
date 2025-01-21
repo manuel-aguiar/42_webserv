@@ -6,10 +6,10 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
+# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../../Toolkit/_Tests/test.h"
+# include "../../../../Toolkit/_Tests/TestHelpers.h"
 # include "CgiStressTest.hpp"
 
 //C++ headers
@@ -223,8 +223,7 @@ int CgiStressTest::StressTest(int testNumber,
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor
-::setNonBlocking(testpipe[0]);
+		FileDescriptor::setNonBlocking(testpipe[0]);
 		char pipeDrain[1024];
 		/////////////////
 
@@ -301,11 +300,11 @@ int CgiStressTest::StressTest(int testNumber,
 
 		if (eventManager.getSubscribeCount() != 0)
 			FailureMessages = FailureMessages + "EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			FailureMessages = FailureMessages + "Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 
 		// checking results
@@ -315,7 +314,7 @@ int CgiStressTest::StressTest(int testNumber,
 			switch (requests[i].m_CgiResultStatus)
 			{
 				case TestProtoRequest::E_CGI_STATUS_WORKING:
-					FailureMessages = FailureMessages + StringUtils::to_string(i) + " still working" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+					FailureMessages = FailureMessages + StringUtils::to_string(i) + " still working" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 					break;
 				case TestProtoRequest::E_CGI_STATUS_SUCCESS:
 
@@ -344,7 +343,7 @@ int CgiStressTest::StressTest(int testNumber,
 		std::string valLog = CgiStressTest::ValgrindReadandClear("valgrind_output.log");
 		if (!valLog.empty())
 			FailureMessages = FailureMessages + "Valgrind errors in this test:\n\n" + valLog + "\n\n" 
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 			
 		std::cout << "\t=================================" << std::endl

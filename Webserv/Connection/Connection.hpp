@@ -12,7 +12,7 @@
 
 class Globals;
 class ListeningSocket;
-class Event;
+class EventCallback;
 
 class Connection
 {
@@ -36,8 +36,8 @@ class Connection
 		t_socket				getSocket()			const;
 		const t_sockaddr*		getAddr()			const;
 		t_socklen				getAddrlen()		const;
-		const Event&			getReadEvent()		const;
-		const Event&			getWriteEvent()		const;
+		const EventCallback&			getReadEvent()		const;
+		const EventCallback&			getWriteEvent()		const;
 		const ListeningSocket&	getListener()		const;
 		const Globals&			getGlobals()		const;
 		const Nginx_MemoryPool&	getMemPool()		const;
@@ -46,8 +46,8 @@ class Connection
 		void					setSocket			(const t_socket sockfd);
 		void					setAddr				(t_sockaddr* addr);
 		void					setAddrlen			(const t_socklen addrlen);
-		void					setReadEvent		(Event& event);
-		void					setWriteEvent		(Event& event);
+		void					setReadEvent		(EventCallback& event);
+		void					setWriteEvent		(EventCallback& event);
 		void					setListener			(ListeningSocket& listener);
 		void					setProtoConnection	(const t_ptr_ProtoConnection connection);
 		void					setProtoModule		(const t_ptr_ProtoModule module);
@@ -58,8 +58,8 @@ class Connection
 		t_ptr_ProtoConnection	accessProtoConnection();
 		t_ptr_ProtoModule		accessProtoModule();
 		Nginx_MemoryPool&		accessMemPool();
-		Event&					accessReadEvent();
-		Event&					accessWriteEvent();
+		EventCallback&					accessReadEvent();
+		EventCallback&					accessWriteEvent();
 
 
 
@@ -69,8 +69,8 @@ class Connection
 		t_socket				m_sockfd;
 		t_sockaddr*				m_addr;
 		t_socklen				m_addrlen;
-		Event*					m_readEvent;
-		Event*					m_writeEvent;
+		EventCallback*					m_readEvent;
+		EventCallback*					m_writeEvent;
 		ListeningSocket*		m_listener;
 		t_ptr_ProtoConnection	m_ptr_protoConnection;				// <- the http connection
 		t_ptr_ProtoModule		m_ptr_protoModule;					// <- the http module in our case

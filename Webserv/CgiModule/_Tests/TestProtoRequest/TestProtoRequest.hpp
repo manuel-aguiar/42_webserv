@@ -4,7 +4,6 @@
 
 # define TESTPROTOREQUEST_HPP
 
-#include "../../../Callback/Callback.hpp"
 #include "../../CgiRequest/CgiRequest.hpp"
 #include "../../CgiModule.h"
 

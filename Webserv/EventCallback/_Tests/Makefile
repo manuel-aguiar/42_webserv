@@ -1,22 +1,20 @@
 
 
 # Compiler and flags
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
-NAME = test.out
+CXX 		=	c++
+CXXFLAGS 	= 	-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
+NAME 		= 	test.out
 
 # Paths
-ROOT_PATH = ../../..
-SRC_PATH = $(ROOT_PATH)/.
-OBJ_PATH = $(ROOT_PATH)/Webserv/_build
+ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
+SRC_PATH	=	$(ROOT_PATH)/.
+OBJ_PATH	=	$(ROOT_PATH)/_build
 
 # Sources
-SRCS    =       $(SRC_PATH)/Webserv/Callback/_Tests/main.cpp \
-                \
-                $(SRC_PATH)/Webserv/Callback/Callback.cpp \
-                $(SRC_PATH)/Webserv/Callback/CallbackGetSetAccess.cpp \
-                \
-                $(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
+SRCS	    =   $(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
+				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp \
+				\
+				$(SRC_PATH)/Webserv/EventCallback/_Tests/main.cpp
 
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))

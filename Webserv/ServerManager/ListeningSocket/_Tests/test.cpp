@@ -196,15 +196,15 @@ int main(void)
 				if (result == unexpected)
 					throw std::runtime_error("getEvent() doesn't return the correct event");
 			}
-			const Event& event = listener.getEvent();
+			const EventCallback& event = listener.getEvent();
 			{
-				const t_func_callback_handler result = event.getCallback().getHandler();
+				const t_func_callback_handler result = event.accessUser().getHandler();
 				const t_func_callback_handler expected = &ListeningSocket::EventCallbackAccept;
 				if (result != expected)
 					throw std::runtime_error("event should be listeningsocket::eventaccept");
 			}
 			{
-				const t_ptr_callback_data result = event.getCallback().getData();
+				const t_ptr_callback_data result = event.accessUser().getData();
 				const t_ptr_callback_data expected = &listener;
 				if (result != expected)
 					throw std::runtime_error("event handler should be the listener itself");

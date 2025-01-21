@@ -118,11 +118,11 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}
 
-void ServerWorker::EventExit(Event& event)
+void ServerWorker::EventExit(EventCallback& event)
 {
     ServerWorker* server;
 
-    server = reinterpret_cast<ServerWorker*>(event.getData());
+    server = reinterpret_cast<ServerWorker*>(event.accessUser());
     server->m_isRunning = false;
 }
 

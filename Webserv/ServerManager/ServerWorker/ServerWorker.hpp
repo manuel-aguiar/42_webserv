@@ -20,7 +20,7 @@
 # include <map>
 # include <iostream>
 
-class Event;
+class EventCallback;
 class Globals;
 class ServerManager;
 class ServerConfig;
@@ -48,7 +48,7 @@ class ServerWorker
 		void							returnConnection(Connection& connection);
 
 		//event handlers
-		static void 					EventCallbackExit(Callback& callback);
+		static void 					EventCallbackExit(EventCallback& callback);
 
 
 	// getters
@@ -81,7 +81,7 @@ class ServerWorker
 		const ServerConfig&								m_config;
 		ConnectionManager								m_connManager;
 		EventManager									m_eventManager;
-		Event											m_mySignalEvent;
+		EventCallback											m_mySignalEvent;
 		Nginx_MemoryPool&								m_memPool;
 		DynArray<ListeningSocket*,
 			Nginx_PoolAllocator<ListeningSocket*> >		m_listeners;

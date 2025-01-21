@@ -8,10 +8,10 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../ServerManager/EventManager/EventManager/EventManager.hpp"
+# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../../Toolkit/_Tests/test.h"
+# include "../../../../Toolkit/_Tests/TestHelpers.h"
 
 //C++ headers
 # include <iostream>
@@ -118,7 +118,7 @@ int TestPart1(int testNumber)
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.enqueueRequest(request, false);
-		cgi.modifyRequest(request, CgiOptions::RESTART_WRITE, false);
+		cgi.modifyRequest(request, false, CgiOptions::RESTART_WRITE);
 
 		//event loop
 		while (1)
@@ -135,16 +135,16 @@ int TestPart1(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
 			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
-			+ protoRequest.m_ExpectedOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ protoRequest.m_ExpectedOutput + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (executing a script)" << std::endl;
 	}
@@ -214,19 +214,19 @@ int TestPart1(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_TIMEOUT)
-			throw std::logic_error("ProtoRequest didn't receive timeout notice " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("ProtoRequest didn't receive timeout notice " + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
 			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
 			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
-			+ protoRequest.m_ExpectedOutput + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ protoRequest.m_ExpectedOutput + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (finishing requests that timed out)" << std::endl;
 	}
@@ -292,25 +292,25 @@ int TestPart1(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (cgi.getBusyWorkerCount() != 0)
 			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::string expectedError("InternalCgiWorker::mf_executeChild(), execve(): No such file or directory");
 
 		if (g_mockGlobals_ErrorMsgs.size() != 1)
 			throw std::runtime_error("Expected 1 error message, got " + StringUtils::to_string(g_mockGlobals_ErrorMsgs.size())
-			 + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0].length() != expectedError.length())
 			throw std::runtime_error("Expected message length is not the same, got: " + StringUtils::to_string(g_mockGlobals_ErrorMsgs[0].length()) +
-			", expected: " + StringUtils::to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			", expected: " + StringUtils::to_string(expectedError.length()) + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0] != expectedError)
 			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
-			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 
@@ -392,14 +392,14 @@ int TestPart1(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			testFailure = testFailure + '\n' + "EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			testFailure = testFailure + '\n' + "Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 		
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
-			testFailure = testFailure + '\n' + "Cgi::Module did not cancel the request " + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			testFailure = testFailure + '\n' + "Cgi::Module did not cancel the request " + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
 
 		
 
@@ -473,25 +473,25 @@ int TestPart1(int testNumber)
 		// tests
 		if (eventManager.getSubscribeCount() != 0)
 			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
 			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::string expectedError("InternalCgiWorker::mf_prepareExecve(): interpreter not found");
 
 		if (g_mockGlobals_ErrorMsgs.size() != 1)
 			throw std::runtime_error("Expected 1 error message, got " + StringUtils::to_string(g_mockGlobals_ErrorMsgs.size())
-			 + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			 + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0].length() != expectedError.length())
 			throw std::runtime_error("Expected message length is not the same, got: " + StringUtils::to_string(g_mockGlobals_ErrorMsgs[0].length()) +
-			", expected: " + StringUtils::to_string(expectedError.length()) + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			", expected: " + StringUtils::to_string(expectedError.length()) + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (g_mockGlobals_ErrorMsgs[0] != expectedError)
 			throw std::runtime_error("Expected error message not found in logs:\ngot:\n" 
-			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			+ g_mockGlobals_ErrorMsgs[0] + '\n' + "expected :\n" + expectedError + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (demanding an interpreter extension that is not set)" << std::endl;
 	}
