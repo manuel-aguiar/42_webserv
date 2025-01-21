@@ -1,14 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    _EventManager.docs                                 :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/22 10:55:02 by manuel            #+#    #+#              #
-#    Updated: 2025/01/21 16:16:44 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
 
 The eventManager is what monitors events. The events monitored concern file descriptors
 and readibiity for reading and writing from/to them.
