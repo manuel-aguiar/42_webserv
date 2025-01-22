@@ -1,8 +1,8 @@
 
 
-#ifndef EVENTINTERNALSUBS_HPP
+#ifndef EVENTINTERNALSUBSCRIPTION_HPP
 
-# define EVENTINTERNALSUBS_HPP
+# define EVENTINTERNALSUBSCRIPTION_HPP
 
 # include "../m_EventsDefinitions.h"
 # include "../Manager/Manager.hpp"
@@ -11,13 +11,13 @@
 
 namespace Events
 {
-    class Manager::InternalSubs : public Manager::Subscription
+    class Manager::InternalSub : public Manager::Subscription
     {
         public:
-            InternalSubs();
-            ~InternalSubs();
-            InternalSubs(const InternalSubs& copy);
-            InternalSubs& operator=(const InternalSubs& assign);
+            InternalSub();
+            ~InternalSub();
+            InternalSub(const InternalSub& copy);
+            InternalSub& operator=(const InternalSub& assign);
 
             //informing public event of the events that took place on the target fd
             void                    setTriggeredEvents(const Events::Monitor::Mask flags);

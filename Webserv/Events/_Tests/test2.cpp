@@ -165,7 +165,7 @@ int TestPart2(int testNumber)
 
 		// setting read to write because.... we can
 		readEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
-		manager.modify(*readEvent, false);
+		manager.updateEvents(*readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
 

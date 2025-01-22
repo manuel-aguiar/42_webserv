@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 10:31:33 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:58:06 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int                EventManager::monitor(const Subscription& event)
 	return (1);
 }
 
-int                EventManager::modify(const Subscription& event)
+int                EventManager::updateEvents(const Subscription& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 

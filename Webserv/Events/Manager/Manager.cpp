@@ -2,7 +2,7 @@
 
 # include "Manager.hpp"
 # include "../Subscription/Subscription.hpp"
-# include "../InternalSubs/InternalSubs.hpp"
+# include "../InternalSub/InternalSub.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 #include <iostream>
@@ -14,7 +14,7 @@ namespace Events
 		m_epollfd		(-1),
 		m_globals		(globals),
 		m_maxStaleFd	(0),
-		m_subscriptions (maxSubscriptions, InternalSubs()),
+		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
 		m_staleEvents	(maxSubscriptions * 10, 0)
 	{
@@ -43,7 +43,7 @@ namespace Events
 	Manager::acquireSubscription()
 	{
 		assert (m_availableSubs.size() > 0);
-		InternalSubs* subscription;
+		InternalSub* subscription;
 		
 		subscription = m_availableSubs.front();
 		m_availableSubs.pop_front();
@@ -53,9 +53,9 @@ namespace Events
 
 	void	Manager::returnSubscription(Subscription& subscription)
 	{
-		InternalSubs* internal;
+		InternalSub* internal;
 
-		internal = static_cast<InternalSubs*>(&subscription);
+		internal = static_cast<InternalSub*>(&subscription);
 
 		//event must not be subscribed 
 		assert(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE);
@@ -95,10 +95,10 @@ namespace Events
 	int                Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
-		InternalSubs*	internal;
+		InternalSub*	internal;
 		t_epoll_event	epollEvent = (t_epoll_event){};
 		
-		internal = static_cast<InternalSubs*>(&event);
+		internal = static_cast<InternalSub*>(&event);
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 
@@ -121,13 +121,13 @@ namespace Events
 		return (1);
 	}
 
-	int                Manager::modify(Subscription& event, bool markAsStale)
+	int                Manager::updateEvents(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
-		InternalSubs*	internal;
+		InternalSub*	internal;
 		t_epoll_event	epollEvent = (t_epoll_event){};
 
-		internal = static_cast<InternalSubs*>(&event);
+		internal = static_cast<InternalSub*>(&event);
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 		
@@ -154,9 +154,9 @@ namespace Events
 	int                 Manager::stopMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
-		InternalSubs*	internal;
+		InternalSub*	internal;
 		
-		internal = static_cast<InternalSubs*>(&event);
+		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
 
 		assert(fd != -1);
@@ -179,7 +179,7 @@ namespace Events
 
 	int                 Manager::ProcessEvents(int timeOut)
 	{
-		InternalSubs*	event;
+		InternalSub*	event;
 		int				waitCount;
 
 		waitCount = epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
@@ -192,13 +192,13 @@ namespace Events
 		
 		for (int i = 0; i < waitCount; i++)
 		{
-			event = static_cast<InternalSubs*>(m_epollEvents[i].data.ptr);
+			event = static_cast<InternalSub*>(m_epollEvents[i].data.ptr);
 
 			if (event->isInvalid() 
 			|| mf_isFdStale(event->getFd()))
 				continue ;
 			event->setTriggeredEvents(m_epollEvents[i].events);
-			event->notifyUser();
+			event->notify();
 		}
 
 		std::memset(m_staleEvents.getArray(), 0, sizeof(m_staleEvents[0]) * (((m_maxStaleFd / 8)) + 1));

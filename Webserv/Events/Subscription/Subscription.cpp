@@ -16,7 +16,7 @@ namespace Events
 
 	Manager::Subscription::~Subscription() {}
 
-	void 	Manager::Subscription::notifyUser()
+	void 	Manager::Subscription::notify()
 	{
 		if (m_handler)
 			m_handler(*this);

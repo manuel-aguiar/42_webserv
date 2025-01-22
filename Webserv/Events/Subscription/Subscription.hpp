@@ -17,7 +17,7 @@ namespace Events
 			typedef void 				(*Callback)(Subscription& event);
 
 			//methods
-			void						notifyUser();
+			void						notify();
 			void						reset();
 
 			// accessors

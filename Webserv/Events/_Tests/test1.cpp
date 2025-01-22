@@ -15,15 +15,15 @@
 class Calculator
 {
 	public:
-		void doSomething()
+		void Calculate()
 		{
 			m_data = 42;
 		}
 
-		static void MyCallback_doSomething(Events::Subscription& event)
+		static void EventCallback_Calculate(Events::Subscription& event)
 		{
 			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
-			me->doSomething();
+			me->Calculate();
 		}
 
 		int getData() const
@@ -51,14 +51,14 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		Events::Manager manager(100, globals);
-		Calculator 		calculator;
+		Events::Manager 		manager(100, globals);
 		Events::Subscription* subscription = manager.acquireSubscription();
-
+		
+		Calculator 				calculator;
 		subscription->setUser(&calculator);
-		subscription->setCallback(Calculator::MyCallback_doSomething);
+		subscription->setCallback(Calculator::EventCallback_Calculate);
 
-		subscription->notifyUser();
+		subscription->notify();
 
 		if (calculator.getData() != 42)
 			throw std::runtime_error("Failed to call the user function" + '\n'
@@ -87,7 +87,7 @@ int TestPart1(int testNumber)
 		Events::Subscription* subscription = manager.acquireSubscription();
 
 		subscription->setCallback(&PrintHelloWorld);
-		subscription->notifyUser();
+		subscription->notify();
 
 		int bytesRead = ::read(testpipe[0], buffer, sizeof(buffer) - 1);
 		buffer[bytesRead] = '\0';

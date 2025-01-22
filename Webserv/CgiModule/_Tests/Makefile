@@ -55,7 +55,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/Events/InternalSubs/InternalSubs.cpp \
+				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \

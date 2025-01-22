@@ -19,7 +19,7 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/Events/InternalSubs/InternalSubs.cpp \
+				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/test1.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/test2.cpp \

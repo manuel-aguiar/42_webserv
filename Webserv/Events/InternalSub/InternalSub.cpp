@@ -1,22 +1,22 @@
 
 
-#include "InternalSubs.hpp"
+#include "InternalSub.hpp"
 #include <iostream>
 #include <cstdlib>
 
 namespace Events
 {
-    Manager::InternalSubs::InternalSubs() : 
+    Manager::InternalSub::InternalSub() : 
         Subscription(),
         m_subscribedFd(-1),
         m_subscribedEvents(Events::Monitor::NONE) {}
-    Manager::InternalSubs::~InternalSubs() {}
+    Manager::InternalSub::~InternalSub() {}
 
-    Manager::InternalSubs::InternalSubs(const InternalSubs& copy) : 
+    Manager::InternalSub::InternalSub(const InternalSub& copy) : 
         Subscription(copy), 
         m_subscribedFd(copy.m_subscribedFd), 
         m_subscribedEvents(copy.m_subscribedEvents) {}
-    Manager::InternalSubs& Manager::InternalSubs::operator=(const InternalSubs& assign)
+    Manager::InternalSub& Manager::InternalSub::operator=(const InternalSub& assign)
     {
         if (this == &assign)
             return (*this);
@@ -26,45 +26,45 @@ namespace Events
         return (*this);
     };
 
-    void Manager::InternalSubs::updateSubscription()
+    void Manager::InternalSub::updateSubscription()
     {
         m_subscribedFd = m_fd;
         m_subscribedEvents = m_monitoredEvents;
     }
 
-    void    Manager::InternalSubs::unSubscribe()
+    void    Manager::InternalSub::unSubscribe()
     {
         m_subscribedFd = -1;
         m_subscribedEvents = Events::Monitor::NONE;
     }
 
-    bool Manager::InternalSubs::isInvalid() const
+    bool Manager::InternalSub::isInvalid() const
     {
 
         return (!(m_subscribedFd == m_fd && m_fd != -1));
     }
 
-    void    Manager::InternalSubs::setTriggeredEvents(const Events::Monitor::Mask flags)
+    void    Manager::InternalSub::setTriggeredEvents(const Events::Monitor::Mask flags)
     {
         m_triggeredEvents = flags;
     }
 
-    void Manager::InternalSubs::setSubscribedFd(const Ws::fd fd)
+    void Manager::InternalSub::setSubscribedFd(const Ws::fd fd)
     {
         m_subscribedFd = fd;
     }
 
-    void Manager::InternalSubs::setSubscribedEvents(const Events::Monitor::Mask flags)
+    void Manager::InternalSub::setSubscribedEvents(const Events::Monitor::Mask flags)
     {
         m_subscribedEvents = flags;
     }
 
-    Ws::fd Manager::InternalSubs::getSubscribedFd() const
+    Ws::fd Manager::InternalSub::getSubscribedFd() const
     {
         return (m_subscribedFd);
     }
 
-    int Manager::InternalSubs::getSubscribedEvents() const 
+    int Manager::InternalSub::getSubscribedEvents() const 
     {
         return (m_subscribedEvents);
     }

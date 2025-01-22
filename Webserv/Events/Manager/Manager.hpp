@@ -28,26 +28,28 @@ namespace Events
 			//methods
 			int				ProcessEvents(int timeOut);
 
+			// acquire and return a subscription
 			Subscription*	acquireSubscription();
 			void			returnSubscription(Subscription& event);
 
+			// monitor, update and stop monitoring a subscription's Event interests
 			int				startMonitoring(Subscription& event, bool markAsStale);
-			int				modify(Subscription& event, bool markAsStale);
+			int				updateEvents(Subscription& event, bool markAsStale);
 			int				stopMonitoring(Subscription& event, bool markAsStale);
 			
 			//getters
 			size_t			getMonitoringCount() const;
 			
 		private:
-			class								InternalSubs;
+			class								InternalSub;
 			
 			size_t								m_subscribeCount;
 			t_fd								m_epollfd;
 			Globals&							m_globals;
 			t_fd								m_maxStaleFd;
 
-			HeapArray<InternalSubs>				m_subscriptions;
-			HeapCircularQueue<InternalSubs*>	m_availableSubs;
+			HeapArray<InternalSub>				m_subscriptions;
+			HeapCircularQueue<InternalSub*>	m_availableSubs;
 			HeapArray<t_byte>					m_staleEvents;
 			Events::Monitor::Event				m_epollEvents[MAX_EPOLL_EVENTS];
 
