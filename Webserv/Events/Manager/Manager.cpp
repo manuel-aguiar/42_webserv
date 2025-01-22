@@ -1,6 +1,6 @@
 
 
-# include "EventManager.hpp"
+# include "Manager.hpp"
 # include "../Subscription/Subscription.hpp"
 # include "../InternalSubs/InternalSubs.hpp"
 # include "../../Globals/Globals.hpp"

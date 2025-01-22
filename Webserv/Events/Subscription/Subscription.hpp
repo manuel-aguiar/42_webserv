@@ -5,7 +5,7 @@
 # define EVENTSUBSCRIPTION_HPP
 
 # include "../Events.h"
-# include "../EventManager/EventManager.hpp"
+# include "../Manager/Manager.hpp"
 
 namespace Events
 {
