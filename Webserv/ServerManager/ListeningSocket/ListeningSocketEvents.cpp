@@ -3,7 +3,7 @@
 # include "ListeningSocket.hpp"
 # include "../../EventCallback/EventCallback.hpp"
 
-void ListeningSocket::EventCallbackAccept(EventCallback& callback)
+void ListeningSocket::EventCallbackAccept(Subscription& callback)
 {
 	ListeningSocket*	listener;
 

@@ -39,7 +39,7 @@ int TestPart2(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -87,7 +87,7 @@ int TestPart2(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -95,8 +95,8 @@ int TestPart2(int testNumber)
 
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)

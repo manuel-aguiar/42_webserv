@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 08:45:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/09 08:48:37 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 08:57:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,7 +480,7 @@ void    addEvent(int epollfd, int fd, int events, int& totalSubscribed)
     totalSubscribed++;
 }
 
-void    delEvent(int epollfd, int fd, int& totalSubscribed)
+void    remove(int epollfd, int fd, int& totalSubscribed)
 {
     epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
     totalSubscribed--;
@@ -568,7 +568,7 @@ int main(void)
             {
                 if (!interpreter.writeConnection(events[i].data.fd))
                 {
-                    delEvent(epollfd, sockpair[0], subscribed);
+                    remove(epollfd, sockpair[0], subscribed);
                     close(sockpair[0]);
                 }
             }

@@ -7,7 +7,7 @@
 # include "../EventManager/EventManager.hpp"
 # include "../../EventCallback/EventCallback.hpp"
 
-class EventManager::InternalEvent : public EventCallback
+class Manager::InternalEvent : public Subscription
 {
     public:
         InternalEvent();
@@ -30,6 +30,10 @@ class EventManager::InternalEvent : public EventCallback
         Ws::Epoll::Events       getSubscribedEvents() const;
         
     private:
+
+        Ws::fd						m_subscribedFd;
+        Event::Flags::Type			m_subscribedEvents;
+
         InternalEvent(const InternalEvent& copy);
         InternalEvent& operator=(const InternalEvent& assign);
 };

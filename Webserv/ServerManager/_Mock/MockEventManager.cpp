@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/21 10:40:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 08:57:39 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ EventManager::~EventManager()
 }
 
 
-int                EventManager::addEvent(const EventCallback& event)
+int                EventManager::add(const Subscription& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
@@ -65,7 +65,7 @@ int                EventManager::addEvent(const EventCallback& event)
 	return (1);
 }
 
-int                EventManager::modEvent(const EventCallback& event)
+int                EventManager::modify(const Subscription& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
@@ -80,7 +80,7 @@ int                EventManager::modEvent(const EventCallback& event)
 	return (1);
 }
 
-int                 EventManager::delEvent(const EventCallback& event)
+int                 EventManager::remove(const Subscription& event)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{
@@ -97,7 +97,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 	//std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
 	//for (int i = 0; i < m_waitCount; i++)
 	//{
-	// std::cout << " " << ((EventCallback*)m_events[i].data.ptr);
+	// std::cout << " " << ((Subscription*)m_events[i].data.ptr);
 	//}
 	//std::cout << std::endl;
 	return (m_waitCount);
@@ -111,11 +111,11 @@ const   t_epoll_event&     EventManager::retrieveEvent(int index)
 
 void    EventManager::distributeEvents()
 {
-	EventCallback* event;
+	Subscription* event;
 
 	for (int i = 0; i < m_waitCount; i++)
 	{
-		event = (EventCallback*)m_events[i].data.ptr;
+		event = (Subscription*)m_events[i].data.ptr;
 
 		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
 		{

@@ -42,7 +42,7 @@ int							ListeningSocket::getBacklog()					const
 	return (m_backlog);
 }
 
-const EventCallback&				ListeningSocket::getEvent()						const
+const Subscription&				ListeningSocket::getEvent()						const
 {
 	return (m_event);
 }
@@ -64,7 +64,7 @@ ServerWorker&				ListeningSocket::accessWorker()
 	return (m_worker);
 }
 
-EventCallback&						ListeningSocket::accessEvent()
+Subscription&						ListeningSocket::accessEvent()
 {
 	return (m_event);
 }

@@ -32,7 +32,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
@@ -50,7 +50,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 		Cgi::Request* data = cgi.acquireRequest();
@@ -70,7 +70,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		cgi.processRequests();
@@ -91,7 +91,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -125,7 +125,7 @@ int TestPart1(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -133,8 +133,8 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
@@ -164,7 +164,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 500, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -204,7 +204,7 @@ int TestPart1(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -212,8 +212,8 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)
@@ -248,7 +248,7 @@ int TestPart1(int testNumber)
 		g_mockGlobals_ErrorMsgs.clear();
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -282,7 +282,7 @@ int TestPart1(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -290,8 +290,8 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		if (cgi.getBusyWorkerCount() != 0)
@@ -333,7 +333,7 @@ int TestPart1(int testNumber)
 		std::string		testFailure;
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -379,7 +379,7 @@ int TestPart1(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -390,8 +390,8 @@ int TestPart1(int testNumber)
 		
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			testFailure = testFailure + '\n' + "EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			testFailure = testFailure + '\n' + "Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)
@@ -429,7 +429,7 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -462,7 +462,7 @@ int TestPart1(int testNumber)
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
@@ -471,8 +471,8 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		if (eventManager.getSubscribeCount() != 0)
-			throw std::runtime_error("EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 		if (cgi.getBusyWorkerCount() != 0)

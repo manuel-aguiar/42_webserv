@@ -3,7 +3,7 @@
 # include "ServerWorker.hpp"
 # include "../../EventCallback/EventCallback.hpp"
 
-void ServerWorker::EventCallbackExit(EventCallback& callback)
+void ServerWorker::EventCallbackExit(Subscription& callback)
 {
     ServerWorker* server;
 

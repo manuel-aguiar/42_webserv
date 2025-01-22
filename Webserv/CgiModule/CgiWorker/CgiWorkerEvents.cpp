@@ -12,19 +12,19 @@
 namespace Cgi
 {
 
-	void	Cgi::Module::Worker::mf_EventCallback_onRead(EventCallback& event)
+	void	Cgi::Module::Worker::mf_EventCallback_onRead(Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_onWrite(EventCallback& event)
+	void	Cgi::Module::Worker::mf_EventCallback_onWrite(Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_writeScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(EventCallback& event)
+	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readEmergencyPhone();
@@ -107,13 +107,13 @@ namespace Cgi
 
 	*/
 
-	void	Cgi::Module::Worker::mf_disableCloseMyEvent(EventCallback& myEvent, bool markAsStale)
+	void	Cgi::Module::Worker::mf_disableCloseMyEvent(Subscription& myEvent, bool markAsStale)
 	{
 		Ws::fd fd = myEvent.getFd();
 
 		if (fd == -1)
 			return ;
-		m_CgiModule.mf_accessEventManager().delEvent(myEvent, markAsStale);
+		m_CgiModule.mf_accessEventManager().remove(myEvent, markAsStale);
 		::close(fd);
 		myEvent.setFd(-1);
 	}

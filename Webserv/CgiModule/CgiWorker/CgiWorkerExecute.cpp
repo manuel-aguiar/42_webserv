@@ -52,17 +52,17 @@ namespace Cgi
 		if (!(options & Options::CANCEL_WRITE))
 		{
 			m_writeEvent.setFd(m_ParentToChild[1]);
-			m_CgiModule.mf_accessEventManager().addEvent(m_writeEvent, markFdsAsStale);
+			m_CgiModule.mf_accessEventManager().add(m_writeEvent, markFdsAsStale);
 		}
 
 		if (!(options & Options::CANCEL_READ))
 		{
 			m_readEvent.setFd(m_ChildToParent[0]);
-			m_CgiModule.mf_accessEventManager().addEvent(m_readEvent, markFdsAsStale);
+			m_CgiModule.mf_accessEventManager().add(m_readEvent, markFdsAsStale);
 		}
 
 		m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
-		m_CgiModule.mf_accessEventManager().addEvent(m_EmergencyEvent, markFdsAsStale);
+		m_CgiModule.mf_accessEventManager().add(m_EmergencyEvent, markFdsAsStale);
 		
 
 		//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -89,7 +89,7 @@ namespace Cgi
 
 
 	/*
-		Parent just closes the pipe ends that doesn't use and simply waits for the EventManager
+		Parent just closes the pipe ends that doesn't use and simply waits for the Manager
 		to inform it that the child process has exited -> Events
 	*/
 	void	Cgi::Module::Worker::mf_executeParent(bool markFdsAsStale)

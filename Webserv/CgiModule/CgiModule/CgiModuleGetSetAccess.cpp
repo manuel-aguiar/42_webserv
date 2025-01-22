@@ -42,7 +42,7 @@ namespace Cgi
 		m_Interpreters.erase(extension);
 	}
 
-	EventManager&
+	Manager&
 	Cgi::Module::mf_accessEventManager()
 	{
 		return (m_eventManager);

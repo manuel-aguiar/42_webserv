@@ -20,7 +20,7 @@
 # include <map>
 # include <iostream>
 
-class EventCallback;
+class Subscription;
 class Globals;
 class ServerManager;
 class ServerConfig;
@@ -48,14 +48,14 @@ class ServerWorker
 		void							returnConnection(Connection& connection);
 
 		//event handlers
-		static void 					EventCallbackExit(EventCallback& callback);
+		static void 					EventCallbackExit(Subscription& callback);
 
 
 	// getters
 		int								getID()				const;
 		const ServerManager&			getServerManager()	const;
 		const ConnectionManager&		getConnManager()	const;
-		const EventManager&				getEventManager()	const;
+		const Manager&				getEventManager()	const;
 		const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
 										getListeners()		const;
 		const Nginx_MemoryPool&			getMemPool()		const;
@@ -65,7 +65,7 @@ class ServerWorker
 	// accessors
 		ServerManager&					accessServerManager();
 		ConnectionManager&				accessConnManager();
-		EventManager&					accessEventManager();
+		Manager&					accessEventManager();
 
 		DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
 										accessListeners();
@@ -80,8 +80,8 @@ class ServerWorker
 		ServerManager&									m_serverManager;
 		const ServerConfig&								m_config;
 		ConnectionManager								m_connManager;
-		EventManager									m_eventManager;
-		EventCallback											m_mySignalEvent;
+		Manager									m_eventManager;
+		Subscription											m_mySignalEvent;
 		Nginx_MemoryPool&								m_memPool;
 		DynArray<ListeningSocket*,
 			Nginx_PoolAllocator<ListeningSocket*> >		m_listeners;

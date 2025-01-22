@@ -23,7 +23,7 @@ class User
 			m_data = 42;
 		}
 
-		static void MyCallback_doSomething(EventCallback& event)
+		static void MyCallback_doSomething(Subscription& event)
 		{
 			User* me = reinterpret_cast<User*>(event.accessUser());
 			me->doSomething();
@@ -47,9 +47,9 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		EventManager manager(globals);
+		Manager manager(globals);
 		User			user;
-		EventCallback 	callback;
+		Subscription 	callback;
 
 		callback.setUser(&user);
 		callback.setHandler(&User::MyCallback_doSomething);
@@ -58,7 +58,7 @@ int TestPart2(int testNumber)
 		callback.setFd(STDOUT_FILENO);
 		callback.setMonitoredEvents(Ws::Epoll::WRITE);
 
-		manager.addEvent(callback, true);	//event added as stale, if triggered do not execute
+		manager.add(callback, true);	//event added as stale, if triggered do not execute
 
 		//stdout should be ready straight away
 		manager.ProcessEvents(-1); 
@@ -81,7 +81,7 @@ int TestPart2(int testNumber)
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		 //remove event, (indifferent to mark as stale here)
-		manager.delEvent(callback, true);
+		manager.remove(callback, true);
 
 		std::cout << "	PASSED (stale event test)" << std::endl;
 	}

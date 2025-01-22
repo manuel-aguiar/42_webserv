@@ -40,8 +40,8 @@ class ConnectionManager
 
 		size_t																		m_maxConnections;
 		HeapArray<ManagedConnection, Nginx_PoolAllocator<ManagedConnection> >		m_connections;
-		HeapArray<EventCallback, Nginx_PoolAllocator<EventCallback> >								m_readEvents;
-		HeapArray<EventCallback, Nginx_PoolAllocator<EventCallback> >								m_writeEvents;
+		HeapArray<Subscription, Nginx_PoolAllocator<Subscription> >								m_readEvents;
+		HeapArray<Subscription, Nginx_PoolAllocator<Subscription> >								m_writeEvents;
 		HeapArray<ManagedConnection*, Nginx_PoolAllocator<ManagedConnection*> >		m_spareConnections;
 
 		Globals&																	m_globals;

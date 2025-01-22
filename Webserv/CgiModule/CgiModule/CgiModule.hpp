@@ -22,7 +22,7 @@
 
 // forward declarations
 class Globals;
-class EventManager;
+class Manager;
 
 namespace Cgi
 {
@@ -33,7 +33,7 @@ namespace Cgi
 			Module(		size_t workerCount, 
 						size_t backlogCount, 
 						size_t maxTimeout, 
-						EventManager& eventManager, 
+						Manager& eventManager, 
 						Globals& globals);
 			~Module();
 
@@ -150,7 +150,7 @@ namespace Cgi
 													m_baseEnv;
 
 			TimerTracker<Timer, InternalRequest*>	m_timerTracker;
-			EventManager&							m_eventManager;
+			Manager&							m_eventManager;
 			Globals&								m_globals;
 
 			//enums for private coordination
@@ -172,7 +172,7 @@ namespace Cgi
 			typedef Module::Worker						mt_CgiWorker;
 			typedef Module::InternalRequest				mt_CgiInternalRequest;
 
-			EventManager&		mf_accessEventManager();
+			Manager&		mf_accessEventManager();
 			Globals&			mf_accessGlobals();
 
 			int					mf_finishTimedOut();

@@ -18,7 +18,7 @@
 # include <arpa/inet.h>
 
 //forward declarations
-class EventCallback;
+class Subscription;
 class ServerWorker;
 class Connection;
 class Globals;
@@ -42,7 +42,7 @@ class ListeningSocket
 		void                        closeConnection(Connection& connection);
 
 		// events callbacks
-		static void                 EventCallbackAccept(EventCallback& callback);
+		static void                 EventCallbackAccept(Subscription& callback);
 
 
 		// getters
@@ -54,7 +54,7 @@ class ListeningSocket
 		t_socklen					getAddrlen()					const;
 		t_port						getPort()						const;
 		int							getBacklog()					const;
-		const EventCallback&				getEvent()						const;
+		const Subscription&				getEvent()						const;
 
 		// setters
 		void						setProtoModule					(const t_ptr_ProtoModule& module);
@@ -62,7 +62,7 @@ class ListeningSocket
 
 		// accessors
 		ServerWorker&				accessWorker();
-		EventCallback&						accessEvent();
+		Subscription&						accessEvent();
 
 	private:
 
@@ -72,7 +72,7 @@ class ListeningSocket
 
 		t_func_initProtoConn		m_initConnection;
 		t_ptr_ProtoModule			m_protoModule;
-		EventCallback						m_event;
+		Subscription						m_event;
 		ServerWorker&				m_worker;
 		Globals&                    m_globals;
 

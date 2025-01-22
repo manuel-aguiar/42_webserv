@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-EventManager::EventManager(Globals& globals) :
+Manager::Manager(Globals& globals) :
 	m_subscribeCount(0),
 	m_epollfd		(-1),
 	m_globals		(globals),
@@ -32,7 +32,7 @@ EventManager::EventManager(Globals& globals) :
 	std::memset(m_staleEvents, 0, sizeof(m_staleEvents));
 }
 
-void EventManager::mf_markFdStale(t_fd fd)
+void Manager::mf_markFdStale(t_fd fd)
 {
 	m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 	size_t index = fd / 8;
@@ -40,7 +40,7 @@ void EventManager::mf_markFdStale(t_fd fd)
     m_staleEvents[index] |= (1 << bit);
 }
 
-int	EventManager::mf_isFdStale(t_fd fd)
+int	Manager::mf_isFdStale(t_fd fd)
 {
 	if (fd == -1)
 		return (1);
@@ -49,20 +49,20 @@ int	EventManager::mf_isFdStale(t_fd fd)
 	return ((m_staleEvents[index] & (1 << bit)) != 0);
 }
 
-EventManager::~EventManager()
+Manager::~Manager()
 {
 	if (m_epollfd != -1)
 	{
 		if (close(m_epollfd) == -1)
 		{
-			m_globals.logError("EventManager::~EventManager, close(): " + std::string(strerror(errno)));
+			m_globals.logError("Manager::~Manager, close(): " + std::string(strerror(errno)));
 		}
 	}
 }
 
 
 
-int                EventManager::addEvent(EventCallback& event, bool markAsStale)
+int                Manager::add(Subscription& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;
@@ -78,7 +78,7 @@ int                EventManager::addEvent(EventCallback& event, bool markAsStale
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 	{
 		assert(false); // this should never happen
-		m_globals.logError("EventManager::addEvent, epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("Manager::add, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 
@@ -91,7 +91,7 @@ int                EventManager::addEvent(EventCallback& event, bool markAsStale
 	return (1);
 }
 
-int                EventManager::modEvent(EventCallback& event, bool markAsStale)
+int                Manager::modify(Subscription& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;
@@ -106,7 +106,7 @@ int                EventManager::modEvent(EventCallback& event, bool markAsStale
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 	{
 		assert(false); // this should never happen
-		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("Manager::remove, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 
@@ -118,7 +118,7 @@ int                EventManager::modEvent(EventCallback& event, bool markAsStale
 	return (1);
 }
 
-int                 EventManager::delEvent(EventCallback& event, bool markAsStale)
+int                 Manager::remove(Subscription& event, bool markAsStale)
 {
 	t_fd			fd;
 	InternalEvent*	internal;
@@ -131,7 +131,7 @@ int                 EventManager::delEvent(EventCallback& event, bool markAsStal
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 	{
 		assert(false); // this should never happen
-		m_globals.logError("EventManager::delEvent, epoll_ctl(): " + std::string(strerror(errno)));
+		m_globals.logError("Manager::remove, epoll_ctl(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	
@@ -144,7 +144,7 @@ int                 EventManager::delEvent(EventCallback& event, bool markAsStal
 	return (1);
 }
 
-int                 EventManager::ProcessEvents(int timeOut)
+int                 Manager::ProcessEvents(int timeOut)
 {
 	InternalEvent*	event;
 	int				waitCount;
@@ -153,7 +153,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 
 	if (waitCount == -1)
 	{
-		m_globals.logError("EventManager::ProcessEvents, epoll_wait(): " + std::string(strerror(errno)));
+		m_globals.logError("Manager::ProcessEvents, epoll_wait(): " + std::string(strerror(errno)));
 		return (waitCount);
 	}
 	
@@ -164,7 +164,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 		if (event->isInvalid() || mf_isFdStale(event->getFd()))
 			continue ;
 		event->setTriggeredEvents(m_events[i].events);
-		event->handle();
+		event->notifyUser();
 	}
 
 	std::memset(m_staleEvents, 0, ((m_maxStaleFd / 8)) + 1);
@@ -172,15 +172,15 @@ int                 EventManager::ProcessEvents(int timeOut)
 	return (waitCount);
 }
 
-size_t			EventManager::getSubscribeCount() const
+size_t			Manager::getMonitoringCount() const
 {
 	return (m_subscribeCount);
 }
 
 //private, bare minimum to compile
-EventManager::EventManager(const EventManager& copy) :
+Manager::Manager(const Manager& copy) :
 	m_globals		(copy.m_globals)
 {}
 
 // private, bare minimum to compile
-EventManager& EventManager::operator=(const EventManager& assign) {(void)assign; return (*this);}
+Manager& Manager::operator=(const Manager& assign) {(void)assign; return (*this);}

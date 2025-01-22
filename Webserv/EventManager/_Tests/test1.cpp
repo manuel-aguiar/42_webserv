@@ -37,7 +37,7 @@ struct CalcFibo
 {
 	CalcFibo(unsigned int n) : number(n), result(0) {}
 
-	static void onReadFibonacci(EventCallback& cb)
+	static void onReadFibonacci(Subscription& cb)
 	{
 		CalcFibo* calcfibo = reinterpret_cast<CalcFibo*>(cb.accessUser());
 		calcfibo->result = fibonacci(calcfibo->number);
@@ -51,7 +51,7 @@ struct WriteHello
 {
 	WriteHello(int fd) : m_fd(fd) {}
 
-	static void onWriteHello(EventCallback& cb)
+	static void onWriteHello(Subscription& cb)
 	{
 		WriteHello* writeHello = reinterpret_cast<WriteHello*>(cb.accessUser());
 		write(writeHello->m_fd, "Hello", 5);
@@ -69,7 +69,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		EventManager manager(globals);
+		Manager manager(globals);
 		
 		std::cout << "	PASSED (instantiation test)" << std::endl;
 	}
@@ -84,7 +84,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		EventManager	manager(globals);
+		Manager	manager(globals);
 
 		int sockfd[2];
 
@@ -100,12 +100,12 @@ int TestPart1(int testNumber)
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		//reader
-		EventCallback	readEvent;
+		Subscription	readEvent;
 		CalcFibo		readCalculate(5);
 		long			readExpectedResult = fibonacci(5);
 
 		//writer
-		EventCallback	writeEvent;
+		Subscription	writeEvent;
 		WriteHello		writeHello(sockfd[1]);
 
 		/*
@@ -131,7 +131,7 @@ int TestPart1(int testNumber)
 		readEvent.setHandler(&CalcFibo::onReadFibonacci);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.addEvent(readEvent, false);
+		manager.add(readEvent, false);
 
 		writeEvent.setFd(sockfd[1]);
 		writeEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
@@ -139,7 +139,7 @@ int TestPart1(int testNumber)
 		writeEvent.setHandler(&WriteHello::onWriteHello);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.addEvent(writeEvent, false);
+		manager.add(writeEvent, false);
 
 		// while we don't have a result, wait and indefinitely until there are events, and process them
 		while (readCalculate.result == 0)
@@ -150,11 +150,11 @@ int TestPart1(int testNumber)
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
 		// remove the write event from monitoring, which should lower the subscribe count
-		manager.delEvent(writeEvent, false);
+		manager.remove(writeEvent, false);
 
 		// there should only 1 subscribed
-		if (manager.getSubscribeCount() != 1)
-			throw std::runtime_error("Events were not deleted correctly, got left " + TestHelpers::to_string(manager.getSubscribeCount())  + ", expected: " + TestHelpers::to_string(1) + '\n'
+		if (manager.getMonitoringCount() != 1)
+			throw std::runtime_error("Events were not deleted correctly, got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(1) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));		
 
 		// modify the read event to actually monitor write, for test purposes, reset result
@@ -164,7 +164,7 @@ int TestPart1(int testNumber)
 
 		// setting read to write because.... we can
 		readEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
-		manager.modEvent(readEvent, false);
+		manager.modify(readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
 
@@ -176,11 +176,11 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		manager.delEvent(readEvent, false);
+		manager.remove(readEvent, false);
 
 		// should be 0 subcribed
-		if (manager.getSubscribeCount() != 0)
-			throw std::runtime_error("Events were not deleted correctly got left " + TestHelpers::to_string(manager.getSubscribeCount())  + ", expected: " + TestHelpers::to_string(0) + '\n'
+		if (manager.getMonitoringCount() != 0)
+			throw std::runtime_error("Events were not deleted correctly got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(0) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
 
 

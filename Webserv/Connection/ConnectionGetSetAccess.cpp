@@ -18,12 +18,12 @@ t_socklen				Connection::getAddrlen() const
 	return (m_addrlen);
 }
 
-const EventCallback&			Connection::getReadEvent() const
+const Subscription&			Connection::getReadEvent() const
 {
 	return (*m_readEvent);
 }
 
-const EventCallback&			Connection::getWriteEvent() const
+const Subscription&			Connection::getWriteEvent() const
 {
 	return (*m_writeEvent);
 }
@@ -60,12 +60,12 @@ void					Connection::setAddrlen(const t_socklen addrlen)
 	m_addrlen = addrlen;
 }
 
-void					Connection::setReadEvent(EventCallback& event)
+void					Connection::setReadEvent(Subscription& event)
 {
 	m_readEvent = &event;
 }
 
-void					Connection::setWriteEvent(EventCallback& event)
+void					Connection::setWriteEvent(Subscription& event)
 {
 	m_writeEvent = &event;
 }

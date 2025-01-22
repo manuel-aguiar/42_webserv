@@ -207,7 +207,7 @@ int CgiStressTest::StressTest(int testNumber,
 		std::cout << "TEST " << testNumber++ << ": "  << assignmentDescription << '\n';
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		EventManager eventManager(globals);
+		Manager eventManager(globals);
 
 		Cgi::Module cgi(workers, backlog, timeoutMs, eventManager, globals);
 		Cgi::Request* current;
@@ -247,7 +247,7 @@ int CgiStressTest::StressTest(int testNumber,
 				requests.back().m_CgiResultStatus = TestProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE;
 
 				nextWait = cgi.processRequests();
-				if (eventManager.getSubscribeCount() != 0)
+				if (eventManager.getMonitoringCount() != 0)
 					eventManager.ProcessEvents(nextWait);
 
 				//pipedrain
@@ -276,7 +276,7 @@ int CgiStressTest::StressTest(int testNumber,
 			// process events right now at each loop, that way we make room in the Module
 			// to take more clients
 			nextWait = cgi.processRequests();
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 
 			
@@ -291,15 +291,15 @@ int CgiStressTest::StressTest(int testNumber,
 		{
 			unsigned int nextWait = cgi.processRequests();
 			
-			if (eventManager.getSubscribeCount() != 0)
+			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
 			while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 		}
 
-		if (eventManager.getSubscribeCount() != 0)
-			FailureMessages = FailureMessages + "EventManager still has events, got " + StringUtils::to_string(eventManager.getSubscribeCount())
+		if (eventManager.getMonitoringCount() != 0)
+			FailureMessages = FailureMessages + "Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
 			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
 
 		if (cgi.getBusyWorkerCount() != 0)

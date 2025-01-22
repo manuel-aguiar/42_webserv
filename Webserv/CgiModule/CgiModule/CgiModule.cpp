@@ -7,7 +7,7 @@
 namespace Cgi
 {
 
-	Cgi::Module::Module(size_t workers, size_t backlog, size_t maxTimeout, EventManager& eventManager, Globals& globals) :
+	Cgi::Module::Module(size_t workers, size_t backlog, size_t maxTimeout, Manager& eventManager, Globals& globals) :
 		m_numWorkers			(workers),
 		m_backlog				(backlog),
 		m_maxTimeout			(maxTimeout),

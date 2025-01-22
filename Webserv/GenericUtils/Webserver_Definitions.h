@@ -65,21 +65,6 @@ namespace Ws
 {
 	typedef int			fd;
 	typedef pid_t		pid;
-
-	namespace Epoll
-	{
-		enum
-		{
-			NONE = 0,
-			READ = EPOLLIN,
-			WRITE = EPOLLOUT,
-			ERROR = EPOLLERR,
-			HANGUP = EPOLLHUP,
-			RHANGUP = EPOLLRDHUP,
-			EDGE_TRIGGERED = EPOLLET
-		};
-		typedef int Events;
-	}
 }
 
 #endif

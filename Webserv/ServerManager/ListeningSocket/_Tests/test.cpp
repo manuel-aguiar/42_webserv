@@ -196,7 +196,7 @@ int main(void)
 				if (result == unexpected)
 					throw std::runtime_error("getEvent() doesn't return the correct event");
 			}
-			const EventCallback& event = listener.getEvent();
+			const Subscription& event = listener.getEvent();
 			{
 				const t_func_callback_handler result = event.accessUser().getHandler();
 				const t_func_callback_handler expected = &ListeningSocket::EventCallbackAccept;

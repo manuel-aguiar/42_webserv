@@ -104,7 +104,7 @@ int		ListeningSocket::open()
 
 
 /*
-	Accepts a socket conenction on the ListeningSocket. Will be called by the EventManager
+	Accepts a socket conenction on the ListeningSocket. Will be called by the Manager
 	via the EventCallbackAccept function pointer, and by the ServerWorker when a Connection instance
 	is returned to try and recycle. 
 */
@@ -165,7 +165,7 @@ int    ListeningSocket::accept()
 	connection->setProtoModule(m_protoModule);
 	m_initConnection(connection);
 
-	if (!m_worker.accessEventManager().addEvent(connection->getReadEvent()))
+	if (!m_worker.accessEventManager().add(connection->getReadEvent()))
 		return (mf_close_accepted_connection(*connection));
 
 	return (1);
@@ -181,7 +181,7 @@ int    ListeningSocket::mf_close_accepted_connection(Connection& connection)
 
 void    ListeningSocket::closeConnection(Connection& connection)
 {
-	m_worker.accessEventManager().delEvent(connection.getReadEvent());
+	m_worker.accessEventManager().remove(connection.getReadEvent());
 	mf_close_accepted_connection(connection);
 }
 

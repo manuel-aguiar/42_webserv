@@ -118,7 +118,7 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}
 
-void ServerWorker::EventExit(EventCallback& event)
+void ServerWorker::EventExit(Subscription& event)
 {
     ServerWorker* server;
 
