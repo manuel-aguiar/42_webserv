@@ -16,7 +16,7 @@ namespace Events
 		m_maxStaleFd	(0),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	(maxSubscriptions * 10, 0)
+		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
 	{
 
 		m_epollfd = epoll_create(1);
