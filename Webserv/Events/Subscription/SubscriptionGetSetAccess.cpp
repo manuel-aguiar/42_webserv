@@ -13,7 +13,7 @@ namespace Events
 
 	Manager::Subscription::Callback			Manager::Subscription::accessService()
 	{
-		return (m_handler);
+		return (m_callback);
 	}
 
 	// getters
@@ -51,7 +51,7 @@ namespace Events
 
 	void	Manager::Subscription::setCallback(const Manager::Subscription::Callback handler)
 	{
-		m_handler = handler;
+		m_callback = handler;
 	}
 
 }

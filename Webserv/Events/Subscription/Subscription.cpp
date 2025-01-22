@@ -11,15 +11,15 @@ namespace Events
 		m_fd				(-1),
 		m_monitoredEvents	(Events::Monitor::NONE),
 		m_user				(NULL),
-		m_handler			(NULL)
+		m_callback			(NULL)
 	{}
 
 	Manager::Subscription::~Subscription() {}
 
 	void 	Manager::Subscription::notify()
 	{
-		if (m_handler)
-			m_handler(*this);
+		if (m_callback)
+			m_callback(*this);
 	}
 
 	void	Manager::Subscription::reset()
@@ -27,7 +27,7 @@ namespace Events
 		m_fd = -1;
 		m_monitoredEvents = Events::Monitor::NONE;
 		m_user = NULL;
-		m_handler = NULL;
+		m_callback = NULL;
 	}
 
 	//private

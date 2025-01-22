@@ -43,7 +43,7 @@ namespace Events
 			Events::Monitor::Mask		m_monitoredEvents;
 			Events::Monitor::Mask		m_triggeredEvents;
 			Subscription::User			m_user;
-			Subscription::Callback		m_handler;
+			Subscription::Callback		m_callback;
 
 			Subscription();
 			~Subscription();			
