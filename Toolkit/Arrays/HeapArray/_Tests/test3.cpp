@@ -12,7 +12,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 int TestPart3(int testNumber)
@@ -43,8 +43,8 @@ int TestPart3(int testNumber)
 			array.push_back(new ToolkitBase(i));
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
@@ -52,7 +52,7 @@ int TestPart3(int testNumber)
 		{
 			if (**it != **iter)
 				throw std::runtime_error("value mismatch " + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		it = array.begin();

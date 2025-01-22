@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../_Tests/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>

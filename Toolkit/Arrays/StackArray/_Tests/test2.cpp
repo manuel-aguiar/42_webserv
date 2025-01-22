@@ -12,7 +12,7 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 int StressTest(int testNumber)
 {
@@ -31,8 +31,8 @@ int StressTest(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackArray<int, 100>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
@@ -40,8 +40,8 @@ int StressTest(int testNumber)
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackArray<int, 100> assign;
@@ -57,13 +57,13 @@ int StressTest(int testNumber)
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
 			if (*it != *iter)
-				throw std::runtime_error("copy assignment value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("copy assignment value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != assign.size())
-			throw std::runtime_error("copy assignment size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(assign.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("copy assignment size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(assign.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -90,16 +90,16 @@ int StressTest(int testNumber)
 			array.emplace_back(i);
 		}
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		StackArray<int, 100>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackArray<int, 100> copy(array);
@@ -110,13 +110,13 @@ int StressTest(int testNumber)
         for ( ; it != copy.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::runtime_error("copy constructor value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::runtime_error("copy constructor value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != copy.size())
-			throw std::runtime_error("copy constructor size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(copy.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("copy constructor size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(copy.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -144,8 +144,8 @@ int StressTest(int testNumber)
 		}
 
 		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		StackArray<int, arraySize>::iterator it = array.begin();
@@ -153,8 +153,8 @@ int StressTest(int testNumber)
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
         StackArray<int, arraySize> copy(array);
@@ -165,13 +165,13 @@ int StressTest(int testNumber)
         for ( ; it != copy.end() && iter != std.end(); ++it, ++iter)
         {
             if (*it != *iter)
-                throw std::runtime_error("copy constructor value mismatch, got: " + to_string(*it) + " expected: " + to_string(*iter) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+                throw std::runtime_error("copy constructor value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         }
 
         if (std.size() != copy.size())
-			throw std::runtime_error("copy constructor size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(copy.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("copy constructor size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(copy.size()) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;

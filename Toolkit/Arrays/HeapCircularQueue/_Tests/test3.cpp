@@ -12,7 +12,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 
 int TestPart3(int testNumber)
@@ -43,16 +43,16 @@ int TestPart3(int testNumber)
 			queue.push_front(new ToolkitBase(i));
 		}
 		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::logic_error("size mismatch, got " + TestHelpers::to_string(queue.size()) + " expected: " + TestHelpers::to_string(std.size())
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		HeapCircularQueue<ToolkitBase*>::iterator it = queue.begin();
 		std::list<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
 			if (**it != **iter)
-				throw std::logic_error("value mismatch, got " + to_string((*it)->getValue()) + " expected: " + to_string((*iter)->getValue())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+				throw std::logic_error("value mismatch, got " + TestHelpers::to_string((*it)->getValue()) + " expected: " + TestHelpers::to_string((*iter)->getValue())
+				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		}
 
 		it = queue.begin();

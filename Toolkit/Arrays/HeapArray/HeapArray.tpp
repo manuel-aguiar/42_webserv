@@ -39,7 +39,7 @@ class HeapArray
 			m_capacity(capacity)
 		{
 			assert(capacity);
-			for (size_t i = 0; i < size; i++)
+			for (size_t i = 0; i < m_size; i++)
 				m_allocator.construct(&m_array[i], T(value));
 		}
 

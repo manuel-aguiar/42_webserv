@@ -13,7 +13,7 @@
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../../Heap_ObjectPool/Heap_ObjectPool.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
@@ -56,9 +56,9 @@ int TestPart1(int testNumber)
 
         if (pool.getFreeSpace() != 4096 - 100 * sizeof(int))
             throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 100 * sizeof(int)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
+            + TestHelpers::to_string(4096 - 100 * sizeof(int)) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -81,18 +81,18 @@ int TestPart1(int testNumber)
 
         if (pool.getFreeSpace() != 4096)
             throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 100 * sizeof(int)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
+            + TestHelpers::to_string(4096 - 100 * sizeof(int)) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         list.push_back("big string that mallocs just to be sure that RAII is working");
         list.push_back("fits buf");
 
         if (pool.getFreeSpace() != 4096 - 2 * (sizeof(std::string) + 8 + 8))
             throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
+            + TestHelpers::to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -120,9 +120,9 @@ int TestPart1(int testNumber)
 
         if (pool.getFreeSpace() != poolSize)
             throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 100 * sizeof(int)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
+            + TestHelpers::to_string(4096 - 100 * sizeof(int)) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 
         for (int i = 0; i < elementCount; i++)
@@ -130,9 +130,9 @@ int TestPart1(int testNumber)
 
         if (pool.getFreeSpace() != 0)
             throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
+            + TestHelpers::to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
+            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}

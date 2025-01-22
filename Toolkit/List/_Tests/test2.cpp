@@ -3,7 +3,7 @@
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/test.h"
+# include "../../_Tests/TestHelpers.h"
 
 // C++ headers
 #include <list>
@@ -43,7 +43,6 @@ int StressTest(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 	
 
@@ -77,7 +76,6 @@ int StressTest(int testNumber)
 	catch(const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
 	}
 
 	return (testNumber);

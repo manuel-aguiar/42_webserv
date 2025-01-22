@@ -12,7 +12,7 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../_Tests/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
 extern int StressTest(int testNumber);
