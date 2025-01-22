@@ -133,6 +133,9 @@ namespace Events
 		
 		fd = internal->getFd();
 		
+		// check the subscription fd is the same but the events are different
+		assert(fd == internal->getSubscribedFd() && internal->getSubscribedEvents() != internal->getMonitoredEvents());
+
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 		{
 			assert(false); // this should never happen
