@@ -238,3 +238,8 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ │ " <<  std::endl ;
 
 }
+
+void	ServerBlock::addSockAddr(const struct sockaddr* addr)
+{
+	m_myListenAddresses.push_back(addr);
+}

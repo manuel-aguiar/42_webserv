@@ -52,6 +52,8 @@ class ServerBlock
 		// Debug
 		void							printServerConfig() const;
 
+		void							addSockAddr(const struct sockaddr* addr);
+
 	private:
 		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
@@ -64,6 +66,8 @@ class ServerBlock
 		std::set<std::string>							m_error_pages;
 
 		std::map<t_path, ServerLocation>				m_locations;
+
+		std::vector<const struct sockaddr*>				m_myListenAddresses;
 };
 
 #endif
