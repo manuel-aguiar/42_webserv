@@ -106,7 +106,7 @@ static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 		//already in the map, associate listener with the unique address we found before
 		if (addrIter != helper.uniqueAddrInfo.end())
 		{
-			helper.listenerToBind.insert(std::pair<const t_listeners*, const BindAddress*>(&listener, addrIter->second));
+			helper.listenerToBind.insert(Pair_listenerToBind(&listener, addrIter->second));
 			continue ;
 		}
 
@@ -120,13 +120,13 @@ static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 
 		//adding unique address to map, will should up in the next lookup
 		std::pair<Map_AddrInfoToBind::iterator, bool> returnVal;
-		returnVal = helper.uniqueAddrInfo.insert(std::pair<const t_addrinfo*, const BindAddress*>(cur, &(helper.uniqueSockAddr.back())));
+		returnVal = helper.uniqueAddrInfo.insert(Pair_AddrInfoToBind(cur, &(helper.uniqueSockAddr.back())));
 		
-		if (returnVal.second == false)  // can't be false, veryfication done right at the start with .find() before, but hey
-			return (false);				// better safe than sorry
+		if (returnVal.second == false)  // not needed lol
+			return (false);				
 		
 		// connecting listener to u_sockaddr, where we inserted the new BindAddress struct
-		helper.listenerToBind.insert(std::pair<const t_listeners*, const BindAddress*>(&listener, returnVal.first->second));
+		helper.listenerToBind.insert(Pair_listenerToBind(&listener, returnVal.first->second));
 	}
 	::freeaddrinfo(helper.allAddrInfo.back());
 	helper.allAddrInfo.pop_back();
