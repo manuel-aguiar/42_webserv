@@ -123,3 +123,10 @@ This will help maintain performance of our server as we can accept/start process
 To monitor we have an array of bits that are set when the event manager is informed that a file descriptor
 was closed/opened as a result of a notification to a Subscription during ProcessEvents() and to disregard any
 events that may be associated with that fd in the current loop iteration.
+
+In the array of bytes, we use a magic constant 10 times the number of subscriptions. This will be adjusted but we know:
+	the kernel attributes the lowest available index into the fdTable when you open an fd
+	the maxmium number of fds is (stdin + stdout + stderr + number of connections + (number of cgi workers * 6)).
+	Since we may inherit fds as the process is opened, we could go past this number.
+	So to keep it simple, multiply the max by 10 more or less and run with it, we should be fine and is not
+	too much memory for our use cases.
