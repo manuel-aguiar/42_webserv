@@ -1,9 +1,10 @@
 
 
 // Project headers
-# include "../EventManager/EventManager.hpp"
+# include "../Events.h"
+# include "../Manager/Manager.hpp"
+# include "../Subscription/Subscription.hpp"
 # include "../../Globals/Globals.hpp"
-# include "../../EventCallback/EventCallback.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
@@ -13,19 +14,19 @@
 // C++ headers
 # include <iostream>
 
-class User
+class Calculator
 {
 	public:
-		User() : m_data(0) {}
+		Calculator() : m_data(0) {}
 
 		void doSomething()
 		{
 			m_data = 42;
 		}
 
-		static void MyCallback_doSomething(Subscription& event)
+		static void MyCallback_doSomething(Events::Subscription& event)
 		{
-			User* me = reinterpret_cast<User*>(event.accessUser());
+			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
 			me->doSomething();
 		}
 
@@ -47,18 +48,18 @@ int TestPart2(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		Manager manager(globals);
-		User			user;
-		Subscription 	callback;
+		Events::Manager 		manager(100, globals);
+		Events::Subscription* 	subscription = manager.acquireSubscription();
+		Calculator				user;
 
-		callback.setUser(&user);
-		callback.setService(&User::MyCallback_doSomething);
+		subscription->setUser(&user);
+		subscription->setService(&Calculator::MyCallback_doSomething);
 
 		// let me know when i can write to stdout
-		callback.setFd(STDOUT_FILENO);
-		callback.setMonitoredFlags(Ws::Monitor::WRITE);
+		subscription->setFd(STDOUT_FILENO);
+		subscription->setMonitoredFlags(Events::Monitor::WRITE);
 
-		manager.add(callback, true);	//event added as stale, if triggered do not execute
+		manager.add(*subscription, true);	//event added as stale, if triggered do not execute
 
 		//stdout should be ready straight away
 		manager.ProcessEvents(-1); 
@@ -81,7 +82,9 @@ int TestPart2(int testNumber)
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		 //remove event, (indifferent to mark as stale here)
-		manager.remove(callback, true);
+		manager.remove(*subscription, true);
+		
+		manager.returnSubscription(*subscription);
 
 		std::cout << "	PASSED (stale event test)" << std::endl;
 	}

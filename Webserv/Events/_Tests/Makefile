@@ -16,19 +16,19 @@ SRC_PATH	=	$(ROOT_PATH)/.
 OBJ_PATH	=	$(ROOT_PATH)/_build
 
 
-SRCS		 =  $(SRC_PATH)/Webserv/EventManager/EventManager/EventManager.cpp \
-				$(SRC_PATH)/Webserv/EventManager/InternalEvent/InternalEvent.cpp \
-				$(SRC_PATH)/Webserv/EventManager/_Tests/main.cpp \
-				$(SRC_PATH)/Webserv/EventManager/_Tests/test1.cpp \
-				$(SRC_PATH)/Webserv/EventManager/_Tests/test2.cpp \
+SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
+				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
+				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Events/InternalSubs/InternalSubs.cpp \
+				$(SRC_PATH)/Webserv/Events/_Tests/main.cpp \
+				$(SRC_PATH)/Webserv/Events/_Tests/test1.cpp \
+				$(SRC_PATH)/Webserv/Events/_Tests/test2.cpp \
 													\
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 													\
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-				$(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
-				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp \
 				\
 				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
 

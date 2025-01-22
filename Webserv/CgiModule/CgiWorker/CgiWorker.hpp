@@ -46,7 +46,7 @@ namespace Cgi
 
 		private:
 
-			InternalRequest*	m_curRequestData;
+			InternalRequest*			m_curRequestData;
 
 			// script arguments
 			DynArray<std::string>
@@ -74,7 +74,7 @@ namespace Cgi
 
 			
 			// External sources
-			Module&			m_CgiModule;
+			Module&				m_CgiModule;
 
 			// execute
 			void				mf_executeParent(bool markFdsAsStale);

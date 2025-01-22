@@ -56,6 +56,9 @@ namespace Events
 		InternalSubs* internal;
 
 		internal = static_cast<InternalSubs*>(&subscription);
+
+		//event must not be subscribed 
+		assert(internal->getSubscribedFd() == -1 && internal->getSubscribedFlags() == Events::Monitor::NONE);
 		m_availableSubs.emplace_back(internal);
 	}
 

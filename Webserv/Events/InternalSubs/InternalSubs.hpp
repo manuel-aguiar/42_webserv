@@ -16,6 +16,8 @@ namespace Events
         public:
             InternalSubs();
             ~InternalSubs();
+            InternalSubs(const InternalSubs& copy);
+            InternalSubs& operator=(const InternalSubs& assign);
 
             //informing public event of the events that took place on the target fd
             void                    setTriggeredFlags(const Events::Monitor::Type flags);
@@ -34,11 +36,9 @@ namespace Events
             
         private:
 
-            Ws::fd					m_subscribedFd;
+            Ws::fd					    m_subscribedFd;
             Events::Monitor::Type		m_subscribedEvents;
 
-            InternalSubs(const InternalSubs& copy);
-            InternalSubs& operator=(const InternalSubs& assign);
     };
 }
 

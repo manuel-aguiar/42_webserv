@@ -52,11 +52,17 @@ namespace Events
         return (m_subscribedEvents);
     }
 
-    // Private copy constructor (not implemented to prevent copying)
-    Manager::InternalSubs::InternalSubs(const InternalSubs& copy) : Subscription(copy)
-    {
-        (void)copy;
-    }
+    Manager::InternalSubs::InternalSubs(const InternalSubs& copy) : 
+        Subscription(copy), 
+        m_subscribedFd(copy.m_subscribedFd), 
+        m_subscribedEvents(copy.m_subscribedEvents) {}
     Manager::InternalSubs& Manager::InternalSubs::operator=(const InternalSubs& assign)
-    {Subscription::operator=(assign); return (*this);};
+    {
+        if (this == &assign)
+            return (*this);
+        Subscription::operator=(assign);
+        m_subscribedFd = assign.m_subscribedFd;
+        m_subscribedEvents = assign.m_subscribedEvents;
+        return (*this);
+    };
 }
