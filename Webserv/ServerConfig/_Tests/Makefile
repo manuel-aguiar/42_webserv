@@ -2,7 +2,7 @@
 NAME =			TestServerConfig.out
 CXX =			c++
 CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP #-fsanitize=address
-SRC =			ServerConfigTests.cpp ../ServerConfig/ServerConfig.cpp ../ServerBlock/ServerBlock.cpp \
+SRC =			ServerConfigTests.cpp ../ServerConfig/ServerConfig.cpp ../ServerConfig/ServerConfigGetAddrInfo.cpp  ../ServerBlock/ServerBlock.cpp \
 				../DefaultConfig/DefaultConfig.cpp ../ServerLocation/ServerLocation.cpp \
 				../../GenericUtils/StringUtils/StringUtils.cpp \
 				../../GenericUtils/Validation/Validation.cpp 
