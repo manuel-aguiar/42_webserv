@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 15:52:32 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 11:04:46 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:52:34 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 # define CGIMODULE_H
 
-# include "CgiNamespace.h"
+# include "m_CgiNamespace.h"
 # include "CgiModule/CgiModule.hpp"
 # include "CgiRequest/CgiRequest.hpp"
 

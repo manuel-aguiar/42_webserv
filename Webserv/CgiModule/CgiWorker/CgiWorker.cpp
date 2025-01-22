@@ -4,7 +4,7 @@
 #include "CgiWorker.hpp"
 #include "../CgiInternalRequest/CgiInternalRequest.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../Events/Manager/Manager.hpp"
+#include "../../Events/Events.h"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C Headers

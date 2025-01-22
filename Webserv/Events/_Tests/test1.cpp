@@ -2,8 +2,6 @@
 
 // Project headers
 # include "../Events.h"
-# include "../Manager/Manager.hpp"
-# include "../Subscription/Subscription.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"

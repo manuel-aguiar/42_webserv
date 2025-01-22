@@ -5,7 +5,7 @@
 # define CGIREQUEST_HPP
 
 //Project Headers
-# include "../CgiNamespace.h"
+# include "../m_CgiNamespace.h"
 # include "../CgiModule/CgiModule.hpp"
 
 // C++ headers

@@ -4,7 +4,7 @@
 
 # define EVENTINTERNALSUBS_HPP
 
-# include "../Events.h"
+# include "../m_EventsDefinitions.h"
 # include "../Manager/Manager.hpp"
 # include "../Subscription/Subscription.hpp"
 

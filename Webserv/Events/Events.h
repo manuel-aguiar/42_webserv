@@ -1,31 +1,16 @@
 
 
-#ifndef EVENT_H
+#ifndef EVENTS_H
 
-# define EVENT_H
+# define EVENTS_H
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# include "m_EventsDefinitions.h"
+# include "Manager/Manager.hpp"
+# include "Subscription/Subscription.hpp"
 
 namespace Events
 {
-
-	namespace Monitor
-	{
-		enum
-		{
-			NONE 		  	= 0,
-			READ            = EPOLLIN,
-			WRITE           = EPOLLOUT,
-			ERROR           = EPOLLERR,
-			HANGUP          = EPOLLHUP,
-			RDHANGUP        = EPOLLRDHUP,
-			EDGE_TRIGGERED  = EPOLLET
-		};
-		typedef int Mask;
-		typedef struct epoll_event Event;
-	}
+	typedef Events::Manager::Subscription Subscription;
 }
-
-# define MAX_EPOLL_FDS 1000000
 
 #endif

@@ -4,7 +4,7 @@
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
-# include "../../Events/Manager/Manager.hpp"
+# include "../../Events/Events.h"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"

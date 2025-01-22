@@ -11,9 +11,9 @@
 # include "../../../Toolkit/List/List.hpp"
 
 // Project Headers
-# include "../CgiNamespace.h"
+# include "../m_CgiNamespace.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../Events/Manager/Manager.hpp"
+# include "../../Events/Events.h"
 
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
