@@ -14,52 +14,35 @@
 // C++ headers
 # include <iostream>
 
-static long fibonacci(unsigned int n)
+class Calculator
 {
-	long a;
-	long b;
-	long temp;
+	public:
+		void doSomething()
+		{
+			m_data = 42;
+		}
 
-	if (n <= 1)
-		return (n);
-	a = 0;
-	b = 1;
-	while (n > 0)
-	{
-		temp = b;
-		b = a + b;
-		a = temp;
-		n--;
-	}
-	return (a);
+		static void MyCallback_doSomething(Events::Subscription& event)
+		{
+			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
+			me->doSomething();
+		}
+
+		int getData() const
+		{
+			return (m_data);
+		}
+	private:
+		int	m_data;
+};
+
+void	PrintHelloWorld(Events::Subscription& callback)
+{
+	(void)callback;
+
+	std::cout << "Hello World!";
+	std::cout.flush();
 }
-
-struct CalcFibo
-{
-	CalcFibo(unsigned int n) : number(n), result(0) {}
-
-	static void onReadFibonacci(Events::Subscription& cb)
-	{
-		CalcFibo* calcfibo = reinterpret_cast<CalcFibo*>(cb.accessUser());
-		calcfibo->result = fibonacci(calcfibo->number);
-	}
-
-	unsigned int	number;
-	long			result;
-};
-
-struct WriteHello
-{
-	WriteHello(int fd) : m_fd(fd) {}
-
-	static void onWriteHello(Events::Subscription& cb)
-	{
-		WriteHello* writeHello = reinterpret_cast<WriteHello*>(cb.accessUser());
-		write(writeHello->m_fd, "Hello", 5);
-	}
-
-	int	m_fd;
-};
 
 int TestPart1(int testNumber)
 {
@@ -71,125 +54,57 @@ int TestPart1(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Events::Manager manager(100, globals);
+		Calculator 		calculator;
+		Events::Subscription* subscription = manager.acquireSubscription();
+
+		subscription->setUser(&calculator);
+		subscription->setCallback(Calculator::MyCallback_doSomething);
+
+		subscription->notifyUser();
+
+		if (calculator.getData() != 42)
+			throw std::runtime_error("Failed to call the user function" + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
-		std::cout << "	PASSED (instantiation test)" << std::endl;
+		std::cout << "	PASSED (using a Subscription)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
-	/************************************************** */
-
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
+		std::cout.flush();
 
-		Events::Manager	manager(100, globals);
+		// prepare some pipes
+		int testpipe[2];
+		int stdcerrDup = dup(STDOUT_FILENO);
+		pipe(testpipe);
+		dup2(testpipe[1], STDOUT_FILENO);
+		char buffer[64];
 
-		int sockfd[2];
+		Events::Manager manager(100, globals);
+		Events::Subscription* subscription = manager.acquireSubscription();
 
-		// create a unix socket pair for communication
-		if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd) != 0)
-			throw std::runtime_error("Failed to create socket pair" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		subscription->setCallback(&PrintHelloWorld);
+		subscription->notifyUser();
 
-		// set the sockets to non-blocking
-		if (!FileDescriptor::setNonBlocking(sockfd[0]) 
-		|| !FileDescriptor::setNonBlocking(sockfd[1]))
-			throw std::runtime_error("Fcntl failed" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		int bytesRead = ::read(testpipe[0], buffer, sizeof(buffer) - 1);
+		buffer[bytesRead] = '\0';
 
-		//reader
-		Events::Subscription*			readEvent = manager.acquireSubscription();
-		CalcFibo						readCalculate(5);
-		long							readExpectedResult = fibonacci(5);
+		// restore the original stdout
+		dup2(stdcerrDup, STDOUT_FILENO);
+		close(stdcerrDup);
+		close(testpipe[1]);
+		close(testpipe[0]);
 
-		//writer
-		Events::Subscription*			writeEvent = manager.acquireSubscription();
-		WriteHello						writeHello(sockfd[1]);
-
-		/*
-			WriteHello will write "Hello" on the write on its socket, when the event manager says its socket
-			can be written to.
-
-			readCalculate will calculate the 5th fibonacci number when the event manager says its socket
-			can be read from.
-
-			Subscribed edge-triggered because i won't be reading the sockets and don't want the event manager
-			to keep triggering the event.
-
-			It is expected the write event is triggered right away. WriteHello writes and triggers the readEvent.
-			On the next epoll iteration, the readEvent is received, calculating fibonacci.
-		*/
-
-
-
-		// preparing the write event
-		readEvent->setFd(sockfd[0]);
-		readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::EDGE_TRIGGERED);
-		readEvent->setUser(&readCalculate);
-		readEvent->setCallback(&CalcFibo::onReadFibonacci);
-
-		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.startMonitoring(*readEvent, false);
-
-		writeEvent->setFd(sockfd[1]);
-		writeEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
-		writeEvent->setUser(&writeHello);
-		writeEvent->setCallback(&WriteHello::onWriteHello);
-
-		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.startMonitoring(*writeEvent, false);
-
-		// while we don't have a result, wait and indefinitely until there are events, and process them
-		while (readCalculate.result == 0)
-			manager.ProcessEvents(-1);
-
-		if (readCalculate.result != readExpectedResult)
-			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
+		if (std::string(buffer) != "Hello World!")
+			throw std::runtime_error("Failed to call the user function" + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
-		// stopMonitoring the write event from monitoring, which should lower the subscribe count
-		manager.stopMonitoring(*writeEvent, false);
-
-		// there should only 1 subscribed
-		if (manager.getMonitoringCount() != 1)
-			throw std::runtime_error("Events were not deleted correctly, got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(1) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));		
-
-		// modify the read event to actually monitor write, for test purposes, reset result
-		// write should be available write away
-
-		readCalculate.result = 0;
-
-		// setting read to write because.... we can
-		readEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
-		manager.modify(*readEvent, false);
-
-		int waitCount = manager.ProcessEvents(-1);
-
-		if (waitCount != 1)
-			throw std::runtime_error("waitCount got " + TestHelpers::to_string(waitCount) + ", expected " + TestHelpers::to_string(1) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-		if (readCalculate.result != readExpectedResult)
-			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-		manager.stopMonitoring(*readEvent, false);
-
-		// should be 0 subcribed
-		if (manager.getMonitoringCount() != 0)
-			throw std::runtime_error("Events were not deleted correctly got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(0) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
-
-
-		// close the socketpair
-		close(sockfd[0]);
-		close(sockfd[1]);
-
-		std::cout << "	PASSED (handling communication between a writer and a reader)" << std::endl;
+		std::cout << "	PASSED (using a Subscription that has no User, just a callback)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{

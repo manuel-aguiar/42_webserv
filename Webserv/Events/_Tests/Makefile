@@ -23,6 +23,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/test1.cpp \
 				$(SRC_PATH)/Webserv/Events/_Tests/test2.cpp \
+				$(SRC_PATH)/Webserv/Events/_Tests/test3.cpp \
 													\
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
