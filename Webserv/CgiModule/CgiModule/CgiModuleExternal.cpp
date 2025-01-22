@@ -87,7 +87,7 @@ namespace Cgi
 		return (mf_finishTimedOut());
 	}
 
-	void	Cgi::Module::modifyRequest(Request& data, bool isCalledFromEventLoop, Module::Options::Monitor newOptions)
+	void	Cgi::Module::modifyRequest(Request& data, bool isCalledFromEventLoop, Module::Options::Mask newOptions)
 	{
 		InternalRequest*	requestData;
 		RequestStateEnum::Type	state;
@@ -125,9 +125,9 @@ namespace Cgi
 				-> closed worker will return the request to the available list when it can
 
 			Request is Queued: request is in the execution queue
-				-> can't remove from the queue, it is in the middle
+				-> can't stopMonitoring from the queue, it is in the middle
 				-> we mark it as cancelled
-				-> as workers try to get requests, they check the cancelled ones and remove them from
+				-> as workers try to get requests, they check the cancelled ones and stopMonitoring them from
 					the queue back to the available list
 					(++ we don't iterate and move all elements in the middle)
 					(-- someone may not be able to subscribe, even though there is a dead request in the queue
@@ -137,7 +137,7 @@ namespace Cgi
 			For the remining, just ignore:
 				finished (already marked for cleanup)
 				idle (wtv, let it be, a user may call on an already recycled request)
-				cancelled (effective cleanup already, waiting for a worker to remove it from the executionQueue)
+				cancelled (effective cleanup already, waiting for a worker to stopMonitoring it from the executionQueue)
 
 		This function does not close any fds, so it is SAFE to be called from an event handler (Subscription).
 	*/
@@ -184,7 +184,7 @@ namespace Cgi
 		for (size_t i = 0; i < m_executionQueue.size(); ++i)
 		{
 			data = m_executionQueue[i];
-			data->Runtime_CallTheUser(CgiRuntime_Callback::ON_ERROR_RUNTIME);
+			data->Runtime_CallTheUser(CgiNotify::ON_ERROR_RUNTIME);
 			mf_returnRequestData(*data);
 		}
 			

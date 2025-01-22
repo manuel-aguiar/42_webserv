@@ -4,7 +4,7 @@
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
-# include "../../EventManager/EventManager/EventManager.hpp"
+# include "../../Events/Manager/Manager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
@@ -27,7 +27,7 @@ namespace Cgi
 
 	void   Cgi::Module::Worker::execute(bool markFdsAsStale)
 	{
-		Options::Monitor options;
+		Options::Mask options;
 
 		options = m_curRequestData->getOptions();
 
@@ -51,18 +51,18 @@ namespace Cgi
 
 		if (!(options & Options::CANCEL_WRITE))
 		{
-			m_writeEvent.setFd(m_ParentToChild[1]);
-			m_CgiModule.mf_accessEventManager().add(m_writeEvent, markFdsAsStale);
+			m_writeEvent->setFd(m_ParentToChild[1]);
+			m_CgiModule.mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
 		}
 
 		if (!(options & Options::CANCEL_READ))
 		{
-			m_readEvent.setFd(m_ChildToParent[0]);
-			m_CgiModule.mf_accessEventManager().add(m_readEvent, markFdsAsStale);
+			m_readEvent->setFd(m_ChildToParent[0]);
+			m_CgiModule.mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
 		}
 
-		m_EmergencyEvent.setFd(m_EmergencyPhone[0]);
-		m_CgiModule.mf_accessEventManager().add(m_EmergencyEvent, markFdsAsStale);
+		m_EmergencyEvent->setFd(m_EmergencyPhone[0]);
+		m_CgiModule.mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
 		
 
 		//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -94,7 +94,7 @@ namespace Cgi
 	*/
 	void	Cgi::Module::Worker::mf_executeParent(bool markFdsAsStale)
 	{
-		Module::Options::Monitor options;
+		Module::Options::Mask options;
 
 		options = m_curRequestData->getOptions();
 

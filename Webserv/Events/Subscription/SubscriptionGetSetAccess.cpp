@@ -11,7 +11,7 @@ namespace Events
 		return (m_user);
 	}
 
-	Manager::Subscription::Service			Manager::Subscription::accessService()
+	Manager::Subscription::Callback			Manager::Subscription::accessService()
 	{
 		return (m_handler);
 	}
@@ -22,12 +22,12 @@ namespace Events
 		return (m_fd);
 	}
 
-	Events::Monitor::Type			Manager::Subscription::getMonitoredFlags() const
+	Events::Monitor::Mask			Manager::Subscription::getMonitoredEvents() const
 	{
 		return (m_monitoredEvents);
 	}
 
-	Events::Monitor::Type			Manager::Subscription::getTriggeredFlags() const
+	Events::Monitor::Mask			Manager::Subscription::getTriggeredEvents() const
 	{
 		return (m_monitoredEvents);
 	}
@@ -39,7 +39,7 @@ namespace Events
 		m_fd = fd;
 	}
 
-	void	Manager::Subscription::setMonitoredFlags(const Events::Monitor::Type flags)
+	void	Manager::Subscription::setMonitoredEvents(const Events::Monitor::Mask flags)
 	{
 		m_monitoredEvents = flags;
 	}
@@ -49,7 +49,7 @@ namespace Events
 		m_user = user;
 	}
 
-	void	Manager::Subscription::setService(const Manager::Subscription::Service handler)
+	void	Manager::Subscription::setCallback(const Manager::Subscription::Callback handler)
 	{
 		m_handler = handler;
 	}

@@ -53,13 +53,13 @@ int TestPart2(int testNumber)
 		Calculator				user;
 
 		subscription->setUser(&user);
-		subscription->setService(&Calculator::MyCallback_doSomething);
+		subscription->setCallback(&Calculator::MyCallback_doSomething);
 
 		// let me know when i can write to stdout
 		subscription->setFd(STDOUT_FILENO);
-		subscription->setMonitoredFlags(Events::Monitor::WRITE);
+		subscription->setMonitoredEvents(Events::Monitor::WRITE);
 
-		manager.add(*subscription, true);	//event added as stale, if triggered do not execute
+		manager.startMonitoring(*subscription, true);	//event added as stale, if triggered do not execute
 
 		//stdout should be ready straight away
 		manager.ProcessEvents(-1); 
@@ -81,9 +81,9 @@ int TestPart2(int testNumber)
 			+ StringUtils::to_string(42) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		 //remove event, (indifferent to mark as stale here)
-		manager.remove(*subscription, true);
-		
+		 //stopMonitoring event, (indifferent to mark as stale here)
+		manager.stopMonitoring(*subscription, true);
+
 		manager.returnSubscription(*subscription);
 
 		std::cout << "	PASSED (stale event test)" << std::endl;

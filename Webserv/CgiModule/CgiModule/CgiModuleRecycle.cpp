@@ -47,7 +47,7 @@ namespace Cgi
 	void
 	Cgi::Module::mf_recycleSuccess(Worker& worker)
 	{
-		mf_recycleExecutionUnit(worker, true, CgiRuntime_Callback::ON_SUCCESS);
+		mf_recycleExecutionUnit(worker, true, CgiNotify::ON_SUCCESS);
 	}
 
 
@@ -55,20 +55,20 @@ namespace Cgi
 	Cgi::Module::mf_recycleRuntimeFailure(Worker& worker)
 	{
 		worker.stop();
-		mf_recycleExecutionUnit(worker, true, CgiRuntime_Callback::ON_ERROR_RUNTIME);
+		mf_recycleExecutionUnit(worker, true, CgiNotify::ON_ERROR_RUNTIME);
 	}
 
 	void
 	Cgi::Module::mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale)
 	{
-		mf_recycleExecutionUnit(worker, markFdsAsStale, CgiRuntime_Callback::ON_ERROR_STARTUP);
+		mf_recycleExecutionUnit(worker, markFdsAsStale, CgiNotify::ON_ERROR_STARTUP);
 	}
 
 	void
 	Cgi::Module::mf_recycleTimeoutFailure(Worker& worker)
 	{
 		worker.stop();
-		mf_recycleExecutionUnit(worker, false, CgiRuntime_Callback::ON_ERROR_TIMEOUT);
+		mf_recycleExecutionUnit(worker, false, CgiNotify::ON_ERROR_TIMEOUT);
 	}
 
 	void
@@ -77,15 +77,15 @@ namespace Cgi
 		Worker*		worker = data.accessExecutor();
 		
 		worker->stop();
-		mf_recycleExecutionUnit(*worker, markFdsAsStale, CgiRuntime_Callback::ON_ERROR_RUNTIME);
+		mf_recycleExecutionUnit(*worker, markFdsAsStale, CgiNotify::ON_ERROR_RUNTIME);
 	}
 
 	void
-	Cgi::Module::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiRuntime_Callback::Type callUser)
+	Cgi::Module::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiNotify::Type callUser)
 	{
 		InternalRequest* 			data = worker.accessRequestData();
 		User 						user = data->getUser();
-		CgiRuntime_Callback::Service	handler = data->getRuntime_Handler(callUser);
+		CgiNotify::Callback	handler = data->getRuntime_Handler(callUser);
 
 		worker.disableCloseAllEvents(markFdsAsStale);
 		mf_recycleWorker(worker, markFdsAsStale);

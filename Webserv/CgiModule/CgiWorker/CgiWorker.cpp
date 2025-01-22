@@ -4,7 +4,7 @@
 #include "CgiWorker.hpp"
 #include "../CgiInternalRequest/CgiInternalRequest.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../EventManager/EventManager/EventManager.hpp"
+#include "../../Events/Manager/Manager.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C Headers
@@ -26,17 +26,23 @@ namespace Cgi
 		m_EmergencyPhone[0] = -1;
 		m_EmergencyPhone[1] = -1;
 		
-		m_EmergencyEvent.setFd(-1);
-		m_EmergencyEvent.setUserHandler(this, mf_EventCallback_OnEmergency);
-		m_EmergencyEvent.setMonitoredFlags(Ws::Monitor::READ | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
+		m_EmergencyEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+		m_EmergencyEvent->setFd(-1);
+		m_EmergencyEvent->setUser(this);
+		m_EmergencyEvent->setCallback(mf_EventCallback_OnEmergency);
+		m_EmergencyEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 
-		m_readEvent.setFd(-1);
-		m_readEvent.setUserHandler(this, mf_EventCallback_onRead);
-		m_readEvent.setMonitoredFlags(Ws::Monitor::READ | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
+		m_readEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+		m_readEvent->setFd(-1);
+		m_readEvent->setUser(this);
+		m_readEvent->setCallback(mf_EventCallback_onRead);
+		m_readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 
-		m_writeEvent.setFd(-1);
-		m_writeEvent.setUserHandler(this, mf_EventCallback_onWrite);
-		m_writeEvent.setMonitoredFlags(Ws::Monitor::WRITE | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
+		m_writeEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+		m_writeEvent->setFd(-1);
+		m_writeEvent->setUser(this);
+		m_writeEvent->setCallback(mf_EventCallback_onWrite);
+		m_writeEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 
 		m_EmergencyBytesRead = 0;
 		std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));
@@ -92,37 +98,40 @@ namespace Cgi
 	void
 	Cgi::Module::Worker::disableReadEvent(bool markAsStale)
 	{
-		mf_disableCloseMyEvent(m_readEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_readEvent, markAsStale);
 	}
 
 	void
 	Cgi::Module::Worker::disableWriteEvent(bool markAsStale)
 	{
-		mf_disableCloseMyEvent(m_writeEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_writeEvent, markAsStale);
 	}
 
 	void
 	Cgi::Module::Worker::disableEmergencyEvent(bool markAsStale)
 	{
-		mf_disableCloseMyEvent(m_EmergencyEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_EmergencyEvent, markAsStale);
 	}
 
 	void
 	Cgi::Module::Worker::disableReadHandler()
 	{
-		m_readEvent.setUserHandler(NULL, NULL);
+		m_readEvent->setUser(NULL);
+		m_readEvent->setCallback(NULL);
 	}
 
 	void
 	Cgi::Module::Worker::disableWriteHandler()
 	{
-		m_writeEvent.setUserHandler(NULL, NULL);
+		m_writeEvent->setUser(NULL);
+		m_writeEvent->setCallback(NULL);
 	}
 
 	void
 	Cgi::Module::Worker::disableEmergencyHandler()
 	{
-		m_EmergencyEvent.setUserHandler(NULL, NULL);
+		m_EmergencyEvent->setUser(NULL);
+		m_EmergencyEvent->setCallback(NULL);
 	}
 
 	void
@@ -137,19 +146,22 @@ namespace Cgi
 	void
 	Cgi::Module::Worker::enableReadHandler()
 	{
-		m_readEvent.setUserHandler(this, mf_EventCallback_onRead);
+		m_readEvent->setUser(this);
+		m_readEvent->setCallback(mf_EventCallback_onRead);
 	}
 
 	void
 	Cgi::Module::Worker::enableWriteHandler()
 	{
-		m_writeEvent.setUserHandler(this, mf_EventCallback_onWrite);
+		m_writeEvent->setUser(this);
+		m_writeEvent->setCallback(mf_EventCallback_onWrite);
 	}
 
 	void
 	Cgi::Module::Worker::enableEmergencyHandler()
 	{
-		m_EmergencyEvent.setUserHandler(this, mf_EventCallback_OnEmergency);
+		m_EmergencyEvent->setUser(this);
+		m_EmergencyEvent->setCallback(mf_EventCallback_OnEmergency);
 	}
 
 	void

@@ -27,15 +27,15 @@ namespace Cgi
 		Worker*		worker = data.accessExecutor();
 		
 		worker->stop();
-		mf_returnExecutionUnit(*worker, false, CgiRuntime_Callback::ON_ERROR_RUNTIME);
+		mf_returnExecutionUnit(*worker, false, CgiNotify::ON_ERROR_RUNTIME);
 	}
 
 	void
-	Cgi::Module::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiRuntime_Callback::Type callUser)
+	Cgi::Module::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiNotify::Type callUser)
 	{
 		InternalRequest* 		data = worker.accessRequestData();
 		User 					user = data->getUser();
-		CgiRuntime_Callback::Service	handler = data->getRuntime_Handler(callUser);
+		CgiNotify::Callback	handler = data->getRuntime_Handler(callUser);
 
 		worker.disableCloseAllEvents(markFdsAsStale);
 		mf_returnWorker(worker);

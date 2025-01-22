@@ -21,7 +21,7 @@ namespace Events
 			RDHANGUP        = EPOLLRDHUP,
 			EDGE_TRIGGERED  = EPOLLET
 		};
-		typedef int Type;
+		typedef int Mask;
 		typedef struct epoll_event Event;
 	}
 }

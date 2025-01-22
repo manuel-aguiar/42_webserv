@@ -3,7 +3,7 @@
 # include "TestProtoRequest.hpp"
 
 void
-(*TestProtoRequest_CgiGateway::Callbacks[CgiRuntime_Callback::COUNT])(CgiUser user) = {
+(*TestProtoRequest_CgiGateway::Callbacks[CgiNotify::COUNT])(CgiUser user) = {
 	TestProtoRequest_CgiGateway::onSuccess,
 	TestProtoRequest_CgiGateway::onErrorStartup,
 	TestProtoRequest_CgiGateway::onErrorRuntime,
@@ -35,13 +35,13 @@ TestProtoRequest_CgiGateway::onErrorTimeOut(CgiUser user)
 }
 
 
-CgiIO_Callback::BytesCount
+CgiIO::BytesCount
 TestProtoRequest_CgiGateway::onWrite(CgiUser user, int writeFd)
 {
 	return (reinterpret_cast<TestProtoRequest*>(user)->CgiWrite(writeFd));
 }
 
-CgiIO_Callback::BytesCount
+CgiIO::BytesCount
 TestProtoRequest_CgiGateway::onRead(CgiUser user, int readFd)
 {
 	return (reinterpret_cast<TestProtoRequest*>(user)->CgiRead(readFd));

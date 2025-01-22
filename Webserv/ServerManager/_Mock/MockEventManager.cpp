@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 09:21:29 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 10:31:33 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ EventManager::~EventManager()
 }
 
 
-int                EventManager::add(const Subscription& event)
+int                EventManager::monitor(const Subscription& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getMonitoredFlags();
+	epollEvent.events = event.getMonitoredEvents();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, event.getFd(), &epollEvent) == -1)
@@ -69,7 +69,7 @@ int                EventManager::modify(const Subscription& event)
 {
 	t_epoll_event epollEvent = (t_epoll_event){};
 
-	epollEvent.events = event.getMonitoredFlags();
+	epollEvent.events = event.getMonitoredEvents();
 	epollEvent.data.ptr = (void *)&event;
 
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, event.getFd(), &epollEvent) == -1)
@@ -80,7 +80,7 @@ int                EventManager::modify(const Subscription& event)
 	return (1);
 }
 
-int                 EventManager::remove(const Subscription& event)
+int                 EventManager::stopMonitoring(const Subscription& event)
 {
 	if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, event.getFd(), NULL) == -1)
 	{

@@ -16,7 +16,7 @@ namespace Events
 		m_maxStaleFd	(0),
 		m_subscriptions (maxSubscriptions, InternalSubs()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	(maxSubscriptions * 10)
+		m_staleEvents	(maxSubscriptions * 10, 0)
 	{
 
 		m_epollfd = epoll_create(1);
@@ -58,7 +58,7 @@ namespace Events
 		internal = static_cast<InternalSubs*>(&subscription);
 
 		//event must not be subscribed 
-		assert(internal->getSubscribedFd() == -1 && internal->getSubscribedFlags() == Events::Monitor::NONE);
+		assert(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE);
 		m_availableSubs.emplace_back(internal);
 	}
 
@@ -92,14 +92,14 @@ namespace Events
 
 
 
-	int                Manager::add(Subscription& event, bool markAsStale)
+	int                Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
 		InternalSubs*	internal;
 		t_epoll_event	epollEvent = (t_epoll_event){};
 		
 		internal = static_cast<InternalSubs*>(&event);
-		epollEvent.events = internal->getMonitoredFlags();
+		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 
 		fd = internal->getFd();
@@ -108,7 +108,7 @@ namespace Events
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
 			assert(false); // this should never happen
-			m_globals.logError("Manager::add, epoll_ctl(): " + std::string(strerror(errno)));
+			m_globals.logError("Manager::startMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
 
@@ -128,7 +128,7 @@ namespace Events
 		t_epoll_event	epollEvent = (t_epoll_event){};
 
 		internal = static_cast<InternalSubs*>(&event);
-		epollEvent.events = internal->getMonitoredFlags();
+		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 		
 		fd = internal->getFd();
@@ -136,7 +136,7 @@ namespace Events
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 		{
 			assert(false); // this should never happen
-			m_globals.logError("Manager::remove, epoll_ctl(): " + std::string(strerror(errno)));
+			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
 
@@ -148,7 +148,7 @@ namespace Events
 		return (1);
 	}
 
-	int                 Manager::remove(Subscription& event, bool markAsStale)
+	int                 Manager::stopMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
 		InternalSubs*	internal;
@@ -161,7 +161,7 @@ namespace Events
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
 			assert(false); // this should never happen
-			m_globals.logError("Manager::remove, epoll_ctl(): " + std::string(strerror(errno)));
+			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
 		
@@ -191,9 +191,10 @@ namespace Events
 		{
 			event = static_cast<InternalSubs*>(m_epollEvents[i].data.ptr);
 
-			if (event->isInvalid() || mf_isFdStale(event->getFd()))
+			if (event->isInvalid() 
+			|| mf_isFdStale(event->getFd()))
 				continue ;
-			event->setTriggeredFlags(m_epollEvents[i].events);
+			event->setTriggeredEvents(m_epollEvents[i].events);
 			event->notifyUser();
 		}
 

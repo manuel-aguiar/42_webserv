@@ -83,7 +83,7 @@ Connection*						ServerWorker::provideConnection()
 	If so, try to accept the first on the queue. If successful, move the ListeningSocket to the end of the
 	queue (they may have more connections to accept on their backlog, we can't know for certain)
 
-	If accept fails, means the listeningsocket has no backlog to accept so we can remove the pendingAccept
+	If accept fails, means the listeningsocket has no backlog to accept so we can stopMonitoring the pendingAccept
 
 	We do this until either the Connection isntance is reused or we come to the conclusion that there
 	is nothing pending right now.

@@ -60,11 +60,11 @@ namespace Cgi
 			Ws::fd						m_EmergencyPhone[2];
 			char						m_EmergencyBuffer[2];
 			int							m_EmergencyBytesRead;
-			Events::Subscription		m_EmergencyEvent;
+			Events::Subscription*		m_EmergencyEvent;
 			t_pid						m_pid;
 
-			Events::Subscription		m_readEvent;
-			Events::Subscription		m_writeEvent;
+			Events::Subscription*		m_readEvent;
+			Events::Subscription*		m_writeEvent;
 
 			typedef enum
 			{
@@ -74,7 +74,7 @@ namespace Cgi
 
 			
 			// External sources
-			Module&				m_CgiModule;
+			Cgi::Module&		m_CgiModule;
 
 			// execute
 			void				mf_executeParent(bool markFdsAsStale);
@@ -82,15 +82,15 @@ namespace Cgi
 			bool				mf_prepareExecve();
 
 			// Events
-			static void			mf_EventCallback_OnEmergency(Subscription& event);	
-			static void			mf_EventCallback_onRead(Subscription& event);
-			static void			mf_EventCallback_onWrite(Subscription& event);
+			static void			mf_EventCallback_OnEmergency(Events::Subscription& event);	
+			static void			mf_EventCallback_onRead(Events::Subscription& event);
+			static void			mf_EventCallback_onWrite(Events::Subscription& event);
 
 			// Callback Handlers
 			void				mf_readEmergencyPhone();
 			void				mf_readScript();
 			void				mf_writeScript();
-			void				mf_disableCloseMyEvent(::Subscription& myEvent, bool markAsStale = true);
+			void				mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale = true);
 
 			// Other helpers
 			void				mf_closeFd(Ws::fd& fd);

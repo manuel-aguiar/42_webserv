@@ -127,20 +127,20 @@ int TestPart1(int testNumber)
 
 		// preparing the write event
 		readEvent->setFd(sockfd[0]);
-		readEvent->setMonitoredFlags(Events::Monitor::READ | Events::Monitor::EDGE_TRIGGERED);
+		readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::EDGE_TRIGGERED);
 		readEvent->setUser(&readCalculate);
-		readEvent->setService(&CalcFibo::onReadFibonacci);
+		readEvent->setCallback(&CalcFibo::onReadFibonacci);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.add(*readEvent, false);
+		manager.startMonitoring(*readEvent, false);
 
 		writeEvent->setFd(sockfd[1]);
-		writeEvent->setMonitoredFlags(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
+		writeEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
 		writeEvent->setUser(&writeHello);
-		writeEvent->setService(&WriteHello::onWriteHello);
+		writeEvent->setCallback(&WriteHello::onWriteHello);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
-		manager.add(*writeEvent, false);
+		manager.startMonitoring(*writeEvent, false);
 
 		// while we don't have a result, wait and indefinitely until there are events, and process them
 		while (readCalculate.result == 0)
@@ -150,8 +150,8 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		
-		// remove the write event from monitoring, which should lower the subscribe count
-		manager.remove(*writeEvent, false);
+		// stopMonitoring the write event from monitoring, which should lower the subscribe count
+		manager.stopMonitoring(*writeEvent, false);
 
 		// there should only 1 subscribed
 		if (manager.getMonitoringCount() != 1)
@@ -164,7 +164,7 @@ int TestPart1(int testNumber)
 		readCalculate.result = 0;
 
 		// setting read to write because.... we can
-		readEvent->setMonitoredFlags(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
+		readEvent->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::EDGE_TRIGGERED);
 		manager.modify(*readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
@@ -177,7 +177,7 @@ int TestPart1(int testNumber)
 			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		manager.remove(*readEvent, false);
+		manager.stopMonitoring(*readEvent, false);
 
 		// should be 0 subcribed
 		if (manager.getMonitoringCount() != 0)

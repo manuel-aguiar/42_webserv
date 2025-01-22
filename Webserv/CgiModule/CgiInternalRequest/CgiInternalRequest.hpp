@@ -17,12 +17,12 @@ namespace Cgi
 			~InternalRequest();
 
 			void						reset();
-			void						Runtime_CallTheUser(const CgiRuntime_Callback::Type type);
-			IO_Callback::BytesCount		IO_CallTheUser(const CgiIO_Callback::Type, Ws::fd readFd);
+			void						Runtime_CallTheUser(const CgiNotify::Type type);
+			IO::BytesCount				IO_CallTheUser(const CgiIO::Type, Ws::fd readFd);
 
 			CgiUser						getUser() const;
-			CgiRuntime_Callback::Service
-										getRuntime_Handler(const CgiRuntime_Callback::Type type) const;
+			CgiNotify::Callback
+										getRuntime_Handler(const CgiNotify::Type type) const;
 			CgiModule::Module::RequestState::Type
 										getState() const;
 			const EnvVariables& 		getEnvVars() const;
@@ -32,7 +32,7 @@ namespace Cgi
 			mt_CgiWorker*				accessExecutor();
 			TimerTracker<Timer, InternalRequest*>::iterator
 										getMyTimer() const;
-			CgiOptions::Monitor			getOptions() const;
+			CgiOptions::Mask			getOptions() const;
 
 			void						assignExecutor(Worker& executor);
 			void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);

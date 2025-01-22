@@ -20,7 +20,7 @@ namespace Events
             InternalSubs& operator=(const InternalSubs& assign);
 
             //informing public event of the events that took place on the target fd
-            void                    setTriggeredFlags(const Events::Monitor::Type flags);
+            void                    setTriggeredEvents(const Events::Monitor::Mask flags);
 
             //validation
             bool                    isInvalid() const;
@@ -29,15 +29,15 @@ namespace Events
             void                    updateSubscription();
             void                    unSubscribe();
             void                    setSubscribedFd(const Ws::fd fd);
-            void                    setSubscribedFlags(const Events::Monitor::Type flags);
+            void                    setSubscribedEvents(const Events::Monitor::Mask flags);
 
             Ws::fd                  getSubscribedFd() const;
-            Events::Monitor::Type      getSubscribedFlags() const;
+            Events::Monitor::Mask   getSubscribedEvents() const;
             
         private:
 
             Ws::fd					    m_subscribedFd;
-            Events::Monitor::Type		m_subscribedEvents;
+            Events::Monitor::Mask		m_subscribedEvents;
 
     };
 }

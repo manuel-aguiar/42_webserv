@@ -52,17 +52,17 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerHelpers.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
-				$(SRC_PATH)/Webserv/EventManager/EventManager/EventManager.cpp \
-				$(SRC_PATH)/Webserv/EventManager/InternalEvent/InternalEvent.cpp \
+				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
+				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
+				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Events/InternalSubs/InternalSubs.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 				$(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
-				$(SRC_PATH)/Webserv/EventCallback/EventCallback.cpp \
-				$(SRC_PATH)/Webserv/EventCallback/EventCallbackGetSetAccess.cpp
+				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 
 #################################################################
 OBJS_COMMON = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(COMMON_SRCS))

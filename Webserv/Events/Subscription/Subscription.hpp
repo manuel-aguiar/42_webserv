@@ -14,7 +14,7 @@ namespace Events
 		public:
 
 			typedef void* 				User;
-			typedef void 				(*Service)(Subscription& event);
+			typedef void 				(*Callback)(Subscription& event);
 
 			//methods
 			void						notifyUser();
@@ -22,28 +22,28 @@ namespace Events
 
 			// accessors
 			Subscription::User			accessUser();
-			Subscription::Service		accessService();
+			Subscription::Callback		accessService();
 
 			//getters
 			Ws::fd						getFd()					const;
-			Events::Monitor::Type		getMonitoredFlags()		const;
-			Events::Monitor::Type		getTriggeredFlags()		const;
+			Events::Monitor::Mask		getMonitoredEvents()	const;
+			Events::Monitor::Mask		getTriggeredEvents()	const;
 
 			//setters
 			void						setFd				(const Ws::fd fd);
-			void						setMonitoredFlags	(const Events::Monitor::Type flags);
+			void						setMonitoredEvents	(const Events::Monitor::Mask flags);
 			void						setUser				(const Subscription::User data);
-			void						setService			(const Subscription::Service handler);
+			void						setCallback			(const Subscription::Callback handler);
 
 			// no setter for triggeredFlags, it is Manager who sets those
 
 			
 		protected:
 			Ws::fd						m_fd;
-			Events::Monitor::Type			m_monitoredEvents;
-			Events::Monitor::Type			m_triggeredEvents;
+			Events::Monitor::Mask		m_monitoredEvents;
+			Events::Monitor::Mask		m_triggeredEvents;
 			Subscription::User			m_user;
-			Subscription::Service		m_handler;
+			Subscription::Callback		m_handler;
 
 			Subscription();
 			~Subscription();			

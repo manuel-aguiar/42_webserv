@@ -31,9 +31,9 @@ namespace Events
 			Subscription*	acquireSubscription();
 			void			returnSubscription(Subscription& event);
 
-			int				add(Subscription& event, bool markAsStale);
+			int				startMonitoring(Subscription& event, bool markAsStale);
 			int				modify(Subscription& event, bool markAsStale);
-			int				remove(Subscription& event, bool markAsStale);
+			int				stopMonitoring(Subscription& event, bool markAsStale);
 			
 			//getters
 			size_t			getMonitoringCount() const;

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 08:57:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 10:24:36 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ int    ListeningSocket::accept()
 	connection->setProtoModule(m_protoModule);
 	m_initConnection(connection);
 
-	if (!m_worker.accessEventManager().add(connection->getReadEvent()))
+	if (!m_worker.accessEventManager().monitor(connection->getReadEvent()))
 		return (mf_close_accepted_connection(*connection));
 
 	return (1);
@@ -183,7 +183,7 @@ int    ListeningSocket::mf_close_accepted_connection(Connection& connection)
 
 void    ListeningSocket::closeConnection(Connection& connection)
 {
-	m_worker.accessEventManager().remove(connection.getReadEvent());
+	m_worker.accessEventManager().stopMonitoring(connection.getReadEvent());
 	mf_close_accepted_connection(connection);
 }
 

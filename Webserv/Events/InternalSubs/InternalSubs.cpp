@@ -6,8 +6,25 @@
 
 namespace Events
 {
-    Manager::InternalSubs::InternalSubs() : Subscription() {}
+    Manager::InternalSubs::InternalSubs() : 
+        Subscription(),
+        m_subscribedFd(-1),
+        m_subscribedEvents(Events::Monitor::NONE) {}
     Manager::InternalSubs::~InternalSubs() {}
+
+    Manager::InternalSubs::InternalSubs(const InternalSubs& copy) : 
+        Subscription(copy), 
+        m_subscribedFd(copy.m_subscribedFd), 
+        m_subscribedEvents(copy.m_subscribedEvents) {}
+    Manager::InternalSubs& Manager::InternalSubs::operator=(const InternalSubs& assign)
+    {
+        if (this == &assign)
+            return (*this);
+        Subscription::operator=(assign);
+        m_subscribedFd = assign.m_subscribedFd;
+        m_subscribedEvents = assign.m_subscribedEvents;
+        return (*this);
+    };
 
     void Manager::InternalSubs::updateSubscription()
     {
@@ -27,7 +44,7 @@ namespace Events
         return (!(m_subscribedFd == m_fd && m_fd != -1));
     }
 
-    void    Manager::InternalSubs::setTriggeredFlags(const Events::Monitor::Type flags)
+    void    Manager::InternalSubs::setTriggeredEvents(const Events::Monitor::Mask flags)
     {
         m_triggeredEvents = flags;
     }
@@ -37,7 +54,7 @@ namespace Events
         m_subscribedFd = fd;
     }
 
-    void Manager::InternalSubs::setSubscribedFlags(const Events::Monitor::Type flags)
+    void Manager::InternalSubs::setSubscribedEvents(const Events::Monitor::Mask flags)
     {
         m_subscribedEvents = flags;
     }
@@ -47,22 +64,10 @@ namespace Events
         return (m_subscribedFd);
     }
 
-    int Manager::InternalSubs::getSubscribedFlags() const 
+    int Manager::InternalSubs::getSubscribedEvents() const 
     {
         return (m_subscribedEvents);
     }
 
-    Manager::InternalSubs::InternalSubs(const InternalSubs& copy) : 
-        Subscription(copy), 
-        m_subscribedFd(copy.m_subscribedFd), 
-        m_subscribedEvents(copy.m_subscribedEvents) {}
-    Manager::InternalSubs& Manager::InternalSubs::operator=(const InternalSubs& assign)
-    {
-        if (this == &assign)
-            return (*this);
-        Subscription::operator=(assign);
-        m_subscribedFd = assign.m_subscribedFd;
-        m_subscribedEvents = assign.m_subscribedEvents;
-        return (*this);
-    };
+
 }

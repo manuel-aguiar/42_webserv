@@ -8,7 +8,6 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/_Tests/TestHelpers.h"
@@ -39,7 +38,7 @@ int TestPart2(int testNumber)
 		std::cout << "TEST " << testNumber++ << ": ";
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		Manager eventManager(globals);
+		Events::Manager eventManager(30, globals);
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
@@ -49,13 +48,13 @@ int TestPart2(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");

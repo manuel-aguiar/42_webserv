@@ -8,7 +8,6 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/_Tests/TestHelpers.h"
 

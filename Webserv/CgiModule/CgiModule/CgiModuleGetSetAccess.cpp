@@ -1,7 +1,7 @@
 
 
 #include "CgiModule.hpp"
-#include "../../EventManager/EventManager/EventManager.hpp"
+
 
 namespace Cgi
 {
@@ -42,7 +42,7 @@ namespace Cgi
 		m_Interpreters.erase(extension);
 	}
 
-	Manager&
+	Events::Manager&
 	Cgi::Module::mf_accessEventManager()
 	{
 		return (m_eventManager);

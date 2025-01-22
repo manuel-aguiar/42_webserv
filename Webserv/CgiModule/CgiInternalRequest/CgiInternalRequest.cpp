@@ -22,15 +22,15 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::InternalRequest::Runtime_CallTheUser(const CgiRuntime_Callback::Type event)
+	Cgi::Module::InternalRequest::Runtime_CallTheUser(const CgiNotify::Type event)
 	{
-		Runtime_Callback::Service	 handler = m_runtime_Handlers[event];
+		Notify::Callback	 handler = m_runtime_Handlers[event];
 		if (handler)
 			(handler)(m_user);
 	}
 
-	Module::IO_Callback::BytesCount
-	Cgi::Module::InternalRequest::IO_CallTheUser(const CgiIO_Callback::Type type, Ws::fd targetFd)
+	Module::IO::BytesCount
+	Cgi::Module::InternalRequest::IO_CallTheUser(const CgiIO::Type type, Ws::fd targetFd)
 	{
 		if (!(m_IO_Handlers[type] && m_user))
 			return (0);

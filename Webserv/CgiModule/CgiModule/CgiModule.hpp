@@ -13,6 +13,7 @@
 // Project Headers
 # include "../CgiNamespace.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Events/Manager/Manager.hpp"
 
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
@@ -22,7 +23,6 @@
 
 // forward declarations
 class Globals;
-class Manager;
 
 namespace Cgi
 {
@@ -33,7 +33,7 @@ namespace Cgi
 			Module(		size_t workerCount, 
 						size_t backlogCount, 
 						size_t maxTimeout, 
-						Manager& eventManager, 
+						Events::Manager& eventManager, 
 						Globals& globals);
 			~Module();
 
@@ -55,14 +55,14 @@ namespace Cgi
 						RESTART_WRITE 	= (1 << 5),
 						CANCEL_WRITE 	= (1 << 6),
 					};
-				typedef int 	Monitor;
+				typedef int 	Mask;
 			};
 
 
 			// request interaction
 			Request*					acquireRequest();
 			void						enqueueRequest(Request& data, bool isCalledFromEventLoop);
-			void						modifyRequest(Request& data, bool isCalledFromEventLoop, Options::Monitor newOptions);
+			void						modifyRequest(Request& data, bool isCalledFromEventLoop, Options::Mask newOptions);
 			void						finishRequest(Request& data, bool isCalledFromEventLoop);
 			
 			// processing
@@ -86,7 +86,7 @@ namespace Cgi
 
 			typedef void*				User;
 
-			class Runtime_Callback
+			class Notify
 			{
 				public:
 					typedef enum
@@ -97,10 +97,10 @@ namespace Cgi
 						ON_ERROR_TIMEOUT,
 						COUNT
 					} 	Type;
-					typedef void	(*Service)	(User user);
+					typedef void	(*Callback)	(User user);
 			};
 
-			class IO_Callback
+			class IO
 			{
 				public:
 					typedef enum
@@ -110,7 +110,7 @@ namespace Cgi
 						COUNT
 					} 	Type;
 					typedef int     	BytesCount;
-					typedef BytesCount	(*Service)	(User user, int targetFd);
+					typedef BytesCount	(*Callback)	(User user, int targetFd);
 			};
 
 
@@ -150,7 +150,7 @@ namespace Cgi
 													m_baseEnv;
 
 			TimerTracker<Timer, InternalRequest*>	m_timerTracker;
-			Manager&							m_eventManager;
+			Events::Manager&						m_eventManager;
 			Globals&								m_globals;
 
 			//enums for private coordination
@@ -167,12 +167,12 @@ namespace Cgi
 				} 	Type;
 			};
 
-			typedef Module::RequestStateEnum				RequestState;
+			typedef Module::RequestStateEnum			RequestState;
 
 			typedef Module::Worker						mt_CgiWorker;
 			typedef Module::InternalRequest				mt_CgiInternalRequest;
 
-			Manager&		mf_accessEventManager();
+			Events::Manager&	mf_accessEventManager();
 			Globals&			mf_accessGlobals();
 
 			int					mf_finishTimedOut();
@@ -183,14 +183,14 @@ namespace Cgi
 			void				mf_recycleRuntimeFailure(Worker& worker);
 			void				mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
 			void				mf_recycleTimeoutFailure(Worker& worker);
-			void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Runtime_Callback::Type callUser);
+			void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Notify::Type callUser);
 			void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
 			
 			void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
 			void				mf_recycleRequestData(InternalRequest& data);
 			
 			// return
-			void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Runtime_Callback::Type callUser);
+			void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Notify::Type callUser);
 			void				mf_returnWorker(Worker& worker);
 			void				mf_returnRequestData(InternalRequest& data);
 			void				mf_cancelAndReturn(InternalRequest& data);
@@ -206,9 +206,9 @@ namespace Cgi
 	typedef Cgi::Module::Request					CgiRequest;
 	typedef Cgi::Module::Options					CgiOptions;
 	typedef Cgi::Module::User						CgiUser;
-	typedef Cgi::Module::IO_Callback				CgiIO_Callback;
-	typedef Cgi::Module::IO_Callback::BytesCount	CgiIO_BytesCount;
-	typedef Cgi::Module::Runtime_Callback			CgiRuntime_Callback;
+	typedef Cgi::Module::IO							CgiIO;
+	typedef Cgi::Module::IO::BytesCount				CgiIO_BytesCount;
+	typedef Cgi::Module::Notify						CgiNotify;
 	typedef Cgi::Module::EnvKey						CgiEnvKey;
 	typedef Cgi::Module::EnvValue					CgiEnvValue;
 	typedef Cgi::Module::ScriptPath					CgiScriptPath;

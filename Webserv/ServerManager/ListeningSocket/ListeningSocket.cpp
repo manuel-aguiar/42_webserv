@@ -165,7 +165,7 @@ int    ListeningSocket::accept()
 	connection->setProtoModule(m_protoModule);
 	m_initConnection(connection);
 
-	if (!m_worker.accessEventManager().add(connection->getReadEvent()))
+	if (!m_worker.accessEventManager().monitor(connection->getReadEvent()))
 		return (mf_close_accepted_connection(*connection));
 
 	return (1);
@@ -181,7 +181,7 @@ int    ListeningSocket::mf_close_accepted_connection(Connection& connection)
 
 void    ListeningSocket::closeConnection(Connection& connection)
 {
-	m_worker.accessEventManager().remove(connection.getReadEvent());
+	m_worker.accessEventManager().stopMonitoring(connection.getReadEvent());
 	mf_close_accepted_connection(connection);
 }
 

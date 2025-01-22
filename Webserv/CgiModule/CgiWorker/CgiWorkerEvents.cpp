@@ -4,7 +4,7 @@
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
-# include "../../EventManager/EventManager/EventManager.hpp"
+# include "../../Events/Manager/Manager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Globals/Globals.hpp"
@@ -12,19 +12,19 @@
 namespace Cgi
 {
 
-	void	Cgi::Module::Worker::mf_EventCallback_onRead(Subscription& event)
+	void	Cgi::Module::Worker::mf_EventCallback_onRead(Events::Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_onWrite(Subscription& event)
+	void	Cgi::Module::Worker::mf_EventCallback_onWrite(Events::Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_writeScript();
 	}
 
-	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(Subscription& event)
+	void	Cgi::Module::Worker::mf_EventCallback_OnEmergency(Events::Subscription& event)
 	{
 		Worker* worker = static_cast<Worker*>(event.accessUser());
 		worker->mf_readEmergencyPhone();
@@ -32,30 +32,30 @@ namespace Cgi
 
 	void	Cgi::Module::Worker::mf_readScript()
 	{
-		int 				bytesRead;
-		Ws::Monitor::Events 	triggeredFlags;
+		int 					bytesRead;
+		Events::Monitor::Mask 	triggeredEvents;
 
-		triggeredFlags = m_readEvent.getTriggeredFlags();
+		triggeredEvents = m_readEvent->getTriggeredEvents();
 		//std::cout << "\t\t\tread called" << std::endl;
 		
-		if (triggeredFlags & Ws::Monitor::READ)
+		if (triggeredEvents & Events::Monitor::READ)
 		{
-			bytesRead = m_curRequestData->IO_CallTheUser(IO_Callback::READ, m_readEvent.getFd());
+			bytesRead = m_curRequestData->IO_CallTheUser(IO::READ, m_readEvent->getFd());
 
 			assert(bytesRead != -1);
 
 			if (bytesRead == 0)
 			{
-				mf_disableCloseMyEvent(m_readEvent, true);
-				if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
+				mf_disableCloseMyEvent(*m_readEvent, true);
+				if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 					mf_waitChild();
 			}
 		}
 		
-		if ((triggeredFlags & (Ws::Monitor::ERROR | Ws::Monitor::HANGUP)) && !(triggeredFlags & Ws::Monitor::READ))
+		if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
 		{
-			mf_disableCloseMyEvent(m_readEvent, true);
-			if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
+			mf_disableCloseMyEvent(*m_readEvent, true);
+			if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 				mf_waitChild();
 		}
 	}
@@ -63,30 +63,30 @@ namespace Cgi
 	void	Cgi::Module::Worker::mf_writeScript()
 	{
 		int 				bytesWritten;
-		Ws::Monitor::Events 	triggeredFlags;
+		Events::Monitor::Mask 	triggeredEvents;
 		
-		triggeredFlags = m_writeEvent.getTriggeredFlags();
+		triggeredEvents = m_writeEvent->getTriggeredEvents();
 		
 		//std::cout << "write triggered" << std::endl;
 		
-		if (triggeredFlags & Ws::Monitor::WRITE)
+		if (triggeredEvents & Events::Monitor::WRITE)
 		{
-			bytesWritten = m_curRequestData->IO_CallTheUser(IO_Callback::WRITE, m_writeEvent.getFd());
+			bytesWritten = m_curRequestData->IO_CallTheUser(IO::WRITE, m_writeEvent->getFd());
 
 			assert(bytesWritten != -1);	
 
 			if (bytesWritten == 0)
 			{
-				mf_disableCloseMyEvent(m_writeEvent, true);
-				if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
+				mf_disableCloseMyEvent(*m_writeEvent, true);
+				if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 					mf_waitChild();
 			}
 		}
 		
-		if (triggeredFlags & (Ws::Monitor::ERROR | Ws::Monitor::HANGUP))
+		if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
 		{
-			mf_disableCloseMyEvent(m_writeEvent, true);
-			if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
+			mf_disableCloseMyEvent(*m_writeEvent, true);
+			if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 				mf_waitChild();
 		}
 
@@ -107,43 +107,43 @@ namespace Cgi
 
 	*/
 
-	void	Cgi::Module::Worker::mf_disableCloseMyEvent(Subscription& myEvent, bool markAsStale)
+	void	Cgi::Module::Worker::mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale)
 	{
 		Ws::fd fd = myEvent.getFd();
 
 		if (fd == -1)
 			return ;
-		m_CgiModule.mf_accessEventManager().remove(myEvent, markAsStale);
+		m_CgiModule.mf_accessEventManager().stopMonitoring(myEvent, markAsStale);
 		::close(fd);
 		myEvent.setFd(-1);
 	}
 
 	void	Cgi::Module::Worker::disableCloseAllEvents(bool markAsStale)
 	{
-		mf_disableCloseMyEvent(m_EmergencyEvent, markAsStale);
-		mf_disableCloseMyEvent(m_readEvent, markAsStale);
-		mf_disableCloseMyEvent(m_writeEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_EmergencyEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_readEvent, markAsStale);
+		mf_disableCloseMyEvent(*m_writeEvent, markAsStale);
 	}
 
 	void	Cgi::Module::Worker::mf_readEmergencyPhone()
 	{
-		int		triggeredFlags;
+		int		triggeredEvents;
 		int		bytesRead;
 
-		triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
+		triggeredEvents = m_EmergencyEvent->getTriggeredEvents();
 		
-		if (triggeredFlags & EPOLLIN)
+		if (triggeredEvents & EPOLLIN)
 		{
 
 
-			bytesRead = ::read(	m_EmergencyEvent.getFd(), 
+			bytesRead = ::read(	m_EmergencyEvent->getFd(), 
 								&m_EmergencyBuffer[m_EmergencyBytesRead], 
 								sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
 			assert(bytesRead != -1);
 			if (bytesRead == -1)
 			{
-				std::cout << " emergency stale event on fd: " << m_EmergencyEvent.getFd() << " " << strerror(errno) << std::endl;
+				std::cout << " emergency stale event on fd: " << m_EmergencyEvent->getFd() << " " << strerror(errno) << std::endl;
 				// a stale read i cannot fix, but apparently is causing no extra problems
 				return ;
 			}
@@ -151,15 +151,15 @@ namespace Cgi
 			m_EmergencyBytesRead += bytesRead;
 
 			if (m_EmergencyBytesRead == 0)
-				return (mf_disableCloseMyEvent(m_EmergencyEvent, true));
+				return (mf_disableCloseMyEvent(*m_EmergencyEvent, true));
 				
 			return (mf_childFailure());
 		}
 
-		if ((triggeredFlags & (EPOLLERR | EPOLLHUP)) && !(triggeredFlags & EPOLLIN))
+		if ((triggeredEvents & (EPOLLERR | EPOLLHUP)) && !(triggeredEvents & EPOLLIN))
 		{
 			if (m_EmergencyBytesRead == 0)	
-				return (mf_disableCloseMyEvent(m_EmergencyEvent, true));
+				return (mf_disableCloseMyEvent(*m_EmergencyEvent, true));
 			return (mf_childFailure());
 		}
 	}

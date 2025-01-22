@@ -6,7 +6,6 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
-# include "../../../EventManager/EventManager/EventManager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/_Tests/TestHelpers.h"
@@ -207,7 +206,7 @@ int CgiStressTest::StressTest(int testNumber,
 		std::cout << "TEST " << testNumber++ << ": "  << assignmentDescription << '\n';
 
 		Globals globals(NULL, NULL, NULL, NULL);
-		Manager eventManager(globals);
+		Events::Manager eventManager(workers * 3, globals);
 
 		Cgi::Module cgi(workers, backlog, timeoutMs, eventManager, globals);
 		Cgi::Request* current;
@@ -261,13 +260,13 @@ int CgiStressTest::StressTest(int testNumber,
 			// setup callbacks
 			current->setUser(&requests.back());
 			
-			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			current->setRuntime_Callback(CgiRuntime_Callback::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-			current->setRuntime_Callback(CgiRuntime_Callback::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+			current->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			current->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			current->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			current->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-			current->setIO_Callback(CgiIO_Callback::READ, &TestProtoRequest_CgiGateway::onRead);
-			current->setIO_Callback(CgiIO_Callback::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+			current->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
+			current->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			
