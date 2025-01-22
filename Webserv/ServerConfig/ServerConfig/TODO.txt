@@ -11,3 +11,8 @@ the full package.
 serverblock vector of listenSockaddr
 will point the u_sockaddr of the
 struct
+
+add some typedefs directly on the 
+.cpp file to easy the visual pain.
+these are only used in the helper 
+structs, no need to be global
