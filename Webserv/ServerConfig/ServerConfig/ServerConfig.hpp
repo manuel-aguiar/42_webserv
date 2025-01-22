@@ -74,7 +74,7 @@ class ServerConfig
 		Globals*							m_globals; // mostly for logs and debuging, see Globals class
 		
 
-		std::vector<u_sockaddr>				m_allSockaddr;
+		std::vector<BindAddress>			m_allSockaddr;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
@@ -88,6 +88,8 @@ class ServerConfig
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
 												std::vector<ServerBlock> &servers, 
 												std::vector<ServerLocation> &locations);
+
+
 		bool								mf_listenDNSlookup();
 };
 

@@ -1,3 +1,6 @@
+
+
+
 .SILENT:
 NAME =			TestServerConfig.out
 CXX =			c++

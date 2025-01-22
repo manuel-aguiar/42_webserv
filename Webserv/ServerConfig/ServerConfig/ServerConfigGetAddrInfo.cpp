@@ -60,6 +60,13 @@ struct AddrinfoPtrComparator
 	}
 };
 
+typedef std::set<const t_listeners*, ListenerPtrComparator> 							Set_uniqueListeners;
+
+typedef std::pair<const t_listeners*, const BindAddress*> 								Pair_listenerToBind;
+typedef std::multimap<const t_listeners*, const BindAddress*, ListenerPtrComparator> 	MMap_listenerToBind;
+
+typedef std::pair<const t_addrinfo*, const BindAddress*> 								Pair_AddrInfoToBind;
+typedef std::map<const t_addrinfo*, const BindAddress*, AddrinfoPtrComparator> 			Map_AddrInfoToBind;
 
 struct DNSLookupHelper
 {
@@ -69,203 +76,118 @@ struct DNSLookupHelper
 			::freeaddrinfo(allAddrInfo[i]);
 	}
 
-	std::set<t_listeners>								uniqueListeners;
-	std::vector<t_addrinfo*>							allAddrInfo;
+	Set_uniqueListeners			uniqueListeners; 	// unique t_listeners
+	std::vector<t_addrinfo*>	allAddrInfo;		// all t_addrinfo structs we find
 
-	std::multimap<const t_listeners*, const u_sockaddr*, ListenerPtrComparator>	
-														listenerToAddress;
+	MMap_listenerToBind			listenerToBind;
+	Map_AddrInfoToBind			uniqueAddrInfo;
 
-	std::map<const t_addrinfo*, const u_sockaddr*, AddrinfoPtrComparator>	
-														uniqueAddrInfo;
-
-	typedef std::map<const t_addrinfo*, const u_sockaddr*, AddrinfoPtrComparator>::iterator t_addrIter;
-	typedef std::multimap<const t_listeners*, const u_sockaddr*, ListenerPtrComparator>::iterator t_listenerIter;
-
-	std::vector<u_sockaddr>								uniqueSockAddr;
+	std::vector<BindAddress>	uniqueSockAddr;
 };
 
-
-static	void getAllListeners(const ServerConfig& config, DNSLookupHelper& helper)
+static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 {
-	const std::vector<ServerBlock>&	serverBlocks = config.getServerBlocks();
+	// DNS lookup
+	t_addrinfo		*res;
+	t_addrinfo		*cur;
+	t_addrinfo		hints;
 
-	for (size_t i = 0; i < serverBlocks.size(); ++i)
+	hints = (t_addrinfo){};
+	hints.ai_family = AF_INET;    			//listener would tell me if it is ipv4 or ipv6
+	hints.ai_socktype = SOCK_STREAM;		//listener would tell me if it is tcp or udp or something else
+
+	if (::getaddrinfo(listener.first.c_str(), listener.second.c_str(), &hints, &res) != 0)
+		return (false);
+	helper.allAddrInfo.push_back(res);
+	for (cur = res; cur != NULL; cur = cur->ai_next)
 	{
-		const std::set<t_listeners>&	listeners = serverBlocks[i].getListeners();
-		for (std::set<t_listeners>::const_iterator iter = listeners.begin(); iter != listeners.end(); ++iter)
-			helper.uniqueListeners.insert(*iter);
-	}
-}
+		Map_AddrInfoToBind::iterator addrIter = helper.uniqueAddrInfo.find(cur);
 
-/*
-	There are multiple combinations here:
-		to listeners referring to the same t_addrinfo
-		so, then to addrinfo referring to the same addrinfo
-	We need: 
-		a unique combination of u_sockaddr
-		maintain separation so we can identify them back to the original listener
-	
-	so we multimap all listeners to their unique sockaddr, pre-computed from the unique addrinfo
-
-	The final step is to iterate the listeners, and for all the unique addrinfo's that are linked to them,
-	we push the unique sockaddr* to the serverblock, already typecasted to struct sockaddr* for
-	consumption by the BlockFinder
-
-
-*/
-
-static bool get_AddrInfo_and_Map(DNSLookupHelper& helper)
-{
-	t_addrinfo          						*res;
-	t_addrinfo          						*cur;
-	t_addrinfo          						hints;
-
-	for (std::set<t_listeners>::iterator iter = helper.uniqueListeners.begin(); iter != helper.uniqueListeners.end(); ++iter)
-	{
-		hints = (t_addrinfo){};
-		hints.ai_family = AF_INET;    			//listener would tell me if it is ipv4 or ipv6
-		hints.ai_socktype = SOCK_STREAM;		//listener would tell me if it is tcp or udp or something else
-
-		if (::getaddrinfo(iter->first.c_str(), iter->second.c_str(), &hints, &res) != 0)
-			return (false);
-		helper.allAddrInfo.push_back(res);
-		for (cur = res; cur != NULL; cur = cur->ai_next)
+		//already in the map, associate listener with the unique address we found before
+		if (addrIter != helper.uniqueAddrInfo.end())
 		{
-			DNSLookupHelper::t_addrIter addrIter = helper.uniqueAddrInfo.find(cur);
-
-			//unique
-			if (addrIter == helper.uniqueAddrInfo.end())
-			{
-				u_sockaddr address = (u_sockaddr){};
-
-				//adding unique address
-				std::memcpy(&address, cur->ai_addr, cur->ai_addrlen);
-				helper.uniqueSockAddr.push_back(address);
-
-				//adding unique address to map
-				std::pair<DNSLookupHelper::t_addrIter, bool> returnVal;
-				returnVal = helper.uniqueAddrInfo.insert(std::pair<const t_addrinfo*, const u_sockaddr*>(cur, &(helper.uniqueSockAddr.back())));
-				if (returnVal.second == false) // can't be false, veryfication before, but hey
-					return (false);
-				
-				// connecting listener to u_sockaddr, where we inserted it
-				helper.listenerToAddress.insert(std::pair<const t_listeners*, const u_sockaddr*>(&(*iter), returnVal.first->second));
-			}
-			else
-				//we know were we inserted it, link it here
-				helper.listenerToAddress.insert(std::pair<const t_listeners*, const u_sockaddr*>(&(*iter), addrIter->second));
+			helper.listenerToBind.insert(std::pair<const t_listeners*, const BindAddress*>(&listener, addrIter->second));
+			continue ;
 		}
+
+		//new struct based on t_addrinfo
+		BindAddress address = (BindAddress){};
+
+		//adding unique address, and length for ListeningSocket::bind()
+		std::memcpy(&address.sockaddr, cur->ai_addr, cur->ai_addrlen);
+		address.addrlen = cur->ai_addrlen;
+		helper.uniqueSockAddr.push_back(address);
+
+		//adding unique address to map, will should up in the next lookup
+		std::pair<Map_AddrInfoToBind::iterator, bool> returnVal;
+		returnVal = helper.uniqueAddrInfo.insert(std::pair<const t_addrinfo*, const BindAddress*>(cur, &(helper.uniqueSockAddr.back())));
+		
+		if (returnVal.second == false)  // can't be false, veryfication done right at the start with .find() before, but hey
+			return (false);				// better safe than sorry
+		
+		// connecting listener to u_sockaddr, where we inserted the new BindAddress struct
+		helper.listenerToBind.insert(std::pair<const t_listeners*, const BindAddress*>(&listener, returnVal.first->second));
 	}
+	::freeaddrinfo(helper.allAddrInfo.back());
+	helper.allAddrInfo.pop_back();
+
 	return (true);
 }
 
+
 /*
-	Ok, making it simple, one step at a time.
+	All in one go, to be fancy and unmaintainable.
+	We loop through all the listen directives of each server block, one at a time.
+	If it is new, update our uniqueListeners (avoid repitition), do the dns lookup,
+	update our uniqueAddrInfo (avoid repitition), create the BindAddress struct,
+	which takes sockaddr and socklen_t (needed by ServerManager::ListeningSocket::bind())
 
-	1) get all unique listeners from all serverblocks
-	2) get all getaddrinfo linkedlists from all the unique listeners
-		b) prepare the sockaddr structs from the unique addresses
-		a) set a listener to unique sockaddr multimap
-	3) assign the multiple unique sockaddr for each listen, for each serverblock
-	4) save the unique sockaddr in serverconfig -> later used to setup listening sockets
+	If, on the other hand, the listener is not unique and we found it before, look
+	at BindAddress* associated with this listener and add them back to the ServerBlocks.m_myListenSockAddr
+
+	At the end, we will have a list of unique BindAddress structs, so we swap the one on the helper
+	with the one on the ServerConfig (why copying..)
+
+	We must free the addrinfo structs we copied the data from (getaddrinfo allocates these for us).
+	We placed the ::freeaddrinfo in the destructor of our helper function, so if anything goes wrong
+	(missconfiguration), RAII will ensure that any structs we have allocated so far will be freed
+	(and at the end)
+
+	All typedefs and helper structs placed on this .cpp file because we don't want to
+	bloat the global namespace with them, not needed.
 */
-
 
 bool	ServerConfig::mf_listenDNSlookup()
 {
 	DNSLookupHelper		helper;
 	
-	getAllListeners(*this, helper);
-	if (!get_AddrInfo_and_Map(helper))
-		return (false);
-	
-	//map serverblocks to sockaddr
 	for (size_t i = 0; i < m_serverBlocks.size(); ++i)
 	{
-		const std::set<t_listeners>&	listeners = m_serverBlocks[i].getListeners();
-		for (std::set<t_listeners>::const_iterator iter = listeners.begin(); iter != listeners.end(); ++iter)
-		{
-			// this gets the range of all the sockaddr linked to this listener
-			std::pair<DNSLookupHelper::t_listenerIter, DNSLookupHelper::t_listenerIter> range;
-			range = helper.listenerToAddress.equal_range(&(*iter));
+		const std::set<t_listeners>&			listeners = m_serverBlocks[i].getListeners();
+		std::set<t_listeners>::const_iterator 	iter = listeners.begin();
 
-			for (DNSLookupHelper::t_listenerIter it = range.first; it != range.second; ++it)
+		for (; iter != listeners.end(); ++iter)
+		{
+			std::pair<Set_uniqueListeners::iterator, bool> isUnique;
+			
+			// if it is new, do the DNS lookup
+			isUnique = helper.uniqueListeners.insert(&(*iter));
+			if (isUnique.second == true && DNSLookup(*iter, helper) == false)
+			{
+				//something went wrong
+				return (false);
+			}
+
+			//check all BindAddress structs that are associated with this listener and add them to the block
+			std::pair<MMap_listenerToBind::iterator, MMap_listenerToBind::iterator> range;
+			range = helper.listenerToBind.equal_range(&(*iter));
+
+			for (MMap_listenerToBind::iterator it = range.first; it != range.second; ++it)
 				m_serverBlocks[i].addSockAddr((struct sockaddr*)it->second);
 		}
 	}
-	//pass the contents of vector of u_sockaddr to serverconfig (needed by ServerManager to setup listeningsockets)
-	m_allSockaddr.swap(helper.uniqueSockAddr);
 
-	//Dns helper's destructor will call freeaddrinfo on the original lists, no problem we copied all the data
+	m_allSockaddr.swap(helper.uniqueSockAddr);
 
 	return (true);
 }
-
-
-
-
-
-
-
-
-
-/*
-	Function to prepare the ServerWorker instances for battle.
-	Takes config, initializes server workers, prepares listening sockets, connections, eventmanagers
-	etc
-
-	The process between isntantiating workers and setting up listening sockets could be separated.
-	However, for cache locality, i wnat to make sure that the memory pool expands itself close together
-	for the worker and that its own listeningsockets/addrinfo's are close together. so, to avoid entangling
-	the memory between workers, i choose to do it all in one go.
-
-	Comments were left in an attempt to explain what each part does.
-
-	Gets all getaddrinfo structs from all ip:port combos obtained from config, and count all the unique ones.
-	ServerWorkers reserve the space for that ammount of listening sockets.
-	Actual listening sockets are allocated inside the worker's memory pool such that
-	each one call allocate their memory addresses write next to themselves (should be better for cache)
-	Each ListeningSocket also copies their addrinfo onto their instance.
-
-	After all listening sockets are setup, we can free all addrinfo structs allocated by ::getaddrinfo()
-
-	WARNING: NO NULL CHECKS YET FOR MEMORY FAILURE WHEN MEMORYPOOL EXPANDS
-
-*/
-
-
-
-/*
-void	ServerManager::mf_prepareWorkers()
-{
-	Nginx_MemoryPool*									workerMemPool;
-
-	//for getaddrinfo
-	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
-	std::vector<t_addrinfo*> 							allLists_Addrinfo;
-
-	const int backlog = 100;																								// must be replaced with correct value
-	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET);				///must be replaced with correct values
-
-	for (size_t i = 0; i < m_workers.size(); i++)
-	{
-		// create a memorypool for the worker, allocate itself in it, save pointer in ServerManager
-		workerMemPool = Nginx_MemoryPool::create(4096, 1);
-		m_workers[i] = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
-		new (m_workers[i]) ServerWorker(*this, i, *workerMemPool, m_globals);
-
-		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
-		{	
-			m_workers[i]->createListeningSocket
-			(
-				**iter, 
-				backlog, 
-				m_protoModules[HTTP_MODULE], 
-				m_initProtoConnection[HTTP_MODULE]
-			);
-		}
-	}
-
-	getAddrInfo_Free(allLists_Addrinfo);
-}
-*/
