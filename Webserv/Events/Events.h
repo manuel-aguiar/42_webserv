@@ -6,11 +6,11 @@
 
 # include "../GenericUtils/Webserver_Definitions.h"
 
-namespace Event
+namespace Events
 {
-	class Manager;
 
-	namespace Flags {
+	namespace Monitor
+	{
 		enum
 		{
 			NONE 		  	= 0,
@@ -22,7 +22,10 @@ namespace Event
 			EDGE_TRIGGERED  = EPOLLET
 		};
 		typedef int Type;
+		typedef struct epoll_event Event;
 	}
 }
+
+# define MAX_EPOLL_FDS 1000000
 
 #endif

@@ -27,7 +27,7 @@ namespace Cgi
 
 	void   Cgi::Module::Worker::execute(bool markFdsAsStale)
 	{
-		Options::Flags options;
+		Options::Monitor options;
 
 		options = m_curRequestData->getOptions();
 
@@ -94,7 +94,7 @@ namespace Cgi
 	*/
 	void	Cgi::Module::Worker::mf_executeParent(bool markFdsAsStale)
 	{
-		Module::Options::Flags options;
+		Module::Options::Monitor options;
 
 		options = m_curRequestData->getOptions();
 

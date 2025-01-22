@@ -70,7 +70,7 @@ class SignalHandler
 	// Re-enable for the main thread
 	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);		// reestablish the oldmask set by the user		UNPROTECTED
 
-	// Signal Handler for the program
+	// Signal Service for the program
 	struct sigaction signal = (struct sigaction){};
 	SignalHandler::prepare_signal(&signal, SignalHandler::signal_handler, numServers);
 

@@ -52,11 +52,11 @@ int TestPart2(int testNumber)
 		Subscription 	callback;
 
 		callback.setUser(&user);
-		callback.setHandler(&User::MyCallback_doSomething);
+		callback.setService(&User::MyCallback_doSomething);
 
 		// let me know when i can write to stdout
 		callback.setFd(STDOUT_FILENO);
-		callback.setMonitoredEvents(Ws::Epoll::WRITE);
+		callback.setMonitoredFlags(Ws::Monitor::WRITE);
 
 		manager.add(callback, true);	//event added as stale, if triggered do not execute
 
@@ -65,7 +65,7 @@ int TestPart2(int testNumber)
 
 		// data should be 0, triggered but not handled because event fd was market as stale
 		if (user.getData() != 0)
-			throw std::runtime_error("Event should not be handled, marked as stale, got " 
+			throw std::runtime_error("Events should not be handled, marked as stale, got " 
 			+ StringUtils::to_string(user.getData()) + ", expected " 
 			+ StringUtils::to_string(0) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
@@ -75,7 +75,7 @@ int TestPart2(int testNumber)
 
 		// handler should be called now, and user data should be 42
 		if (user.getData() != 42)
-			throw std::runtime_error("Event should not be handled, marked as stale, got " 
+			throw std::runtime_error("Events should not be handled, marked as stale, got " 
 			+ StringUtils::to_string(user.getData()) + ", expected " 
 			+ StringUtils::to_string(42) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));

@@ -13,14 +13,14 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::Request::setRuntime_Callback(const CgiRuntime_Callback::Type type, const CgiRuntime_Callback::Handler handler)
+	Cgi::Module::Request::setRuntime_Callback(const CgiRuntime_Callback::Type type, const CgiRuntime_Callback::Service handler)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_runtime_Handlers[type] = handler;
 	}
 
 	void
-	Cgi::Module::Request::setIO_Callback(const CgiIO_Callback::Type type, CgiIO_Callback::Handler handler)
+	Cgi::Module::Request::setIO_Callback(const CgiIO_Callback::Type type, CgiIO_Callback::Service handler)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_IO_Handlers[type] = handler;
@@ -64,7 +64,7 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::Request::setRuntimeOptions(const CgiOptions::Flags options)
+	Cgi::Module::Request::setRuntimeOptions(const CgiOptions::Monitor options)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_options = options;

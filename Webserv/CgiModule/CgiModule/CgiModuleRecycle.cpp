@@ -85,7 +85,7 @@ namespace Cgi
 	{
 		InternalRequest* 			data = worker.accessRequestData();
 		User 						user = data->getUser();
-		CgiRuntime_Callback::Handler	handler = data->getRuntime_Handler(callUser);
+		CgiRuntime_Callback::Service	handler = data->getRuntime_Handler(callUser);
 
 		worker.disableCloseAllEvents(markFdsAsStale);
 		mf_recycleWorker(worker, markFdsAsStale);

@@ -55,14 +55,14 @@ namespace Cgi
 						RESTART_WRITE 	= (1 << 5),
 						CANCEL_WRITE 	= (1 << 6),
 					};
-				typedef int 	Flags;
+				typedef int 	Monitor;
 			};
 
 
 			// request interaction
 			Request*					acquireRequest();
 			void						enqueueRequest(Request& data, bool isCalledFromEventLoop);
-			void						modifyRequest(Request& data, bool isCalledFromEventLoop, Options::Flags newOptions);
+			void						modifyRequest(Request& data, bool isCalledFromEventLoop, Options::Monitor newOptions);
 			void						finishRequest(Request& data, bool isCalledFromEventLoop);
 			
 			// processing
@@ -97,7 +97,7 @@ namespace Cgi
 						ON_ERROR_TIMEOUT,
 						COUNT
 					} 	Type;
-					typedef void	(*Handler)	(User user);
+					typedef void	(*Service)	(User user);
 			};
 
 			class IO_Callback
@@ -110,7 +110,7 @@ namespace Cgi
 						COUNT
 					} 	Type;
 					typedef int     	BytesCount;
-					typedef BytesCount	(*Handler)	(User user, int targetFd);
+					typedef BytesCount	(*Service)	(User user, int targetFd);
 			};
 
 

@@ -4,16 +4,18 @@
 
 # define EVENTMANAGER_HPP
 
+// Project headers
+# include "../Events.h"
 # include "../../GenericUtils/Webserver_Definitions.h"
+
+//Toolkit headers
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
+
 class Globals;
-class Subscription;
 
-# define MAX_EPOLL_FDS 1000000
-
-namespace Event
+namespace Events
 {
 	class Manager
 	{
@@ -27,6 +29,7 @@ namespace Event
 			int				ProcessEvents(int timeOut);
 
 			Subscription*	acquireSubscription();
+			void			returnSubscription(Subscription& event);
 
 			int				add(Subscription& event, bool markAsStale);
 			int				modify(Subscription& event, bool markAsStale);
@@ -36,22 +39,26 @@ namespace Event
 			size_t			getMonitoringCount() const;
 			
 		private:
-			class			Validation;
+			class								InternalSubs;
 			
-			size_t			m_subscribeCount;
-			t_fd			m_epollfd;
-			Globals&		m_globals;
-			
-			t_fd			m_maxStaleFd;	
-			t_epoll_event	m_events[MAX_EPOLL_EVENTS];
-			t_byte			m_staleEvents[(MAX_EPOLL_FDS / 8) + 1];
+			size_t								m_subscribeCount;
+			t_fd								m_epollfd;
+			Globals&							m_globals;
+			t_fd								m_maxStaleFd;
 
-			void			mf_markFdStale(t_fd fd);
-			int				mf_isFdStale(t_fd fd);
+			HeapArray<InternalSubs>				m_subscriptions;
+			HeapCircularQueue<InternalSubs*>	m_availableSubs;
+			HeapArray<t_byte>					m_staleEvents;
+			Events::Monitor::Event				m_epollEvents[MAX_EPOLL_EVENTS];
+
+			void								mf_markFdStale(t_fd fd);
+			int									mf_isFdStale(t_fd fd);
 			
 			Manager(const Manager& copy);
 			Manager& operator=(const Manager& assign);
 	};
+
+	typedef Manager::Subscription Subscription;
 }
 
 

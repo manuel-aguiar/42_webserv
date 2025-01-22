@@ -24,7 +24,7 @@ namespace Cgi
 	void
 	Cgi::Module::InternalRequest::Runtime_CallTheUser(const CgiRuntime_Callback::Type event)
 	{
-		Runtime_Callback::Handler	 handler = m_runtime_Handlers[event];
+		Runtime_Callback::Service	 handler = m_runtime_Handlers[event];
 		if (handler)
 			(handler)(m_user);
 	}

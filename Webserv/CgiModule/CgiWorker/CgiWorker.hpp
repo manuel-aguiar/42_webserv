@@ -7,7 +7,7 @@
 //Project Headers
 # include "../CgiModule/CgiModule.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../EventCallback/EventCallback.hpp"
+# include "../../Events/Subscription/Subscription.hpp"
 
 // implement some timeout for script execution, if nothing then kill
 namespace Cgi
@@ -50,21 +50,21 @@ namespace Cgi
 
 			// script arguments
 			DynArray<std::string>
-								m_envStr;
-			DynArray<char *>	m_envPtr;
-			DynArray<char *>	m_argPtr;
+										m_envStr;
+			DynArray<char *>			m_envPtr;
+			DynArray<char *>			m_argPtr;
 
 			// pipes and buffers
-			Ws::fd				m_ParentToChild[2];
-			Ws::fd				m_ChildToParent[2];
-			Ws::fd				m_EmergencyPhone[2];
-			char				m_EmergencyBuffer[2];
-			int					m_EmergencyBytesRead;
-			Subscription		m_EmergencyEvent;
-			t_pid				m_pid;
+			Ws::fd						m_ParentToChild[2];
+			Ws::fd						m_ChildToParent[2];
+			Ws::fd						m_EmergencyPhone[2];
+			char						m_EmergencyBuffer[2];
+			int							m_EmergencyBytesRead;
+			Events::Subscription		m_EmergencyEvent;
+			t_pid						m_pid;
 
-			Subscription		m_readEvent;
-			Subscription		m_writeEvent;
+			Events::Subscription		m_readEvent;
+			Events::Subscription		m_writeEvent;
 
 			typedef enum
 			{

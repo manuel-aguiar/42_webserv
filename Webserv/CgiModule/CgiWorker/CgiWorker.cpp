@@ -28,15 +28,15 @@ namespace Cgi
 		
 		m_EmergencyEvent.setFd(-1);
 		m_EmergencyEvent.setUserHandler(this, mf_EventCallback_OnEmergency);
-		m_EmergencyEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_EmergencyEvent.setMonitoredFlags(Ws::Monitor::READ | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
 
 		m_readEvent.setFd(-1);
 		m_readEvent.setUserHandler(this, mf_EventCallback_onRead);
-		m_readEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_readEvent.setMonitoredFlags(Ws::Monitor::READ | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
 
 		m_writeEvent.setFd(-1);
 		m_writeEvent.setUserHandler(this, mf_EventCallback_onWrite);
-		m_writeEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::ERROR | Ws::Epoll::HANGUP);
+		m_writeEvent.setMonitoredFlags(Ws::Monitor::WRITE | Ws::Monitor::ERROR | Ws::Monitor::HANGUP);
 
 		m_EmergencyBytesRead = 0;
 		std::memset(m_EmergencyBuffer, 0, sizeof(m_EmergencyBuffer));

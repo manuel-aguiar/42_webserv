@@ -66,7 +66,7 @@ int main()
 	std::ifstream   file(std::string(WEBSITE_FOLDER) + "index.html");
 	std::string	 htmlContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html;\r\nset-cookie: bananas=potatoes;\r\ncharset=UTF-8\r\nContent-Length: " +
+	std::string response = "HTTP/1.1 200 OK\r\nContent-Flags: text/html;\r\nset-cookie: bananas=potatoes;\r\ncharset=UTF-8\r\nContent-Length: " +
 							std::to_string(htmlContent.size()) + "\r\n\r\n" + htmlContent;
 
 

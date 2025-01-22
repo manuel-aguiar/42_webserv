@@ -126,17 +126,17 @@ int TestPart1(int testNumber)
 
 		// preparing the write event
 		readEvent.setFd(sockfd[0]);
-		readEvent.setMonitoredEvents(Ws::Epoll::READ | Ws::Epoll::EDGE_TRIGGERED);
+		readEvent.setMonitoredFlags(Ws::Monitor::READ | Ws::Monitor::EDGE_TRIGGERED);
 		readEvent.setUser(&readCalculate);
-		readEvent.setHandler(&CalcFibo::onReadFibonacci);
+		readEvent.setService(&CalcFibo::onReadFibonacci);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
 		manager.add(readEvent, false);
 
 		writeEvent.setFd(sockfd[1]);
-		writeEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
+		writeEvent.setMonitoredFlags(Ws::Monitor::WRITE | Ws::Monitor::EDGE_TRIGGERED);
 		writeEvent.setUser(&writeHello);
-		writeEvent.setHandler(&WriteHello::onWriteHello);
+		writeEvent.setService(&WriteHello::onWriteHello);
 
 		// subcribe [false] we are subscribing from main and not an event handler, safe to not mark as stale
 		manager.add(writeEvent, false);
@@ -163,7 +163,7 @@ int TestPart1(int testNumber)
 		readCalculate.result = 0;
 
 		// setting read to write because.... we can
-		readEvent.setMonitoredEvents(Ws::Epoll::WRITE | Ws::Epoll::EDGE_TRIGGERED);
+		readEvent.setMonitoredFlags(Ws::Monitor::WRITE | Ws::Monitor::EDGE_TRIGGERED);
 		manager.modify(readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);

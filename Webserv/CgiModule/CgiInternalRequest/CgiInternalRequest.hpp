@@ -21,7 +21,7 @@ namespace Cgi
 			IO_Callback::BytesCount		IO_CallTheUser(const CgiIO_Callback::Type, Ws::fd readFd);
 
 			CgiUser						getUser() const;
-			CgiRuntime_Callback::Handler
+			CgiRuntime_Callback::Service
 										getRuntime_Handler(const CgiRuntime_Callback::Type type) const;
 			CgiModule::Module::RequestState::Type
 										getState() const;
@@ -32,7 +32,7 @@ namespace Cgi
 			mt_CgiWorker*				accessExecutor();
 			TimerTracker<Timer, InternalRequest*>::iterator
 										getMyTimer() const;
-			CgiOptions::Flags			getOptions() const;
+			CgiOptions::Monitor			getOptions() const;
 
 			void						assignExecutor(Worker& executor);
 			void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);

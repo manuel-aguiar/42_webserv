@@ -12,7 +12,7 @@ namespace Cgi
 		return (m_user);
 	}
 
-	CgiRuntime_Callback::Handler
+	CgiRuntime_Callback::Service
 	Cgi::Module::InternalRequest::getRuntime_Handler(const CgiRuntime_Callback::Type type) const
 	{
 		return (m_runtime_Handlers[type]);
@@ -37,7 +37,7 @@ namespace Cgi
 		return (m_scriptPath);
 	}
 
-	CgiOptions::Flags
+	CgiOptions::Monitor
 	Cgi::Module::InternalRequest::getOptions() const
 	{
 		return (m_options);

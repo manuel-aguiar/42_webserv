@@ -33,12 +33,12 @@ namespace Cgi
 	void	Cgi::Module::Worker::mf_readScript()
 	{
 		int 				bytesRead;
-		Ws::Epoll::Events 	triggeredFlags;
+		Ws::Monitor::Events 	triggeredFlags;
 
-		triggeredFlags = m_readEvent.getTriggeredEvents();
+		triggeredFlags = m_readEvent.getTriggeredFlags();
 		//std::cout << "\t\t\tread called" << std::endl;
 		
-		if (triggeredFlags & Ws::Epoll::READ)
+		if (triggeredFlags & Ws::Monitor::READ)
 		{
 			bytesRead = m_curRequestData->IO_CallTheUser(IO_Callback::READ, m_readEvent.getFd());
 
@@ -52,7 +52,7 @@ namespace Cgi
 			}
 		}
 		
-		if ((triggeredFlags & (Ws::Epoll::ERROR | Ws::Epoll::HANGUP)) && !(triggeredFlags & Ws::Epoll::READ))
+		if ((triggeredFlags & (Ws::Monitor::ERROR | Ws::Monitor::HANGUP)) && !(triggeredFlags & Ws::Monitor::READ))
 		{
 			mf_disableCloseMyEvent(m_readEvent, true);
 			if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
@@ -63,13 +63,13 @@ namespace Cgi
 	void	Cgi::Module::Worker::mf_writeScript()
 	{
 		int 				bytesWritten;
-		Ws::Epoll::Events 	triggeredFlags;
+		Ws::Monitor::Events 	triggeredFlags;
 		
-		triggeredFlags = m_writeEvent.getTriggeredEvents();
+		triggeredFlags = m_writeEvent.getTriggeredFlags();
 		
 		//std::cout << "write triggered" << std::endl;
 		
-		if (triggeredFlags & Ws::Epoll::WRITE)
+		if (triggeredFlags & Ws::Monitor::WRITE)
 		{
 			bytesWritten = m_curRequestData->IO_CallTheUser(IO_Callback::WRITE, m_writeEvent.getFd());
 
@@ -83,7 +83,7 @@ namespace Cgi
 			}
 		}
 		
-		if (triggeredFlags & (Ws::Epoll::ERROR | Ws::Epoll::HANGUP))
+		if (triggeredFlags & (Ws::Monitor::ERROR | Ws::Monitor::HANGUP))
 		{
 			mf_disableCloseMyEvent(m_writeEvent, true);
 			if (m_writeEvent.getFd() == -1 && m_readEvent.getFd() == -1)
@@ -130,7 +130,7 @@ namespace Cgi
 		int		triggeredFlags;
 		int		bytesRead;
 
-		triggeredFlags = m_EmergencyEvent.getTriggeredEvents();
+		triggeredFlags = m_EmergencyEvent.getTriggeredFlags();
 		
 		if (triggeredFlags & EPOLLIN)
 		{

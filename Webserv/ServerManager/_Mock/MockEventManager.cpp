@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 08:57:39 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/22 09:21:29 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,11 @@ int                 EventManager::remove(const Subscription& event)
 int                 EventManager::ProcessEvents(int timeOut)
 {
 	//std::cout << "                waiting for events" << std::endl;
-	m_waitCount = epoll_wait(m_epollfd, m_events, MAX_EPOLL_EVENTS, timeOut);
+	m_waitCount = epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
 	//std::cout << "                         events arrived, fds: " << m_waitCount << std::endl;
 	//for (int i = 0; i < m_waitCount; i++)
 	//{
-	// std::cout << " " << ((Subscription*)m_events[i].data.ptr);
+	// std::cout << " " << ((Subscription*)m_epollEvents[i].data.ptr);
 	//}
 	//std::cout << std::endl;
 	return (m_waitCount);
@@ -106,7 +106,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 const   t_epoll_event&     EventManager::retrieveEvent(int index)
 {
 	assert(index >= 0 && index < m_waitCount);
-	return (m_events[index]);
+	return (m_epollEvents[index]);
 }
 
 void    EventManager::distributeEvents()
@@ -115,14 +115,14 @@ void    EventManager::distributeEvents()
 
 	for (int i = 0; i < m_waitCount; i++)
 	{
-		event = (Subscription*)m_events[i].data.ptr;
+		event = (Subscription*)m_epollEvents[i].data.ptr;
 
-		if (m_events[i].events & EPOLLIN || m_events[i].events & EPOLLOUT)
+		if (m_epollEvents[i].events & EPOLLIN || m_epollEvents[i].events & EPOLLOUT)
 		{
 			event->handle();
 		}
 
-		if (m_events[i].events & EPOLLHUP || m_events[i].events & EPOLLERR || m_events[i].events & EPOLLRDHUP)
+		if (m_epollEvents[i].events & EPOLLHUP || m_epollEvents[i].events & EPOLLERR || m_epollEvents[i].events & EPOLLRDHUP)
 		{
 
 		}

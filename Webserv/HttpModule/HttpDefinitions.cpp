@@ -34,7 +34,7 @@ namespace Http
         static std::set<std::string> initAllowedHeaders()
         {
             std::set<std::string> headers;
-            headers.insert("Content-Type");
+            headers.insert("Content-Flags");
             headers.insert("Content-Length");
             headers.insert("Host");
             headers.insert("User-Agent");

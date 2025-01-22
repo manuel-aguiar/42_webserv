@@ -87,7 +87,7 @@ namespace Cgi
 		return (mf_finishTimedOut());
 	}
 
-	void	Cgi::Module::modifyRequest(Request& data, bool isCalledFromEventLoop, Module::Options::Flags newOptions)
+	void	Cgi::Module::modifyRequest(Request& data, bool isCalledFromEventLoop, Module::Options::Monitor newOptions)
 	{
 		InternalRequest*	requestData;
 		RequestStateEnum::Type	state;
