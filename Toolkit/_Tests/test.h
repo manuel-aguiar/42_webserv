@@ -35,15 +35,17 @@ namespace TestHelpers
 		return oss.str();
 	}
 
+	std::string FileLineFunction(const char* file, const int line, const char* function);
+
 	template <typename T>
 	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
 	{
 		if (actual != expected)
 		{
 			throw std::logic_error(
-				message + " result was " + StringUtils::to_string(actual) +
-				" but expected: " + StringUtils::to_string(expected) + "\n" +
-				FileLineFunction(file, line, function));
+				message + " result was " + TestHelpers::to_string(actual) +
+				" but expected: " + TestHelpers::to_string(expected) + "\n" +
+				TestHelpers::FileLineFunction(file, line, function));
 		}
 	}
 
@@ -53,9 +55,9 @@ namespace TestHelpers
 		if (actual == expected)
 		{
 			throw std::logic_error(
-				message + " result was " + StringUtils::to_string(actual) +
-				" but expected: " + StringUtils::to_string(expected) + "\n" +
-				FileLineFunction(file, line, function));
+				message + " result was " + TestHelpers::to_string(actual) +
+				" but expected: " + TestHelpers::to_string(expected) + "\n" +
+				TestHelpers::FileLineFunction(file, line, function));
 		}
 	}
 
