@@ -35,7 +35,7 @@ namespace TestHelpers
 	}
 
 	template <typename T>
-	void assertUnequal(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
+	void assertNotEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
 	{
 		if (actual == expected)
 		{
