@@ -63,3 +63,18 @@ Design considerations of ServerConfigDNSLookup.cpp
 		a) important step, each block may have duplicates themselves
 			so we need to keep track, at each block, their own listener duplicates to avoid having the same input twice.
 	4. Swap the uniqueBindAddress with the one on the ServerConfig, no need to copy
+
+
+
+	We ARE NOT doing conversion of network to host byte order: sockets accepted by accept() are in network byte order
+	as well, the match will be done in network order format. The lsiteningsockets are also setup
+	based on network byte order, so avoids the "deconverting" step.
+	Should the user want to print port and IP, they have to do THE CONVERTION TO HOST THEMSELVES via:
+
+		/////IPV4 SPECIFIC PART, SHOUD BE SWITCHED IF WE ADDED IPV6////////
+
+		struct sockaddr_in *addr = (struct sockaddr_in*)&address.sockaddr;
+		addr->sin_port			= ::ntohs(addr->sin_port);
+		addr->sin_addr.s_addr 	= ::ntohl(addr->sin_addr.s_addr);
+        
+		///////////////////////////////////////////////////////////////////	
