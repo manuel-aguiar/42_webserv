@@ -101,17 +101,6 @@ int main(void)
 
         config.parseConfigFile();
 
-        const std::vector<BindAddress>& bindAddresses = config.getAllBindAddresses();
-
-        for (size_t i = 0; i < bindAddresses.size(); i++)
-        {
-            int port = ::ntohs(((struct sockaddr_in*)(&bindAddresses[i].sockaddr))->sin_port);
-            char ip[INET_ADDRSTRLEN];
-            ::inet_ntop(AF_INET, &((struct sockaddr_in*)(&bindAddresses[i].sockaddr))->sin_addr, ip, INET_ADDRSTRLEN);
-
-            std::cout << "\naddress " << i << ": " << ip << ":" << port << "\n" << std::endl;
-        }
-
         if (config.getAllBindAddresses().size() != expectedCount)
             throw std::logic_error(
             "result was " + StringUtils::to_string(config.getAllBindAddresses().size()) + 
