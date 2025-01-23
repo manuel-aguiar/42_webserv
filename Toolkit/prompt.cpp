@@ -1,3 +1,5 @@
+/*
+
 i am refactoring c++98 code with a new function i made. here is what i have done:
 
 ###############
@@ -36,7 +38,6 @@ int TestPart1(int testNumber)
 
 		HeapCircularQueue<int> 			queue(queueSize);
 
-        /************* */
         
         resultInsertion = queue.push_back(frontNumber);
 
@@ -46,7 +47,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
                
         resultInsertion = queue.emplace_back(backNumber);
 
@@ -56,7 +56,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
 
         TestHelpers::assertEqual(queue[0], frontNumber, "index 0 doesn't match ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue[1], backNumber, "index 1 doesn't match ", __FILE__, __LINE__, __FUNCTION__);
@@ -71,7 +70,6 @@ int TestPart1(int testNumber)
 
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
        
         resultInsertion = queue.push_back(10);
 
@@ -80,7 +78,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
         
         resultInsertion = queue.pop_back();
 
@@ -89,7 +86,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
 
         resultInsertion = queue.pop_back();
 
@@ -98,7 +94,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
 
         resultInsertion = queue.pop_back();
 
@@ -107,7 +102,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-    /************* */
 
         resultInsertion = queue.pop_back();
 
@@ -116,7 +110,6 @@ int TestPart1(int testNumber)
         TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
 
-        /************* */
 
         resultInsertion = queue.push_back(10);
         expectedInsertion = (expectedElemCount < queueSize);
@@ -137,5 +130,5 @@ i want you to apply the same logic to these following code: same TestHelpers::as
 
 Here it is:
 
-
+*/
 
