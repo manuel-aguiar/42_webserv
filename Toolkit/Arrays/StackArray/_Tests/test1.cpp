@@ -22,7 +22,7 @@ int TestPart1(int testNumber)
 	{
 		const int arraySize = 100;
 		StackArray<int, arraySize> array;
-
+		
 		if (array.capacity() != arraySize)
 			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.capacity()) + " expected: " + TestHelpers::to_string(arraySize) + '\n'
 			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));

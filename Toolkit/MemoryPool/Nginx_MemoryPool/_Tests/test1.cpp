@@ -53,16 +53,8 @@ int TestPart1(int testNumber)
         TestAllocator<t_byte> alloc(counters);
         Impl_Nginx_MemoryPool<t_byte, TestAllocator<t_byte> > pool(4096, 1, alloc);
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 1)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected 1" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != 4096)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected 4096" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -83,34 +75,18 @@ int TestPart1(int testNumber)
         TestAllocator<t_byte> alloc(counters);
         Impl_Nginx_MemoryPool<int, TestAllocator<t_byte> > pool(100, 1, alloc);
 
-
-        //same result, didn't overwelm the pool
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 1)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected 1" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != 100 * (sizeof(int)))
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected 4096" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)(100 * (sizeof(int))), "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
         void* bigBlock = pool.allocate(200);
         (void)bigBlock;
 
         //big block, will overwelm the pool
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 2)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected 1" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
 
         size_t expectedBytes = (100 + 200 + 16 / sizeof(int)) * (sizeof(int)); //16 / sizeof(int)(how many ints i have to allocate to have place for the big block struct)
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != expectedBytes)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected " + TestHelpers::to_string(expectedBytes) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -138,15 +114,9 @@ int TestPart1(int testNumber)
         monitoredList       list(objPool);
 
         //same result, didn't overwelm the pool
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 1)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected 1" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != 4096)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected 4096" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         // inserting integers
         for (size_t i = 0; i < 100; ++i)
@@ -154,15 +124,9 @@ int TestPart1(int testNumber)
 
 
         // should not trigger any call to new, there is plenty of space in the first block of the pool
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 1)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected 1" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != 4096)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected 4096" + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -189,32 +153,20 @@ int TestPart1(int testNumber)
         monitoredObjPool    objPool(200, allocator);        //obj pool for 100 list nodes of integers
         monitoredList       list(objPool);
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 1)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected " + TestHelpers::to_string(1) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
 
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != 4096)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected " + TestHelpers::to_string(4096) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         // inserting integers
         for (size_t i = 0; i < 200; ++i)
             list.push_back(i);
 
-
         // should not trigger any call to new, there is plenty of space in the first block of the pool
-        if (counters[TestAllocator<t_byte>::E_ALLOC_COUNT] != 2)
-            throw std::runtime_error("alloc count dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_COUNT])
-             + " expected " + TestHelpers::to_string(2) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
 
         size_t expectedBytes = 4096 + 200 * 24 + 4 * 4; //base alloc + 200 list nodes + 4 integers to fit t_bigBlock struct
-        if (counters[TestAllocator<t_byte>::E_ALLOC_BYTES] != expectedBytes)
-            throw std::runtime_error("alloc bytes dont match, got " + TestHelpers::to_string(counters[TestAllocator<t_byte>::E_ALLOC_BYTES])
-             + " expected " + TestHelpers::to_string(expectedBytes) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+
 
 		std::cout << "	PASSED" << std::endl;
 	}

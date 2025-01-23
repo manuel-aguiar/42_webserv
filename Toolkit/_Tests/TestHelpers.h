@@ -28,8 +28,8 @@ namespace TestHelpers
 		if (actual != expected)
 		{
 			throw std::logic_error(
-				message + " result was " + StringUtils::to_string(actual) +
-				" but expected: " + StringUtils::to_string(expected) + "\n" +
+				message + " result was " + TestHelpers::to_string(actual) +
+				" but expected: " + TestHelpers::to_string(expected) + "\n" +
 				TestHelpers::FileLineFunction(file, line, function));
 		}
 	}
@@ -40,8 +40,8 @@ namespace TestHelpers
 		if (actual == expected)
 		{
 			throw std::logic_error(
-				message + " result was " + StringUtils::to_string(actual) +
-				" but expected: " + StringUtils::to_string(expected) + "\n" +
+				message + " result was " + TestHelpers::to_string(actual) +
+				" but expected: " + TestHelpers::to_string(expected) + "\n" +
 				TestHelpers::FileLineFunction(file, line, function));
 		}
 	}

@@ -12,7 +12,7 @@
 #include <stdexcept>
 
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 	/*********************** ************************/
 	std::cout << "TEST " << testNumber++ << ": ";
