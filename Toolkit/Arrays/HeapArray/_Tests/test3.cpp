@@ -42,17 +42,13 @@ int TestPart3(int testNumber)
 			std.push_back(new ToolkitBase(i));
 			array.push_back(new ToolkitBase(i));
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		HeapArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (**it != **iter)
-				throw std::runtime_error("value mismatch " + '\n'
-				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			TestHelpers::assertEqual((*it)->getValue() == (*iter)->getValue(), true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 		it = array.begin();

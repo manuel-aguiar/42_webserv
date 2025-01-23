@@ -1,5 +1,3 @@
-
-
 // C++ headers
 #include <iostream>
 #include <cstring>
@@ -36,29 +34,24 @@ class EmplaceTwo
 
 int TestPart2(int testNumber)
 {
-
-/******************************************************************** */
-
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		DynArray<int> 			array;
+		std::vector<int> std;
+		DynArray<int> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
         DynArray<int> assign;
@@ -69,43 +62,36 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            if (*it != *iter)
-                throw std::logic_error("copy assignment, value mismatch");
+            TestHelpers::assertEqual(*it, *iter, "copy assignment, value mismatch", __FILE__, __LINE__, __FUNCTION__);
         }
 
-        if (std.size() != assign.size())
-			throw std::logic_error("copy assignment, size mismatch");
-
+        TestHelpers::assertEqual(std.size(), assign.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        	}
-
-/******************************************************************** */
+	}
 
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		DynArray<int> 			array;
+		std::vector<int> std;
+		DynArray<int> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
         DynArray<int> assign(array);
@@ -115,13 +101,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            if (*it != *iter)
-                throw std::logic_error("copy constructor, value mismatch");
+            TestHelpers::assertEqual(*it, *iter, "copy constructor, value mismatch", __FILE__, __LINE__, __FUNCTION__);
         }
 
-        if (std.size() != assign.size())
-			throw std::logic_error("copy constructor, size mismatch");
-
+        TestHelpers::assertEqual(std.size(), assign.size(), "copy constructor, size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -130,28 +113,24 @@ int TestPart2(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
-/******************************************************************** */
-
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		DynArray<int> 			array;
+		std::vector<int> std;
+		DynArray<int> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
         DynArray<int> assign;
@@ -166,26 +145,21 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            if (*it != *iter)
-                throw std::logic_error("::move failed, value mismatch");
+            TestHelpers::assertEqual(*it, *iter, "::move failed, value mismatch", __FILE__, __LINE__, __FUNCTION__);
         }
 
-        if (std.size() != assign.size())
-			throw std::logic_error("::move failed, size mismatch");
+        TestHelpers::assertEqual(std.size(), assign.size(), "::move failed, size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
-        if (array.size() != 0)
-            throw std::logic_error("::move failed, source array not empty");    
+        TestHelpers::assertEqual(array.size(), (size_t)0, "::move failed, source array not empty", __FILE__, __LINE__, __FUNCTION__);
 
         array.push_back(1);
         array.push_back(2);
 
-        if (std.size() != assign.size())
-			throw std::logic_error("::move failed, the movedFrom array influenced the moveTo");
+        TestHelpers::assertEqual(std.size(), assign.size(), "::move failed, the movedFrom array influenced the moveTo", __FILE__, __LINE__, __FUNCTION__);
 
         array.clear();
 
-        if (array.size() != 0)
-            throw std::logic_error("::clear failed, array not empty");
+        TestHelpers::assertEqual(array.size(), (size_t)0, "::clear failed, array not empty", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -200,26 +174,15 @@ int TestPart2(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<EmplaceTwo> 		std;
-		DynArray<EmplaceTwo> 			array;
+		std::vector<EmplaceTwo> std;
+		DynArray<EmplaceTwo> array;
 		
 		for (int i = 0; i < 2; ++i)
 		{
 			std.push_back(EmplaceTwo("name", i));
 			array.push_back(EmplaceTwo("name", i));
 		}
-/*
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
 
-		DynArray<EmplaceTwo>::iterator it = array.begin();
-		std::vector<EmplaceTwo>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
-		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
-		}
-*/
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
