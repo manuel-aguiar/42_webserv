@@ -6,17 +6,6 @@
 #include <arpa/inet.h>
 
 
-template <typename T>
-void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function) {
-    if (actual != expected)
-    {
-        throw std::logic_error(
-            message + " result was " + StringUtils::to_string(actual) +
-            " but expected: " + StringUtils::to_string(expected) + "\n" +
-            FileLineFunction(file, line, function));
-    }
-}
-
 int main(void)
 {
 
@@ -33,15 +22,15 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
 
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
-        assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
         
          //confirming match is correct ,ORDER DEPENDS ON SETS
         struct sockaddr_in *addr;
@@ -52,15 +41,15 @@ int main(void)
         addr = (struct sockaddr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
         
         //checking second address
         addr = (struct sockaddr_in*)(sockAddr[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED (one server, two listeners)" << std::endl;
 	}
@@ -79,15 +68,15 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
         
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
-        assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
          //confirming match is correct ,ORDER DEPENDS ON SETS
         char ip[INET_ADDRSTRLEN];
@@ -95,13 +84,13 @@ int main(void)
 
         addr = (struct sockaddr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
         addr = (struct sockaddr_in*)(sockAddr[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("123.123.123.123"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("123.123.123.123"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED (one server, two listeners(one concrete and one wildcard ip)" << std::endl;
 	}
@@ -121,24 +110,24 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses",__FILE__, __LINE__, __FUNCTION__);
         
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(serverBlocks.size(), (size_t)1, "there should be only 1 server block", __FILE__, __LINE__, __FUNCTION__);
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
-        assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
         //confirming match is correct ,ORDER DEPENDS ON SETS
         char ip[INET_ADDRSTRLEN];
         struct sockaddr_in *addr;
-
+        
         addr = (struct sockaddr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("127.0.0.1"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("127.0.0.1"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED (one server, two equivalent listeners - localhost" << std::endl;
 	}
@@ -157,24 +146,24 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        assertEqual(serverBlocks.size(), (size_t)2, "there should be 2 server blocks", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(serverBlocks.size(), (size_t)2, "there should be 2 server blocks", __FILE__, __LINE__, __FUNCTION__);
 
         const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
-        assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
 
-        assertEqual(sockAddr1[0], sockAddr2[0], "both servers should be pointing to the same sockaddr", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1[0], sockAddr2[0], "both servers should be pointing to the same sockaddr", __FILE__, __LINE__, __FUNCTION__);
 
         char ip[INET_ADDRSTRLEN];
         struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("0.0.0.0"), "IP mapping failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "IP mapping failed", __FILE__, __LINE__, __FUNCTION__);
 
         std::cout << "\tPASSED (two servers, same listener)" << std::endl;
     }
@@ -193,28 +182,28 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
         const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
-        assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
 
-        assertEqual(sockAddr1[0], sockAddr2[0], "servers should share the same sockaddr for 0.0.0.0:80", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(sockAddr1[1], sockAddr2[1], "servers should share the same sockaddr for 123.123.123.123:80", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1[0], sockAddr2[0], "servers should share the same sockaddr for 0.0.0.0:80", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1[1], sockAddr2[1], "servers should share the same sockaddr for 123.123.123.123:80", __FILE__, __LINE__, __FUNCTION__);
 
         char ip[INET_ADDRSTRLEN];
         struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed for first address", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("0.0.0.0"), "IP mapping failed for first address", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed for first address", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "IP mapping failed for first address", __FILE__, __LINE__, __FUNCTION__);
 
         addr = (struct sockaddr_in*)(sockAddr1[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed for second address", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("123.123.123.123"), "IP mapping failed for second address", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed for second address", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("123.123.123.123"), "IP mapping failed for second address", __FILE__, __LINE__, __FUNCTION__);
 
         std::cout << "\tPASSED (two servers, two listeners, shared wildcard and concrete IPs)" << std::endl;
     }
@@ -233,22 +222,22 @@ int main(void)
 
         config.parseConfigFile();
 
-        assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses", __FILE__, __LINE__, __FUNCTION__);
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
         const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
-        assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2", __FILE__, __LINE__, __FUNCTION__);
 
-        assertEqual(sockAddr1[0], sockAddr2[0], "both servers should point to the same localhost sockaddr", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(sockAddr1[0], sockAddr2[0], "both servers should point to the same localhost sockaddr", __FILE__, __LINE__, __FUNCTION__);
 
         char ip[INET_ADDRSTRLEN];
         struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-        assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed", __FILE__, __LINE__, __FUNCTION__);
-        assertEqual(std::string(ip), std::string("127.0.0.1"), "IP mapping failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(ip), std::string("127.0.0.1"), "IP mapping failed", __FILE__, __LINE__, __FUNCTION__);
 
         std::cout << "\tPASSED (two servers, single listener, localhost)" << std::endl;
     }
