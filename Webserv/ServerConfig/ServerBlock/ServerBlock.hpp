@@ -52,9 +52,9 @@ class ServerBlock
 		// Debug
 		void							printServerConfig() const;
 
-		void							addSockAddr(const struct sockaddr* addr);
+		void							addListenSockAddr(const struct sockaddr* addr);
 		std::vector<const struct sockaddr*>	
-										getSockAddr() const;
+										getListenSockAddr() const;
 
 	private:
 		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);

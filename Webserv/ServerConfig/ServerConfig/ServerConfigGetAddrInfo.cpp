@@ -173,7 +173,7 @@ bool	ServerConfig::mf_listenDNSlookup()
 			range = helper.listenerToBind.equal_range(&(*iter));
 
 			for (MMap_listenerToBind::iterator it = range.first; it != range.second; ++it)
-				m_serverBlocks[i].addSockAddr((struct sockaddr*)it->second);
+				m_serverBlocks[i].addListenSockAddr((struct sockaddr*)it->second);
 		}
 	}
 
