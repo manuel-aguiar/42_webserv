@@ -92,20 +92,12 @@ int TestPart2(int testNumber)
 				break ;
 		}
 
-
 		// tests
-		if (eventManager.getMonitoringCount() != 0)
-			throw std::runtime_error("Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
-
-		if (cgi.getBusyWorkerCount() != 0)
-			throw std::runtime_error("Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-		if (protoRequest.m_TotalBytesRead != protoRequest.m_ExpectedOutput.length() ||
-			std::string(protoRequest.m_buffer) != protoRequest.m_ExpectedOutput)
-			throw std::logic_error("Script output doesn't match expected\n\ngot:\n\n" + std::string(protoRequest.m_buffer) + "\nexpected:\n\n" 
-			+ protoRequest.m_ExpectedOutput + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Length doesn't match", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED (env vars + testing env variables)" << std::endl;
 	}
