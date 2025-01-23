@@ -75,7 +75,7 @@ class ServerConfig
 		Globals*							m_globals; // mostly for logs and debuging, see Globals class
 		
 
-		std::vector<BindAddress>			m_allSockaddr;
+		std::vector<BindAddress>			m_bindAddresses;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels

@@ -51,34 +51,15 @@ Changes applied to ServerBlock:
 
 Design considerations of ServerConfigDNSLookup.cpp
 
-	All in one go, to be fancy and unmaintainable.
-	We loop through all the listen directives of each server block, one at a time.
-	If it is new, update our uniqueListeners (avoid repitition), do the dns lookup,
-	update our uniqueAddrInfo (avoid repitition), create the BindAddress struct,
-	which takes sockaddr and socklen_t (needed by ServerManager::ListeningSocket::bind())
+	Function divided into 4 stages:
 
-	If, on the other hand, the listener is not unique and we found it before, look
-	at BindAddress* associated with this listener and add them back to the ServerBlocks.m_myListenSockAddr
-
-	At the end, we will have a list of unique BindAddress structs, so we swap the one on the helper
-	with the one on the ServerConfig (why copying..)
-
-	We ARE NOT doing conversion of network to host byte order: sockets accepted by accept() are in network byte order
-	as well, the match will be done in network order format. The lsiteningsockets are also setup
-	based on network byte order, so avoids the "deconverting" step.
-	Should the user want to print port and IP, they have to do THE CONVERTION TO HOST THEMSELVES VIA:
-
-		/////IPV4 SPECIFIC PART, SHOUD BE SWITCHED IF WE ADDED IPV6////////
-		struct sockaddr_in *addr = (struct sockaddr_in*)&address.sockaddr;
-		addr->sin_port			= ::ntohs(addr->sin_port);
-		addr->sin_addr.s_addr 	= ::ntohl(addr->sin_addr.s_addr);
-		///////////////////////////////////////////////////////////////////	
-
-
-	We must free the addrinfo structs we copied the data from (getaddrinfo allocates these for us).
-	We placed the ::freeaddrinfo in the destructor of our helper function, so if anything goes wrong
-	(missconfiguration), RAII will ensure that any structs we have allocated so far will be freed
-	(and at the end)
-	
-	All typedefs and helper structs placed on this .cpp file because we don't want to
-	bloat the global namespace with them, not needed.
+	1. Do the DNS lookup for all the listeners in all server blocks
+		a) as we go, we build a set of unique addrinfo structs
+		b) we build a map of ALL listeners to their UNIQUE counterpart (the first that resolved to that addrinfo)
+			(since two exact same addrinfo structs imply the same BindAddress, hence localhost being equal 127.0.0.1, same address)
+	2. Create a vector (uniqueBind) of BindAddress structs, one for each unique addrinfo struct
+		a) As we go, we also map the unique addrinfo to their BindAddress structs (uniqueBind)
+	3. Fill the server blocks with their listeners, by mapping the listeners to their addrinfo and then to their BindAddress structs
+		a) important step, each block may have duplicates themselves
+			so we need to keep track, at each block, their own listener duplicates to avoid having the same input twice.
+	4. Swap the uniqueBindAddress with the one on the ServerConfig, no need to copy

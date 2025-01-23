@@ -297,7 +297,7 @@ void	ServerConfig::m_setDefaults()
 
 const std::vector<BindAddress>&	ServerConfig::getAllBindAddresses() const
 {
-	return (m_allSockaddr);
+	return (m_bindAddresses);
 }
 
 // Debug functions
