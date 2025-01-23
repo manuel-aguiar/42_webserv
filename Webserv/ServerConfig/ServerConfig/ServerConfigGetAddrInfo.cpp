@@ -12,14 +12,6 @@ struct ListenerPtrComparator {
 	}
 };
 
-/*
-
-	A Comparator struct that we use on std::set to make sure we are not trying to build sockets of addrinfo that are
-	exactly the same.
-
-	Not needed anywhere else in the project
-
-*/
 struct AddrinfoPtrComparator
 {
 	bool operator()(const t_addrinfo* a, const t_addrinfo* b)
