@@ -53,7 +53,7 @@ class ServerBlock
 		void							printServerConfig() const;
 
 		void							addListenSockAddr(const struct sockaddr* addr);
-		std::vector<const struct sockaddr*>	
+		const std::vector<const struct sockaddr*>&	
 										getListenSockAddr() const;
 
 	private:

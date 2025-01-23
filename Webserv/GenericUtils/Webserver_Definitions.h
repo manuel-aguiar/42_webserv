@@ -60,11 +60,11 @@ typedef union
 	t_sockaddr_un      sockaddr_un;
 }   u_sockaddr;
 
-typedef struct BindAddress
+typedef struct s_BindAddress
 {
 	u_sockaddr			sockaddr;
 	t_socklen			addrlen;
-}	t_Address; 
+}	BindAddress; 
 
 # define MAX_EPOLL_EVENTS 64
 

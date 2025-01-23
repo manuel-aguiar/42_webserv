@@ -244,7 +244,7 @@ void	ServerBlock::addListenSockAddr(const struct sockaddr* addr)
 	m_myListenAddresses.push_back(addr);
 }
 
-std::vector<const struct sockaddr*>	
+const std::vector<const struct sockaddr*>&	
 ServerBlock::getListenSockAddr() const
 {
 	return (m_myListenAddresses);

@@ -13,7 +13,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Integration/DNSLookup/main.cpp \
 								\
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
-								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigGetAddrInfo.cpp  \
+								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
