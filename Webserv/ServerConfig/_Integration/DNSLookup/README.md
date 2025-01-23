@@ -38,8 +38,8 @@ Changes applied to ServerBlock:
 1) added a vector of pointers to their own listeners sockaddr for match for the blockfinder:
     and the following methods:
 
-		void							                    addListenSockAddr(const struct sockaddr* addr);         //helper
-		const std::vector<const struct sockaddr*>&		    getListenSockAddr() const;                              //getter
+		void							                    addListenAddress(const struct sockaddr* addr);         //helper
+		const std::vector<const struct sockaddr*>&		    getListenAddresses() const;                              //getter
 
     The getter will be used by the BlockFinder to retrieve all the sockaddresses representing were
     the server will serve connections, to setup its internal data structures for matching client requests
@@ -54,7 +54,7 @@ Design considerations of ServerConfigDNSLookup.cpp
 	Function divided into 4 stages:
 
 	1. Do the DNS lookup for all the listeners in all server blocks
-		a) as we go, we build a set of unique addrinfo structs
+		a) as we go, we build a set of unique addrinfo structs and 
 		b) we build a map of ALL listeners to their UNIQUE counterpart (the first that resolved to that addrinfo)
 			(since two exact same addrinfo structs imply the same BindAddress, hence localhost being equal 127.0.0.1, same address)
 	2. Create a vector (uniqueBind) of BindAddress structs, one for each unique addrinfo struct
