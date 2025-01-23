@@ -155,8 +155,7 @@ int TestPart3(int testNumber)
 
         size_t result = future.get();           // code blocks until this value is available
 
-        if (result != fiboExpected)
-            throw std::runtime_error("Didn't calculate fibonacci right");
+        TestHelpers::assertEqual(result, fiboExpected, "Didn't calculate fibonacci right", __FILE__, __LINE__, __FUNCTION__);
 
         tp.waitForCompletion();
 

@@ -79,8 +79,7 @@ int TestPart2(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			if (fiboExpected[i] != fiboPlaceResult[i])
-				throw std::runtime_error("Didn't calculate fibonacci right");
+			TestHelpers::assertEqual(fiboExpected[i], fiboPlaceResult[i], "Fibonacci mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 		std::cout << "	PASSED" << std::endl;
