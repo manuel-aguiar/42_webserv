@@ -154,21 +154,6 @@ static bool Map_Listener_and_Addrinfo(const t_listeners &listener, DNSLookupHelp
 }
 
 /*
-
-	We ARE NOT doing conversion of network to host byte order: sockets accepted by accept() are in network byte order
-	as well, the match will be done in network order format. The lsiteningsockets are also setup
-	based on network byte order, so avoids the "deconverting" step.
-	Should the user want to print port and IP, they have to do THE CONVERTION TO HOST THEMSELVES VIA:
-
-		/////IPV4 SPECIFIC PART, SHOUD BE SWITCHED IF WE ADDED IPV6////////
-		struct sockaddr_in *addr = (struct sockaddr_in*)&address.sockaddr;
-		addr->sin_port			= ::ntohs(addr->sin_port);
-		addr->sin_addr.s_addr 	= ::ntohl(addr->sin_addr.s_addr);
-		///////////////////////////////////////////////////////////////////	
-
-*/
-
-/*
 	Now here we have the unique addresses and listeners map.
 
 	We first setup the vector of BindAddress built from the unique addrinfos, to store on the ServerConfig.

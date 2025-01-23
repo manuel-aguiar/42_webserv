@@ -43,6 +43,25 @@ int main(void)
             "result was " + StringUtils::to_string(sockAddr.size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        
+
+         //confirming match is correct ,ORDER DEPENDS ON SETS
+        struct sockaddr_in *addr = (struct sockaddr_in*)(sockAddr[0]);
+        char ip[INET_ADDRSTRLEN];
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "0.0.0.0")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        
+        addr = (struct sockaddr_in*)(sockAddr[1]);
+        if (::ntohs(addr->sin_port) != 81 || std::string(ip) != "0.0.0.0")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:81" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (one server, two listeners)" << std::endl;
 	}
@@ -82,6 +101,28 @@ int main(void)
             "result was " + StringUtils::to_string(sockAddr.size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+         //confirming match is correct ,ORDER DEPENDS ON SETS
+        char ip[INET_ADDRSTRLEN];
+        struct sockaddr_in *addr;
+
+        addr = (struct sockaddr_in*)(sockAddr[0]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "0.0.0.0")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        addr = (struct sockaddr_in*)(sockAddr[1]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "123.123.123.123")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 123.123.123.123:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
 
 		std::cout << "	PASSED (one server, two listeners(one concrete and one wildcard ip)" << std::endl;
 	}
@@ -123,7 +164,17 @@ int main(void)
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+        //confirming match is correct ,ORDER DEPENDS ON SETS
+        char ip[INET_ADDRSTRLEN];
+        struct sockaddr_in *addr;
 
+        addr = (struct sockaddr_in*)(sockAddr[0]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "127.0.0.1")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (one server, two equivalent listeners - localhost" << std::endl;
 	}
@@ -172,6 +223,25 @@ int main(void)
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+        // confirming they are pointing to the same place
+        if (sockAddr1[0] != sockAddr2[0])
+            throw std::logic_error("both servers should be pointing to the same sockaddr"
+            "result was " + StringUtils::to_string(sockAddr1[0]) + 
+            " but expected: " + StringUtils::to_string(sockAddr2[0]) + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        //confirming match is correct, ORDER DEPENDS ON SETS
+        char ip[INET_ADDRSTRLEN];
+        struct sockaddr_in *addr;
+
+        addr = (struct sockaddr_in*)(sockAddr1[0]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "0.0.0.0")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
 		std::cout << "	PASSED (two servers, same listener)" << std::endl;
 	}
 	catch (const std::exception& e)
@@ -215,6 +285,40 @@ int main(void)
             "result was " + StringUtils::to_string(sockAddr2.size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        
+        // confirming they are pointing to the same place
+        if (sockAddr1[0] != sockAddr2[0])
+            throw std::logic_error("both servers should be pointing to the same sockaddr"
+            "result was " + StringUtils::to_string(sockAddr1[0]) + 
+            " but expected: " + StringUtils::to_string(sockAddr2[0]) + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        
+        // confirming they are pointing to the same place
+        if (sockAddr1[1] != sockAddr2[1])
+            throw std::logic_error("both servers should be pointing to the same sockaddr"
+            "result was " + StringUtils::to_string(sockAddr1[0]) + 
+            " but expected: " + StringUtils::to_string(sockAddr2[0]) + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        //confirming match is correct, ORDER DEPENDS ON SETS
+        char ip[INET_ADDRSTRLEN];
+        struct sockaddr_in *addr;
+
+        addr = (struct sockaddr_in*)(sockAddr1[0]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "0.0.0.0")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        addr = (struct sockaddr_in*)(sockAddr1[1]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "123.123.123.123")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (two servers, two listeners per server, same (one concrete and one wildcard ip)" << std::endl;
 	}
@@ -256,6 +360,25 @@ int main(void)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr2.size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        // confirming they are pointing to the same place
+        if (sockAddr1[0] != sockAddr2[0])
+            throw std::logic_error("both servers should be pointing to the same sockaddr"
+            "result was " + StringUtils::to_string(sockAddr1[0]) + 
+            " but expected: " + StringUtils::to_string(sockAddr2[0]) + "\n"
+            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        //confirming the matching is correct, ORDER DEPENDS ON SETS
+        char ip[INET_ADDRSTRLEN];
+        struct sockaddr_in *addr;
+
+        addr = (struct sockaddr_in*)(sockAddr1[0]);
+        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        if (::ntohs(addr->sin_port) != 80 || std::string(ip) != "127.0.0.1")
+            throw std::logic_error("sockaddr was not correctly mapped to the server"
+            "result was " + std::string(ip) + ":" + StringUtils::to_string(::ntohs(addr->sin_port)) + 
+            " but expected: 0.0.0.0:80" + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED (two servers, one listener per server, one localhost:80, other 127.0.0.1:80" << std::endl;
