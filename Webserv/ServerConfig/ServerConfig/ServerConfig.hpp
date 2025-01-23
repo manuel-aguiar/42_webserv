@@ -37,7 +37,7 @@ class ServerConfig
 		const std::string&							getMaxConnections() const;
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
-		const std::vector<BindAddress>&				getAllSockaddr() const;
+		const std::vector<BindAddress>&				getAllBindAddresses() const;
 		void										setConfigPath(const t_path &path);
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);

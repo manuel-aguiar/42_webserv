@@ -108,6 +108,14 @@ static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 		//adding unique address, and length for ListeningSocket::bind()
 		std::memcpy(&address.sockaddr, cur->ai_addr, cur->ai_addrlen);
 		address.addrlen = cur->ai_addrlen;
+
+		/////IPV4 SPECIFIC PART, SHOUD BE SWITCHED IF WE ADDED IPV6////////
+		struct sockaddr_in *addr = (struct sockaddr_in*)&address.sockaddr;
+		addr->sin_port			= ::ntohs(addr->sin_port);
+		addr->sin_addr.s_addr 	= ::ntohl(addr->sin_addr.s_addr);
+		///////////////////////////////////////////////////////////////////
+
+
 		helper.uniqueSockAddr.push_back(address);
 
 		//adding unique address to map, will should up in the next lookup
@@ -138,11 +146,17 @@ static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 	At the end, we will have a list of unique BindAddress structs, so we swap the one on the helper
 	with the one on the ServerConfig (why copying..)
 
+	We are doing a specific conversion of network byte order to host byte order. Strictly speaking,
+	this is not needed for our webserver: if both the listener and connection "speak"
+ 	in the same byte order, there is no need to convert. However, we are doing it here for
+	potential debug purposes up ahead. The sockets received from accept() will tehrefore have to do the
+	same such that the Blockfinder can match addresses. 
+
 	We must free the addrinfo structs we copied the data from (getaddrinfo allocates these for us).
 	We placed the ::freeaddrinfo in the destructor of our helper function, so if anything goes wrong
 	(missconfiguration), RAII will ensure that any structs we have allocated so far will be freed
 	(and at the end)
-
+	
 	All typedefs and helper structs placed on this .cpp file because we don't want to
 	bloat the global namespace with them, not needed.
 */

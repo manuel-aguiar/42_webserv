@@ -21,9 +21,9 @@ int main(void)
 
         config.parseConfigFile();
 
-        if (config.getAllSockaddr().size() != expectedCount)
+        if (config.getAllBindAddresses().size() != expectedCount)
             throw std::logic_error(
-            "result was " + StringUtils::to_string(config.getAllSockaddr().size()) + 
+            "result was " + StringUtils::to_string(config.getAllBindAddresses().size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
@@ -61,9 +61,9 @@ int main(void)
 
         config.parseConfigFile();
 
-        if (config.getAllSockaddr().size() != expectedCount)
+        if (config.getAllBindAddresses().size() != expectedCount)
             throw std::logic_error(
-            "result was " + StringUtils::to_string(config.getAllSockaddr().size()) + 
+            "result was " + StringUtils::to_string(config.getAllBindAddresses().size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
@@ -100,9 +100,9 @@ int main(void)
 
         config.parseConfigFile();
 
-        if (config.getAllSockaddr().size() != expectedCount)
+        if (config.getAllBindAddresses().size() != expectedCount)
             throw std::logic_error(
-            "result was " + StringUtils::to_string(config.getAllSockaddr().size()) + 
+            "result was " + StringUtils::to_string(config.getAllBindAddresses().size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
@@ -149,9 +149,9 @@ int main(void)
 
         config.parseConfigFile();
         //checking config file
-        if (config.getAllSockaddr().size() != expectedCount)
+        if (config.getAllBindAddresses().size() != expectedCount)
             throw std::logic_error(
-            "result was " + StringUtils::to_string(config.getAllSockaddr().size()) + 
+            "result was " + StringUtils::to_string(config.getAllBindAddresses().size()) + 
             " but expected: " + StringUtils::to_string(expectedCount) + "\n"
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 

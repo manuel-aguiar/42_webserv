@@ -295,7 +295,7 @@ void	ServerConfig::m_setDefaults()
 		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
 }
 
-const std::vector<BindAddress>&	ServerConfig::getAllSockaddr() const
+const std::vector<BindAddress>&	ServerConfig::getAllBindAddresses() const
 {
 	return (m_allSockaddr);
 }
