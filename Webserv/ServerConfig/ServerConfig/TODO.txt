@@ -1,0 +1,4 @@
+expand the bindaddress struct
+add socktype, proto
+
+copy those from t_addrinfo when setting up the vector
