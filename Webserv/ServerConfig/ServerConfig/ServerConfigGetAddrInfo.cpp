@@ -3,6 +3,11 @@
 # include <cstddef>
 # include <cstring>
 
+/*
+	Bunch of helper structs and typedefs, purposefully placed here to avoid bloating the global namespace.
+	Not needed anywhere else outside of this file.
+*/
+
 struct ListenerPtrComparator {
 	bool operator()(const t_listeners* a, const t_listeners* b) const
 	{
