@@ -16,7 +16,7 @@
 # include "../../../_Tests/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 extern int TestPart3(int testNumber);
 extern int TestPart4(int testNumber);
 
@@ -28,7 +28,7 @@ int main()
 	std::cout << "\n*************** HeapCircularQueue tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-    testNumber = StressTest(testNumber);
+    testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
     testNumber = TestPart4(testNumber);
 

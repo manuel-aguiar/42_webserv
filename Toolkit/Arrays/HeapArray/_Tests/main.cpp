@@ -15,7 +15,7 @@
 # include "../../../_Tests/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 extern int TestPart3(int testNumber);
 
 int main()
@@ -25,7 +25,7 @@ int main()
 	std::cout << "\n*************** HeapArray tests ***************" << std::endl;
 	
     testNumber = TestPart1(testNumber);
-    testNumber = StressTest(testNumber);
+    testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
 
 	std::cout << "*********************************************\n" << std::endl;

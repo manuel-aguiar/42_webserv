@@ -14,7 +14,7 @@
 #include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../_Tests/TestHelpers.h"
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 	try
 	{

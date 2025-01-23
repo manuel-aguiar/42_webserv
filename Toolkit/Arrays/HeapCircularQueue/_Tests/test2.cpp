@@ -45,7 +45,7 @@ std::ostream& operator<<(std::ostream& os, const EmplaceTwo& emplace)
 	return os;
 }
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 
 /******************************************************************** */

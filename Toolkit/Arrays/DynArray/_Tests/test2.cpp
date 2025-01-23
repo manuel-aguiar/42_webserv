@@ -34,7 +34,7 @@ class EmplaceTwo
 };
 
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 
 /******************************************************************** */

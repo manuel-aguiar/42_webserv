@@ -51,7 +51,7 @@ class FiboTask : public IThreadTask
 		long* 			m_placeResult;
 };
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 /************************************************************** */
 	std::cout << "TEST " << testNumber << ": ";
