@@ -270,7 +270,7 @@ bool	ServerConfig::mf_listenDNSlookup()
 			for (MMap_uniqueListenToAddr::iterator it = range.first; it != range.second; ++it)
 			{
 				Map_uniqueAddrToBind::iterator addrIter = helper.uniqueAddrToBind.find(it->second);
-				m_serverBlocks[i].addListenSockAddr((struct sockaddr*)(&addrIter->second->sockaddr));
+				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->sockaddr));
 			}
 		}
 	}

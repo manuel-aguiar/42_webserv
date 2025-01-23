@@ -37,7 +37,7 @@ int main(void)
 
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
         if (sockAddr.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr.size()) + 
@@ -76,7 +76,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
         if (sockAddr.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr.size()) + 
@@ -116,7 +116,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
         if (sockAddr.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server, "
             "result was " + StringUtils::to_string(sockAddr.size()) + 
@@ -157,7 +157,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
         
         // checking server 0
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         if (sockAddr1.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr1.size()) + 
@@ -165,7 +165,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         // checking server 1
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
         if (sockAddr2.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr2.size()) + 
@@ -201,7 +201,7 @@ int main(void)
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
 
         //checking server 0
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         if (sockAddr1.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr1.size()) + 
@@ -209,7 +209,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         //checking server 1
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
         if (sockAddr2.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr2.size()) + 
@@ -243,7 +243,7 @@ int main(void)
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
 
         //checking server 0
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         if (sockAddr1.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr1.size()) + 
@@ -251,7 +251,7 @@ int main(void)
             + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
         //checking server 1
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenSockAddr();
+        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
         if (sockAddr2.size() != expectedCount)
             throw std::logic_error("sockaddr was not correctly mapped to the server"
             "result was " + StringUtils::to_string(sockAddr2.size()) + 
