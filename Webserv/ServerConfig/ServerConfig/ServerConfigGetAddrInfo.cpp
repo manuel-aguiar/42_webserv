@@ -28,16 +28,6 @@ struct AddrinfoPtrComparator
 			return (a->ai_protocol < b->ai_protocol);
 		if (a->ai_addrlen != b->ai_addrlen)
 			return (a->ai_addrlen < b->ai_addrlen);
-		if (a->ai_canonname != b->ai_canonname)
-		{
-			if (a->ai_canonname == NULL)
-				return (true);
-			if (b->ai_canonname == NULL)
-				return (false);
-			memcmp = std::strcmp(a->ai_canonname, b->ai_canonname);
-			if (memcmp != 0)
-				return (memcmp < 0);
-		}
 		if (a->ai_addr != b->ai_addr)
 		{
 			if (a->ai_addr == NULL)
@@ -45,6 +35,16 @@ struct AddrinfoPtrComparator
 			if (b->ai_addr == NULL)
 				return (false);
 			memcmp = std::memcmp(a->ai_addr, b->ai_addr, a->ai_addrlen);
+			if (memcmp != 0)
+				return (memcmp < 0);
+		}
+		if (a->ai_canonname != b->ai_canonname)
+		{
+			if (a->ai_canonname == NULL)
+				return (true);
+			if (b->ai_canonname == NULL)
+				return (false);
+			memcmp = std::strcmp(a->ai_canonname, b->ai_canonname);
 			if (memcmp != 0)
 				return (memcmp < 0);
 		}
@@ -120,8 +120,6 @@ static bool DNSLookup(const t_listeners &listener, DNSLookupHelper& helper)
 		// connecting listener to u_sockaddr, where we inserted the new BindAddress struct
 		helper.listenerToBind.insert(Pair_listenerToBind(&listener, returnVal.first->second));
 	}
-	::freeaddrinfo(helper.allAddrInfo.back());
-	helper.allAddrInfo.pop_back();
 
 	return (true);
 }

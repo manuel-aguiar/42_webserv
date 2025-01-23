@@ -1,7 +1,7 @@
 
 
 
-NAME =			TestServerConfig.out
+NAME =			test.out
 CXX =			c++
 CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP #-fsanitize=address
 
