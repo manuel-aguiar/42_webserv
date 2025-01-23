@@ -1,15 +1,28 @@
 
 
 
-.SILENT:
 NAME =			TestServerConfig.out
 CXX =			c++
 CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP #-fsanitize=address
-SRC =			ServerConfigTests.cpp ../ServerConfig/ServerConfig.cpp ../ServerConfig/ServerConfigGetAddrInfo.cpp  ../ServerBlock/ServerBlock.cpp \
-				../DefaultConfig/DefaultConfig.cpp ../ServerLocation/ServerLocation.cpp \
-				../../GenericUtils/StringUtils/StringUtils.cpp \
-				../../GenericUtils/Validation/Validation.cpp 
-DEPS =			$(SRC:.cpp=.d)
+
+# Paths
+ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
+SRC_PATH				=		$(ROOT_PATH)/.
+OBJ_PATH				=		$(ROOT_PATH)/_build
+
+SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
+								\
+								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigGetAddrInfo.cpp  \
+								$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
+
+
+OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+DEPS					=		$(OBJS:.o=.d)
 
 #=== COLORS ===#
 
@@ -27,9 +40,14 @@ TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 all: $(NAME)
 
-$(NAME): $(SRC)
+$(NAME): $(OBJS)
 	@echo "$(TAG) Making Program"
-	@$(CXX) $(CXXFLAGS) $(SRC) -o $(NAME)
+	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
+
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 -include $(DEPS)
 
