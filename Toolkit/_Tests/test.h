@@ -59,25 +59,6 @@ namespace TestHelpers
 		}
 	}
 
-	template <typename T>
-	void assertUnequal(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
-	{
-		if (actual == expected)
-		{
-			throw std::logic_error(std::string("\n\n")
-				+ "\t----------------------------------" 				+ "\n"
-				+ "\tError:     '" + message 							+ "'\n"
-				+ "\tResult:    '" + TestHelpers::to_string(actual) 	+ "'\n"
-				+ "\tExpected:  '" + TestHelpers::to_string(expected) 	+ "'\n"
-				+ "\t----------------------------------" 				+ "\n"
-				+ "\tFile:       " + file 								+ "\n"
-				+ "\tLine:       " + TestHelpers::to_string(line) 		+ "\n"
-				+ "\tFunction:   " + function 							+ "\n"
-				+ "\t----------------------------------" 				+ "\n"
-				);
-		}
-	}
-
 }
 
 

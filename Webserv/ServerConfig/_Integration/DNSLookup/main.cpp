@@ -279,7 +279,6 @@ int main(void)
         TestHelpers::assertEqual(success, false, "DNS lookup should fail", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(std::string(buffer), expected, "Error message is incorrect", __FILE__, __LINE__, __FUNCTION__);
 
-
         std::cout << "\tPASSED (passing an IP that cannot be resolved)" << std::endl;
     }
     catch (const std::exception& e)
