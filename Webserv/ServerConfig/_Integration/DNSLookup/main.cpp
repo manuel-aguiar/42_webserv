@@ -248,7 +248,50 @@ int main(void)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+    try
+    {
+        std::cout << "TEST " << testNumber++ << ": ";
+
+        ServerConfig config("OneServer_BadDNS.conf", NULL);
+
+                                            // setting pipes to read stderr
+                                            int pipefd[2];
+                                            int dupstrerr = dup(STDERR_FILENO);
+                                            pipe(pipefd);
+                                            dup2(pipefd[1], STDERR_FILENO);
+
+        // test
+        bool success = config.parseConfigFile();
+
+                                            // reading from pipe
+                                            char buffer[1024];
+                                            int bytesRead = read(pipefd[0], buffer, 1024);
+                                            buffer[bytesRead] = '\0';
+
+                                            // restoring stderr
+                                            dup2(dupstrerr, STDERR_FILENO);
+                                            close(dupstrerr);
+                                            close(pipefd[0]);
+                                            close(pipefd[1]);
+
+        std::string expected = "Error: DNS lookup failed for asfasfasfasfasfasfasfasfasf.com:80\n";
+
+        TestHelpers::assertEqual(success, false, "DNS lookup should fail", __FILE__, __LINE__, __FUNCTION__);
+        TestHelpers::assertEqual(std::string(buffer), expected, "Error message is incorrect", __FILE__, __LINE__, __FUNCTION__);
+
+
+        std::cout << "\tPASSED (passing an IP that cannot be resolved)" << std::endl;
+    }
+    catch (const std::exception& e)
+    {
+        std::cout << "\tFAILED: " << e.what() << std::endl;
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 std::cout << "\n*************** ******************************************** ***************" << std::endl;
+
+    close(STDERR_FILENO);
 
     return (0);
 }

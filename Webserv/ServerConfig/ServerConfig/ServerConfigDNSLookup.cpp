@@ -127,7 +127,11 @@ static bool Map_Listener_and_Addrinfo(const t_listeners &listener, DNSLookupHelp
 	hints.ai_socktype = SOCK_STREAM;		//listener would tell me if it is tcp or udp or something else
 
 	if (::getaddrinfo(listener.first.c_str(), listener.second.c_str(), &hints, &res) != 0)
+	{
+		std::cerr << "Error: DNS lookup failed for " << listener.first << ":" << listener.second << std::endl;
 		return (false);
+	}
+		
 	helper.allAddr.push_back(res);
 
 	for (cur = res; cur != NULL; cur = cur->ai_next)
@@ -171,8 +175,11 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 	{
 		BindAddress address = (BindAddress){};
 
-		std::memcpy(&address.sockaddr, (*it)->ai_addr, (*it)->ai_addrlen);
+		std::memcpy(&address.address, (*it)->ai_addr, (*it)->ai_addrlen);
 		address.addrlen = (*it)->ai_addrlen;
+		address.family = (*it)->ai_family;
+		address.socktype = (*it)->ai_socktype;
+		address.protocol = (*it)->ai_protocol;
 		helper.uniqueBind.push_back(address);
 		helper.uniqueAddrToBind.insert(Pair_uniqueAddrToBind(*it, &helper.uniqueBind.back()));
 	}
@@ -255,7 +262,7 @@ bool	ServerConfig::mf_listenDNSlookup()
 			for (MMap_uniqueListenToAddr::iterator it = range.first; it != range.second; ++it)
 			{
 				Map_uniqueAddrToBind::iterator addrIter = helper.uniqueAddrToBind.find(it->second);
-				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->sockaddr));
+				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->address));
 			}
 		}
 	}

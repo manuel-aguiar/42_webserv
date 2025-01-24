@@ -224,10 +224,7 @@ int		ServerConfig::parseConfigFile()
 		return (0);
 	}
 	if (!mf_listenDNSlookup())
-	{
-		std::cerr << "Error: invalid listen directives" << std::endl;
 		return (0);
-	}
 		
 	m_setDefaults();
 	return (1);
