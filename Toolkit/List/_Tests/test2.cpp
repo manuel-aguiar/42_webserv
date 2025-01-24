@@ -1,9 +1,7 @@
-
-
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>
@@ -12,7 +10,7 @@
 #include <stdexcept>
 
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 	/*********************** ************************/
 	std::cout << "TEST " << testNumber++ << ": ";
@@ -29,21 +27,17 @@ int StressTest(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("copy constructor, value mismatch");
-			if (it.getPtr() == iter.getPtr())
-				throw std::logic_error("copy constructor, same pointer");
+			TestHelpers::assertEqual(*it, *iter, "copy constructor, value mismatch", __FILE__, __LINE__, __func__);
+			TestHelpers::assertEqual(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer", __FILE__, __LINE__, __func__);
 		}
 
-		if (list.size() != copy.size())
-			throw std::logic_error("copy constructor, size mismatch");
+		TestHelpers::assertEqual(list.size(), copy.size(), "copy constructor, size mismatch", __FILE__, __LINE__, __func__);
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 	
 
@@ -63,21 +57,17 @@ int StressTest(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("copy assignment, value mismatch");
-			if (it.getPtr() == iter.getPtr())
-				throw std::logic_error("copy constructor, same pointer");
+			TestHelpers::assertEqual(*it, *iter, "copy assignment, value mismatch", __FILE__, __LINE__, __func__);
+			TestHelpers::assertEqual(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer", __FILE__, __LINE__, __func__);
 		}
 
-		if (list.size() != copy.size())
-			throw std::logic_error("copy assignment, size mismatch");
+		TestHelpers::assertEqual(list.size(), copy.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __func__);
 
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	return (testNumber);

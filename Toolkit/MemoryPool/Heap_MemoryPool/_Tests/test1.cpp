@@ -9,7 +9,7 @@
 // Project headers
 # include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 # include "TimerTrackerOld.hpp"
 
 int TestPart1(int testNumber)
@@ -50,12 +50,7 @@ int TestPart1(int testNumber)
         
         vec.reserve(100);
 
-        if (pool.getFreeSpace() != 4096 - 100 * sizeof(int))
-            throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 100 * sizeof(int)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        TestHelpers::assertEqual(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}

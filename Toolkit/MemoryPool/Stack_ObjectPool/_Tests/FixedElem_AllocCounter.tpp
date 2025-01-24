@@ -6,7 +6,7 @@
 
 #include "../Stack_ObjectPool.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 template <typename T, size_t Size>
 class FixedElem_AllocCounter : public Stack_ObjectPool<T, Size>
