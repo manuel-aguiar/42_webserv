@@ -27,22 +27,20 @@ namespace TestHelpers
 	{
 		if (actual != expected)
 		{
-			throw std::logic_error(
-				message + " result was " + TestHelpers::to_string(actual) +
-				" but expected: " + TestHelpers::to_string(expected) + "\n" +
-				TestHelpers::FileLineFunction(file, line, function));
-		}
-	}
-
-	template <typename T>
-	void assertNotEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
-	{
-		if (actual == expected)
-		{
-			throw std::logic_error(
-				message + " result was " + TestHelpers::to_string(actual) +
-				" but expected: " + TestHelpers::to_string(expected) + "\n" +
-				TestHelpers::FileLineFunction(file, line, function));
+			std::string strLine = TestHelpers::to_string(line);
+			std::string strActual = TestHelpers::to_string(actual);
+			std::string strExpected = TestHelpers::to_string(expected);
+			throw std::logic_error(std::string("\n\n")
+				+ "\t----------------------------------" 	+ "\n"
+				+ "\tError:     '" + message 				+ "'\n"
+				+ "\tResult:    '" + strActual 				+ "'\n"
+				+ "\tExpected:  '" + strExpected 			+ "'\n"
+				+ "\t----------------------------------" 	+ "\n"
+				+ "\tFile:       " + file + ":" + strLine 	+ "\n"
+				+ "\tLine:       " + strLine 				+ "\n"
+				+ "\tFunction:   " + function 				+ "\n"
+				+ "\t----------------------------------" 	+ "\n"
+				);
 		}
 	}
 }

@@ -27,8 +27,7 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		bool resultSizeMatch = (std.size() == array.size());
-		TestHelpers::assertEqual(resultSizeMatch, true, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
@@ -56,8 +55,7 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.push_back(i);
 		}
-		bool resultSizeMatch = (std.size() == array.size());
-		TestHelpers::assertEqual(resultSizeMatch, true, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
@@ -85,8 +83,7 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		bool resultSizeMatch = (std.size() == array.size());
-		TestHelpers::assertEqual(resultSizeMatch, true, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
@@ -118,8 +115,7 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 			array.emplace_back(array[0]);
 		}
-		bool resultSizeMatch = (std.size() == array.size());
-		TestHelpers::assertEqual(resultSizeMatch, true, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
