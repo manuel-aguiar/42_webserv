@@ -62,7 +62,7 @@ typedef union
 
 typedef struct s_BindAddress
 {
-	int					family;
+	int					addrFamily;
 	int					socktype;
 	int					protocol;
 	u_sockaddr			address;

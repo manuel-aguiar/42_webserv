@@ -177,7 +177,7 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 
 		std::memcpy(&address.address, (*it)->ai_addr, (*it)->ai_addrlen);
 		address.addrlen = (*it)->ai_addrlen;
-		address.family = (*it)->ai_family;
+		address.addrFamily = (*it)->ai_family;
 		address.socktype = (*it)->ai_socktype;
 		address.protocol = (*it)->ai_protocol;
 		helper.uniqueBind.push_back(address);
