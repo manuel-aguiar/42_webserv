@@ -9,8 +9,7 @@
 # include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../Globals/LogFile/LogFile.hpp"
-# include "../../EventCallback/EventCallback.hpp"
-# include "../EventManager/EventManager.hpp"
+# include "../Events/Manager/Manager.hpp"
 
 // C headers
 # include <sys/socket.h>
@@ -54,7 +53,7 @@ class ListeningSocket
 		t_socklen					getAddrlen()					const;
 		t_port						getPort()						const;
 		int							getBacklog()					const;
-		const Subscription&				getEvent()						const;
+		const Subscription&			getEvent()						const;
 
 		// setters
 		void						setProtoModule					(const t_ptr_ProtoModule& module);
@@ -62,7 +61,7 @@ class ListeningSocket
 
 		// accessors
 		ServerWorker&				accessWorker();
-		Subscription&						accessEvent();
+		Subscription&				accessEvent();
 
 	private:
 
@@ -72,14 +71,13 @@ class ListeningSocket
 
 		t_func_initProtoConn		m_initConnection;
 		t_ptr_ProtoModule			m_protoModule;
-		Subscription						m_event;
+		Subscription*				m_event;
 		ServerWorker&				m_worker;
 		Globals&                    m_globals;
 
 		ListeningSocket();
 		ListeningSocket(const ListeningSocket& copy);
 		ListeningSocket& operator=(const ListeningSocket& assign);
-
 
 		int    mf_close_accepted_connection(Connection& connection);
 		int    mf_bind();
