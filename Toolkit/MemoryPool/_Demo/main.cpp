@@ -11,7 +11,7 @@
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../Heap_ObjectPool/Heap_ObjectPool.hpp"
-# include "../../_Tests/TestHelpers.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 /*
 

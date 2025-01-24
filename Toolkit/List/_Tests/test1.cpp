@@ -1,7 +1,7 @@
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-#include "../../_Tests/TestHelpers.h"
+#include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>

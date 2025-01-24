@@ -6,7 +6,7 @@
 
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <climits>

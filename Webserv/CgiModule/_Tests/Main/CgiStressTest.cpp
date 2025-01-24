@@ -8,7 +8,7 @@
 # include "../../../Globals/Globals.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../../../Toolkit/_Tests/TestHelpers.h"
+# include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "CgiStressTest.hpp"
 
 //C++ headers

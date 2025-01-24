@@ -15,7 +15,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/TestHelpers.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 static long fibGood(unsigned int n)
 {

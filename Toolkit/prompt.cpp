@@ -19,7 +19,7 @@ i am refactoring c++98 code with a new function i made. here is what i have done
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {

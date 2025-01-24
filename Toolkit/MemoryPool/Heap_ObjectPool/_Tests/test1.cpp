@@ -2,7 +2,7 @@
 
 // Project headers
 #include "../Heap_ObjectPool.hpp"
-#include "../../../_Tests/TestHelpers.h"
+#include "../../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <map>

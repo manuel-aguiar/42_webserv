@@ -1,5 +1,4 @@
 
-
 # include "TestHelpers.h"
 
 std::string TestHelpers::FileLineFunction(const char* file, const int line, const char* function)

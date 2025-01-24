@@ -1,16 +1,18 @@
 
+#ifndef TESTHELPERS_H
 
-#ifndef TEST_H
+# define TESTHELPERS_H
 
-# define TEST_H
+#include <string>
+#include <sstream>
+#include <stdexcept>
 
-# include <iostream>
-# include <iomanip>
-# include <sstream>
-# include <string>
 
 namespace TestHelpers
 {
+	
+    std::string FileLineFunction(const char* file, const int line, const char* function);
+
 	template <typename T>
 	std::string to_string(const T& value)
 	{
@@ -18,9 +20,6 @@ namespace TestHelpers
 		oss << value;
 		return oss.str();
 	}
-
-
-	std::string FileLineFunction(const char* file, const int line, const char* function);
 
 	template <typename T>
 	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
@@ -43,7 +42,9 @@ namespace TestHelpers
 				);
 		}
 	}
+
 }
+
 
 
 #endif

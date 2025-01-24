@@ -9,7 +9,7 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Test helpers
-# include "../../../Toolkit/_Tests/TestHelpers.h"
+# include "../../../Toolkit/TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <iostream>

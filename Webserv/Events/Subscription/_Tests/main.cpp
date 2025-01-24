@@ -4,7 +4,7 @@
 # include "../EventCallback.hpp"
 
 //Project headers
-# include "../../../Toolkit/_Tests/TestHelpers.h"
+# include "../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include <iostream>
 # include <cstdio>

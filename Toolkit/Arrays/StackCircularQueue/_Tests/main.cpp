@@ -14,7 +14,7 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);

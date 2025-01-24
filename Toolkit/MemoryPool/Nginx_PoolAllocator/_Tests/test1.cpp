@@ -10,7 +10,7 @@
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {

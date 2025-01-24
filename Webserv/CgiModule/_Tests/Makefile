@@ -34,7 +34,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestCgiGateway.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
 									\
-				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp \
+				$(SRC_PATH)/Toolkit/TestHelpers/TestHelpers.cpp \
 									\
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModule.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \

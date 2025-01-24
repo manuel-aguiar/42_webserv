@@ -9,7 +9,7 @@
 // Project headers
 # include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 # include "TimerTrackerOld.hpp"
 
 int TestPart1(int testNumber)
