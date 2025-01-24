@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConnectionManager.cpp                                 :+:      :+:    :+:   */
+/*   Manager.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,12 +13,12 @@
 # include "../ConnectionManager/ConnectionManager.hpp"
 # include "../../EventCallback/EventCallback.hpp"
 
-ConnectionManager::~ConnectionManager()
+Manager::~Manager()
 {
 
 }
 
-ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
+Manager::Manager(size_t maxConnections, Nginx_MemoryPool& borrowedPool, Globals& globals) :
     m_maxConnections(maxConnections),
     m_connections(Nginx_PoolAllocator<Connection>(&borrowedPool)),
     m_readEvents(Nginx_PoolAllocator<Subscription>(&borrowedPool)),
@@ -45,7 +45,7 @@ ConnectionManager::ConnectionManager(size_t maxConnections, Nginx_MemoryPool& bo
 
 }
 
-Connection* ConnectionManager::provideConnection()
+Connection* Manager::provideConnection()
 {
     Connection*     connection;
 
@@ -56,7 +56,7 @@ Connection* ConnectionManager::provideConnection()
     return (connection);
 }
 
-void ConnectionManager::returnConnection(Connection& connection)
+void Manager::returnConnection(Connection& connection)
 {
     connection.reset();
     m_spareConnections.push_front(&connection);
@@ -65,7 +65,7 @@ void ConnectionManager::returnConnection(Connection& connection)
 
 //private, as usual
 
-ConnectionManager::ConnectionManager(const ConnectionManager& copy) :
+Manager::Manager(const Manager& copy) :
     m_maxConnections(copy.m_maxConnections),
     m_connections(copy.m_connections),
     m_readEvents(copy.m_readEvents),
@@ -73,4 +73,4 @@ ConnectionManager::ConnectionManager(const ConnectionManager& copy) :
     m_spareConnections(copy.m_spareConnections),
     m_globals(copy.m_globals)
 {(void)copy;}
-ConnectionManager& ConnectionManager::operator=(const ConnectionManager& assign) {(void)assign; return (*this);}
+Manager& Manager::operator=(const Manager& assign) {(void)assign; return (*this);}

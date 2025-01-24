@@ -39,7 +39,7 @@ ServerWorker::ServerWorker(ServerManager& manager, size_t serverID, Nginx_Memory
 
 /*
 	ListeningSockets are created inside the serverWorker's memory pool which doesn't call destructors
-	so we must call it explicitely ourselves. ConnectionManager is the same since it builts its structs
+	so we must call it explicitely ourselves. Manager is the same since it builts its structs
 	inside the same memorypool, so we must call its destructor explicitely.
 
 	The alternative to all of this could be to wrap the memory pool inside a shared pointer.
@@ -68,7 +68,7 @@ void	ServerWorker::addPendingAccept(ListeningSocket& listener)
 
 
 /*
-	Goes to the connection manager, removes the need from listening sockets to access the ConnectionManager
+	Goes to the connection manager, removes the need from listening sockets to access the Manager
 	and instead they interact with their worker to provide it to them, reduces interdependency slightly
 */
 Connection*						ServerWorker::provideConnection()
@@ -77,7 +77,7 @@ Connection*						ServerWorker::provideConnection()
 }
 
 /*
-	When a Connection is returned to the ConnectionManager, check if there are listeningsockets
+	When a Connection is returned to the Manager, check if there are listeningsockets
 	waiting for a free Connection instance such that they can accept.
 
 	If so, try to accept the first on the queue. If successful, move the ListeningSocket to the end of the
@@ -143,7 +143,7 @@ const ServerManager&		ServerWorker::getServerManager() const
 //	return (m_cgiManager);
 //}
 
-const ConnectionManager&	ServerWorker::getConnManager() const
+const Manager&	ServerWorker::getConnManager() const
 {
 	return (m_connManager);
 }
@@ -176,7 +176,7 @@ ServerManager&				ServerWorker::accessServerManager()
 //	return (m_cgiManager);
 //}
 
-ConnectionManager&			ServerWorker::accessConnManager()
+Manager&			ServerWorker::accessConnManager()
 {
 	return (m_connManager);
 }

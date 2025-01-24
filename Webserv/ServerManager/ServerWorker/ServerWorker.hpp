@@ -43,7 +43,7 @@ class ServerWorker
 															const t_ptr_ProtoModule& protoModule, 
 															const t_func_initProtoConn& initProtoConnection);
 
-		// interaction with ConnectionManager
+		// interaction with Manager
 		Connection*						provideConnection();
 		void							returnConnection(Connection& connection);
 
@@ -54,7 +54,7 @@ class ServerWorker
 	// getters
 		int								getID()				const;
 		const ServerManager&			getServerManager()	const;
-		const ConnectionManager&		getConnManager()	const;
+		const Manager&		getConnManager()	const;
 		const Manager&				getEventManager()	const;
 		const DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
 										getListeners()		const;
@@ -64,7 +64,7 @@ class ServerWorker
 		void							stop();
 	// accessors
 		ServerManager&					accessServerManager();
-		ConnectionManager&				accessConnManager();
+		Manager&				accessConnManager();
 		Manager&					accessEventManager();
 
 		DynArray<ListeningSocket*, Nginx_PoolAllocator<ListeningSocket*> >&
@@ -79,7 +79,7 @@ class ServerWorker
 
 		ServerManager&									m_serverManager;
 		const ServerConfig&								m_config;
-		ConnectionManager								m_connManager;
+		Manager								m_connManager;
 		Manager									m_eventManager;
 		Subscription											m_mySignalEvent;
 		Nginx_MemoryPool&								m_memPool;

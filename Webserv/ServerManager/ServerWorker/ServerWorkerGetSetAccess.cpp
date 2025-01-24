@@ -19,7 +19,7 @@ const ServerManager&		ServerWorker::getServerManager() const
 //	return (m_cgiManager);
 //}
 
-const ConnectionManager&	ServerWorker::getConnManager() const
+const Manager&	ServerWorker::getConnManager() const
 {
 	return (m_connManager);
 }
@@ -52,7 +52,7 @@ ServerManager&				ServerWorker::accessServerManager()
 //	return (m_cgiManager);
 //}
 
-ConnectionManager&			ServerWorker::accessConnManager()
+Manager&			ServerWorker::accessConnManager()
 {
 	return (m_connManager);
 }

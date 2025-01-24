@@ -51,13 +51,7 @@ typedef void*										t_ptr_ProtoConnection;
 typedef void*										t_ptr_ProtoModule;
 
 
-typedef union
-{
-	t_sockaddr         sockaddr;
-	t_sockaddr_in      sockaddr_in;
-	t_sockaddr_in6     sockaddr_in6;
-	t_sockaddr_un      sockaddr_un;
-}   u_sockaddr;
+
 
 # define MAX_EPOLL_EVENTS 64
 
@@ -65,6 +59,32 @@ namespace Ws
 {
 	typedef int			fd;
 	typedef pid_t		pid;
+
+	namespace Sock
+	{
+		typedef int					fd;
+		typedef socklen_t			addrlen;
+		typedef int					addrFamily;
+		typedef int					type;
+		typedef int					protocol;
+		typedef union
+		{
+			t_sockaddr         sockaddr;
+			t_sockaddr_in      sockaddr_in;
+			t_sockaddr_in6     sockaddr_in6;
+			t_sockaddr_un      sockaddr_un;
+		}   addr;
+	}
+
+
+	typedef struct s_BindAddress
+	{
+		Sock::addrFamily	family;
+		Sock::type			socktype;
+		Sock::protocol		proto;
+		Sock::addr			addr;
+		Sock::addrlen		addrlen;
+	}	BindAddress; 
 }
 
 #endif
