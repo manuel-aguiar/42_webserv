@@ -19,8 +19,6 @@ namespace TestHelpers
 		return oss.str();
 	}
 
-	std::string FileLineFunction(const char* file, const int line, const char* function);
-
 	template <typename T>
 	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
 	{
