@@ -6,50 +6,50 @@
 
 namespace Events
 {
-	Manager::Subscription::User				Manager::Subscription::accessUser()
+	Subscription::User				Subscription::accessUser()
 	{
 		return (m_user);
 	}
 
-	Manager::Subscription::Callback			Manager::Subscription::accessService()
+	Subscription::Callback			Subscription::accessService()
 	{
 		return (m_callback);
 	}
 
 	// getters
-	Ws::fd						Manager::Subscription::getFd() const
+	Ws::fd						Subscription::getFd() const
 	{
 		return (m_fd);
 	}
 
-	Events::Monitor::Mask			Manager::Subscription::getMonitoredEvents() const
+	Events::Monitor::Mask			Subscription::getMonitoredEvents() const
 	{
 		return (m_monitoredEvents);
 	}
 
-	Events::Monitor::Mask			Manager::Subscription::getTriggeredEvents() const
+	Events::Monitor::Mask			Subscription::getTriggeredEvents() const
 	{
 		return (m_monitoredEvents);
 	}
 
 	// setters
 
-	void	Manager::Subscription::setFd(const Ws::fd fd)
+	void	Subscription::setFd(const Ws::fd fd)
 	{
 		m_fd = fd;
 	}
 
-	void	Manager::Subscription::setMonitoredEvents(const Events::Monitor::Mask flags)
+	void	Subscription::setMonitoredEvents(const Events::Monitor::Mask flags)
 	{
 		m_monitoredEvents = flags;
 	}
 
-	void	Manager::Subscription::setUser(const Manager::Subscription::User user)
+	void	Subscription::setUser(const Subscription::User user)
 	{
 		m_user = user;
 	}
 
-	void	Manager::Subscription::setCallback(const Manager::Subscription::Callback handler)
+	void	Subscription::setCallback(const Subscription::Callback handler)
 	{
 		m_callback = handler;
 	}

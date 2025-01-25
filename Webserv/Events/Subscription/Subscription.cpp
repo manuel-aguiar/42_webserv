@@ -7,22 +7,22 @@
 
 namespace Events
 {
-	Manager::Subscription::Subscription() :
+	Subscription::Subscription() :
 		m_fd				(-1),
 		m_monitoredEvents	(Events::Monitor::NONE),
 		m_user				(NULL),
 		m_callback			(NULL)
 	{}
 
-	Manager::Subscription::~Subscription() {}
+	Subscription::~Subscription() {}
 
-	void 	Manager::Subscription::notify()
+	void 	Subscription::notify()
 	{
 		if (m_callback)
 			m_callback(*this);
 	}
 
-	void	Manager::Subscription::reset()
+	void	Subscription::reset()
 	{
 		m_fd = -1;
 		m_monitoredEvents = Events::Monitor::NONE;
@@ -31,6 +31,6 @@ namespace Events
 	}
 
 	//private
-	Manager::Subscription::Subscription(const Subscription& copy)  {(void)copy;}
-	Manager::Subscription& Manager::Subscription::operator=(const Subscription& assign) {(void)assign; return (*this);}
+	Subscription::Subscription(const Subscription& copy)  {(void)copy;}
+	Subscription& Subscription::operator=(const Subscription& assign) {(void)assign; return (*this);}
 }

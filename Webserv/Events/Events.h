@@ -8,9 +8,4 @@
 # include "Manager/Manager.hpp"
 # include "Subscription/Subscription.hpp"
 
-namespace Events
-{
-	typedef Events::Manager::Subscription Subscription;
-}
-
 #endif

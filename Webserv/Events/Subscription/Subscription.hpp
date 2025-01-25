@@ -5,11 +5,10 @@
 # define EVENTSUBSCRIPTION_HPP
 
 # include "../m_EventsDefinitions.h"
-# include "../Manager/Manager.hpp"
 
 namespace Events
 {
-	class Manager::Subscription
+	class Subscription
 	{
 		public:
 
@@ -49,10 +48,7 @@ namespace Events
 			~Subscription();			
 			Subscription(const Subscription& copy);
 			Subscription& operator=(const Subscription& assign);
-
-
 			//for internal use
-
 	};
 }
 
