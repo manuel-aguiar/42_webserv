@@ -1,9 +1,7 @@
-
-
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/TestHelpers.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>
@@ -19,9 +17,8 @@ int TestPart3(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-
-		std::list<int> 	    std;
-        List<int>           list;   
+		std::list<int>  std;
+        List<int>     list;   
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -32,21 +29,19 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
 
-		std::list   <int>::iterator    iter = std.begin();
-		List        <int>::iterator    it = list.begin();
-		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		std::list<int>::iterator iter = std.begin();
+		List<int>::iterator it = list.begin();
+		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __func__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 /******************* *** ************************/
@@ -55,9 +50,8 @@ int TestPart3(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-
-		std::list<int> 	    std;
-		List<int> 			list;
+		std::list<int> std;
+		List<int> list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -68,21 +62,19 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
 
-		std::list<int>::iterator    iter = std.begin();
-		List<int>::iterator         it = list.begin();
-		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		std::list<int>::iterator iter = std.begin();
+		List<int>::iterator it = list.begin();
+		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __func__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 /******************* TEST ::erase() ************************/
@@ -108,21 +100,18 @@ int TestPart3(int testNumber)
         std::advance(listIter, 10);
         list.erase(listIter);
 
-        if (stdList.size() != list.size())
-            throw std::logic_error("size mismatch");
+        TestHelpers::assertEqual(stdList.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
 
         std::list<int>::iterator stdIt = stdList.begin();
         List<int>::iterator listIt = list.begin();
-        for ( ; stdIt != stdList.end() && listIt != list.end(); ++stdIt, ++listIt)
+        for (; stdIt != stdList.end() && listIt != list.end(); ++stdIt, ++listIt)
         {
-            if (*stdIt != *listIt)
-                throw std::logic_error("value mismatch");
+            TestHelpers::assertEqual(*stdIt, *listIt, "value mismatch", __FILE__, __LINE__, __func__);
         }
 
-        if (stdList.size() == 99 && list.size() != 99)
-            throw std::logic_error("Erase operation did not behave as expected");
+        TestHelpers::assertEqual(list.size(), (size_t)99, "Erase operation did not behave as expected", __FILE__, __LINE__, __func__);
             
-        std::cout << "	PASSED" << std::endl;
+        std::cout << "\tPASSED" << std::endl;
     }
     catch (const std::exception& e)
     {

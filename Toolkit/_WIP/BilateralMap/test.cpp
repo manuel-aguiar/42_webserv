@@ -6,7 +6,7 @@
 template <typename T>
 class MemoryPool_Wrapper {
 public:
-    typedef T value_type; // Flags that this allocator will manage
+    typedef T value_type; // Type that this allocator will manage
 
     // Pointer types
     typedef T* pointer;

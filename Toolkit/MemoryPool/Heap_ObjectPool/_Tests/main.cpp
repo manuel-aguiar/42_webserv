@@ -2,7 +2,7 @@
 #include "../Heap_ObjectPool.hpp"
 #include <list>
 
-#include "../../../_Tests/TestHelpers.h"
+#include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);

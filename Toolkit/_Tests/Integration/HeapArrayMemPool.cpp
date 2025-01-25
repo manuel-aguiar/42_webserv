@@ -63,7 +63,8 @@ int testHeapArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        	}
+        TEST_FAIL_INFO();
+	}
     testNumber++;
 
 /*******************  *****************************/
@@ -148,6 +149,7 @@ int testHeapArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
     testNumber++;
 
@@ -182,6 +184,7 @@ int testHeapArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
     testNumber++;
 

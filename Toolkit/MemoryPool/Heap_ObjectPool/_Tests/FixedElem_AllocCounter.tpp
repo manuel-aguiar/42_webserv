@@ -6,7 +6,7 @@
 
 #include "../Heap_ObjectPool.hpp"
 
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 template <typename T, typename Allocator = std::allocator<T> >
 class FixedElem_AllocCounter : public Heap_ObjectPool<T, Allocator>

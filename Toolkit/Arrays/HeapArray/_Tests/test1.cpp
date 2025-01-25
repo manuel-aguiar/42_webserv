@@ -1,4 +1,3 @@
-
 // C++ headers
 #include <iostream>
 #include <cstring>
@@ -10,8 +9,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/TestHelpers.h"
-
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
@@ -21,22 +19,21 @@ int TestPart1(int testNumber)
 		std::vector<int> 		std;
 		HeapArray<int> 			array(100);
 
+		/************* Insert elements and test size *************/
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.push_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after pushing elements", __FILE__, __LINE__, __FUNCTION__);
+
+		/************* Compare elements *************/
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
-				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -44,7 +41,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-	
+
 	/******************* ***** ************************/
 
 	try
@@ -53,22 +50,21 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy> 		std;
 		HeapArray<ToolkitDummy> 		array(100);
 
+		/************* Insert elements and test size *************/
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.push_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after pushing ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+
+		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
-				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration with ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -76,7 +72,8 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-	/******************* *****************************/
+
+	/******************* ***** ************************/
 
 	try
 	{
@@ -84,22 +81,21 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy> 		std;
 		HeapArray<ToolkitDummy> 		array(100);
 
+		/************* Insert elements with emplace_back and test size *************/
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after emplacing ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+
+		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
-				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			TestHelpers::assertEqual(*it, *iter, "value mismatch during emplace_back iteration with ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -108,9 +104,7 @@ int TestPart1(int testNumber)
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
 
-
-
-/******************* ***** ************************/
+	/******************* ***** ************************/
 
 	try
 	{
@@ -118,6 +112,7 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy> 			std;
 		HeapArray<ToolkitDummy> 			array(200);
 
+		/************* Insert elements and duplicate some *************/
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
@@ -125,17 +120,15 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 			array.emplace_back(array[0]);
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + TestHelpers::to_string(array.size()) + " expected: " + TestHelpers::to_string(std.size()) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after inserting and duplicating ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+
+		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::runtime_error("value mismatch, got: " + TestHelpers::to_string(*it) + " expected: " + TestHelpers::to_string(*iter) + '\n'
-				+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration with duplicated ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -143,9 +136,6 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
-
-/***************************************** */
-
 
     return (testNumber);
 }

@@ -1,16 +1,13 @@
-
-
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/TestHelpers.h"
+#include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
-
 
 int TestPart1(int testNumber)
 {
@@ -26,21 +23,19 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			list.push_back(i);
 		}
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/************************ ************************/
@@ -49,28 +44,26 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
-		List<ToolkitDummy> 		list;
+		List<ToolkitDummy> 	list;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_front(i);
 			list.push_front(i);
 		}
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -79,56 +72,52 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
-		List<ToolkitDummy> 		list;
+		List<ToolkitDummy> 	list;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_front(i);
 			list.emplace_front(i);
 		}
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
-		List<ToolkitDummy> 		list;
+		List<ToolkitDummy> 	list;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			list.emplace_back(i);
 		}
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -137,7 +126,7 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 		std::list<ToolkitDummy> 	std;
-		List<ToolkitDummy> 		list;
+		List<ToolkitDummy> 	list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -164,24 +153,20 @@ int TestPart1(int testNumber)
 
 			std.pop_front();
 			list.pop_front();
-
-
 		}
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -197,20 +182,18 @@ int TestPart1(int testNumber)
 		}
 
 		List<ToolkitDummy> copy;
-
 		copy = list;
 		List<ToolkitDummy>::iterator iter = copy.begin();
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -236,24 +219,17 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator iter = copy.begin();
 		List<ToolkitDummy>::iterator it = list.begin();
 
-		if (list.size() != copy.size())
-		{
-			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
-
-			throw std::logic_error("size mismatch");
-		}
-
+		TestHelpers::assertEqual(list.size(), copy.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -274,14 +250,13 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	/******************* *** ************************/
@@ -307,24 +282,17 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator iter = copy.begin();
 		List<ToolkitDummy>::iterator it = list.begin();
 
-		if (list.size() != copy.size())
-		{
-			std::cout << "list size: " << list.size() << " copy size: " << copy.size() << std::endl;
-
-			throw std::logic_error("size mismatch");
-		}
-
+		TestHelpers::assertEqual(list.size(), copy.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
-		std::cout << "	PASSED" << std::endl;
+		std::cout << "\tPASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << "\tFAILED: " << e.what()  << std::endl;
 	}
 
 	return (testNumber);

@@ -1,5 +1,3 @@
-
-
 // C++ headers
 #include <iostream>
 #include <cstring>
@@ -11,7 +9,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
@@ -21,23 +19,22 @@ int TestPart1(int testNumber)
     try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		DynArray<int> 			array;
+		std::vector<int> std;
+		DynArray<int> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -50,23 +47,22 @@ int TestPart1(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.push_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -79,23 +75,22 @@ int TestPart1(int testNumber)
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -105,13 +100,13 @@ int TestPart1(int testNumber)
 	}
 
 
-/******************* ************************/
+	/******************* ************************/
 
 	try
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -120,15 +115,14 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 			array.emplace_back(array[0]);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

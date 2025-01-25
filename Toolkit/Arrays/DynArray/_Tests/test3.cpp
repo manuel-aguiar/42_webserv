@@ -11,7 +11,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/TestHelpers.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart3(int testNumber)
 {
@@ -43,15 +43,14 @@ int TestPart3(int testNumber)
 			std.push_back(new ToolkitBase(i));
 			array.push_back(new ToolkitBase(i));
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+
+		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
 
 		DynArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (**it != **iter)
-				throw std::logic_error("value mismatch");
+			TestHelpers::assertEqual((*it)->getValue() == (*iter)->getValue(), true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
 		}
 
 		it = array.begin();

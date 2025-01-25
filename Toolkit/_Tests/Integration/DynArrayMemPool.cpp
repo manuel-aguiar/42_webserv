@@ -37,6 +37,7 @@ int DynArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
 
 /******************* TEST 5 ************************/
@@ -95,6 +96,7 @@ int DynArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
 
 
@@ -182,6 +184,7 @@ int DynArrayMemPool(int testNumber)
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAIL_INFO();
 	}
     testNumber++;
 
