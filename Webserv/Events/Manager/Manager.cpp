@@ -44,7 +44,8 @@ namespace Events
 	Events::Subscription*
 	Manager::acquireSubscription()
 	{
-		assert (m_availableSubs.size() > 0);
+		//check if there are available subscriptions
+		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		InternalSub* subscription;
 		
 		subscription = m_availableSubs.front();
@@ -59,8 +60,13 @@ namespace Events
 
 		internal = static_cast<InternalSub*>(&subscription);
 
-		//event must not be subscribed 
-		assert(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE);
+		//subscription must be part of the manager's subscriptions
+		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
+		true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
+
+		//event must not being monitored
+		ASSERT_EQUAL(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE,
+		true, "Manager::returnSubscription(): Subscription is still being monitored");
 		m_availableSubs.emplace_back(internal);
 	}
 
