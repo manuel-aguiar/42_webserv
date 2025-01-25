@@ -13,7 +13,7 @@
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
 
-// forward declarations ///
+/// forward declarations ///
 class Globals;
 class InternalSub;
 namespace Events
