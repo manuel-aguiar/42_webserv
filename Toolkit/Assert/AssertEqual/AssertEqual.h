@@ -5,7 +5,7 @@
 	#ifndef NDEBUG
 		#include <iostream>
 		#include <cstdlib> // for abort
-		#include "../../TestHelpers/TestHelpers.h"
+		
 		#define ASSERT_EQUAL(actual, expected, message)                                		 				\
 			do                                                                          					\
 			{                                                                           					\
