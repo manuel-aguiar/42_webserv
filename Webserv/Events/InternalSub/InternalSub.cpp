@@ -5,14 +5,14 @@
 #include <cstdlib>
 
 InternalSub::InternalSub() : 
-    Subscription(),
+    Events::Subscription(),
     m_subscribedFd(-1),
     m_subscribedEvents(Events::Monitor::NONE) {}
 
 InternalSub::~InternalSub() {}
 
 InternalSub::InternalSub(const InternalSub& copy) : 
-    Subscription(copy), 
+    Events::Subscription(copy), 
     m_subscribedFd(copy.m_subscribedFd), 
     m_subscribedEvents(copy.m_subscribedEvents) {}
 
@@ -20,7 +20,7 @@ InternalSub& InternalSub::operator=(const InternalSub& assign)
 {
     if (this == &assign)
         return (*this);
-    Subscription::operator=(assign);
+    Events::Subscription::operator=(assign);
     m_subscribedFd = assign.m_subscribedFd;
     m_subscribedEvents = assign.m_subscribedEvents;
     return (*this);

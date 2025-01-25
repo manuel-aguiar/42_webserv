@@ -82,7 +82,7 @@ int TestPart1(int testNumber)
 		pipe(testpipe);
 		dup2(testpipe[1], STDOUT_FILENO);
 		char buffer[64];
-
+		
 		Events::Manager manager(100, globals);
 		Events::Subscription* subscription = manager.acquireSubscription();
 
