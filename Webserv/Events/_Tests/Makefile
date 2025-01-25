@@ -29,9 +29,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 													\
-				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
-				\
-				$(SRC_PATH)/Toolkit/_Tests/testHelpers.cpp
+				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS 			= 	$(OBJS:.o=.d)

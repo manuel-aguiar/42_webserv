@@ -5,6 +5,8 @@
 # include "../InternalSub/InternalSub.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+
 #include <iostream>
 
 namespace Events
@@ -12,8 +14,8 @@ namespace Events
 	Manager::Manager(size_t maxSubscriptions, Globals& globals) :
 		m_subscribeCount(0),
 		m_epollfd		(-1),
-		m_globals		(globals),
 		m_maxStaleFd	(0),
+		m_globals		(globals),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
 		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
@@ -99,15 +101,19 @@ namespace Events
 		t_epoll_event	epollEvent = (t_epoll_event){};
 		
 		internal = static_cast<InternalSub*>(&event);
+		fd = internal->getFd();
+
+		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
+		true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::startMonitoring(): Subscription passed has fd = -1");
+
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 
-		fd = internal->getFd();
-		assert(fd != -1);
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
-			assert(false); // this should never happen
+			ASSERT_EQUAL(true, false, "Manager::startMonitoring(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::startMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
@@ -128,17 +134,19 @@ namespace Events
 		t_epoll_event	epollEvent = (t_epoll_event){};
 
 		internal = static_cast<InternalSub*>(&event);
+		fd = internal->getFd();
+
+		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
+		true, "Manager::updateEvents(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::updateEvents(): Subscription passed has fd = -1");
+
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 		
-		fd = internal->getFd();
 		
-		// check the subscription fd is the same but the events are different
-		assert(fd == internal->getSubscribedFd() && internal->getSubscribedEvents() != internal->getMonitoredEvents());
-
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 		{
-			assert(false); // this should never happen
+			ASSERT_EQUAL(true, false, "Manager::updateEvents(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
@@ -159,11 +167,13 @@ namespace Events
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
 
-		assert(fd != -1);
+		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
+		true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::stopMonitoring(): Subscription passed has fd = -1");
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
-			assert(false); // this should never happen
+			ASSERT_EQUAL(true, false, "Manager::stopMonitoring(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}

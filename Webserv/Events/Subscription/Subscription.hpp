@@ -11,6 +11,10 @@ namespace Events
 	class Subscription
 	{
 		public:
+			Subscription();
+			~Subscription();			
+			Subscription(const Subscription& copy);
+			Subscription& operator=(const Subscription& assign);
 
 			typedef void* 				User;
 			typedef void 				(*Callback)(Subscription& event);
@@ -44,11 +48,6 @@ namespace Events
 			Subscription::User			m_user;
 			Subscription::Callback		m_callback;
 
-			Subscription();
-			~Subscription();			
-			Subscription(const Subscription& copy);
-			Subscription& operator=(const Subscription& assign);
-			//for internal use
 	};
 }
 

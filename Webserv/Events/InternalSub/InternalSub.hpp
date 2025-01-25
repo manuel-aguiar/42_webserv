@@ -4,7 +4,6 @@
 
 # define EVENTINTERNALSUBSCRIPTION_HPP
 
-# include "../m_EventsDefinitions.h"
 # include "../Subscription/Subscription.hpp"
 
 class InternalSub : public Events::Subscription
