@@ -11,7 +11,7 @@ namespace Events
 		return (m_user);
 	}
 
-	Subscription::Callback			Subscription::accessService()
+	Subscription::Callback			Subscription::accessCallback()
 	{
 		return (m_callback);
 	}

@@ -25,7 +25,7 @@ namespace Events
 
 			// accessors
 			Subscription::User			accessUser();
-			Subscription::Callback		accessService();
+			Subscription::Callback		accessCallback();
 
 			//getters
 			Ws::fd						getFd()					const;
