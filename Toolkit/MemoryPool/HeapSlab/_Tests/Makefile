@@ -14,8 +14,7 @@ SRCS					=		$(SRC_PATH)/MemoryPool/HeapSlab/_Tests/main.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		\
-								$(SRC_PATH)/_Tests/testHelpers.cpp		
+								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

@@ -4,10 +4,11 @@
 
 # define NGINX_FIXEDPOOL_HPP
 
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
+
 // C++ headers
 # include <cstddef>
-# include <cassert>
-# include <iostream>
 
 template <typename T, typename Allocator>
 class Impl_Heap_MemoryPool
@@ -25,18 +26,19 @@ class Impl_Heap_MemoryPool
 
         ~Impl_Heap_MemoryPool() { destroy(); }
 
-        T*  allocate(size_t size) {
-            assert(m_array != NULL);
+        T*  allocate(size_t size)
+        {
+            ASSERT_EQUAL(m_array != NULL, true, "Heap Memory Pool: Array is NULL");
             return (allocate(size, (size * sizeof(T) > sizeof(size_t)) ? sizeof(size_t) : size * sizeof(T)));
         }
 
         T*  allocate(size_t size, size_t alignment)
         {
-            assert(m_array != NULL);
+            ASSERT_EQUAL(m_array != NULL, true, "Heap Memory Pool: Array is NULL");
 
             T* location = mf_allignedAlloc(m_freePosition, alignment);
 
-            assert(location + size <= m_endOfBlock);
+            ASSERT_EQUAL(location + size <= m_endOfBlock, true, "Heap Memory Pool: Out of memory");
             m_freePosition = location + size;
             return (location);    
         }

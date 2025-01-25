@@ -4,8 +4,11 @@
 
 # define IMPL_THREADPOOL_TPP
 
+
+
 // Project headers
 # include "../ThreadPool.hpp"
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 // C headers
 # include <pthread.h>
@@ -82,7 +85,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 {
 	ThreadWorker* worker;
 
-	assert(m_threads.getElemCount() < ThreadBacklog);
+	ASSERT_EQUAL(m_threads.getElemCount() < ThreadBacklog, true, "ThreadPool: No more threads can be added");
 
 	pthread_mutex_lock(&m_statusLock);
 
@@ -96,7 +99,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::addThread()
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::removeThread()
 {
-	assert(m_threads.getElemCount() > 0);
+	ASSERT_EQUAL(m_threads.getElemCount() > 0, true, "ThreadPool: No threads to remove");
 	
 	pthread_mutex_lock(&m_statusLock);
 	m_taskQueue.addTask(NULL);
