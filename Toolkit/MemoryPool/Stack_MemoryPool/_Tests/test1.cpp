@@ -73,21 +73,12 @@ int TestPart1(int testNumber)
         Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > alloc(pool);
         std::list<std::string, Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > > list(alloc);
         
-
-        if (pool.getFreeSpace() != 4096)
-            throw std::runtime_error("free space is not correct, got: " 
-            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
-            + TestHelpers::to_string(4096 - 100 * sizeof(int)) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)4096, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
 
         list.push_back("big string that mallocs just to be sure that RAII is working");
         list.push_back("fits buf");
 
-        if (pool.getFreeSpace() != 4096 - 2 * (sizeof(std::string) + 8 + 8))
-            throw std::runtime_error("free space is not correct, got: " 
-            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
-            + TestHelpers::to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(pool.getFreeSpace(), 4096 - 2 * (sizeof(std::string) + 8 + 8), "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -112,22 +103,12 @@ int TestPart1(int testNumber)
 
         std::list<std::string, Heap_ObjectPool<std::string, Nginx_PoolAllocator<std::string, Stack_MemoryPool<poolSize> > > > list(alloc);
         
-
-        if (pool.getFreeSpace() != poolSize)
-            throw std::runtime_error("free space is not correct, got: " 
-            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
-            + TestHelpers::to_string(4096 - 100 * sizeof(int)) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)poolSize, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
 
         for (int i = 0; i < elementCount; i++)
             list.push_back("big string that mallocs just to be sure that RAII is working");
 
-        if (pool.getFreeSpace() != 0)
-            throw std::runtime_error("free space is not correct, got: " 
-            + TestHelpers::to_string(pool.getFreeSpace()) + " expected: " 
-            + TestHelpers::to_string(4096 - 2 * (sizeof(int) + 4 + 8 + 8)) + '\n'
-            + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)0, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}

@@ -4,8 +4,8 @@
 
 # define STACKCIRCULARQUEUE_TPP
 
-# include <cassert>
-# include <iostream>
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 template <typename T, size_t queueCapacity>
 class StackCircularQueue
@@ -16,6 +16,7 @@ class StackCircularQueue
 			m_frontIndex(-1),
 			m_backIndex(-1)
 		{
+			ASSERT_EQUAL(queueCapacity != 0, true, "StackCircularQueue: capacity must be greater than 0");
 			for (size_t i = 0; i < queueCapacity; ++i)
 			{
 				new(&m_typeArray[i]) T();
@@ -71,8 +72,7 @@ class StackCircularQueue
 
 		T& operator[](const size_t index)
 		{
-			assert(index < queueCapacity);
-
+			ASSERT_EQUAL(index < queueCapacity, true, "StackCircularQueue Copy: Index out of bounds");
 			size_t position;
 
 			position = (m_frontIndex + index) % queueCapacity;
@@ -81,7 +81,7 @@ class StackCircularQueue
 
 		const T& operator[](const size_t index) const
 		{
-			assert(index < queueCapacity);
+			ASSERT_EQUAL(index < queueCapacity, true, "StackCircularQueue Copy: Index out of bounds");
 			
 			size_t position;
 
@@ -112,7 +112,7 @@ class StackCircularQueue
 		
         T& at(size_t index)
         {
-            assert (!isEmpty() && index < size());
+			ASSERT_EQUAL(!isEmpty() && index < size(), true, "StackCircularQueue Copy: Index out of bounds");
 
 			size_t position;
 
@@ -122,14 +122,14 @@ class StackCircularQueue
 
 		T& front()
 		{
-			assert (!isEmpty());
+			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue Copy: Index out of bounds");
 			
 			return (m_typeArray[m_frontIndex]);
 		}
 
 		T& back()
 		{
-			assert (!isEmpty());
+			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue Copy: Index out of bounds");
 
 			size_t position;
 
@@ -375,7 +375,7 @@ class StackCircularQueue
 
 				iterator& operator++()
 				{
-					assert (m_index != -1);
+					ASSERT_EQUAL(m_index != -1, true, "StackCircularQueue Copy: Index out of bounds");
 					m_index = (m_index + 1) % m_capacity;
 
 					//reached the back

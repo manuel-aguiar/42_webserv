@@ -25,8 +25,8 @@ namespace TestHelpers
 		std::string strLine = TestHelpers::to_string(line);
 		std::string strActual = TestHelpers::to_string(actual);
 		std::string strExpected = TestHelpers::to_string(expected);
-		return std::string("\n\n")
-			+ "\t----------------------------------" 	+ "\n"
+		return 
+			std::string("\t----------------------------------\n")
 			+ "\tError:     '" + message 				+ "'\n"
 			+ "\tResult:    '" + strActual 				+ "'\n"
 			+ "\tExpected:  '" + strExpected 			+ "'\n"
@@ -41,7 +41,7 @@ namespace TestHelpers
 	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
 	{
 		if (actual != expected)
-			throw std::logic_error(TestHelpers::errorMsg(actual, expected, message, file, line, function));
+			throw std::logic_error(std::string("\n\n") + TestHelpers::errorMsg(actual, expected, message, file, line, function));
 	}
 
 }

@@ -4,9 +4,11 @@
 
 # define Stack_MemoryPool_TPP
 
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
+
 // C++ headers
 # include <cstddef>
-# include <cassert>
 
 
 template <size_t BlockSize, typename T>
@@ -29,7 +31,7 @@ class Impl_Stack_MemoryPool
         {
             T* location = mf_allignedAlloc(m_freePosition, alignment);
 
-            assert(location + size <= m_endOfBlock);
+            ASSERT_EQUAL(location + size <= m_endOfBlock, true, "Stack Memory Pool: Out of memory");
 
             m_freePosition = location + size;
             return (location);

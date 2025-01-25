@@ -123,14 +123,8 @@ int TestPart1(int testNumber)
 
 		map1.clear();
 
-		if (counters[0] != counters[1])
-			throw std::runtime_error("alloc/dealloc count mismatch, allocs: " + TestHelpers::to_string(counters[0]) 
-			+ " deallocs: " + TestHelpers::to_string(counters[1]) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		if (counters[0] != expectedAllocCount)
-			throw std::runtime_error("alloc count failed, got " + TestHelpers::to_string(counters[0]) 
-			+ " expected: " + TestHelpers::to_string(expectedAllocCount) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(counters[0], counters[1], "alloc/dealloc count mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(counters[0], expectedAllocCount, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
