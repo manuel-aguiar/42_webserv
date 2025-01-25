@@ -2,7 +2,7 @@
 
 // Project headers
 #include "../Heap_ObjectPool.hpp"
-#include "../../../_Tests/test.h"
+#include "../../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <map>
@@ -83,21 +83,14 @@ int TestPart1(int testNumber)
 
 		list1.clear();
 
-		if (counters[0] != counters[1])
-			throw std::runtime_error("alloc/dealloc count mismatch, allocs: " + to_string(counters[0]) 
-			+ " deallocs: " + to_string(counters[1]) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		if (counters[0] != expectedAllocCount)
-			throw std::runtime_error("alloc count failed, got " + to_string(counters[0]) 
-			+ " expected: " + to_string(expectedAllocCount) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(counters[0], counters[1], "alloc/dealloc count mismatch", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(counters[0], expectedAllocCount, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
 
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 
 
@@ -131,20 +124,19 @@ int TestPart1(int testNumber)
 		map1.clear();
 
 		if (counters[0] != counters[1])
-			throw std::runtime_error("alloc/dealloc count mismatch, allocs: " + to_string(counters[0]) 
-			+ " deallocs: " + to_string(counters[1]) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("alloc/dealloc count mismatch, allocs: " + TestHelpers::to_string(counters[0]) 
+			+ " deallocs: " + TestHelpers::to_string(counters[1]) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 		if (counters[0] != expectedAllocCount)
-			throw std::runtime_error("alloc count failed, got " + to_string(counters[0]) 
-			+ " expected: " + to_string(expectedAllocCount) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			throw std::runtime_error("alloc count failed, got " + TestHelpers::to_string(counters[0]) 
+			+ " expected: " + TestHelpers::to_string(expectedAllocCount) + '\n'
+			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
 		std::cout << "	PASSED" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
 	}
 	
 	return (testNumber);
