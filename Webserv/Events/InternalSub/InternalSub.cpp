@@ -1,8 +1,6 @@
 
 
 #include "InternalSub.hpp"
-#include <iostream>
-#include <cstdlib>
 
 InternalSub::InternalSub() : 
     Events::Subscription(),

@@ -1,9 +1,6 @@
 
 
 # include "Subscription.hpp"
-# include <cassert>
-# include <cstddef>
-
 
 namespace Events
 {

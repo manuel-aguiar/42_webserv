@@ -7,8 +7,6 @@
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
-#include <iostream>
-
 namespace Events
 {
 	Manager::Manager(size_t maxSubscriptions, Globals& globals) :
