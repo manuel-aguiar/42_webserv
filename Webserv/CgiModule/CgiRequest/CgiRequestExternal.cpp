@@ -4,23 +4,22 @@
 
 namespace Cgi
 {
-
 	void
-	Cgi::Module::Request::setUser(const CgiUser user)
+	Cgi::Request::setUser(const CgiUser user)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_user = user;
 	}
 
 	void
-	Cgi::Module::Request::setNotify_Callback(const CgiNotify::Type type, const CgiNotify::Callback handler)
+	Cgi::Request::setNotify_Callback(const CgiNotify::Type type, const CgiNotify::Callback handler)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_runtime_Handlers[type] = handler;
 	}
 
 	void
-	Cgi::Module::Request::setIO_Callback(const CgiIO::Type type, CgiIO::Callback handler)
+	Cgi::Request::setIO_Callback(const CgiIO::Type type, CgiIO::Callback handler)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_IO_Handlers[type] = handler;
@@ -28,28 +27,28 @@ namespace Cgi
 
 
 	void
-	Cgi::Module::Request::setEnvBase(const CgiEnvEnum::Type env, const Module::EnvValue& value)
+	Cgi::Request::setEnvBase(const CgiEnvEnum::Type env, const ImplModule::EnvValue& value)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_env.envBase.emplace_back(env, value);
 	}
 
 	void
-	Cgi::Module::Request::setEnvExtra(const CgiEnvKey& key, const CgiEnvValue& value)
+	Cgi::Request::setEnvExtra(const CgiEnvKey& key, const CgiEnvValue& value)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_env.envExtra.emplace_back(key, value);
 	}
 
 	void
-	Cgi::Module::Request::setExtension(const CgiInterpExtension& extension)
+	Cgi::Request::setExtension(const CgiInterpExtension& extension)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_extension = extension;
 	}
 
 	void
-	Cgi::Module::Request::setScriptPath(const std::string& path)
+	Cgi::Request::setScriptPath(const std::string& path)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_scriptPath = path;
@@ -57,39 +56,39 @@ namespace Cgi
 
 
 	void
-	Cgi::Module::Request::setTimeoutMs(const unsigned int timeoutMs)
+	Cgi::Request::setTimeoutMs(const unsigned int timeoutMs)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_timeoutMs = timeoutMs;
 	}
 
 	void
-	Cgi::Module::Request::setRuntimeOptions(const CgiOptions::Mask options)
+	Cgi::Request::setRuntimeOptions(const CgiOptions::Mask options)
 	{
 		assert(m_state == RequestState::ACQUIRED);
 		m_options = options;
 	}
 
 	const CgiEnvVariables& 
-	Cgi::Module::Request::getEnvVars() const
+	Cgi::Request::getEnvVars() const
 	{
 		return (m_env);
 	}
 
 	const CgiInterpExtension&
-	Cgi::Module::Request::getExtension() const
+	Cgi::Request::getExtension() const
 	{
 		return (m_extension);
 	}
 
 	const std::string&
-	Cgi::Module::Request::getScriptPath() const
+	Cgi::Request::getScriptPath() const
 	{
 		return (m_scriptPath);
 	}
 
 	unsigned int
-	Cgi::Module::Request::getTimeoutMs() const
+	Cgi::Request::getTimeoutMs() const
 	{
 		return (m_timeoutMs);
 	}

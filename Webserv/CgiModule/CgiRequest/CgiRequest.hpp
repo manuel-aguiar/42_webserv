@@ -13,7 +13,7 @@
 
 namespace Cgi
 {
-	class Module::Request
+	class Request
 	{
 		public:
 		
@@ -49,12 +49,11 @@ namespace Cgi
 			std::string							m_scriptPath;
 			CgiEnvVariables						m_env;
 
-			Cgi::Module::RequestState::Type		m_state;
+			Cgi::ImplModule::RequestState::Type		m_state;
 			CgiOptions::Mask					m_options;
 
 			void								mf_reset();
 	};
-	typedef Cgi::Module::Request Request;
 };
 
 #endif

@@ -6,6 +6,21 @@
 
 namespace Cgi
 {
+
+	typedef std::string ScriptPath;
+	typedef std::string InterpExtension;
+	typedef std::string InterpPath;
+	typedef std::string	EnvKey;
+	typedef std::string	EnvValue;
+
+	typedef void*		User;
+
+	typedef struct s_CgiRequestEnv
+	{
+		DynArray<std::pair<Cgi::Env::Enum::Type, 	EnvValue> >	envBase;
+		DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
+	}	EnvVariables;
+
 	namespace Env
 	{
 		class Enum
@@ -56,6 +71,33 @@ namespace Cgi
 		}
 	}
 	typedef Cgi::Env::Enum				CgiEnvEnum;
+
+	namespace Options
+	{
+		enum
+		{
+			HOLD_READ 		= (1 << 1),
+			RESTART_READ 	= (1 << 2),
+			CANCEL_READ 	= (1 << 3),
+			HOLD_WRITE 		= (1 << 4),
+			RESTART_WRITE 	= (1 << 5),
+			CANCEL_WRITE 	= (1 << 6),
+		};
+		typedef int 	Mask;
+	}
+
+	namespace Notify
+	{
+		typedef enum
+		{
+			ON_SUCCESS,
+			ON_ERROR_STARTUP,
+			ON_ERROR_RUNTIME,
+			ON_ERROR_TIMEOUT,
+			COUNT
+		} 	Type;
+		typedef void	(*Callback)	(User user);
+	};
 }
 
 #endif

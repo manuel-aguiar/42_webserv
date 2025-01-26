@@ -9,20 +9,20 @@ namespace Cgi
 {
 
 	void
-	Cgi::Module::mf_returnWorker(Worker& worker)
+	Cgi::ImplModule::mf_returnWorker(Worker& worker)
 	{
 		m_availableWorkers.push_back(&worker);
 		m_busyWorkerCount--;
 	}
 
 	void
-	Cgi::Module::mf_returnRequestData(InternalRequest& data)
+	Cgi::ImplModule::mf_returnRequestData(InternalRequest& data)
 	{
 		mf_recycleRequestData(data);
 	}
 
 	void
-	Cgi::Module::mf_cancelAndReturn(InternalRequest& data)
+	Cgi::ImplModule::mf_cancelAndReturn(InternalRequest& data)
 	{
 		Worker*		worker = data.accessExecutor();
 		
@@ -31,7 +31,7 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Module::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiNotify::Type callUser)
+	Cgi::ImplModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const CgiNotify::Type callUser)
 	{
 		InternalRequest* 		data = worker.accessRequestData();
 		User 					user = data->getUser();

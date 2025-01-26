@@ -5,7 +5,7 @@
 namespace Cgi
 {
 
-	Cgi::Module::Request::Request() :
+	Cgi::Request::Request() :
 		m_user			(NULL),
 		m_timeoutMs		(0),
 		m_extension		(""),
@@ -23,14 +23,14 @@ namespace Cgi
 
 	}
 
-	Cgi::Module::Request::~Request()
+	Cgi::Request::~Request()
 	{
 
 	}
 
 
 
-	void	Cgi::Module::Request::mf_reset()
+	void	Cgi::Request::mf_reset()
 	{
 		m_extension.clear();
 		m_scriptPath.clear();
@@ -48,7 +48,7 @@ namespace Cgi
 		m_options = 0;
 	}
 
-	Cgi::Module::Request::Request(const Request &copy) :
+	Cgi::Request::Request(const Request &copy) :
 		m_user(copy.m_user),
 		m_timeoutMs(copy.m_timeoutMs),
 		m_extension(copy.m_extension),
@@ -57,7 +57,7 @@ namespace Cgi
 		*this = copy;
 	}
 
-	Cgi::Module::Request&	Cgi::Module::Request::operator=(const Request &assign)
+	Cgi::ImplModule::Request&	Cgi::Request::operator=(const Request &assign)
 	{
 		if (this == &assign)
 			return (*this);

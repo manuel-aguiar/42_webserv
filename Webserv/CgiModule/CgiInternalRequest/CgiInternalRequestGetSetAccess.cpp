@@ -2,85 +2,81 @@
 
 # include "CgiInternalRequest.hpp"
 
-namespace Cgi
+
+//getters
+CgiUser
+InternalRequest::getUser() const
 {
+	return (m_user);
+}
 
-	//getters
-	CgiUser
-	Cgi::Module::InternalRequest::getUser() const
-	{
-		return (m_user);
-	}
-
-	CgiNotify::Callback
-	Cgi::Module::InternalRequest::getRuntime_Handler(const CgiNotify::Type type) const
-	{
-		return (m_runtime_Handlers[type]);
-	}
+CgiNotify::Callback
+InternalRequest::getRuntime_Handler(const CgiNotify::Type type) const
+{
+	return (m_runtime_Handlers[type]);
+}
 
 
-	const CgiEnvVariables& 
-	Cgi::Module::InternalRequest::getEnvVars() const
-	{
-		return (m_env);
-	}
+const CgiEnvVariables& 
+InternalRequest::getEnvVars() const
+{
+	return (m_env);
+}
 
-	const CgiInterpExtension&
-	Cgi::Module::InternalRequest::getExtension() const
-	{
-		return (m_extension);
-	}
+const CgiInterpExtension&
+InternalRequest::getExtension() const
+{
+	return (m_extension);
+}
 
-	const std::string&
-	Cgi::Module::InternalRequest::getScriptPath() const
-	{
-		return (m_scriptPath);
-	}
+const std::string&
+InternalRequest::getScriptPath() const
+{
+	return (m_scriptPath);
+}
 
-	CgiOptions::Mask
-	Cgi::Module::InternalRequest::getOptions() const
-	{
-		return (m_options);
-	}
+CgiOptions::Mask
+InternalRequest::getOptions() const
+{
+	return (m_options);
+}
 
-	unsigned int
-	Cgi::Module::InternalRequest::getTimeoutMs() const
-	{
-		return (m_timeoutMs);
-	}
+unsigned int
+InternalRequest::getTimeoutMs() const
+{
+	return (m_timeoutMs);
+}
 
-	TimerTracker<Timer, Module::InternalRequest*>::iterator
-	Cgi::Module::InternalRequest::getMyTimer() const
-	{
-		return (m_myTimer);
-	}
+TimerTracker<Timer, ImplModule::InternalRequest*>::iterator
+InternalRequest::getMyTimer() const
+{
+	return (m_myTimer);
+}
 
-	Cgi::Module::mt_CgiWorker*	Cgi::Module::InternalRequest::accessExecutor()
-	{
-		return (m_executor);
-	}
+Cgi::ImplModule::mt_CgiWorker*	InternalRequest::accessExecutor()
+{
+	return (m_executor);
+}
 
-	Cgi::Module::RequestState::Type	Cgi::Module::InternalRequest::getState() const
-	{
-		return (m_state);
-	}
+Cgi::ImplModule::RequestState::Type	InternalRequest::getState() const
+{
+	return (m_state);
+}
 
 
 
-	//setters
-	void	Cgi::Module::InternalRequest::setState(const Cgi::Module::RequestState::Type state)
-	{
-		m_state = state;
-	}
+//setters
+void	InternalRequest::setState(const Cgi::ImplModule::RequestState::Type state)
+{
+	m_state = state;
+}
 
-	void	Cgi::Module::InternalRequest::assignExecutor(Worker& executor)
-	{
-		m_executor = &executor;
-	}
+void	InternalRequest::assignExecutor(Worker& executor)
+{
+	m_executor = &executor;
+}
 
-	void	Cgi::Module::InternalRequest::setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer)
-	{
-		m_myTimer = timer;
-	}
-
-};
+void	InternalRequest::setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer)
+{
+	m_myTimer = timer;
+}
