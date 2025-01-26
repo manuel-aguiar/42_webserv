@@ -41,8 +41,8 @@ namespace Cgi
 			Request &operator=(const Request &assign);
 
 			CgiUser								m_user;
-			CgiIO::Callback			m_IO_Handlers[CgiIO::COUNT];
-			CgiNotify::Callback		m_runtime_Handlers[CgiNotify::COUNT];
+			CgiIO::Callback						m_IO_Handlers[CgiIO::COUNT];
+			CgiNotify::Callback					m_runtime_Handlers[CgiNotify::COUNT];
 
 			unsigned int						m_timeoutMs;
 			CgiInterpExtension					m_extension;
