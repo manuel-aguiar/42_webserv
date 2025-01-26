@@ -17,6 +17,8 @@ class InternalSub : public Events::Subscription
         //informing public event of the events that took place on the target fd
         void                    setTriggeredEvents(const Events::Monitor::Mask flags);
 
+        void                    reset();
+
         //validation
         bool                    isInvalid() const;
 
