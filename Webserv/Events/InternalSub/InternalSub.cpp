@@ -1,73 +1,75 @@
 
 
 #include "InternalSub.hpp"
-#include <iostream>
-#include <cstdlib>
 
-namespace Events
+InternalSub::InternalSub() : 
+    Events::Subscription(),
+    m_subscribedFd(-1),
+    m_subscribedEvents(Events::Monitor::NONE) {}
+
+InternalSub::~InternalSub() {}
+
+InternalSub::InternalSub(const InternalSub& copy) : 
+    Events::Subscription(copy), 
+    m_subscribedFd(copy.m_subscribedFd), 
+    m_subscribedEvents(copy.m_subscribedEvents) {}
+
+InternalSub& InternalSub::operator=(const InternalSub& assign)
 {
-    Manager::InternalSub::InternalSub() : 
-        Subscription(),
-        m_subscribedFd(-1),
-        m_subscribedEvents(Events::Monitor::NONE) {}
-    Manager::InternalSub::~InternalSub() {}
-
-    Manager::InternalSub::InternalSub(const InternalSub& copy) : 
-        Subscription(copy), 
-        m_subscribedFd(copy.m_subscribedFd), 
-        m_subscribedEvents(copy.m_subscribedEvents) {}
-    Manager::InternalSub& Manager::InternalSub::operator=(const InternalSub& assign)
-    {
-        if (this == &assign)
-            return (*this);
-        Subscription::operator=(assign);
-        m_subscribedFd = assign.m_subscribedFd;
-        m_subscribedEvents = assign.m_subscribedEvents;
+    if (this == &assign)
         return (*this);
-    };
+    Events::Subscription::operator=(assign);
+    m_subscribedFd = assign.m_subscribedFd;
+    m_subscribedEvents = assign.m_subscribedEvents;
+    return (*this);
+};
 
-    void Manager::InternalSub::updateSubscription()
-    {
-        m_subscribedFd = m_fd;
-        m_subscribedEvents = m_monitoredEvents;
-    }
+void    InternalSub::reset()
+{
+    Events::Subscription::reset();
+    m_subscribedFd = -1;
+    m_subscribedEvents = Events::Monitor::NONE;
+}
 
-    void    Manager::InternalSub::unSubscribe()
-    {
-        m_subscribedFd = -1;
-        m_subscribedEvents = Events::Monitor::NONE;
-    }
+void InternalSub::updateSubscription()
+{
+    m_subscribedFd = m_fd;
+    m_subscribedEvents = m_monitoredEvents;
+}
 
-    bool Manager::InternalSub::isInvalid() const
-    {
+void    InternalSub::unSubscribe()
+{
+    m_subscribedFd = -1;
+    m_subscribedEvents = Events::Monitor::NONE;
+}
 
-        return (!(m_subscribedFd == m_fd && m_fd != -1));
-    }
+bool InternalSub::isInvalid() const
+{
 
-    void    Manager::InternalSub::setTriggeredEvents(const Events::Monitor::Mask flags)
-    {
-        m_triggeredEvents = flags;
-    }
+    return (!(m_subscribedFd == m_fd && m_fd != -1));
+}
 
-    void Manager::InternalSub::setSubscribedFd(const Ws::fd fd)
-    {
-        m_subscribedFd = fd;
-    }
+void    InternalSub::setTriggeredEvents(const Events::Monitor::Mask flags)
+{
+    m_triggeredEvents = flags;
+}
 
-    void Manager::InternalSub::setSubscribedEvents(const Events::Monitor::Mask flags)
-    {
-        m_subscribedEvents = flags;
-    }
+void InternalSub::setSubscribedFd(const Ws::fd fd)
+{
+    m_subscribedFd = fd;
+}
 
-    Ws::fd Manager::InternalSub::getSubscribedFd() const
-    {
-        return (m_subscribedFd);
-    }
+void InternalSub::setSubscribedEvents(const Events::Monitor::Mask flags)
+{
+    m_subscribedEvents = flags;
+}
 
-    int Manager::InternalSub::getSubscribedEvents() const 
-    {
-        return (m_subscribedEvents);
-    }
+Ws::fd InternalSub::getSubscribedFd() const
+{
+    return (m_subscribedFd);
+}
 
-
+int InternalSub::getSubscribedEvents() const 
+{
+    return (m_subscribedEvents);
 }

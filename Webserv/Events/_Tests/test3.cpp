@@ -1,15 +1,16 @@
 
 
-// Project headers
-# include "../Events.h"
+// testing targets
 # include "../Manager/Manager.hpp"
 # include "../Subscription/Subscription.hpp"
+
+// Project headers
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Test helpers
-# include "../../../Toolkit/TestHelpers/TestHelpers.h"
+# include "../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 
 // C++ headers
 # include <iostream>
@@ -65,21 +66,13 @@ int TestPart3(int testNumber)
 		manager.ProcessEvents(-1); 
 
 		// data should be 0, triggered but not handled because event fd was market as stale
-		if (user.getData() != 0)
-			throw std::runtime_error("Events should not be handled, marked as stale, got " 
-			+ StringUtils::to_string(user.getData()) + ", expected " 
-			+ StringUtils::to_string(0) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(user.getData(), 0, "Events should not be handled, marked as stale", __FILE__, __LINE__, __FUNCTION__);
 		
 		// after processing events, all fds are marked as good again, until proven otherwise
 		manager.ProcessEvents(-1);
 
 		// handler should be called now, and user data should be 42
-		if (user.getData() != 42)
-			throw std::runtime_error("Events should not be handled, marked as stale, got " 
-			+ StringUtils::to_string(user.getData()) + ", expected " 
-			+ StringUtils::to_string(42) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(user.getData(), 42, "Events should now be handled, not stale anymore", __FILE__, __LINE__, __FUNCTION__);
 
 		 //stopMonitoring event, (indifferent to mark as stale here)
 		manager.stopMonitoring(*subscription, true);

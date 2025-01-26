@@ -21,7 +21,7 @@ int main(void)
 	testNumber = TestPart2(testNumber);
 	testNumber = TestPart3(testNumber);
 
-	::close(STDOUT_FILENO);
+	::close(STDERR_FILENO);
 
 	std::cout << "**************************************************\n" << std::endl;
 

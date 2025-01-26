@@ -5,13 +5,16 @@
 # define EVENTSUBSCRIPTION_HPP
 
 # include "../m_EventsDefinitions.h"
-# include "../Manager/Manager.hpp"
 
 namespace Events
 {
-	class Manager::Subscription
+	class Subscription
 	{
 		public:
+			Subscription();
+			~Subscription();			
+			Subscription(const Subscription& copy);
+			Subscription& operator=(const Subscription& assign);
 
 			typedef void* 				User;
 			typedef void 				(*Callback)(Subscription& event);
@@ -22,7 +25,7 @@ namespace Events
 
 			// accessors
 			Subscription::User			accessUser();
-			Subscription::Callback		accessService();
+			Subscription::Callback		accessCallback();
 
 			//getters
 			Ws::fd						getFd()					const;
@@ -44,14 +47,6 @@ namespace Events
 			Events::Monitor::Mask		m_triggeredEvents;
 			Subscription::User			m_user;
 			Subscription::Callback		m_callback;
-
-			Subscription();
-			~Subscription();			
-			Subscription(const Subscription& copy);
-			Subscription& operator=(const Subscription& assign);
-
-
-			//for internal use
 
 	};
 }

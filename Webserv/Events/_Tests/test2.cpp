@@ -1,15 +1,16 @@
 
 
-// Project headers
-# include "../Events.h"
+// testing targets
 # include "../Manager/Manager.hpp"
 # include "../Subscription/Subscription.hpp"
+
+// Project headers
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Test helpers
-# include "../../../Toolkit/TestHelpers/TestHelpers.h"
+# include "../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 
 // C++ headers
 # include <iostream>
@@ -89,16 +90,10 @@ int TestPart2(int testNumber)
 
 		int sockfd[2];
 
-		// create a unix socket pair for communication
-		if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd) != 0)
-			throw std::runtime_error("Failed to create socket pair" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-		// set the sockets to non-blocking
-		if (!FileDescriptor::setNonBlocking(sockfd[0]) 
-		|| !FileDescriptor::setNonBlocking(sockfd[1]))
-			throw std::runtime_error("Fcntl failed" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		// create a unix socket pair for communication, just check all went well
+		TestHelpers::assertEqual(socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd), 0, "Failed to create socket pair", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(sockfd[0]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(sockfd[1]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__);
 
 		//reader
 		Events::Subscription*			readEvent = manager.acquireSubscription();
@@ -125,7 +120,7 @@ int TestPart2(int testNumber)
 
 
 
-		// preparing the write event
+		// preparing the read event
 		readEvent->setFd(sockfd[0]);
 		readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::EDGE_TRIGGERED);
 		readEvent->setUser(&readCalculate);
@@ -146,17 +141,12 @@ int TestPart2(int testNumber)
 		while (readCalculate.result == 0)
 			manager.ProcessEvents(-1);
 
-		if (readCalculate.result != readExpectedResult)
-			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(readCalculate.result, readExpectedResult, "Failed to calculate fibonacci", __FILE__, __LINE__, __FUNCTION__);
 		
-		// stopMonitoring the write event from monitoring, which should lower the subscribe count
 		manager.stopMonitoring(*writeEvent, false);
 
 		// there should only 1 subscribed
-		if (manager.getMonitoringCount() != 1)
-			throw std::runtime_error("Events were not deleted correctly, got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(1) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));		
+		TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)1, "Events were not deleted correctly", __FILE__, __LINE__, __FUNCTION__);
 
 		// modify the read event to actually monitor write, for test purposes, reset result
 		// write should be available write away
@@ -168,21 +158,13 @@ int TestPart2(int testNumber)
 		manager.updateEvents(*readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
-
-		if (waitCount != 1)
-			throw std::runtime_error("waitCount got " + TestHelpers::to_string(waitCount) + ", expected " + TestHelpers::to_string(1) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-		if (readCalculate.result != readExpectedResult)
-			throw std::runtime_error("Events did not get triggered correctly, got fibo" + TestHelpers::to_string(readCalculate.result) + ", expected fibo" + TestHelpers::to_string(readExpectedResult) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(waitCount, 1, "Events did not get triggered correctly", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(readCalculate.result, readExpectedResult, "Events did not get triggered correctly", __FILE__, __LINE__, __FUNCTION__);
 
 		manager.stopMonitoring(*readEvent, false);
 
 		// should be 0 subcribed
-		if (manager.getMonitoringCount() != 0)
-			throw std::runtime_error("Events were not deleted correctly got left " + TestHelpers::to_string(manager.getMonitoringCount())  + ", expected: " + TestHelpers::to_string(0) + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));	
+		TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)0, "Events were not deleted correctly", __FILE__, __LINE__, __FUNCTION__);
 
 
 		// close the socketpair

@@ -13,15 +13,22 @@
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
 
+/// forward declarations ///
 class Globals;
+class InternalSub;
+namespace Events
+{
+	class Subscription;
+}
+//////////////////////////
+
 
 namespace Events
 {
 	class Manager
 	{
 		public:
-			class Subscription;
-
+			
 			Manager(size_t maxSubscriptions, Globals& globals);
 			~Manager();
 
@@ -41,15 +48,13 @@ namespace Events
 			size_t			getMonitoringCount() const;
 			
 		private:
-			class								InternalSub;
-			
 			size_t								m_subscribeCount;
 			t_fd								m_epollfd;
-			Globals&							m_globals;
 			t_fd								m_maxStaleFd;
+			Globals&							m_globals;
 
 			HeapArray<InternalSub>				m_subscriptions;
-			HeapCircularQueue<InternalSub*>	m_availableSubs;
+			HeapCircularQueue<InternalSub*>		m_availableSubs;
 			HeapArray<t_byte>					m_staleEvents;
 			Events::Monitor::Event				m_epollEvents[MAX_EPOLL_EVENTS];
 
@@ -59,8 +64,6 @@ namespace Events
 			Manager(const Manager& copy);
 			Manager& operator=(const Manager& assign);
 	};
-
-	typedef Manager::Subscription Subscription;
 }
 
 

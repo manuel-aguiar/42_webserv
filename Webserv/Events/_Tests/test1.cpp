@@ -1,13 +1,15 @@
 
+// testing targets
+# include "../Manager/Manager.hpp"
+# include "../Subscription/Subscription.hpp"
 
 // Project headers
-# include "../Events.h"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Test helpers
-# include "../../../Toolkit/TestHelpers/TestHelpers.h"
+# include "../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 
 // C++ headers
 # include <iostream>
@@ -53,16 +55,14 @@ int TestPart1(int testNumber)
 
 		Events::Manager 		manager(100, globals);
 		Events::Subscription* subscription = manager.acquireSubscription();
-		
+
 		Calculator 				calculator;
 		subscription->setUser(&calculator);
 		subscription->setCallback(Calculator::EventCallback_Calculate);
 
 		subscription->notify();
 
-		if (calculator.getData() != 42)
-			throw std::runtime_error("Failed to call the user function" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(calculator.getData(), 42, "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
 		
 		std::cout << "	PASSED (using a Subscription)" << std::endl;
 	}
@@ -82,7 +82,7 @@ int TestPart1(int testNumber)
 		pipe(testpipe);
 		dup2(testpipe[1], STDOUT_FILENO);
 		char buffer[64];
-
+		
 		Events::Manager manager(100, globals);
 		Events::Subscription* subscription = manager.acquireSubscription();
 
@@ -98,9 +98,7 @@ int TestPart1(int testNumber)
 		close(testpipe[1]);
 		close(testpipe[0]);
 
-		if (std::string(buffer) != "Hello World!")
-			throw std::runtime_error("Failed to call the user function" + '\n'
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		TestHelpers::assertEqual(std::string(buffer), std::string("Hello World!"), "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
 		
 		std::cout << "	PASSED (using a Subscription that has no User, just a callback)" << std::endl;
 	}

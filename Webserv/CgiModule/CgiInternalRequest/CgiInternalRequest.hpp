@@ -6,10 +6,12 @@
 
 // Project Headers
 # include "../CgiRequest/CgiRequest.hpp"
+# include "../../TimerTracker/TimerTracker.hpp"
 
 class Worker;
 class Timer;
 namespace Cgi { class Request; }
+namespace Ws { typedef int fd; }
 
 class InternalRequest : public Cgi::Request
 {
@@ -18,29 +20,30 @@ class InternalRequest : public Cgi::Request
 		~InternalRequest();
 
 		void						reset();
-		void						Runtime_CallTheUser(const CgiNotify::Type type);
-		IO::BytesCount				IO_CallTheUser(const CgiIO::Type, Ws::fd readFd);
+		void						Runtime_CallTheUser(const Cgi::Notify::Type type);
+		Cgi::IO::BytesCount			IO_CallTheUser(const Cgi::IO::Type, Ws::fd readFd);
 
-		CgiUser						getUser() const;
-		CgiNotify::Callback
-									getRuntime_Handler(const CgiNotify::Type type) const;
-		CgiModule::ImplModule::RequestState::Type
+		Cgi::User					getUser() const;
+		Cgi::Notify::Callback
+									getRuntime_Handler(const Cgi::Notify::Type type) const;
+		Cgi::RequestState::Type
 									getState() const;
-		const EnvVariables& 		getEnvVars() const;
-		const CgiInterpExtension&			getExtension() const;
+		const Cgi::EnvVariables& 	getEnvVars() const;
+		const Cgi::InterpExtension&	getExtension() const;
 		const std::string&			getScriptPath() const;
 		unsigned int				getTimeoutMs() const;
 		Worker*						accessExecutor();
+
 		TimerTracker<Timer, InternalRequest*>::iterator
 									getMyTimer() const;
-		CgiOptions::Mask			getOptions() const;
+		Cgi::Options::Mask			getOptions() const;
 
 		void						assignExecutor(Worker& executor);
 		void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
-		void						setState(const CgiModule::ImplModule::RequestState::Type state);
+		void						setState(const Cgi::RequestState::Type state);
 		
 	private:
-		Worker*				m_executor;
+		Worker*						m_executor;
 		
 		TimerTracker<Timer, InternalRequest*>::iterator	
 									m_myTimer;

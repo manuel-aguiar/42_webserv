@@ -10,15 +10,15 @@ namespace Cgi
 		m_timeoutMs		(0),
 		m_extension		(""),
 		m_scriptPath	(""),
-		m_state			(RequestState::IDLE),
+		m_state			(Cgi::RequestState::IDLE),
 		m_options		(0)
 	{
 		m_env.envBase.reserve(Cgi::Env::Enum::COUNT);
 
-		for (size_t i = 0; i < CgiNotify::COUNT; i++)
+		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
 			m_runtime_Handlers[i] = NULL;
 
-		for (size_t i = 0; i < CgiIO::COUNT; i++)
+		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
 			m_IO_Handlers[i] = NULL;
 
 	}
@@ -37,14 +37,14 @@ namespace Cgi
 		m_env.envBase.clear();
 		m_env.envExtra.clear();
 
-		for (size_t i = 0; i < CgiNotify::COUNT; i++)
+		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
 			m_runtime_Handlers[i] = NULL;
-		for (size_t i = 0; i < CgiIO::COUNT; i++)
+		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
 			m_IO_Handlers[i] = NULL;
 		
 		m_timeoutMs = 0;
 		m_user = NULL;
-		m_state = RequestState::IDLE;
+		m_state = Cgi::RequestState::IDLE;
 		m_options = 0;
 	}
 
@@ -57,16 +57,16 @@ namespace Cgi
 		*this = copy;
 	}
 
-	Cgi::ImplModule::Request&	Cgi::Request::operator=(const Request &assign)
+	Cgi::Request&	Cgi::Request::operator=(const Request &assign)
 	{
 		if (this == &assign)
 			return (*this);
 
 		m_user = assign.m_user;
 
-		for (size_t i = 0; i < CgiNotify::COUNT; i++)
+		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
 			m_runtime_Handlers[i] = assign.m_runtime_Handlers[i];
-		for (size_t i = 0; i < CgiIO::COUNT; i++)
+		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
 			m_IO_Handlers[i] = assign.m_IO_Handlers[i];
 
 		m_timeoutMs = assign.m_timeoutMs;

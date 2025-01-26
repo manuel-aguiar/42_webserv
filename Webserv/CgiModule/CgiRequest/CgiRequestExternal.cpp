@@ -1,56 +1,57 @@
 
 
 #include "CgiRequest.hpp"
+# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 namespace Cgi
 {
 	void
-	Cgi::Request::setUser(const CgiUser user)
+	Cgi::Request::setUser(const Cgi::User user)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_user = user;
 	}
 
 	void
-	Cgi::Request::setNotify_Callback(const CgiNotify::Type type, const CgiNotify::Callback handler)
+	Cgi::Request::setNotify_Callback(const Cgi::Notify::Type type, const Cgi::Notify::Callback handler)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_runtime_Handlers[type] = handler;
 	}
 
 	void
-	Cgi::Request::setIO_Callback(const CgiIO::Type type, CgiIO::Callback handler)
+	Cgi::Request::setIO_Callback(const Cgi::IO::Type type, Cgi::IO::Callback handler)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_IO_Handlers[type] = handler;
 	}
 
 
 	void
-	Cgi::Request::setEnvBase(const CgiEnvEnum::Type env, const ImplModule::EnvValue& value)
+	Cgi::Request::setEnvBase(const CgiEnvEnum::Type env, const Cgi::EnvValue& value)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_env.envBase.emplace_back(env, value);
 	}
 
 	void
-	Cgi::Request::setEnvExtra(const CgiEnvKey& key, const CgiEnvValue& value)
+	Cgi::Request::setEnvExtra(const Cgi::EnvKey& key, const Cgi::EnvValue& value)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_env.envExtra.emplace_back(key, value);
 	}
 
 	void
-	Cgi::Request::setExtension(const CgiInterpExtension& extension)
+	Cgi::Request::setExtension(const Cgi::InterpExtension& extension)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_extension = extension;
 	}
 
 	void
-	Cgi::Request::setScriptPath(const std::string& path)
+	Cgi::Request::setScriptPath(const Cgi::ScriptPath& path)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_scriptPath = path;
 	}
 
@@ -58,30 +59,30 @@ namespace Cgi
 	void
 	Cgi::Request::setTimeoutMs(const unsigned int timeoutMs)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_timeoutMs = timeoutMs;
 	}
 
 	void
-	Cgi::Request::setRuntimeOptions(const CgiOptions::Mask options)
+	Cgi::Request::setRuntimeOptions(const Cgi::Options::Mask options)
 	{
-		assert(m_state == RequestState::ACQUIRED);
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_options = options;
 	}
 
-	const CgiEnvVariables& 
+	const Cgi::EnvVariables& 
 	Cgi::Request::getEnvVars() const
 	{
 		return (m_env);
 	}
 
-	const CgiInterpExtension&
+	const Cgi::InterpExtension&
 	Cgi::Request::getExtension() const
 	{
 		return (m_extension);
 	}
 
-	const std::string&
+	const Cgi::ScriptPath&
 	Cgi::Request::getScriptPath() const
 	{
 		return (m_scriptPath);

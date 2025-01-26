@@ -4,26 +4,26 @@
 
 
 //getters
-CgiUser
+Cgi::User
 InternalRequest::getUser() const
 {
 	return (m_user);
 }
 
-CgiNotify::Callback
-InternalRequest::getRuntime_Handler(const CgiNotify::Type type) const
+Cgi::Notify::Callback
+InternalRequest::getRuntime_Handler(const Cgi::Notify::Type type) const
 {
 	return (m_runtime_Handlers[type]);
 }
 
 
-const CgiEnvVariables& 
+const Cgi::EnvVariables& 
 InternalRequest::getEnvVars() const
 {
 	return (m_env);
 }
 
-const CgiInterpExtension&
+const Cgi::InterpExtension&
 InternalRequest::getExtension() const
 {
 	return (m_extension);
@@ -35,7 +35,7 @@ InternalRequest::getScriptPath() const
 	return (m_scriptPath);
 }
 
-CgiOptions::Mask
+Cgi::Options::Mask
 InternalRequest::getOptions() const
 {
 	return (m_options);
@@ -47,18 +47,18 @@ InternalRequest::getTimeoutMs() const
 	return (m_timeoutMs);
 }
 
-TimerTracker<Timer, ImplModule::InternalRequest*>::iterator
+TimerTracker<Timer, InternalRequest*>::iterator
 InternalRequest::getMyTimer() const
 {
 	return (m_myTimer);
 }
 
-Cgi::ImplModule::mt_CgiWorker*	InternalRequest::accessExecutor()
+Worker*	InternalRequest::accessExecutor()
 {
 	return (m_executor);
 }
 
-Cgi::ImplModule::RequestState::Type	InternalRequest::getState() const
+Cgi::RequestState::Type	InternalRequest::getState() const
 {
 	return (m_state);
 }
@@ -66,7 +66,7 @@ Cgi::ImplModule::RequestState::Type	InternalRequest::getState() const
 
 
 //setters
-void	InternalRequest::setState(const Cgi::ImplModule::RequestState::Type state)
+void	InternalRequest::setState(const Cgi::RequestState::Type state)
 {
 	m_state = state;
 }

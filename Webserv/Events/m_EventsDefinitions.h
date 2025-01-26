@@ -8,7 +8,6 @@
 
 namespace Events
 {
-
 	namespace Monitor
 	{
 		enum

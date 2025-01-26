@@ -19,15 +19,15 @@ InternalRequest::reset()
 }
 
 void
-InternalRequest::Runtime_CallTheUser(const CgiNotify::Type event)
+InternalRequest::Runtime_CallTheUser(const Cgi::Notify::Type event)
 {
-	Notify::Callback	 handler = m_runtime_Handlers[event];
+	Cgi::Notify::Callback	 handler = m_runtime_Handlers[event];
 	if (handler)
 		(handler)(m_user);
 }
 
-ImplModule::IO::BytesCount
-InternalRequest::IO_CallTheUser(const CgiIO::Type type, Ws::fd targetFd)
+Cgi::IO::BytesCount
+InternalRequest::IO_CallTheUser(const Cgi::IO::Type type, Ws::fd targetFd)
 {
 	if (!(m_IO_Handlers[type] && m_user))
 		return (0);

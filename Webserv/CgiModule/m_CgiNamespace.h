@@ -98,6 +98,30 @@ namespace Cgi
 		} 	Type;
 		typedef void	(*Callback)	(User user);
 	};
+
+	namespace IO
+	{
+		typedef enum
+		{
+			READ,
+			WRITE,
+			COUNT
+		} 	Type;
+		typedef int     	BytesCount;
+		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
+	};
+	
+	namespace RequestState
+	{
+		typedef enum
+		{
+			IDLE,
+			ACQUIRED,
+			QUEUED,
+			EXECUTING,
+			CANCELLED,
+		} 	Type;
+	};
 }
 
 #endif

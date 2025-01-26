@@ -1,9 +1,11 @@
 
 
+# include "CgiModule.hpp"
 # include "../CgiWorker/CgiWorker.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
-# include "CgiModule.hpp"
 
+// Toolkit headers
+# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 /*
 	Provide the caller with one CgiRequestData object if available,
@@ -20,7 +22,7 @@ Cgi::Request*	ImplModule::acquireRequest()
 	data = m_availableRequestData.back();
 	m_availableRequestData.pop_back();
 
-	data->setState(RequestState::ACQUIRED);
+	data->setState(Cgi::RequestState::ACQUIRED);
 	
 	return (data);
 }
@@ -34,7 +36,7 @@ Cgi::Request*	ImplModule::acquireRequest()
 	Because it doesn't execute anything or create/destroy fds, it is SAFE to call it
 	from an event handler (Subscription).
 */
-void	ImplModule::enqueueRequest(Request& request, bool isCalledFromEventLoop)
+void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoop)
 {
 	Worker*						worker;	
 	InternalRequest*			requestData;
@@ -42,7 +44,7 @@ void	ImplModule::enqueueRequest(Request& request, bool isCalledFromEventLoop)
 
 	requestData = static_cast<InternalRequest*>(&request);
 
-	assert(requestData->getState() == RequestState::ACQUIRED);
+	ASSERT_EQUAL(requestData->getState(), Cgi::RequestState::ACQUIRED, "ImplModule::enqueueRequest(), request state must be ACQUIRED");
 
 	timeout = requestData->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
