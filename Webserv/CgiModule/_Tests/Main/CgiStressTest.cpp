@@ -69,10 +69,10 @@ void	CgiStressTest::ValidPython(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 	// some env vars
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -84,9 +84,9 @@ void	CgiStressTest::ValidShell(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("sh");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/sh/envPrint.sh");
 
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::PATH_INFO, "LostMyWay");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "LostMyWay");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY1", "hiThere");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "321");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "321");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -97,9 +97,9 @@ void	CgiStressTest::ValidPHP(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("php");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::PATH_INFO, "WhereAmI");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "WhereAmI");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY3", "SomeHttpStuff_in_here");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "charIsUserFault");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "charIsUserFault");
 
 	prepareExpectedOutput(true, proto);
 }
@@ -110,10 +110,10 @@ void	CgiStressTest::InvalidInterpreter(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("pyasgasg");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -124,10 +124,10 @@ void	CgiStressTest::InvalidInterpreterPath(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("phpbad");
 	proto.m_CgiRequestData->setScriptPath("TestScripts/php/envPrint.php");
 
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -139,10 +139,10 @@ void	CgiStressTest::InvalidScript(TestProtoRequest& proto, int index)
 	proto.m_CgiRequestData->setExtension("py");
 	proto.m_CgiRequestData->setScriptPath("thisDoesNotExist");
 
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
-	proto.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 	prepareExpectedOutput(false, proto);
 }
@@ -260,13 +260,13 @@ int CgiStressTest::StressTest(int testNumber,
 			// setup callbacks
 			current->setUser(&requests.back());
 			
-			current->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			current->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			current->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-			current->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+			current->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+			current->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+			current->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			current->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-			current->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-			current->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+			current->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+			current->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 			AssignmentCriteria(requests.back(), i);
 			
@@ -298,12 +298,10 @@ int CgiStressTest::StressTest(int testNumber,
 		}
 
 		if (eventManager.getMonitoringCount() != 0)
-			FailureMessages = FailureMessages + "Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
-
+			FailureMessages = FailureMessages + '\n' + TestHelpers::errorMsg(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
+			
 		if (cgi.getBusyWorkerCount() != 0)
-			FailureMessages = FailureMessages + "Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			FailureMessages = FailureMessages + '\n' + TestHelpers::errorMsg(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
 
 
 		// checking results
@@ -313,16 +311,16 @@ int CgiStressTest::StressTest(int testNumber,
 			switch (requests[i].m_CgiResultStatus)
 			{
 				case TestProtoRequest::E_CGI_STATUS_WORKING:
-					FailureMessages = FailureMessages + StringUtils::to_string(i) + " still working" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+					FailureMessages = FailureMessages + '\n' + "protorequest: " + StringUtils::to_string(requests[i].m_id) + " failed, " + '\n' 
+					 + TestHelpers::errorMsg(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch", __FILE__, __LINE__, __FUNCTION__);
 					break;
 				case TestProtoRequest::E_CGI_STATUS_SUCCESS:
 
 					if (::strlen(requests[i].m_buffer) != requests[i].m_ExpectedOutput.size()
 					|| std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
-						FailureMessages = FailureMessages + '\n' + StringUtils::to_string(i) + " failed: " 
-						+ StringUtils::to_string(requests[i].m_TotalBytesRead) + " got:\n" + requests[i].m_buffer + "\n\n"
-						+ "expected:\n" + StringUtils::to_string(requests[i].m_ExpectedOutput.length()) + " " + requests[i].m_ExpectedOutput + "\n\n";
+						FailureMessages = FailureMessages + '\n' + "protorequest: " + StringUtils::to_string(requests[i].m_id) + " failed, " + '\n' 
+						+ TestHelpers::errorMsg(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
 					}
 					break ;
 				default:
@@ -341,8 +339,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		std::string valLog = CgiStressTest::ValgrindReadandClear("valgrind_output.log");
 		if (!valLog.empty())
-			FailureMessages = FailureMessages + "Valgrind errors in this test:\n\n" + valLog + "\n\n" 
-			+ TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			FailureMessages = FailureMessages + TestHelpers::errorMsg(valLog, std::string(""), "Valgrind errors in this test", __FILE__, __LINE__, __FUNCTION__);
 
 			
 		std::cout << "\t=================================" << std::endl

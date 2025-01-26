@@ -102,22 +102,22 @@ int TestPart1(int testNumber)
 
 		// preparing request with relevant data
 		request.setUser(&protoRequest);
-		request.setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		request.setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		request.setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		request.setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
-		request.setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		request.setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
-		request.setRuntimeOptions(CgiOptions::HOLD_WRITE);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		request.setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		request.setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		request.setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		request.setRuntimeOptions(Cgi::Options::HOLD_WRITE);
 		request.setTimeoutMs(5000); // 5ms
 		request.setExtension("py");
 		request.setScriptPath("TestScripts/py/envPrint.py");
-		request.setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		request.setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
 		cgi.enqueueRequest(request, false);
-		cgi.modifyRequest(request, false, CgiOptions::RESTART_WRITE);
+		cgi.modifyRequest(request, false, Cgi::Options::RESTART_WRITE);
 
 		//event loop
 		while (1)
@@ -165,20 +165,20 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
 		
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(200); //0.2ms
 		
 		// false, we will cancel
@@ -239,19 +239,19 @@ int TestPart1(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 
 		CgiStressTest::prepareExpectedOutput(false, protoRequest);
@@ -309,19 +309,19 @@ int TestPart1(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("asfafasfasfasfasf");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 
@@ -358,16 +358,13 @@ int TestPart1(int testNumber)
 
 		// tests
 		if (eventManager.getMonitoringCount() != 0)
-			testFailure = testFailure + '\n' + "Manager still has events, got " + StringUtils::to_string(eventManager.getMonitoringCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);	
+			testFailure = testFailure + '\n' + TestHelpers::errorMsg(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
 
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + '\n' + "Cgi::Module still has workers rolling, got " + StringUtils::to_string(cgi.getBusyWorkerCount())
-			 + " expected 0" + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
+			testFailure = testFailure + '\n' + TestHelpers::errorMsg(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
 		
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
-			testFailure = testFailure + '\n' + "Cgi::Module did not cancel the request " + '\n' + TestHelpers::FileLineFunction(__FILE__, __LINE__, __FUNCTION__);
-
+			testFailure = testFailure + '\n' + TestHelpers::errorMsg(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME, "ProtoRequest didn't receive error runtime notice", __FILE__, __LINE__, __FUNCTION__);
 		
 
 		// restoring the original stdcerr not to mess the remaining tests
@@ -403,19 +400,19 @@ int TestPart1(int testNumber)
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
 
 		
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
 		protoRequest.m_CgiRequestData->setTimeoutMs(5000); //0.2ms
 		
 

@@ -4,6 +4,9 @@
 
 # define CGINAMESPACE_H
 
+# include <string>
+# include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
+
 namespace Cgi
 {
 
@@ -15,11 +18,7 @@ namespace Cgi
 
 	typedef void*		User;
 
-	typedef struct s_CgiRequestEnv
-	{
-		DynArray<std::pair<Cgi::Env::Enum::Type, 	EnvValue> >	envBase;
-		DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
-	}	EnvVariables;
+
 
 	namespace Env
 	{
@@ -72,6 +71,12 @@ namespace Cgi
 	}
 	typedef Cgi::Env::Enum				CgiEnvEnum;
 
+	typedef struct s_CgiRequestEnv
+	{
+		DynArray<std::pair<Cgi::Env::Enum::Type, 	EnvValue> >	envBase;
+		DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
+	}	EnvVariables;
+
 	namespace Options
 	{
 		enum
@@ -110,7 +115,7 @@ namespace Cgi
 		typedef int     	BytesCount;
 		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
 	};
-	
+
 	namespace RequestState
 	{
 		typedef enum

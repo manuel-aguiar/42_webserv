@@ -48,13 +48,13 @@ int TestPart2(int testNumber)
 
 		protoRequest.m_CgiRequestData->setUser(&protoRequest);
 
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
-		protoRequest.m_CgiRequestData->setNotify_Callback(CgiNotify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		protoRequest.m_CgiRequestData->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::READ, &TestProtoRequest_CgiGateway::onRead);
-		protoRequest.m_CgiRequestData->setIO_Callback(CgiIO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		protoRequest.m_CgiRequestData->setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
 
 		protoRequest.m_CgiRequestData->setExtension("py");
 		protoRequest.m_CgiRequestData->setScriptPath("TestScripts/py/envPrint.py");
@@ -65,14 +65,14 @@ int TestPart2(int testNumber)
 		///////////////// Setting Variables ////////////////////
 
 		// normal ones
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "Basic");
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::CONTENT_LENGTH, "123");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "123");
 
 		// custom
 		protoRequest.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY2", "someRandomValue");
 
 		// doubled entry, the first should prevail
-		protoRequest.m_CgiRequestData->setEnvBase(CgiEnvEnum::AUTH_TYPE, "DoubledBasic");
+		protoRequest.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "DoubledBasic");
 
 
 		////////////////////////////////////////////////////////////////

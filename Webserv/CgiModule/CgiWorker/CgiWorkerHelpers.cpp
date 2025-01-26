@@ -4,6 +4,7 @@
 # include "CgiWorker.hpp"
 # include "../CgiModule/CgiModule.hpp"
 # include "../../Globals/Globals.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C Headers
 # include <unistd.h>

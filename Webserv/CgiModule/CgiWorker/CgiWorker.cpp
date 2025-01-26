@@ -2,6 +2,7 @@
 
 // Project Headers
 #include "CgiWorker.hpp"
+#include "../CgiModule/CgiModule.hpp"
 #include "../CgiInternalRequest/CgiInternalRequest.hpp"
 #include "../../Events/Subscription/Subscription.hpp"
 #include "../../Events/Manager/Manager.hpp"

@@ -3,9 +3,10 @@
 # include "CgiModule.hpp"
 # include "../CgiWorker/CgiWorker.hpp"
 # include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "../../TimerTracker/Timer/Timer.hpp"
 
 // Toolkit headers
-# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+# include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 /*
 	Provide the caller with one CgiRequestData object if available,
@@ -54,7 +55,7 @@ void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoo
 	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
 	if (m_availableWorkers.size() == 0)
 	{
-		requestData->setState(RequestState::QUEUED);
+		requestData->setState(Cgi::RequestState::QUEUED);
 		m_executionQueue.push_back(requestData);
 		return ;
 	}
@@ -87,30 +88,30 @@ int		ImplModule::processRequests()
 	return (mf_finishTimedOut());
 }
 
-void	ImplModule::modifyRequest(Request& data, bool isCalledFromEventLoop, ImplModule::Options::Mask newOptions)
+void	ImplModule::modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, Cgi::Options::Mask newOptions)
 {
 	InternalRequest*	requestData;
-	RequestStateEnum::Type	state;
+	Cgi::RequestState::Type	state;
 
 	requestData = static_cast<InternalRequest*>(&data);
 	state = requestData->getState();
 	
-	if (state == RequestState::ACQUIRED || state == RequestState::QUEUED)
+	if (state == Cgi::RequestState::ACQUIRED || state == Cgi::RequestState::QUEUED)
 	{
 		data.setRuntimeOptions(newOptions);
 		return ;
 	}
-	if (newOptions & Options::CANCEL_READ)
+	if (newOptions & Cgi::Options::CANCEL_READ)
 		requestData->accessExecutor()->disableReadEvent(isCalledFromEventLoop);
-	if (newOptions & Options::CANCEL_WRITE)
+	if (newOptions & Cgi::Options::CANCEL_WRITE)
 		requestData->accessExecutor()->disableWriteEvent(isCalledFromEventLoop);
-	if (newOptions & Options::HOLD_READ)
+	if (newOptions & Cgi::Options::HOLD_READ)
 		requestData->accessExecutor()->disableReadHandler();
-	if (newOptions & Options::HOLD_WRITE)
+	if (newOptions & Cgi::Options::HOLD_WRITE)
 		requestData->accessExecutor()->disableWriteHandler();
-	if (newOptions & Options::RESTART_READ)
+	if (newOptions & Cgi::Options::RESTART_READ)
 		requestData->accessExecutor()->enableReadHandler();
-	if (newOptions & Options::RESTART_WRITE)
+	if (newOptions & Cgi::Options::RESTART_WRITE)
 		requestData->accessExecutor()->enableWriteHandler();
 }
 
@@ -141,22 +142,22 @@ void	ImplModule::modifyRequest(Request& data, bool isCalledFromEventLoop, ImplMo
 
 	This function does not close any fds, so it is SAFE to be called from an event handler (Subscription).
 */
-void	ImplModule::finishRequest(Request& request, bool isCalledFromEventLoop)
+void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop)
 {
-	InternalRequest*					requestData;
-	ImplModule::RequestState::Type		state;
+	InternalRequest*			requestData;
+	Cgi::RequestState::Type		state;
 
 	requestData = static_cast<InternalRequest*>(&request);
 	state = requestData->getState();
 	
 	switch (state)
 	{
-		case RequestState::ACQUIRED:
+		case Cgi::RequestState::ACQUIRED:
 			mf_recycleRequestData(*requestData); break ;
-		case RequestState::EXECUTING:
+		case Cgi::RequestState::EXECUTING:
 			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
-		case RequestState::QUEUED:
-			requestData->setState(RequestStateEnum::CANCELLED); break ;
+		case Cgi::RequestState::QUEUED:
+			requestData->setState(Cgi::RequestState::CANCELLED); break ;
 		default:
 			break ;
 	}
@@ -184,7 +185,7 @@ void	ImplModule::stopAndReset()
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
-		data->Runtime_CallTheUser(CgiNotify::ON_ERROR_RUNTIME);
+		data->Runtime_CallTheUser(Cgi::Notify::ON_ERROR_RUNTIME);
 		mf_returnRequestData(*data);
 	}
 		

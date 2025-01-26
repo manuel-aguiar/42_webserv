@@ -25,7 +25,7 @@
 
 void   Worker::execute(bool markFdsAsStale)
 {
-	Options::Mask options;
+	Cgi::Options::Mask options;
 
 	options = m_curRequestData->getOptions();
 
@@ -47,13 +47,13 @@ void   Worker::execute(bool markFdsAsStale)
 	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
 	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
 
-	if (!(options & Options::CANCEL_WRITE))
+	if (!(options & Cgi::Options::CANCEL_WRITE))
 	{
 		m_writeEvent->setFd(m_ParentToChild[1]);
 		m_CgiModule.mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
 	}
 
-	if (!(options & Options::CANCEL_READ))
+	if (!(options & Cgi::Options::CANCEL_READ))
 	{
 		m_readEvent->setFd(m_ChildToParent[0]);
 		m_CgiModule.mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
@@ -92,25 +92,25 @@ void   Worker::execute(bool markFdsAsStale)
 */
 void	Worker::mf_executeParent(bool markFdsAsStale)
 {
-	ImplModule::Options::Mask options;
+	Cgi::Options::Mask options;
 
 	options = m_curRequestData->getOptions();
 
-	if ((!(options & Options::CANCEL_WRITE) && !FileDescriptor::setNonBlocking(m_ParentToChild[1])) ||
-		(!(options & Options::CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
+	if ((!(options & Cgi::Options::CANCEL_WRITE) && !FileDescriptor::setNonBlocking(m_ParentToChild[1])) ||
+		(!(options & Cgi::Options::CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]))
 	{
 		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
 		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 
-	if (options & Options::CANCEL_WRITE)
+	if (options & Cgi::Options::CANCEL_WRITE)
 		mf_closeFd(m_ParentToChild[1]);
-	if (options & Options::CANCEL_READ)
+	if (options & Cgi::Options::CANCEL_READ)
 		mf_closeFd(m_ChildToParent[0]);
-	if (options & Options::HOLD_READ)
+	if (options & Cgi::Options::HOLD_READ)
 		disableReadHandler();
-	if (options & Options::HOLD_WRITE)
+	if (options & Cgi::Options::HOLD_WRITE)
 		disableWriteHandler();
 
 	mf_closeFd(m_EmergencyPhone[1]);
@@ -196,10 +196,10 @@ void	Worker::mf_executeChild()
 */
 bool	Worker::mf_prepareExecve()
 {
-	typedef DynArray<std::pair<EnvKey, EnvValue> >::const_iterator	t_EnvExtraIter;
+	typedef DynArray<std::pair<Cgi::EnvKey, Cgi::EnvValue> >::const_iterator	t_EnvExtraIter;
 
-	const EnvVariables& 			envRequest = m_curRequestData->getEnvVars();
-	const StackArray<EnvKey, Cgi::Env::Enum::COUNT>&
+	const Cgi::EnvVariables& 			envRequest = m_curRequestData->getEnvVars();
+	const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
 									envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
 	std::string						temp;
@@ -207,7 +207,7 @@ bool	Worker::mf_prepareExecve()
 
 	try
 	{
-		std::map<InterpExtension, InterpPath>::const_iterator interpExtension 
+		std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpExtension 
 		= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
 
 		if (interpExtension == m_CgiModule.getInterpreters().end())

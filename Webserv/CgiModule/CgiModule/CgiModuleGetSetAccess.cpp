@@ -3,55 +3,50 @@
 #include "CgiModule.hpp"
 
 
-namespace Cgi
+const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
+ImplModule::getBaseEnvKeys() const
 {
+	return (m_baseEnv);
+}
 
-	const StackArray<CgiEnvKey, Cgi::Env::Enum::COUNT>&
-	Cgi::ImplModule::getBaseEnvKeys() const
-	{
-		return (m_baseEnv);
-	}
+const std::map<Cgi::InterpExtension, Cgi::InterpPath>&
+ImplModule::getInterpreters() const
+{
+	return (m_Interpreters);
+}
 
-	const std::map<CgiInterpExtension, CgiInterpPath>&
-	Cgi::ImplModule::getInterpreters() const
-	{
-		return (m_Interpreters);
-	}
+size_t
+ImplModule::getBusyWorkerCount() const
+{
+	return (m_allWorkers.size() - m_availableWorkers.size());
+}
 
-	size_t
-	Cgi::ImplModule::getBusyWorkerCount() const
-	{
-		return (m_allWorkers.size() - m_availableWorkers.size());
-	}
+size_t
+ImplModule::getQueueSize() const
+{
+	return (m_executionQueue.size());
+}
 
-	size_t
-	Cgi::ImplModule::getQueueSize() const
-	{
-		return (m_executionQueue.size());
-	}
+void
+ImplModule::addInterpreter(const std::string& extension, const std::string& path)
+{
+	m_Interpreters[extension] = path;
+}
 
-	void
-	Cgi::ImplModule::addInterpreter(const std::string& extension, const std::string& path)
-	{
-		m_Interpreters[extension] = path;
-	}
+void
+ImplModule::removeInterpreter(const std::string& extension)
+{
+	m_Interpreters.erase(extension);
+}
 
-	void
-	Cgi::ImplModule::removeInterpreter(const std::string& extension)
-	{
-		m_Interpreters.erase(extension);
-	}
+Events::Manager&
+ImplModule::mf_accessEventManager()
+{
+	return (m_eventManager);
+}
 
-	Events::Manager&
-	Cgi::ImplModule::mf_accessEventManager()
-	{
-		return (m_eventManager);
-	}
-
-	Globals&
-	Cgi::ImplModule::mf_accessGlobals()
-	{
-		return (m_globals);
-	}
-
-}; // namespace Cgi
+Globals&
+ImplModule::mf_accessGlobals()
+{
+	return (m_globals);
+}

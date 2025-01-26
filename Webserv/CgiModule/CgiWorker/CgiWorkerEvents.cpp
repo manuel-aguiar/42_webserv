@@ -35,7 +35,7 @@ void	Worker::mf_readScript()
 	
 	if (triggeredEvents & Events::Monitor::READ)
 	{
-		bytesRead = m_curRequestData->IO_CallTheUser(IO::READ, m_readEvent->getFd());
+		bytesRead = m_curRequestData->IO_CallTheUser(Cgi::IO::READ, m_readEvent->getFd());
 
 		assert(bytesRead != -1);
 
@@ -66,7 +66,7 @@ void	Worker::mf_writeScript()
 	
 	if (triggeredEvents & Events::Monitor::WRITE)
 	{
-		bytesWritten = m_curRequestData->IO_CallTheUser(IO::WRITE, m_writeEvent->getFd());
+		bytesWritten = m_curRequestData->IO_CallTheUser(Cgi::IO::WRITE, m_writeEvent->getFd());
 
 		assert(bytesWritten != -1);	
 

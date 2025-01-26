@@ -38,47 +38,34 @@ class ImplModule
 	public:
 
 		// request interaction
-		Cgi::Request*				acquireRequest();
-		void						enqueueRequest(Cgi::Request& data, bool isCalledFromEventLoop);
-		void						modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, Cgi::Options::Mask newOptions);
-		void						finishRequest(Cgi::Request& data, bool isCalledFromEventLoop);
+		Cgi::Request*		acquireRequest();
+		void				enqueueRequest(Cgi::Request& data, bool isCalledFromEventLoop);
+		void				modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, Cgi::Options::Mask newOptions);
+		void				finishRequest(Cgi::Request& data, bool isCalledFromEventLoop);
 		
 		// processing
-		int							processRequests();
-		void						stopAndReset();
+		int					processRequests();
+		void				stopAndReset();
 
 		// configuring interpreters
-		void						addInterpreter(const Cgi::InterpExtension& extension, const Cgi::InterpPath& path);
-		void						removeInterpreter(const Cgi::InterpExtension& extension);
-
-
-
-		class IO
-		{
-			public:
-				typedef enum
-				{
-					READ,
-					WRITE,
-					COUNT
-				} 	Type;
-				typedef int     	BytesCount;
-				typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
-		};
-
-
+		void				addInterpreter(const Cgi::InterpExtension& extension, const Cgi::InterpPath& path);
+		void				removeInterpreter(const Cgi::InterpExtension& extension);
 
 		// getters
-		size_t						getBusyWorkerCount() const;
-		size_t						getQueueSize() const;
+		size_t				getBusyWorkerCount() const;
+		size_t				getQueueSize() const;
 		const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
-									getBaseEnvKeys() const;
+							getBaseEnvKeys() const;
 		const std::map<Cgi::InterpExtension, Cgi::InterpPath>&	
-									getInterpreters() const;
+							getInterpreters() const;
 
 
 		#define						CGI_MIN_TIMEOUT 1
 
+
+
+		//helper functions that will be called by the helper classes, mostly
+		// will be HIDDEN FROM THE PUBLIC INTERFACE
 		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
 
 		// recycle (re-use immediately)
@@ -125,21 +112,7 @@ class ImplModule
 		Events::Manager&						m_eventManager;
 		Globals&								m_globals;
 
-		//enums for private coordination
-		class RequestStateEnum
-		{
-			public:
-			typedef enum
-			{
-				IDLE,
-				ACQUIRED,
-				QUEUED,
-				EXECUTING,
-				CANCELLED,
-			} 	Type;
-		};
-
-		int					mf_finishTimedOut();
+		int										mf_finishTimedOut();
 		
 		// private copy/assignment
 		ImplModule(const ImplModule &copy);

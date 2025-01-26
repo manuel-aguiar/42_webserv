@@ -7,7 +7,7 @@
 
 void	ImplModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
 {
-	data.setState(RequestState::EXECUTING);
+	data.setState(Cgi::RequestState::EXECUTING);
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);
 	worker.execute(markFdsAsStale);
@@ -27,17 +27,17 @@ int	ImplModule::mf_finishTimedOut()
 	
 	for (; it != m_timerTracker.end(); ++it) 
 	{
-		if (it->first < timer && it->second->getState() != RequestState::IDLE)
+		if (it->first < timer && it->second->getState() != Cgi::RequestState::IDLE)
 		{
 			curRequest = it->second;
 			switch (curRequest->getState())
 			{
-				case RequestState::ACQUIRED:
+				case Cgi::RequestState::ACQUIRED:
 					mf_recycleRequestData(*curRequest); break ;
-				case RequestState::EXECUTING:
+				case Cgi::RequestState::EXECUTING:
 					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
-				case RequestState::QUEUED:
-					curRequest->setState(RequestState::CANCELLED); break;
+				case Cgi::RequestState::QUEUED:
+					curRequest->setState(Cgi::RequestState::CANCELLED); break;
 				default: break ;
 			}		
 		}
