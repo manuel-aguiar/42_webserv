@@ -16,7 +16,7 @@ namespace Events
 		m_globals		(globals),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
+		m_staleEvents	(maxSubscriptions / 8 + 1, 0)
 	{
 
 		m_epollfd = epoll_create(1);
@@ -65,6 +65,9 @@ namespace Events
 		//event must not being monitored
 		ASSERT_EQUAL(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE,
 		true, "Manager::returnSubscription(): Subscription is still being monitored");
+
+		internal->reset();
+
 		m_availableSubs.emplace_back(internal);
 	}
 
