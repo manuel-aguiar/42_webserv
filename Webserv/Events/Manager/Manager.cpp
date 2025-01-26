@@ -60,7 +60,7 @@ namespace Events
 
 		//subscription must be part of the manager's subscriptions
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
+		true, "Manager::returnSubscription(): Subscription is not part of the EventManager's subscriptions");
 
 		//event must not being monitored
 		ASSERT_EQUAL(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE,
