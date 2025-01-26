@@ -120,7 +120,7 @@ int TestPart2(int testNumber)
 
 
 
-		// preparing the write event
+		// preparing the read event
 		readEvent->setFd(sockfd[0]);
 		readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::EDGE_TRIGGERED);
 		readEvent->setUser(&readCalculate);
