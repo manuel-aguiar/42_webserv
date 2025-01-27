@@ -6,73 +6,56 @@
 
 
 // Project Headers
-# include "../../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../Globals/LogFile/LogFile.hpp"
-# include "../Events/Manager/Manager.hpp"
 
-// C headers
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
+
 
 //forward declarations
 class Subscription;
 class ServerWorker;
-class Connection;
 class Globals;
+struct BindAddress;
+namespace Conn (class Connection;)
+namespace Events (class Subscription;)
+namespace Events (class Manager;)
 
 class ListeningSocket
 {
 	public:
-		ListeningSocket(ServerWorker&		worker, 
-						Nginx_MemoryPool&	memPool, 
-						const t_addrinfo&	addrInfo, 
-						const int			backlog, 
-						Globals&			globals);
+		ListeningSocket(const int backlog, const BindAddress& info, Globals& globals);
 		~ListeningSocket();
-
 
 		// methods
 		int                         open();
 		int                        	accept();
 
 		void                        close();
-		void                        closeConnection(Connection& connection);
+		void                        closeConnection(Conn::Connection& connection);
 
 		// events callbacks
-		static void                 EventCallbackAccept(Subscription& callback);
+		static void                 EventCallbackAccept(Events::Subscription& callback);
 
 
 		// getters
-		const ServerWorker&			getWorker()						const;
-		t_socket					getSocket()						const;
-		int							getSockType()					const;
-		int							getProtocol()					const;
-		const t_sockaddr*			getAddr()						const;
-		t_socklen					getAddrlen()					const;
-		t_port						getPort()						const;
-		int							getBacklog()					const;
-		const Subscription&			getEvent()						const;
+		const Events::Subscription*	getEvent()						const;
 
 		// setters
 		void						setProtoModule					(const t_ptr_ProtoModule& module);
 		void						setInitProtocolConnection		(const t_func_initProtoConn& func);
 
 		// accessors
-		ServerWorker&				accessWorker();
-		Subscription&				accessEvent();
+		Events::Subscription*		accessEvent();
 
 	private:
 
-		t_addrinfo					m_addrInfo;
-		t_socket					m_sockfd;
+		Ws::Sock::fd				m_sockfd;
 		int							m_backlog;
 
 		t_func_initProtoConn		m_initConnection;
 		t_ptr_ProtoModule			m_protoModule;
-		Subscription*				m_event;
-		ServerWorker&				m_worker;
+		
+		Events::Subscription*		m_event;
+		const BindAddress&			m_info;
 		Globals&                    m_globals;
 
 		ListeningSocket();

@@ -5,86 +5,86 @@
 namespace Conn
 {
 	//getters
-	t_socket				Manager::Connection::getSocket() const
+	t_socket				ImplManager::Connection::getSocket() const
 	{
 		return (m_sockfd);
 	}
 
-	const Ws::Sock::addr&		Manager::Connection::getAddr() const
+	const Ws::Sock::addr&		ImplManager::Connection::getAddr() const
 	{
 		return (m_addr);
 	}
 
-	const Events::Subscription&			Manager::Connection::getEventSubs() const
+	const Events::Subscription&			ImplManager::Connection::getEventSubs() const
 	{
 		return (*m_eventSubs);
 	}
 
-	const Events::Subscription&			Manager::Connection::getWriteEvent() const
+	const Events::Subscription&			ImplManager::Connection::getWriteEvent() const
 	{
 		return (*m_writeEvent);
 	}
 
-	const ListeningSocket&	Manager::Connection::getListener() const
+	const ListeningSocket&	ImplManager::Connection::getListener() const
 	{
 		return (*m_listener);
 	}
 
-	const Globals&			Manager::Connection::getGlobals() const
+	const Globals&			ImplManager::Connection::getGlobals() const
 	{
 		return (m_globals);
 	}
 
 	//setters
-	void					Manager::Connection::setSocket(const t_socket sockfd)
+	void					ImplManager::Connection::setSocket(const t_socket sockfd)
 	{
 		m_sockfd = sockfd;
 	}
 
-	void					Manager::Connection::setAddr(const Ws::Sock::addr& addr)
+	void					ImplManager::Connection::setAddr(const Ws::Sock::addr& addr)
 	{
 		m_addr = addr;
 	}
 
-	void					Manager::Connection::setAddrlen(const t_socklen addrlen)
+	void					ImplManager::Connection::setAddrlen(const t_socklen addrlen)
 	{
 		m_addrlen = addrlen;
 	}
 
 
-	void					Manager::Connection::setListener(ListeningSocket& listener)
+	void					ImplManager::Connection::setListener(ListeningSocket& listener)
 	{
 		m_listener = &listener;
 	}
 
-	void					Manager::Connection::setProtoConnection(const t_ptr_ProtoConnection connection)
+	void					ImplManager::Connection::setProtoConnection(const t_ptr_ProtoConnection connection)
 	{
 		m_ptr_protoConnection = connection;
 	}
 
-	void					Manager::Connection::setProtoModule(const t_ptr_ProtoModule module)
+	void					ImplManager::Connection::setProtoModule(const t_ptr_ProtoModule module)
 	{
 		m_ptr_protoModule = module;
 	}
 
 
 	//accessors
-	t_ptr_ProtoConnection	Manager::Connection::accessProtoConnection()
+	t_ptr_ProtoConnection	ImplManager::Connection::accessProtoConnection()
 	{
 		return (m_ptr_protoConnection);
 	}
 
-	t_ptr_ProtoModule		Manager::Connection::accessProtoModule()
+	t_ptr_ProtoModule		ImplManager::Connection::accessProtoModule()
 	{
 		return (m_ptr_protoModule);
 	}
 
-	Nginx_MemoryPool&		Manager::Connection::accessMemPool()
+	Nginx_MemoryPool&		ImplManager::Connection::accessMemPool()
 	{
 		return (m_memPool);
 	}
 
-	t_sockaddr*		Manager::Connection::accessAddr()
+	t_sockaddr*		ImplManager::Connection::accessAddr()
 	{
 		return (m_addr);
 	}

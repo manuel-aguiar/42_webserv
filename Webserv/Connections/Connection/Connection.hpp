@@ -17,15 +17,13 @@ class ListeningSocket;
 
 namespace Conn
 {
-	class Manager::Connection
+	class Connection
 	{
-		protected:
+		public:
 			Connection(Globals& globals);
 			~Connection();
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);
-
-		public:
 
 			typedef void 				(*Init)(Connection*);
 
@@ -59,18 +57,16 @@ namespace Conn
 
 
 		private:
-			// set by ListeningSocket that accepts
 			Ws::Sock::fd				m_sockfd;
 			Ws::Sock::addr				m_addr;
 			Ws::Sock::addrlen			m_addrlen;
 			Events::Subscription*		m_eventSubs;
-			t_ptr_ProtoConnection		m_ptr_protoConnection;				// <- the http connection
-			t_ptr_ProtoModule			m_ptr_protoModule;					// <- the http module in our case
+			t_ptr_ProtoConnection		m_ptr_protoConnection;						// <- the http connection
+			t_ptr_ProtoModule			m_ptr_protoModule;							// <- the http module in our case
 
 			ListeningSocket*			m_listener;
 			Globals&					m_globals;
 																					// set by the listening socket
-
 	};
 }
 

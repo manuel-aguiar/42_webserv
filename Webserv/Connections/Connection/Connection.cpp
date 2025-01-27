@@ -8,23 +8,23 @@
 
 namespace Conn
 {
-    Manager::Connection::Connection(Globals& globals) :
+    ImplManager::Connection::Connection(Globals& globals) :
         m_globals(globals)
     {
 
     }
 
-    Manager::Connection::~Connection()
+    ImplManager::Connection::~Connection()
     {
         m_memPool.destroy();
     }
 
-    void    Manager::Connection::init()
+    void    ImplManager::Connection::init()
     {
         
     }
 
-    void    Manager::Connection::reset()
+    void    ImplManager::Connection::reset()
     {
         m_sockfd = -1;
         m_listener = NULL;
@@ -32,7 +32,7 @@ namespace Conn
 
 
     // no copies, as usual
-    Manager::Connection::Connection(const Connection& other) :
+    ImplManager::Connection::Connection(const Connection& other) :
         m_sockfd(other.m_sockfd),
         m_addr(other.m_addr),
         m_addrlen(other.m_addrlen),
@@ -43,5 +43,5 @@ namespace Conn
 
     }
 
-    Manager::Connection& Manager::Connection::operator=(const Connection& other) {(void)other; return (*this);}
+    ImplManager::Connection& ImplManager::Connection::operator=(const Connection& other) {(void)other; return (*this);}
 }

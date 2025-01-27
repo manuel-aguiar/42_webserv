@@ -5,7 +5,7 @@
 # include "../InternalReq/InternalReq.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
-ImplModule::ImplModule(size_t workers, size_t backlog, size_t maxTimeout, Events::Manager& eventManager, Globals& globals) :
+ImplModule::ImplModule(const size_t workers, const size_t backlog, const size_t maxTimeout, Events::Manager& eventManager, Globals& globals) :
 	m_numWorkers			(workers),
 	m_backlog				(backlog),
 	m_maxTimeout			(maxTimeout),

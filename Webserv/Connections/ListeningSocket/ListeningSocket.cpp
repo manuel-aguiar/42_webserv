@@ -1,12 +1,13 @@
 
 
 #include "ListeningSocket.hpp"
-#include "../ServerWorker/ServerWorker.hpp"
-#include "../ConnectionManager/ConnectionManager.hpp"
-#include "../EventManager/EventManager.hpp"
 #include "../../Globals/Globals.hpp"
-#include "../../EventCallback/EventCallback.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+
+// C headers
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
 
 ListeningSocket::ListeningSocket(	ServerWorker& worker, 
 									Nginx_MemoryPool& memPool, 

@@ -27,9 +27,9 @@ namespace Events {class Manager;}
 class ImplModule
 {
 	protected:
-		ImplModule(	size_t workerCount, 
-					size_t backlogCount, 
-					size_t maxTimeout, 
+		ImplModule(	const size_t workerCount, 
+					const size_t backlogCount, 
+					const size_t maxTimeout, 
 					Events::Manager& eventManager, 
 					Globals& globals);
 		~ImplModule();
