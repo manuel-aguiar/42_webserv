@@ -40,13 +40,13 @@ ImplModule::removeInterpreter(const std::string& extension)
 }
 
 Events::Manager&
-ImplModule::_mf_accessEventManager()
+ImplModule::_WorkerAccessEventManager()
 {
 	return (m_eventManager);
 }
 
 Globals&
-ImplModule::_mf_accessGlobals()
+ImplModule::_WorkerAccessGlobals()
 {
 	return (m_globals);
 }

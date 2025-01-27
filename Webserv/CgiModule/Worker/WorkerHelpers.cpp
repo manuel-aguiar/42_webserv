@@ -2,7 +2,6 @@
 
 // Project Headers
 # include "Worker.hpp"
-# include "../ImplModule/ImplModule.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
@@ -35,8 +34,8 @@ void	Worker::mf_childFailure()
 		errorMsg += ::strerror(m_EmergencyBuffer[1]);
 	else
 		errorMsg += "inconclusive error";
-	m_CgiModule._mf_accessGlobals().logError(errorMsg);
-	m_CgiModule._mf_recycleRuntimeFailure(*this);
+	mf_accessGlobals().logError(errorMsg);
+	mf_recycleRuntimeFailure();
 }
 
 
@@ -52,16 +51,16 @@ void	Worker::mf_waitChild()
 
 	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
 	{
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
-		m_CgiModule._mf_recycleRuntimeFailure(*this);
+		mf_accessGlobals().logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
+		mf_recycleRuntimeFailure();
 	}
 	else
-		m_CgiModule._mf_recycleSuccess(*this);
+		mf_recycleSuccess();
 }
 
 void 	Worker::mf_closeFd(Ws::fd& fd)
 {
 	if (fd != -1 && ::close(fd) == -1)
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
+		mf_accessGlobals().logError("InternalCgiWorker::closeFd(), close(): " + std::string(strerror(errno)));
 	fd = -1;
 }

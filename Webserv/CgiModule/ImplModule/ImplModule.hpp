@@ -63,29 +63,13 @@ class ImplModule
 
 
 
-		//helper functions that will be called by the helper classes, mostly
-		// will be HIDDEN FROM THE PUBLIC INTERFACE
-		void				_mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
+		// helper functions the Worker will need to use to inform the manager about execution
+		void				_WorkerRecycleSuccess(Worker& worker);
+		void				_WorkerRecycleRuntimeFailure(Worker& worker);
+		void				_WorkerRecycleStartupFailure(Worker& worker, bool markFdsAsStale);
 
-		// recycle (re-use immediately)
-		void				_mf_recycleSuccess(Worker& worker);
-		void				_mf_recycleRuntimeFailure(Worker& worker);
-		void				_mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
-		void				_mf_recycleTimeoutFailure(Worker& worker);
-		void				_mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
-		void				_mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
-		
-		void				_mf_recycleWorker(Worker& worker, bool markFdsAsStale);
-		void				_mf_recycleRequestData(InternalRequest& data);
-		
-		// return
-		void				_mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
-		void				_mf_returnWorker(Worker& worker);
-		void				_mf_returnRequestData(InternalRequest& data);
-		void				_mf_cancelAndReturn(InternalRequest& data);
-
-		Events::Manager&	_mf_accessEventManager();
-		Globals&			_mf_accessGlobals();
+		Events::Manager&	_WorkerAccessEventManager();
+		Globals&			_WorkerAccessGlobals();
 
 	private:
 
@@ -111,7 +95,20 @@ class ImplModule
 		Events::Manager&						m_eventManager;
 		Globals&								m_globals;
 
-		int										mf_finishTimedOut();
+		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
+		int					mf_finishTimedOut();
+		// return
+		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
+		void				mf_returnWorker(Worker& worker);
+		void				mf_returnRequestData(InternalRequest& data);
+		void				mf_cancelAndReturn(InternalRequest& data);
+		
+		void				mf_recycleTimeoutFailure(Worker& worker);
+		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
+		void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
+		
+		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
+		void				mf_recycleRequestData(InternalRequest& data);
 		
 		// private copy/assignment
 		ImplModule(const ImplModule &copy);

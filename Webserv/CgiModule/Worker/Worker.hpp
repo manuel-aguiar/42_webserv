@@ -18,7 +18,10 @@
 // forward declarations
 class ImplModule;
 class InternalRequest;
+class Globals;
 namespace Events { class Subscription; }
+namespace Events { class Manager; }
+namespace Cgi { class EnvVariables; }
 
 class Worker
 {
@@ -83,6 +86,8 @@ class Worker
 		ImplModule&		m_CgiModule;
 
 		// execute
+
+
 		void				mf_executeParent(bool markFdsAsStale);
 		void				mf_executeChild();
 		bool				mf_prepareExecve();
@@ -103,6 +108,14 @@ class Worker
 		void				mf_childFailure();
 		void				mf_waitChild();
 		void				mf_KillWaitChild();
+
+		// interaction with the manager
+		void				mf_recycleSuccess();
+		void				mf_recycleRuntimeFailure();
+		void				mf_recycleStartupFailure(bool markFdsAsStale);
+
+		Events::Manager&	mf_accessEventManager();
+		Globals&			mf_accessGlobals();
 
 		//private as usual
 		Worker(const Worker &other);

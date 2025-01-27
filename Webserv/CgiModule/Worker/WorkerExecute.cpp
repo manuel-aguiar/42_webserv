@@ -2,12 +2,11 @@
 
 // Project Headers
 # include "Worker.hpp"
-# include "../ImplModule/ImplModule.hpp"
 # include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
 # include "../../Globals/Globals.hpp"
 
 // C Headers
@@ -30,14 +29,14 @@ void   Worker::execute(bool markFdsAsStale)
 	options = m_curRequestData->getOptions();
 
 	if (!mf_prepareExecve())
-		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
+		return (mf_recycleStartupFailure(markFdsAsStale));
 
 	if (::pipe(m_ParentToChild) == -1 ||
 		::pipe(m_ChildToParent) == -1 ||
 		::pipe(m_EmergencyPhone) == -1)
 	{
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
+		mf_accessGlobals().logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
+		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
 
 	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -50,17 +49,17 @@ void   Worker::execute(bool markFdsAsStale)
 	if (!(options & Cgi::Options::CANCEL_WRITE))
 	{
 		m_writeEvent->setFd(m_ParentToChild[1]);
-		m_CgiModule._mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
+		mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
 	}
 
 	if (!(options & Cgi::Options::CANCEL_READ))
 	{
 		m_readEvent->setFd(m_ChildToParent[0]);
-		m_CgiModule._mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
+		mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
 	}
 
 	m_EmergencyEvent->setFd(m_EmergencyPhone[0]);
-	m_CgiModule._mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
+	mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
 	
 
 	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -73,8 +72,8 @@ void   Worker::execute(bool markFdsAsStale)
 	m_pid = ::fork();
 	if (m_pid == -1)
 	{
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
+		mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
+		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
 	
 
@@ -100,8 +99,8 @@ void	Worker::mf_executeParent(bool markFdsAsStale)
 		(!(options & Cgi::Options::CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]))
 	{
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
+		mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
+		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
 
 	if (options & Cgi::Options::CANCEL_WRITE)
@@ -194,59 +193,4 @@ void	Worker::mf_executeChild()
 	Putting env variables in place for execution.
 	Try-catch because the DynArray may throw if it fails to allocate memory
 */
-bool	Worker::mf_prepareExecve()
-{
-	typedef DynArray<std::pair<Cgi::EnvKey, Cgi::EnvValue> >::const_iterator	t_EnvExtraIter;
 
-	const Cgi::EnvVariables& 			envRequest = m_curRequestData->getEnvVars();
-	const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
-									envBase = m_CgiModule.getBaseEnvKeys();
-	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
-	std::string						temp;
-	
-
-	try
-	{
-		std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpExtension 
-		= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
-
-		if (interpExtension == m_CgiModule.getInterpreters().end())
-			throw std::runtime_error("interpreter not found");
-
-		assert (m_envStr.size() == 0 && m_envPtr.size() == 0 && m_argPtr.size() == 0);
-
-		m_envStr.reserve(entryCount);
-		m_envPtr.reserve(entryCount + 1);
-		m_argPtr.reserve(3);
-
-		for (size_t i = 0; i < envRequest.envBase.size(); i++)
-		{
-			temp = (envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
-			m_envStr.emplace_back();
-			StringUtils::move(m_envStr.back(), temp);
-		}
-		
-		for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
-		{
-			temp = (it->first + "=" + it->second);
-			m_envStr.emplace_back();
-			StringUtils::move(m_envStr.back(), temp);
-		}
-
-		for (size_t i = 0; i < entryCount; i++)
-			m_envPtr.push_back(const_cast<char*>(m_envStr[i].c_str()));
-
-		m_envPtr.push_back(NULL);
-
-		m_argPtr.push_back(const_cast<char*>(interpExtension->second.c_str()));
-		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
-		m_argPtr.push_back(NULL);
-		
-		return (true);
-	}
-	catch(const std::exception& e)
-	{
-		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
-	}
-	return (false);
-}

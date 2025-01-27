@@ -6,7 +6,27 @@
 # include "../../TimerTracker/Timer/Timer.hpp"
 
 void
-ImplModule::_mf_recycleWorker(Worker& worker, bool markFdsAsStale)
+ImplModule::_WorkerRecycleSuccess(Worker& worker)
+{
+	mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_SUCCESS);
+}
+
+
+void
+ImplModule::_WorkerRecycleRuntimeFailure(Worker& worker)
+{
+	worker.stop();
+	mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_ERROR_RUNTIME);
+}
+
+void
+ImplModule::_WorkerRecycleStartupFailure(Worker& worker, bool markFdsAsStale)
+{
+	mf_recycleExecutionUnit(worker, markFdsAsStale, Cgi::Notify::ON_ERROR_STARTUP);
+}
+
+void
+ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 {
 	InternalRequest* newData;
 
@@ -19,17 +39,17 @@ ImplModule::_mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 
 		if (newData->getState() != Cgi::RequestState::CANCELLED)
 		{
-			_mf_execute(worker, *newData, markFdsAsStale);
+			mf_execute(worker, *newData, markFdsAsStale);
 			return ;
 		}
-		_mf_recycleRequestData(*newData);
+		mf_recycleRequestData(*newData);
 	}
 	m_availableWorkers.push_back(&worker);
 	m_busyWorkerCount--;
 }
 
 void
-ImplModule::_mf_recycleRequestData(InternalRequest& data)
+ImplModule::mf_recycleRequestData(InternalRequest& data)
 {	
 	TimerTracker<Timer, InternalRequest*>::iterator 	timer;
 
@@ -42,52 +62,33 @@ ImplModule::_mf_recycleRequestData(InternalRequest& data)
 	m_availableRequestData.push_back(&data);
 }
 
-void
-ImplModule::_mf_recycleSuccess(Worker& worker)
-{
-	_mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_SUCCESS);
-}
-
 
 void
-ImplModule::_mf_recycleRuntimeFailure(Worker& worker)
+ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 {
 	worker.stop();
-	_mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR_TIMEOUT);
 }
 
 void
-ImplModule::_mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale)
-{
-	_mf_recycleExecutionUnit(worker, markFdsAsStale, Cgi::Notify::ON_ERROR_STARTUP);
-}
-
-void
-ImplModule::_mf_recycleTimeoutFailure(Worker& worker)
-{
-	worker.stop();
-	_mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR_TIMEOUT);
-}
-
-void
-ImplModule::_mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
+ImplModule::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
 {
 	Worker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	_mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR_RUNTIME);
 }
 
 void
-ImplModule::_mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
+ImplModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
 	InternalRequest* 		data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 
 	worker.disableCloseAllEvents(markFdsAsStale);
-	_mf_recycleWorker(worker, markFdsAsStale);
-	_mf_recycleRequestData(*data);
+	mf_recycleWorker(worker, markFdsAsStale);
+	mf_recycleRequestData(*data);
 	if (user && handler)
 		(handler)(user);
 }

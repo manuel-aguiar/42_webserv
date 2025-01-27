@@ -2,7 +2,6 @@
 
 // Project Headers
 # include "Worker.hpp"
-# include "../ImplModule/ImplModule.hpp"
 # include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
@@ -56,7 +55,7 @@ void	Worker::mf_readScript()
 
 void	Worker::mf_writeScript()
 {
-	int 				bytesWritten;
+	int 					bytesWritten;
 	Events::Monitor::Mask 	triggeredEvents;
 	
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
