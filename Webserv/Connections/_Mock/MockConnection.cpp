@@ -97,11 +97,6 @@ void					Connection::setSocket(const t_socket sockfd)
 	m_sockfd = sockfd;
 }
 
-void					Connection::setAddr(t_sockaddr* addr)
-{
-	m_addr = addr;
-}
-
 void					Connection::setAddrlen(const t_socklen addrlen)
 {
 	m_addrlen = addrlen;
@@ -147,9 +142,4 @@ t_ptr_ProtoModule		Connection::accessProtoModule()
 Nginx_MemoryPool&		Connection::accessMemPool()
 {
 	return (m_memPool);
-}
-
-t_sockaddr*		Connection::accessAddr()
-{
-	return (m_addr);
 }

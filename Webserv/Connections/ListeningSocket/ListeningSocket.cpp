@@ -1,89 +1,53 @@
 
 
-#include "ListeningSocket.hpp"
-#include "../../Globals/Globals.hpp"
-#include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "ListeningSocket.hpp"
+# include "../ImplManager/ImplManager.hpp"
+# include "../InternalConn/InternalConn.hpp"
+# include "../../Globals/Globals.hpp"
+# include "../../ServerContext/ServerContext.hpp"
+# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 // C headers
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
-ListeningSocket::ListeningSocket(	ServerWorker& worker, 
-									Nginx_MemoryPool& memPool, 
-									const t_addrinfo& addrInfo, 
-									const int backlog, 
-									Globals& globals) :
+
+
+ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, ImplManager& connManager, ServerContext& context) :
 	m_sockfd(-1),
 	m_backlog(backlog),
-	m_worker(worker),
-	m_globals(globals)
+	m_init(NULL),
+	m_module(NULL),
+	m_event(NULL),
+	m_info(info),
+	m_connManager(connManager),
+	m_context(context)
 {
-	size_t canonnameLen;
-
-	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
-		#include <iostream>
-		if (globals)
-			m_globals.m_debugFile->record("ListeningSocket Constructor Called");
-		else
-			std::cout << "ListeningSocket Constructor Called" << std::endl;
-	#endif
-
-	std::memcpy(&m_addrInfo, &addrInfo, sizeof(addrInfo));
-	m_addrInfo.ai_next = NULL;
-
-	m_addrInfo.ai_addr = (t_sockaddr *)memPool.allocate(m_addrInfo.ai_addrlen, true);
-	std::memcpy(m_addrInfo.ai_addr, addrInfo.ai_addr, m_addrInfo.ai_addrlen);
-
-	// just convert the port to host byte order in place
-	// this should require some form of switch statement to detect various address types as IPV6
-	((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port = ::ntohs(((t_sockaddr_in *)m_addrInfo.ai_addr)->sin_port);
-
-	canonnameLen = addrInfo.ai_canonname ? std::strlen(addrInfo.ai_canonname) : 0;
-
-	if (!canonnameLen)
-		m_addrInfo.ai_canonname = NULL;
-	else
-	{
-		m_addrInfo.ai_canonname = (char *)memPool.allocate(canonnameLen + 1, true);
-		std::memcpy(m_addrInfo.ai_canonname, addrInfo.ai_canonname, canonnameLen + 1);
-	}
-
-	m_event.setFdFlags(m_sockfd, EPOLLIN | EPOLLET);
-	m_event.setCallback(this, &ListeningSocket::EventCallbackAccept);
+	m_init = context.getAppLayerInit(info.appLayer);
+	m_module = context.getAppLayerModule(info.appLayer);
 }
 
 ListeningSocket::~ListeningSocket()
 {
 	close();
-
-	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
-		#include <iostream>
-		if (globals)
-			m_globals.m_debugFile->record("ListeningSocket Destructor Called");
-		else
-			std::cout << "ListeningSocket Destructor Called" << std::endl;
-	#endif
 }
 
 int		ListeningSocket::open()
 {
 	int options;
-
-	m_sockfd = ::socket(m_addrInfo.ai_family, m_addrInfo.ai_socktype, m_addrInfo.ai_protocol);
-	//std::cout << "listener sockfd " << m_sockfd << std::endl;
+	
+	m_sockfd = ::socket(m_info.family, m_info.socktype, m_info.proto);
 	if (m_sockfd == -1)
 	{
-		m_globals.logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
+		m_context.getGlobals()->logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
 		return (0);
 	}
-
-	if (!FileDescriptor
-::setCloseOnExec_NonBlocking(m_sockfd))
+	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
 	{
-		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
+		m_context.getGlobals()->logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (0);
-	}	
+	}
 
 	#ifdef SO_REUSEPORT
 		options = SO_REUSEADDR | SO_REUSEPORT;
@@ -93,15 +57,35 @@ int		ListeningSocket::open()
 
 	if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
 	{
-		m_globals.logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
+		m_context.getGlobals()->logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
+		return (0);
+	}	
+	if (::bind(m_sockfd, (struct sockaddr*)(&m_info.addr), m_info.addrlen) == -1)
+	{
+		m_context.getGlobals()->logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
+		return (0);
+	}
+	if (::listen(m_sockfd, m_backlog) == -1)
+	{
+		m_context.getGlobals()->logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
 		return (0);
 	}
 
-	if (!mf_bind() || !mf_listen())
-		return (0);
 	return (1);
 }
 
+int	ListeningSocket::accept()
+{
+	InternalConn*	connection;
+
+	connection = m_connManager._Listener_ProvideConnection();
+	if (!connection)
+	{
+		m_connManager._Listener_MoveToPendingAccept(*this);
+		return (0);
+	}
+	connection->accept(m_sockfd);
+}
 
 
 /*
@@ -109,7 +93,7 @@ int		ListeningSocket::open()
 	via the EventCallbackAccept function pointer, and by the ServerWorker when a Connection instance
 	is returned to try and recycle. 
 */
-int    ListeningSocket::accept()
+int    ListeningSocket::acceptasf()
 {
 	Connection*	connection;
 	u_sockaddr	addr;
@@ -163,8 +147,8 @@ int    ListeningSocket::accept()
 
 	std::memcpy(connection->accessAddr(), &addr, addrlen);
 	connection->setAddrlen(addrlen);
-	connection->setProtoModule(m_protoModule);
-	m_initConnection(connection);
+	connection->setProtoModule(m_module);
+	m_init(connection);
 
 	if (!m_worker.accessEventManager().monitor(connection->getReadEvent()))
 		return (mf_close_accepted_connection(*connection));
@@ -215,20 +199,12 @@ ListeningSocket::ListeningSocket() :
 
 int		ListeningSocket::mf_bind()
 {
-	if (::bind(m_sockfd, (struct sockaddr*)m_addrInfo.ai_addr, m_addrInfo.ai_addrlen) == -1)
-	{
-		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
-		return (0);
-	}
+
 	return (1);
 }
 
 int		ListeningSocket::mf_listen()
 {
-	if (::listen(m_sockfd, m_backlog) == -1)
-	{
-		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
-		return (0);
-	}
+
 	return (1);
 }

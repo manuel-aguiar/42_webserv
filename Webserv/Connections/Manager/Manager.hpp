@@ -11,7 +11,10 @@ namespace Conn
 	class Manager : public ImplManager
 	{
 		public:
-			Manager(size_t maxConnections, Events::Manager& em, Globals& globals);
+			Manager(const size_t maxConnections,
+					const std::vector<Ws::BindInfo>& bindAddresses,
+					Events::Manager& eventManager, 
+					ServerContext& context);
 			~Manager();
 	};
 }

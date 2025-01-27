@@ -28,14 +28,14 @@ class ServerContext
 
 		ServerConfig*			getServerConfig() const;
 		Globals*				getGlobals() const;
-		Ws::AppLayer::Module		getAppLayerModule(Ws::AppLayer::Type type) const;
+		Ws::AppLayer::Module	getAppLayerModule(Ws::AppLayer::Type type) const;
 		Ws::AppLayer::Init		getAppLayerInit(Ws::AppLayer::Type type) const;
 		Ws::AddonLayer::State	getAddonLayer(Ws::AddonLayer::Type type) const;
 
 	private:
 		ServerConfig*												m_config;
 		Globals*													m_globals;
-		StackArray<Ws::AppLayer::Module,		 Ws::AppLayer::COUNT>	m_appLayerState;
+		StackArray<Ws::AppLayer::Module,	Ws::AppLayer::COUNT>	m_appLayerState;
 		StackArray<Ws::AppLayer::Init, 		Ws::AppLayer::COUNT>	m_appLayerInit;
 		StackArray<Ws::AddonLayer::State, 	Ws::AddonLayer::COUNT>	m_addonLayer;
 };

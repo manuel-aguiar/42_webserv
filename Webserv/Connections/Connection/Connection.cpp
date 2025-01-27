@@ -9,9 +9,10 @@
 namespace Conn
 {
     Connection::Connection(	Events::Manager& eventManager, 
-						    ImplManager& connManager, 
-						    ServerContext& serverContext) :
+						    ServerContext& serverContext,
+                            ImplManager* connManager) :
         m_sockfd(-1),
+        m_addr({}),
         m_connManager(connManager),
         m_eventManager(eventManager),
         m_context(serverContext)
@@ -21,7 +22,7 @@ namespace Conn
 
     Connection::~Connection()
     {
-        
+
     }
 
     void    Connection::reset()

@@ -6,6 +6,8 @@
 
 # include "../Connection/Connection.hpp"
 
+class ListeningSocket;
+
 class InternalConn : public Conn::Connection
 {
 	public:
@@ -17,7 +19,12 @@ class InternalConn : public Conn::Connection
 		InternalConn(const InternalConn& other);
 		InternalConn& operator=(const InternalConn& other);
 
-		void ForceClose();
+		int		accept(Ws::Sock::fd& listener);
+		void 	ForceClose();
+
+		Ws::Sock::addr&		accessAddr();
+		Ws::Sock::addrlen&	accessAddrlen();
+		Ws::Sock::fd		accessSocket();
 
 	private:
 		typedef enum

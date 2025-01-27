@@ -12,30 +12,42 @@
 # include <vector>
 
 // forward declarations
-class Connection;
 class InternalConn;
 class ListeningSocket;
 class ServerContext;
 namespace Events { class Manager; }
-struct BindAddress;
+namespace Ws { struct BindInfo; }
+namespace Conn { class Connection; }
 
 class ImplManager
 {
 	protected:
 		ImplManager(const size_t maxConnections,
-					const std::vector<BindAddress>& bindAddresses,
+					const std::vector<Ws::BindInfo>& bindAddresses,
 					Events::Manager& eventManager, 
 					ServerContext& context);
 		~ImplManager();
 	
 	public:
+
+		// public interface
 		void								init();
 		void								shutdown();
 
+
+
 		// helper methods that will actually be called internally between helpers
 		// will be hidden via private inheritance for the public interface
-		Connection*							provideConnection();
-		void								returnConnection(Connection& connection);
+
+
+
+		// access to the event manager
+		Events::Manager&					accessEventManager();
+
+
+		InternalConn*						_Listener_ProvideConnection();
+		void								_Listener_ReturnConnection(InternalConn& connection);
+		void								_Listener_MoveToPendingAccept(ListeningSocket& listener);
 
 	private:
 		size_t								m_maxConnections;
@@ -43,10 +55,10 @@ class ImplManager
 		HeapCircularQueue<InternalConn*>	m_spareConnections;
 
 		HeapArray<ListeningSocket>			m_listeningSockets;
-		Events::Manager&					m_eventManager;
-		ServerContext&						m_globals;
+		HeapCircularQueue<ListeningSocket*>	m_pendingAccepts;
 
-		void 					mf_destroyConnection(Connection* connection);
+		Events::Manager&					m_eventManager;
+		ServerContext&						m_context;
 
 		ImplManager(const ImplManager& copy);
 		ImplManager& operator=(const ImplManager& assign);

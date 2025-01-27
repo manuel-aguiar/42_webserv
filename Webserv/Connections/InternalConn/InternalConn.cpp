@@ -19,6 +19,12 @@ void	InternalConn::ForceClose()
 	m_state == IDLE;
 }
 
+int	InternalConn::accept(Ws::Sock::fd& listener)
+{
+	m_sockfd = ::accept(listener, (struct sockaddr*)(&m_addr), &m_addrlen);
+	return (m_sockfd);
+}
+
 InternalConn& InternalConn::operator=(const InternalConn& other)
 {
 	if (this == &other)

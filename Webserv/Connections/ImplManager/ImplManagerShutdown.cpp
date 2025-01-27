@@ -14,7 +14,7 @@ void   	ImplManager::shutdown()
 	}
 
 	// here maybe clear the listener queue of listeners that couldn't get a free connection
-
+	m_pendingAccepts.clear();
 
 	// force close all connections, lets the user know we are shutting down, can do own cleanup
 	for (size_t i = 0; i < m_connections.size(); ++i)
