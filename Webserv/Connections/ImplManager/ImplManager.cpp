@@ -63,7 +63,6 @@ void ImplManager::returnConnection(Connection& connection)
 
 	connection.reset();
 	m_spareConnections.push_back(static_cast<ManagedConnection*>(&connection));
-
 }
 
 

@@ -4,7 +4,7 @@
 
 int main (void)
 {
-	Server::Context ctx;
+	ServerContext ctx;
 
 	return (0);
 }

@@ -37,7 +37,7 @@ class ServerConfig
 		const std::string&							getMaxConnections() const;
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
-		const std::vector<BindAddress>&				getAllBindAddresses() const;
+		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		void										setConfigPath(const t_path &path);
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
@@ -75,7 +75,7 @@ class ServerConfig
 		Globals*							m_globals; // mostly for logs and debuging, see Globals class
 		
 
-		std::vector<BindAddress>			m_bindAddresses;
+		std::vector<Ws::BindInfo>			m_bindAddresses;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels

@@ -47,13 +47,9 @@ typedef struct epoll_event							t_epoll_event;
 typedef struct sigaction							t_sigaction;
 typedef sigset_t									t_sigset;
 
-typedef void*										t_ptr_ProtoConnection;
-typedef void*										t_ptr_ProtoModule;
-
-
-
-
 # define MAX_EPOLL_EVENTS 64
+
+namespace Conn {class Connection;}
 
 namespace Ws
 {
@@ -76,15 +72,38 @@ namespace Ws
 		}   addr;
 	}
 
-
-	typedef struct s_BindAddress
+	namespace AppLayer
 	{
+		typedef enum
+		{
+			HTTP = 0,
+			COUNT
+		}	Type;
+		typedef void* Module;
+		typedef void* Conn;
+		typedef void (*Init)(Conn::Connection&);
+		typedef void (*ForceCloseCallback)(Conn::Connection&);
+	}
+
+	namespace AddonLayer
+	{
+		typedef enum
+		{
+			CGI = 0,
+			COUNT
+		}	Type;
+		typedef void* State;
+	}
+
+	typedef struct s_BindInfo
+	{
+		AppLayer::Type		appLayer;
 		Sock::addrFamily	family;
 		Sock::type			socktype;
 		Sock::protocol		proto;
 		Sock::addr			addr;
 		Sock::addrlen		addrlen;
-	}	BindAddress; 
+	}	BindInfo;
 }
 
 #endif

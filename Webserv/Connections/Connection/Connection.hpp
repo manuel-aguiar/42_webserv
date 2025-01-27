@@ -8,24 +8,32 @@
 # include "../../Toolkit/MemoryPool/Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 
 // Project headers
-# include "../Manager/Manager.hpp"
 # include "../GenericUtils/Webserver_Definitions.h"
-# include "../../Events/Events.h"
 
-class Globals;
+// forward declarations
 class ListeningSocket;
+class ServerContext;
+class ImplManager;
+namespace Events { class Manager; }
+namespace Events { class Subscription; }
 
 namespace Conn
 {
 	class Connection
 	{
 		public:
-			Connection(Globals& globals);
+			Connection(	Events::Manager& eventManager, 
+						ImplManager& connManager, 
+						ServerContext& serverContext);
 			~Connection();
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);
 
 			typedef void 				(*Init)(Connection*);
+
+			void						subscribeEvents();
+			void						unsubscribeEvents();
+			void						modifyEvents();	
 
 		//methods
 			void    					init();
@@ -34,26 +42,22 @@ namespace Conn
 
 		//getters
 			const Ws::Sock::addr&		getAddr()			const;
-			const Events::Subscription&	getEventSubs()		const;
-			const ListeningSocket&		getListener()		const;
-			const Globals&				getGlobals()		const;
+			const ListeningSocket*		getListener()		const;
+			const Ws::Sock::addr&		getAddr() const;
 
 		//setters
+			void						setAppLayerConn		(const Ws::AppLayer::Conn& appConn);
+			void						setAppLayerForceClose(const Ws::AppLayer::ForceCloseCallback callback);
 			void						setSocket			(const t_socket sockfd);
 			void						setAddr				(const Ws::Sock::addr& addr);
 			void						setAddrlen			(const t_socklen addrlen);
-			void						setReadEvent		(Events::Subscription& event);
 			void						setListener			(ListeningSocket& listener);
-			void						setProtoConnection	(const t_ptr_ProtoConnection connection);
-			void						setProtoModule		(const t_ptr_ProtoModule module);
-
 
 		//accessors
-			Ws::Sock::addr&				accessAddr();
-			t_ptr_ProtoConnection		accessProtoConnection();
-			t_ptr_ProtoModule			accessProtoModule();
-			Events::Subscription&		accessReadEvent();
-			Events::Subscription&		accessWriteEvent();
+			Ws::AppLayer::Conn			accessAppLayerConn();
+			Events::Subscription*		accessEventSubs();
+			Events::Manager&			accessEventManager();
+			ServerContext&				accessServerContext();
 
 
 		private:
@@ -61,11 +65,12 @@ namespace Conn
 			Ws::Sock::addr				m_addr;
 			Ws::Sock::addrlen			m_addrlen;
 			Events::Subscription*		m_eventSubs;
-			t_ptr_ProtoConnection		m_ptr_protoConnection;						// <- the http connection
-			t_ptr_ProtoModule			m_ptr_protoModule;							// <- the http module in our case
-
-			ListeningSocket*			m_listener;
-			Globals&					m_globals;
+			Ws::AppLayer::Conn			m_appConn;
+			Ws::AppLayer::ForceCloseCallback	
+										m_appForceClose;
+			ImplManager&				m_connManager;
+			Events::Manager&			m_eventManager;
+			ServerContext&				m_context;
 																					// set by the listening socket
 	};
 }

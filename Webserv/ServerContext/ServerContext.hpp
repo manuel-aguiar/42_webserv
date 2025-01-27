@@ -6,61 +6,39 @@
 
 # include "../../Toolkit/Arrays/StackArray/StackArray.hpp"
 
+# include "../GenericUtils/Webserver_Definitions.h"
+
 //forward declarations
 class ServerConfig;
 class Globals;
 class Connection;
 
-namespace Server
+class ServerContext
 {
-	namespace AppLayer
-	{
-		typedef enum
-		{
-			HTTP = 0,
-			COUNT
-		}	Type;
-		typedef void* State;
-		typedef void (*Init)(State, Connection*);
-	}
+	public:
+		ServerContext();
+		~ServerContext();
+		ServerContext(const ServerContext& copy);
+		ServerContext& operator=(const ServerContext& assign);
 
-	namespace AddonLayer
-	{
-		typedef enum
-		{
-			CGI = 0,
-			COUNT
-		}	Type;
-		typedef void* State;
-	}
+		void					setServerConfig(ServerConfig* config);
+		void					setGlobals(Globals* globals);
+		void					setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init);
+		void					setAddonLayer(Ws::AddonLayer::Type type, Ws::AddonLayer::State state);
 
-	class Context
-	{
-		public:
-			Context();
-			~Context();
-			Context(const Context& copy);
-			Context& operator=(const Context& assign);
+		ServerConfig*			getServerConfig() const;
+		Globals*				getGlobals() const;
+		Ws::AppLayer::Module		getAppLayerModule(Ws::AppLayer::Type type) const;
+		Ws::AppLayer::Init		getAppLayerInit(Ws::AppLayer::Type type) const;
+		Ws::AddonLayer::State	getAddonLayer(Ws::AddonLayer::Type type) const;
 
-			void				setServerConfig(ServerConfig* config);
-			void				setGlobals(Globals* globals);
-			void				setAppLayer(AppLayer::Type type, AppLayer::State state, AppLayer::Init init);
-			void				setAddonLayer(AddonLayer::Type type, AddonLayer::State state);
-
-			ServerConfig*		getServerConfig() const;
-			Globals*			getGlobals() const;
-			AppLayer::State		getAppLayerState(AppLayer::Type type) const;
-			AppLayer::Init		getAppLayerInit(AppLayer::Type type) const;
-			AddonLayer::State	getAddonLayer(AddonLayer::Type type) const;
-
-		private:
-			ServerConfig*										m_config;
-			Globals*											m_globals;
-			StackArray<AppLayer::State, AppLayer::COUNT>		m_appLayerState;
-			StackArray<AppLayer::Init, AppLayer::COUNT>			m_appLayerInit;
-			StackArray<AddonLayer::State, AddonLayer::COUNT>	m_addonLayer;
-	};
-}
+	private:
+		ServerConfig*												m_config;
+		Globals*													m_globals;
+		StackArray<Ws::AppLayer::Module,		 Ws::AppLayer::COUNT>	m_appLayerState;
+		StackArray<Ws::AppLayer::Init, 		Ws::AppLayer::COUNT>	m_appLayerInit;
+		StackArray<Ws::AddonLayer::State, 	Ws::AddonLayer::COUNT>	m_addonLayer;
+};
 
 
 #endif

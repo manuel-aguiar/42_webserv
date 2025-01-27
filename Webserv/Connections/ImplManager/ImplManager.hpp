@@ -14,8 +14,8 @@
 // forward declarations
 class Connection;
 class InternalConn;
-class Globals;
 class ListeningSocket;
+class ServerContext;
 namespace Events { class Manager; }
 struct BindAddress;
 
@@ -25,7 +25,7 @@ class ImplManager
 		ImplManager(const size_t maxConnections,
 					const std::vector<BindAddress>& bindAddresses,
 					Events::Manager& eventManager, 
-					Globals& globals);
+					ServerContext& context);
 		~ImplManager();
 	
 	public:
@@ -42,7 +42,7 @@ class ImplManager
 
 		HeapArray<ListeningSocket>			m_listeningSockets;
 		Events::Manager&					m_eventManager;
-		Globals&							m_globals;
+		ServerContext&						m_globals;
 
 		void 					mf_destroyConnection(Connection* connection);
 

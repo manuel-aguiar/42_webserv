@@ -13,16 +13,15 @@
 //forward declarations
 class Subscription;
 class ServerWorker;
-class Globals;
-struct BindAddress;
-namespace Conn (class Connection;)
-namespace Events (class Subscription;)
-namespace Events (class Manager;)
+namespace Conn {class Manager;}
+namespace Conn {class Connection;}
+namespace Events {class Subscription;}
+namespace Events {class Manager;}
 
 class ListeningSocket
 {
 	public:
-		ListeningSocket(const int backlog, const BindAddress& info, Globals& globals);
+		ListeningSocket(const int backlog, const Ws::BindInfo& info, Conn::Manager& globals);
 		~ListeningSocket();
 
 		// methods
@@ -39,10 +38,6 @@ class ListeningSocket
 		// getters
 		const Events::Subscription*	getEvent()						const;
 
-		// setters
-		void						setProtoModule					(const t_ptr_ProtoModule& module);
-		void						setInitProtocolConnection		(const t_func_initProtoConn& func);
-
 		// accessors
 		Events::Subscription*		accessEvent();
 
@@ -51,11 +46,12 @@ class ListeningSocket
 		Ws::Sock::fd				m_sockfd;
 		int							m_backlog;
 
-		t_func_initProtoConn		m_initConnection;
-		t_ptr_ProtoModule			m_protoModule;
+		Ws::AppLayer::Init			m_initConnection;
+		Ws::AppLayer::Module			m_protoModule;
 		
 		Events::Subscription*		m_event;
-		const BindAddress&			m_info;
+		const Ws::BindInfo&			m_info;
+		Conn::Manager&				m_connManager;
 		Globals&                    m_globals;
 
 		ListeningSocket();

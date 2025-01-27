@@ -18,13 +18,8 @@ SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Integration/DNSLookup/main.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
-								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		\
-								$(SRC_PATH)/_Tests/testHelpers.cpp
-
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
+								
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
 

@@ -1,81 +1,78 @@
 
 # include "ServerContext.hpp"
 
-namespace Server
+ServerContext::ServerContext() :
+	m_config(NULL),
+	m_globals(NULL),
+	m_appLayerState(NULL),
+	m_appLayerInit(NULL),
+	m_addonLayer(NULL) {}
+
+ServerContext::~ServerContext() {}
+
+ServerContext::ServerContext(const ServerContext& copy) :
+	m_config(copy.m_config),
+	m_globals(copy.m_globals),
+	m_appLayerState(copy.m_appLayerState),
+	m_appLayerInit(copy.m_appLayerInit),
+	m_addonLayer(copy.m_addonLayer) {}
+
+ServerContext& ServerContext::operator=(const ServerContext& assign)
 {
-	Context::Context() :
-		m_config(NULL),
-		m_globals(NULL),
-		m_appLayerState(NULL),
-		m_appLayerInit(NULL),
-		m_addonLayer(NULL) {}
-
-	Context::~Context() {}
-
-	Context::Context(const Context& copy) :
-		m_config(copy.m_config),
-		m_globals(copy.m_globals),
-		m_appLayerState(copy.m_appLayerState),
-		m_appLayerInit(copy.m_appLayerInit),
-		m_addonLayer(copy.m_addonLayer) {}
-	
-	Context& Context::operator=(const Context& assign)
-	{
-		if (this == &assign)
-			return (*this);
-
-		m_config = assign.m_config;
-		m_globals = assign.m_globals;
-		m_appLayerState = assign.m_appLayerState;
-		m_appLayerInit = assign.m_appLayerInit;
-		m_addonLayer = assign.m_addonLayer;
-
+	if (this == &assign)
 		return (*this);
-	}
 
-	void	Context::setServerConfig(ServerConfig* config)
-	{
-		m_config = config;
-	}
+	m_config = assign.m_config;
+	m_globals = assign.m_globals;
+	m_appLayerState = assign.m_appLayerState;
+	m_appLayerInit = assign.m_appLayerInit;
+	m_addonLayer = assign.m_addonLayer;
 
-	void	Context::setGlobals(Globals* globals)
-	{
-		m_globals = globals;
-	}
+	return (*this);
+}
 
-	void	Context::setAppLayer(AppLayer::Type type, AppLayer::State state, AppLayer::Init init)
-	{
-		m_appLayerState[type] = state;
-		m_appLayerInit[type] = init;
-	}
+void	ServerContext::setServerConfig(ServerConfig* config)
+{
+	m_config = config;
+}
 
-	void	Context::setAddonLayer(AddonLayer::Type type, AddonLayer::State state)
-	{
-		m_addonLayer[type] = state;
-	}
+void	ServerContext::setGlobals(Globals* globals)
+{
+	m_globals = globals;
+}
 
-	ServerConfig*		Context::getServerConfig() const
-	{
-		return (m_config);
-	}
+void	ServerContext::setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init)
+{
+	m_appLayerState[type] = state;
+	m_appLayerInit[type] = init;
+}
 
-	Globals*			Context::getGlobals() const
-	{
-		return (m_globals);
-	}
+void	ServerContext::setAddonLayer(Ws::AddonLayer::Type type, Ws::AddonLayer::State state)
+{
+	m_addonLayer[type] = state;
+}
 
-	AppLayer::State		Context::getAppLayerState(AppLayer::Type type) const
-	{
-		return (m_appLayerState[type]);
-	}
+ServerConfig*		ServerContext::getServerConfig() const
+{
+	return (m_config);
+}
 
-	AppLayer::Init		Context::getAppLayerInit(AppLayer::Type type) const
-	{
-		return (m_appLayerInit[type]);
-	}
+Globals*			ServerContext::getGlobals() const
+{
+	return (m_globals);
+}
 
-	AddonLayer::State	Context::getAddonLayer(AddonLayer::Type type) const
-	{
-		return (m_addonLayer[type]);
-	}
+Ws::AppLayer::Module		ServerContext::getAppLayerModule(Ws::AppLayer::Type type) const
+{
+	return (m_appLayerState[type]);
+}
+
+Ws::AppLayer::Init		ServerContext::getAppLayerInit(Ws::AppLayer::Type type) const
+{
+	return (m_appLayerInit[type]);
+}
+
+Ws::AddonLayer::State	ServerContext::getAddonLayer(Ws::AddonLayer::Type type) const
+{
+	return (m_addonLayer[type]);
 }

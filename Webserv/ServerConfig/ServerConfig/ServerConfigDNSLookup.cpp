@@ -65,8 +65,8 @@ typedef std::set<const t_addrinfo*, AddrinfoPtrComparator> 								Set_uniqueAdd
 typedef std::pair<const t_listeners*, const t_addrinfo*> 								Pair_uniqueListenToAddr;
 typedef std::multimap<const t_listeners*, const t_addrinfo*, ListenerPtrComparator> 	MMap_uniqueListenToAddr;
 
-typedef std::pair<const t_addrinfo*, const BindAddress*> 								Pair_uniqueAddrToBind;
-typedef std::map<const t_addrinfo*, const BindAddress*, AddrinfoPtrComparator> 			Map_uniqueAddrToBind;
+typedef std::pair<const t_addrinfo*, const Ws::BindInfo*> 								Pair_uniqueAddrToBind;
+typedef std::map<const t_addrinfo*, const Ws::BindInfo*, AddrinfoPtrComparator> 			Map_uniqueAddrToBind;
 
 struct DNSLookupHelper
 {
@@ -84,7 +84,7 @@ struct DNSLookupHelper
 
 	Map_uniqueAddrToBind		uniqueAddrToBind;
 
-	std::vector<BindAddress>	uniqueBind;
+	std::vector<Ws::BindInfo>	uniqueBind;
 };
 
 /*
@@ -173,14 +173,15 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 
 	for (; it != helper.uniqueAddr.end(); ++it)
 	{
-		BindAddress address = (BindAddress){};
+		Ws::BindInfo info = (Ws::BindInfo){};
 
-		std::memcpy(&address.address, (*it)->ai_addr, (*it)->ai_addrlen);
-		address.addrlen = (*it)->ai_addrlen;
-		address.addrFamily = (*it)->ai_family;
-		address.socktype = (*it)->ai_socktype;
-		address.protocol = (*it)->ai_protocol;
-		helper.uniqueBind.push_back(address);
+		std::memcpy(&info.addr, (*it)->ai_addr, (*it)->ai_addrlen);
+		info.appLayer = Ws::AppLayer::HTTP;
+		info.addrlen = (*it)->ai_addrlen;
+		info.family = (*it)->ai_family;
+		info.socktype = (*it)->ai_socktype;
+		info.proto = (*it)->ai_protocol;
+		helper.uniqueBind.push_back(info);
 		helper.uniqueAddrToBind.insert(Pair_uniqueAddrToBind(*it, &helper.uniqueBind.back()));
 	}
 }
@@ -262,7 +263,7 @@ bool	ServerConfig::mf_listenDNSlookup()
 			for (MMap_uniqueListenToAddr::iterator it = range.first; it != range.second; ++it)
 			{
 				Map_uniqueAddrToBind::iterator addrIter = helper.uniqueAddrToBind.find(it->second);
-				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->address));
+				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->addr));
 			}
 		}
 	}
