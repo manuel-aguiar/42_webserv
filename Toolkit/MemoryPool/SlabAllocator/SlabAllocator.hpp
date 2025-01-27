@@ -1,8 +1,8 @@
 
 
-#ifndef Heap_ObjectPool_HPP
+#ifndef SLABALLOCATOR_HPP
 
-# define Heap_ObjectPool_HPP
+# define SLABALLOCATOR_HPP
 
 // C++ headers
 # include <limits.h>

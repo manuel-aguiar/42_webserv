@@ -5,11 +5,11 @@
 
 // Project headers
 # include "../../Arrays/HeapArray/HeapArray.hpp"
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 # include <limits>
 # include <cstddef>
-# include <cassert>
 
 template <size_t nodeSize, typename Allocator>
 class HeapSlab
@@ -48,9 +48,8 @@ class HeapSlab
 		template <typename T>
 		T* allocate()
 		{
-
-			assert(sizeof(T) <= nodeSize);
-			assert(m_elemCount < m_elements.capacity());
+			ASSERT_EQUAL(sizeof(T) <= nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
+			ASSERT_EQUAL(m_elemCount < m_elements.capacity(), true, "HeapSlab: Out of memory");
 
 			if (m_freeSlot != NULL)
 			{
