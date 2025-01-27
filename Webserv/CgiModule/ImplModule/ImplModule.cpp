@@ -1,8 +1,8 @@
 
 
-# include "CgiModule.hpp"
-# include "../CgiWorker/CgiWorker.hpp"
-# include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "ImplModule.hpp"
+# include "../Worker/Worker.hpp"
+# include "../InternalReq/InternalReq.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
 ImplModule::ImplModule(size_t workers, size_t backlog, size_t maxTimeout, Events::Manager& eventManager, Globals& globals) :

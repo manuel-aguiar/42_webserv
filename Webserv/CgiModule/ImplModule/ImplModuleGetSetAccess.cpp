@@ -1,6 +1,6 @@
 
 
-#include "CgiModule.hpp"
+#include "ImplModule.hpp"
 
 
 const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
@@ -40,13 +40,13 @@ ImplModule::removeInterpreter(const std::string& extension)
 }
 
 Events::Manager&
-ImplModule::mf_accessEventManager()
+ImplModule::_mf_accessEventManager()
 {
 	return (m_eventManager);
 }
 
 Globals&
-ImplModule::mf_accessGlobals()
+ImplModule::_mf_accessGlobals()
 {
 	return (m_globals);
 }

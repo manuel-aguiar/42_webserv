@@ -1,8 +1,8 @@
 
 
-# include "CgiModule.hpp"
-# include "../CgiWorker/CgiWorker.hpp"
-# include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "ImplModule.hpp"
+# include "../Worker/Worker.hpp"
+# include "../InternalReq/InternalReq.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
 // Toolkit headers
@@ -63,7 +63,7 @@ void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoo
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	
-	mf_execute(*worker, *requestData, isCalledFromEventLoop);
+	_mf_execute(*worker, *requestData, isCalledFromEventLoop);
 }
 
 /*
@@ -153,9 +153,9 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 	switch (state)
 	{
 		case Cgi::RequestState::ACQUIRED:
-			mf_recycleRequestData(*requestData); break ;
+			_mf_recycleRequestData(*requestData); break ;
 		case Cgi::RequestState::EXECUTING:
-			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
+			_mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
 		case Cgi::RequestState::QUEUED:
 			requestData->setState(Cgi::RequestState::CANCELLED); break ;
 		default:
@@ -179,14 +179,14 @@ void	ImplModule::stopAndReset()
 		data = m_allWorkers[i].accessRequestData();
 		if (!data)
 			continue ;
-		mf_cancelAndReturn(*data); break ;
+		_mf_cancelAndReturn(*data); break ;
 	}
 	
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
 		data->Runtime_CallTheUser(Cgi::Notify::ON_ERROR_RUNTIME);
-		mf_returnRequestData(*data);
+		_mf_returnRequestData(*data);
 	}
 		
 	m_executionQueue.clear();

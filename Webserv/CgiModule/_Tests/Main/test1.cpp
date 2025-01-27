@@ -8,6 +8,7 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
+# include "../../../Events/Manager/Manager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/TestHelpers/TestHelpers.h"
@@ -353,9 +354,6 @@ int TestPart1(int testNumber)
 			while (read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
 		}
 			
-
-		
-
 		// tests
 		if (eventManager.getMonitoringCount() != 0)
 			testFailure = testFailure + '\n' + TestHelpers::errorMsg(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);

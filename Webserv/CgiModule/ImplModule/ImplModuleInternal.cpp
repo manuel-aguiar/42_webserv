@@ -1,11 +1,11 @@
 
 
-# include "CgiModule.hpp"
-# include "../CgiWorker/CgiWorker.hpp"
-# include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "ImplModule.hpp"
+# include "../Worker/Worker.hpp"
+# include "../InternalReq/InternalReq.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
-void	ImplModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
+void	ImplModule::_mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
 {
 	data.setState(Cgi::RequestState::EXECUTING);
 	data.assignExecutor(worker);
@@ -33,9 +33,9 @@ int	ImplModule::mf_finishTimedOut()
 			switch (curRequest->getState())
 			{
 				case Cgi::RequestState::ACQUIRED:
-					mf_recycleRequestData(*curRequest); break ;
+					_mf_recycleRequestData(*curRequest); break ;
 				case Cgi::RequestState::EXECUTING:
-					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
+					_mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
 				case Cgi::RequestState::QUEUED:
 					curRequest->setState(Cgi::RequestState::CANCELLED); break;
 				default: break ;

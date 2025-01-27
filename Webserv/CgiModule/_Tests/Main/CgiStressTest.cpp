@@ -6,6 +6,7 @@
 // test helpers
 # include "../TestProtoRequest/TestProtoRequest.hpp"
 # include "../../../Globals/Globals.hpp"
+# include "../../../Events/Manager/Manager.hpp"
 # include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../../../Toolkit/TestHelpers/TestHelpers.h"

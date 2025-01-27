@@ -18,8 +18,6 @@ namespace Cgi
 
 	typedef void*		User;
 
-
-
 	namespace Env
 	{
 		class Enum
@@ -71,11 +69,11 @@ namespace Cgi
 	}
 	typedef Cgi::Env::Enum				CgiEnvEnum;
 
-	typedef struct s_CgiRequestEnv
+	struct EnvVariables
 	{
 		DynArray<std::pair<Cgi::Env::Enum::Type, 	EnvValue> >	envBase;
 		DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
-	}	EnvVariables;
+	};
 
 	namespace Options
 	{

@@ -35,20 +35,20 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
 									\
 				$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModule.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleExternal.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleInternal.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleRecycle.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiModule/CgiModuleReturn.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequest/CgiRequest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiRequest/CgiRequestExternal.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiInternalRequest/CgiInternalRequest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiInternalRequest/CgiInternalRequestGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorker.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerEvents.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerExecute.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/CgiWorker/CgiWorkerHelpers.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Request/RequestExternal.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReq.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReqGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Worker/Worker.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerEvents.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \

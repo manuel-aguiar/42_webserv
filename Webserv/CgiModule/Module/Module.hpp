@@ -4,7 +4,7 @@
 
 # define MODULE_HPP
 
-# include "../CgiModule/CgiModule.hpp"
+# include "../ImplModule/ImplModule.hpp"
 
 // forward declarations
 class Globals;
@@ -16,7 +16,11 @@ namespace Cgi
     class Module : private ImplModule
     {
         public:
-            Module(size_t workers, size_t backlog, size_t maxTimeout, Events::Manager& eventManager, Globals& globals);
+            Module( size_t workers, 
+                    size_t backlog, 
+                    size_t maxTimeout, 
+                    Events::Manager& eventManager, 
+                    Globals& globals);
             ~Module();
 
             Cgi::Request*	acquireRequest();

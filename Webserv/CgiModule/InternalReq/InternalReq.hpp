@@ -5,12 +5,11 @@
 # define CGIINTERNALREQUEST_HPP
 
 // Project Headers
-# include "../CgiRequest/CgiRequest.hpp"
+# include "../Request/Request.hpp"
 # include "../../TimerTracker/TimerTracker.hpp"
 
 class Worker;
 class Timer;
-namespace Cgi { class Request; }
 namespace Ws { typedef int fd; }
 
 class InternalRequest : public Cgi::Request

@@ -1,9 +1,9 @@
 
 
 // Project Headers
-#include "CgiWorker.hpp"
-#include "../CgiModule/CgiModule.hpp"
-#include "../CgiInternalRequest/CgiInternalRequest.hpp"
+#include "Worker.hpp"
+#include "../ImplModule/ImplModule.hpp"
+#include "../InternalReq/InternalReq.hpp"
 #include "../../Events/Subscription/Subscription.hpp"
 #include "../../Events/Manager/Manager.hpp"
 
@@ -23,19 +23,19 @@ Worker::Worker(ImplModule& cgi) :
 	m_EmergencyPhone[0] = -1;
 	m_EmergencyPhone[1] = -1;
 	
-	m_EmergencyEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+	m_EmergencyEvent = m_CgiModule._mf_accessEventManager().acquireSubscription();
 	m_EmergencyEvent->setFd(-1);
 	m_EmergencyEvent->setUser(this);
 	m_EmergencyEvent->setCallback(mf_EventCallback_OnEmergency);
 	m_EmergencyEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 
-	m_readEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+	m_readEvent = m_CgiModule._mf_accessEventManager().acquireSubscription();
 	m_readEvent->setFd(-1);
 	m_readEvent->setUser(this);
 	m_readEvent->setCallback(mf_EventCallback_onRead);
 	m_readEvent->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 
-	m_writeEvent = m_CgiModule.mf_accessEventManager().acquireSubscription();
+	m_writeEvent = m_CgiModule._mf_accessEventManager().acquireSubscription();
 	m_writeEvent->setFd(-1);
 	m_writeEvent->setUser(this);
 	m_writeEvent->setCallback(mf_EventCallback_onWrite);
@@ -167,6 +167,17 @@ Worker::enableAllHandlers()
 	enableReadHandler();
 	enableWriteHandler();
 	enableEmergencyHandler();
+}
+
+void	Worker::mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale)
+{
+	Ws::fd fd = myEvent.getFd();
+
+	if (fd == -1)
+		return ;
+	m_CgiModule._mf_accessEventManager().stopMonitoring(myEvent, markAsStale);
+	::close(fd);
+	myEvent.setFd(-1);
 }
 
 // private, bare minimum to compile

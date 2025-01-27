@@ -4,8 +4,8 @@
 
 # define TESTPROTOREQUEST_HPP
 
-#include "../../CgiRequest/CgiRequest.hpp"
-#include "../../CgiModule.h"
+#include "../../../CgiModule/Request/Request.hpp"
+#include "../../../CgiModule/Module/Module.hpp"
 
 class Globals;
 

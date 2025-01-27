@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 10:56:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/13 14:28:09 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:48:24 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../HttpModule/HttpModule.hpp"
-# include "../../CgiModule/CgiModule.hpp"
+# include "../../CgiModule/ImplModule.hpp"
 # include "../../Globals/SignalHandler/SignalHandler.hpp"
 
 ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :

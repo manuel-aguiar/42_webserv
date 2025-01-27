@@ -1,6 +1,6 @@
 
 
-#include "CgiRequest.hpp"
+#include "Request.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 namespace Cgi

@@ -1,6 +1,6 @@
 
 
-#include "CgiRequest.hpp"
+#include "Request.hpp"
 
 namespace Cgi
 {

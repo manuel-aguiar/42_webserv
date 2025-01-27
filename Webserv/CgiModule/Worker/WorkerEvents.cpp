@@ -1,11 +1,10 @@
 
 
 // Project Headers
-# include "CgiWorker.hpp"
-# include "../CgiModule/CgiModule.hpp"
-# include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "Worker.hpp"
+# include "../ImplModule/ImplModule.hpp"
+# include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
-# include "../../Events/Manager/Manager.hpp"
 
 void	Worker::mf_EventCallback_onRead(Events::Subscription& event)
 {
@@ -101,17 +100,6 @@ void	Worker::mf_writeScript()
 
 
 */
-
-void	Worker::mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale)
-{
-	Ws::fd fd = myEvent.getFd();
-
-	if (fd == -1)
-		return ;
-	m_CgiModule.mf_accessEventManager().stopMonitoring(myEvent, markAsStale);
-	::close(fd);
-	myEvent.setFd(-1);
-}
 
 void	Worker::disableCloseAllEvents(bool markAsStale)
 {

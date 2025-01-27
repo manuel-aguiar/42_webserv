@@ -10,9 +10,7 @@
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
 // Project Headers
-# include "../m_CgiNamespace.h"
-# include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../Events/Events.h"
+# include "../CgiNamespace.h"
 # include "../../TimerTracker/TimerTracker.hpp"
 
 // C++ headers
@@ -24,6 +22,7 @@ class Worker;
 class InternalRequest;
 class Timer;
 namespace Cgi { class Request;}
+namespace Events {class Manager;}
 
 class ImplModule
 {
@@ -66,27 +65,27 @@ class ImplModule
 
 		//helper functions that will be called by the helper classes, mostly
 		// will be HIDDEN FROM THE PUBLIC INTERFACE
-		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
+		void				_mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
 
 		// recycle (re-use immediately)
-		void				mf_recycleSuccess(Worker& worker);
-		void				mf_recycleRuntimeFailure(Worker& worker);
-		void				mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
-		void				mf_recycleTimeoutFailure(Worker& worker);
-		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
-		void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
+		void				_mf_recycleSuccess(Worker& worker);
+		void				_mf_recycleRuntimeFailure(Worker& worker);
+		void				_mf_recycleStartupFailure(Worker& worker, bool markFdsAsStale);
+		void				_mf_recycleTimeoutFailure(Worker& worker);
+		void				_mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
+		void				_mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
 		
-		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
-		void				mf_recycleRequestData(InternalRequest& data);
+		void				_mf_recycleWorker(Worker& worker, bool markFdsAsStale);
+		void				_mf_recycleRequestData(InternalRequest& data);
 		
 		// return
-		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
-		void				mf_returnWorker(Worker& worker);
-		void				mf_returnRequestData(InternalRequest& data);
-		void				mf_cancelAndReturn(InternalRequest& data);
+		void				_mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
+		void				_mf_returnWorker(Worker& worker);
+		void				_mf_returnRequestData(InternalRequest& data);
+		void				_mf_cancelAndReturn(InternalRequest& data);
 
-		Events::Manager&	mf_accessEventManager();
-		Globals&			mf_accessGlobals();
+		Events::Manager&	_mf_accessEventManager();
+		Globals&			_mf_accessGlobals();
 
 	private:
 

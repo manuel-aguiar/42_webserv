@@ -1,6 +1,6 @@
 
 
-# include "CgiInternalRequest.hpp"
+# include "InternalReq.hpp"
 
 
 //getters

@@ -1,9 +1,9 @@
 
 
 // Project Headers
-# include "CgiWorker.hpp"
-# include "../CgiModule/CgiModule.hpp"
-# include "../CgiInternalRequest/CgiInternalRequest.hpp"
+# include "Worker.hpp"
+# include "../ImplModule/ImplModule.hpp"
+# include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
@@ -30,14 +30,14 @@ void   Worker::execute(bool markFdsAsStale)
 	options = m_curRequestData->getOptions();
 
 	if (!mf_prepareExecve())
-		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
+		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
 
 	if (::pipe(m_ParentToChild) == -1 ||
 		::pipe(m_ChildToParent) == -1 ||
 		::pipe(m_EmergencyPhone) == -1)
 	{
-		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
+		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), pipe(): " + std::string(strerror(errno)));
+		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 
 	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -50,17 +50,17 @@ void   Worker::execute(bool markFdsAsStale)
 	if (!(options & Cgi::Options::CANCEL_WRITE))
 	{
 		m_writeEvent->setFd(m_ParentToChild[1]);
-		m_CgiModule.mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
+		m_CgiModule._mf_accessEventManager().startMonitoring(*m_writeEvent, markFdsAsStale);
 	}
 
 	if (!(options & Cgi::Options::CANCEL_READ))
 	{
 		m_readEvent->setFd(m_ChildToParent[0]);
-		m_CgiModule.mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
+		m_CgiModule._mf_accessEventManager().startMonitoring(*m_readEvent, markFdsAsStale);
 	}
 
 	m_EmergencyEvent->setFd(m_EmergencyPhone[0]);
-	m_CgiModule.mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
+	m_CgiModule._mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
 	
 
 	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
@@ -73,8 +73,8 @@ void   Worker::execute(bool markFdsAsStale)
 	m_pid = ::fork();
 	if (m_pid == -1)
 	{
-		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
+		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
+		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 	
 
@@ -100,8 +100,8 @@ void	Worker::mf_executeParent(bool markFdsAsStale)
 		(!(options & Cgi::Options::CANCEL_READ) && !FileDescriptor::setNonBlocking(m_ChildToParent[0]))  ||
 		!FileDescriptor::setNonBlocking(m_EmergencyPhone[0]))
 	{
-		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
-		return (m_CgiModule.mf_recycleStartupFailure(*this, markFdsAsStale));
+		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::execute(), fcntl(): " + std::string(strerror(errno)));
+		return (m_CgiModule._mf_recycleStartupFailure(*this, markFdsAsStale));
 	}
 
 	if (options & Cgi::Options::CANCEL_WRITE)
@@ -246,7 +246,7 @@ bool	Worker::mf_prepareExecve()
 	}
 	catch(const std::exception& e)
 	{
-		m_CgiModule.mf_accessGlobals().logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
+		m_CgiModule._mf_accessGlobals().logError("InternalCgiWorker::mf_prepareExecve(): " + std::string(e.what()));
 	}
 	return (false);
 }
