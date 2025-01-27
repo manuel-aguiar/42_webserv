@@ -80,12 +80,12 @@ void	Worker::stop()
 	mf_KillWaitChild();
 }
 
-void	Worker::assignRequestData(InternalRequest& data)
+void	Worker::assignRequestData(InternalReq& data)
 {
 	m_curRequestData = &data;
 }
 
-InternalRequest*	Worker::accessRequestData()
+InternalReq*	Worker::accessRequestData()
 {
 	return (m_curRequestData);
 }

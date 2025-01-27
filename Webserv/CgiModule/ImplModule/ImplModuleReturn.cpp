@@ -13,13 +13,13 @@ ImplModule::mf_returnWorker(Worker& worker)
 }
 
 void
-ImplModule::mf_returnRequestData(InternalRequest& data)
+ImplModule::mf_returnRequestData(InternalReq& data)
 {
 	mf_recycleRequestData(data);
 }
 
 void
-ImplModule::mf_cancelAndReturn(InternalRequest& data)
+ImplModule::mf_cancelAndReturn(InternalReq& data)
 {
 	Worker*		worker = data.accessExecutor();
 	
@@ -30,7 +30,7 @@ ImplModule::mf_cancelAndReturn(InternalRequest& data)
 void
 ImplModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
-	InternalRequest* 		data = worker.accessRequestData();
+	InternalReq* 		data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 

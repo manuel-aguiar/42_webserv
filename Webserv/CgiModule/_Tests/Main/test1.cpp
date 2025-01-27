@@ -44,7 +44,7 @@ int TestPart1(int testNumber)
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
 	//instantiation and cleanup test	
 	try
 	{
@@ -64,7 +64,7 @@ int TestPart1(int testNumber)
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
-
+//////////////////////////////////////////////////////////////////////////////////////////////////
 	//instantiation and cleanup test	
 	try
 	{
@@ -331,11 +331,12 @@ int TestPart1(int testNumber)
 
 		/// setting up some fds to divert python3 error messages for "no such file or directory"
 		int testpipe[2];
-		int stdcerrDup = dup(STDERR_FILENO);
-		pipe(testpipe);
-		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor::setNonBlocking(testpipe[0]);
+		int stdcerrDup;
 		char pipeDrain[1024];
+		TestHelpers::assertEqual(pipe(testpipe), 0, "pipe() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual((stdcerrDup = dup(STDERR_FILENO)) != -1, true, "dup() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(dup2(testpipe[1], STDERR_FILENO) != -1, true, "dup2() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(testpipe[0]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__); 
 		/////////////////
 
 		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);

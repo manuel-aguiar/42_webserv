@@ -5,6 +5,9 @@
 # include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
+// C headers
+# include <unistd.h>
+
 void	Worker::mf_EventCallback_onRead(Events::Subscription& event)
 {
 	Worker* worker = static_cast<Worker*>(event.accessUser());
@@ -35,7 +38,7 @@ void	Worker::mf_readScript()
 	{
 		bytesRead = m_curRequestData->IO_CallTheUser(Cgi::IO::READ, m_readEvent->getFd());
 
-		assert(bytesRead != -1);
+		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readScript(): bytesread should never be -1");
 
 		if (bytesRead == 0)
 		{
@@ -66,7 +69,7 @@ void	Worker::mf_writeScript()
 	{
 		bytesWritten = m_curRequestData->IO_CallTheUser(Cgi::IO::WRITE, m_writeEvent->getFd());
 
-		assert(bytesWritten != -1);	
+		ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
 
 		if (bytesWritten == 0)
 		{
@@ -122,7 +125,8 @@ void	Worker::mf_readEmergencyPhone()
 							&m_EmergencyBuffer[m_EmergencyBytesRead], 
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
-		assert(bytesRead != -1);
+		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readEmergencyPhone(): read() should never return -1");
+		
 		if (bytesRead == -1)
 		{
 			std::cout << " emergency stale event on fd: " << m_EmergencyEvent->getFd() << " " << strerror(errno) << std::endl;

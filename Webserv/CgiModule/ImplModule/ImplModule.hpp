@@ -19,7 +19,7 @@
 // forward declarations
 class Globals;
 class Worker;
-class InternalRequest;
+class InternalReq;
 class Timer;
 namespace Cgi { class Request;}
 namespace Events {class Manager;}
@@ -79,11 +79,11 @@ class ImplModule
 		size_t									m_busyWorkerCount;
 
 		HeapArray<Worker>						m_allWorkers;
-		HeapArray<InternalRequest>				m_allRequestData;
+		HeapArray<InternalReq>					m_allRequestData;
 		
 		HeapCircularQueue<Worker*>				m_availableWorkers;
-		HeapCircularQueue<InternalRequest*>		m_availableRequestData;
-		HeapCircularQueue<InternalRequest*>		m_executionQueue;
+		HeapCircularQueue<InternalReq*>			m_availableRequestData;
+		HeapCircularQueue<InternalReq*>			m_executionQueue;
 
 		std::map<Cgi::InterpExtension, Cgi::InterpPath>
 												m_Interpreters;
@@ -91,26 +91,26 @@ class ImplModule
 		StackArray<Cgi::EnvKey,Cgi::Env::Enum::COUNT>
 												m_baseEnv;
 
-		TimerTracker<Timer, InternalRequest*>	m_timerTracker;
+		TimerTracker<Timer, InternalReq*>		m_timerTracker;
 		Events::Manager&						m_eventManager;
 		Globals&								m_globals;
 
 
 		// internal helper functions
-		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
+		void				mf_execute(Worker& worker, InternalReq& data, bool markFdsAsStale);
 		int					mf_finishTimedOut();
 
 		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
 		void				mf_returnWorker(Worker& worker);
-		void				mf_returnRequestData(InternalRequest& data);
-		void				mf_cancelAndReturn(InternalRequest& data);
+		void				mf_returnRequestData(InternalReq& data);
+		void				mf_cancelAndReturn(InternalReq& data);
 		
 		void				mf_recycleTimeoutFailure(Worker& worker);
 		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
-		void				mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale);
+		void				mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale);
 		
 		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
-		void				mf_recycleRequestData(InternalRequest& data);
+		void				mf_recycleRequestData(InternalReq& data);
 		
 		// private copy/assignment
 		ImplModule(const ImplModule &copy);

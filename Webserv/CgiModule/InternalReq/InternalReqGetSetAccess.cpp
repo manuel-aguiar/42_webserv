@@ -5,60 +5,60 @@
 
 //getters
 Cgi::User
-InternalRequest::getUser() const
+InternalReq::getUser() const
 {
 	return (m_user);
 }
 
 Cgi::Notify::Callback
-InternalRequest::getRuntime_Handler(const Cgi::Notify::Type type) const
+InternalReq::getRuntime_Handler(const Cgi::Notify::Type type) const
 {
 	return (m_runtime_Handlers[type]);
 }
 
 
 const Cgi::EnvVariables& 
-InternalRequest::getEnvVars() const
+InternalReq::getEnvVars() const
 {
 	return (m_env);
 }
 
 const Cgi::InterpExtension&
-InternalRequest::getExtension() const
+InternalReq::getExtension() const
 {
 	return (m_extension);
 }
 
 const std::string&
-InternalRequest::getScriptPath() const
+InternalReq::getScriptPath() const
 {
 	return (m_scriptPath);
 }
 
 Cgi::Options::Mask
-InternalRequest::getOptions() const
+InternalReq::getOptions() const
 {
 	return (m_options);
 }
 
 unsigned int
-InternalRequest::getTimeoutMs() const
+InternalReq::getTimeoutMs() const
 {
 	return (m_timeoutMs);
 }
 
-TimerTracker<Timer, InternalRequest*>::iterator
-InternalRequest::getMyTimer() const
+TimerTracker<Timer, InternalReq*>::iterator
+InternalReq::getMyTimer() const
 {
 	return (m_myTimer);
 }
 
-Worker*	InternalRequest::accessExecutor()
+Worker*	InternalReq::accessExecutor()
 {
 	return (m_executor);
 }
 
-Cgi::RequestState::Type	InternalRequest::getState() const
+Cgi::RequestState::Type	InternalReq::getState() const
 {
 	return (m_state);
 }
@@ -66,17 +66,17 @@ Cgi::RequestState::Type	InternalRequest::getState() const
 
 
 //setters
-void	InternalRequest::setState(const Cgi::RequestState::Type state)
+void	InternalReq::setState(const Cgi::RequestState::Type state)
 {
 	m_state = state;
 }
 
-void	InternalRequest::assignExecutor(Worker& executor)
+void	InternalReq::assignExecutor(Worker& executor)
 {
 	m_executor = &executor;
 }
 
-void	InternalRequest::setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer)
+void	InternalReq::setMyTimer(const TimerTracker<Timer, InternalReq*>::iterator& timer)
 {
 	m_myTimer = timer;
 }

@@ -59,7 +59,10 @@ void		SignalHandler::signal_handler(int sigNum)
 	{
 		g_SignalHandler.setSignal(sigNum);
 		for (size_t i = 0; i < count; ++i)
-			write(g_SignalHandler.getPipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
+		{
+			int bytesWritten = write(g_SignalHandler.getPipeWrite(i), "DUKE NUKEM", sizeof("DUKE NUKEM"));
+			(void)bytesWritten;
+		}
 	}
 }
 

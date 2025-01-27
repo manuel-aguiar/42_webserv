@@ -12,11 +12,11 @@ class Worker;
 class Timer;
 namespace Ws { typedef int fd; }
 
-class InternalRequest : public Cgi::Request
+class InternalReq : public Cgi::Request
 {
 	public:
-		InternalRequest();
-		~InternalRequest();
+		InternalReq();
+		~InternalReq();
 
 		void						reset();
 		void						Runtime_CallTheUser(const Cgi::Notify::Type type);
@@ -33,22 +33,22 @@ class InternalRequest : public Cgi::Request
 		unsigned int				getTimeoutMs() const;
 		Worker*						accessExecutor();
 
-		TimerTracker<Timer, InternalRequest*>::iterator
+		TimerTracker<Timer, InternalReq*>::iterator
 									getMyTimer() const;
 		Cgi::Options::Mask			getOptions() const;
 
 		void						assignExecutor(Worker& executor);
-		void						setMyTimer(const TimerTracker<Timer, InternalRequest*>::iterator& timer);
+		void						setMyTimer(const TimerTracker<Timer, InternalReq*>::iterator& timer);
 		void						setState(const Cgi::RequestState::Type state);
 		
 	private:
 		Worker*						m_executor;
 		
-		TimerTracker<Timer, InternalRequest*>::iterator	
+		TimerTracker<Timer, InternalReq*>::iterator	
 									m_myTimer;
 		
-		InternalRequest(const InternalRequest &copy);
-		InternalRequest &operator=(const InternalRequest &assign);
+		InternalReq(const InternalReq &copy);
+		InternalReq &operator=(const InternalReq &assign);
 };
 
 

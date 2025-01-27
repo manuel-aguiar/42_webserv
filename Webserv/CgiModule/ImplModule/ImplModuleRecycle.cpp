@@ -28,7 +28,7 @@ ImplModule::_WorkerRecycleStartupFailure(Worker& worker, bool markFdsAsStale)
 void
 ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 {
-	InternalRequest* newData;
+	InternalReq* newData;
 
 	worker.reset();
 
@@ -49,12 +49,12 @@ ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 }
 
 void
-ImplModule::mf_recycleRequestData(InternalRequest& data)
+ImplModule::mf_recycleRequestData(InternalReq& data)
 {	
-	TimerTracker<Timer, InternalRequest*>::iterator 	timer;
+	TimerTracker<Timer, InternalReq*>::iterator 	timer;
 
 	timer = data.getMyTimer();
-	if (timer != TimerTracker<Timer, InternalRequest*>::iterator())
+	if (timer != TimerTracker<Timer, InternalReq*>::iterator())
 		m_timerTracker.erase(timer);
 
 	data.reset();
@@ -71,7 +71,7 @@ ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 }
 
 void
-ImplModule::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
+ImplModule::mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale)
 {
 	Worker*		worker = data.accessExecutor();
 	
@@ -82,7 +82,7 @@ ImplModule::mf_cancelAndRecycle(InternalRequest& data, bool markFdsAsStale)
 void
 ImplModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
-	InternalRequest* 		data = worker.accessRequestData();
+	InternalReq* 		data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 

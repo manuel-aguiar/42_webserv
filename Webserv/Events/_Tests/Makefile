@@ -7,7 +7,7 @@
 #
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
+CXXFLAGS = -Wall -Wextra -Werror -g -std=c++98 -MMD -MP -O3
 NAME = test.out
 
 # Paths

@@ -17,7 +17,7 @@
 
 // forward declarations
 class ImplModule;
-class InternalRequest;
+class InternalReq;
 class Globals;
 namespace Events { class Subscription; }
 namespace Events { class Manager; }
@@ -49,14 +49,14 @@ class Worker
 		void				disableEmergencyEvent(bool markAsStale);
 		void				disableCloseAllEvents(bool markAsStale);
 		
-		void				assignRequestData(InternalRequest& data);
-		InternalRequest*	accessRequestData();
+		void				assignRequestData(InternalReq& data);
+		InternalReq*		accessRequestData();
 
 
 
 	private:
 
-		InternalRequest*			m_curRequestData;
+		InternalReq*			m_curRequestData;
 
 		// script arguments
 		DynArray<std::string>		m_envStr;

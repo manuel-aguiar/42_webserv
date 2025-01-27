@@ -161,7 +161,9 @@ void	Worker::mf_executeChild()
 	{
 		EmergencyCode[0] = E_EMER_DUP2;
 		EmergencyCode[1] = errno;
-		::write(m_EmergencyPhone[1], EmergencyCode, 2);
+
+		int bytesWritten = ::write(m_EmergencyPhone[1], EmergencyCode, 2);
+		(void)bytesWritten;
 
 		childCloseFd(m_EmergencyPhone[1]);
 		childCloseFd(m_ParentToChild[0]);
@@ -177,8 +179,10 @@ void	Worker::mf_executeChild()
 
 	EmergencyCode[0] = E_EMER_EXECVE;
 	EmergencyCode[1] = errno;
-	::write(m_EmergencyPhone[1], EmergencyCode, 2);
-	
+
+	int bytesWritten = ::write(m_EmergencyPhone[1], EmergencyCode, 2);
+	(void)bytesWritten;
+
 	childCloseFd(m_EmergencyPhone[1]);
 	childCloseFd(m_ParentToChild[0]);
 	childCloseFd(m_ChildToParent[1]);

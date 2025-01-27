@@ -220,11 +220,12 @@ int CgiStressTest::StressTest(int testNumber,
 
 		/// setting up some fds to divert interpreter's error messages for "no such file or directory"
 		int testpipe[2];
-		int stdcerrDup = dup(STDERR_FILENO);
-		pipe(testpipe);
-		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor::setNonBlocking(testpipe[0]);
+		int stdcerrDup;
 		char pipeDrain[1024];
+		TestHelpers::assertEqual(pipe(testpipe), 0, "pipe() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual((stdcerrDup = dup(STDERR_FILENO)) != -1, true, "dup() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(dup2(testpipe[1], STDERR_FILENO) != -1, true, "dup2() failed", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(testpipe[0]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__); 
 		/////////////////
 
 

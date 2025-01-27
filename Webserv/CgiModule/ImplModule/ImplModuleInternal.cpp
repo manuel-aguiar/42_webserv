@@ -5,7 +5,7 @@
 # include "../InternalReq/InternalReq.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
-void	ImplModule::mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale)
+void	ImplModule::mf_execute(Worker& worker, InternalReq& data, bool markFdsAsStale)
 {
 	data.setState(Cgi::RequestState::EXECUTING);
 	data.assignExecutor(worker);
@@ -22,8 +22,8 @@ int	ImplModule::mf_finishTimedOut()
 {
 	Timer timer = Timer::now();
 
-	TimerTracker<Timer, InternalRequest*>::iterator 	it = m_timerTracker.begin();
-	InternalRequest* 								curRequest;
+	TimerTracker<Timer, InternalReq*>::iterator 	it = m_timerTracker.begin();
+	InternalReq* 								curRequest;
 	
 	for (; it != m_timerTracker.end(); ++it) 
 	{

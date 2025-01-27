@@ -16,7 +16,7 @@
 */
 Cgi::Request*	ImplModule::acquireRequest()
 {
-	InternalRequest*     data;
+	InternalReq*     data;
 
 	if (!m_availableRequestData.size())
 		return (NULL);
@@ -39,31 +39,33 @@ Cgi::Request*	ImplModule::acquireRequest()
 */
 void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoop)
 {
-	Worker*						worker;	
-	InternalRequest*			requestData;
-	unsigned int				timeout;
+	Worker*			worker;	
+	InternalReq*	internal;
+	unsigned int	timeout;
 
-	requestData = static_cast<InternalRequest*>(&request);
+	internal = static_cast<InternalReq*>(&request);
 
-	ASSERT_EQUAL(requestData->getState(), Cgi::RequestState::ACQUIRED, "ImplModule::enqueueRequest(), request state must be ACQUIRED");
+	ASSERT_EQUAL(internal >= m_allRequestData.getArray() && internal <= m_allRequestData.getArray() + m_allRequestData.size(), true, 
+	"ImplModule::enqueueRequest(), request was not supplied by this Module");
+	ASSERT_EQUAL(internal->getState(), Cgi::RequestState::ACQUIRED, "ImplModule::enqueueRequest(), request state must be ACQUIRED");
 
-	timeout = requestData->getTimeoutMs();
+	timeout = internal->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
 	timeout = (timeout < CGI_MIN_TIMEOUT) ? CGI_MIN_TIMEOUT : timeout;
 	
 	// tell the requestData where its timer is, in case of premature finish/cancelation
-	requestData->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, requestData));
+	internal->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, internal));
 	if (m_availableWorkers.size() == 0)
 	{
-		requestData->setState(Cgi::RequestState::QUEUED);
-		m_executionQueue.push_back(requestData);
+		internal->setState(Cgi::RequestState::QUEUED);
+		m_executionQueue.push_back(internal);
 		return ;
 	}
 	worker = m_availableWorkers.back();
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
 	
-	mf_execute(*worker, *requestData, isCalledFromEventLoop);
+	mf_execute(*worker, *internal, isCalledFromEventLoop);
 }
 
 /*
@@ -88,31 +90,35 @@ int		ImplModule::processRequests()
 	return (mf_finishTimedOut());
 }
 
-void	ImplModule::modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, Cgi::Options::Mask newOptions)
+void	ImplModule::modifyRequest(Cgi::Request& request, bool isCalledFromEventLoop, Cgi::Options::Mask newOptions)
 {
-	InternalRequest*	requestData;
+	InternalReq*	internal;
 	Cgi::RequestState::Type	state;
 
-	requestData = static_cast<InternalRequest*>(&data);
-	state = requestData->getState();
+	internal = static_cast<InternalReq*>(&request);
+
+	ASSERT_EQUAL(internal >= m_allRequestData.getArray() && internal <= m_allRequestData.getArray() + m_allRequestData.size(), true, 
+	"ImplModule::modifyRequest(), request was not supplied by this Module");
+
+	state = internal->getState();
 	
 	if (state == Cgi::RequestState::ACQUIRED || state == Cgi::RequestState::QUEUED)
 	{
-		data.setRuntimeOptions(newOptions);
+		request.setRuntimeOptions(newOptions);
 		return ;
 	}
 	if (newOptions & Cgi::Options::CANCEL_READ)
-		requestData->accessExecutor()->disableReadEvent(isCalledFromEventLoop);
+		internal->accessExecutor()->disableReadEvent(isCalledFromEventLoop);
 	if (newOptions & Cgi::Options::CANCEL_WRITE)
-		requestData->accessExecutor()->disableWriteEvent(isCalledFromEventLoop);
+		internal->accessExecutor()->disableWriteEvent(isCalledFromEventLoop);
 	if (newOptions & Cgi::Options::HOLD_READ)
-		requestData->accessExecutor()->disableReadHandler();
+		internal->accessExecutor()->disableReadHandler();
 	if (newOptions & Cgi::Options::HOLD_WRITE)
-		requestData->accessExecutor()->disableWriteHandler();
+		internal->accessExecutor()->disableWriteHandler();
 	if (newOptions & Cgi::Options::RESTART_READ)
-		requestData->accessExecutor()->enableReadHandler();
+		internal->accessExecutor()->enableReadHandler();
 	if (newOptions & Cgi::Options::RESTART_WRITE)
-		requestData->accessExecutor()->enableWriteHandler();
+		internal->accessExecutor()->enableWriteHandler();
 }
 
 /*
@@ -144,20 +150,24 @@ void	ImplModule::modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, C
 */
 void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop)
 {
-	InternalRequest*			requestData;
+	InternalReq*				internal;
 	Cgi::RequestState::Type		state;
 
-	requestData = static_cast<InternalRequest*>(&request);
-	state = requestData->getState();
+	internal = static_cast<InternalReq*>(&request);
+
+	ASSERT_EQUAL(internal >= m_allRequestData.getArray() && internal <= m_allRequestData.getArray() + m_allRequestData.size(), true, 
+	"ImplModule::enqueueRequest(), request was not supplied by this Module");
+
+	state = internal->getState();
 	
 	switch (state)
 	{
 		case Cgi::RequestState::ACQUIRED:
-			mf_recycleRequestData(*requestData); break ;
+			mf_recycleRequestData(*internal); break ;
 		case Cgi::RequestState::EXECUTING:
-			mf_cancelAndRecycle(*requestData, isCalledFromEventLoop); break ;
+			mf_cancelAndRecycle(*internal, isCalledFromEventLoop); break ;
 		case Cgi::RequestState::QUEUED:
-			requestData->setState(Cgi::RequestState::CANCELLED); break ;
+			internal->setState(Cgi::RequestState::CANCELLED); break ;
 		default:
 			break ;
 	}
@@ -172,7 +182,7 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 
 void	ImplModule::stopAndReset()
 {
-	InternalRequest* data;
+	InternalReq* data;
 
 	for (size_t i = 0; i < m_allWorkers.size(); ++i)
 	{
