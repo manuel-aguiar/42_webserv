@@ -29,9 +29,11 @@ class ImplManager
 		~ImplManager();
 	
 	public:
-		void								startListening();
-		void								stopListening();
+		void								init();
+		void								shutdown();
 
+		// helper methods that will actually be called internally between helpers
+		// will be hidden via private inheritance for the public interface
 		Connection*							provideConnection();
 		void								returnConnection(Connection& connection);
 

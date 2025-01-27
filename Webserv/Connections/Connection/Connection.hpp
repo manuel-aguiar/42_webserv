@@ -52,7 +52,9 @@ namespace Conn
 			void						setAddr				(const Ws::Sock::addr& addr);
 			void						setAddrlen			(const t_socklen addrlen);
 			void						setListener			(ListeningSocket& listener);
-
+			void						setEventSubs		(Events::Subscription* subs);
+			
+			void						CallUserForceClose();
 		//accessors
 			Ws::AppLayer::Conn			accessAppLayerConn();
 			Events::Subscription*		accessEventSubs();

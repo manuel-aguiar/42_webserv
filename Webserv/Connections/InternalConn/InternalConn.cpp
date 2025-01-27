@@ -11,6 +11,14 @@ InternalConn::~InternalConn() {}
 InternalConn::InternalConn(const InternalConn& other) :
 	Conn::Connection(other) {}
 
+void	InternalConn::ForceClose()
+{
+	if (m_state == ACTIVE)
+		Conn::Connection::CallUserForceClose();
+	Conn::Connection::reset();
+	m_state == IDLE;
+}
+
 InternalConn& InternalConn::operator=(const InternalConn& other)
 {
 	if (this == &other)
