@@ -5,8 +5,8 @@
 
 ImplManager::ImplManager(size_t maxConnections, Events::Manager& eventManager, Globals& globals) :
 	m_maxConnections(maxConnections),
-	m_connections(m_maxConnections, Nginx_PoolAllocator<ManagedConnection>(borrowedPool)),
-	m_spareConnections(m_maxConnections, Nginx_PoolAllocator<ManagedConnection*>(borrowedPool)),
+	m_connections(m_maxConnections),
+	m_spareConnections(m_maxConnections),
 	m_eventManager(eventManager),
 	m_globals(globals)
 {
