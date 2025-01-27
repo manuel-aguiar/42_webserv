@@ -45,7 +45,7 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		parse_size(value);
+		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw(e.what());
@@ -56,7 +56,7 @@ void	ServerBlock::setClientBodySize(const std::string &value)
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		parse_size(value);
+		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw(e.what());
@@ -86,8 +86,8 @@ void	ServerBlock::addListener(const std::string &value)
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
-	portValue = stoull(port); // fix throw
-	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
+	portValue = StringUtils::stoull(port); // fix throw
+	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
 	m_listen.insert(t_listeners(hostname, port));
 }
@@ -112,7 +112,7 @@ void	ServerBlock::addErrorPage(const std::string &value)
 	if (separator == std::string::npos)
 		throw (std::invalid_argument("no separator \":\" found while adding error page (errorValue:path)"));
 	error_code = value.substr(0, separator);
-	if (!isNumber(error_code))
+	if (!Validation::isNumber(error_code))
 		throw (std::invalid_argument("error code is not a number: " + error_code));
 	// path = value.substr(separator + 1, value.size() - (separator - 1));			// To retrieve the path
 	m_error_pages.insert(value);
@@ -143,12 +143,12 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (parse_size(m_client_body_size));
+	return (StringUtils::parse_size(m_client_body_size));
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (parse_size(m_client_header_size));
+	return (StringUtils::parse_size(m_client_header_size));
 }
 
 const std::set<std::string>&	ServerBlock::getErrorPages() const
@@ -238,3 +238,17 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ │ " <<  std::endl ;
 
 }
+
+void	ServerBlock::addListenAddress(const struct sockaddr* addr)
+{
+	m_myListenAddresses.push_back(addr);
+}
+
+const std::vector<const struct sockaddr*>&	
+ServerBlock::getListenAddresses() const
+{
+	return (m_myListenAddresses);
+}
+
+
+
