@@ -95,9 +95,11 @@ class ImplModule
 		Events::Manager&						m_eventManager;
 		Globals&								m_globals;
 
+
+		// internal helper functions
 		void				mf_execute(Worker& worker, InternalRequest& data, bool markFdsAsStale);
 		int					mf_finishTimedOut();
-		// return
+
 		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
 		void				mf_returnWorker(Worker& worker);
 		void				mf_returnRequestData(InternalRequest& data);

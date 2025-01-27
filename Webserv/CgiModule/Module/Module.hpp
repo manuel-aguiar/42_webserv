@@ -6,11 +6,6 @@
 
 # include "../ImplModule/ImplModule.hpp"
 
-// forward declarations
-class Globals;
-namespace Cgi {class Request;}
-namespace Events {class Manager;}
-
 namespace Cgi
 {
     class Module : private ImplModule

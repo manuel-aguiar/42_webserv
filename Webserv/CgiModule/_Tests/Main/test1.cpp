@@ -334,8 +334,7 @@ int TestPart1(int testNumber)
 		int stdcerrDup = dup(STDERR_FILENO);
 		pipe(testpipe);
 		dup2(testpipe[1], STDERR_FILENO);
-		FileDescriptor
-::setNonBlocking(testpipe[0]);
+		FileDescriptor::setNonBlocking(testpipe[0]);
 		char pipeDrain[1024];
 		/////////////////
 
