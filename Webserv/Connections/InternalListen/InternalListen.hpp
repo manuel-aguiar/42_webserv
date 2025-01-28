@@ -35,7 +35,7 @@ class InternalListen
 		Socket						m_socket;
 		Monitor						m_monitor;
 		Listener					m_listener;
-		InternalManager&				m_connManager;
+		InternalManager&			m_connManager;
 
 		ServerContext&				mf_accessServerContext();
 		Globals&					mf_accessGlobals();

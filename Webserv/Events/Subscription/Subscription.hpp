@@ -42,6 +42,13 @@ namespace Events
 
 			
 		protected:
+
+			typedef enum
+			{
+				SUBSCRIBED,
+				UNSUBSCRIBED
+			}	State;
+
 			Ws::fd						m_fd;
 			Events::Monitor::Mask		m_monitoredEvents;
 			Events::Monitor::Mask		m_triggeredEvents;
