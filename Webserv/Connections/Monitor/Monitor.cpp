@@ -1,6 +1,7 @@
 
 # include "Monitor.hpp"
 # include "../../Events/Manager/Manager.hpp"
+# include "../../Events/Subscription/Subscription.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 # include <cstddef>
@@ -84,4 +85,12 @@ Monitor::operator=(const Monitor& assign)
 	if (this == &assign)
 		return (*this);
 	return *this;
+}
+
+void
+Monitor::reset(bool isCalledFromEventLoop)
+{
+	if (m_state == Monitor::SUBSCRIBED)
+		unsubscribe(isCalledFromEventLoop);
+	m_eventSubs->reset();
 }

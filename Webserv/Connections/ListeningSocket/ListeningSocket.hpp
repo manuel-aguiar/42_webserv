@@ -10,6 +10,7 @@
 
 # include "../Socket/Socket.hpp"
 # include "../Monitor/Monitor.hpp"
+# include "../Listener/Listener.hpp"
 
 //forward declarations
 class ImplManager;
@@ -31,14 +32,12 @@ class ListeningSocket
 		int							acceptPending(InternalConn& connection);
 
 	private:
-		int							m_backlog;
-		Ws::Sock::fd				m_sockfd;
-		const Ws::BindInfo&			m_info;
-		Events::Subscription*		m_eventSubs;
+		Socket						m_socket;
+		Monitor						m_monitor;
+		Listener					m_listener;
 		ImplManager&				m_connManager;
 
 		ServerContext&				mf_accessServerContext();
-		Events::Manager&			mf_accessEventManager();
 		Globals&					mf_accessGlobals();
 		int							mf_acceptInternal(InternalConn& connection);
 

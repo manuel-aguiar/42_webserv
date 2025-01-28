@@ -5,36 +5,23 @@
 //getters
 namespace Conn
 {
-	const Ws::BindInfo&		Connection::getBindInfo() const
+	Monitor&
+	Connection::accessMonitor()
 	{
-		return (m_info);
-	}
-
-	Ws::Sock::fd			Connection::getSocket() const
-	{
-		return (m_sockfd);
+		return (m_monitor);
 	}
 
 	//setters
-	void	Connection::setAppLayerConn			(const Ws::AppLayer::Conn& appConn)
+	AppLayer&
+	Connection::accessAppLayer()
 	{
-		m_appConn = appConn;
+		return (m_appLayer);
 	}
 
-	void 	Connection::setAppLayerCloseCallback	(const Ws::AppLayer::CloseCallback callback)
+	Socket&
+	Connection::accessSocket()
 	{
-		m_appForceClose = callback;
-	}
-
-	//accessors
-	Ws::AppLayer::Conn	Connection::accessAppLayerConn()
-	{
-		return (m_appConn);
-	}
-
-	Ws::AppLayer::CloseCallback	Connection::accessAppLayerCloseCallback()
-	{
-		return (m_appForceClose);
+		return (m_socket);
 	}
 
 }

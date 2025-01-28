@@ -26,13 +26,13 @@ Socket& Socket::operator=(const Socket& assign)
 }
 
 Ws::Sock::fd
-Socket::getSockFd()
+Socket::getSockFd() const
 {
 	return (m_sockfd);
 }
 
 const Ws::BindInfo&
-Socket::getBindInfo()
+Socket::getBindInfo() const
 {
 	return (m_info);
 }
@@ -54,4 +54,11 @@ Ws::BindInfo&
 Socket::modifyBindInfo()
 {
 	return (m_info);
+}
+
+void
+Socket::reset()
+{
+	m_sockfd = -1;
+	m_info = (Ws::BindInfo){};
 }

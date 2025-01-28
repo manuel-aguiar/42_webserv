@@ -8,17 +8,16 @@
 // C headers
 # include <unistd.h>
 
-Listener::Listener(int backlog, const Ws::BindInfo& info) : 
-	m_socket(-1, info),
+Listener::Listener(int backlog) : 
 	m_backlog(backlog) {}
 
 Listener::~Listener() {}
 
-int	Listener::open()
+int	Listener::open(Socket& listen)
 {
 	int 				options;
 	int 				sockfd;
-	const Ws::BindInfo& m_info = m_socket.getBindInfo();
+	const Ws::BindInfo& m_info = listen.getBindInfo();
 
 	sockfd = ::socket(m_info.family, m_info.socktype, m_info.proto);
 
@@ -53,24 +52,24 @@ int	Listener::open()
 		return (0);
 	}
 
-	m_socket.setSockFd(sockfd);
+	listen.setSockFd(sockfd);
 	return (1);
 }
 
-void	Listener::close()
+void	Listener::close(Socket& listen)
 {
-	ASSERT_EQUAL(m_socket.getSockFd() != -1, true, "Listener::close(), socket already closed");
-	::close(m_socket.getSockFd());
-	m_socket.setSockFd(-1);
+	ASSERT_EQUAL(listen.getSockFd() != -1, true, "Listener::close(), socket already closed");
+	::close(listen.getSockFd());
+	listen.setSockFd(-1);
 }
 
-int		Listener::accept(Socket& fill)
+int		Listener::accept(const Socket& listen, Socket& accept)
 {
 	int 				sockfd;
-	const Ws::BindInfo& m_info = m_socket.getBindInfo();
-	Ws::BindInfo&		modifyInfo = fill.modifyBindInfo();
+	const Ws::BindInfo&	m_info = listen.getBindInfo();
+	Ws::BindInfo&		modifyInfo = accept.modifyBindInfo();
 
-	sockfd = ::accept(m_socket.getSockFd(), (struct sockaddr*)(&modifyInfo.addr), &modifyInfo.addrlen);
+	sockfd = ::accept(listen.getSockFd(), (struct sockaddr*)(&modifyInfo.addr), &modifyInfo.addrlen);
 
 	if (sockfd == -1)
 		return (0);
@@ -84,13 +83,12 @@ int		Listener::accept(Socket& fill)
 	modifyInfo.family = m_info.family;
 	modifyInfo.socktype = m_info.socktype;
 	modifyInfo.proto = m_info.proto;
-	fill.setSockFd(sockfd);
+	accept.setSockFd(sockfd);
 
 	return (1);
 }
 
 Listener::Listener(const Listener& copy) : 
-	m_socket(copy.m_socket),
 	m_backlog(copy.m_backlog) {}
 
 Listener& Listener::operator=(const Listener& assign)
@@ -98,7 +96,6 @@ Listener& Listener::operator=(const Listener& assign)
 	if (this == &assign)
 		return (*this);
 
-	m_socket = assign.m_socket;
 	m_backlog = assign.m_backlog;
 
 	return (*this);

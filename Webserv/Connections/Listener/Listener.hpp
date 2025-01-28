@@ -9,15 +9,14 @@
 class Listener
 {
 	public:
-		Listener(int backlog, const Ws::BindInfo& info);
+		Listener(int backlog);
 		~Listener();
 
-		int						open();
-		void					close();
-		int						accept(Socket& fill);
+		int						open(Socket& listen);
+		void					close(Socket& listen);
+		int						accept(const Socket& listen, Socket& accept);
 
 	private:
-		Socket	m_socket;
 		int		m_backlog;
 
 		Listener(const Listener& copy);

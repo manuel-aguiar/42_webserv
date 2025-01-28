@@ -28,6 +28,10 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocket.cpp \
 				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketOpenClose.cpp \
 				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketAccept.cpp \
+				$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp \
+				$(SRC_PATH)/Webserv/Connections/AppLayer/AppLayer.cpp \
+				$(SRC_PATH)/Webserv/Connections/Socket/Socket.cpp \
+				$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp \
 				\
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \

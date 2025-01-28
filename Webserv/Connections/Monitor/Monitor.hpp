@@ -13,14 +13,14 @@ class Monitor
 		Monitor(Events::Manager& eventManager);
 		~Monitor();
 
-
+		void						reset(bool isCalledFromEventLoop);
 		void						acquire();
 		void						release();
 		void						subscribe(bool isCalledFromEventLoop);
 		void						unsubscribe(bool isCalledFromEventLoop);
 		void						modify(bool isCalledFromEventLoop);
 		Events::Subscription*		accessEvent();
-		
+
 	private:
 
 		typedef enum

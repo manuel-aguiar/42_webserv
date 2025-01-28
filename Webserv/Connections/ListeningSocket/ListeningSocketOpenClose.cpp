@@ -12,66 +12,38 @@
 
 int		ListeningSocket::open()
 {
-	int options;
-
-	m_sockfd = ::socket(m_info.family, m_info.socktype, m_info.proto);
-	if (m_sockfd == -1)
-	{
-		mf_accessGlobals().logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
+	int res = m_listener.open(m_socket);
+	
+	if (!res)
+		// failed to open
 		return (0);
-	}
 
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
-	{
-		mf_accessGlobals().logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
-		return (0);
-	}
+	m_monitor.acquire();
+	Events::Subscription* event = m_monitor.accessEvent();
 
-	#ifdef SO_REUSEPORT
-		options = SO_REUSEADDR | SO_REUSEPORT;
-	#else
-		options = SO_REUSEADDR;
-	#endif
-
-	if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
-	{
-		mf_accessGlobals().logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
-		return (0);
-	}	
-	if (::bind(m_sockfd, (struct sockaddr*)(&m_info.addr), m_info.addrlen) == -1)
-	{
-		mf_accessGlobals().logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
-		return (0);
-	}
-	if (::listen(m_sockfd, m_backlog) == -1)
-	{
-		mf_accessGlobals().logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
-		return (0);
-	}
-
-	ASSERT_EQUAL(m_eventSubs == NULL, true, "ListeningSocket::open(), listening socket already opened, that can't be");
-	m_eventSubs = mf_accessEventManager().acquireSubscription();
-	ASSERT_EQUAL(m_eventSubs != NULL, true, "ListeningSocket::open(), acquireSubscription() failed, should have enough for all");
-	m_eventSubs->setFd(m_sockfd);
-	m_eventSubs->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP | Events::Monitor::EDGE_TRIGGERED);
-	m_eventSubs->setUser(this);
-	m_eventSubs->setCallback(EventCallbackAccept);
-	mf_accessEventManager().startMonitoring(*m_eventSubs, false);
+	event->setFd(m_socket.getSockFd());
+	event->setMonitoredEvents(Events::Monitor::READ 
+							| Events::Monitor::ERROR 
+							| Events::Monitor::HANGUP 
+							| Events::Monitor::EDGE_TRIGGERED);
+	event->setUser(this);
+	event->setCallback(EventCallbackAccept);
+	m_monitor.subscribe(true);
 
 	return (1);
 }
 
 void	ListeningSocket::close()
 {
-	if (m_eventSubs)
-	{
-		mf_accessEventManager().stopMonitoring(*m_eventSubs, false);
-		mf_accessEventManager().returnSubscription(*m_eventSubs);
-		m_eventSubs = NULL;
-	}
-	if (m_sockfd != -1)
-	{
-		::close(m_sockfd);
-		m_sockfd = -1;
-	}
+	m_monitor.reset(false);
+	m_monitor.release();
+	m_listener.close(m_socket);
+}
+
+void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)
+{
+	ListeningSocket*	listener;
+
+	listener = reinterpret_cast<ListeningSocket*>(callback.accessUser());
+	listener->accept();
 }
