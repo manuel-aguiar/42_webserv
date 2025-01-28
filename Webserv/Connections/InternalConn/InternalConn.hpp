@@ -1,39 +1,25 @@
 
 
-#ifndef CONNECTIONINTERNALCONN_HPP
+#ifndef CONNINTERNALCONN_HPP
 
-# define CONNECTIONINTERNALCONN_HPP
+# define CONNINTERNALCONN_HPP
 
 # include "../Connection/Connection.hpp"
 
-class ListeningSocket;
 
 class InternalConn : public Conn::Connection
 {
 	public:
-		InternalConn(	Events::Manager& eventManager, 
-						ImplManager& connManager, 
-						ServerContext& serverContext);
+		InternalConn(ImplManager& connManager);
 		~InternalConn();
 
-		InternalConn(const InternalConn& other);
-		InternalConn& operator=(const InternalConn& other);
-
-		int		accept(Ws::Sock::fd& listener);
-		void 	ForceClose();
-
-		Ws::Sock::addr&		accessAddr();
-		Ws::Sock::addrlen&	accessAddrlen();
-		Ws::Sock::fd		accessSocket();
+		int	beAccepted(Ws::Sock::fd listener, Ws::Sock::type type, Ws::Sock::protocol proto, Ws::AppLayer::Type appLayer);
 
 	private:
-		typedef enum
-		{
-			IDLE,
-			ACTIVE
-		}	State;
+		InternalConn(const InternalConn& copy);
+		InternalConn& operator=(const InternalConn& assign);
 
-		State	m_state;
 };
+
 
 #endif

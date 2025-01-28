@@ -31,7 +31,7 @@ ImplManager::~ImplManager()
 
 }
 
-Conn::Connection* ImplManager::_Listener_ProvideConnection()
+Conn::BaseConnection* ImplManager::_Listener_ProvideConnection()
 {
 	InternalConn*     connection;
 
@@ -44,7 +44,7 @@ Conn::Connection* ImplManager::_Listener_ProvideConnection()
 
 
 
-void ImplManager::_Listener_ReturnConnection(Conn::Connection& connection)
+void ImplManager::_Listener_ReturnConnection(Conn::BaseConnection& connection)
 {
 	InternalConn* internal = static_cast<InternalConn*>(&connection);
 

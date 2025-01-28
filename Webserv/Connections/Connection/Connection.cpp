@@ -1,48 +1,127 @@
 
 
+#include "Connection.hpp"
+#include "ImplManager/ImplManager.hpp"
+#include "Events/Manager/Manager.hpp"
+#include "Events/Subscription/Subscription.hpp"
 
-
-# include "Connection.hpp"
-# include "../../ListeningSocket/ListeningSocket.hpp"
-# include "../Events/Manager/Manager.hpp"
+#include <unistd.h>
 
 namespace Conn
 {
-    Connection::Connection(	Events::Manager& eventManager, 
-						    ServerContext& serverContext,
-                            ImplManager* connManager) :
-        m_sockfd(-1),
-        m_addr({}),
-        m_connManager(connManager),
-        m_eventManager(eventManager),
-        m_context(serverContext)
-    {
-        m_eventSubs = m_eventManager.acquireSubscription();
-    }
+	Connection::Connection(ImplManager& connManager) :
+		m_sockfd(-1),
+		m_info({}),
+		m_appConn(NULL),
+		m_appForceClose(NULL),
+		m_eventSubs(NULL),
+		m_connManager(connManager)
+	{
+		m_eventSubs = mf_accessEventManager().acquireSubscription();
+		ASSERT_EQUAL(m_eventSubs, NULL, "Connection::Connection, acquireSubscription() failed, should have enough for all");
+	}
 
-    Connection::~Connection()
-    {
+	Connection::~Connection() {}
 
-    }
+	void    
+	Connection::close()
+	{
+		if (m_sockfd != -1)
+		{
+			callAppLayerForceClose();
+			::close(m_sockfd);
+		}
+		m_sockfd = -1;
+	}
 
-    void    Connection::reset()
-    {
-        m_sockfd = -1;
-    }
+	/*
+		closes the connection if open.
+		resets all parameters to base value for later reuse
+	*/
+	void    
+	Connection::reset()
+	{
+		close();
+		m_info = {};
+		m_appConn = NULL;
+		m_appForceClose = NULL;
+	}
 
 
-    // no copies, as usual
-    Connection::Connection(const Connection& other) :
-        m_sockfd(other.m_sockfd),
-        m_addr(other.m_addr),
-        m_addrlen(other.m_addrlen),
-        m_eventSubs(other.m_eventSubs),
-        m_connManager(other.m_connManager),
-        m_eventManager(other.m_eventManager),
-        m_context(other.m_context)
-    {
+	Events::Manager&
+	Connection::mf_accessEventManager()
+	{
+		return (m_connManager.accessEventManager());
+	}
 
-    }
+	Globals&
+	Connection::mf_accessGlobals()
+	{
+		return (m_connManager.accessGlobals());
+	}
 
-    Connection& Connection::operator=(const Connection& other) {(void)other; return (*this);}
+	ServerContext&
+	Connection::mf_accessServerContext()
+	{
+		return (m_connManager.accessServerContext());
+	}
+
+	void
+	Connection::subscribeEvents(bool isCalledFromEventLoop)
+	{
+		mf_accessEventManager().startMonitoring(*m_eventSubs, isCalledFromEventLoop);
+	}
+
+	void
+	Connection::unsubscribeEvents(bool isCalledFromEventLoop)
+	{
+		mf_accessEventManager().stopMonitoring(*m_eventSubs, isCalledFromEventLoop);
+	}
+
+	void
+	Connection::modifyEvents(bool isCalledFromEventLoop)
+	{
+		mf_accessEventManager().updateEvents(*m_eventSubs, isCalledFromEventLoop);
+	}
+
+	Events::Subscription*
+	Connection::accessEvent()
+	{
+		return (m_eventSubs);
+	}
+
+	ServerContext&
+	Connection::accessServerContext()
+	{
+		return (mf_accessServerContext());
+	}
+
+
+	void  
+	Connection::callAppLayerForceClose()
+	{
+		if (m_appForceClose)
+			m_appForceClose(*this);
+	}
+
+	//private anyways
+	Connection::Connection(const Connection& other) :
+		m_sockfd(other.m_sockfd),
+		m_info(other.m_info),
+		m_appConn(other.m_appConn),
+		m_appForceClose(other.m_appForceClose),
+		m_eventSubs(other.m_eventSubs),
+		m_connManager(other.m_connManager)
+	{
+
+	}
+
+	Connection&
+	Connection::operator=(const Connection& other)
+	{
+		if (this == &other)
+			return (*this);
+
+		return (*this);
+	}
 }

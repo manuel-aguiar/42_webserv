@@ -6,7 +6,7 @@
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
-void	Http::Module::InitConnection(Conn::Connection& connection)
+void	Http::Module::InitConnection(Conn::BaseConnection& connection)
 {
 	ServerContext& context = connection.accessServerContext();
 
@@ -37,7 +37,7 @@ void	Http::Module::InitConnection(Conn::Connection& connection)
 }
 
 
-void	Http::Module::CallbackForcedClose(Conn::Connection& connection)
+void	Http::Module::CallbackForcedClose(Conn::BaseConnection& connection)
 {
 	Http::Connection* httpConn = reinterpret_cast<Http::Connection*>(connection.accessAppLayerConn());
 

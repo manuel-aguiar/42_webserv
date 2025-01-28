@@ -13,9 +13,17 @@ namespace Conn
 		public:
 			Manager(const size_t maxConnections,
 					const std::vector<Ws::BindInfo>& bindAddresses,
-					Events::Manager& eventManager, 
+					Events::Manager& eventManager,
+					Globals& globals,
 					ServerContext& context);
 			~Manager();
+
+			void	init();
+			void	shutdown();
+		
+		private:
+			Manager(const Manager& copy);
+			Manager& operator=(const Manager& assign);
 	};
 }
 

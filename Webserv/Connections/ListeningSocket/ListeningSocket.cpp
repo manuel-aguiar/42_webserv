@@ -13,19 +13,13 @@
 # include <arpa/inet.h>
 
 
-
-ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, ImplManager& connManager, ServerContext& context) :
+ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, Globals& globals) :
 	m_sockfd(-1),
 	m_backlog(backlog),
-	m_init(NULL),
-	m_module(NULL),
-	m_event(NULL),
 	m_info(info),
-	m_connManager(connManager),
-	m_context(context)
+	m_globals(globals)
 {
-	m_init = context.getAppLayerInit(info.appLayer);
-	m_module = context.getAppLayerModule(info.appLayer);
+
 }
 
 ListeningSocket::~ListeningSocket()
@@ -40,12 +34,12 @@ int		ListeningSocket::open()
 	m_sockfd = ::socket(m_info.family, m_info.socktype, m_info.proto);
 	if (m_sockfd == -1)
 	{
-		m_context.getGlobals()->logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
 	{
-		m_context.getGlobals()->logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
 		return (0);
 	}
 
@@ -57,42 +51,41 @@ int		ListeningSocket::open()
 
 	if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
 	{
-		m_context.getGlobals()->logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
 		return (0);
 	}	
 	if (::bind(m_sockfd, (struct sockaddr*)(&m_info.addr), m_info.addrlen) == -1)
 	{
-		m_context.getGlobals()->logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
 		return (0);
 	}
 	if (::listen(m_sockfd, m_backlog) == -1)
 	{
-		m_context.getGlobals()->logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
+		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
 		return (0);
 	}
 
 	return (1);
 }
 
-int	ListeningSocket::accept()
-{
-	InternalConn*	connection;
-
-	connection = m_connManager._Listener_ProvideConnection();
-	if (!connection)
-	{
-		m_connManager._Listener_MoveToPendingAccept(*this);
-		return (0);
-	}
-	connection->accept(m_sockfd);
-}
-
-
 /*
 	Accepts a socket conenction on the ListeningSocket. Will be called by the Manager
 	via the EventCallbackAccept function pointer, and by the ServerWorker when a Connection instance
 	is returned to try and recycle. 
 */
+
+int   ListeningSocket::accept(Conn::BaseConnection& connection)
+{
+
+}
+
+void    ListeningSocket::close()
+{
+	if (m_sockfd != -1 && ::close(m_sockfd) == -1)
+		m_globals.logError("close(): " + std::string(strerror(errno)));
+	m_sockfd = -1;
+}
+
 int    ListeningSocket::acceptasf()
 {
 	Connection*	connection;
@@ -171,18 +164,12 @@ void    ListeningSocket::closeConnection(Connection& connection)
 }
 
 
-void    ListeningSocket::close()
-{
-	if (m_sockfd != -1 && ::close(m_sockfd) == -1)
-		m_globals.logError("close(): " + std::string(strerror(errno)));
-	m_sockfd = -1;
-}
+
 
 
 
 //private
 ListeningSocket::ListeningSocket() :
-	m_worker(*((ServerWorker*)NULL)),  					//never do this, for real
 	m_globals(*((Globals*)NULL))
 {
 
@@ -194,17 +181,4 @@ ListeningSocket::ListeningSocket() :
 			std::cout << "ListeningSocket Destructor Called" << std::endl;
 	#endif
 
-}
-
-
-int		ListeningSocket::mf_bind()
-{
-
-	return (1);
-}
-
-int		ListeningSocket::mf_listen()
-{
-
-	return (1);
 }

@@ -49,7 +49,7 @@ typedef sigset_t									t_sigset;
 
 # define MAX_EPOLL_EVENTS 64
 
-namespace Conn {class Connection;}
+namespace Conn { class Connection;}
 
 namespace Ws
 {
@@ -82,7 +82,7 @@ namespace Ws
 		typedef void* Module;
 		typedef void* Conn;
 		typedef void (*Init)(Conn::Connection&);
-		typedef void (*ForceCloseCallback)(Conn::Connection&);
+		typedef void (*CloseCallback)(Conn::Connection&);
 	}
 
 	namespace AddonLayer

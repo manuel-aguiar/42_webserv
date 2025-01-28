@@ -13,18 +13,20 @@
 
 // forward declarations
 class InternalConn;
+class Globals;
 class ListeningSocket;
 class ServerContext;
+
 namespace Events { class Manager; }
 namespace Ws { struct BindInfo; }
-namespace Conn { class Connection; }
 
 class ImplManager
 {
 	protected:
 		ImplManager(const size_t maxConnections,
 					const std::vector<Ws::BindInfo>& bindAddresses,
-					Events::Manager& eventManager, 
+					Events::Manager& eventManager,
+					Globals& globals,
 					ServerContext& context);
 		~ImplManager();
 	
@@ -43,6 +45,8 @@ class ImplManager
 
 		// access to the event manager
 		Events::Manager&					accessEventManager();
+		Globals&							accessGlobals();
+		ServerContext&						accessServerContext();
 
 
 		InternalConn*						_Listener_ProvideConnection();
@@ -58,6 +62,7 @@ class ImplManager
 		HeapCircularQueue<ListeningSocket*>	m_pendingAccepts;
 
 		Events::Manager&					m_eventManager;
+		Globals&							m_globals;
 		ServerContext&						m_context;
 
 		ImplManager(const ImplManager& copy);

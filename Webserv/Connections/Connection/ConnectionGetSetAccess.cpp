@@ -2,38 +2,39 @@
 
 # include "Connection.hpp"
 
+//getters
 namespace Conn
 {
-
-	const Ws::Sock::addr&		Connection::getAddr() const
+	const Ws::BindInfo&		Connection::getBindInfo() const
 	{
-		return (m_addr);
+		return (m_info);
 	}
 
-	Events::Subscription*			Connection::accessEventSubs()
+	Ws::Sock::fd			Connection::getSocket() const
 	{
-		return (m_eventSubs);
-	}
-
-	ServerContext&			Connection::accessServerContext()
-	{
-		return (m_context);
+		return (m_sockfd);
 	}
 
 	//setters
-	void					Connection::setSocket(const t_socket sockfd)
+	void	Connection::setAppLayerConn			(const Ws::AppLayer::Conn& appConn)
 	{
-		m_sockfd = sockfd;
+		m_appConn = appConn;
 	}
 
-	void					Connection::setAddr(const Ws::Sock::addr& addr)
+	void 	Connection::setAppLayerCloseCallback	(const Ws::AppLayer::CloseCallback callback)
 	{
-		m_addr = addr;
+		m_appForceClose = callback;
 	}
 
-	void					Connection::setAddrlen(const t_socklen addrlen)
+	//accessors
+	Ws::AppLayer::Conn	Connection::accessAppLayerConn()
 	{
-		m_addrlen = addrlen;
+		return (m_appConn);
 	}
 
+	Ws::AppLayer::CloseCallback	Connection::accessAppLayerCloseCallback()
+	{
+		return (m_appForceClose);
+	}
 }
+
