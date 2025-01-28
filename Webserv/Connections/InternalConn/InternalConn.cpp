@@ -1,6 +1,7 @@
 
 
 # include "InternalConn.hpp"
+# include "../../Events/Subscription/Subscription.hpp"
 
 InternalConn::InternalConn(ImplManager& connManager) :
 	Conn::Connection(connManager)
@@ -25,6 +26,22 @@ InternalConn::beAccepted(Ws::Sock::fd listener, Ws::Sock::type type, Ws::Sock::p
 	m_info.appLayer = appLayer;
 
 	return (m_sockfd);
+}
+
+void
+InternalConn::ForcedClose()
+{
+	if (m_sockfd == -1)
+		return ;
+	if (m_appForceClose)
+		m_appForceClose(*this);
+	Conn::Connection::close();
+}
+
+void
+InternalConn::reset()
+{
+	Conn::Connection::pf_reset();
 }
 
 InternalConn::InternalConn(const InternalConn& copy) :

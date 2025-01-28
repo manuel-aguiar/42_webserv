@@ -2,24 +2,15 @@
 
 # include "ListeningSocket.hpp"
 # include "../ImplManager/ImplManager.hpp"
-# include "../InternalConn/InternalConn.hpp"
-# include "../../Globals/Globals.hpp"
-# include "../../ServerContext/ServerContext.hpp"
-# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-// C headers
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
-
-
-ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, Globals& globals) :
+ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, ImplManager& connManager) :
 	m_sockfd(-1),
 	m_backlog(backlog),
 	m_info(info),
-	m_globals(globals)
+	m_eventSubs(NULL),
+	m_connManager(connManager)
 {
-
+	
 }
 
 ListeningSocket::~ListeningSocket()
@@ -27,45 +18,22 @@ ListeningSocket::~ListeningSocket()
 	close();
 }
 
-int		ListeningSocket::open()
+Globals&
+ListeningSocket::mf_accessGlobals()
 {
-	int options;
-	
-	m_sockfd = ::socket(m_info.family, m_info.socktype, m_info.proto);
-	if (m_sockfd == -1)
-	{
-		m_globals.logError("ListeningSocket::open, socket(): " + std::string(strerror(errno)));
-		return (0);
-	}
-	if (!FileDescriptor::setCloseOnExec_NonBlocking(m_sockfd))
-	{
-		m_globals.logError("ListeningSocket::open(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
-		return (0);
-	}
+	return (m_connManager._accessGlobals());
+}
 
-	#ifdef SO_REUSEPORT
-		options = SO_REUSEADDR | SO_REUSEPORT;
-	#else
-		options = SO_REUSEADDR;
-	#endif
+ServerContext&
+ListeningSocket::mf_accessServerContext()
+{
+	return (m_connManager._accessServerContext());
+}
 
-	if (::setsockopt(m_sockfd, SOL_SOCKET, options, &options, sizeof(options)) == -1)
-	{
-		m_globals.logError("ListeningSocket::open(), setsockopt(): " + std::string(strerror(errno)));
-		return (0);
-	}	
-	if (::bind(m_sockfd, (struct sockaddr*)(&m_info.addr), m_info.addrlen) == -1)
-	{
-		m_globals.logError("ListeningSocket::bind(), bind(): " + std::string(strerror(errno)));
-		return (0);
-	}
-	if (::listen(m_sockfd, m_backlog) == -1)
-	{
-		m_globals.logError("ListeningSocket::listen(): listen():" + std::string(strerror(errno)));
-		return (0);
-	}
-
-	return (1);
+Events::Manager&
+ListeningSocket::mf_accessEventManager()
+{
+	return (m_connManager._accessEventManager());
 }
 
 /*
@@ -74,111 +42,3 @@ int		ListeningSocket::open()
 	is returned to try and recycle. 
 */
 
-int   ListeningSocket::accept(Conn::BaseConnection& connection)
-{
-
-}
-
-void    ListeningSocket::close()
-{
-	if (m_sockfd != -1 && ::close(m_sockfd) == -1)
-		m_globals.logError("close(): " + std::string(strerror(errno)));
-	m_sockfd = -1;
-}
-
-int    ListeningSocket::acceptasf()
-{
-	Connection*	connection;
-	u_sockaddr	addr;
-	t_socklen	addrlen;
-	t_sockaddr*	addrrr;
-	int			sockfd;
-
-
-	connection = m_worker.provideConnection();
-
-	if (!connection)
-	{
-		m_worker.addPendingAccept(*this);
-		return (0);
-	}
-
-	connection->setListener(*this);
-	addrlen = sizeof(addr);
-	sockfd = ::accept(m_sockfd, &addr.sockaddr, &addrlen);
-
-
-	if (sockfd == -1)
-	{
-		
-		if (!(errno == EAGAIN || errno == EWOULDBLOCK))
-		{
-			/* there was backlog but accept failed */
-			m_globals.logError("ListeningSocket::accept(): " + std::string(strerror(errno)));
-		}
-		m_worker.returnConnection(*connection);
-		return (0);		
-	}
-
-	connection->setSocket(sockfd);
-
-	if (!FileDescriptor
-::setCloseOnExec_NonBlocking(sockfd))
-	{
-		m_globals.logError("ListeningSocket::accept(), setCloseOnExec_NonBlocking(): " + std::string(strerror(errno)));
-		return (mf_close_accepted_connection(*connection));
-	}
-
-	addrrr = (t_sockaddr*)connection->accessMemPool().allocate(addrlen, true);
-
-	if (!addrrr)
-	{
-		m_globals.logError("ListeningSocket::accept(), memorypool " + std::string(strerror(errno)));
-		return (mf_close_accepted_connection(*connection));
-	}
-	connection->setAddr(addrrr);
-
-	std::memcpy(connection->accessAddr(), &addr, addrlen);
-	connection->setAddrlen(addrlen);
-	connection->setProtoModule(m_module);
-	m_init(connection);
-
-	if (!m_worker.accessEventManager().monitor(connection->getReadEvent()))
-		return (mf_close_accepted_connection(*connection));
-
-	return (1);
-}
-
-int    ListeningSocket::mf_close_accepted_connection(Connection& connection)
-{
-	if (connection.getSocket() != -1 && ::close(connection.getSocket()) == -1)
-		m_globals.logError("close(): " + std::string(strerror(errno)));
-	m_worker.returnConnection(connection);
-	return (0);
-}
-
-void    ListeningSocket::closeConnection(Connection& connection)
-{
-	m_worker.accessEventManager().stopMonitoring(connection.getReadEvent());
-	mf_close_accepted_connection(connection);
-}
-
-
-
-
-
-
-//private
-ListeningSocket::ListeningSocket() :
-	m_globals(*((Globals*)NULL))
-{
-
-	#if !defined(NDEBUG) && defined(DEBUG_CTOR)
-		#include <iostream>
-		if (globals)
-			m_globals.m_debugFile->record("ListeningSocket Destructor Called");
-		else
-			std::cout << "ListeningSocket Destructor Called" << std::endl;
-	#endif
-
-}

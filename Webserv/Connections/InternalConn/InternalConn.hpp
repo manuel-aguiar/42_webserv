@@ -13,8 +13,9 @@ class InternalConn : public Conn::Connection
 		InternalConn(ImplManager& connManager);
 		~InternalConn();
 
-		int	beAccepted(Ws::Sock::fd listener, Ws::Sock::type type, Ws::Sock::protocol proto, Ws::AppLayer::Type appLayer);
-
+		void	ForcedClose();
+		void	reset();
+		int 	beAccepted(Ws::Sock::fd listener, Ws::Sock::type type, Ws::Sock::protocol proto, Ws::AppLayer::Type appLayer);
 	private:
 		InternalConn(const InternalConn& copy);
 		InternalConn& operator=(const InternalConn& assign);

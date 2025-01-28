@@ -36,5 +36,6 @@ namespace Conn
 	{
 		return (m_appForceClose);
 	}
+
 }
 

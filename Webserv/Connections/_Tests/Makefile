@@ -16,15 +16,25 @@ SRC_PATH	=	$(ROOT_PATH)/.
 OBJ_PATH	=	$(ROOT_PATH)/_build
 
 
-SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
+SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/test1.cpp \
+				\
+				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
+				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
+				$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Connections/ImplManager/ImplManager.cpp \
+				$(SRC_PATH)/Webserv/Connections/ImplManager/ImplManagerInitShutdown.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp \
+				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocket.cpp \
+				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketOpenClose.cpp \
+				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketAccept.cpp \
+				\
+				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
 				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \
-				$(SRC_PATH)/Webserv/Events/_Tests/main.cpp \
-				$(SRC_PATH)/Webserv/Events/_Tests/test1.cpp \
-				$(SRC_PATH)/Webserv/Events/_Tests/test2.cpp \
-				$(SRC_PATH)/Webserv/Events/_Tests/test3.cpp \
-													\
+				\
+				$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \

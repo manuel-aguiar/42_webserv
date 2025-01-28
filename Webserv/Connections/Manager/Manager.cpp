@@ -17,9 +17,9 @@ namespace Conn
 	{
 	}
 
-	void	Manager::init()
+	bool	Manager::init()
 	{
-		ImplManager::init();
+		return (ImplManager::init());
 	}
 
 	void	Manager::shutdown()

@@ -8,7 +8,7 @@
 
 namespace Conn
 {
-	class Manager : public ImplManager
+	class Manager : private ImplManager
 	{
 		public:
 			Manager(const size_t maxConnections,
@@ -18,7 +18,7 @@ namespace Conn
 					ServerContext& context);
 			~Manager();
 
-			void	init();
+			bool	init();
 			void	shutdown();
 		
 		private:

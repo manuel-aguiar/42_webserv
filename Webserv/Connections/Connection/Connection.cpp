@@ -1,9 +1,9 @@
 
 
 #include "Connection.hpp"
-#include "ImplManager/ImplManager.hpp"
-#include "Events/Manager/Manager.hpp"
-#include "Events/Subscription/Subscription.hpp"
+#include "../ImplManager/ImplManager.hpp"
+#include "../../Events/Manager/Manager.hpp"
+#include "../../Events/Subscription/Subscription.hpp"
 
 #include <unistd.h>
 
@@ -11,27 +11,28 @@ namespace Conn
 {
 	Connection::Connection(ImplManager& connManager) :
 		m_sockfd(-1),
-		m_info({}),
+		m_info((Ws::BindInfo){}),
 		m_appConn(NULL),
 		m_appForceClose(NULL),
 		m_eventSubs(NULL),
 		m_connManager(connManager)
 	{
 		m_eventSubs = mf_accessEventManager().acquireSubscription();
-		ASSERT_EQUAL(m_eventSubs, NULL, "Connection::Connection, acquireSubscription() failed, should have enough for all");
+		ASSERT_EQUAL(m_eventSubs != NULL, true, "Connection::Connection, acquireSubscription() failed, should have enough for all");
 	}
 
-	Connection::~Connection() {}
+	Connection::~Connection()
+	{
+		mf_accessEventManager().returnSubscription(*m_eventSubs);
+	}
 
 	void    
 	Connection::close()
 	{
 		if (m_sockfd != -1)
-		{
-			callAppLayerForceClose();
 			::close(m_sockfd);
-		}
 		m_sockfd = -1;
+		m_connManager._ReturnConnection(*this);
 	}
 
 	/*
@@ -39,31 +40,30 @@ namespace Conn
 		resets all parameters to base value for later reuse
 	*/
 	void    
-	Connection::reset()
+	Connection::pf_reset()
 	{
-		close();
-		m_info = {};
+		m_info = (Ws::BindInfo){};
 		m_appConn = NULL;
 		m_appForceClose = NULL;
+		m_eventSubs->reset();
 	}
-
 
 	Events::Manager&
 	Connection::mf_accessEventManager()
 	{
-		return (m_connManager.accessEventManager());
+		return (m_connManager._accessEventManager());
 	}
 
 	Globals&
 	Connection::mf_accessGlobals()
 	{
-		return (m_connManager.accessGlobals());
+		return (m_connManager._accessGlobals());
 	}
 
 	ServerContext&
 	Connection::mf_accessServerContext()
 	{
-		return (m_connManager.accessServerContext());
+		return (m_connManager._accessServerContext());
 	}
 
 	void
@@ -98,7 +98,7 @@ namespace Conn
 
 
 	void  
-	Connection::callAppLayerForceClose()
+	Connection::pf_callAppLayerForceClose()
 	{
 		if (m_appForceClose)
 			m_appForceClose(*this);

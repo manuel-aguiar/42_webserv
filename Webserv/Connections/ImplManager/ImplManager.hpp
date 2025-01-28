@@ -5,8 +5,8 @@
 # define CONNECTIONIMPLMANAGER_HPP
 
 //  Project Headers
-# include "../../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
-# include "../../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
+# include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
+# include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
 // C++ headers
 # include <vector>
@@ -18,7 +18,8 @@ class ListeningSocket;
 class ServerContext;
 
 namespace Events { class Manager; }
-namespace Ws { struct BindInfo; }
+namespace Ws { struct s_BindInfo; typedef struct s_BindInfo BindInfo; }
+namespace Conn { class Connection; }
 
 class ImplManager
 {
@@ -29,29 +30,22 @@ class ImplManager
 					Globals& globals,
 					ServerContext& context);
 		~ImplManager();
-	
+
 	public:
 
 		// public interface
-		void								init();
+		bool								init();
 		void								shutdown();
-
-
 
 		// helper methods that will actually be called internally between helpers
 		// will be hidden via private inheritance for the public interface
 
-
-
-		// access to the event manager
-		Events::Manager&					accessEventManager();
-		Globals&							accessGlobals();
-		ServerContext&						accessServerContext();
-
-
 		InternalConn*						_Listener_ProvideConnection();
-		void								_Listener_ReturnConnection(InternalConn& connection);
 		void								_Listener_MoveToPendingAccept(ListeningSocket& listener);
+		void								_ReturnConnection(Conn::Connection& connection);
+		Events::Manager&					_accessEventManager();
+		Globals&							_accessGlobals();
+		ServerContext&						_accessServerContext();
 
 	private:
 		size_t								m_maxConnections;
@@ -67,6 +61,7 @@ class ImplManager
 
 		ImplManager(const ImplManager& copy);
 		ImplManager& operator=(const ImplManager& assign);
+
 };
 
 # endif

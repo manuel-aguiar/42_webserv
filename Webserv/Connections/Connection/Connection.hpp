@@ -3,7 +3,7 @@
 
 # define CONNCONNECTION_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# include "../../GenericUtils/Webserver_Definitions.h"
 
 // forawrd declarations
 class ImplManager;
@@ -18,16 +18,15 @@ namespace Conn
 	{
 		public:
 
+			void    					close();
+
 			//events
 			void						subscribeEvents(bool isCalledFromEventLoop);
 			void						unsubscribeEvents(bool isCalledFromEventLoop);
 			void						modifyEvents(bool isCalledFromEventLoop);
 			Events::Subscription*		accessEvent();
 
-			void    					reset();
-			void    					close();
 
-			
 			Ws::Sock::fd				getSocket() const;	
 			const Ws::BindInfo&			getBindInfo() const;
 
@@ -52,14 +51,16 @@ namespace Conn
 			Ws::AppLayer::Conn			m_appConn;
 			Ws::AppLayer::CloseCallback	m_appForceClose;
 			Events::Subscription*		m_eventSubs;
+
 			ImplManager&				m_connManager;
 
-			
-			void					callAppLayerForceClose();
+			void						pf_callAppLayerForceClose();
+			void    					pf_reset();
 
-			ServerContext&			mf_accessServerContext();
-			Events::Manager&		mf_accessEventManager();
-			Globals&				mf_accessGlobals();
+		private:
+			ServerContext&				mf_accessServerContext();
+			Events::Manager&			mf_accessEventManager();
+			Globals&					mf_accessGlobals();
 
 	};
 }
