@@ -11,7 +11,6 @@
 //forward declarations
 class ServerConfig;
 class Globals;
-class Connection;
 
 class ServerContext
 {
