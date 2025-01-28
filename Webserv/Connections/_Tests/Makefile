@@ -22,12 +22,12 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp \
-				$(SRC_PATH)/Webserv/Connections/ImplManager/ImplManager.cpp \
-				$(SRC_PATH)/Webserv/Connections/ImplManager/ImplManagerInitShutdown.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp \
 				$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp \
-				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocket.cpp \
-				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketOpenClose.cpp \
-				$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketAccept.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalListen/InternalListen.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalListen/InternalListenOpenClose.cpp \
+				$(SRC_PATH)/Webserv/Connections/InternalListen/InternalListenAccept.cpp \
 				$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp \
 				$(SRC_PATH)/Webserv/Connections/AppLayer/AppLayer.cpp \
 				$(SRC_PATH)/Webserv/Connections/Socket/Socket.cpp \

@@ -1,9 +1,8 @@
 
 
 # include "InternalConn.hpp"
-# include "../../Events/Subscription/Subscription.hpp"
 
-InternalConn::InternalConn(ImplManager& connManager) :
+InternalConn::InternalConn(InternalManager& connManager) :
 	Conn::Connection(connManager)
 {
 }
@@ -33,6 +32,7 @@ InternalConn::reset()
 void
 InternalConn::mf_callAppLayerForceClose()
 {
-
+	if (m_appLayer.accessCloseCallback())
+		m_appLayer.accessCloseCallback()(*this);
 
 }

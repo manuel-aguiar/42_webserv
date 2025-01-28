@@ -1,13 +1,13 @@
 
 
 #include "Connection.hpp"
-#include "../ImplManager/ImplManager.hpp"
+#include "../InternalManager/InternalManager.hpp"
 
 #include <unistd.h>
 
 namespace Conn
 {
-	Connection::Connection(ImplManager& connManager) :
+	Connection::Connection(InternalManager& connManager) :
 		m_monitor(connManager._accessEventManager()),
 		m_connManager(connManager)
 	{

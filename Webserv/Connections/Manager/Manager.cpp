@@ -9,7 +9,7 @@ namespace Conn
 					Events::Manager& eventManager,
 					Globals& globals,
 					ServerContext& context) :
-		ImplManager(maxConnections, bindAddresses, eventManager, globals, context)
+		InternalManager(maxConnections, bindAddresses, eventManager, globals, context)
 	{
 	}
 
@@ -19,11 +19,11 @@ namespace Conn
 
 	bool	Manager::init()
 	{
-		return (ImplManager::init());
+		return (InternalManager::init());
 	}
 
 	void	Manager::shutdown()
 	{
-		ImplManager::shutdown();
+		InternalManager::shutdown();
 	}
 }

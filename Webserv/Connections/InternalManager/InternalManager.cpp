@@ -1,12 +1,12 @@
 
 
-# include "ImplManager.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
+# include "InternalManager.hpp"
+# include "../InternalListen/InternalListen.hpp"
 # include "../InternalConn/InternalConn.hpp"
 # include "../../Events/Manager/Manager.hpp"
 
 
-ImplManager::ImplManager(const size_t maxConnections,
+InternalManager::InternalManager(const size_t maxConnections,
 						const std::vector<Ws::BindInfo>& bindAddresses,
 						Events::Manager& eventManager, 
 						Globals& globals,
@@ -32,12 +32,12 @@ ImplManager::ImplManager(const size_t maxConnections,
 	}
 }
 
-ImplManager::~ImplManager()
+InternalManager::~InternalManager()
 {
 	shutdown();
 }
 
-InternalConn* ImplManager::_Listener_ProvideConnection()
+InternalConn* InternalManager::_Listener_ProvideConnection()
 {
 	InternalConn*     connection;
 
@@ -48,12 +48,12 @@ InternalConn* ImplManager::_Listener_ProvideConnection()
 	return (connection);
 }
 
-void ImplManager::_Listener_MoveToPendingAccept(ListeningSocket& listener)
+void InternalManager::_Listener_MoveToPendingAccept(InternalListen& listener)
 {
 	m_pendingAccepts.push_back(&listener);
 }
 
-void ImplManager::_ReturnConnection(Conn::Connection& connection)
+void InternalManager::_ReturnConnection(Conn::Connection& connection)
 {
 	InternalConn* 	internal = static_cast<InternalConn*>(&connection);
 
@@ -63,7 +63,7 @@ void ImplManager::_ReturnConnection(Conn::Connection& connection)
 	internal->reset();
 	while (m_pendingAccepts.size())
 	{
-		ListeningSocket* listener = m_pendingAccepts.front();
+		InternalListen* listener = m_pendingAccepts.front();
 		m_pendingAccepts.pop_front();
 		if (listener->acceptPending(*internal) != -1) // success, push it back again, may have more to accept
 		{
@@ -77,29 +77,29 @@ void ImplManager::_ReturnConnection(Conn::Connection& connection)
 }
 
 
-Events::Manager& ImplManager::_accessEventManager()
+Events::Manager& InternalManager::_accessEventManager()
 {
 	return (m_eventManager);
 }
 
-Globals& ImplManager::_accessGlobals()
+Globals& InternalManager::_accessGlobals()
 {
 	return (m_globals);
 }
 
-ServerContext& ImplManager::_accessServerContext()
+ServerContext& InternalManager::_accessServerContext()
 {
 	return (m_context);
 }
 
 //private, as usual
 
-ImplManager::ImplManager(const ImplManager& copy) :
+InternalManager::InternalManager(const InternalManager& copy) :
 	m_eventManager(copy.m_eventManager),
 	m_globals(copy.m_globals),
 	m_context(copy.m_context) {}
 
-ImplManager& ImplManager::operator=(const ImplManager& assign)
+InternalManager& InternalManager::operator=(const InternalManager& assign)
 {
 	if (this == &assign) 
 		return (*this);

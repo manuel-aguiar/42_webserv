@@ -10,11 +10,8 @@
 # include "../Socket/Socket.hpp"
 
 // forawrd declarations
-class ImplManager;
-class Globals;
+class InternalManager;
 class ServerContext;
-namespace Events {class Manager;}
-namespace Events {class Subscription;}
 
 namespace Conn
 {
@@ -30,13 +27,13 @@ namespace Conn
 			ServerContext&				accessServerContext();
 
 		protected:
-			Connection(ImplManager& connManager);
+			Connection(InternalManager& connManager);
 			~Connection();
 
 			Socket						m_socket;
 			Monitor						m_monitor;
 			AppLayer					m_appLayer;
-			ImplManager&				m_connManager;
+			InternalManager&			m_connManager;
 
 	};
 }

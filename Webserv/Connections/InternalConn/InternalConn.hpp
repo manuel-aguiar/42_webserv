@@ -10,7 +10,7 @@
 class InternalConn : public Conn::Connection
 {
 	public:
-		InternalConn(ImplManager& connManager);
+		InternalConn(InternalManager& connManager);
 		~InternalConn();
 
 		void	ForcedClose();

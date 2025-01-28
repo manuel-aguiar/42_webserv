@@ -1,7 +1,7 @@
 
 
-# include "ListeningSocket.hpp"
-# include "../ImplManager/ImplManager.hpp"
+# include "InternalListen.hpp"
+# include "../InternalManager/InternalManager.hpp"
 # include "../InternalConn/InternalConn.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../Globals/Globals.hpp"
@@ -10,7 +10,7 @@
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 
-int		ListeningSocket::open()
+int		InternalListen::open()
 {
 	int res = m_listener.open(m_socket);
 	
@@ -33,7 +33,7 @@ int		ListeningSocket::open()
 	return (1);
 }
 
-void	ListeningSocket::close()
+void	InternalListen::close()
 {
 	m_monitor.reset(false);
 	m_monitor.release();
@@ -41,10 +41,10 @@ void	ListeningSocket::close()
 		m_listener.close(m_socket);
 }
 
-void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)
+void InternalListen::EventCallbackAccept(Events::Subscription& callback)
 {
-	ListeningSocket*	listener;
+	InternalListen*	listener;
 
-	listener = reinterpret_cast<ListeningSocket*>(callback.accessUser());
+	listener = reinterpret_cast<InternalListen*>(callback.accessUser());
 	listener->accept();
 }

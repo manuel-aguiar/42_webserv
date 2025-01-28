@@ -20,7 +20,7 @@ int main(void)
 	bindAddresses.push_back((Ws::BindInfo){});
 
 	Conn::Manager connManager(100, bindAddresses, eventManager, globals, context);
-
+	
 	connManager.init();
 	connManager.shutdown();
 

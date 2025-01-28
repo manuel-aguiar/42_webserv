@@ -3,12 +3,12 @@
 
 # define CONNECTIONMANAGER_HPP
 
-# include "../ImplManager/ImplManager.hpp"
+# include "../InternalManager/InternalManager.hpp"
 
 
 namespace Conn
 {
-	class Manager : private ImplManager
+	class Manager : private InternalManager
 	{
 		public:
 			Manager(const size_t maxConnections,

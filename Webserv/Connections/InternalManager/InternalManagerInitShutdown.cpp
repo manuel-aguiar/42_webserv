@@ -1,9 +1,9 @@
 
-# include "ImplManager.hpp"
+# include "InternalManager.hpp"
 # include "../InternalConn/InternalConn.hpp"
-# include "../ListeningSocket/ListeningSocket.hpp"
+# include "../InternalListen/InternalListen.hpp"
 
-bool	ImplManager::init()
+bool	InternalManager::init()
 {
 	for (size_t i = 0; i < m_listeningSockets.size(); ++i)
 	{
@@ -16,7 +16,7 @@ bool	ImplManager::init()
 	return (true);
 }
 
-void   	ImplManager::shutdown()
+void   	InternalManager::shutdown()
 {
 	for (size_t i = 0; i< m_listeningSockets.size(); ++i)
 		m_listeningSockets[i].close();

@@ -13,16 +13,16 @@
 # include "../Listener/Listener.hpp"
 
 //forward declarations
-class ImplManager;
+class InternalManager;
 class InternalConn;
 class Globals;
 class ServerContext;
 
-class ListeningSocket
+class InternalListen
 {
 	public:
-		ListeningSocket(const int backlog, const Ws::BindInfo& info, ImplManager& connManager);
-		~ListeningSocket();
+		InternalListen(const int backlog, const Ws::BindInfo& info, InternalManager& connManager);
+		~InternalListen();
 
 		// methods
 		int                         open();
@@ -35,7 +35,7 @@ class ListeningSocket
 		Socket						m_socket;
 		Monitor						m_monitor;
 		Listener					m_listener;
-		ImplManager&				m_connManager;
+		InternalManager&				m_connManager;
 
 		ServerContext&				mf_accessServerContext();
 		Globals&					mf_accessGlobals();
@@ -43,8 +43,8 @@ class ListeningSocket
 
 		static void                 EventCallbackAccept(Events::Subscription& callback);
 
-		ListeningSocket(const ListeningSocket& copy);
-		ListeningSocket& operator=(const ListeningSocket& assign);
+		InternalListen(const InternalListen& copy);
+		InternalListen& operator=(const InternalListen& assign);
 
 };
 
