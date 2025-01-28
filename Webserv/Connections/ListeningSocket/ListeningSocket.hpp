@@ -8,13 +8,14 @@
 // Project Headers
 # include "../../GenericUtils/Webserver_Definitions.h"
 
+# include "../Socket/Socket.hpp"
+# include "../Monitor/Monitor.hpp"
+
 //forward declarations
 class ImplManager;
 class InternalConn;
 class Globals;
 class ServerContext;
-namespace Events { class Subscription; }
-namespace Events { class Manager; }
 
 class ListeningSocket
 {
@@ -30,8 +31,8 @@ class ListeningSocket
 		int							acceptPending(InternalConn& connection);
 
 	private:
-		Ws::Sock::fd				m_sockfd;
 		int							m_backlog;
+		Ws::Sock::fd				m_sockfd;
 		const Ws::BindInfo&			m_info;
 		Events::Subscription*		m_eventSubs;
 		ImplManager&				m_connManager;
