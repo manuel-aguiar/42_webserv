@@ -37,7 +37,8 @@ void	ListeningSocket::close()
 {
 	m_monitor.reset(false);
 	m_monitor.release();
-	m_listener.close(m_socket);
+	if (m_socket.getSockFd() != -1)
+		m_listener.close(m_socket);
 }
 
 void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)

@@ -32,10 +32,9 @@ Monitor::acquire()
 void
 Monitor::release()
 {
-	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::release() called on a Monitor with a NULL Subscription");
-	ASSERT_EQUAL(m_state == Monitor::UNSUBSCRIBED, true, "Monitor::release() called on a Monitor that is still subscribed");
-	
-	m_eventManager.returnSubscription(*m_eventSubs);
+	reset(true);
+	if (m_eventSubs != NULL)
+		m_eventManager.returnSubscription(*m_eventSubs);
 }
 
 void
@@ -92,5 +91,7 @@ Monitor::reset(bool isCalledFromEventLoop)
 {
 	if (m_state == Monitor::SUBSCRIBED)
 		unsubscribe(isCalledFromEventLoop);
-	m_eventSubs->reset();
+	m_state = Monitor::UNSUBSCRIBED;
+	if (m_eventSubs != NULL)
+		m_eventSubs->reset();
 }
