@@ -49,12 +49,10 @@ namespace Events
 			
 		protected:
 
-
-
 			class FdMask
 			{
 				public:
-					FdMask(const Ws::fd fd = -1);
+					FdMask(const Ws::fd fd);
 					~FdMask();
 					FdMask(const FdMask& copy);
 					FdMask& operator=(const FdMask& assign);
@@ -68,7 +66,6 @@ namespace Events
 					bool					operator==(const FdMask& rhs) const;
 				private:
 					Ws::fd					m_fd;
-
 			};
 
 			FdMask						m_fdmask;

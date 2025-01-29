@@ -53,6 +53,49 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
+		Events::Subscription	subscription;
+
+		TestHelpers::assertEqual(subscription.getFd(), -1, "fd not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Monitored events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.accessUser(), (Events::Subscription::User)NULL, "User not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.accessCallback(), (Events::Subscription::Callback)NULL, "Callback not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		
+		std::cout << "	PASSED (Subscription instantiation)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+	
+//////////////////////////////////////////////////////////////////////////////////////
+
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		Events::Subscription	subscription;
+
+		subscription.setFd(STDOUT_FILENO);
+		TestHelpers::assertEqual(subscription.getFd(), STDOUT_FILENO, "fd not correctly set", __FILE__, __LINE__, __FUNCTION__);
+		
+		subscription.setMonitoredEvents(Events::Monitor::WRITE);
+		TestHelpers::assertEqual(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Monitored events not correctly set", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		TestHelpers::assertEqual(subscription.isSubscribed(), false, "Subscription should not be subscribed", __FILE__, __LINE__, __FUNCTION__);
+
+		std::cout << "	PASSED (Subscription setters/getters)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+//////////////////////////////////////////////////////////////////////////////////////
+
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
 		Events::Manager 		manager(1, globals);
 		Events::Subscription* 	subscription = manager.acquireSubscription();
 
