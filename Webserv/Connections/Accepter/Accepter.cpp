@@ -1,19 +1,20 @@
 
 
 // Project headers
-# include "Listener.hpp"
+# include "Accepter.hpp"
+# include "../Socket/Socket.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 // C headers
 # include <unistd.h>
 
-Listener::Listener(int backlog) : 
+Accepter::Accepter(int backlog) : 
 	m_backlog(backlog) {}
 
-Listener::~Listener() {}
+Accepter::~Accepter() {}
 
-int	Listener::open(Socket& listen)
+int	Accepter::open(Socket& listen)
 {
 	int 				options;
 	int 				sockfd;
@@ -56,14 +57,14 @@ int	Listener::open(Socket& listen)
 	return (1);
 }
 
-void	Listener::close(Socket& listen)
+void	Accepter::close(Socket& listen)
 {
-	ASSERT_EQUAL(listen.getSockFd() != -1, true, "Listener::close(), socket already closed");
+	ASSERT_EQUAL(listen.getSockFd() != -1, true, "Accepter::close(), socket already closed");
 	::close(listen.getSockFd());
 	listen.setSockFd(-1);
 }
 
-int		Listener::accept(const Socket& listen, Socket& accept)
+int		Accepter::accept(const Socket& listen, Socket& accept)
 {
 	int 				sockfd;
 	const Ws::BindInfo&	m_info = listen.getBindInfo();
@@ -88,10 +89,10 @@ int		Listener::accept(const Socket& listen, Socket& accept)
 	return (1);
 }
 
-Listener::Listener(const Listener& copy) : 
+Accepter::Accepter(const Accepter& copy) : 
 	m_backlog(copy.m_backlog) {}
 
-Listener& Listener::operator=(const Listener& assign)
+Accepter& Accepter::operator=(const Accepter& assign)
 {
 	if (this == &assign)
 		return (*this);

@@ -40,8 +40,8 @@ class InternalManager
 		// helper methods that will actually be called internally between helpers
 		// will be hidden via private inheritance for the public interface
 
-		InternalConn*						_Listener_ProvideConnection();
-		void								_Listener_MoveToPendingAccept(ListeningSocket& listener);
+		InternalConn*						_Accepter_ProvideConnection();
+		void								_Accepter_MoveToPendingAccept(ListeningSocket& listener);
 		void								_ReturnConnection(Conn::Connection& connection);
 		Events::Manager&					_accessEventManager();
 		Globals&							_accessGlobals();

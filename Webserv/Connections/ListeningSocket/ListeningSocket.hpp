@@ -10,7 +10,7 @@
 
 # include "../Socket/Socket.hpp"
 # include "../Monitor/Monitor.hpp"
-# include "../Listener/Listener.hpp"
+# include "../Accepter/Accepter.hpp"
 
 //forward declarations
 class InternalManager;
@@ -35,7 +35,7 @@ class ListeningSocket
 	private:
 		Socket						m_socket;
 		Monitor						m_monitor;
-		Listener					m_listener;
+		Accepter					m_listener;
 		InternalManager&			m_connManager;
 
 		Events::Manager&			mf_accessEventManager();

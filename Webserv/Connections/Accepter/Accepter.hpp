@@ -4,13 +4,13 @@
 
 # define CONNECTIONLISTENER_HPP
 
-# include "../Socket/Socket.hpp"
+class Socket;
 
-class Listener
+class Accepter
 {
 	public:
-		Listener(int backlog);
-		~Listener();
+		Accepter(int backlog);
+		~Accepter();
 
 		int						open(Socket& listen);
 		void					close(Socket& listen);
@@ -19,8 +19,8 @@ class Listener
 	private:
 		int		m_backlog;
 
-		Listener(const Listener& copy);
-		Listener& operator=(const Listener& assign);
+		Accepter(const Accepter& copy);
+		Accepter& operator=(const Accepter& assign);
 };
 
 

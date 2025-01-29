@@ -37,7 +37,7 @@ InternalManager::~InternalManager()
 	shutdown();
 }
 
-InternalConn* InternalManager::_Listener_ProvideConnection()
+InternalConn* InternalManager::_Accepter_ProvideConnection()
 {
 	InternalConn*     connection;
 
@@ -48,7 +48,7 @@ InternalConn* InternalManager::_Listener_ProvideConnection()
 	return (connection);
 }
 
-void InternalManager::_Listener_MoveToPendingAccept(ListeningSocket& listener)
+void InternalManager::_Accepter_MoveToPendingAccept(ListeningSocket& listener)
 {
 	m_pendingAccepts.push_back(&listener);
 }

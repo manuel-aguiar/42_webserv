@@ -11,12 +11,12 @@ void  ListeningSocket::accept()
 {
 	InternalConn*	connection;
 
-	connection = m_connManager._Listener_ProvideConnection();
+	connection = m_connManager._Accepter_ProvideConnection();
 
 	if (!connection)
 	{
 		m_monitor.unsubscribe(mf_accessEventManager(), false);
-		return (m_connManager._Listener_MoveToPendingAccept(*this));
+		return (m_connManager._Accepter_MoveToPendingAccept(*this));
 	}
 
 	int res = m_listener.accept(m_socket, connection->accessSocket());

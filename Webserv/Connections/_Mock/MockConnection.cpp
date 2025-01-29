@@ -75,7 +75,7 @@ const Subscription&			Connection::getWriteEvent() const
 	return (*m_writeEvent);
 }
 
-const ListeningSocket&	Connection::getListener() const
+const ListeningSocket&	Connection::getAccepter() const
 {
 	return (*m_listener);
 }
@@ -112,7 +112,7 @@ void					Connection::setWriteEvent(Subscription& event)
 	m_writeEvent = &event;
 }
 
-void					Connection::setListener(ListeningSocket& listener)
+void					Connection::setAccepter(ListeningSocket& listener)
 {
 	m_listener = &listener;
 }
