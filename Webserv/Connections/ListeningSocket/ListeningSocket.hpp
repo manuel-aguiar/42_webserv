@@ -35,7 +35,7 @@ class ListeningSocket
 	private:
 		Socket						m_socket;
 		Monitor						m_monitor;
-		Accepter					m_listener;
+		Accepter					m_accepter;
 		InternalManager&			m_connManager;
 
 		Events::Manager&			mf_accessEventManager();

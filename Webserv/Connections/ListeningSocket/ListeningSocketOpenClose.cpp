@@ -6,7 +6,7 @@
 
 int		ListeningSocket::open()
 {
-	int res = m_listener.open(m_socket);
+	int res = m_accepter.open(m_socket);
 	
 	if (!res)
 		// failed to open
@@ -32,7 +32,7 @@ void	ListeningSocket::close()
 	m_monitor.reset(mf_accessEventManager(), false);
 	m_monitor.release(mf_accessEventManager());
 	if (m_socket.getSockFd() != -1)
-		m_listener.close(m_socket);
+		m_accepter.close(m_socket);
 }
 
 void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)

@@ -5,7 +5,7 @@
 
 ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, InternalManager& connManager) :
 	m_socket(-1, info),
-	m_listener(backlog),
+	m_accepter(backlog),
 	m_connManager(connManager)
 {
 	

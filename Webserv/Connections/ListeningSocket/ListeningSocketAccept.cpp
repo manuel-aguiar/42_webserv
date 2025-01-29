@@ -19,7 +19,7 @@ void  ListeningSocket::accept()
 		return (m_connManager._Accepter_MoveToPendingAccept(*this));
 	}
 
-	int res = m_listener.accept(m_socket, connection->accessSocket());
+	int res = m_accepter.accept(m_socket, connection->accessSocket());
 
 	ASSERT_EQUAL(res != -1, true, "ListeningSocket::accept(), beAccepted() failed, this handler should only be called when we are sure there is a connection via epoll");	
 
@@ -28,7 +28,7 @@ void  ListeningSocket::accept()
 
 int ListeningSocket::acceptPending(InternalConn& connection)
 {
-	int result = m_listener.accept(m_socket, connection.accessSocket());
+	int result = m_accepter.accept(m_socket, connection.accessSocket());
 
 	if (result == -1)
 	{
