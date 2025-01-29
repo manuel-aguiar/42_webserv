@@ -9,6 +9,7 @@ InternalConn::InternalConn(InternalManager& connManager) :
 
 InternalConn::~InternalConn()
 {
+	m_monitor.release(accessEventManager());
 }
 
 
@@ -34,5 +35,4 @@ InternalConn::mf_callAppLayerForceClose()
 {
 	if (m_appLayer.accessCloseCallback())
 		m_appLayer.accessCloseCallback()(*this);
-
 }

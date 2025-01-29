@@ -32,9 +32,10 @@ Monitor::release(Events::Manager& eventManager)
 {
 	if (m_eventSubs == NULL)
 		return ;
-		
+
 	reset(eventManager, true);
 	eventManager.returnSubscription(*m_eventSubs);
+	m_eventSubs = NULL;
 }
 
 void
