@@ -26,8 +26,10 @@ TestProtoRequest::CgiWrite(int writeFd)
 		
 	bytesWritten = ::write(writeFd, m_msgBody.c_str(), m_msgBody.size());
 
-	if ((size_t)bytesWritten != m_msgBody.size() && bytesWritten > 0)
-		m_msgBody.erase(0, bytesWritten);
+	std::string wrote = m_msgBody.substr(0, bytesWritten);
+
+	m_msgBody.erase(0, bytesWritten);
+
 	return (bytesWritten);
 }
 

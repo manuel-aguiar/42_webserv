@@ -133,11 +133,11 @@ int TestPart1(int testNumber)
 
 
 		// tests
+		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
 		
 		std::cout << "	PASSED (executing a script)" << std::endl;
 	}

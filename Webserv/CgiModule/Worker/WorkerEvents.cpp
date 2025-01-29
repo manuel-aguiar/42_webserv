@@ -61,8 +61,15 @@ void	Worker::mf_writeScript()
 	int 					bytesWritten;
 	Events::Monitor::Mask 	triggeredEvents;
 	
+	
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
 	
+	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
+	{
+		mf_disableCloseMyEvent(*m_writeEvent, true);
+		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
+			mf_waitChild();
+	}
 	//std::cout << "write triggered" << std::endl;
 	
 	if (triggeredEvents & Events::Monitor::WRITE)
@@ -77,13 +84,6 @@ void	Worker::mf_writeScript()
 			if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 				mf_waitChild();
 		}
-	}
-	
-	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
-	{
-		mf_disableCloseMyEvent(*m_writeEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();
 	}
 
 }
