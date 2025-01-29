@@ -19,7 +19,7 @@ namespace Events
 	// getters
 	Ws::fd						Subscription::getFd() const
 	{
-		return (m_fd);
+		return (m_fdmask.getFd());
 	}
 
 	Events::Monitor::Mask			Subscription::getMonitoredEvents() const
@@ -29,14 +29,14 @@ namespace Events
 
 	Events::Monitor::Mask			Subscription::getTriggeredEvents() const
 	{
-		return (m_monitoredEvents);
+		return (m_triggeredEvents);
 	}
 
 	// setters
 
 	void	Subscription::setFd(const Ws::fd fd)
 	{
-		m_fd = fd;
+		m_fdmask.setFd(fd);
 	}
 
 	void	Subscription::setMonitoredEvents(const Events::Monitor::Mask flags)
@@ -54,4 +54,8 @@ namespace Events
 		m_callback = handler;
 	}
 
+	bool	Subscription::isSubscribed() const
+	{
+		return (m_fdmask.getState() == Subscription::SUBSCRIBED);
+	}
 }

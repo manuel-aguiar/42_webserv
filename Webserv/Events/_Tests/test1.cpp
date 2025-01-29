@@ -53,13 +53,13 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "TEST " << testNumber++ << ": ";
 
-		Events::Manager 		manager(100, globals);
-		Events::Subscription* subscription = manager.acquireSubscription();
+		Events::Manager 		manager(1, globals);
+		Events::Subscription* 	subscription = manager.acquireSubscription();
 
 		Calculator 				calculator;
+
 		subscription->setUser(&calculator);
 		subscription->setCallback(Calculator::EventCallback_Calculate);
-
 		subscription->notify();
 
 		TestHelpers::assertEqual(calculator.getData(), 42, "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
@@ -70,6 +70,41 @@ int TestPart1(int testNumber)
 	{
 		std::cout << "	FAILED: " << e.what()  << std::endl;
 	}
+///////////////////////////////////////////////////////
+	try
+	{
+		std::cout << "TEST " << testNumber++ << ": ";
+
+		Events::Manager 		manager(1, globals);
+		Events::Subscription* 	subscription = manager.acquireSubscription();
+
+		Calculator 				calculator;
+
+		subscription->setUser(&calculator);
+		subscription->setCallback(Calculator::EventCallback_Calculate);
+		// manager.startMonitoring(*subscription, false);  <- correctly asserts, fd is -1;
+
+		subscription->setFd(42);
+		// manager.startMonitoring(*subscription, false); <- correctly asserts, no events to monitor here;
+
+		subscription->setMonitoredEvents(Events::Monitor::WRITE);
+		// manager.startMonitoring(*subscription, false); <- correctly asserts, fd 42 is not open, EPOLL_CTL fails and aborts
+
+		subscription->setFd(STDOUT_FILENO);
+		manager.startMonitoring(*subscription, false); // passes, stdcout is open
+
+		manager.ProcessEvents(-1);
+
+		TestHelpers::assertEqual(calculator.getData(), 42, "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
+		
+		std::cout << "	PASSED (using a Subscription)" << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cout << "	FAILED: " << e.what()  << std::endl;
+	}
+
+///////////////////////////////////////////////////////
 
 	try
 	{

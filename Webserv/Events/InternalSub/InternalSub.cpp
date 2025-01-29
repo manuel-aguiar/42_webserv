@@ -1,7 +1,7 @@
 
 
 #include "InternalSub.hpp"
-
+#include <iostream>
 InternalSub::InternalSub() : 
     Events::Subscription(),
     m_subscribedFd(-1),
@@ -33,20 +33,22 @@ void    InternalSub::reset()
 
 void InternalSub::updateSubscription()
 {
-    m_subscribedFd = m_fd;
+    this->setState(Events::Subscription::SUBSCRIBED);
+    m_subscribedFd = m_fdmask.getFd();
     m_subscribedEvents = m_monitoredEvents;
 }
 
 void    InternalSub::unSubscribe()
 {
+    this->setState(Events::Subscription::UNSUBSCRIBED);
     m_subscribedFd = -1;
     m_subscribedEvents = Events::Monitor::NONE;
 }
 
 bool InternalSub::isInvalid() const
 {
-
-    return (!(m_subscribedFd == m_fd && m_fd != -1));
+    Ws::fd fd = m_fdmask.getFd();
+    return (!(m_subscribedFd == fd && fd != -1));
 }
 
 void    InternalSub::setTriggeredEvents(const Events::Monitor::Mask flags)
@@ -72,4 +74,14 @@ Ws::fd InternalSub::getSubscribedFd() const
 int InternalSub::getSubscribedEvents() const 
 {
     return (m_subscribedEvents);
+}
+
+Events::Subscription::State InternalSub::getState() const
+{
+    return (m_fdmask.getState());
+}
+
+void InternalSub::setState(const Events::Subscription::State state)
+{
+    m_fdmask.setState(state);
 }

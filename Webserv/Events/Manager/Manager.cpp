@@ -18,7 +18,6 @@ namespace Events
 		m_availableSubs	(maxSubscriptions),
 		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
 	{
-
 		m_epollfd = epoll_create(1);
 
 		if (m_epollfd == -1)
@@ -48,7 +47,6 @@ namespace Events
 		
 		subscription = m_availableSubs.front();
 		m_availableSubs.pop_front();
-
 		return (subscription);
 	}
 
@@ -113,10 +111,11 @@ namespace Events
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
 		true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
 		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::startMonitoring(): Subscription passed has fd = -1");
+		ASSERT_EQUAL(internal->getState() == Subscription::UNSUBSCRIBED, true, "Manager::startMonitoring(): Subscription is already being monitored");
+		ASSERT_EQUAL(internal->getMonitoredEvents() != Events::Monitor::NONE, true, "Manager::startMonitoring(): Subscription has no events to monitor");
 
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
-
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
@@ -146,6 +145,8 @@ namespace Events
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
 		true, "Manager::updateEvents(): Subscription is not part of the EventManager's subscriptions");
 		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::updateEvents(): Subscription passed has fd = -1");
+		ASSERT_EQUAL(internal->getState() == Subscription::SUBSCRIBED, true, "Manager::updateEvents(): Subscription is not being monitored");
+
 
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
@@ -177,6 +178,8 @@ namespace Events
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
 		true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
 		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::stopMonitoring(): Subscription passed has fd = -1");
+		ASSERT_EQUAL(internal->getState() == Subscription::SUBSCRIBED, true, "Manager::stopMonitoring(): Subscription is not being monitored");
+
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
