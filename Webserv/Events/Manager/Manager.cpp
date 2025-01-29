@@ -18,7 +18,6 @@ namespace Events
 		m_availableSubs	(maxSubscriptions),
 		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
 	{
-
 		m_epollfd = epoll_create(1);
 
 		if (m_epollfd == -1)
@@ -43,12 +42,12 @@ namespace Events
 	Manager::acquireSubscription()
 	{
 		//check if there are available subscriptions
-		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		InternalSub* subscription;
+
+		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		
 		subscription = m_availableSubs.front();
 		m_availableSubs.pop_front();
-
 		return (subscription);
 	}
 
@@ -60,11 +59,11 @@ namespace Events
 
 		//subscription must be part of the manager's subscriptions
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::returnSubscription(): Subscription is not part of the EventManager's subscriptions");
+				true, "Manager::returnSubscription(): Subscription is not part of the EventManager's subscriptions");
 
 		//event must not being monitored
-		ASSERT_EQUAL(internal->getSubscribedFd() == -1 && internal->getSubscribedEvents() == Events::Monitor::NONE,
-		true, "Manager::returnSubscription(): Subscription is still being monitored");
+		ASSERT_EQUAL(internal->isSubscribed(), false,  
+				"Manager::returnSubscription(): Subscription is still being monitored, stopMonitoring before attempting to return");
 
 		internal->reset();
 
@@ -81,7 +80,7 @@ namespace Events
 
 	int	Manager::mf_isFdStale(t_fd fd)
 	{
-		if (fd == -1)
+		if (fd == Ws::FD_NONE)
 			return (1);
 		size_t index = fd / 8;
 		size_t bit = fd % 8;
@@ -90,7 +89,7 @@ namespace Events
 
 	Manager::~Manager()
 	{
-		if (m_epollfd != -1)
+		if (m_epollfd != Ws::FD_NONE)
 		{
 			if (close(m_epollfd) == -1)
 			{
@@ -111,12 +110,13 @@ namespace Events
 		fd = internal->getFd();
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
-		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::startMonitoring(): Subscription passed has fd = -1");
+				true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->getFd() == Ws::FD_NONE, false, "Manager::startMonitoring(): Subscription passed has fd = Ws::FD_NONE");
+		ASSERT_EQUAL(internal->isSubscribed(), false, "Manager::startMonitoring(): Subscription is already being monitored");
+		ASSERT_EQUAL(internal->getMonitoredEvents() != Events::Monitor::NONE, true, "Manager::startMonitoring(): Subscription has no events to monitor");
 
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
-
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
@@ -144,8 +144,10 @@ namespace Events
 		fd = internal->getFd();
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::updateEvents(): Subscription is not part of the EventManager's subscriptions");
-		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::updateEvents(): Subscription passed has fd = -1");
+				true, "Manager::updateEvents(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->getFd() == Ws::FD_NONE, false, "Manager::updateEvents(): Subscription passed has fd = Ws::FD_NONE");
+		ASSERT_EQUAL(internal->isSubscribed(), true, "Manager::updateEvents(): Subscription is not being monitored");
+		ASSERT_EQUAL(internal->getMonitoredEvents() != Events::Monitor::NONE, true, "Manager::startMonitoring(): Subscription has no events to monitor");
 
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
@@ -175,8 +177,8 @@ namespace Events
 		fd = internal->getFd();
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
-		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::stopMonitoring(): Subscription passed has fd = -1");
+				true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
+		ASSERT_EQUAL(internal->isSubscribed(), true, "Manager::stopMonitoring(): Subscription is not being monitored");
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
@@ -198,6 +200,9 @@ namespace Events
 	{
 		InternalSub*	event;
 		int				waitCount;
+
+		if (m_subscribeCount == 0)
+			return (0);
 
 		waitCount = epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
 
