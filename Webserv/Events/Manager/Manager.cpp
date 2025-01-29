@@ -42,8 +42,9 @@ namespace Events
 	Manager::acquireSubscription()
 	{
 		//check if there are available subscriptions
-		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		InternalSub* subscription;
+		
+		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		
 		subscription = m_availableSubs.front();
 		m_availableSubs.pop_front();
@@ -176,7 +177,7 @@ namespace Events
 		fd = internal->getFd();
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
-		true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
+				true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
 		ASSERT_EQUAL(internal->isSubscribed(), true, "Manager::stopMonitoring(): Subscription is not being monitored");
 
 		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)

@@ -158,6 +158,8 @@ int TestPart1(int testNumber)
 
 				TestHelpers::assertEqual(subscription->isSubscribed(), false, "Subscription should not be subscribed", __FILE__, __LINE__, __FUNCTION__);
 
+		//manager.stopMonitoring(*subscription, false); <- correctly asserts, subscription is not being monitored so it can't be unsubscribed
+
 		manager.startMonitoring(*subscription, false); // passes, stdcout is open
 
 				TestHelpers::assertEqual(subscription->isSubscribed(), true, "Subscription should be subscribed", __FILE__, __LINE__, __FUNCTION__);
