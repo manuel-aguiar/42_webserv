@@ -2,21 +2,20 @@
 
 #include "Connection.hpp"
 #include "../InternalManager/InternalManager.hpp"
-
+#include "../Monitor/Monitor.hpp"
 #include <unistd.h>
 
 namespace Conn
 {
 	Connection::Connection(InternalManager& connManager) :
-		m_monitor(connManager._accessEventManager()),
 		m_connManager(connManager)
 	{
-		m_monitor.acquire();
+		m_monitor.acquire(accessEventManager());
 	}
 
 	Connection::~Connection()
 	{
-		m_monitor.release();
+		m_monitor.release(accessEventManager());
 	}
 
 	void    
@@ -26,16 +25,35 @@ namespace Conn
 		m_connManager._ReturnConnection(*this);
 	}
 
-	/*
-		closes the connection if open.
-		resets all parameters to base value for later reuse
-	*/
-
-
 	ServerContext&
 	Connection::accessServerContext()
 	{
 		return (m_connManager._accessServerContext());
 	}
+
+	Events::Manager&
+	Connection::accessEventManager()
+	{
+		return (m_connManager._accessEventManager());
+	}
+
+	void
+	Connection::startMonitoring(bool isCalledFromEventLoop)
+	{
+		m_monitor.subscribe(accessEventManager(), isCalledFromEventLoop);
+	}
+	
+	void
+	Connection::stopMonitoring(bool isCalledFromEventLoop)
+	{
+		m_monitor.unsubscribe(accessEventManager(), isCalledFromEventLoop);
+	}
+	
+	void
+	Connection::updateMonitoring(bool isCalledFromEventLoop)
+	{
+		m_monitor.modify(accessEventManager(), isCalledFromEventLoop);
+	}
+	
 
 }

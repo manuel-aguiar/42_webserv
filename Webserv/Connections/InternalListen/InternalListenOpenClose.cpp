@@ -1,13 +1,7 @@
 
 
 # include "InternalListen.hpp"
-# include "../InternalManager/InternalManager.hpp"
-# include "../InternalConn/InternalConn.hpp"
-# include "../../ServerContext/ServerContext.hpp"
-# include "../../Globals/Globals.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
-# include "../../Events/Manager/Manager.hpp"
-# include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 
 int		InternalListen::open()
@@ -18,7 +12,7 @@ int		InternalListen::open()
 		// failed to open
 		return (0);
 
-	m_monitor.acquire();
+	m_monitor.acquire(mf_accessEventManager());
 	Events::Subscription* event = m_monitor.accessEvent();
 
 	event->setFd(m_socket.getSockFd());
@@ -28,15 +22,15 @@ int		InternalListen::open()
 							| Events::Monitor::EDGE_TRIGGERED);
 	event->setUser(this);
 	event->setCallback(EventCallbackAccept);
-	m_monitor.subscribe(true);
+	m_monitor.subscribe(mf_accessEventManager(), true);
 
 	return (1);
 }
 
 void	InternalListen::close()
 {
-	m_monitor.reset(false);
-	m_monitor.release();
+	m_monitor.reset(mf_accessEventManager(), false);
+	m_monitor.release(mf_accessEventManager());
 	if (m_socket.getSockFd() != -1)
 		m_listener.close(m_socket);
 }

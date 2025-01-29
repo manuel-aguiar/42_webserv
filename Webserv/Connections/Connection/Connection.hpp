@@ -12,6 +12,7 @@
 // forawrd declarations
 class InternalManager;
 class ServerContext;
+namespace Events { class Subscription; }
 
 namespace Conn
 {
@@ -22,9 +23,13 @@ namespace Conn
 
 			Socket&						accessSocket();
 			AppLayer&					accessAppLayer();
-			Monitor&					accessMonitor();
-
 			ServerContext&				accessServerContext();
+			Events::Manager&			accessEventManager();
+
+			Events::Subscription*		accessEvent();
+			void						startMonitoring(bool isCalledFromEventLoop);
+			void						stopMonitoring(bool isCalledFromEventLoop);
+			void						updateMonitoring(bool isCalledFromEventLoop);
 
 		protected:
 			Connection(InternalManager& connManager);
@@ -34,6 +39,7 @@ namespace Conn
 			Monitor						m_monitor;
 			AppLayer					m_appLayer;
 			InternalManager&			m_connManager;
+
 
 	};
 }

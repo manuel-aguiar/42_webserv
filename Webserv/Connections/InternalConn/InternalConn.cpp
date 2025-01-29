@@ -25,7 +25,7 @@ void
 InternalConn::reset()
 {
 	m_socket.reset();
-	m_monitor.reset(false);
+	m_monitor.reset(accessEventManager(), false);
 	m_appLayer.reset();
 }
 

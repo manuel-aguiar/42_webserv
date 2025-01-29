@@ -17,6 +17,7 @@ class InternalManager;
 class InternalConn;
 class Globals;
 class ServerContext;
+namespace Events { class Manager; }
 
 class InternalListen
 {
@@ -37,6 +38,7 @@ class InternalListen
 		Listener					m_listener;
 		InternalManager&			m_connManager;
 
+		Events::Manager&			mf_accessEventManager();
 		ServerContext&				mf_accessServerContext();
 		Globals&					mf_accessGlobals();
 		int							mf_acceptInternal(InternalConn& connection);

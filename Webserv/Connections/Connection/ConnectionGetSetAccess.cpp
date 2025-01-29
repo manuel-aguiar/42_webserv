@@ -5,11 +5,6 @@
 //getters
 namespace Conn
 {
-	Monitor&
-	Connection::accessMonitor()
-	{
-		return (m_monitor);
-	}
 
 	//setters
 	AppLayer&
@@ -23,6 +18,14 @@ namespace Conn
 	{
 		return (m_socket);
 	}
+
+
+	Events::Subscription*
+	Connection::accessEvent()
+	{
+		return (m_monitor.accessEvent());
+	}
+
 
 }
 
