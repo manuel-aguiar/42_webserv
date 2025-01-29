@@ -19,11 +19,11 @@ class Globals;
 class ServerContext;
 namespace Events { class Manager; }
 
-class InternalListen
+class ListeningSocket
 {
 	public:
-		InternalListen(const int backlog, const Ws::BindInfo& info, InternalManager& connManager);
-		~InternalListen();
+		ListeningSocket(const int backlog, const Ws::BindInfo& info, InternalManager& connManager);
+		~ListeningSocket();
 
 		// methods
 		int                         open();
@@ -45,8 +45,8 @@ class InternalListen
 
 		static void                 EventCallbackAccept(Events::Subscription& callback);
 
-		InternalListen(const InternalListen& copy);
-		InternalListen& operator=(const InternalListen& assign);
+		ListeningSocket(const ListeningSocket& copy);
+		ListeningSocket& operator=(const ListeningSocket& assign);
 
 };
 

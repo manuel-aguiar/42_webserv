@@ -1,5 +1,5 @@
 
-# include "InternalListen.hpp"
+# include "ListeningSocket.hpp"
 # include "../InternalManager/InternalManager.hpp"
 # include "../InternalConn/InternalConn.hpp"
 # include "../../ServerContext/ServerContext.hpp"
@@ -7,7 +7,7 @@
 
 
 
-void  InternalListen::accept()
+void  ListeningSocket::accept()
 {
 	InternalConn*	connection;
 
@@ -26,7 +26,7 @@ void  InternalListen::accept()
 	mf_acceptInternal(*connection);
 }
 
-int InternalListen::acceptPending(InternalConn& connection)
+int ListeningSocket::acceptPending(InternalConn& connection)
 {
 	int result = m_listener.accept(m_socket, connection.accessSocket());
 
@@ -41,7 +41,7 @@ int InternalListen::acceptPending(InternalConn& connection)
 }
 
 int
-InternalListen::mf_acceptInternal(InternalConn& connection)
+ListeningSocket::mf_acceptInternal(InternalConn& connection)
 {
 	mf_accessServerContext().getAppLayerInit(m_socket.getBindInfo().appLayer)(connection);
 	return (1);

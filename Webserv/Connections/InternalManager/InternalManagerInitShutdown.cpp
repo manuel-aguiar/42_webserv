@@ -1,7 +1,7 @@
 
 # include "InternalManager.hpp"
 # include "../InternalConn/InternalConn.hpp"
-# include "../InternalListen/InternalListen.hpp"
+# include "../ListeningSocket/ListeningSocket.hpp"
 
 bool	InternalManager::init()
 {

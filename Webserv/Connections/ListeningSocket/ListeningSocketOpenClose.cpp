@@ -1,10 +1,10 @@
 
 
-# include "InternalListen.hpp"
+# include "ListeningSocket.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
 
-int		InternalListen::open()
+int		ListeningSocket::open()
 {
 	int res = m_listener.open(m_socket);
 	
@@ -27,7 +27,7 @@ int		InternalListen::open()
 	return (1);
 }
 
-void	InternalListen::close()
+void	ListeningSocket::close()
 {
 	m_monitor.reset(mf_accessEventManager(), false);
 	m_monitor.release(mf_accessEventManager());
@@ -35,10 +35,10 @@ void	InternalListen::close()
 		m_listener.close(m_socket);
 }
 
-void InternalListen::EventCallbackAccept(Events::Subscription& callback)
+void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)
 {
-	InternalListen*	listener;
+	ListeningSocket*	listener;
 
-	listener = reinterpret_cast<InternalListen*>(callback.accessUser());
+	listener = reinterpret_cast<ListeningSocket*>(callback.accessUser());
 	listener->accept();
 }

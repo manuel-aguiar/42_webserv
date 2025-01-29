@@ -1,7 +1,7 @@
 
 
 # include "InternalManager.hpp"
-# include "../InternalListen/InternalListen.hpp"
+# include "../ListeningSocket/ListeningSocket.hpp"
 # include "../InternalConn/InternalConn.hpp"
 # include "../../Events/Manager/Manager.hpp"
 
@@ -48,7 +48,7 @@ InternalConn* InternalManager::_Listener_ProvideConnection()
 	return (connection);
 }
 
-void InternalManager::_Listener_MoveToPendingAccept(InternalListen& listener)
+void InternalManager::_Listener_MoveToPendingAccept(ListeningSocket& listener)
 {
 	m_pendingAccepts.push_back(&listener);
 }
@@ -63,7 +63,7 @@ void InternalManager::_ReturnConnection(Conn::Connection& connection)
 	internal->reset();
 	while (m_pendingAccepts.size())
 	{
-		InternalListen* listener = m_pendingAccepts.front();
+		ListeningSocket* listener = m_pendingAccepts.front();
 		m_pendingAccepts.pop_front();
 		if (listener->acceptPending(*internal) != -1) // success, push it back again, may have more to accept
 		{
