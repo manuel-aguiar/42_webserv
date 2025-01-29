@@ -4,7 +4,7 @@
 #include <iostream>
 InternalSub::InternalSub() : 
     Events::Subscription(),
-    m_subscribedFd(-1),
+    m_subscribedFd(Ws::FD_NONE),
     m_subscribedEvents(Events::Monitor::NONE) {}
 
 InternalSub::~InternalSub() {}
@@ -27,7 +27,7 @@ InternalSub& InternalSub::operator=(const InternalSub& assign)
 void    InternalSub::reset()
 {
     Events::Subscription::reset();
-    m_subscribedFd = -1;
+    m_subscribedFd = Ws::FD_NONE;
     m_subscribedEvents = Events::Monitor::NONE;
 }
 
@@ -41,14 +41,14 @@ void InternalSub::updateSubscription()
 void    InternalSub::unSubscribe()
 {
     this->setState(Events::Subscription::UNSUBSCRIBED);
-    m_subscribedFd = -1;
+    m_subscribedFd = Ws::FD_NONE;
     m_subscribedEvents = Events::Monitor::NONE;
 }
 
 bool InternalSub::isInvalid() const
 {
     Ws::fd fd = m_fdmask.getFd();
-    return (!(m_subscribedFd == fd && fd != -1));
+    return (!(m_subscribedFd == fd && fd != Ws::FD_NONE));
 }
 
 void    InternalSub::setTriggeredEvents(const Events::Monitor::Mask flags)

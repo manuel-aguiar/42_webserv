@@ -43,7 +43,7 @@ namespace Events
 	{
 		//check if there are available subscriptions
 		InternalSub* subscription;
-		
+
 		ASSERT_EQUAL(m_availableSubs.size() > 0, true, "Manager::acquireSubscription(): No available subscriptions");
 		
 		subscription = m_availableSubs.front();
@@ -80,7 +80,7 @@ namespace Events
 
 	int	Manager::mf_isFdStale(t_fd fd)
 	{
-		if (fd == -1)
+		if (fd == Ws::FD_NONE)
 			return (1);
 		size_t index = fd / 8;
 		size_t bit = fd % 8;
@@ -89,7 +89,7 @@ namespace Events
 
 	Manager::~Manager()
 	{
-		if (m_epollfd != -1)
+		if (m_epollfd != Ws::FD_NONE)
 		{
 			if (close(m_epollfd) == -1)
 			{
@@ -111,7 +111,7 @@ namespace Events
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
 				true, "Manager::startMonitoring(): Subscription is not part of the EventManager's subscriptions");
-		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::startMonitoring(): Subscription passed has fd = -1");
+		ASSERT_EQUAL(internal->getFd() == Ws::FD_NONE, false, "Manager::startMonitoring(): Subscription passed has fd = Ws::FD_NONE");
 		ASSERT_EQUAL(internal->isSubscribed(), false, "Manager::startMonitoring(): Subscription is already being monitored");
 		ASSERT_EQUAL(internal->getMonitoredEvents() != Events::Monitor::NONE, true, "Manager::startMonitoring(): Subscription has no events to monitor");
 
@@ -145,7 +145,7 @@ namespace Events
 
 		ASSERT_EQUAL(internal >= m_subscriptions.getArray() && internal < m_subscriptions.getArray() + m_subscriptions.size(), 
 				true, "Manager::updateEvents(): Subscription is not part of the EventManager's subscriptions");
-		ASSERT_EQUAL(internal->getFd() == -1, false, "Manager::updateEvents(): Subscription passed has fd = -1");
+		ASSERT_EQUAL(internal->getFd() == Ws::FD_NONE, false, "Manager::updateEvents(): Subscription passed has fd = Ws::FD_NONE");
 		ASSERT_EQUAL(internal->isSubscribed(), true, "Manager::updateEvents(): Subscription is not being monitored");
 		ASSERT_EQUAL(internal->getMonitoredEvents() != Events::Monitor::NONE, true, "Manager::startMonitoring(): Subscription has no events to monitor");
 

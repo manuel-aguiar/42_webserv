@@ -52,7 +52,7 @@ namespace Events
 			class FdMask
 			{
 				public:
-					FdMask(const Ws::fd fd);
+					FdMask(const Ws::fd fd = Ws::FD_NONE);
 					~FdMask();
 					FdMask(const FdMask& copy);
 					FdMask& operator=(const FdMask& assign);

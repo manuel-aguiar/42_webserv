@@ -6,7 +6,7 @@
 namespace Events
 {
 	Subscription::Subscription() :
-		m_fdmask			(-1),
+		m_fdmask			(Ws::FD_NONE),
 		m_monitoredEvents	(Events::Monitor::NONE),
 		m_triggeredEvents	(Events::Monitor::NONE),
 		m_user				(NULL),
@@ -57,7 +57,7 @@ namespace Events
 
 	Subscription::FdMask::FdMask(const Ws::fd fd)
 	{
-		ASSERT_EQUAL(fd >= -1, true, "Subscription::FdMask: fd must be bigger than -1");
+		ASSERT_EQUAL(fd >= Ws::FD_NONE, true, "Subscription::FdMask: fd must be bigger than -1");
 
 		m_fd = fd | (Subscription::UNSUBSCRIBED << 31);
 	}
@@ -88,12 +88,12 @@ namespace Events
 
 	Ws::fd	Subscription::FdMask::getFd() const
 	{
-		return ((m_fd == -1) ? -1 : m_fd & ~(1 << 31));
+		return ((m_fd == Ws::FD_NONE) ? Ws::FD_NONE : m_fd & ~(1 << 31));
 	}
 
 	void	Subscription::FdMask::setFd(const Ws::fd fd)
 	{
-		ASSERT_EQUAL(fd >= -1, true, "Subscription::FdMask::setFd: fd must be bigger than -1");
+		ASSERT_EQUAL(fd >= Ws::FD_NONE, true, "Subscription::FdMask::setFd: fd must be bigger than -1");
 
 		Subscription::State state = getState();
 
@@ -105,7 +105,7 @@ namespace Events
 
 	void	Subscription::FdMask::reset()
 	{
-		m_fd = -1;
+		m_fd = Ws::FD_NONE;
 	}
 
 	bool					

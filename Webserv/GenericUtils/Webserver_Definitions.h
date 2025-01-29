@@ -54,6 +54,7 @@ namespace Conn { class Connection;}
 namespace Ws
 {
 	typedef int			fd;
+	enum { FD_NONE = -1 };
 	typedef pid_t		pid;
 
 	namespace Sock
