@@ -50,7 +50,7 @@ namespace Events
 								| 	Events::Monitor::RDHANGUP 
 								| 	Events::Monitor::EDGE_TRIGGERED;
 
-		ASSERT_EQUAL((flags & ~validFlags), 0, "Subscription::setMonitoredEvents: invalid flag combination");
+		ASSERT_EQUAL((flags & ~validFlags) == 0, true, "Subscription::setMonitoredEvents: invalid flag combination");
 
 		m_monitoredEvents = flags;
 	}
