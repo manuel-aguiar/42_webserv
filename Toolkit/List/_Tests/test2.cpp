@@ -27,11 +27,11 @@ int TestPart2(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "copy constructor, value mismatch", __FILE__, __LINE__, __func__);
-			TestHelpers::assertEqual(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer", __FILE__, __LINE__, __func__);
+			EXPECT_EQUAL(*it, *iter, "copy constructor, value mismatch");
+			EXPECT_EQUAL(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer");
 		}
 
-		TestHelpers::assertEqual(list.size(), copy.size(), "copy constructor, size mismatch", __FILE__, __LINE__, __func__);
+		EXPECT_EQUAL(list.size(), copy.size(), "copy constructor, size mismatch");
 
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -57,11 +57,11 @@ int TestPart2(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "copy assignment, value mismatch", __FILE__, __LINE__, __func__);
-			TestHelpers::assertEqual(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer", __FILE__, __LINE__, __func__);
+			EXPECT_EQUAL(*it, *iter, "copy assignment, value mismatch");
+			EXPECT_EQUAL(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer");
 		}
 
-		TestHelpers::assertEqual(list.size(), copy.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __func__);
+		EXPECT_EQUAL(list.size(), copy.size(), "copy assignment, size mismatch");
 
 		std::cout << "\tPASSED" << std::endl;
 	}

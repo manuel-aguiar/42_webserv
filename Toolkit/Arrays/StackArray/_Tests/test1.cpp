@@ -23,7 +23,7 @@ int TestPart1(int testNumber)
 		const size_t arraySize = 100;
 		StackArray<int, arraySize> array;
 		
-		TestHelpers::assertEqual(array.capacity(), arraySize, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.capacity(), arraySize, "size mismatch");
 
 
 		for (int i = 0; i < 100; ++i)
@@ -31,10 +31,10 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 
-		TestHelpers::assertEqual(array.size(), arraySize, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), arraySize, "size mismatch");
 
 		for (int i = 0; i < 100; ++i)
-			TestHelpers::assertEqual(array[i], i, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(array[i], i, "value mismatch");
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -54,10 +54,10 @@ int TestPart1(int testNumber)
 		// copy constructs the elements based on the one element passed
 		StackArray<int, arraySize> array(copyInit);
 
-		TestHelpers::assertEqual(array.capacity(), arraySize, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.capacity(), arraySize, "size mismatch");
 
 		for (size_t i = 0; i < array.size(); ++i)
-			TestHelpers::assertEqual(array[i], copyInit, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(array[i], copyInit, "value mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -82,10 +82,10 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 
-		TestHelpers::assertEqual(array.size(), arraySize, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), arraySize, "size mismatch");
 			
 		for (size_t i = 0; i < array.size(); ++i)
-			TestHelpers::assertEqual(array[i] == i, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(array[i] == i, true, "value mismatch");
 		
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -107,8 +107,8 @@ int TestPart1(int testNumber)
 		}
 		array.pop_back();
 
-		TestHelpers::assertEqual(array.size(), (size_t)99, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(array.back(), 98, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), (size_t)99, "size mismatch");
+		EXPECT_EQUAL(array.back(), 98, "value mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -128,8 +128,8 @@ int TestPart1(int testNumber)
 		}
 
 		// Check front and back
-		TestHelpers::assertEqual(array.front(), 0, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(array.back(), 99, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.front(), 0, "value mismatch");
+		EXPECT_EQUAL(array.back(), 99, "value mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -148,12 +148,12 @@ int TestPart1(int testNumber)
 		array.emplace_back(2);
 		array.emplace_back(3);
 
-		TestHelpers::assertEqual(array.size(), (size_t)3, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), (size_t)3, "size mismatch");
 
 		array.emplace_back(4);
 		array.emplace_back(5);
 
-		TestHelpers::assertEqual(array.size(), (size_t)5, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), (size_t)5, "size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -175,16 +175,16 @@ int TestPart1(int testNumber)
 
 		// Test iterator
 		StackArray<int, 5>::iterator it = array.begin();
-		TestHelpers::assertEqual(*it, 1, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(*it, 1, "value mismatch");
 
 		it++;
-		TestHelpers::assertEqual(*it, 2, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(*it, 2, "value mismatch");
 
 		it++;
-		TestHelpers::assertEqual(*it, 3, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(*it, 3, "value mismatch");
 
 		it++;
-		TestHelpers::assertEqual(it == array.end(), true, "iterator should be at end", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(it == array.end(), true, "iterator should be at end");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -203,9 +203,9 @@ int TestPart1(int testNumber)
 		array.emplace_back("World");
 		array.emplace_back("StackArray");
 
-		TestHelpers::assertEqual(array[0], std::string("Hello"), "value mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(array[1], std::string("World"), "value mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(array[2], std::string("StackArray"), "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array[0], std::string("Hello"), "value mismatch");
+		EXPECT_EQUAL(array[1], std::string("World"), "value mismatch");
+		EXPECT_EQUAL(array[2], std::string("StackArray"), "value mismatch");
 
 
 		std::cout << "	PASSED" << std::endl;

@@ -56,11 +56,10 @@ int TestPart1(int testNumber)
 		Events::Subscription	subscription;
 
 		EXPECT_EQUAL(subscription.getFd(), -1, "fd not correctly initialized");
-		TestHelpers::assertEqual(subscription.getFd(), -1, "fd not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Monitored events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.accessUser(), (Events::Subscription::User)NULL, "User not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.accessCallback(), (Events::Subscription::Callback)NULL, "Callback not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(subscription.getMonitoredEvents(), Events::Monitor::NONE, "Monitored events not correctly initialized");
+		EXPECT_EQUAL(subscription.getTriggeredEvents(), Events::Monitor::NONE, "Triggered events not correctly initialized");
+		EXPECT_EQUAL(subscription.accessUser(), (Events::Subscription::User)NULL, "User not correctly initialized");
+		EXPECT_EQUAL(subscription.accessCallback(), (Events::Subscription::Callback)NULL, "Callback not correctly initialized");
 		
 		std::cout << "	PASSED (Subscription instantiation)" << std::endl;
 	}
@@ -78,12 +77,12 @@ int TestPart1(int testNumber)
 		Events::Subscription	subscription;
 
 		subscription.setFd(STDOUT_FILENO);
-		TestHelpers::assertEqual(subscription.getFd(), STDOUT_FILENO, "fd not correctly set", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(subscription.getFd(), STDOUT_FILENO, "fd not correctly set");
 		
 		subscription.setMonitoredEvents(Events::Monitor::WRITE);
-		TestHelpers::assertEqual(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Monitored events not correctly set", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.isSubscribed(), false, "Subscription should not be subscribed", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Monitored events not correctly set");
+		EXPECT_EQUAL(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized");
+		EXPECT_EQUAL(subscription.isSubscribed(), false, "Subscription should not be subscribed");
 
 		std::cout << "	PASSED (Subscription setters/getters)" << std::endl;
 	}
@@ -122,12 +121,12 @@ int TestPart1(int testNumber)
 		subscription.setUser(&calculator);
 		subscription.setCallback(Calculator::EventCallback_Calculate);
 
-		TestHelpers::assertEqual(subscription.accessUser(), (Events::Subscription::User)&calculator, "User not correctly set", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(subscription.accessCallback(), (Events::Subscription::Callback)Calculator::EventCallback_Calculate, "Callback not correctly set", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(subscription.accessUser(), (Events::Subscription::User)&calculator, "User not correctly set");
+		EXPECT_EQUAL(subscription.accessCallback(), (Events::Subscription::Callback)Calculator::EventCallback_Calculate, "Callback not correctly set");
 		
 		subscription.notify();
 
-		TestHelpers::assertEqual(calculator.getData(), 42, "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(calculator.getData(), 42, "Failed to call the user function");
 		
 		std::cout << "	PASSED (using a Subscription)" << std::endl;
 	}
@@ -157,28 +156,28 @@ int TestPart1(int testNumber)
 
 		subscription->setFd(STDOUT_FILENO);
 
-				TestHelpers::assertEqual(subscription->isSubscribed(), false, "Subscription should not be subscribed", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(subscription->isSubscribed(), false, "Subscription should not be subscribed");
 
 		//manager.stopMonitoring(*subscription, false); <- correctly asserts, subscription is not being monitored so it can't be unsubscribed
 
 		manager.startMonitoring(*subscription, false); // passes, stdcout is open
 
-				TestHelpers::assertEqual(subscription->isSubscribed(), true, "Subscription should be subscribed", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(subscription->isSubscribed(), true, "Subscription should be subscribed");
 
-				TestHelpers::assertEqual(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, 
-					"There should be no triggered events, manager.processevents was not yet called", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, 
+					"There should be no triggered events, manager.processevents was not yet called");
 
-				TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)1, "Manager Failed to subscribe", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)1, "Manager Failed to subscribe");
 
 		manager.ProcessEvents(10);
 
-				TestHelpers::assertEqual(calculator.getData(), -1, "Should not have triggered any event, STDOUT is not available for reading", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(calculator.getData(), -1, "Should not have triggered any event, STDOUT is not available for reading");
 
 		subscription->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::HANGUP | Events::Monitor::ERROR);
 	
 		manager.ProcessEvents(10);
-				TestHelpers::assertEqual(calculator.getData(), -1, "Should not have triggered any event, \
-			Subscription now tracks writing but the event manager was not informed", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(calculator.getData(), -1, "Should not have triggered any event, \
+			Subscription now tracks writing but the event manager was not informed");
 
 		manager.updateEvents(*subscription, false);
 		manager.updateEvents(*subscription, false);
@@ -188,15 +187,15 @@ int TestPart1(int testNumber)
 		manager.ProcessEvents(-1);
 
 		// should only trigger the write event
-				TestHelpers::assertEqual(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Failed to trigger the event", __FILE__, __LINE__, __FUNCTION__);
-				TestHelpers::assertEqual(calculator.getData(), 42, "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Failed to trigger the event");
+				EXPECT_EQUAL(calculator.getData(), 42, "Failed to call the user function");
 		
 		//manager.startMonitoring(*subscription, false);  <- correctly asserts, subscription is already being monitored
 
 		manager.stopMonitoring(*subscription, false); //works fine
 
-				TestHelpers::assertEqual(subscription->isSubscribed(), false, "Subscription should not be subscribed", __FILE__, __LINE__, __FUNCTION__);
-				TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)0, "Failed to unsubscribe", __FILE__, __LINE__, __FUNCTION__);
+				EXPECT_EQUAL(subscription->isSubscribed(), false, "Subscription should not be subscribed");
+				EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)0, "Failed to unsubscribe");
 
 		//manager.updateEvents(*subscription, false);  <- correctly asserts, subscription is not being monitored, cannot be changed
 
@@ -243,7 +242,7 @@ int TestPart1(int testNumber)
 		close(testpipe[1]);
 		close(testpipe[0]);
 
-		TestHelpers::assertEqual(std::string(buffer), std::string("Hello World!"), "Failed to call the user function", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std::string(buffer), std::string("Hello World!"), "Failed to call the user function");
 		
 		std::cout << "	PASSED (using a Subscription that has no User, just a callback)" << std::endl;
 	}

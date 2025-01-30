@@ -46,13 +46,13 @@ int TestPart3(int testNumber)
 			queue.push_front(new ToolkitBase(i));
 		}
 
-		TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
 		StackCircularQueue<ToolkitBase*, queueSize>::iterator it = queue.begin();
 		std::list<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual((*it)->getValue() == (*iter)->getValue(), true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL((*it)->getValue() == (*iter)->getValue(), true, "value mismatch");
 		}
 
 		it = queue.begin();

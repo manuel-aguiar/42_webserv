@@ -31,7 +31,7 @@ int TestPart2(int testNumber)
         }
 
         // Compare sizes
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
         // Compare contents via iterators
         StackArray<int, 100>::iterator it = array.begin();
@@ -39,7 +39,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         // Test copy assignment
@@ -55,10 +55,10 @@ int TestPart2(int testNumber)
 
         for (; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy assignment size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy assignment size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -83,7 +83,7 @@ int TestPart2(int testNumber)
             array.emplace_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
         // Compare contents via iterators
         StackArray<int, 100>::iterator it = array.begin();
@@ -91,7 +91,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         // Test copy constructor
@@ -102,10 +102,10 @@ int TestPart2(int testNumber)
 
         for (; it != copy.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy constructor value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy constructor value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), copy.size(), "copy constructor size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), copy.size(), "copy constructor size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -129,7 +129,7 @@ int TestPart2(int testNumber)
             std.push_back(5);
         }
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
         // Compare contents via iterators
         StackArray<int, arraySize>::iterator it = array.begin();
@@ -137,7 +137,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         // Test copy constructor
@@ -148,10 +148,10 @@ int TestPart2(int testNumber)
 
         for (; it != copy.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy constructor value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy constructor value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), copy.size(), "copy constructor size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), copy.size(), "copy constructor size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }

@@ -43,7 +43,7 @@ int TestPart2(int testNumber)
 		list1.push_back(0);
 		size_t 										lastElement = (size_t)pool.allocate(sizeof(size_t));
 
-		TestHelpers::assertEqual(lastElement - firstElement, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(lastElement - firstElement, poolsize * nodeSize, "element size is not correct");
 
 		for (size_t i = 1; i < loopTimes; i++)
 			list1.push_back(i);
@@ -52,7 +52,7 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			TestHelpers::assertEqual(nodeAddress >= firstElement && nodeAddress < lastElement, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(nodeAddress >= firstElement && nodeAddress < lastElement, true, "element is outside range");
 		}
 
 
@@ -119,13 +119,13 @@ int TestPart2(int testNumber)
 		/////////////////
 		
 		// List 1 must be allcoated in a block of this size
-		TestHelpers::assertEqual(lastElement1 - firstElement1, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(lastElement1 - firstElement1, poolsize * nodeSize, "element size is not correct");
 
 		// List2 must be allcoated in a block of this size
-		TestHelpers::assertEqual(lastElement2 - firstElement2, poolsize * nodeSize, "element size is not correct", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(lastElement2 - firstElement2, poolsize * nodeSize, "element size is not correct");
 
 		// blocks don't overlap
-		TestHelpers::assertEqual(lastElement1 <= firstElement2, true, "blocks are overlapping", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(lastElement1 <= firstElement2, true, "blocks are overlapping");
 
 		/////////////////////
 		//Elements in block//
@@ -136,7 +136,7 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			TestHelpers::assertEqual(nodeAddress >= firstElement1 && nodeAddress < lastElement1, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(nodeAddress >= firstElement1 && nodeAddress < lastElement1, true, "element is outside range");
 		}
 
 
@@ -145,7 +145,7 @@ int TestPart2(int testNumber)
 		{
 			size_t nodeAddress;
 			nodeAddress = (size_t)&(*it);
-			TestHelpers::assertEqual(nodeAddress >= firstElement2 && nodeAddress < lastElement2, true, "element is outside range", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(nodeAddress >= firstElement2 && nodeAddress < lastElement2, true, "element is outside range");
 		}
 
 

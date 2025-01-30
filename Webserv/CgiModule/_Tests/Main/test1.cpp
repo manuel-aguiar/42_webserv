@@ -133,11 +133,11 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice");
+		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
 		
 		std::cout << "	PASSED (executing a script)" << std::endl;
 	}
@@ -205,11 +205,11 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_TIMEOUT, "ProtoRequest didn't receive timeout notice", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_TIMEOUT, "ProtoRequest didn't receive timeout notice");
+		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
+		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
 
 		std::cout << "	PASSED (finishing requests that timed out)" << std::endl;
 	}
@@ -273,14 +273,14 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
 
 		std::string expectedError("InternalCgiWorker::mf_executeChild(), execve(): No such file or directory");
 
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 
 		std::cout << "	PASSED (using a non-existant interpreter)" << std::endl;
 	}
@@ -333,10 +333,10 @@ int TestPart1(int testNumber)
 		int testpipe[2];
 		int stdcerrDup;
 		char pipeDrain[1024];
-		TestHelpers::assertEqual(pipe(testpipe), 0, "pipe() failed", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual((stdcerrDup = dup(STDERR_FILENO)) != -1, true, "dup() failed", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(dup2(testpipe[1], STDERR_FILENO) != -1, true, "dup2() failed", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(testpipe[0]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__); 
+		EXPECT_EQUAL(pipe(testpipe), 0, "pipe() failed");
+		EXPECT_EQUAL((stdcerrDup = dup(STDERR_FILENO)) != -1, true, "dup() failed");
+		EXPECT_EQUAL(dup2(testpipe[1], STDERR_FILENO) != -1, true, "dup2() failed");
+		EXPECT_EQUAL(FileDescriptor::setNonBlocking(testpipe[0]) == 0, false, "Fcntl failed"); 
 		/////////////////
 
 		cgi.enqueueRequest(*protoRequest.m_CgiRequestData, false);
@@ -430,14 +430,14 @@ int TestPart1(int testNumber)
 				break ;
 		}
 
-		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
 
 		std::string expectedError("InternalCgiWorker::mf_prepareExecve(): interpreter not found");
 
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 
 		std::cout << "	PASSED (demanding an interpreter extension that is not set)" << std::endl;
 	}

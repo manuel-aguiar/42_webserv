@@ -94,11 +94,11 @@ int TestPart2(int testNumber)
 		}
 
 		// tests
-		TestHelpers::assertEqual(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Length doesn't match", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch");
+		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Length doesn't match");
+		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
 
 		std::cout << "	PASSED (env vars + testing env variables)" << std::endl;
 	}
