@@ -4,77 +4,59 @@
 #
 
 # Compiler and flags
-CXX			= c++
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g
+TARGET_DEBUG			= 		test.out
+CXX						= 		c++
+CXXFLAGS				= 		-Wall -Wextra -Werror -std=c++98 -g -MMD -MP
 
-# Directories
-ROOT_PATH = $(shell git rev-parse --show-toplevel)
-UTILS_DIR = $(ROOT_PATH)/Webserv/GenericUtils
-CONFIG_DIR = $(ROOT_PATH)/Webserv/ServerConfig
-TEST_DIR = .
+# Paths
+ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
+SRC_PATH				=		$(ROOT_PATH)/.
+OBJ_PATH				=		$(ROOT_PATH)/_build
 
-# Target
-NAME		= test.out
 
-# Source directories
-SRCS_DIRS	= $(TEST_DIR) \
-			  $(CONFIG_DIR)/BlockFinder \
-			  $(CONFIG_DIR)/ServerBlock \
-			  $(CONFIG_DIR)/ServerLocation \
-			  $(CONFIG_DIR)/DefaultConfig \
-			  $(UTILS_DIR)/StringUtils \
-			  $(UTILS_DIR)/Validation
+SRCS					=	$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/BlockFinder-ServerBlock/test.cpp \
+							\
+							$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
+							$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
+							$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+							$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
+							$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
+							$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
+							$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+							$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 
-# Source files
-SRCS		= $(TEST_DIR)/test.cpp \
-			  $(CONFIG_DIR)/BlockFinder/BlockFinder.cpp \
-			  $(CONFIG_DIR)/ServerBlock/ServerBlock.cpp \
-			  $(CONFIG_DIR)/ServerLocation/ServerLocation.cpp \
-			  $(CONFIG_DIR)/DefaultConfig/DefaultConfig.cpp \
-			  $(UTILS_DIR)/StringUtils/StringUtils.cpp \
-			  $(UTILS_DIR)/Validation/Validation.cpp
-
-# Object files (maintain directory structure)
-OBJS		= $(SRCS:%.cpp=%.o)
-
-# Include paths
-INCLUDES	= -I$(CONFIG_DIR)/BlockFinder \
-			  -I$(CONFIG_DIR)/ServerBlock \
-			  -I$(CONFIG_DIR)/DefaultConfig \
-			  -I$(CONFIG_DIR)/ServerLocation \
-			  -I$(UTILS_DIR) \
-			  -I$(UTILS_DIR)/StringUtils \
-			  -I$(UTILS_DIR)/Validation \
-			  -I$(TEST_DIR)
+OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
+DEPS					=		$(OBJS:.o=.d)
 
 # Rules
-all: $(NAME)
+all: $(TARGET_DEBUG)
 
-$(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
+$(TARGET_DEBUG): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET_DEBUG)
 
-# Pattern rule for object files
-%.o: %.cpp
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+-include $(DEPS)
 
 clean:
 	rm -f $(OBJS)
 	find $(ROOT_PATH) -type d -empty -delete 2>/dev/null || true
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(TARGET_DEBUG)
 
 re: fclean all
 
-run: all
+debug: $(TARGET_DEBUG)
+	@valgrind --quiet --leak-check=full --show-leak-kinds=all ./$(TARGET_DEBUG)
+
+run: $(TARGET_DEBUG)
 	@echo "\nRunning integration tests with valgrind...\n"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes ./$(NAME)
+	@valgrind --quiet --leak-check=full --show-leak-kinds=all --track-fds=yes ./$(TARGET_DEBUG)
 
-test: all
-	./$(NAME)
+test: debug
 
-.PHONY: all clean fclean re run test
 
-# Dependencies
--include $(OBJS:.o=.d)
+.PHONY: all clean fclean re run test debug
