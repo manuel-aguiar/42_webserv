@@ -6,10 +6,12 @@
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = test
+TARGET = test.out
 
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
+
+all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
@@ -17,13 +19,13 @@ $(TARGET): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-all: $(TARGET)
-
 clean:
 	rm -rf $(OBJS) $(TARGET)
 
-test: all
+fclean: clean
+
+test: $(TARGET) 
 
 debug: test
 
-.PHONY: clean
+.PHONY: clean test debug fclean

@@ -49,7 +49,7 @@ TAG =		$(CYAN)[$(NAME)]$(RESET)
 all: $(TARGET_DEBUG) $(TARGET_TEST)
 
 $(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
-	@echo "$(TAG) Making Program"
+	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
 	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_DEBUG) -o $(TARGET_DEBUG)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)

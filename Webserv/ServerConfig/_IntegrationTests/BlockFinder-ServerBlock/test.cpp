@@ -1,34 +1,45 @@
+
+
 #include "TestDependencies.hpp"
 #include <arpa/inet.h>
 #include <cstdlib>
 
+#include "../../../../Toolkit/TestHelpers/TestHelpers.h"
+
 // Helper function to create sockaddr
-static struct sockaddr_in* createSockAddr(const std::string& ip, const std::string& port) {
-    struct sockaddr_in* addr = new struct sockaddr_in();
-    addr->sin_family = AF_INET;
+static struct sockaddr_in createSockAddr(const std::string& ip, const std::string& port) {
+
+    struct sockaddr_in addr = (struct sockaddr_in){};
+
+    addr.sin_family = AF_INET;
 
     // Convert port string to number
-    addr->sin_port = htons(std::atoi(port.c_str()));
+    addr.sin_port = htons(std::atoi(port.c_str()));
 
     // Handle IP
     if (ip.empty() || ip == "0.0.0.0") {
-        addr->sin_addr.s_addr = INADDR_ANY;  // 0.0.0.0
+        addr.sin_addr.s_addr = INADDR_ANY;  // 0.0.0.0
     } else {
-        inet_pton(AF_INET, ip.c_str(), &(addr->sin_addr));
+        inet_pton(AF_INET, ip.c_str(), &(addr.sin_addr));
     }
 
     return addr;
 }
 
-int main() {
-    std::cout << "\n─ Server Block/BlockFinder Integration Test ─\n\n";
+int main()
+{
+
+    TEST_HEADER("Server Block/BlockFinder Integration");
+    int testNumber = 1;
+////////////////////////////////////////////////////////////////////////////////////////////////////
     {
         try {
-            std::cout << "─ Test 1: All configuration set ─\n";
+            TEST_INTRO(testNumber++);
+
             // Create a server block with specific configuration
             ServerBlock serverBlock;
-            struct sockaddr_in* addr = createSockAddr("127.0.0.1", "8080");
-            serverBlock.addListenAddress((struct sockaddr*)addr);
+            struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
+            serverBlock.addListenAddress((struct sockaddr*)&addr);
             serverBlock.addServerName("example.com");
             serverBlock.setRootPath("/var/www/html");
             serverBlock.setClientBodySize("10M");
@@ -40,52 +51,38 @@ int main() {
             finder.addServerBlock(serverBlock);
 
             // Test finding the block with exact match
-            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)addr, "example.com");
-            if (!found) {
-                delete addr;
-                throw std::runtime_error("Block not found with exact match");
-            }
+            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
 
-            // Verify the found block has the correct configuration
-            if (found->getRoot() != "/var/www/html") {
-                delete addr;
-                throw std::runtime_error("Root path mismatch");
-            }
+            EXPECT_EQUAL(found != NULL, true, "Block not found with exact match");
+            EXPECT_EQUAL(found->getRoot(), "/var/www/html", "Root path mismatch");
+            EXPECT_EQUAL(found->getClientBodySize(), StringUtils::parse_size("10M"), "Client body size mismatch");
 
-            if (found->getClientBodySize() != StringUtils::parse_size("10M")) {
-                delete addr;
-                throw std::runtime_error("Client body size mismatch");
-            }
 
             // Test finding with non-existent configuration
-            struct sockaddr_in* addr2 = createSockAddr("127.0.0.2", "8080");
-            const ServerBlock* notFound = finder.findServerBlock((struct sockaddr*)addr2, "example.com");
-            if (notFound) {
-                delete addr;
-                delete addr2;
-                throw std::runtime_error("Found block that shouldn't exist");
-            }
-            delete addr2;
+            struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "8080");
+            const ServerBlock* notFound = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
 
-            std::cout << "PASSED\n";
-            delete addr;
+            EXPECT_EQUAL(notFound == NULL, true, "Block found that shouldn't exist");
+
+            TEST_PASSED_MSG("All configuration set");
         }
         catch (const std::exception& e) {
-            std::cout << "FAILED: Exception: " << e.what() << "\n";
+            TEST_FAILED_MSG(e.what());
         }
-        std::cout << "───────────────────────────────────\n";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
     {
         try {
-            std::cout << "─ Test 2: Searching for block with no configuration set ─\n";
+
+            TEST_INTRO(testNumber++);
+
             ServerBlock serverBlock;
             BlockFinder finder;
 
             // adding one more block with configuration set
             ServerBlock serverBlock2;
-            struct sockaddr_in* addr2 = createSockAddr("127.0.0.2", "1000");
-            serverBlock2.addListenAddress((struct sockaddr*)addr2);
+            struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "1000");
+            serverBlock2.addListenAddress((struct sockaddr*)&addr2);
             serverBlock2.addServerName("example-domain.com");
             serverBlock2.setRootPath("/var/www/html");
             serverBlock2.setClientBodySize("10M");
@@ -97,129 +94,100 @@ int main() {
             finder.addServerBlock(serverBlock);
 
             // searching for the block with no configuration set
-            struct sockaddr_in* addr = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)addr, "example.com");
-            if (found != NULL) {
-                delete addr;
-                throw std::runtime_error("Found block that shouldn't exist");
-            }
+            struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
+            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
+
+            EXPECT_EQUAL(found == NULL, true, "Found block that shouldn't exist");
 
             // now searching for the block with configuration set
-            found = finder.findServerBlock((struct sockaddr*)addr2, "example-domain.com");
-            if (found == NULL || found != &serverBlock2) {
-                delete addr;
-                delete addr2;
-                throw std::runtime_error("Block should be found");
-            }
+            found = finder.findServerBlock((struct sockaddr*)&addr2, "example-domain.com");
 
-            delete addr;
-            delete addr2;
-            std::cout << "PASSED\n";
+            EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
+
+            TEST_PASSED_MSG("Searching for block with no configuration set");
         }
         catch (const std::exception& e) {
-            std::cout << "FAILED: Exception: " << e.what() << "\n";
+            TEST_FAILED_MSG(e.what());
         }
-        std::cout << "───────────────────────────────────\n";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
     {
         try {
-            std::cout << "─ Test 3: Multiple blocks with same server name but different ports ─\n";
+            TEST_INTRO(testNumber++);
             BlockFinder finder;
 
             // First block
             ServerBlock block1;
-            struct sockaddr_in* addr1 = createSockAddr("127.0.0.1", "8080");
-            block1.addListenAddress((struct sockaddr*)addr1);
+            struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
+            block1.addListenAddress((struct sockaddr*)&addr1);
             block1.addServerName("example.com");
             block1.setRootPath("/var/www/html1");
             finder.addServerBlock(block1);
 
             // Second block with same server name but different port
             ServerBlock block2;
-            struct sockaddr_in* addr2 = createSockAddr("127.0.0.1", "8081");
-            block2.addListenAddress((struct sockaddr*)addr2);
+            struct sockaddr_in addr2 = createSockAddr("127.0.0.1", "8081");
+            block2.addListenAddress((struct sockaddr*)&addr2);
             block2.addServerName("example.com");
             block2.setRootPath("/var/www/html2");
             finder.addServerBlock(block2);
 
             // Test finding each block
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)addr2, "example.com");
+            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr1, "example.com");
+            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
 
-            if (!found1 || found1->getRoot() != "/var/www/html1") {
-                delete addr1;
-                delete addr2;
-                throw std::runtime_error("First block not found or incorrect");
-            }
-            if (!found2 || found2->getRoot() != "/var/www/html2") {
-                delete addr1;
-                delete addr2;
-                throw std::runtime_error("Second block not found or incorrect");
-            }
+            EXPECT_EQUAL(found1 != NULL, true, "First block not found");
+            EXPECT_EQUAL(found1->getRoot(), "/var/www/html1", "First block found but, incorrect match");
 
-            delete addr1;
-            delete addr2;
-            std::cout << "PASSED\n";
+            EXPECT_EQUAL(found2 != NULL, true, "Second block not found");
+            EXPECT_EQUAL(found2->getRoot(), "/var/www/html2", "Second block found but, incorrect match");
+
+            TEST_PASSED_MSG("Multiple blocks with same server name but different ports");
         }
         catch (const std::exception& e) {
-            std::cout << "FAILED: Exception: " << e.what() << "\n";
+            TEST_FAILED_MSG(e.what());
         }
-        std::cout << "───────────────────────────────────\n";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
     {
         try {
-            std::cout << "─ Test 4: Wildcard IP with specific server name ─\n";
+            TEST_INTRO(testNumber++);
             BlockFinder finder;
 
             // Block with wildcard IP
             ServerBlock block;
-            struct sockaddr_in* addr = createSockAddr("0.0.0.0", "8080");
-            block.addListenAddress((struct sockaddr*)addr);
+            struct sockaddr_in addr = createSockAddr("0.0.0.0", "8080");
+            block.addListenAddress((struct sockaddr*)&addr);
             block.addServerName("example.com");
             block.setRootPath("/var/www/html");
             finder.addServerBlock(block);
 
             // Test finding with different IPs
-            struct sockaddr_in* addr1 = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
-            struct sockaddr_in* addr2 = createSockAddr("192.168.1.1", "8080");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)addr2, "example.com");
+            struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
+            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr1, "example.com");
+            struct sockaddr_in addr2 = createSockAddr("192.168.1.1", "8080");
+            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
 
-            if (!found1 || !found2) {
-                delete addr;
-                delete addr1;
-                delete addr2;
-                throw std::runtime_error("Block not found with wildcard IP");
-            }
-            if (found1 != found2) {
-                delete addr;
-                delete addr1;
-                delete addr2;
-                throw std::runtime_error("Different blocks returned for same wildcard");
-            }
+            EXPECT_EQUAL(found1 != NULL, true, "Block 1 not found with wildcard IP");
+            EXPECT_EQUAL(found2 != NULL, true, "Block 2 not found with wildcard IP");
+            EXPECT_EQUAL(found1 == found2, true, "Different blocks returned for same wildcard");
 
-            delete addr;
-            delete addr1;
-            delete addr2;
-            std::cout << "PASSED\n";
+            TEST_PASSED_MSG("Wildcard IP with specific server name");
         }
         catch (const std::exception& e) {
-            std::cout << "FAILED: Exception: " << e.what() << "\n";
+            TEST_FAILED_MSG(e.what());
         }
-        std::cout << "───────────────────────────────────\n";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
     {
         try {
-            std::cout << "─ Test 5: Multiple server names for same block ─\n";
+            TEST_INTRO(testNumber++);
             BlockFinder finder;
 
             // Block with multiple server names
             ServerBlock block;
-            struct sockaddr_in* addr = createSockAddr("127.0.0.1", "8080");
-            block.addListenAddress((struct sockaddr*)addr);
+            struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
+            block.addListenAddress((struct sockaddr*)&addr);
             block.addServerName("example.com");
             block.addServerName("www.example.com");
             block.addServerName("api.example.com");
@@ -227,27 +195,26 @@ int main() {
             finder.addServerBlock(block);
 
             // Test finding with different server names
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)addr, "example.com");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)addr, "www.example.com");
-            const ServerBlock* found3 = finder.findServerBlock((struct sockaddr*)addr, "api.example.com");
+            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
+            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr, "www.example.com");
+            const ServerBlock* found3 = finder.findServerBlock((struct sockaddr*)&addr, "api.example.com");
 
             if (!found1 || !found2 || !found3) {
-                delete addr;
                 throw std::runtime_error("Block not found for one of the server names");
             }
             if (found1 != found2 || found2 != found3) {
-                delete addr;
                 throw std::runtime_error("Different blocks returned for same configuration");
             }
 
-            delete addr;
-            std::cout << "PASSED\n";
+            TEST_PASSED_MSG("Multiple server names for same block");
         }
         catch (const std::exception& e) {
-            std::cout << "FAILED: Exception: " << e.what() << "\n";
+            TEST_FAILED_MSG(e.what());
         }
-        std::cout << "───────────────────────────────────\n";
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TEST_FOOTER;
 
     return 0;
 }

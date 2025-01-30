@@ -23,6 +23,7 @@ SRCS_DEBUG			= 	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/debug.cpp
 SRCS_TEST			= 	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/main.cpp
 
 SRCS_COMMON			=	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/common.cpp \
+						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/TestDependencies.cpp \
 						$(SUBJECT_PATH)/BlockFinder.cpp
 
 # Object files

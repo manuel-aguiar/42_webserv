@@ -33,14 +33,12 @@ MAGENTA =	\033[0;35m
 CYAN =		\033[96m
 RESET =		\033[0m
 
-TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 #=== RULES ===#
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@echo "$(TAG) Making Program"
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 
@@ -53,7 +51,6 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 clean:
 
 fclean: clean
-	@echo "$(TAG) Full clean."
 	@rm -f $(NAME)
 
 test: $(NAME)
