@@ -4,7 +4,7 @@
 # include "../../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 # include <iostream>
 # include <arpa/inet.h>
-
+# include <unistd.h>
 
 int main(void)
 {
@@ -15,7 +15,7 @@ int main(void)
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("OneServer_TwoListen.conf", NULL);
         const size_t expectedCount = 2;
@@ -51,17 +51,17 @@ int main(void)
         TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
-		std::cout << "	PASSED (one server, two listeners)" << std::endl;
+		std::cout << "	PASSED " << "(one server, two listeners)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("OneServer_Wildcard.conf", NULL);
         const size_t expectedCount = 2;
@@ -92,18 +92,18 @@ int main(void)
         TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(std::string(ip), std::string("123.123.123.123"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
-		std::cout << "	PASSED (one server, two listeners(one concrete and one wildcard ip)" << std::endl;
+		std::cout << "	PASSED " << "(one server, two listeners(one concrete and one wildcard ip)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("OneServer_LocalHost.conf", NULL);
         const size_t expectedCount = 1;
@@ -129,17 +129,17 @@ int main(void)
         TestHelpers::assertEqual(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
         TestHelpers::assertEqual(std::string(ip), std::string("127.0.0.1"), "sockaddr was not correctly mapped to the server", __FILE__, __LINE__, __FUNCTION__);
 
-		std::cout << "	PASSED (one server, two equivalent listeners - localhost" << std::endl;
+		std::cout << "	PASSED " << "(one server, two equivalent listeners - localhost" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("TwoServer_SameListen.conf", NULL);
         const size_t expectedCount = 1;
@@ -175,7 +175,7 @@ int main(void)
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("TwoServer_Wildcard.conf", NULL);
         const size_t expectedCount = 2;
@@ -215,7 +215,7 @@ int main(void)
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("TwoServer_LocalHost.conf", NULL);
         const size_t expectedCount = 1;
@@ -250,7 +250,7 @@ int main(void)
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
         ServerConfig config("OneServer_BadDNS.conf", NULL);
 

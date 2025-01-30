@@ -84,7 +84,7 @@ int TestPart4(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			TestHelpers::assertEqual(fiboExpected[i], fiboPlaceResult[i], "Fibonacci value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(fiboExpected[i], fiboPlaceResult[i], "Fibonacci value mismatch");
 		}
 
 		std::cout << "	PASSED" << std::endl;

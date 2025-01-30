@@ -47,7 +47,7 @@ int TestPart3(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
 		Events::Manager 		manager(100, globals);
 		Events::Subscription* 	subscription = manager.acquireSubscription();
@@ -79,11 +79,11 @@ int TestPart3(int testNumber)
 
 		manager.returnSubscription(*subscription);
 
-		std::cout << "	PASSED (stale event test)" << std::endl;
+		std::cout << "	PASSED " << "(stale event test)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 	/************************************************** */

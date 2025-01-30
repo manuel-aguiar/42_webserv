@@ -39,8 +39,8 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
 
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
                
@@ -49,23 +49,23 @@ int TestPart1(int testNumber)
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
 
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
-        TestHelpers::assertEqual(queue[0], frontNumber, "index 0 doesn't match ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue[1], backNumber, "index 1 doesn't match ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);        
-        TestHelpers::assertEqual(queue.back(), backNumber, "back doesn't match ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.front(), frontNumber, "front doesn't match ", __FILE__, __LINE__, __FUNCTION__);        
+        EXPECT_EQUAL(queue[0], frontNumber, "index 0 doesn't match ");
+        EXPECT_EQUAL(queue[1], backNumber, "index 1 doesn't match ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");        
+        EXPECT_EQUAL(queue.back(), backNumber, "back doesn't match ");
+        EXPECT_EQUAL(queue.front(), frontNumber, "front doesn't match ");        
 
         resultInsertion = queue.push_back(10);
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
 
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
 
         /************* */
        
@@ -73,8 +73,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
         
@@ -82,8 +82,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
@@ -91,8 +91,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
@@ -100,8 +100,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
     /************* */
 
@@ -109,16 +109,16 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
         resultInsertion = queue.push_back(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "insertion result is not the same ", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size is not the same ", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -152,77 +152,77 @@ int TestPart1(int testNumber)
         resultInsertion = queue.push_front(backNumber);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "push_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "push_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
         /************* */
                
         resultInsertion = queue.push_front(frontNumber);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "push_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "push_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
         /************* */
 
-        TestHelpers::assertEqual(queue[0], frontNumber, "index 0 mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue[1], backNumber, "index 1 mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.back(), backNumber, "back mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.front(), frontNumber, "front mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(queue[0], frontNumber, "index 0 mismatch");
+        EXPECT_EQUAL(queue[1], backNumber, "index 1 mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size mismatch");
+        EXPECT_EQUAL(queue.back(), backNumber, "back mismatch");
+        EXPECT_EQUAL(queue.front(), frontNumber, "front mismatch");
 
         resultInsertion = queue.push_front(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "push_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
 
         /************* */
        
         resultInsertion = queue.push_front(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "push_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "size mismatch after push_front", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size mismatch after push_front");
 
         /************* */
         
         resultInsertion = queue.pop_front();
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "pop_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "pop_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.pop_front();
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "pop_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "pop_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.pop_front();
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "pop_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "pop_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
     /************* */
 
         resultInsertion = queue.pop_front();
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "pop_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "pop_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.push_front(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
-        TestHelpers::assertEqual(resultInsertion, expectedInsertion, "push_front result mismatch", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(queue.size(), expectedElemCount, "push_front size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -240,7 +240,7 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        TestHelpers::assertEqual(it == itEnd, true, "iterators, empty queue, begin and end should be equal", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(it == itEnd, true, "iterators, empty queue, begin and end should be equal");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -261,15 +261,15 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        TestHelpers::assertEqual(it != itEnd, true, "iterators, push_back, non-full queue, begin and end should not be equal", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_back, non-full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            TestHelpers::assertEqual(*it, queue[i], "iterators, push_back, non-full queue, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_back, non-full queue, value mismatch");
         }
 
-        TestHelpers::assertEqual(i, queue.size(), "iterators, push_back, non-full queue, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_back, non-full queue, size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -290,15 +290,15 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        TestHelpers::assertEqual(it != itEnd, true, "iterators, push_back, full queue, begin and end should not be equal", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_back, full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            TestHelpers::assertEqual(*it, queue[i], "iterators, push_back, full queue, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_back, full queue, value mismatch");
         }
 
-        TestHelpers::assertEqual(i, queue.size(), "iterators, push_back, full queue, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_back, full queue, size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -319,15 +319,15 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        TestHelpers::assertEqual(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            TestHelpers::assertEqual(*it, queue[i], "iterators, push_front, non-full queue, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_front, non-full queue, value mismatch");
         }
 
-        TestHelpers::assertEqual(i, queue.size(), "iterators, push_front, non-full queue, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -348,15 +348,15 @@ try
     HeapCircularQueue<int>::iterator it = queue.begin();
     HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-    TestHelpers::assertEqual(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal");
 
     size_t i = 0;
     for ( ; it != itEnd; ++it, ++i)
     {
-        TestHelpers::assertEqual(*it, queue[i], "iterators, push_front, non-full queue, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*it, queue[i], "iterators, push_front, non-full queue, value mismatch");
     }
 
-    TestHelpers::assertEqual(i, queue.size(), "iterators, push_front, non-full queue, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
 
     std::cout << "	PASSED" << std::endl;
 }
@@ -376,14 +376,14 @@ try
 
     HeapCircularQueue<int> copy(queue);
 
-    TestHelpers::assertEqual(queue.size(), copy.size(), "copy constructor, full copy-from, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, full copy-from, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = copy.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "copy constructor, full copy-from, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, full copy-from, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -404,14 +404,14 @@ try
 
     HeapCircularQueue<int> copy(queue);
 
-    TestHelpers::assertEqual(queue.size(), copy.size(), "copy constructor, not-full copy-from, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, not-full copy-from, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = copy.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "copy constructor, not-full copy-from value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, not-full copy-from value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -429,14 +429,14 @@ try
 
     HeapCircularQueue<int> copy(queue);
 
-    TestHelpers::assertEqual(queue.size(), copy.size(), "copy constructor, empty copy-from, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, empty copy-from, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = copy.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "copy constructor, empty copy-from value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, empty copy-from value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -459,14 +459,14 @@ try
 
     assign = queue;
 
-    TestHelpers::assertEqual(queue.size(), assign.size(), "assignment, full copy-from, empty copy-to, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, full copy-from, empty copy-to, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "assignment, full copy-from, empty copy-to, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, empty copy-to, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -489,14 +489,14 @@ try
 
     assign = queue;
 
-    TestHelpers::assertEqual(queue.size(), assign.size(), "assignment, non-full copy-from, empty copy-to, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, non-full copy-from, empty copy-to, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "assignment, non-full copy-from, empty copy-to, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, empty copy-to, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -515,14 +515,14 @@ try
 
     assign = queue;
 
-    TestHelpers::assertEqual(queue.size(), assign.size(), "assignment, empty copy-from, empty copy-to, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, empty copy-from, empty copy-to, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "assignment, empty copy-from, empty copy-to, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, empty copy-from, empty copy-to, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -546,14 +546,14 @@ try
 
     assign = queue;
 
-    TestHelpers::assertEqual(queue.size(), assign.size(), "assignment, full copy-from, non-empty copy-to, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, full copy-from, non-empty copy-to, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "assignment, full copy-from, non-empty copy-to, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, non-empty copy-to, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;
@@ -577,14 +577,14 @@ try
 
     assign = queue;
 
-    TestHelpers::assertEqual(queue.size(), assign.size(), "assignment, non-full copy-from, non-empty copy-to, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, non-full copy-from, non-empty copy-to, size mismatch");
 
     HeapCircularQueue<int>::iterator itOriginal = queue.begin();
     HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
     for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        TestHelpers::assertEqual(*itOriginal, *itCopy, "assignment, non-full copy-from, non-empty copy-to, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, non-empty copy-to, value mismatch");
     }
 
     std::cout << "	PASSED" << std::endl;

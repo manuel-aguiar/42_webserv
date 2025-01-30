@@ -52,7 +52,7 @@ int TestPart1(int testNumber)
         
         vec.reserve(100);
 
-        TestHelpers::assertEqual(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct");
 
 		std::cout << "	PASSED" << std::endl;
 	}

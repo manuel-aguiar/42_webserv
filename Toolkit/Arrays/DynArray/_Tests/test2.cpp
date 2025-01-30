@@ -45,13 +45,13 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         DynArray<int> assign;
@@ -62,10 +62,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment, value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy assignment, size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -85,13 +85,13 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         DynArray<int> assign(array);
@@ -101,10 +101,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy constructor, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy constructor, value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy constructor, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy constructor, size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -124,13 +124,13 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         DynArray<int> assign;
@@ -145,21 +145,21 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "::move failed, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "::move failed, value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "::move failed, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "::move failed, size mismatch");
 
-        TestHelpers::assertEqual(array.size(), (size_t)0, "::move failed, source array not empty", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(array.size(), 0, "::move failed, source array not empty");
 
         array.push_back(1);
         array.push_back(2);
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "::move failed, the movedFrom array influenced the moveTo", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "::move failed, the movedFrom array influenced the moveTo");
 
         array.clear();
 
-        TestHelpers::assertEqual(array.size(), (size_t)0, "::clear failed, array not empty", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(array.size(), 0, "::clear failed, array not empty");
 
 		std::cout << "	PASSED" << std::endl;
 	}

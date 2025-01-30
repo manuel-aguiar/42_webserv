@@ -7,45 +7,59 @@
 #include <sstream>
 #include <stdexcept>
 
+# define TEST_CLR_BLUE "\033[34m"
+# define TEST_CLR_RED "\033[31m"
+# define TEST_CLR_GREEN "\033[32m"
+# define TEST_CLR_RESET "\033[0m"
+
+# include <iostream>
+
+# define TEST_INTRO(testNumber)	\
+	do 	{						\
+		std::cout << TEST_CLR_BLUE << "TEST " << (testNumber) << ": " << TEST_CLR_RESET 	\
+	} 	while (0)
+
+# define TEST_PASS(message)	\
+	do	{						\
+		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
+	}	while (0)
+
+# define TEST_FAIL(message) \
+	do	{						\
+		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
+	}	while (0)
 
 namespace TestHelpers
 {
-	
-	template <typename T>
-	std::string to_string(const T& value)
-	{
-		std::ostringstream oss;
-		oss << value;
-		return oss.str();
-	}
 
-	template <typename T>
-	std::string errorMsg(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
-	{
-		std::string strLine = TestHelpers::to_string(line);
-		std::string strActual = TestHelpers::to_string(actual);
-		std::string strExpected = TestHelpers::to_string(expected);
-		return 
-			std::string("\t----------------------------------\n")
-			+ "\tError:     '" + message 				+ "'\n"
-			+ "\tResult:    '" + strActual 				+ "'\n"
-			+ "\tExpected:  '" + strExpected 			+ "'\n"
-			+ "\t----------------------------------" 	+ "\n"
-			+ "\tFile:       " + file + ":" + strLine 	+ "\n"
-			+ "\tLine:       " + strLine 				+ "\n"
-			+ "\tFunction:   " + function 				+ "\n"
-			+ "\t----------------------------------" 	+ "\n";
-	}
+	#ifndef TEST_ERROR_MSG
+			#include <sstream>
+			#define TEST_ERROR_MSG(actual, expected, message) (										\
+				{                    														     	\
+					std::ostringstream oss;                                                      	\
+					oss << "\t----------------------------------\n"                              	\
+						<< "\tError:     '" << (message) << "'\n"                                	\
+						<< "\tResult:    '" << (actual)   << "' [" << #actual   << "]\n"         	\
+						<< "\tExpected:  '" << (expected) << "' [" << #expected << "]\n"         	\
+						<< "\t----------------------------------\n"                              	\
+						<< "\tFile:       " << __FILE__  << ":" << __LINE__ << "\n"              	\
+						<< "\tLine:       " << __LINE__  << "\n"                                 	\
+						<< "\tFunction:   " << __FUNCTION__ << "\n"                              	\
+						<< "\t----------------------------------\n";                             	\
+					oss.str();                                                                   	\
+				}																					\
+			)
+	#endif
 
-	template <typename T>
-	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
-	{
-		if (actual != expected)
-			throw std::logic_error(std::string("\n\n") + TestHelpers::errorMsg(actual, expected, message, file, line, function));
-	}
+	#ifndef EXPECT_EQUAL
+		#include <sstream>
+		#define EXPECT_EQUAL(actual, expected, message)                               			\
+			do	{                                                                           	\
+				if ((actual) != (expected))														\
+					throw std::logic_error(TEST_ERROR_MSG((actual), (expected), (message)));	\
+			}	while (0)																	
+		
+	#endif
 
 }
-
-
-
 #endif

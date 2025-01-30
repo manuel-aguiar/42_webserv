@@ -3,14 +3,14 @@
 
 NAME =			TestServerConfig.out
 CXX =			c++
-CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP #-fsanitize=address
+CXXFLAGS =		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
+SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/main.cpp \
 								\
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \

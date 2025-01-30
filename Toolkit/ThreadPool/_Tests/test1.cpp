@@ -110,7 +110,7 @@ int	TestPart1(int testNumber)
 		tp.waitForCompletion();
 		tp.removeThread();
 
-		TestHelpers::assertEqual(placeResult, (long)8, "Didn't calculate fibonacci right", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(placeResult, (long)8, "Didn't calculate fibonacci right");
 
 		std::cout << "	PASSED" << std::endl;
 	}

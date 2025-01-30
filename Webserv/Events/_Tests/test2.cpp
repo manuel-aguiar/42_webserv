@@ -69,22 +69,22 @@ int TestPart2(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
 		Events::Manager manager(100, globals);
 		
-		std::cout << "	PASSED (instantiation test)" << std::endl;
+		std::cout << "	PASSED " << "(instantiation test)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 	/************************************************** */
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		std::cout << TEST_CLR_BLUE << "TEST " << testNumber++ << ": " << TEST_CLR_RESET;
 
 		Events::Manager	manager(100, globals);
 
@@ -171,11 +171,11 @@ int TestPart2(int testNumber)
 		close(sockfd[0]);
 		close(sockfd[1]);
 
-		std::cout << "	PASSED (handling communication between a writer and a reader)" << std::endl;
+		std::cout << "	PASSED " << "(handling communication between a writer and a reader)" << std::endl;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		std::cout << TEST_CLR_RED << "	FAILED: " << TEST_CLR_RESET << e.what()  << std::endl;
 	}
 
 	return (testNumber);
