@@ -55,6 +55,7 @@ int TestPart1(int testNumber)
 
 		Events::Subscription	subscription;
 
+		EXPECT_EQUAL(subscription.getFd(), -1, "fd not correctly initialized");
 		TestHelpers::assertEqual(subscription.getFd(), -1, "fd not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Monitored events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
 		TestHelpers::assertEqual(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized", __FILE__, __LINE__, __FUNCTION__);
