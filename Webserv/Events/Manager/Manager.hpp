@@ -48,7 +48,7 @@ namespace Events
 			size_t			getMonitoringCount() const;
 			
 		private:
-			size_t								m_subscribeCount;
+			size_t								m_monitoringCount;
 			t_fd								m_epollfd;
 			t_fd								m_maxStaleFd;
 			Globals&							m_globals;

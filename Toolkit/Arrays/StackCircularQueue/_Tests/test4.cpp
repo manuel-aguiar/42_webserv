@@ -31,13 +31,13 @@ int TestPart4(int testNumber)
             queue.push_front(i);
         }
 
-        TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch in first test", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(list.size(), queue.size(), "size mismatch in first test");
 
         StackCircularQueue<int, queueSize>::iterator it = queue.begin();
         std::list<int>::iterator iter = list.begin();
         for (; it != queue.end() && iter != list.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch in first test", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch in first test");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -63,13 +63,13 @@ int TestPart4(int testNumber)
             queue.push_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch in second test", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch in second test");
 
         StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
         std::list<ToolkitDummy>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch in second test", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch in second test");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -95,13 +95,13 @@ int TestPart4(int testNumber)
             queue.emplace_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch in third test", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch in third test");
 
         StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
         std::list<ToolkitDummy>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch in third test", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch in third test");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -127,14 +127,14 @@ int TestPart4(int testNumber)
             queue.emplace_back(i);
         }
 
-        TestHelpers::assertEqual(list.size(), queue.size(), "size mismatch in fourth test", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(list.size(), queue.size(), "size mismatch in fourth test");
 
         StackCircularQueue<ToolkitDummy, queueSize>::iterator it = queue.begin();
         std::list<ToolkitDummy>::iterator iter = list.begin();
 
         for (; it != queue.end() && iter != list.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch in fourth test", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch in fourth test");
         }
 
         std::cout << "	PASSED" << std::endl;

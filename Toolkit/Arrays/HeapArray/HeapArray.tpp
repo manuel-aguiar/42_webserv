@@ -224,6 +224,13 @@ class HeapArray
 			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1, arg2, arg3);
         }	
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_back(const Arg1& arg1, const Arg2& arg2, Arg3& arg3) // lol
+        {
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
+			new (m_array + m_size++) T(arg1, arg2, arg3);
+        }	
+
 
 		template <typename U>
 		class ArrayIterator

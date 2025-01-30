@@ -83,8 +83,8 @@ int TestPart1(int testNumber)
 
 		list1.clear();
 
-		TestHelpers::assertEqual(counters[0], counters[1], "alloc/dealloc count mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(counters[0], expectedAllocCount, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(counters[0], counters[1], "alloc/dealloc count mismatch");
+		EXPECT_EQUAL(counters[0], expectedAllocCount, "alloc count failed");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -123,8 +123,8 @@ int TestPart1(int testNumber)
 
 		map1.clear();
 
-		TestHelpers::assertEqual(counters[0], counters[1], "alloc/dealloc count mismatch", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(counters[0], expectedAllocCount, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(counters[0], counters[1], "alloc/dealloc count mismatch");
+		EXPECT_EQUAL(counters[0], expectedAllocCount, "alloc count failed");
 
 		std::cout << "	PASSED" << std::endl;
 	}

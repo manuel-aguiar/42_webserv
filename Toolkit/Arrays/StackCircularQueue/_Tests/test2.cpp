@@ -62,14 +62,14 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			queue.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), queue.size(), "Size mismatch in test 1", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "Size mismatch in test 1");
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "Value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "Value mismatch");
 		}
 
         StackCircularQueue<int, queueSize> assign;
@@ -78,18 +78,18 @@ int TestPart2(int testNumber)
 		
         assign = queue;
 
-		TestHelpers::assertEqual(queue.size(), assign.size(), "Size mismatch after assignment", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(std.size(), assign.size(), "Size mismatch between std and assigned", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(queue.size(), assign.size(), "Size mismatch after assignment");
+		EXPECT_EQUAL(std.size(), assign.size(), "Size mismatch between std and assigned");
 
         it = assign.begin();
         iter = std.begin();
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "Copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "Copy assignment value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "Copy assignment size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -114,14 +114,14 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			queue.push_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), queue.size(), "Size mismatch in test 2", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "Size mismatch in test 2");
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "Value mismatch in test 2", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "Value mismatch in test 2");
 		}
 
         StackCircularQueue<int, queueSize> assign;
@@ -130,17 +130,17 @@ int TestPart2(int testNumber)
 
         assign = queue;
 
-		TestHelpers::assertEqual(queue.size(), assign.size(), "Size mismatch after assignment", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(queue.size(), assign.size(), "Size mismatch after assignment");
 
         it = assign.begin();
         iter = std.begin();
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "Copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "Copy assignment value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "Copy assignment size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -165,13 +165,13 @@ int TestPart2(int testNumber)
 			std.push_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
 			queue.emplace_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
 		}
-		TestHelpers::assertEqual(std.size(), queue.size(), "Size mismatch in string test", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "Size mismatch in string test");
 
 		StackCircularQueue<std::string, queueSize>::iterator it = queue.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "Value mismatch in string test", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "Value mismatch in string test");
 		}
 
         StackCircularQueue<std::string, queueSize> assign("i like potatoes on the heap if possible");
@@ -185,10 +185,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "Copy assignment value mismatch in string test", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "Copy assignment value mismatch in string test");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "Copy assignment size mismatch in string test", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch in string test");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -213,13 +213,13 @@ int TestPart2(int testNumber)
 			std.push_back(i);
 			queue.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), queue.size(), "Size mismatch in test 4", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "Size mismatch in test 4");
 
 		StackCircularQueue<int, queueSize>::iterator it = queue.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "Value mismatch in test 4", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "Value mismatch in test 4");
 		}
 
         StackCircularQueue<int, queueSize> assign(queue);
@@ -229,10 +229,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "Copy constructor value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "Copy constructor value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "Copy constructor size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "Copy constructor size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -259,13 +259,13 @@ int TestPart2(int testNumber)
 			queue.push_back(EmplaceTwo("name", i));
 		}
 
-		TestHelpers::assertEqual(std.size(), queue.size(), "Size mismatch in EmplaceTwo test", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), queue.size(), "Size mismatch in EmplaceTwo test");
 
 		StackCircularQueue<EmplaceTwo, queueSize>::iterator it = queue.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(it->present(), iter->present(), "Value mismatch in EmplaceTwo test", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(it->present(), iter->present(), "Value mismatch in EmplaceTwo test");
 		}
 
 		std::cout << "	PASSED" << std::endl;

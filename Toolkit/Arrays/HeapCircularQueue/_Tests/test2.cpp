@@ -60,14 +60,14 @@ int TestPart2(int testNumber)
             queue.emplace_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
         HeapCircularQueue<int>::iterator it = queue.begin();
         std::vector<int>::iterator iter = std.begin();
 
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         HeapCircularQueue<int> assign(100);
@@ -76,15 +76,15 @@ int TestPart2(int testNumber)
         
         assign = queue;
 
-        TestHelpers::assertEqual(queue.size(), assign.size(), "size mismatch after copy assignment", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(std.size(), assign.size(), "size mismatch after copy assignment", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(queue.size(), assign.size(), "size mismatch after copy assignment");
+        EXPECT_EQUAL(std.size(), assign.size(), "size mismatch after copy assignment");
 
         it = assign.begin();
         iter = std.begin();
 
         for (; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -109,13 +109,13 @@ int TestPart2(int testNumber)
             queue.push_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
         HeapCircularQueue<int>::iterator it = queue.begin();
         std::vector<int>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         HeapCircularQueue<int> assign(100);
@@ -124,14 +124,14 @@ int TestPart2(int testNumber)
 
         assign = queue;
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "size mismatch after copy assignment", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "size mismatch after copy assignment");
 
         it = assign.begin();
         iter = std.begin();
         
         for (; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -156,13 +156,13 @@ int TestPart2(int testNumber)
             queue.emplace_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
         HeapCircularQueue<std::string>::iterator it = queue.begin();
         std::vector<std::string>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         HeapCircularQueue<std::string> assign(100);
@@ -176,7 +176,7 @@ int TestPart2(int testNumber)
 
         for (; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
         std::cout << "	PASSED" << std::endl;
@@ -201,13 +201,13 @@ int TestPart2(int testNumber)
             queue.emplace_back(i);
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
         HeapCircularQueue<int>::iterator it = queue.begin();
         std::vector<int>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
         }
 
         HeapCircularQueue<int> assign(queue);
@@ -217,10 +217,10 @@ int TestPart2(int testNumber)
 
         for (; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy constructor value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy constructor value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy constructor size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy constructor size mismatch");
 
         std::cout << "	PASSED" << std::endl;
     }
@@ -245,13 +245,13 @@ int TestPart2(int testNumber)
             queue.push_back(EmplaceTwo("name", i));
         }
 
-        TestHelpers::assertEqual(std.size(), queue.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
         HeapCircularQueue<EmplaceTwo>::iterator it = queue.begin();
         std::vector<EmplaceTwo>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(it->present(), iter->present(), "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(it->present(), iter->present(), "value mismatch");
         }
 
         std::cout << "	PASSED" << std::endl;

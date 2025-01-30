@@ -91,9 +91,9 @@ int TestPart2(int testNumber)
 		int sockfd[2];
 
 		// create a unix socket pair for communication, just check all went well
-		TestHelpers::assertEqual(socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd), 0, "Failed to create socket pair", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(sockfd[0]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(FileDescriptor::setNonBlocking(sockfd[1]) == 0, false, "Fcntl failed", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(socketpair(AF_UNIX, SOCK_STREAM, 0, sockfd), 0, "Failed to create socket pair");
+		EXPECT_EQUAL(FileDescriptor::setNonBlocking(sockfd[0]) == 0, false, "Fcntl failed");
+		EXPECT_EQUAL(FileDescriptor::setNonBlocking(sockfd[1]) == 0, false, "Fcntl failed");
 
 		//reader
 		Events::Subscription*			readEvent = manager.acquireSubscription();
@@ -141,12 +141,12 @@ int TestPart2(int testNumber)
 		while (readCalculate.result == 0)
 			manager.ProcessEvents(-1);
 
-		TestHelpers::assertEqual(readCalculate.result, readExpectedResult, "Failed to calculate fibonacci", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(readCalculate.result, readExpectedResult, "Failed to calculate fibonacci");
 		
 		manager.stopMonitoring(*writeEvent, false);
 
 		// there should only 1 subscribed
-		TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)1, "Events were not deleted correctly", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(manager.getMonitoringCount(), 1, "Events were not deleted correctly");
 
 		// modify the read event to actually monitor write, for test purposes, reset result
 		// write should be available write away
@@ -158,13 +158,13 @@ int TestPart2(int testNumber)
 		manager.updateEvents(*readEvent, false);
 
 		int waitCount = manager.ProcessEvents(-1);
-		TestHelpers::assertEqual(waitCount, 1, "Events did not get triggered correctly", __FILE__, __LINE__, __FUNCTION__);
-		TestHelpers::assertEqual(readCalculate.result, readExpectedResult, "Events did not get triggered correctly", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(waitCount, 1, "Events did not get triggered correctly");
+		EXPECT_EQUAL(readCalculate.result, readExpectedResult, "Events did not get triggered correctly");
 
 		manager.stopMonitoring(*readEvent, false);
 
 		// should be 0 subcribed
-		TestHelpers::assertEqual(manager.getMonitoringCount(), (size_t)0, "Events were not deleted correctly", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(manager.getMonitoringCount(), 0, "Events were not deleted correctly");
 
 
 		// close the socketpair

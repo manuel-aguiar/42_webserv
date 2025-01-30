@@ -44,13 +44,13 @@ int TestPart3(int testNumber)
 			array.push_back(new ToolkitBase(i));
 		}
 
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		DynArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual((*it)->getValue() == (*iter)->getValue(), true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL((*it)->getValue() == (*iter)->getValue(), true, "value mismatch");
 		}
 
 		it = array.begin();

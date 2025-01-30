@@ -27,14 +27,14 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			bool resultValueMatch = (*it == *iter);
-			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -55,14 +55,14 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.push_back(i);
 		}
-		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			bool resultValueMatch = (*it == *iter);
-			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -83,14 +83,14 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			bool resultValueMatch = (*it == *iter);
-			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -115,14 +115,14 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 			array.emplace_back(array[0]);
 		}
-		TestHelpers::assertEqual(array.size(), std.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
 			bool resultValueMatch = (*it == *iter);
-			TestHelpers::assertEqual(resultValueMatch, true, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

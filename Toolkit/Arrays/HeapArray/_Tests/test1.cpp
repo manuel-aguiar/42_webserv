@@ -26,14 +26,14 @@ int TestPart1(int testNumber)
 			array.push_back(i);
 		}
 
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after pushing elements", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch after pushing elements");
 
 		/************* Compare elements *************/
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -57,14 +57,14 @@ int TestPart1(int testNumber)
 			array.push_back(i);
 		}
 
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after pushing ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch after pushing ToolkitDummy elements");
 
 		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration with ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with ToolkitDummy");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -88,14 +88,14 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after emplacing ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch after emplacing ToolkitDummy elements");
 
 		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch during emplace_back iteration with ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch during emplace_back iteration with ToolkitDummy");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -121,14 +121,14 @@ int TestPart1(int testNumber)
 			array.emplace_back(array[0]);
 		}
 
-		TestHelpers::assertEqual(std.size(), array.size(), "size mismatch after inserting and duplicating ToolkitDummy elements", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch after inserting and duplicating ToolkitDummy elements");
 
 		/************* Compare elements *************/
 		HeapArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch during iteration with duplicated ToolkitDummy", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with duplicated ToolkitDummy");
 		}
 		std::cout << "	PASSED" << std::endl;
 	}

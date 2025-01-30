@@ -54,7 +54,7 @@ int TestPart1(int testNumber)
         
         vec.reserve(100);
 
-        TestHelpers::assertEqual(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -73,12 +73,12 @@ int TestPart1(int testNumber)
         Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > alloc(pool);
         std::list<std::string, Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > > list(alloc);
         
-        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)4096, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096, "free space is not correct");
 
         list.push_back("big string that mallocs just to be sure that RAII is working");
         list.push_back("fits buf");
 
-        TestHelpers::assertEqual(pool.getFreeSpace(), 4096 - 2 * (sizeof(std::string) + 8 + 8), "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096 - 2 * (sizeof(std::string) + 8 + 8), "free space is not correct");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -103,12 +103,12 @@ int TestPart1(int testNumber)
 
         std::list<std::string, Heap_ObjectPool<std::string, Nginx_PoolAllocator<std::string, Stack_MemoryPool<poolSize> > > > list(alloc);
         
-        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)poolSize, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), (size_t)poolSize, "free space is not correct");
 
         for (int i = 0; i < elementCount; i++)
             list.push_back("big string that mallocs just to be sure that RAII is working");
 
-        TestHelpers::assertEqual(pool.getFreeSpace(), (size_t)0, "free space is not correct", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(pool.getFreeSpace(), 0, "free space is not correct");
 
 		std::cout << "	PASSED" << std::endl;
 	}
