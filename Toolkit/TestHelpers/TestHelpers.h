@@ -9,10 +9,22 @@
 
 # define TEST_CLR_BLUE "\033[34m"
 # define TEST_CLR_RED "\033[31m"
+# define TEST_CLR_GREY "\033[30m"
 # define TEST_CLR_GREEN "\033[32m"
+# define TEST_CLR_BROWN "\033[1;38;5;130m"
 # define TEST_CLR_RESET "\033[0m"
 
 # include <iostream>
+
+# define TEST_HEADER(message)	\
+	do	{						\
+		std::cout << TEST_CLR_BROWN << "\n*************** [" << (message) << "]  Tests ***************\n" << TEST_CLR_RESET << std::endl;	\
+	}	while (0)
+
+# define TEST_FOOTER	\
+	do	{						\
+		std::cout << TEST_CLR_BROWN << "\n**************************************************\n" << TEST_CLR_RESET << std::endl;	\
+	}	while (0)
 
 # define TEST_INTRO(testNumber)	\
 	do 	{						\
@@ -31,12 +43,12 @@
 
 # define TEST_PASSED_MSG(message)	\
 	do	{						\
-		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
+		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_GREY << " (" << (message) << ")"  << TEST_CLR_RESET << std::endl;			\
 	}	while (0)
 
 # define TEST_FAILED_MSG(message) \
 	do	{						\
-		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
+		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_GREY << " (" << (message) << ")"  << TEST_CLR_RESET << std::endl;			\
 	}	while (0)
 
 namespace TestHelpers
@@ -80,4 +92,5 @@ namespace TestHelpers
 	#endif
 
 }
+
 #endif

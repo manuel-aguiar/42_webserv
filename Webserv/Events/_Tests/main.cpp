@@ -1,11 +1,13 @@
 
 
+# include "../../../Toolkit/TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <iostream>
 
 //C headers
 # include <unistd.h>
+
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
@@ -15,7 +17,7 @@ int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** Events tests ***************" << std::endl;
+	TEST_HEADER("Events");
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
@@ -23,7 +25,7 @@ int main(void)
 
 	::close(STDERR_FILENO);
 
-	std::cout << "**************************************************\n" << std::endl;
+	TEST_FOOTER;
 
 	return (0);
 }
