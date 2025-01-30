@@ -17,7 +17,7 @@
 int TestPart1(int testNumber)
 {
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		const size_t arraySize = 100;
@@ -37,15 +37,15 @@ int TestPart1(int testNumber)
 			EXPECT_EQUAL(array[i], i, "value mismatch");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		const size_t arraySize = 100;
@@ -59,11 +59,11 @@ int TestPart1(int testNumber)
 		for (size_t i = 0; i < array.size(); ++i)
 			EXPECT_EQUAL(array[i], copyInit, "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
@@ -71,7 +71,7 @@ int TestPart1(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		const size_t arraySize = 100;
@@ -87,18 +87,18 @@ int TestPart1(int testNumber)
 		for (size_t i = 0; i < array.size(); ++i)
 			EXPECT_EQUAL(array[i] == i, true, "value mismatch");
 		
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 100> array;
 
 		for (int i = 0; i < 100; ++i)
@@ -110,17 +110,17 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(array.size(), 99, "size mismatch");
 		EXPECT_EQUAL(array.back(), 98, "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -131,18 +131,18 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(array.front(), 0, "value mismatch");
 		EXPECT_EQUAL(array.back(), 99, "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 5> array;
 		array.emplace_back(1);
 		array.emplace_back(2);
@@ -155,18 +155,18 @@ int TestPart1(int testNumber)
 
 		EXPECT_EQUAL(array.size(), 5, "size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		StackArray<int, 5> array;
 		array.emplace_back(1);
@@ -186,18 +186,18 @@ int TestPart1(int testNumber)
 		it++;
 		EXPECT_EQUAL(it == array.end(), true, "iterator should be at end");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 	/* just strings... */
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<std::string, 3> array;
 		array.emplace_back("Hello");
 		array.emplace_back("World");
@@ -208,11 +208,11 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(array[2], std::string("StackArray"), "value mismatch");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

@@ -55,7 +55,7 @@ class FiboTask : public IThreadTask
 int TestPart4(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 
 	// Simulating a TaskQueue congestion and users waiting for a slot to execute: addTask(waitForSlot = true)
 
@@ -87,11 +87,11 @@ int TestPart4(int testNumber)
 			EXPECT_EQUAL(fiboExpected[i], fiboPlaceResult[i], "Fibonacci value mismatch");
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 	return (testNumber);
 }

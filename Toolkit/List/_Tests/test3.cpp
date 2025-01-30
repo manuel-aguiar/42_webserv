@@ -15,7 +15,7 @@ int TestPart3(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		std::list<int>  std;
         List<int>     list;   
@@ -37,18 +37,18 @@ int TestPart3(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		std::list<int> std;
 		List<int> list;
@@ -70,18 +70,18 @@ int TestPart3(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* TEST ::erase() ************************/
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         std::list<int> stdList;
         List<int> list;
@@ -111,7 +111,7 @@ int TestPart3(int testNumber)
 
         EXPECT_EQUAL(list.size(), 99, "Erase operation did not behave as expected");
             
-        std::cout << "\tPASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {

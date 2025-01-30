@@ -22,7 +22,7 @@
 
 int TestPart2(int testNumber)
 {
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	
 	try
 	{
@@ -56,14 +56,14 @@ int TestPart2(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	
 	try
 	{
@@ -149,11 +149,11 @@ int TestPart2(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);

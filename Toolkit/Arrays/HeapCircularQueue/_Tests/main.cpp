@@ -25,14 +25,14 @@ int main()
 {
     int testNumber = 1;
     
-	std::cout << "\n*************** HeapCircularQueue tests ***************" << std::endl;
+    TEST_HEADER("HeapCircularQueue");
 	
     testNumber = TestPart1(testNumber);
     testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
     testNumber = TestPart4(testNumber);
 
-	std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return (0);
 }

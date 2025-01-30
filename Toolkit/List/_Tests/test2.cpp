@@ -13,7 +13,7 @@
 int TestPart2(int testNumber)
 {
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		List<int> list;
@@ -33,15 +33,15 @@ int TestPart2(int testNumber)
 
 		EXPECT_EQUAL(list.size(), copy.size(), "copy constructor, size mismatch");
 
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 	
 
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		List<int> list;
@@ -63,11 +63,11 @@ int TestPart2(int testNumber)
 
 		EXPECT_EQUAL(list.size(), copy.size(), "copy assignment, size mismatch");
 
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);

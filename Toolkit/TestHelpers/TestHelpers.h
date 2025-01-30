@@ -7,9 +7,60 @@
 #include <sstream>
 #include <stdexcept>
 
+# define TEST_CLR_BLUE "\033[34m"
+# define TEST_CLR_RED "\033[31m"
+# define TEST_CLR_GREY "\033[30m"
+# define TEST_CLR_GREEN "\033[32m"
+# define TEST_CLR_BROWN "\033[1;38;5;130m"
+# define TEST_CLR_RESET "\033[0m"
+
+# include <iostream>
+
+# define TEST_HEADER(message)	\
+	do	{						\
+		std::cout << TEST_CLR_BROWN << "\n*************** [" << (message) << "]  Tests ***************" << TEST_CLR_RESET << std::endl;	\
+	}	while (0)
+
+# define TEST_FOOTER	\
+	do	{						\
+		std::cout << TEST_CLR_BROWN << "**************************************************\n" << TEST_CLR_RESET << std::endl;	\
+	}	while (0)
+
+# define TEST_INTRO(testNumber)	\
+	do 	{						\
+		std::cout << TEST_CLR_BLUE << "TEST " << (testNumber) << ": " << TEST_CLR_RESET;	\
+	} 	while (0)
+
+# define TEST_PASSED	\
+	do	{						\
+		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
+
+# define TEST_FAILED \
+	do	{						\
+		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
+
+# define TEST_PASSED_MSG(message)	\
+	do	{						\
+		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_GREY << " (" << (message) << ")"  << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
+
+# define TEST_FAILED_MSG(message) \
+	do	{						\
+		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_GREY << " (" << (message) << ")"  << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
 
 namespace TestHelpers
 {
+
+	template <typename T>
+	std::string to_string(const T& value)
+	{
+		std::ostringstream oss;
+		oss << value;
+		return (oss.str());
+	}
 
 	#ifndef TEST_ERROR_MSG
 			#include <sstream>
@@ -35,10 +86,11 @@ namespace TestHelpers
 		#define EXPECT_EQUAL(actual, expected, message)                               			\
 			do	{                                                                           	\
 				if ((actual) != (expected))														\
-					throw std::logic_error(TEST_ERROR_MSG((actual), (expected), (message)));	\
+					throw std::logic_error(std::string("\n\n") + TEST_ERROR_MSG(actual, expected, message));	\
 			}	while (0)																	
 		
 	#endif
 
 }
+
 #endif
