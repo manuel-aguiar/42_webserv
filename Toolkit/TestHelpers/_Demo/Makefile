@@ -7,11 +7,11 @@ NAME					=		test.out
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Toolkit
+SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/TestHelpers/_Demo/main.cpp
+SRCS					=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo/main.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
@@ -33,6 +33,8 @@ all: $(NAME)
 
 test: $(NAME)
 	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(NAME)
+
+debug: test
 
 clean:
 	rm -rf $(NAME) vgcore*
