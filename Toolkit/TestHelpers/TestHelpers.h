@@ -19,8 +19,8 @@ namespace TestHelpers
 		return oss.str();
 	}
 
-	template <typename T>
-	std::string errorMsg(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
+	template <typename T, typename U>
+	std::string errorMsg(T actual, U expected, const std::string& message, const char* file, int line, const char* function)
 	{
 		std::string strLine = TestHelpers::to_string(line);
 		std::string strActual = TestHelpers::to_string(actual);
@@ -37,8 +37,8 @@ namespace TestHelpers
 			+ "\t----------------------------------" 	+ "\n";
 	}
 
-	template <typename T>
-	void assertEqual(T actual, T expected, const std::string& message, const char* file, int line, const char* function)
+	template <typename T, typename U>
+	void assertEqual(T actual, U expected, const std::string& message, const char* file, int line, const char* function)
 	{
 		if (actual != expected)
 			throw std::logic_error(std::string("\n\n") + TestHelpers::errorMsg(actual, expected, message, file, line, function));
@@ -46,6 +46,25 @@ namespace TestHelpers
 
 }
 
-
+	#ifndef EXPECT_EQUAL
+		#include <sstream>
+		#define EXPECT_EQUAL(actual, expected, message)                                \
+		do {                                                                           \
+			if ((actual) != (expected)) {                                              \
+				std::ostringstream oss;                                                \
+				oss << "\n\n"                                                          \
+					<< "\t----------------------------------\n"                        \
+					<< "\tError:     '" << (message)  << "'\n"                         \
+					<< "\tResult:    '" << (actual)   << "' [" << #actual   << "]\n"   \
+					<< "\tExpected:  '" << (expected) << "' [" << #expected << "]\n"   \
+					<< "\t----------------------------------\n"                        \
+					<< "\tFile:       " << __FILE__  << ":" << __LINE__ << "\n"        \
+					<< "\tLine:       " << __LINE__  << "\n"                           \
+					<< "\tFunction:   " << __FUNCTION__ << "\n"                        \
+					<< "\t----------------------------------\n";                       \
+				throw std::logic_error(oss.str());                                     \
+			}                                                                          \
+		} while (0)
+	#endif
 
 #endif

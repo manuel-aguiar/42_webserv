@@ -49,13 +49,13 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         HeapArray<int> assign(100);
@@ -70,10 +70,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy assignment, size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -93,13 +93,13 @@ int TestPart2(int testNumber)
 			std.push_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
 			array.emplace_back("big string the will require allocation on the heap " + TestHelpers::to_string(i));
 		}
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<std::string>::iterator it = array.begin();
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         HeapArray<std::string> assign(100);
@@ -113,10 +113,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy assignment, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy assignment, value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy assignment, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy assignment, size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -137,13 +137,13 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         HeapArray<int> assign(array);
@@ -153,10 +153,10 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "copy, constructor value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "copy, constructor value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "copy constructor, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "copy constructor, size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -177,13 +177,13 @@ int TestPart2(int testNumber)
 			array.emplace_back(i);
 		}
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 
         HeapArray<int> assign(100);
@@ -198,16 +198,16 @@ int TestPart2(int testNumber)
         
         for ( ; it != assign.end() && iter != std.end(); ++it, ++iter)
         {
-            TestHelpers::assertEqual(*it, *iter, "::move failed, value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(*it, *iter, "::move failed, value mismatch");
         }
 
-        TestHelpers::assertEqual(std.size(), assign.size(), "::move failed, size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), assign.size(), "::move failed, size mismatch");
 
-        TestHelpers::assertEqual(array.size(), (size_t)0, "::move failed, source array not empty", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(array.size(), (size_t)0, "::move failed, source array not empty");
 
         assign.clear();
 
-        TestHelpers::assertEqual(assign.size(), (size_t)0, "::clear failed, array not empty", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(assign.size(), (size_t)0, "::clear failed, array not empty");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -228,13 +228,13 @@ int TestPart2(int testNumber)
 			array.push_back(EmplaceTwo("name", i));
 		}
 
-        TestHelpers::assertEqual(std.size(), array.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<EmplaceTwo>::iterator it = array.begin();
 		std::vector<EmplaceTwo>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            TestHelpers::assertEqual(it->present(), iter->present(), "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+            EXPECT_EQUAL(it->present(), iter->present(), "value mismatch");
 		}
 
 		std::cout << "	PASSED" << std::endl;

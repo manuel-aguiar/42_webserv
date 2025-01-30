@@ -29,13 +29,13 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		std::list<int>::iterator iter = std.begin();
 		List<int>::iterator it = list.begin();
 		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __func__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -62,13 +62,13 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		std::list<int>::iterator iter = std.begin();
 		List<int>::iterator it = list.begin();
 		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __func__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -100,16 +100,16 @@ int TestPart3(int testNumber)
         std::advance(listIter, 10);
         list.erase(listIter);
 
-        TestHelpers::assertEqual(stdList.size(), list.size(), "size mismatch", __FILE__, __LINE__, __func__);
+        EXPECT_EQUAL(stdList.size(), list.size(), "size mismatch");
 
         std::list<int>::iterator stdIt = stdList.begin();
         List<int>::iterator listIt = list.begin();
         for (; stdIt != stdList.end() && listIt != list.end(); ++stdIt, ++listIt)
         {
-            TestHelpers::assertEqual(*stdIt, *listIt, "value mismatch", __FILE__, __LINE__, __func__);
+            EXPECT_EQUAL(*stdIt, *listIt, "value mismatch");
         }
 
-        TestHelpers::assertEqual(list.size(), (size_t)99, "Erase operation did not behave as expected", __FILE__, __LINE__, __func__);
+        EXPECT_EQUAL(list.size(), (size_t)99, "Erase operation did not behave as expected");
             
         std::cout << "\tPASSED" << std::endl;
     }

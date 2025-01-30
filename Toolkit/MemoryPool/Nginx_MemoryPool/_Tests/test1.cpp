@@ -53,8 +53,8 @@ int TestPart1(int testNumber)
         TestAllocator<t_byte> alloc(counters);
         Impl_Nginx_MemoryPool<t_byte, TestAllocator<t_byte> > pool(4096, 1, alloc);
 
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed");
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -75,18 +75,18 @@ int TestPart1(int testNumber)
         TestAllocator<t_byte> alloc(counters);
         Impl_Nginx_MemoryPool<int, TestAllocator<t_byte> > pool(100, 1, alloc);
 
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)(100 * (sizeof(int))), "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed");
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)(100 * (sizeof(int))), "alloc bytes failed");
 
         void* bigBlock = pool.allocate(200);
         (void)bigBlock;
 
         //big block, will overwelm the pool
 
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed");
 
         size_t expectedBytes = (100 + 200 + 16 / sizeof(int)) * (sizeof(int)); //16 / sizeof(int)(how many ints i have to allocate to have place for the big block struct)
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed");
 
 		std::cout << "	PASSED" << std::endl;
 	}
@@ -114,8 +114,8 @@ int TestPart1(int testNumber)
         monitoredList       list(objPool);
 
         //same result, didn't overwelm the pool
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed");
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed");
 
 
         // inserting integers
@@ -124,8 +124,8 @@ int TestPart1(int testNumber)
 
 
         // should not trigger any call to new, there is plenty of space in the first block of the pool
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed");
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed");
 
 
 		std::cout << "	PASSED" << std::endl;
@@ -153,8 +153,8 @@ int TestPart1(int testNumber)
         monitoredObjPool    objPool(200, allocator);        //obj pool for 100 list nodes of integers
         monitoredList       list(objPool);
 
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)1, "alloc count failed");
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], (size_t)4096, "alloc bytes failed");
 
 
         // inserting integers
@@ -162,10 +162,10 @@ int TestPart1(int testNumber)
             list.push_back(i);
 
         // should not trigger any call to new, there is plenty of space in the first block of the pool
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], (size_t)2, "alloc count failed");
 
         size_t expectedBytes = 4096 + 200 * 24 + 4 * 4; //base alloc + 200 list nodes + 4 integers to fit t_bigBlock struct
-        TestHelpers::assertEqual(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed");
 
 
 		std::cout << "	PASSED" << std::endl;

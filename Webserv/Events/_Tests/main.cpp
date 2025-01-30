@@ -15,7 +15,7 @@ int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** Events tests ***************\n" << std::endl;
+	std::cout << "\n*************** Manager tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
@@ -23,7 +23,7 @@ int main(void)
 
 	::close(STDERR_FILENO);
 
-	std::cout << "\n**************************************************\n" << std::endl;
+	std::cout << "**************************************************\n" << std::endl;
 
 	return (0);
 }

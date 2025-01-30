@@ -66,13 +66,13 @@ int TestPart3(int testNumber)
 		manager.ProcessEvents(-1); 
 
 		// data should be 0, triggered but not handled because event fd was market as stale
-		TestHelpers::assertEqual(user.getData(), 0, "Events should not be handled, marked as stale", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(user.getData(), 0, "Events should not be handled, marked as stale");
 		
 		// after processing events, all fds are marked as good again, until proven otherwise
 		manager.ProcessEvents(-1);
 
 		// handler should be called now, and user data should be 42
-		TestHelpers::assertEqual(user.getData(), 42, "Events should now be handled, not stale anymore", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(user.getData(), 42, "Events should now be handled, not stale anymore");
 
 		 //stopMonitoring event, (indifferent to mark as stale here)
 		manager.stopMonitoring(*subscription, true);

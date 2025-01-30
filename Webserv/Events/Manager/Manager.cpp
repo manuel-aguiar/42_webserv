@@ -10,13 +10,13 @@
 namespace Events
 {
 	Manager::Manager(size_t maxSubscriptions, Globals& globals) :
-		m_subscribeCount(0),
+		m_monitoringCount(0),
 		m_epollfd		(-1),
 		m_maxStaleFd	(0),
 		m_globals		(globals),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	((maxSubscriptions * 10) / 8 + 1, 0)
+		m_staleEvents	((maxSubscriptions * 2) / 8 + 1, 0)
 	{
 		m_epollfd = epoll_create(1);
 
@@ -51,7 +51,8 @@ namespace Events
 		return (subscription);
 	}
 
-	void	Manager::returnSubscription(Subscription& subscription)
+	void
+	Manager::returnSubscription(Subscription& subscription)
 	{
 		InternalSub* internal;
 
@@ -70,7 +71,8 @@ namespace Events
 		m_availableSubs.emplace_back(internal);
 	}
 
-	void Manager::mf_markFdStale(t_fd fd)
+	void
+	Manager::mf_markFdStale(t_fd fd)
 	{
 		m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 		size_t index = fd / 8;
@@ -78,7 +80,8 @@ namespace Events
 		m_staleEvents[index] |= (1 << bit);
 	}
 
-	int	Manager::mf_isFdStale(t_fd fd)
+	int
+	Manager::mf_isFdStale(t_fd fd)
 	{
 		if (fd == Ws::FD_NONE)
 			return (1);
@@ -100,7 +103,8 @@ namespace Events
 
 
 
-	int                Manager::startMonitoring(Subscription& event, bool markAsStale)
+	int
+	Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
 		InternalSub*	internal;
@@ -129,12 +133,13 @@ namespace Events
 			mf_markFdStale(fd);
 		internal->updateSubscription();
 
-		++m_subscribeCount;
+		++m_monitoringCount;
 
 		return (1);
 	}
 
-	int                Manager::updateEvents(Subscription& event, bool markAsStale)
+	int
+	Manager::updateEvents(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
 		InternalSub*	internal;
@@ -168,7 +173,8 @@ namespace Events
 		return (1);
 	}
 
-	int                 Manager::stopMonitoring(Subscription& event, bool markAsStale)
+	int
+	Manager::stopMonitoring(Subscription& event, bool markAsStale)
 	{
 		t_fd			fd;
 		InternalSub*	internal;
@@ -191,17 +197,18 @@ namespace Events
 			mf_markFdStale(fd);
 		internal->unSubscribe();
 
-		--m_subscribeCount;
+		--m_monitoringCount;
 
 		return (1);
 	}
 
-	int                 Manager::ProcessEvents(int timeOut)
+	int
+	Manager::ProcessEvents(int timeOut)
 	{
 		InternalSub*	event;
 		int				waitCount;
 
-		if (m_subscribeCount == 0)
+		if (m_monitoringCount == 0)
 			return (0);
 
 		waitCount = epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
@@ -228,9 +235,10 @@ namespace Events
 		return (waitCount);
 	}
 
-	size_t			Manager::getMonitoringCount() const
+	size_t
+	Manager::getMonitoringCount() const
 	{
-		return (m_subscribeCount);
+		return (m_monitoringCount);
 	}
 
 	//private, bare minimum to compile

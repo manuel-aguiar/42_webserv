@@ -15,13 +15,15 @@ namespace Events
 
 	Subscription::~Subscription() {}
 
-	void 	Subscription::notify()
+	void 
+	Subscription::notify()
 	{
 		if (m_callback)
 			m_callback(*this);
 	}
 
-	void	Subscription::reset()
+	void
+	Subscription::reset()
 	{
 		m_fdmask.reset();
 		m_monitoredEvents = Events::Monitor::NONE;
@@ -38,7 +40,8 @@ namespace Events
 		m_callback			(copy.m_callback)
 	{}
 	
-	Subscription& Subscription::operator=(const Subscription& assign)
+	Subscription&
+	Subscription::operator=(const Subscription& assign)
 	{
 		if (this == &assign)
 			return (*this);
@@ -76,22 +79,26 @@ namespace Events
 		return (*this);
 	}
 
-	Subscription::State Subscription::FdMask::getState() const
+	Subscription::State
+	Subscription::FdMask::getState() const
 	{
 		return (State)((m_fd >> 31) & 1);
 	}
 
-	void	Subscription::FdMask::setState(const State state)
+	void
+	Subscription::FdMask::setState(const State state)
 	{
 		m_fd = (m_fd & ~(1 << 31)) | (state << 31);
 	}
 
-	Ws::fd	Subscription::FdMask::getFd() const
+	Ws::fd
+	Subscription::FdMask::getFd() const
 	{
 		return ((m_fd == Ws::FD_NONE) ? Ws::FD_NONE : m_fd & ~(1 << 31));
 	}
 
-	void	Subscription::FdMask::setFd(const Ws::fd fd)
+	void
+	Subscription::FdMask::setFd(const Ws::fd fd)
 	{
 		ASSERT_EQUAL(fd >= Ws::FD_NONE, true, "Subscription::FdMask::setFd: fd must be bigger than -1");
 
@@ -103,7 +110,8 @@ namespace Events
 		m_fd = fd | (state << 31);
 	}
 
-	void	Subscription::FdMask::reset()
+	void
+	Subscription::FdMask::reset()
 	{
 		m_fd = Ws::FD_NONE;
 	}

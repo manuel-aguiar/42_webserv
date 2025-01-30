@@ -23,13 +23,13 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			list.push_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -51,13 +51,13 @@ int TestPart1(int testNumber)
 			std.push_front(i);
 			list.push_front(i);
 		}
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -79,13 +79,13 @@ int TestPart1(int testNumber)
 			std.push_front(i);
 			list.emplace_front(i);
 		}
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -105,13 +105,13 @@ int TestPart1(int testNumber)
 			std.push_back(i);
 			list.emplace_back(i);
 		}
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -154,13 +154,13 @@ int TestPart1(int testNumber)
 			std.pop_front();
 			list.pop_front();
 		}
-		TestHelpers::assertEqual(std.size(), list.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
 		List<ToolkitDummy>::iterator it = list.begin();
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -187,7 +187,7 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -219,11 +219,11 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator iter = copy.begin();
 		List<ToolkitDummy>::iterator it = list.begin();
 
-		TestHelpers::assertEqual(list.size(), copy.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(list.size(), copy.size(), "size mismatch");
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -250,7 +250,7 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}
@@ -282,11 +282,11 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator iter = copy.begin();
 		List<ToolkitDummy>::iterator it = list.begin();
 
-		TestHelpers::assertEqual(list.size(), copy.size(), "size mismatch", __FILE__, __LINE__, __FUNCTION__);
+		EXPECT_EQUAL(list.size(), copy.size(), "size mismatch");
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			TestHelpers::assertEqual(*it, *iter, "value mismatch", __FILE__, __LINE__, __FUNCTION__);
+			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
 		std::cout << "\tPASSED" << std::endl;
 	}

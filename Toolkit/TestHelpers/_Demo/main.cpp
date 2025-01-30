@@ -7,7 +7,7 @@ int main(void)
 {
     try
     {
-        TestHelpers::assertEqual(2 + 2 , 2 + 3, "The result must be 5", __FILE__, __LINE__, __FUNCTION__);
+        EXPECT_EQUAL(2 + 2 , 2 + 3, "The result must be 5");
     }
     catch(const std::exception& e)
     {
