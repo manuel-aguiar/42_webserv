@@ -79,7 +79,7 @@ int TestPart3(int testNumber)
 
 		manager.returnSubscription(*subscription);
 
-		std::cout << "	PASSED (stale event test)" << std::endl;
+		TEST_PASSED_MSG("stale event test");
 	}
 	catch (const std::exception& e)
 	{

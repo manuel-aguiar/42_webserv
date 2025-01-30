@@ -73,7 +73,7 @@ int TestPart2(int testNumber)
 
 		Events::Manager manager(100, globals);
 		
-		std::cout << "	PASSED (instantiation test)" << std::endl;
+		TEST_PASSED_MSG("Events::Manager instantiation");
 	}
 	catch (const std::exception& e)
 	{
@@ -171,7 +171,7 @@ int TestPart2(int testNumber)
 		close(sockfd[0]);
 		close(sockfd[1]);
 
-		std::cout << "	PASSED (handling communication between a writer and a reader)" << std::endl;
+		TEST_PASSED_MSG("handling communication between a writer and a reader");
 	}
 	catch (const std::exception& e)
 	{

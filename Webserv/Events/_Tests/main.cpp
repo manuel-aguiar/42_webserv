@@ -15,7 +15,7 @@ int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** Manager tests ***************" << std::endl;
+	std::cout << "\n*************** Events tests ***************" << std::endl;
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);

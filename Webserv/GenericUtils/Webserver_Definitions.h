@@ -74,6 +74,7 @@ namespace Ws
 {
 	typedef int			fd;
 	typedef pid_t		pid;
+	enum { FD_NONE = -1 };
 }
 
 #endif
