@@ -7,6 +7,7 @@
 #include "../ServerBlock/ServerBlock.hpp"
 #include "../ServerLocation/ServerLocation.hpp"
 #include "../DefaultConfig/DefaultConfig.hpp"
+#include "../../GenericUtils/WsTestHelpers/WsTestHelpers.h" 
 #include <unistd.h>
 #include <cstdio>
 
@@ -25,19 +26,23 @@ void testFunction(const std::string &filePath, int testNbr, bool expectedValid)
 									pipe(testpipe);
 									dup2(testpipe[1], STDERR_FILENO);
 
-	std::string result = CLR_FAIL;
+	TEST_INTRO(testNbr);
+
+	bool passed = false;
 
 	ServerConfig config(filePath.c_str(), NULL);
 	if (config.parseConfigFile() == (int)expectedValid)
-		result = CLR_PASS;
+		passed = true;
 									//cleanup
 									dup2(stdcerrDup, STDERR_FILENO);
 									close(stdcerrDup);
 									close(testpipe[1]);
 									close(testpipe[0]);
 
-
-	std::cout << CLR_BLUE << "Test " << testNbr << ": \t" << result << CLR_RESET << " (" << filePath << ")" << CLR_RESET << std::endl;
+	if (passed)
+		TEST_PASSED_MSG(filePath);
+	else
+		TEST_FAILED_MSG(filePath);
 }
 
 void testFolder(const std::string &folderPath, int& testNumber, bool expectedValid)

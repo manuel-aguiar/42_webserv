@@ -19,7 +19,7 @@ SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/DNSLookup/main.cp
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
-
+								
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
 
