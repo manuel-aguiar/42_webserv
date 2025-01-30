@@ -16,21 +16,39 @@
 
 # define TEST_INTRO(testNumber)	\
 	do 	{						\
-		std::cout << TEST_CLR_BLUE << "TEST " << (testNumber) << ": " << TEST_CLR_RESET 	\
+		std::cout << TEST_CLR_BLUE << "TEST " << (testNumber) << ": " << TEST_CLR_RESET;	\
 	} 	while (0)
 
-# define TEST_PASS(message)	\
+# define TEST_PASSED	\
+	do	{						\
+		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
+
+# define TEST_FAILED \
+	do	{						\
+		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_RESET << std::endl;			\
+	}	while (0)
+
+# define TEST_PASSED_MSG(message)	\
 	do	{						\
 		std::cout << TEST_CLR_GREEN << "\tPASSED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
 	}	while (0)
 
-# define TEST_FAIL(message) \
+# define TEST_FAILED_MSG(message) \
 	do	{						\
 		std::cout << TEST_CLR_RED << "\tFAILED" << TEST_CLR_RESET << " (" << (message) << ")" << std::endl;			\
 	}	while (0)
 
 namespace TestHelpers
 {
+
+	template <typename T>
+	std::string to_string(const T& value)
+	{
+		std::ostringstream oss;
+		oss << value;
+		return (oss.str());
+	}
 
 	#ifndef TEST_ERROR_MSG
 			#include <sstream>

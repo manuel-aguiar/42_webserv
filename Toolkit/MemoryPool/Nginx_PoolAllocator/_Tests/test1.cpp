@@ -17,7 +17,7 @@ int TestPart1(int testNumber)
     // instantiation
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
         Heap_MemoryPool pool(4096);
         
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
@@ -33,16 +33,16 @@ int TestPart1(int testNumber)
         
         // RAII, no leaks, everything is destructed
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         
         Heap_MemoryPool pool(4096);
@@ -54,11 +54,11 @@ int TestPart1(int testNumber)
 
         EXPECT_EQUAL(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

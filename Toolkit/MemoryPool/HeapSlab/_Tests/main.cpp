@@ -23,7 +23,7 @@ int main(void)
     int testNumber = 1;
     std::cout << "\n*************** HeapSlab tests ***************" << std::endl;
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         const size_t nodeSetSize = 40;
@@ -41,14 +41,14 @@ int main(void)
 
 		set1.insert(1);
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
         std::cout << "	FAILED: " << e.what() << std::endl;
     }
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         const size_t nodeSetSize = 48;
@@ -66,14 +66,14 @@ int main(void)
 
 		map1[0] = 1;
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
         std::cout << "	FAILED: " << e.what() << std::endl;
     }
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
 
  	try
     {
@@ -104,7 +104,7 @@ int main(void)
 
 		map1.begin()->second.insert(1);
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {

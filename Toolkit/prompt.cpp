@@ -26,7 +26,7 @@ int TestPart1(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
         const int queueSize = 10;
         const int frontNumber = 5;
@@ -117,11 +117,11 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
         EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 #####################################

@@ -30,10 +30,13 @@ class InternalSub : public Events::Subscription
 
         Ws::fd                  getSubscribedFd() const;
         Events::Monitor::Mask   getSubscribedEvents() const;
+
+        Events::Subscription::State    
+                                getState() const;
+        void                    setState(const Subscription::State state);
         
     private:
-
-        Ws::fd					    m_subscribedFd;
+        Ws::fd                      m_subscribedFd;	    
         Events::Monitor::Mask		m_subscribedEvents;
 
 };

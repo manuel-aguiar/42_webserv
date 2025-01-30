@@ -19,7 +19,7 @@ int TestPart3(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitBase*> 				std;
 		HeapCircularQueue<ToolkitBase*> 		queue(300);
 
@@ -62,11 +62,11 @@ int TestPart3(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

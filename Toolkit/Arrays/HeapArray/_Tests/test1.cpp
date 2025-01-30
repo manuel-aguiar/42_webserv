@@ -15,7 +15,7 @@ int TestPart1(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<int> 		std;
 		HeapArray<int> 			array(100);
 
@@ -35,18 +35,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<ToolkitDummy> 		std;
 		HeapArray<ToolkitDummy> 		array(100);
 
@@ -66,18 +66,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with ToolkitDummy");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<ToolkitDummy> 		std;
 		HeapArray<ToolkitDummy> 		array(100);
 
@@ -97,18 +97,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch during emplace_back iteration with ToolkitDummy");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<ToolkitDummy> 			std;
 		HeapArray<ToolkitDummy> 			array(200);
 
@@ -130,11 +130,11 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with duplicated ToolkitDummy");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

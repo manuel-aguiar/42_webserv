@@ -17,7 +17,7 @@ int TestPart2(int testNumber)
     /********************************************* */
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int arraySize = 100;
 
@@ -60,7 +60,7 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "copy assignment size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception &e)
     {
@@ -70,7 +70,7 @@ int TestPart2(int testNumber)
     /********************************************* */
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int arraySize = 100;
 
@@ -107,7 +107,7 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), copy.size(), "copy constructor size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception &e)
     {
@@ -120,7 +120,7 @@ int TestPart2(int testNumber)
     {
         const int arraySize = 100;
 
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<int> std;
         StackArray<int, arraySize> array(5); // All elements initialized to 5
 
@@ -153,7 +153,7 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), copy.size(), "copy constructor size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception &e)
     {
