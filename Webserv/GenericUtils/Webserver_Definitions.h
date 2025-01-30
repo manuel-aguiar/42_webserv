@@ -73,6 +73,7 @@ typedef struct s_BindAddress
 namespace Ws
 {
 	typedef int			fd;
+	enum { FD_NONE = -1 };
 	typedef pid_t		pid;
 	enum { FD_NONE = -1 };
 }
