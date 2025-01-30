@@ -22,4 +22,8 @@ all: $(TARGET)
 clean:
 	rm -rf $(OBJS) $(TARGET)
 
+test: all
+
+debug: test
+
 .PHONY: clean

@@ -58,6 +58,6 @@ run: all
 	@echo "\nRunning tests with valgrind...\n"
 	@valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes ./$(NAME)
 
-test: run
+test: all
 
 .PHONY: all clean fclean re run test
