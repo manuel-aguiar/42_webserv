@@ -65,14 +65,14 @@ void testFolder(const std::string &folderPath, int& testNumber, bool expectedVal
 
 int main()
 {
-	std::cout << "\n****************** ServerConfig Tests **********************\n" << std::endl;
+	TEST_HEADER("ServerConfig");
 
 	int testNumber = 1;
 
 	testFolder(TESTFOLDER + "Pass", testNumber, true);
 	testFolder(TESTFOLDER + "Fail", testNumber, false);
 
-	std::cout << "\n****************** *************** **********************\n" << std::endl;
+	TEST_FOOTER;
 
 	return 0;
 }

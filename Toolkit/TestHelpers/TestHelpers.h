@@ -86,7 +86,7 @@ namespace TestHelpers
 		#define EXPECT_EQUAL(actual, expected, message)                               			\
 			do	{                                                                           	\
 				if ((actual) != (expected))														\
-					throw std::logic_error(TEST_ERROR_MSG((actual), (expected), (message)));	\
+					throw std::logic_error(std::string("\n\n") + TEST_ERROR_MSG(actual, expected, message));	\
 			}	while (0)																	
 		
 	#endif

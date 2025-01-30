@@ -9,8 +9,7 @@
 
 int main(void)
 {
-
-	std::cout << "\n*************** [ServerConfig - DNS Lookup] Integration test ***************\n" << std::endl;
+    TEST_HEADER("Integration ServerConfig - DNS Lookup");
 
     int testNumber = 1;
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +299,7 @@ int main(void)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::cout << "\n*************** ******************************************** ***************" << std::endl;
+    TEST_FOOTER;
 
     close(STDERR_FILENO);
 
