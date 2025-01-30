@@ -14,7 +14,7 @@ int main(void)
         std::cerr << e.what() << '\n';
     }
     
-    std::string errorMsg = TestHelpers::errorMsg(false, true, "The result must be true!", __FILE__, __LINE__, __FUNCTION__);
+    std::string errorMsg = TEST_ERROR_MSG((int)4, 5, "The result must be true!");
 
     std::cout << errorMsg << std::endl;
 

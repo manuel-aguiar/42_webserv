@@ -73,7 +73,7 @@ int TestPart1(int testNumber)
         Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > alloc(pool);
         std::list<std::string, Nginx_PoolAllocator<std::string, Stack_MemoryPool<4096> > > list(alloc);
         
-        EXPECT_EQUAL(pool.getFreeSpace(), (size_t)4096, "free space is not correct");
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096, "free space is not correct");
 
         list.push_back("big string that mallocs just to be sure that RAII is working");
         list.push_back("fits buf");
@@ -108,7 +108,7 @@ int TestPart1(int testNumber)
         for (int i = 0; i < elementCount; i++)
             list.push_back("big string that mallocs just to be sure that RAII is working");
 
-        EXPECT_EQUAL(pool.getFreeSpace(), (size_t)0, "free space is not correct");
+        EXPECT_EQUAL(pool.getFreeSpace(), 0, "free space is not correct");
 
 		std::cout << "	PASSED" << std::endl;
 	}

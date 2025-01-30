@@ -203,11 +203,11 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "::move failed, size mismatch");
 
-        EXPECT_EQUAL(array.size(), (size_t)0, "::move failed, source array not empty");
+        EXPECT_EQUAL(array.size(), 0, "::move failed, source array not empty");
 
         assign.clear();
 
-        EXPECT_EQUAL(assign.size(), (size_t)0, "::clear failed, array not empty");
+        EXPECT_EQUAL(assign.size(), 0, "::clear failed, array not empty");
 
 		std::cout << "	PASSED" << std::endl;
 	}
