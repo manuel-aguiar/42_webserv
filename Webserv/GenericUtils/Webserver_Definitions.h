@@ -66,7 +66,7 @@ typedef struct s_BindAddress
 	int					protocol;
 	u_sockaddr			address;
 	t_socklen			addrlen;
-}	BindAddress; 
+}	BindAddress;
 
 # define MAX_EPOLL_EVENTS 64
 
