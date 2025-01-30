@@ -300,10 +300,10 @@ int CgiStressTest::StressTest(int testNumber,
 		}
 
 		if (eventManager.getMonitoringCount() != 0)
-			FailureMessages = FailureMessages + '\n' + TestHelpers::errorMsg(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events", __FILE__, __LINE__, __FUNCTION__);
+			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
 			
 		if (cgi.getBusyWorkerCount() != 0)
-			FailureMessages = FailureMessages + '\n' + TestHelpers::errorMsg(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling", __FILE__, __LINE__, __FUNCTION__);
+			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
 
 
 		// checking results
@@ -314,7 +314,7 @@ int CgiStressTest::StressTest(int testNumber,
 			{
 				case TestProtoRequest::E_CGI_STATUS_WORKING:
 					FailureMessages = FailureMessages + '\n' + "protorequest: " + StringUtils::to_string(requests[i].m_id) + " failed, " + '\n' 
-					 + TestHelpers::errorMsg(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch", __FILE__, __LINE__, __FUNCTION__);
+					 + TEST_ERROR_MSG(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch");
 					break;
 				case TestProtoRequest::E_CGI_STATUS_SUCCESS:
 
@@ -322,7 +322,7 @@ int CgiStressTest::StressTest(int testNumber,
 					|| std::string(requests[i].m_buffer) != requests[i].m_ExpectedOutput)
 					{
 						FailureMessages = FailureMessages + '\n' + "protorequest: " + StringUtils::to_string(requests[i].m_id) + " failed, " + '\n' 
-						+ TestHelpers::errorMsg(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Script output doesn't match expected", __FILE__, __LINE__, __FUNCTION__);
+						+ TEST_ERROR_MSG(requests[i].m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Script output doesn't match expected");
 					}
 					break ;
 				default:
@@ -341,7 +341,7 @@ int CgiStressTest::StressTest(int testNumber,
 
 		std::string valLog = CgiStressTest::ValgrindReadandClear("valgrind_output.log");
 		if (!valLog.empty())
-			FailureMessages = FailureMessages + TestHelpers::errorMsg(valLog, std::string(""), "Valgrind errors in this test", __FILE__, __LINE__, __FUNCTION__);
+			FailureMessages = FailureMessages + TEST_ERROR_MSG(valLog, std::string(""), "Valgrind errors in this test");
 
 			
 		std::cout << "\t=================================" << std::endl
