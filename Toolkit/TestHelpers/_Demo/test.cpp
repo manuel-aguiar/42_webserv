@@ -2,7 +2,8 @@
 
 #include "../TestHelpers.h"
 #include <iostream>
-#include <cstring>
+
+extern size_t mystrlen(const char* str);
 
 int main(void)
 {
@@ -54,7 +55,7 @@ int main(void)
     {   
         TEST_INTRO(testNumber++);
 
-        EXPECT_EQUAL(std::strlen("Hello World!"), 12, "Strlen of Hello World! should be 12");
+        EXPECT_EQUAL(mystrlen("Hello World!"), 12, "Strlen of Hello World! should be 12");
 
         TEST_PASSED_MSG("checking strlen of a string");
     }
