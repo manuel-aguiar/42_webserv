@@ -48,4 +48,6 @@ fclean: clean
 
 re: fclean all
 
+debug: test
+
 .PHONY: clean fclean run

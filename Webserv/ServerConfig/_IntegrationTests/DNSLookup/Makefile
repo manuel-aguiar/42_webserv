@@ -62,4 +62,8 @@ test: $(NAME)
 re: fclean all
 	@echo "$(TAG) Recompiling."
 
+
+debug: test
+
+
 .PHONY: all clean fclean re

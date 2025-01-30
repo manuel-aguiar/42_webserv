@@ -5,7 +5,7 @@
 
 # Compiler and flags
 CXX			= c++
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -g -MMD -MP
 
 # Directories
 ROOT_PATH = $(shell git rev-parse --show-toplevel)
@@ -37,6 +37,8 @@ SRCS		= $(TEST_DIR)/test.cpp \
 # Object files (maintain directory structure)
 OBJS		= $(SRCS:%.cpp=%.o)
 
+DEPS		= $(OBJS:.o=.d)
+
 # Include paths
 INCLUDES	= -I$(CONFIG_DIR)/BlockFinder \
 			  -I$(CONFIG_DIR)/ServerBlock \
@@ -58,6 +60,9 @@ $(NAME): $(OBJS)
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
+# Dependencies
+-include $(DEPS)
+
 clean:
 	rm -f $(OBJS)
 	find $(ROOT_PATH) -type d -empty -delete 2>/dev/null || true
@@ -76,5 +81,7 @@ test: all
 
 .PHONY: all clean fclean re run test
 
-# Dependencies
--include $(OBJS:.o=.d)
+debug: test
+
+
+
