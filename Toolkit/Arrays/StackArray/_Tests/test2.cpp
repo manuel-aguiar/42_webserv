@@ -64,7 +64,7 @@ int TestPart2(int testNumber)
     }
     catch (const std::exception &e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /********************************************* */
@@ -111,7 +111,7 @@ int TestPart2(int testNumber)
     }
     catch (const std::exception &e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /********************************************* */
@@ -157,7 +157,7 @@ int TestPart2(int testNumber)
     }
     catch (const std::exception &e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     return testNumber;

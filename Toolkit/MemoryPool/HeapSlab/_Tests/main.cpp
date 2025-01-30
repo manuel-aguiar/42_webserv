@@ -14,6 +14,7 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
+#include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
 extern int TestPart2(int testNumber);
@@ -21,7 +22,8 @@ extern int TestPart2(int testNumber);
 int main(void)
 {
     int testNumber = 1;
-    std::cout << "\n*************** HeapSlab tests ***************" << std::endl;
+
+    TEST_HEADER("HeapSlab");
 
     TEST_INTRO(testNumber++);
     try
@@ -45,7 +47,7 @@ int main(void)
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     TEST_INTRO(testNumber++);
@@ -70,7 +72,7 @@ int main(void)
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     TEST_INTRO(testNumber++);
@@ -108,10 +110,12 @@ int main(void)
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 	
-    std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
+
+    return (0);
 }
 
 

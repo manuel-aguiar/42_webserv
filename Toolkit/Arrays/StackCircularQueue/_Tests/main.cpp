@@ -26,14 +26,14 @@ int main()
 {
     int testNumber = 1;
     
-	std::cout << "\n*************** StackCircularQueue tests ***************" << std::endl;
+    TEST_HEADER("StackCircularQueue");
 	
     testNumber = TestPart1(testNumber);
     testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
     testNumber = TestPart4(testNumber);
 
-	std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return (0);
 }

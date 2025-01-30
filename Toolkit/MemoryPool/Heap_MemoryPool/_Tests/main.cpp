@@ -16,12 +16,11 @@ int main(void)
 {
     int testNumber = 1;
     
-
-	std::cout << "\n*************** Heap_MemoryPool tests ***************" << std::endl;
+    TEST_HEADER("Heap_MemoryPool");
 	
     testNumber = TestPart1(testNumber);
 
-    std::cout << "******************************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return 0;
 }

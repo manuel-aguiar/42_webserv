@@ -27,17 +27,16 @@ int main(void)
 
     int testNumber = 1;
 	/******************* TEST 1 ************************/
-	std::cout << "\n************ ThreadPool tests *************" << std::endl;
-	
-	
+
+	TEST_HEADER("ThreadPool");
 
     testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
 	testNumber = TestPart3(testNumber);
 	testNumber = TestPart4(testNumber);
 
-	std::cout << "*******************************************\n" << std::endl;
-	
+	TEST_FOOTER;
+		
 	return (0);
 }
 

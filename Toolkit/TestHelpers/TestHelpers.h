@@ -18,12 +18,12 @@
 
 # define TEST_HEADER(message)	\
 	do	{						\
-		std::cout << TEST_CLR_BROWN << "\n*************** [" << (message) << "]  Tests ***************\n" << TEST_CLR_RESET << std::endl;	\
+		std::cout << TEST_CLR_BROWN << "\n*************** [" << (message) << "]  Tests ***************" << TEST_CLR_RESET << std::endl;	\
 	}	while (0)
 
 # define TEST_FOOTER	\
 	do	{						\
-		std::cout << TEST_CLR_BROWN << "\n**************************************************\n" << TEST_CLR_RESET << std::endl;	\
+		std::cout << TEST_CLR_BROWN << "**************************************************\n" << TEST_CLR_RESET << std::endl;	\
 	}	while (0)
 
 # define TEST_INTRO(testNumber)	\
