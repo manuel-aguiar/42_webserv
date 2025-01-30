@@ -94,8 +94,8 @@ int TestPart2(int testNumber)
 		}
 
 		// tests
-		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
-		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "Cgi result status mismatch");
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Length doesn't match");
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");

@@ -167,7 +167,7 @@ int TestPart1(int testNumber)
 				EXPECT_EQUAL(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, 
 					"There should be no triggered events, manager.processevents was not yet called");
 
-				EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)1, "Manager Failed to subscribe");
+				EXPECT_EQUAL(manager.getMonitoringCount(), 1, "Manager Failed to subscribe");
 
 		manager.ProcessEvents(10);
 
@@ -195,7 +195,7 @@ int TestPart1(int testNumber)
 		manager.stopMonitoring(*subscription, false); //works fine
 
 				EXPECT_EQUAL(subscription->isSubscribed(), false, "Subscription should not be subscribed");
-				EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)0, "Failed to unsubscribe");
+				EXPECT_EQUAL(manager.getMonitoringCount(), 0, "Failed to unsubscribe");
 
 		//manager.updateEvents(*subscription, false);  <- correctly asserts, subscription is not being monitored, cannot be changed
 

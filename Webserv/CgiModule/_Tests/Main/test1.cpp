@@ -134,8 +134,8 @@ int TestPart1(int testNumber)
 
 		// tests
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
-		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
-		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice");
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
 		
@@ -205,8 +205,8 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
-		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_TIMEOUT, "ProtoRequest didn't receive timeout notice");
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
@@ -273,12 +273,12 @@ int TestPart1(int testNumber)
 
 
 		// tests
-		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
-		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 
 		std::string expectedError("InternalCgiWorker::mf_executeChild(), execve(): No such file or directory");
 
-		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), 1, "Expected 1 error message");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 
@@ -356,10 +356,10 @@ int TestPart1(int testNumber)
 			
 		// tests
 		if (eventManager.getMonitoringCount() != 0)
-			testFailure = testFailure + '\n' + TEST_ERROR_MSG(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+			testFailure = testFailure + '\n' + TEST_ERROR_MSG(eventManager.getMonitoringCount(), 0, "Manager still has events");
 
 		if (cgi.getBusyWorkerCount() != 0)
-			testFailure = testFailure + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+			testFailure = testFailure + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 		
 		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
 			testFailure = testFailure + '\n' + TEST_ERROR_MSG(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME, "ProtoRequest didn't receive error runtime notice");
@@ -430,12 +430,12 @@ int TestPart1(int testNumber)
 				break ;
 		}
 
-		EXPECT_EQUAL(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
-		EXPECT_EQUAL(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 
 		std::string expectedError("InternalCgiWorker::mf_prepareExecve(): interpreter not found");
 
-		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), (size_t)1, "Expected 1 error message");
+		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs.size(), 1, "Expected 1 error message");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 

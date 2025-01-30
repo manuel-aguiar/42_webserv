@@ -107,7 +107,7 @@ int TestPart1(int testNumber)
 		}
 		array.pop_back();
 
-		EXPECT_EQUAL(array.size(), (size_t)99, "size mismatch");
+		EXPECT_EQUAL(array.size(), 99, "size mismatch");
 		EXPECT_EQUAL(array.back(), 98, "value mismatch");
 
 		std::cout << "	PASSED" << std::endl;
@@ -148,12 +148,12 @@ int TestPart1(int testNumber)
 		array.emplace_back(2);
 		array.emplace_back(3);
 
-		EXPECT_EQUAL(array.size(), (size_t)3, "size mismatch");
+		EXPECT_EQUAL(array.size(), 3, "size mismatch");
 
 		array.emplace_back(4);
 		array.emplace_back(5);
 
-		EXPECT_EQUAL(array.size(), (size_t)5, "size mismatch");
+		EXPECT_EQUAL(array.size(), 5, "size mismatch");
 
 		std::cout << "	PASSED" << std::endl;
 	}

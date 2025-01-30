@@ -109,7 +109,7 @@ int TestPart3(int testNumber)
             EXPECT_EQUAL(*stdIt, *listIt, "value mismatch");
         }
 
-        EXPECT_EQUAL(list.size(), (size_t)99, "Erase operation did not behave as expected");
+        EXPECT_EQUAL(list.size(), 99, "Erase operation did not behave as expected");
             
         std::cout << "\tPASSED" << std::endl;
     }

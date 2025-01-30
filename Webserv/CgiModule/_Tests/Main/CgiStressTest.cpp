@@ -300,10 +300,10 @@ int CgiStressTest::StressTest(int testNumber,
 		}
 
 		if (eventManager.getMonitoringCount() != 0)
-			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(eventManager.getMonitoringCount(), (size_t)0, "Manager still has events");
+			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(eventManager.getMonitoringCount(), 0, "Manager still has events");
 			
 		if (cgi.getBusyWorkerCount() != 0)
-			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), (size_t)0, "Cgi::Module still has workers rolling");
+			FailureMessages = FailureMessages + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 
 
 		// checking results

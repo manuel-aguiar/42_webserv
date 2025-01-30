@@ -146,7 +146,7 @@ int TestPart2(int testNumber)
 		manager.stopMonitoring(*writeEvent, false);
 
 		// there should only 1 subscribed
-		EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)1, "Events were not deleted correctly");
+		EXPECT_EQUAL(manager.getMonitoringCount(), 1, "Events were not deleted correctly");
 
 		// modify the read event to actually monitor write, for test purposes, reset result
 		// write should be available write away
@@ -164,7 +164,7 @@ int TestPart2(int testNumber)
 		manager.stopMonitoring(*readEvent, false);
 
 		// should be 0 subcribed
-		EXPECT_EQUAL(manager.getMonitoringCount(), (size_t)0, "Events were not deleted correctly");
+		EXPECT_EQUAL(manager.getMonitoringCount(), 0, "Events were not deleted correctly");
 
 
 		// close the socketpair

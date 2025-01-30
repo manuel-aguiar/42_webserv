@@ -27,7 +27,7 @@ int main(void)
 
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        EXPECT_EQUAL(serverBlocks.size(), (size_t)1, "there should be only 1 server block");
+        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
@@ -73,7 +73,7 @@ int main(void)
         
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        EXPECT_EQUAL(serverBlocks.size(), (size_t)1, "there should be only 1 server block");
+        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
@@ -115,7 +115,7 @@ int main(void)
         
         // checking single server
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        EXPECT_EQUAL(serverBlocks.size(), (size_t)1, "there should be only 1 server block");
+        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
         const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
@@ -150,7 +150,7 @@ int main(void)
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        EXPECT_EQUAL(serverBlocks.size(), (size_t)2, "there should be 2 server blocks");
+        EXPECT_EQUAL(serverBlocks.size(), 2, "there should be 2 server blocks");
 
         const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
         const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
