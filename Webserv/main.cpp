@@ -37,6 +37,10 @@ int main(int ac, char** av)
 		LogFile			debugFile("debug.log");
 		Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
 		ServerConfig	config(av[1], &globals);
+		ServerContext	context;
+		BlockFinder		blockFinder;
+		Events::Manager	eventManager(200, globals);
+		Conn::Manager	connManager(100, config.getBindAddresses(), eventManager, globals, context);
 		ServerManager	webserver(config, globals);
 
 		webserver.run();

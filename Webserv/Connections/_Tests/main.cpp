@@ -9,6 +9,7 @@
 
 int main(void)
 {
+	
 	std::vector<Ws::BindInfo> 	bindAddresses;
 	Globals 					globals(NULL, NULL, NULL, NULL);
 	Events::Manager 			eventManager(200, globals);
