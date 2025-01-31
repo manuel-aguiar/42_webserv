@@ -5,12 +5,6 @@
 # include "../../Ws_Namespace.h"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
-// Choose between mock and real implementation
-# ifdef TESTMODE
-#  include "_Tests/TestDependencies.hpp"
-# else
-#  include "../ServerBlock/ServerBlock.hpp"
-# endif
 
 // C++ headers
 # include <string>
@@ -19,12 +13,14 @@
 # include <iostream>
 # include <iomanip>
 
+class ServerBlock;
 
 class BlockFinder {
 	public:
 		BlockFinder();
 		~BlockFinder();
 
+		void				loadServerBlocks(const std::vector<ServerBlock>& blocks);
 		void				addServerBlock(const ServerBlock& block);
 		const ServerBlock*	findServerBlock(Ws::Sock::addr* address, const std::string& serverName);
 		bool				hasServerBlock(Ws::Sock::addr* address, const std::string& serverName);

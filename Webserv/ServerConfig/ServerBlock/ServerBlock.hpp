@@ -81,7 +81,7 @@ class ServerBlock
 
 		std::map<Ws::path, ServerLocation>				m_locations;
 
-		std::vector<const struct sockaddr*>				m_myListenAddresses;
+		std::vector<const Ws::Sock::addr*>				m_myListenAddresses;
 };
 
 #endif

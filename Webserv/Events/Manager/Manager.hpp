@@ -52,6 +52,8 @@ namespace Events
 			Ws::fd								m_maxStaleFd;
 			Globals&							m_globals;
 
+			enum {MAX_EPOLL_EVENTS = 64};
+
 			HeapArray<InternalSub>				m_subscriptions;
 			HeapCircularQueue<InternalSub*>		m_availableSubs;
 			HeapArray<Ws::byte>					m_staleEvents;

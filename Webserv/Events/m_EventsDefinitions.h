@@ -32,6 +32,5 @@ namespace Events
 	typedef struct epoll_event EpollEvent;
 }
 
-# define MAX_EPOLL_EVENTS 64
 
 #endif

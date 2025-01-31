@@ -1,5 +1,5 @@
 
-
+#include "../../ServerBlock/ServerBlock.hpp"
 #include "../BlockFinder.hpp"
 #include <iomanip>
 #include <arpa/inet.h>
@@ -15,8 +15,8 @@ extern void reviewTests();
 
 
 void    testPrecedence(BlockFinder& bfinder) {
-    ServerBlock block1("block1");
-    ServerBlock block2("block2");
+    ServerBlock block1;
+    ServerBlock block2;
 
     // Create sockaddr structures
     Ws::Sock::addr_in addr1 = createSockAddr("127.0.0.1", "80");
@@ -60,7 +60,7 @@ void    testPrecedence(BlockFinder& bfinder) {
 
 void    testSingle(BlockFinder& bfinder) {
     std::cout << "Testing adding a block with ip: 0.0.0.0, port: 443, server_name: somedomain.com" << std::endl;
-    ServerBlock	block("newTestBlock");
+    ServerBlock	block;
 
     Ws::Sock::addr_in testAddr = createSockAddr("0.0.0.0", "443");
     block.addListenAddress((Ws::Sock::addr*)&testAddr);
@@ -74,7 +74,7 @@ void    testSingle(BlockFinder& bfinder) {
 
 int	main(int argc, char **argv)
 {
-    ServerBlock	block("block");
+    ServerBlock	block;
     BlockFinder	bfinder;
 
     std::cerr << "Review tests started\n";
@@ -102,7 +102,7 @@ int	main(int argc, char **argv)
     // try adding empty strings, they will be replaced with the wildcard value
     std::cout << "Adding an empty ip" << std::endl;
     // this will be replaced with the wildcard value
-    ServerBlock	block_empty_ip("empty_ip");
+    ServerBlock	block_empty_ip;
     Ws::Sock::addr_in emptyAddr = createSockAddr("", "80");
     block_empty_ip.addListenAddress((Ws::Sock::addr*)&emptyAddr);
     block_empty_ip.addServerName("localhost");
@@ -114,7 +114,7 @@ int	main(int argc, char **argv)
                 (Ws::Sock::addr*)&emptyAddr, "localhost");
 
     // try to add a block with the same ip, port and server_name
-    ServerBlock	block_duplicate("duplicate");
+    ServerBlock	block_duplicate;
     Ws::Sock::addr_in dupAddr = createSockAddr("", "80");
     block_duplicate.addListenAddress((Ws::Sock::addr*)&dupAddr);
     block_duplicate.addServerName("localhost");

@@ -4,6 +4,13 @@
 #include <cassert>
 
 
+// Choose between mock and real implementation
+# ifdef TESTMODE
+#  include "_Tests/TestDependencies.hpp"
+# else
+#  include "../ServerBlock/ServerBlock.hpp"
+# endif
+
 BlockFinder::BlockFinder():
     m_wildcardKey() {
         m_wildcardKey.ip = 0;  // 0.0.0.0 in network byte order
@@ -78,6 +85,12 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
                 m_serverBlocks[key] = &block;
         }
     }
+}
+
+void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
+{
+    for (std::vector<ServerBlock>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
+        addServerBlock(*it);
 }
 
 /*

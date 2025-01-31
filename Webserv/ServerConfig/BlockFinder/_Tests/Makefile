@@ -22,9 +22,15 @@ TEST_FOLDERNAME		=	_Tests
 SRCS_DEBUG			= 	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/debug.cpp 
 SRCS_TEST			= 	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/main.cpp
 
-SRCS_COMMON			=	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/common.cpp \
-						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/TestDependencies.cpp \
-						$(SUBJECT_PATH)/BlockFinder.cpp
+SRCS_COMMON			=	$(SUBJECT_PATH)/BlockFinder.cpp \
+						\
+						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/common.cpp \
+						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/MockServerBlock.cpp \
+						$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+						$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+						$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+						$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp
+						
 
 # Object files
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))

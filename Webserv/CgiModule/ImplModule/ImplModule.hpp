@@ -58,8 +58,7 @@ class ImplModule
 		const std::map<Cgi::InterpExtension, Cgi::InterpPath>&	
 							getInterpreters() const;
 
-
-		#define						CGI_MIN_TIMEOUT 1
+		enum { MIN_TIMEOUT = 1};
 
 
 
