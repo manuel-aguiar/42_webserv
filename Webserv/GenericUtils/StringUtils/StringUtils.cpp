@@ -22,11 +22,15 @@ size_t	stoull(const std::string &str)
 	size_t				value;
 
 	ss >> value;
-    if (ss.fail() || !ss.eof())
+	if (ss.fail() || !ss.eof())
 		throw (std::invalid_argument("Invalid value (not a number): " + str));
 	return (value);
 }
 
+# include <iostream>
+/** Parses a string representing a size (e.g., "10K", "5M", "3G") and converts it to a size_t
+ *  with the value converted from 'K' for kilobytes, 'M' for megabytes, 'G' for gigabytes, to bytes
+ *  The input should be trimmed before the function if necessary */
 size_t	parse_size(const std::string &size_str)
 {
 	size_t	multiplier = 1;
@@ -34,7 +38,7 @@ size_t	parse_size(const std::string &size_str)
 	std::string	value = size_str.substr(0, size_str.size() - 1);
 
 	if (!isNumber(value))
-		throw (std::invalid_argument("Invalid value: " + size_str));
+		throw (std::invalid_argument("Invalid size: " + size_str));
 
 	it = size_str.rbegin();
 	if (*it == 'K')

@@ -58,7 +58,7 @@ void	ServerBlock::setClientBodySize(const std::string &value)
 		parse_size(value);
 	}
 	catch (std::exception &e) {
-		throw(e.what());
+		throw (std::invalid_argument(e.what()));
 	}
 	m_client_body_size = value;
 }
@@ -69,7 +69,7 @@ void	ServerBlock::setClientHeaderSize(const std::string &value)
 		parse_size(value);
 	}
 	catch (std::exception &e) {
-		throw(e.what());
+		throw (std::invalid_argument(e.what()));
 	}
 	m_client_header_size = value;
 }

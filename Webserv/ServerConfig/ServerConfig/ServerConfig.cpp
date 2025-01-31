@@ -87,7 +87,6 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 		{
 			case PROGRAM_LEVEL:
 				try {
-					// std::cout << "programLevel Set!! " << value << "\n";
 					m_setConfigValue(key, value);
 				}
 				catch (std::exception &e) {
@@ -272,22 +271,55 @@ void		ServerConfig::setConfigPath(const t_path &path)
 
 void		ServerConfig::setMaxConnections(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_connections must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_connections value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_connections must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_connections = value;
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_concurrent_cgi = value;
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	if (!isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_cgi_backlog value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_cgi_backlog must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_cgi_backlog = value;
 }
 
