@@ -107,7 +107,7 @@ namespace TestHelpers
 	#ifndef TEST_ERROR_MSG
 			#include <sstream>
 			/*
-				Generates an error message (returns a std::string). This macro is called by EXPECT_EQUAL
+				Generates an error message (returns a const char*). This macro is called by EXPECT_EQUAL
 				and also ASSERT_EQUAL. You can call it directly if you have chained tests and need
 				to cleanup resources before throwing an exception.
 
