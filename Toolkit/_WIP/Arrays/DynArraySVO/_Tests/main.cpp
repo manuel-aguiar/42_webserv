@@ -175,11 +175,11 @@ int main()
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* TEST 2 ************************/
@@ -205,11 +205,11 @@ int main()
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* TEST 3 ************************/
@@ -235,11 +235,11 @@ int main()
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
@@ -272,11 +272,11 @@ int main()
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* TEST 5 ************************/
@@ -317,11 +317,11 @@ int main()
 			if (**it != **iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 

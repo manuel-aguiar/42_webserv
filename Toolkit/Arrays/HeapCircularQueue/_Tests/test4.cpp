@@ -18,7 +18,7 @@ int TestPart4(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<int> 					list;
 		HeapCircularQueue<int> 			queue(200);
 
@@ -39,18 +39,18 @@ int TestPart4(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 		std;
 		HeapCircularQueue<ToolkitDummy> 		queue(100);
 
@@ -67,18 +67,18 @@ int TestPart4(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 	/******************* *****************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 		std;
 		HeapCircularQueue<ToolkitDummy> 		queue(100);
 
@@ -95,11 +95,11 @@ int TestPart4(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 
@@ -109,7 +109,7 @@ int TestPart4(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 				list;
 		HeapCircularQueue<ToolkitDummy> 			queue(200);
 
@@ -127,11 +127,11 @@ int TestPart4(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 

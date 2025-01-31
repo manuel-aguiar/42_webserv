@@ -18,7 +18,7 @@ int TestPart1(int testNumber)
     // instantiation
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
         Nginx_MemoryPool pool(4096, 1);
         
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
@@ -35,17 +35,17 @@ int TestPart1(int testNumber)
         
         // RAII, no leaks, everything is destructed
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     // instantiation
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         size_t counters[TestAllocator<t_byte>::E_TOTAL_COUNTERS] = {0};
 
@@ -56,18 +56,18 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_COUNT], 1, "alloc count failed");
         EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], 4096, "alloc bytes failed");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
     // instantiation
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         size_t counters[TestAllocator<t_byte>::E_TOTAL_COUNTERS] = {0};
 
@@ -88,16 +88,16 @@ int TestPart1(int testNumber)
         size_t expectedBytes = (100 + 200 + 16 / sizeof(int)) * (sizeof(int)); //16 / sizeof(int)(how many ints i have to allocate to have place for the big block struct)
         EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try     // using the memory pool to allocate memory for linked list nodes
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         size_t counters[TestAllocator<t_byte>::E_TOTAL_COUNTERS] = {0};
 
@@ -128,16 +128,16 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], 4096, "alloc bytes failed");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try     // using the memory pool to allocate memory for linked list nodes
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         size_t counters[TestAllocator<t_byte>::E_TOTAL_COUNTERS] = {0};
 
@@ -168,11 +168,11 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(counters[TestAllocator<t_byte>::E_ALLOC_BYTES], expectedBytes, "alloc bytes failed");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
         
     return (testNumber);

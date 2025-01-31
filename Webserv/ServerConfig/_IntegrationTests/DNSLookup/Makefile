@@ -10,7 +10,7 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_Integration/DNSLookup/main.cpp \
+SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/DNSLookup/main.cpp \
 								\
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
@@ -33,14 +33,12 @@ MAGENTA =	\033[0;35m
 CYAN =		\033[96m
 RESET =		\033[0m
 
-TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 #=== RULES ===#
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@echo "$(TAG) Making Program"
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 
@@ -53,7 +51,6 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 clean:
 
 fclean: clean
-	@echo "$(TAG) Full clean."
 	@rm -f $(NAME)
 
 test: $(NAME)
@@ -61,5 +58,9 @@ test: $(NAME)
 
 re: fclean all
 	@echo "$(TAG) Recompiling."
+
+
+debug: test
+
 
 .PHONY: all clean fclean re

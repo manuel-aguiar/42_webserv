@@ -50,7 +50,7 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		const int queueSize = 100;
 
@@ -91,18 +91,18 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		const int queueSize = 100;
 
@@ -142,18 +142,18 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		const int queueSize = 100;
 
@@ -190,18 +190,18 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "Copy assignment size mismatch in string test");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     /******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		const int queueSize = 100;
 
@@ -234,11 +234,11 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "Copy constructor size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     /******************************************************************** */
@@ -246,7 +246,7 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		const int queueSize = 100;
 
@@ -268,11 +268,11 @@ int TestPart2(int testNumber)
 			EXPECT_EQUAL(it->present(), iter->present(), "Value mismatch in EmplaceTwo test");
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

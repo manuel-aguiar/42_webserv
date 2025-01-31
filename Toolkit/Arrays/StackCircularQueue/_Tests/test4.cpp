@@ -16,7 +16,7 @@ int TestPart4(int testNumber)
 {
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int queueSize = 200;
         std::list<int> list;
@@ -40,18 +40,18 @@ int TestPart4(int testNumber)
             EXPECT_EQUAL(*it, *iter, "value mismatch in first test");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /******************* ***** ************************/
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int queueSize = 100;
         std::list<ToolkitDummy> std;
@@ -72,18 +72,18 @@ int TestPart4(int testNumber)
             EXPECT_EQUAL(*it, *iter, "value mismatch in second test");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /******************* *****************************/
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int queueSize = 100;
         std::list<ToolkitDummy> std;
@@ -104,18 +104,18 @@ int TestPart4(int testNumber)
             EXPECT_EQUAL(*it, *iter, "value mismatch in third test");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /******************* ***** ************************/
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         const int queueSize = 200;
         std::list<ToolkitDummy> list;
@@ -137,11 +137,11 @@ int TestPart4(int testNumber)
             EXPECT_EQUAL(*it, *iter, "value mismatch in fourth test");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     /***************************************** */

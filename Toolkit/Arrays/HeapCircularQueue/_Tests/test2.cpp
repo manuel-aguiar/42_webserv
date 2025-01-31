@@ -50,7 +50,7 @@ int TestPart2(int testNumber)
 
     try
     {
-        std::cout << "TEST " << testNumber << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<int> std;
         HeapCircularQueue<int> queue(100);
 
@@ -87,11 +87,11 @@ int TestPart2(int testNumber)
             EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
     testNumber++;
 
@@ -99,7 +99,7 @@ int TestPart2(int testNumber)
 
     try
     {
-        std::cout << "TEST " << testNumber << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<int> std;
         HeapCircularQueue<int> queue(100);
 
@@ -134,11 +134,11 @@ int TestPart2(int testNumber)
             EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
     testNumber++;
 
@@ -146,7 +146,7 @@ int TestPart2(int testNumber)
 
     try
     {
-        std::cout << "TEST " << testNumber << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<std::string> std;
         HeapCircularQueue<std::string> queue(100);
 
@@ -179,11 +179,11 @@ int TestPart2(int testNumber)
             EXPECT_EQUAL(*it, *iter, "copy assignment value mismatch");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
     testNumber++;
 
@@ -191,7 +191,7 @@ int TestPart2(int testNumber)
 
     try
     {
-        std::cout << "TEST " << testNumber << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<int> std;
         HeapCircularQueue<int> queue(100);
 
@@ -222,11 +222,11 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "copy constructor size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
     testNumber++;
 
@@ -235,7 +235,7 @@ int TestPart2(int testNumber)
 
     try
     {
-        std::cout << "TEST " << testNumber << ": ";
+        TEST_INTRO(testNumber++);
         std::vector<EmplaceTwo> std;
         HeapCircularQueue<EmplaceTwo> queue(100, EmplaceTwo("name", 0));
 
@@ -254,11 +254,11 @@ int TestPart2(int testNumber)
             EXPECT_EQUAL(it->present(), iter->present(), "value mismatch");
         }
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
     testNumber++;
 

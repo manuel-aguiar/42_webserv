@@ -20,12 +20,13 @@ int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** List tests ***************" << std::endl;
+	TEST_HEADER("List");
 
 	testNumber = TestPart1(testNumber);
 	testNumber = TestPart2(testNumber);
 	testNumber = TestPart3(testNumber);
 
-	std::cout << "******************************************\n" << std::endl;
+	TEST_FOOTER;
 
+	return (0);
 }

@@ -54,7 +54,7 @@ class FiboTask : public IThreadTask
 int TestPart2(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		const int numberOfTasks = 100;
@@ -82,13 +82,12 @@ int TestPart2(int testNumber)
 			EXPECT_EQUAL(fiboExpected[i], fiboPlaceResult[i], "Fibonacci mismatch");
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;	
 	return (testNumber);
 }
 

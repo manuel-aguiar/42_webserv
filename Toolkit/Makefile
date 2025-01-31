@@ -18,6 +18,8 @@ test:
 		$(MAKE) -C $$dir test --quiet || exit 1; \
 	done
 
+debug: test
+
 # Clean all subdirectories
 clean:
 	@for dir in $(SUBDIRS); do \

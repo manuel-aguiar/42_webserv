@@ -22,13 +22,13 @@ int main()
 {
     int testNumber = 1;
     
-	std::cout << "\n*************** HeapArray tests ***************" << std::endl;
+    TEST_HEADER("HeapArray");
 	
     testNumber = TestPart1(testNumber);
     testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
 
-	std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return (0);
 }

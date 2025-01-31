@@ -51,7 +51,7 @@ int TestPart1(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Subscription	subscription;
 
@@ -61,18 +61,18 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(subscription.accessUser(), (Events::Subscription::User)NULL, "User not correctly initialized");
 		EXPECT_EQUAL(subscription.accessCallback(), (Events::Subscription::Callback)NULL, "Callback not correctly initialized");
 		
-		std::cout << "	PASSED (Subscription instantiation)" << std::endl;
+		TEST_PASSED_MSG("Subscription instantiation");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Subscription	subscription;
 
@@ -84,18 +84,18 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized");
 		EXPECT_EQUAL(subscription.isSubscribed(), false, "Subscription should not be subscribed");
 
-		std::cout << "	PASSED (Subscription setters/getters)" << std::endl;
+		TEST_PASSED_MSG("Subscription setters/getters");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Subscription	subscription;
 
@@ -103,17 +103,18 @@ int TestPart1(int testNumber)
 
 		//subscription.setMonitoredEvents(-1); <- correctly asserts, this is not a valid flag combination
 
-		std::cout << "	PASSED (Subscription internal asserts)" << std::endl;
+
+		TEST_PASSED_MSG("Subscription internal asserts");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 //////////////////////////////////////////////////////////////////////////////////////
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Calculator 				calculator;
 		Events::Subscription	subscription;
@@ -128,16 +129,16 @@ int TestPart1(int testNumber)
 
 		EXPECT_EQUAL(calculator.getData(), 42, "Failed to call the user function");
 		
-		std::cout << "	PASSED (using a Subscription)" << std::endl;
+		TEST_PASSED_MSG("using a Subscription");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 ///////////////////////////////////////////////////////
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Manager 		manager(1, globals);
 		Events::Subscription* 	subscription = manager.acquireSubscription();
@@ -206,18 +207,18 @@ int TestPart1(int testNumber)
 		manager.ProcessEvents(-1);
 		// returns immediatelly, no subscribers
 
-		std::cout << "	PASSED (Subscription with EventManager)" << std::endl;
+		TEST_PASSED_MSG("Subscription with EventManager");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 ///////////////////////////////////////////////////////
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::cout.flush();
 
 		// prepare some pipes
@@ -244,11 +245,11 @@ int TestPart1(int testNumber)
 
 		EXPECT_EQUAL(std::string(buffer), std::string("Hello World!"), "Failed to call the user function");
 		
-		std::cout << "	PASSED (using a Subscription that has no User, just a callback)" << std::endl;
+		TEST_PASSED_MSG("using a Subscription that has no User, just a callback");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);

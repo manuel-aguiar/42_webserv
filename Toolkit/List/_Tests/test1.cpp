@@ -14,7 +14,7 @@ int TestPart1(int testNumber)
 	/*********************** ************************/
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 			list;
 
@@ -31,18 +31,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/************************ ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 	list;
 
@@ -59,18 +59,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 	list;
 
@@ -87,16 +87,16 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 	list;
 
@@ -113,18 +113,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitDummy> 	std;
 		List<ToolkitDummy> 	list;
 
@@ -162,18 +162,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		List<ToolkitDummy> 		list;
 
 		for (int i = 0; i < 100; ++i)
@@ -189,18 +189,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		List<ToolkitDummy> 		copy;
 		List<ToolkitDummy> 		list;
 
@@ -225,18 +225,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		List<ToolkitDummy> 		list;
 
@@ -252,18 +252,18 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		List<ToolkitDummy> 		copy;
 		List<ToolkitDummy> 		list;
 
@@ -288,11 +288,11 @@ int TestPart1(int testNumber)
 		{
 			EXPECT_EQUAL(*it, *iter, "value mismatch");
 		}
-		std::cout << "\tPASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "\tFAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);

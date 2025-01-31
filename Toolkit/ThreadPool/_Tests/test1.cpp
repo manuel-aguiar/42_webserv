@@ -55,37 +55,34 @@ class FiboTask : public IThreadTask
 
 int	TestPart1(int testNumber)
 {
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<10, 100> tp(5);
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
 
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.addThread();
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
-
 
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<100, 1000> tp(10);
@@ -112,14 +109,12 @@ int	TestPart1(int testNumber)
 
 		EXPECT_EQUAL(placeResult, (long)8, "Didn't calculate fibonacci right");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
-
 	return (testNumber);
 }
 
