@@ -3,7 +3,7 @@
 
 # define CONNCONNECTION_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 # include "../AppLayer/AppLayer.hpp"
 # include "../Monitor/Monitor.hpp"

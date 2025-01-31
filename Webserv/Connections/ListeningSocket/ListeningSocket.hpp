@@ -6,7 +6,7 @@
 
 
 // Project Headers
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 # include "../Socket/Socket.hpp"
 # include "../Monitor/Monitor.hpp"

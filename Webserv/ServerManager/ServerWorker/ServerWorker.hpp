@@ -12,7 +12,7 @@
 # include "../ListeningSocket/ListeningSocket.hpp"
 # include "../EventManager/EventManager.hpp"
 # include "../ConnectionManager/ConnectionManager.hpp"
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include "../../Globals/Globals.hpp"
 
 // C++ headers
@@ -38,7 +38,7 @@ class ServerWorker
 
 		// helpers
 		void							addPendingAccept(ListeningSocket& listener);	
-		void							createListeningSocket(const t_addrinfo& addrinfo, 
+		void							createListeningSocket(const Ws::Sock::Info& addrinfo, 
 															const int backlog, 
 															const t_ptr_ProtoModule& protoModule, 
 															const t_func_initProtoConn& initProtoConnection);

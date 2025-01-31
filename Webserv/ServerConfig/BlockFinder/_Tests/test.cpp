@@ -4,8 +4,8 @@
 #include <cstdlib>
 
 // Helper functions for testing
-static struct sockaddr_in* createSockAddr(const std::string& ip, const std::string& port) {
-    struct sockaddr_in* addr = new struct sockaddr_in();
+static Ws::Sock::addr_in* createSockAddr(const std::string& ip, const std::string& port) {
+    Ws::Sock::addr_in* addr = new Ws::Sock::addr_in();
     addr->sin_family = AF_INET;
 
     // Convert port string to number (simple atoi for testing)
@@ -22,19 +22,19 @@ static struct sockaddr_in* createSockAddr(const std::string& ip, const std::stri
 }
 
 // Helper to convert sockaddr to string for display
-static std::string getIpString(const struct sockaddr* addr) {
+static std::string getIpString(const Ws::Sock::addr* addr) {
     char ipStr[INET_ADDRSTRLEN];
-    struct sockaddr_in* ipv4 = (struct sockaddr_in*)addr;
+    Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
     inet_ntop(AF_INET, &(ipv4->sin_addr), ipStr, INET_ADDRSTRLEN);
     return std::string(ipStr);
 }
 
-static std::string getPortString(const struct sockaddr* addr) {
-    struct sockaddr_in* ipv4 = (struct sockaddr_in*)addr;
+static std::string getPortString(const Ws::Sock::addr* addr) {
+    Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
     return StringUtils::to_string(ntohs(ipv4->sin_port));
 }
 
-void	printBlock(const ServerBlock *block, const struct sockaddr* addr, const std::string& server_name)
+void	printBlock(const ServerBlock *block, const Ws::Sock::addr* addr, const std::string& server_name)
 {
     std::cout << "┌──────────── Block Found ────────────┐" << std::endl;
     std::cout << "│ ID:          " << std::left << std::setw(23) << block->id() << "│" << std::endl;
@@ -44,7 +44,7 @@ void	printBlock(const ServerBlock *block, const struct sockaddr* addr, const std
     std::cout << "└─────────────────────────────────────┘\n\n" << std::endl;
 }
 
-void    checkIfFound(const ServerBlock* block_found, const struct sockaddr* addr, const std::string& server_name)
+void    checkIfFound(const ServerBlock* block_found, const Ws::Sock::addr* addr, const std::string& server_name)
 {
     if (block_found)
         printBlock(block_found, addr, server_name);
@@ -57,42 +57,42 @@ void    testPrecedence(BlockFinder& bfinder) {
     ServerBlock block2("block2");
 
     // Create sockaddr structures
-    struct sockaddr_in* addr1 = createSockAddr("127.0.0.1", "80");
-    struct sockaddr_in* addr2 = createSockAddr("0.0.0.0", "80");
+    Ws::Sock::addr_in* addr1 = createSockAddr("127.0.0.1", "80");
+    Ws::Sock::addr_in* addr2 = createSockAddr("0.0.0.0", "80");
 
     // Add blocks with different combinations
-    block1.addListenAddress((struct sockaddr*)addr1);
+    block1.addListenAddress((Ws::Sock::addr*)addr1);
     block1.addServerName("example.com");
     bfinder.addServerBlock(block1);
 
-    block2.addListenAddress((struct sockaddr*)addr2);
+    block2.addListenAddress((Ws::Sock::addr*)addr2);
     block2.addServerName("example.com");
     bfinder.addServerBlock(block2);
 
     // Test cases remain the same, just update the function calls
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: example.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr1, "example.com"),
-                (struct sockaddr*)addr1, "example.com");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr1, "example.com"),
+                (Ws::Sock::addr*)addr1, "example.com");
 
     // Match by IP and Port, wildcard server name (should match block1)
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: *" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr1, "*"),
-                (struct sockaddr*)addr1, "*");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr1, "*"),
+                (Ws::Sock::addr*)addr1, "*");
 
     // Match by IP and Port, different server name (should match block2 with "test.com")
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: test.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr1, "test.com"),
-                (struct sockaddr*)addr1, "test.com");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr1, "test.com"),
+                (Ws::Sock::addr*)addr1, "test.com");
 
     // Match by wildcard IP and exact port and server name (should match block1)
     std::cout << "Searching for block with IP: 0.0.0.0, Port: 80, Server Name: example.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr2, "example.com"),
-                (struct sockaddr*)addr2, "example.com");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr2, "example.com"),
+                (Ws::Sock::addr*)addr2, "example.com");
 
     // Search for block with wildcard IP and port, wildcard server name (should match block1)
     std::cout << "Searching for block with IP: 0.0.0.0, Port: 80, Server Name: *" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr2, "*"),
-                (struct sockaddr*)addr2, "*");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr2, "*"),
+                (Ws::Sock::addr*)addr2, "*");
 
     // Cleanup
     delete addr1;
@@ -103,12 +103,12 @@ void    testSingle(BlockFinder& bfinder) {
     std::cout << "Testing adding a block with ip: 0.0.0.0, port: 443, server_name: somedomain.com" << std::endl;
     ServerBlock	block("newTestBlock");
 
-    struct sockaddr_in* testAddr = createSockAddr("0.0.0.0", "443");
-    block.addListenAddress((struct sockaddr*)testAddr);
+    Ws::Sock::addr_in* testAddr = createSockAddr("0.0.0.0", "443");
+    block.addListenAddress((Ws::Sock::addr*)testAddr);
     block.addServerName("somedomain.com");
     bfinder.addServerBlock(block);
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)testAddr, "somedomain.com"),
-                (struct sockaddr*)testAddr, "somedomain.com");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)testAddr, "somedomain.com"),
+                (Ws::Sock::addr*)testAddr, "somedomain.com");
 }
 
 void reviewTests()
@@ -122,19 +122,19 @@ void reviewTests()
             ServerBlock block2("block2");
             BlockFinder finder;
 
-            struct sockaddr_in* addr1 = createSockAddr("0.0.0.0", "80");
-            struct sockaddr_in* addr2 = createSockAddr("127.0.0.1", "80");
+            Ws::Sock::addr_in* addr1 = createSockAddr("0.0.0.0", "80");
+            Ws::Sock::addr_in* addr2 = createSockAddr("127.0.0.1", "80");
 
-            block1.addListenAddress((struct sockaddr*)addr1);
+            block1.addListenAddress((Ws::Sock::addr*)addr1);
             block1.addServerName("example.com");
             finder.addServerBlock(block1);
 
-            block2.addListenAddress((struct sockaddr*)addr2);
+            block2.addListenAddress((Ws::Sock::addr*)addr2);
             block2.addServerName("example.com");
             finder.addServerBlock(block2);
 
             //test
-            const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
+            const ServerBlock* result = finder.findServerBlock((Ws::Sock::addr*)addr1, "example.com");
             const ServerBlock* expected = &block1;
 
             if (result != expected)
@@ -155,19 +155,19 @@ void reviewTests()
         ServerBlock block2("block2");
         BlockFinder finder;
 
-        struct sockaddr_in* addr2 = createSockAddr("127.0.0.1", "80");
-        block2.addListenAddress((struct sockaddr*)addr2);
+        Ws::Sock::addr_in* addr2 = createSockAddr("127.0.0.1", "80");
+        block2.addListenAddress((Ws::Sock::addr*)addr2);
         block2.addServerName("example.com");
         finder.addServerBlock(block2);
         std::cout << "adding next block" << std::endl;
 
-        struct sockaddr_in* addr1 = createSockAddr("0.0.0.0", "80");
-        block1.addListenAddress((struct sockaddr*)addr1);
+        Ws::Sock::addr_in* addr1 = createSockAddr("0.0.0.0", "80");
+        block1.addListenAddress((Ws::Sock::addr*)addr1);
         block1.addServerName("example.com");
         finder.addServerBlock(block1);
 
         // test
-        const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
+        const ServerBlock* result = finder.findServerBlock((Ws::Sock::addr*)addr1, "example.com");
         const ServerBlock* expected = &block1;
 
         if (result != expected)
@@ -186,16 +186,16 @@ void reviewTests()
         ServerBlock block1("block1");
         BlockFinder finder;
 
-        struct sockaddr_in* addr1 = createSockAddr("127.0.0.1", "80");
-        block1.addListenAddress((struct sockaddr*)addr1);
+        Ws::Sock::addr_in* addr1 = createSockAddr("127.0.0.1", "80");
+        block1.addListenAddress((Ws::Sock::addr*)addr1);
         block1.addServerName("example.com");
         finder.addServerBlock(block1);
 
         //test
-        const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr1, "example.com");
+        const ServerBlock* result = finder.findServerBlock((Ws::Sock::addr*)addr1, "example.com");
         const ServerBlock* expected = &block1;
 
-        checkIfFound(result, (struct sockaddr*)addr1, "example.com");
+        checkIfFound(result, (Ws::Sock::addr*)addr1, "example.com");
         if (result != expected)
             throw std::runtime_error("Received a block but No block matches the port:ip combo");
         std::cout << "      PASSED\n";
@@ -214,23 +214,23 @@ void reviewTests()
         ServerBlock block3("block3");
         BlockFinder finder;
 
-        struct sockaddr_in* addr1 = createSockAddr("0.0.0.0", "80");
-        block1.addListenAddress((struct sockaddr*)addr1);
+        Ws::Sock::addr_in* addr1 = createSockAddr("0.0.0.0", "80");
+        block1.addListenAddress((Ws::Sock::addr*)addr1);
         block1.addServerName("example.com");
         finder.addServerBlock(block1);
 
-        struct sockaddr_in* addr2 = createSockAddr("127.0.0.1", "80");
-        block2.addListenAddress((struct sockaddr*)addr2);
+        Ws::Sock::addr_in* addr2 = createSockAddr("127.0.0.1", "80");
+        block2.addListenAddress((Ws::Sock::addr*)addr2);
         block2.addServerName("example.com");
         finder.addServerBlock(block2);
 
-        struct sockaddr_in* addr3 = createSockAddr("127.0.0.2", "443");
-        block3.addListenAddress((struct sockaddr*)addr3);
+        Ws::Sock::addr_in* addr3 = createSockAddr("127.0.0.2", "443");
+        block3.addListenAddress((Ws::Sock::addr*)addr3);
         block3.addServerName("somedomain.com");
         finder.addServerBlock(block3);
 
         //test
-        const ServerBlock* result = finder.findServerBlock((struct sockaddr*)addr3, "somedomain.com");
+        const ServerBlock* result = finder.findServerBlock((Ws::Sock::addr*)addr3, "somedomain.com");
         const ServerBlock* expected = &block3;
 
         if (result != expected)
@@ -249,13 +249,13 @@ void reviewTests()
         ServerBlock block1("block1");
         BlockFinder bfinder;
 
-        struct sockaddr_in* addr1 = createSockAddr("0.0.0.0", "443");
-        block1.addListenAddress((struct sockaddr*)addr1);
+        Ws::Sock::addr_in* addr1 = createSockAddr("0.0.0.0", "443");
+        block1.addListenAddress((Ws::Sock::addr*)addr1);
         block1.addServerName("somedomain.com");
         bfinder.addServerBlock(block1);
 
         //test
-        const ServerBlock* result = bfinder.findServerBlock((struct sockaddr*)addr1, "somedomain.com");
+        const ServerBlock* result = bfinder.findServerBlock((Ws::Sock::addr*)addr1, "somedomain.com");
         const ServerBlock* expected = &block1;
 
         if (result != expected)
@@ -274,13 +274,13 @@ void reviewTests()
         ServerBlock block1("block1");
         BlockFinder bfinder;
 
-        struct sockaddr_in* addr1 = createSockAddr("0.0.0.0", "443");
-        block1.addListenAddress((struct sockaddr*)addr1);
+        Ws::Sock::addr_in* addr1 = createSockAddr("0.0.0.0", "443");
+        block1.addListenAddress((Ws::Sock::addr*)addr1);
         block1.addServerName("somedomain.com");
         bfinder.addServerBlock(block1);
 
-        struct sockaddr_in* addr2 = createSockAddr("127.0.0.2", "444");
-        const ServerBlock* result = bfinder.findServerBlock((struct sockaddr*)addr2, "somedomain.com");
+        Ws::Sock::addr_in* addr2 = createSockAddr("127.0.0.2", "444");
+        const ServerBlock* result = bfinder.findServerBlock((Ws::Sock::addr*)addr2, "somedomain.com");
         const ServerBlock* expected = NULL;
 
         if (result != expected)
@@ -304,69 +304,69 @@ int	main(int argc, char **argv)
     testSingle(bfinder);
 
     // this is good data
-    struct sockaddr_in* testAddr = createSockAddr("127.0.0.2", "443");
-    block.addListenAddress((struct sockaddr*)testAddr);
+    Ws::Sock::addr_in* testAddr = createSockAddr("127.0.0.2", "443");
+    block.addListenAddress((Ws::Sock::addr*)testAddr);
     block.addServerName("somedomain.com");
     bfinder.addServerBlock(block);
 
     // same server config block but on wildcard ip
-    struct sockaddr_in* addr = createSockAddr("0.0.0.0", "443");
-    block.addListenAddress((struct sockaddr*)addr);
+    Ws::Sock::addr_in* addr = createSockAddr("0.0.0.0", "443");
+    block.addListenAddress((Ws::Sock::addr*)addr);
     bfinder.addServerBlock(block);
 
     std::cout << "Searching a block with exact ip, port and server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)testAddr, "somedomain.com"),
-                (struct sockaddr*)testAddr, "somedomain.com");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)testAddr, "somedomain.com"),
+                (Ws::Sock::addr*)testAddr, "somedomain.com");
 
     // try adding empty strings, they will be replaced with the wildcard value
     std::cout << "Adding an empty ip" << std::endl;
     // this will be replaced with the wildcard value
     ServerBlock	block_empty_ip("empty_ip");
-    struct sockaddr_in* emptyAddr = createSockAddr("", "80");
-    block_empty_ip.addListenAddress((struct sockaddr*)emptyAddr);
+    Ws::Sock::addr_in* emptyAddr = createSockAddr("", "80");
+    block_empty_ip.addListenAddress((Ws::Sock::addr*)emptyAddr);
     block_empty_ip.addServerName("localhost");
     bfinder.addServerBlock(block_empty_ip);
 
     // lets check the ip wildcard block exists
     std::cout << "Searching a block with empty ip, which should have been replaced with the wildcard value" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)emptyAddr, "localhost"),
-                (struct sockaddr*)emptyAddr, "localhost");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)emptyAddr, "localhost"),
+                (Ws::Sock::addr*)emptyAddr, "localhost");
 
     // try to add a block with the same ip, port and server_name
     ServerBlock	block_duplicate("duplicate");
-    struct sockaddr_in* dupAddr = createSockAddr("", "80");
-    block_duplicate.addListenAddress((struct sockaddr*)dupAddr);
+    Ws::Sock::addr_in* dupAddr = createSockAddr("", "80");
+    block_duplicate.addListenAddress((Ws::Sock::addr*)dupAddr);
     block_duplicate.addServerName("localhost");
     bfinder.addServerBlock(block_duplicate); // this will be discarded
 
     std::cout << "Searching a block with duplicate ip, port and server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)dupAddr, "localhost"),
-                (struct sockaddr*)dupAddr, "localhost");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)dupAddr, "localhost"),
+                (Ws::Sock::addr*)dupAddr, "localhost");
 
     std::cout << "Adding an empty server_name" << std::endl;
     // this will be replaced with the wildcard value
-    block.addListenAddress((struct sockaddr*)addr);
+    block.addListenAddress((Ws::Sock::addr*)addr);
     block.addServerName("");
     bfinder.addServerBlock(block);
 
     std::cout << "Searching a block with empty server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr, ""),
-                (struct sockaddr*)addr, "");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr, ""),
+                (Ws::Sock::addr*)addr, "");
 
     testPrecedence(bfinder);
 
     // can remove a block
-    bfinder.removeServerBlock((struct sockaddr*)addr, "");
-    checkIfFound(bfinder.findServerBlock((struct sockaddr*)addr, ""),
-                (struct sockaddr*)addr, "");
+    bfinder.removeServerBlock((Ws::Sock::addr*)addr, "");
+    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)addr, ""),
+                (Ws::Sock::addr*)addr, "");
 
-    struct sockaddr_in* wildcardAddr = NULL;
+    Ws::Sock::addr_in* wildcardAddr = NULL;
 
     // trigger manually
     if (argc > 1 && std::string(argv[1]) == "-wp") {
         // finally adding a wildcard port, which will throw an assertion failure
         wildcardAddr = createSockAddr("127.0.0.1", "*");
-        block.addListenAddress((struct sockaddr*)wildcardAddr);
+        block.addListenAddress((Ws::Sock::addr*)wildcardAddr);
         block.addServerName("localhost");
         bfinder.addServerBlock(block);
     }

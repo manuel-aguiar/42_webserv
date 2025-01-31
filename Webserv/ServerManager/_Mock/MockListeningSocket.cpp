@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 14:52:40 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/24 15:39:24 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/31 14:18:14 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "../../EventCallback/EventCallback.hpp"
 #include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
-ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool, const t_addrinfo& addrInfo, int backlog, Globals& globals) :
+ListeningSocket::ListeningSocket(ServerWorker& worker, Nginx_MemoryPool& memPool, const Ws::Sock::Info& addrInfo, int backlog, Globals& globals) :
 	m_backlog(backlog),
 	m_worker(worker),
 	m_globals(globals)

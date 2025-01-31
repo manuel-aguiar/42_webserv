@@ -3,7 +3,7 @@
 
 # define CONNECTIONSOCKET_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 class Socket
 {

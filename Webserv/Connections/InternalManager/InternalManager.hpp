@@ -18,7 +18,7 @@ class ListeningSocket;
 class ServerContext;
 
 namespace Events { class Manager; }
-namespace Ws { struct s_BindInfo; typedef struct s_BindInfo BindInfo; }
+namespace Ws { struct BindInfo; }
 namespace Conn { class Connection; }
 
 class InternalManager

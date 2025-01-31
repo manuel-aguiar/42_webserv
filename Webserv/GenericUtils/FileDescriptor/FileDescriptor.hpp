@@ -4,7 +4,7 @@
 
 # define FILEDESCRIPTOR_HPP
 
-# include "../Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include <fcntl.h>
 
 namespace FileDescriptor

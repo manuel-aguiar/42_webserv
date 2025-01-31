@@ -2,7 +2,7 @@
 # define BLOCKFINDER_HPP
 
 // our headers
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // Choose between mock and real implementation
@@ -26,9 +26,9 @@ class BlockFinder {
 		~BlockFinder();
 
 		void				addServerBlock(const ServerBlock& block);
-		const ServerBlock*	findServerBlock(struct sockaddr* address, const std::string& serverName);
-		bool				hasServerBlock(struct sockaddr* address, const std::string& serverName);
-		void				removeServerBlock(struct sockaddr* address, const std::string& serverName);
+		const ServerBlock*	findServerBlock(Ws::Sock::addr* address, const std::string& serverName);
+		bool				hasServerBlock(Ws::Sock::addr* address, const std::string& serverName);
+		void				removeServerBlock(Ws::Sock::addr* address, const std::string& serverName);
 
 	private:
 		struct BlockIdentifier {
@@ -43,8 +43,8 @@ class BlockFinder {
 		BlockIdentifier                              		m_wildcardKey;
 		std::map<BlockIdentifier, const ServerBlock*>		m_serverBlocks;
 
-		std::pair<uint32_t, uint16_t>	mf_extractIpPort(const struct sockaddr* addr) const;
-		BlockIdentifier				 	 mf_createIdentifier(const struct sockaddr* addr, const std::string& serverName) const;
+		std::pair<uint32_t, uint16_t>	mf_extractIpPort(const Ws::Sock::addr* addr) const;
+		BlockIdentifier				 	 mf_createIdentifier(const Ws::Sock::addr* addr, const std::string& serverName) const;
 };
 
 #endif

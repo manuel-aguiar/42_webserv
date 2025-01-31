@@ -4,7 +4,13 @@
 
 # define M_EVENTSDEFINITIONS_H
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# ifdef __linux__
+#  include <sys/epoll.h>
+# endif
+
+# ifdef __APPLE__
+#  include <sys/event.h>
+# endif
 
 namespace Events
 {
@@ -23,8 +29,9 @@ namespace Events
 		typedef int Mask;
 		typedef struct epoll_event Event;
 	}
+	typedef struct epoll_event EpollEvent;
 }
 
-# define MAX_EPOLL_FDS 1000000
+# define MAX_EPOLL_EVENTS 64
 
 #endif

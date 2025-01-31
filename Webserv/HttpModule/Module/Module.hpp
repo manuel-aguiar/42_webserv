@@ -4,7 +4,7 @@
 
 # define HTTPMODULE_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# include "../Ws_Namespace.h"
 
 namespace Conn {class BaseConnection;}
 namespace Http {class Connection;}

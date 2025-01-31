@@ -1,7 +1,7 @@
 #ifndef TESTDEPENDENCIES_HPP
 # define TESTDEPENDENCIES_HPP
 
-# include "../../../GenericUtils/Webserver_Definitions.h"
+# include "../../../Ws_Namespace.h"
 # include <string>
 # include <set>
 # include <vector>

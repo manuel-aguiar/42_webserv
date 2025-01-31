@@ -6,7 +6,7 @@
 
 // Project Headers
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include "../ServerWorker/ServerWorker.hpp"
 # include "../BlockFinder/BlockFinder.hpp"
 

@@ -4,7 +4,7 @@
 
 # define SIGNALHANDLER_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include <signal.h>
 # include <vector>
 # include <unistd.h>
@@ -41,7 +41,7 @@ class SignalHandler
 		Globals*								m_globals;
 		std::vector<std::pair<Ws::fd, Ws::fd> >	m_pipes;
 		int 									m_signal;
-		t_sigaction								m_sigact;
+		struct sigaction						m_sigact;
 
 		//shared to all instances
 		static size_t							gm_counter;

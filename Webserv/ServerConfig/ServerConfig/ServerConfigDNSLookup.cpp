@@ -1,5 +1,9 @@
 
+
+
 # include "ServerConfig.hpp"
+# include "../ServerBlock/ServerBlock.hpp"
+
 # include <cstddef>
 # include <cstring>
 # include <arpa/inet.h>
@@ -9,17 +13,19 @@
 */
 
 struct ListenerPtrComparator {
-	bool operator()(const t_listeners* a, const t_listeners* b) const
+	bool operator()(const Config::Listen* a, const Config::Listen* b) const
 	{
-		if (a->first != b->first)
-			return (a->first < b->first);
-		return (a->second < b->second);
+		if (a->appLayer != b->appLayer)
+			return (a->appLayer < b->appLayer);
+		if (a->hostname != b->hostname)
+			return (a->hostname < b->hostname);
+		return (a->port < b->port);
 	}
 };
 
 struct AddrinfoPtrComparator
 {
-	bool operator()(const t_addrinfo* a, const t_addrinfo* b)
+	bool operator()(const Ws::Sock::Info* a, const Ws::Sock::Info* b)
 	{
 		int memcmp;
 
@@ -57,16 +63,16 @@ struct AddrinfoPtrComparator
 	}
 };
 
-typedef std::pair<const t_listeners*, const t_listeners*> 								Pair_toUniqueListener;
-typedef std::map<const t_listeners*, const t_listeners*, ListenerPtrComparator> 		Map_toUniqueListener;
+typedef std::pair<const Config::Listen*, const Config::Listen*> 								Pair_toUniqueListener;
+typedef std::map<const Config::Listen*, const Config::Listen*, ListenerPtrComparator> 		Map_toUniqueListener;
 
-typedef std::set<const t_addrinfo*, AddrinfoPtrComparator> 								Set_uniqueAddr;
+typedef std::set<const Ws::Sock::Info*, AddrinfoPtrComparator> 								Set_uniqueAddr;
 
-typedef std::pair<const t_listeners*, const t_addrinfo*> 								Pair_uniqueListenToAddr;
-typedef std::multimap<const t_listeners*, const t_addrinfo*, ListenerPtrComparator> 	MMap_uniqueListenToAddr;
+typedef std::pair<const Config::Listen*, const Ws::Sock::Info*> 								Pair_uniqueListenToAddr;
+typedef std::multimap<const Config::Listen*, const Ws::Sock::Info*, ListenerPtrComparator> 	MMap_uniqueListenToAddr;
 
-typedef std::pair<const t_addrinfo*, const Ws::BindInfo*> 								Pair_uniqueAddrToBind;
-typedef std::map<const t_addrinfo*, const Ws::BindInfo*, AddrinfoPtrComparator> 			Map_uniqueAddrToBind;
+typedef std::pair<const Ws::Sock::Info*, const Ws::BindInfo*> 								Pair_uniqueAddrToBind;
+typedef std::map<const Ws::Sock::Info*, const Ws::BindInfo*, AddrinfoPtrComparator> 			Map_uniqueAddrToBind;
 
 struct DNSLookupHelper
 {
@@ -75,9 +81,9 @@ struct DNSLookupHelper
 		for (size_t i = 0; i < allAddr.size(); ++i)
 			::freeaddrinfo(allAddr[i]);
 	}
-	std::vector<t_addrinfo*>	allAddr;		// all t_addrinfo structs we find
+	std::vector<Ws::Sock::Info*>	allAddr;		// all Ws::Sock::Info structs we find
 
-	Map_toUniqueListener		listenerToUniqueListener; 	// a map of listeners (if two resolve to the same t_addrinfo, point to the one who resolved)
+	Map_toUniqueListener		listenerToUniqueListener; 	// a map of listeners (if two resolve to the same Ws::Sock::Info, point to the one who resolved)
 
 	MMap_uniqueListenToAddr		uniqueListenToAddr;
 	Set_uniqueAddr				uniqueAddr;
@@ -90,7 +96,7 @@ struct DNSLookupHelper
 /*
 	Find out who is the unique listener that setup that addrinfo, originally, and map us to that listener
 */
-static void mapEquivalentListener(DNSLookupHelper& helper, const t_listeners& dupListener, const t_addrinfo& targetAddrinfo)
+static void mapEquivalentListener(DNSLookupHelper& helper, const Config::Listen& dupListener, const Ws::Sock::Info& targetAddrinfo)
 {
 	if (helper.listenerToUniqueListener.find(&dupListener) != helper.listenerToUniqueListener.end())
 		return ; // already mapped
@@ -115,20 +121,20 @@ static void mapEquivalentListener(DNSLookupHelper& helper, const t_listeners& du
 
 */
 
-static bool Map_Listener_and_Addrinfo(const t_listeners &listener, DNSLookupHelper& helper)
+static bool Map_Listener_and_Addrinfo(const Config::Listen& listener, DNSLookupHelper& helper)
 {
 	// DNS lookup
-	t_addrinfo		*res;
-	t_addrinfo		*cur;
-	t_addrinfo		hints;
+	Ws::Sock::Info		*res;
+	Ws::Sock::Info		*cur;
+	Ws::Sock::Info		hints;
 
-	hints = (t_addrinfo){};
+	hints = (Ws::Sock::Info){};
 	hints.ai_family = AF_INET;    			//listener would tell me if it is ipv4 or ipv6
 	hints.ai_socktype = SOCK_STREAM;		//listener would tell me if it is tcp or udp or something else
 
-	if (::getaddrinfo(listener.first.c_str(), listener.second.c_str(), &hints, &res) != 0)
+	if (::getaddrinfo(listener.hostname.c_str(), listener.port.c_str(), &hints, &res) != 0)
 	{
-		std::cerr << "Error: DNS lookup failed for " << listener.first << ":" << listener.second << std::endl;
+		std::cerr << "Error: DNS lookup failed for " << listener.hostname << ":" << listener.port << std::endl;
 		return (false);
 	}
 		
@@ -198,8 +204,8 @@ static bool DNSLookup_MapUniques(const ServerConfig& config, DNSLookupHelper&		h
 
 	for (size_t i = 0; i < serverBlocks.size(); ++i)
 	{
-		const std::set<t_listeners>&			listeners = serverBlocks[i].getListeners();
-		std::set<t_listeners>::const_iterator 	iter = listeners.begin();
+		const std::set<Config::Listen>&			listeners = serverBlocks[i].getListeners();
+		std::set<Config::Listen>::const_iterator 	iter = listeners.begin();
 
 		for (; iter != listeners.end(); ++iter)
 		{
@@ -243,15 +249,15 @@ bool	ServerConfig::mf_listenDNSlookup()
 	//3)
 	for (size_t i = 0; i < m_serverBlocks.size(); ++i)
 	{
-		const std::set<t_listeners>&			listeners = m_serverBlocks[i].getListeners();
-		std::set<t_listeners>::const_iterator 	iter = listeners.begin();
+		const std::set<Config::Listen>&			listeners = m_serverBlocks[i].getListeners();
+		std::set<Config::Listen>::const_iterator 	iter = listeners.begin();
 
 		//track own duplicates
-		std::set<const t_listeners*>			myFiltered;	
+		std::set<const Config::Listen*>			myFiltered;	
 		for (; iter != listeners.end(); ++iter)
 		{
 			// check if myself have a doubled listener. if i do, skip and let the unique fill the sockaddr
-			const t_listeners* target = helper.listenerToUniqueListener.find(&(*iter))->second;
+			const Config::Listen* target = helper.listenerToUniqueListener.find(&(*iter))->second;
 			if (myFiltered.insert(target).second == false)
 				continue ;
 
@@ -263,7 +269,7 @@ bool	ServerConfig::mf_listenDNSlookup()
 			for (MMap_uniqueListenToAddr::iterator it = range.first; it != range.second; ++it)
 			{
 				Map_uniqueAddrToBind::iterator addrIter = helper.uniqueAddrToBind.find(it->second);
-				m_serverBlocks[i].addListenAddress((struct sockaddr*)(&addrIter->second->addr));
+				m_serverBlocks[i].addListenAddress((Ws::Sock::addr*)(&addrIter->second->addr));
 			}
 		}
 	}

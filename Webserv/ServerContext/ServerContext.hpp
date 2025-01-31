@@ -6,7 +6,7 @@
 
 # include "../../Toolkit/Arrays/StackArray/StackArray.hpp"
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# include "../Ws_Namespace.h"
 
 //forward declarations
 class ServerConfig;

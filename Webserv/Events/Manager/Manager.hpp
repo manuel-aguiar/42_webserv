@@ -6,7 +6,7 @@
 
 // Project headers
 # include "../m_EventsDefinitions.h"
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 //Toolkit headers
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
@@ -21,7 +21,6 @@ namespace Events
 	class Subscription;
 }
 //////////////////////////
-
 
 namespace Events
 {
@@ -49,17 +48,17 @@ namespace Events
 			
 		private:
 			size_t								m_monitoringCount;
-			t_fd								m_epollfd;
-			t_fd								m_maxStaleFd;
+			Ws::fd								m_epollfd;
+			Ws::fd								m_maxStaleFd;
 			Globals&							m_globals;
 
 			HeapArray<InternalSub>				m_subscriptions;
 			HeapCircularQueue<InternalSub*>		m_availableSubs;
-			HeapArray<t_byte>					m_staleEvents;
+			HeapArray<Ws::byte>					m_staleEvents;
 			Events::Monitor::Event				m_epollEvents[MAX_EPOLL_EVENTS];
 
-			void								mf_markFdStale(t_fd fd);
-			int									mf_isFdStale(t_fd fd);
+			void								mf_markFdStale(Ws::fd fd);
+			int									mf_isFdStale(Ws::fd fd);
 			
 			Manager(const Manager& copy);
 			Manager& operator=(const Manager& assign);

@@ -72,7 +72,7 @@ namespace Events
 	}
 
 	void
-	Manager::mf_markFdStale(t_fd fd)
+	Manager::mf_markFdStale(Ws::fd fd)
 	{
 		m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 		size_t index = fd / 8;
@@ -81,7 +81,7 @@ namespace Events
 	}
 
 	int
-	Manager::mf_isFdStale(t_fd fd)
+	Manager::mf_isFdStale(Ws::fd fd)
 	{
 		if (fd == Ws::FD_NONE)
 			return (1);
@@ -106,9 +106,9 @@ namespace Events
 	int
 	Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
-		t_epoll_event	epollEvent = (t_epoll_event){};
+		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
 		
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
@@ -141,9 +141,9 @@ namespace Events
 	int
 	Manager::updateEvents(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
-		t_epoll_event	epollEvent = (t_epoll_event){};
+		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
 
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
@@ -176,7 +176,7 @@ namespace Events
 	int
 	Manager::stopMonitoring(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
 		
 		internal = static_cast<InternalSub*>(&event);

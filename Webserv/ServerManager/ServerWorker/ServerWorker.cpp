@@ -138,7 +138,7 @@ ServerWorker::ServerWorker(const ServerWorker& copy) :
 ServerWorker& ServerWorker::operator=(const ServerWorker& assign) { (void)assign; return (*this);}
 
 
-void	ServerWorker::createListeningSocket(const t_addrinfo& addrinfo, 
+void	ServerWorker::createListeningSocket(const Ws::Sock::Info& addrinfo, 
 											const int backlog, 
 											const t_ptr_ProtoModule& protoModule, 
 											const t_func_initProtoConn& initProtoConnection)

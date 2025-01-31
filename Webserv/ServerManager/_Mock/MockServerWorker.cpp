@@ -196,7 +196,7 @@ Nginx_MemoryPool&			ServerWorker::accessMemPool()
 	return (m_memPool);
 }
 
-void	ServerWorker::createListeningSocket(const t_addrinfo& addrinfo, 
+void	ServerWorker::createListeningSocket(const Ws::Sock::Info& addrinfo, 
 											const int backlog, 
 											const t_ptr_ProtoModule& protoModule, 
 											const t_func_initProtoConn& initProtoConnection)

@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 11:12:20 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/22 11:58:06 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/01/31 14:11:49 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ EventManager::~EventManager()
 
 int                EventManager::monitor(const Subscription& event)
 {
-	t_epoll_event epollEvent = (t_epoll_event){};
+	Events::EpollEvent epollEvent = (Events::EpollEvent){};
 
 	epollEvent.events = event.getMonitoredEvents();
 	epollEvent.data.ptr = (void *)&event;
@@ -67,7 +67,7 @@ int                EventManager::monitor(const Subscription& event)
 
 int                EventManager::updateEvents(const Subscription& event)
 {
-	t_epoll_event epollEvent = (t_epoll_event){};
+	Events::EpollEvent epollEvent = (Events::EpollEvent){};
 
 	epollEvent.events = event.getMonitoredEvents();
 	epollEvent.data.ptr = (void *)&event;
@@ -103,7 +103,7 @@ int                 EventManager::ProcessEvents(int timeOut)
 	return (m_waitCount);
 }
 
-const   t_epoll_event&     EventManager::retrieveEvent(int index)
+const   Events::EpollEvent&     EventManager::retrieveEvent(int index)
 {
 	assert(index >= 0 && index < m_waitCount);
 	return (m_epollEvents[index]);

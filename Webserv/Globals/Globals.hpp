@@ -4,7 +4,7 @@
 
 # define GLOBALS_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
+# include "../Ws_Namespace.h"
 # include "LogFile/LogFile.hpp"
 # include "Clock/Clock.hpp"
 # include "SignalHandler/SignalHandler.hpp"

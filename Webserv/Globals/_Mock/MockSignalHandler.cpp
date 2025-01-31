@@ -17,13 +17,13 @@ SignalHandler::~SignalHandler()
 
 }
 
-t_fd		SignalHandler::getPipeRead(int serverID)
+Ws::fd		SignalHandler::getPipeRead(int serverID)
 {
     (void)serverID;
 	return (1);
 }
 
-t_fd		SignalHandler::getPipeWrite(int serverID)
+Ws::fd		SignalHandler::getPipeWrite(int serverID)
 {
     (void)serverID;
 	return (1);

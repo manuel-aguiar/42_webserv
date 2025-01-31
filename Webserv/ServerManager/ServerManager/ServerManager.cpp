@@ -2,7 +2,7 @@
 
 # include "ServerManager.hpp"
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include "../../HttpModule/HttpModule.hpp"
 # include "../../CgiModule/CgiModule/ImplModule.hpp"
 # include "../../Globals/SignalHandler/SignalHandler.hpp"

@@ -5,7 +5,7 @@
 # define CGIWORKER_HPP
 
 //Project Headers
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 // Toolkit headers
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"

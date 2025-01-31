@@ -31,7 +31,7 @@ struct ListenerPtrComparator {
 */
 struct AddrinfoPtrComparator
 {
-	bool operator()(const t_addrinfo* a, const t_addrinfo* b)
+	bool operator()(const Ws::Sock::Info* a, const Ws::Sock::Info* b)
 	{
 		int memcmp;
 
@@ -87,20 +87,20 @@ struct AddrinfoPtrComparator
 
 */
 
-static void getAddrInfo_Free(std::vector<t_addrinfo*>& allAddrInfo)
+static void getAddrInfo_Free(std::vector<Ws::Sock::Info*>& allAddrInfo)
 {
 	for (size_t i = 0; i < allAddrInfo.size(); ++i)
 		::freeaddrinfo(allAddrInfo[i]);
 }
 
 static int	getAddrInfo_Setup(const ServerConfig& 									config,
-					std::set<const t_addrinfo*, AddrinfoPtrComparator>& 	unique_AddrInfo,
-					std::vector<t_addrinfo*>& 								allLists_AddrInfo,
+					std::set<const Ws::Sock::Info*, AddrinfoPtrComparator>& 	unique_AddrInfo,
+					std::vector<Ws::Sock::Info*>& 								allLists_AddrInfo,
 					int socktype, int addrFamily)
 {
-	t_addrinfo          						*res;
-	t_addrinfo          						*cur;
-	t_addrinfo          						hints;
+	Ws::Sock::Info          						*res;
+	Ws::Sock::Info          						*cur;
+	Ws::Sock::Info          						hints;
 	int											status;
 
 	typedef std::map<std::string, ServerBlock> t_blocks;
@@ -110,7 +110,7 @@ static int	getAddrInfo_Setup(const ServerConfig& 									config,
 
 	std::set<const t_listeners*, ListenerPtrComparator>	filterListeners;
 
-	hints = (t_addrinfo){};
+	hints = (Ws::Sock::Info){};
 	hints.ai_family = addrFamily;
 	hints.ai_socktype = socktype;
 
@@ -171,8 +171,8 @@ void	ServerManager::mf_prepareWorkers()
 	Nginx_MemoryPool*									workerMemPool;
 
 	//for getaddrinfo
-	std::set<const t_addrinfo*, AddrinfoPtrComparator> 	unique_Addrinfo;
-	std::vector<t_addrinfo*> 							allLists_Addrinfo;
+	std::set<const Ws::Sock::Info*, AddrinfoPtrComparator> 	unique_Addrinfo;
+	std::vector<Ws::Sock::Info*> 							allLists_Addrinfo;
 
 	const int backlog = 100;																								// must be replaced with correct value
 	m_listenerCount = getAddrInfo_Setup(m_config, unique_Addrinfo, allLists_Addrinfo, SOCK_STREAM, AF_INET);				///must be replaced with correct values
@@ -184,7 +184,7 @@ void	ServerManager::mf_prepareWorkers()
 		m_workers[i] = (ServerWorker*)workerMemPool->allocate(sizeof (ServerWorker));
 		new (m_workers[i]) ServerWorker(*this, i, *workerMemPool, m_globals);
 
-		for (std::set<const t_addrinfo*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
+		for (std::set<const Ws::Sock::Info*, AddrinfoPtrComparator>::iterator iter = unique_Addrinfo.begin(); iter != unique_Addrinfo.end(); ++iter)
 		{	
 			/*
 				The protoModule and protoconnection should be found in serverconfig but we don't have
