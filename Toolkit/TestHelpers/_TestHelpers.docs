@@ -1,0 +1,61 @@
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+TEST_HEADER(message)
+	Place this at the beginning of the test main, to signal the tests are beginning
+	pass it your class name for instance
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_FOOTER
+	Place this at the end of your test main to signal the end of tests for a class
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_INTRO(testNumber)
+	Place this at the beginning of each test. THe macro can take any argument but ideally
+	pass it the number of your test
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_PASSED
+	Passing test, no custom message
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_FAILED
+	Failing test, no custom message
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_PASSED_MSG(message)
+	Passing test, adding a custom message
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_FAILED_MSG(message)
+	Failing test, adding a custom message
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+TEST_ERROR_MSG(actual, expected, message)
+    Generates an error message (returns a std::string). This macro is called by EXPECT_EQUAL
+    and also ASSERT_EQUAL. You can call it directly if you have chained tests and need
+    to cleanup resources before throwing an exception.
+
+    But it is most a helper.
+    Args:
+        actual - the result of what your testing
+        expected - what you expect the outcome to be
+        message - a custom message you want to display
+	
+//////////////////////////////////////////////////////////////////////////////////////////
+
+EXPECT_EQUAL(actual, expected, message)
+    Compares to values (actual vs expected) and throws an exception if they are not equal.
+    It uses TEST_ERROR_MSG to generate the error message.
+    Args:
+        actual - the result of what your testing
+        expected - what you expect the outcome to be
+        message - a custom message you want to display in case of failing equality (actual != expected)
