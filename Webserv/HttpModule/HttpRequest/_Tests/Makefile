@@ -16,7 +16,15 @@ HTTP_MODULE_DIR = ../..
 NAME = test.out
 
 # Source files
-TEST_SRCS = $(TEST_DIR)/test_req_line.cpp
+# TEST_SRCS = $(TEST_DIR)/test_req_line.cpp
+
+# TEST_SRCS += $(TEST_DIR)/test_req_headers.cpp
+
+TEST_SRCS += $(TEST_DIR)/test_req_body.cpp
+
+# TEST_SRCS += $(TEST_DIR)/test_req_chunked_body.cpp
+
+
 
 MAIN_SRCS = $(SRC_DIR)/HttpRequest.cpp \
             $(HTTP_MODULE_DIR)/HttpDefinitions.cpp
