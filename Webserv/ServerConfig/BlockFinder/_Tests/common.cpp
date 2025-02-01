@@ -2,6 +2,7 @@
 
 
 #include "../BlockFinder.hpp"
+#include "../../ServerBlock/ServerBlock.hpp"
 #include <iomanip>
 #include <arpa/inet.h>
 #include <cstdlib>
@@ -25,7 +26,7 @@ static std::string getPortString(const struct sockaddr* addr) {
 void	printBlock(const ServerBlock *block, const struct sockaddr* addr, const std::string& server_name)
 {
     std::cout << "┌──────────── Block Found ────────────┐" << std::endl;
-    std::cout << "│ ID:          " << std::left << std::setw(23) << block->id() << "│" << std::endl;
+    std::cout << "│ ID:          " << std::left << std::setw(23) << block << "│" << std::endl;
     std::cout << "│ IP:          " << std::left << std::setw(23) << getIpString(addr) << "│" << std::endl;
     std::cout << "│ Port:        " << std::left << std::setw(23) << getPortString(addr) << "│" << std::endl;
     std::cout << "│ Server Name: " << std::left << std::setw(23) << server_name << "│" << std::endl;
@@ -67,8 +68,8 @@ void reviewTests()
         try
         {
             //setup
-            ServerBlock block1("block1");
-            ServerBlock block2("block2");
+            ServerBlock block1;
+            ServerBlock block2;
             BlockFinder finder;
 
             struct sockaddr_in addr1 = createSockAddr("0.0.0.0", "80");
@@ -98,8 +99,8 @@ void reviewTests()
     try
     {
         //setup
-        ServerBlock block1("block1");
-        ServerBlock block2("block2");
+        ServerBlock block1;
+        ServerBlock block2;
         BlockFinder finder;
 
         struct sockaddr_in addr2 = createSockAddr("127.0.0.1", "80");
@@ -127,7 +128,7 @@ void reviewTests()
     try
     {
         //setup
-        ServerBlock block1("block1");
+        ServerBlock block1;
         BlockFinder finder;
 
         struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "80");
@@ -150,9 +151,9 @@ void reviewTests()
     try
     {
         //setup
-        ServerBlock block1("block1");
-        ServerBlock block2("block2");
-        ServerBlock block3("block3");
+        ServerBlock block1;
+        ServerBlock block2;
+        ServerBlock block3;
         BlockFinder finder;
 
         struct sockaddr_in addr1 = createSockAddr("0.0.0.0", "80");
@@ -185,7 +186,7 @@ void reviewTests()
     try
     {
         //setup
-        ServerBlock block1("block1");
+        ServerBlock block1;
         BlockFinder bfinder;
 
         struct sockaddr_in addr1 = createSockAddr("0.0.0.0", "443");
@@ -209,7 +210,7 @@ void reviewTests()
     try
     {
         // setup
-        ServerBlock block1("block1");
+        ServerBlock block1;
         BlockFinder bfinder;
 
         struct sockaddr_in addr1 = createSockAddr("0.0.0.0", "443");
