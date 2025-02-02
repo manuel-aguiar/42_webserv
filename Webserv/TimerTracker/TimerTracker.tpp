@@ -7,6 +7,7 @@
 
 // Project Headers
 # include "../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
+# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 # include <map>
@@ -30,15 +31,14 @@ class TimerTracker
 
 		TimerTracker(size_t capacity, const Allocator& allocator = Allocator()) : 
 			m_timers(std::less<T>(), mapPool(capacity, pairAllocator(allocator))), 
-			m_capacity(capacity), 
-			m_size(0)
+			m_capacity(capacity) 
 		{
+			ASSERT_EQUAL(capacity > 0, true, "TimerTracker capacity must be greater than 0");
 		}
 
         TimerTracker(const TimerTracker& copy) :
             m_timers(std::less<T>(), mapPool(copy.m_capacity, pairAllocator(copy.m_timers.get_allocator()))),
-            m_capacity(copy.m_capacity),
-            m_size(copy.m_size)
+            m_capacity(copy.m_capacity)
         {
             *this = copy;
         }
@@ -49,14 +49,19 @@ class TimerTracker
                 return (*this);
 
             m_capacity = copy.m_capacity;
-            m_size = copy.m_size;
             m_timers = copy.m_timers;
 
             return (*this);
         }
 
+		size_t size() const
+		{
+			return (m_timers.size());
+		}
+
 		iterator insert(const T& key, const U& value)
 		{
+			ASSERT_EQUAL(m_timers.size() < m_capacity, true, "TimerTracker is full");
 			return (m_timers.insert(std::pair<T, U>(key, value)));
 		}
 
@@ -64,14 +69,10 @@ class TimerTracker
 		{
 			std::pair<iterator, iterator> it = m_timers.equal_range(key);
 			
-			//can be multiple, but not in our case
 			for (iterator start = it.first; start != it.second; ++start)
 			{
 				if (start->second == value)
-				{
 					m_timers.erase(start);
-					break;
-				}
 			}
 		}
 
@@ -101,7 +102,6 @@ class TimerTracker
 	private:
 		timerMap 							m_timers;
 		size_t								m_capacity;
-		size_t 								m_size;
 };
 
 #endif
