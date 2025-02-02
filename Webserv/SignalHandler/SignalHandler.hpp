@@ -37,12 +37,12 @@ class SignalHandler
 		void			ignoreSignal(const int sigNum, Globals& globals);
 		void			unregisterSignal(const int sigNum, Globals& globals);
 
-		void			notifySignalReception(int sigNum);
+		void			notifySignalReception(const int sigNum);
 
-		void			setSignal(int sigNum);
+		void			setSignal(const int sigNum);
 		int				getSignal();
 
-		Ws::fd			getSignalListener(int serverID);
+		Ws::fd			getSignalListener(const int serverID);
 		
 
 	private:

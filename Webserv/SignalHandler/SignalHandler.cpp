@@ -23,7 +23,7 @@ bool 			SignalHandler::m_isInstantiated = false;
 	Signal handler that will be subscribed by our class to all signals that get registered
 */
 void
-SignalHandler::mf_defaultHandler(int sigNum)
+SignalHandler::mf_defaultHandler(const int sigNum)
 {
 	g_SignalHandler.notifySignalReception(sigNum);
 }
@@ -57,7 +57,7 @@ SignalHandler::~SignalHandler()
 	This way, signal reception is solved synchronously by the worker
 */
 Ws::fd
-SignalHandler::getSignalListener(int serverID)
+SignalHandler::getSignalListener(const int serverID)
 {
 	return (m_pipes[serverID].read);
 }
@@ -82,7 +82,7 @@ SignalHandler::setSignal(int sig)
 	identify and act accordingly (our use case, the listener will just exit)
 */
 void
-SignalHandler::notifySignalReception(int sigNum)
+SignalHandler::notifySignalReception(const int sigNum)
 {
 	setSignal(sigNum);
 	size_t count = m_pipes.size();
