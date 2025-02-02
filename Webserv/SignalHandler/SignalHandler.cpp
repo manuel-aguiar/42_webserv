@@ -37,7 +37,8 @@ SignalHandler::mf_defaultHandler(const int sigNum)
 	hence extern above
 */
 SignalHandler::SignalHandler() :
-	m_signal(SIG_NONE)
+	m_signal(SIG_NONE),
+	m_modifiedSignals(0)
 {
 	ASSERT_EQUAL(m_isInstantiated == 0, true, "SignalHandler can only be instantiated once");
 	SignalHandler::m_isInstantiated = true;
@@ -125,6 +126,8 @@ SignalHandler::registerSignal(const int sigNum, Globals& globals)
 {
 	struct sigaction sigact;
 
+	ASSERT_EQUAL(sigNum <= 64, true, "SignalHandler::registerSignal: Signal number out of range");
+
 	sigact.sa_flags = SA_RESTART;
 	sigact.sa_handler = mf_defaultHandler;
 	::sigemptyset(&(sigact.sa_mask));
@@ -134,12 +137,17 @@ SignalHandler::registerSignal(const int sigNum, Globals& globals)
 		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::registerSignal: m_sigact() failed");
 	}
+
+	m_modifiedSignals |= (1 << sigNum);
 }
 
 void
 SignalHandler::unregisterSignal(const int sigNum, Globals& globals)
 {
 	struct sigaction sigact;	
+
+	ASSERT_EQUAL(sigNum <= 64, true, "SignalHandler::unregisterSignal: Signal number out of range");
+	ASSERT_EQUAL((m_modifiedSignals & (1 << sigNum)) != 0, true, "SignalHandler::unregisterSignal: Signal not registered in the first place");
 
 	sigact.sa_flags = 0;
 	sigact.sa_handler = SIG_DFL;
@@ -150,12 +158,16 @@ SignalHandler::unregisterSignal(const int sigNum, Globals& globals)
 		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::unregisterSignal: m_sigact() failed");
 	}
+
+	m_modifiedSignals &= ~(1 << sigNum);
 }
 
 void
 SignalHandler::ignoreSignal(const int sigNum, Globals& globals)
 {
 	struct sigaction sigact;	
+
+	ASSERT_EQUAL(sigNum <= 64, true, "SignalHandler::ignoreSignal: Signal number out of range");
 
 	sigact.sa_flags = 0;
 	sigact.sa_handler = SIG_IGN;
@@ -166,6 +178,65 @@ SignalHandler::ignoreSignal(const int sigNum, Globals& globals)
 		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::ignoreSignal: m_sigact() failed");
 	}
+
+	m_modifiedSignals |= (1 << sigNum);
+}
+
+/*
+	Binary search to find the first set bit in a number
+*/
+static int findFirstSetBitPosition(size_t value)
+{
+	int pos = 0;
+
+	if (!value)
+		return (-1);
+	if ((value & 0xffffffff) == 0) {
+		pos += 32;
+		value >>= 32;
+	}
+	if ((value & 0xffff) == 0) {
+		pos += 16;
+		value >>= 16;
+	}
+	if ((value & 0xff) == 0) {
+		pos += 8;
+		value >>= 8;
+	}
+	if ((value & 0xf) == 0) {
+		pos += 4;
+		value >>= 4;
+	}
+	if ((value & 0x3) == 0) {
+		pos += 2;
+		value >>= 2;
+	}
+	if ((value & 0x1) == 0) {
+		pos += 1;
+	}
+
+    return (pos);
+}
+
+void
+SignalHandler::reset(Globals& globals)
+{
+	m_signal = SIG_NONE;
+	mf_clearOpenPipes();
+
+    size_t modifiedSignals = m_modifiedSignals;
+
+    int i = -1;
+    while (modifiedSignals)
+    {
+		int pos = findFirstSetBitPosition(modifiedSignals) + 1;
+
+		i += pos;
+        unregisterSignal(i, globals);
+
+        modifiedSignals >>= pos;
+    }
+	m_modifiedSignals = 0;
 }
 
 void

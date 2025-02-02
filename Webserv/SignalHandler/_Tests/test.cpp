@@ -21,26 +21,58 @@ int main(void)
 
 	TEST_HEADER("SignalHandler");
 
-
+	// common process and common Globals
 	int ourPid = ::getpid();
+	Globals globals(NULL, NULL, NULL, NULL);
+
+	// reset the signal handler after every test
+	g_SignalHandler.reset(globals);
 	try
 	{
 		TEST_INTRO(testNumber++);
 
 		//SignalHandler handler; <- correctly asserts, SignalHandler is a global and cannot be instantiated outside global scope
 		//SignalHandler copy(g_SignalHandler); <- private
-		TEST_PASSED_MSG("SignalHandler instantiation");
+
+		//g_SignalHandler.unregisterSignal(SIGINT, globals); <- correctly asserts, signal was not registered/ignored
+
+		TEST_PASSED_MSG("SignalHandler instantiation and assert tests");
 	}
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+	// reset the signal handler after every test
+	g_SignalHandler.reset(globals);
+	try
+	{
+		TEST_INTRO(testNumber++);
+
+		//SignalHandler handler; <- correctly asserts, SignalHandler is a global and cannot be instantiated outside global scope
+		//SignalHandler copy(g_SignalHandler); <- private
+
+		g_SignalHandler.registerSignal(5, globals);
+		g_SignalHandler.registerSignal(10, globals);
+		g_SignalHandler.registerSignal(15, globals);
+		g_SignalHandler.registerSignal(16, globals);
+
+
+		TEST_PASSED_MSG("registering random but legal signals");
+	}
+	catch(const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
+///////////////////////////////////////////////////////////////////////////////////////
+	// reset the signal handler after every test
+	g_SignalHandler.reset(globals);
 
 	try
 	{
 		TEST_INTRO(testNumber++);
 
-		Globals globals(NULL, NULL, NULL, NULL);
+		
 		g_SignalHandler.openSignalListeners(1, globals);
 
 		Ws::fd listener = g_SignalHandler.getSignalListener(0);
@@ -68,14 +100,15 @@ int main(void)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-
+///////////////////////////////////////////////////////////////////////////////////////
+	// reset the signal handler after every test
+	g_SignalHandler.reset(globals);
 	try
 	{
 		TEST_INTRO(testNumber++);
 
 		const int numServers = 100;
 
-		Globals globals(NULL, NULL, NULL, NULL);
 		g_SignalHandler.openSignalListeners(numServers, globals);
 		DynArray<Ws::fd> listeners(numServers);
 
@@ -90,7 +123,6 @@ int main(void)
 		::kill(ourPid, SIGQUIT);
 		::kill(ourPid, SIGINT);
 		::kill(ourPid, SIGQUIT);
-
 
 		// confirming all listeners received them, in order
 		for (size_t i = 0; i < listeners.size(); ++i)
@@ -112,6 +144,9 @@ int main(void)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+	// reset the signal handler after every test
+	g_SignalHandler.reset(globals);
 
 	try
 	{
@@ -119,7 +154,6 @@ int main(void)
 
 		const int numServers = 1;
 
-		Globals globals(NULL, NULL, NULL, NULL);
 		g_SignalHandler.openSignalListeners(numServers, globals);
 
 		// ignoring
@@ -157,6 +191,9 @@ int main(void)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
+///////////////////////////////////////////////////////////////////////////////////////
+
+	g_SignalHandler.reset(globals);
 
 	TEST_FOOTER;
 	return (0);

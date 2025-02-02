@@ -44,6 +44,7 @@ class SignalHandler
 
 		Ws::fd			getSignalListener(const int serverID);
 		
+		void			reset(Globals& globals);
 
 	private:
 
@@ -63,6 +64,8 @@ class SignalHandler
 
 		//shared to all instances, force single instance and assert if more than 1
 		static bool			m_isInstantiated;
+
+		size_t				m_modifiedSignals;
 
 		//private
 		SignalHandler(const SignalHandler& copy);
