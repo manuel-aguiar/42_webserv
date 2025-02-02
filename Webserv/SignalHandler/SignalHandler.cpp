@@ -11,6 +11,7 @@
 
 // C headers
 # include <unistd.h>
+# include <signal.h>
 
 //the user of the class must declare this global
 //user may want to derive from this class, let it declare the global

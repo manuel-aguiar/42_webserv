@@ -8,6 +8,11 @@
 //dependencies
 # include "../../Globals/Globals.hpp"
 
+// C headers
+# include <signal.h>
+# include <unistd.h>
+
+
 SignalHandler 	g_SignalHandler;
 
 int main(void)

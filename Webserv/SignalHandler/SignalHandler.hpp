@@ -5,19 +5,23 @@
 # define SIGNALHANDLER_HPP
 
 // Project headers
-# include "../Ws_Namespace.h"
 # include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
 
-// C headers
-# include <signal.h>
+// own forward declaration + extern global instance
+class SignalHandler;
 
 
+// THE USER WILL HAVE TO INSTANTIATE THEMSELVES
+// allws a user to have a derived class and instantiate that one
+// if it wants to
+extern SignalHandler 	g_SignalHandler;
 
+
+// forward declarations
 class Globals;
 
-// global SignalHandler class
-class SignalHandler;
-extern SignalHandler 	g_SignalHandler;
+// not making the full namespace a dependency when i just want the fd typedef
+namespace Ws {typedef int fd;}
 
 class SignalHandler
 {
@@ -40,15 +44,15 @@ class SignalHandler
 
 		Ws::fd			getSignalListener(int serverID);
 		
-		enum { SIG_NONE = 0, SIG_INT = SIGINT, SIG_QUIT = SIGQUIT};
-		//setters
 
 	private:
 
+		enum {SIG_NONE = 0};
+
 		struct PipeFds
 		{
-			Ws::fd read;
-			Ws::fd write;
+			Ws::fd	read;
+			Ws::fd	write;
 		}; // helper struct
 
 		void				mf_clearOpenPipes();
@@ -57,7 +61,7 @@ class SignalHandler
 		DynArray<PipeFds>	m_pipes;
 		int 				m_signal;
 
-		//shared to all instances
+		//shared to all instances, force single instance and assert if more than 1
 		static bool			m_isInstantiated;
 
 		//private
