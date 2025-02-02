@@ -17,7 +17,13 @@ OBJ_PATH	=	$(ROOT_PATH)/_build
 
 
 SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
-				$(SRC_PATH)/Webserv/Connections/_Tests/test1.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testSocket.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testListeningSocket.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testAppLayer.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testAccepter.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
 				\
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \

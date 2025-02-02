@@ -1,29 +1,19 @@
 
 
-# include "../Manager/Manager.hpp"
-# include "../../Globals/Globals.hpp"
-# include "../../Events/Manager/Manager.hpp"
-# include "../../ServerContext/ServerContext.hpp"
 
-#include <iostream>
+# include "../../../Toolkit/TestHelpers/TestHelpers.h"
+
+extern void testSocket(int& testNumber);
 
 int main(void)
 {
-	
-	std::vector<Ws::BindInfo> 	bindAddresses;
-	Globals 					globals(NULL, NULL, NULL, NULL);
-	Events::Manager 			eventManager(200, globals);
-	ServerContext 				context;
+	int testNumber = 1;
 
-	bindAddresses.push_back((Ws::BindInfo){});
-	bindAddresses.push_back((Ws::BindInfo){});
-	bindAddresses.push_back((Ws::BindInfo){});
-	bindAddresses.push_back((Ws::BindInfo){});
+	TEST_HEADER("Connection Manager tests");
 
-	Conn::Manager connManager(100, bindAddresses, eventManager, globals, context);
-	
-	connManager.init();
-	connManager.shutdown();
+	testSocket(testNumber);	
+
+	TEST_FOOTER;
 
 	return (0);
 }

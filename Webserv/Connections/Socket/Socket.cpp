@@ -7,7 +7,7 @@ Socket::Socket(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) :
 	m_info(info) {}
 
 Socket::Socket() : 
-	m_sockfd(-1),
+	m_sockfd(Ws::FD_NONE),
 	m_info((Ws::BindInfo){}) {}
 
 Socket::~Socket() {}
@@ -20,8 +20,10 @@ Socket& Socket::operator=(const Socket& assign)
 {
 	if (this == &assign)
 		return (*this);
+
 	m_sockfd = assign.m_sockfd;
 	m_info = assign.m_info;
+	
 	return (*this);
 }
 
@@ -59,6 +61,6 @@ Socket::modifyBindInfo()
 void
 Socket::reset()
 {
-	m_sockfd = -1;
+	m_sockfd = Ws::FD_NONE;
 	m_info = (Ws::BindInfo){};
 }
