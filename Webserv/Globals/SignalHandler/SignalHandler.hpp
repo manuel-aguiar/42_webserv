@@ -11,8 +11,9 @@
 
 
 class Globals;
-class SignalHandler;
 
+// global SignalHandler class
+class SignalHandler;
 extern SignalHandler 	g_SignalHandler;
 
 class SignalHandler
@@ -38,7 +39,6 @@ class SignalHandler
 		void									setSignal(int sig);
 
 	private:
-		Globals*								m_globals;
 		std::vector<std::pair<Ws::fd, Ws::fd> >	m_pipes;
 		int 									m_signal;
 		struct sigaction						m_sigact;

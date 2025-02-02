@@ -1,23 +1,29 @@
 
 
+# include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../SignalHandler.hpp"
-# include "TestDependencies.hpp"
 # include <iostream>
 
 int main(void)
 {
-	/****************************************** */
-	std::cout << "Test 1: ";
+	int testNumber = 1;
+
+	TEST_HEADER("SignalHandler");
+
 	try
 	{
-		SignalHandler handler;
-		std::cout << "FAILED, cannot have more than the global instance\n";
+		TEST_INTRO(testNumber++);
+
+		//SignalHandler handler; <- correctly asserts, SignalHandler is a global and cannot be instantiated outside global scope
+
+		TEST_PASSED_MSG("SignalHandler instantiation");
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "PASS: " << e.what() << '\n';
+		TEST_FAILED_MSG(e.what());
 	}
 	
+	TEST_FOOTER;
 	return (0);
 }
 

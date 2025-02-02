@@ -3,18 +3,16 @@
 # include "SignalHandler.hpp"
 # include "../Globals.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
+# include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 SignalHandler 	g_SignalHandler;
-size_t			SignalHandler::gm_counter;
-
+size_t 			SignalHandler::gm_counter = 0;
 SignalHandler::SignalHandler() :
-	m_globals(NULL),
 	m_pipes(0),
 	m_signal(0),
-	m_sigact((t_sigaction){})
+	m_sigact((struct sigaction){})
 {
-	if (SignalHandler::gm_counter != 0)
-		throw std::runtime_error("SignalHandler::SignalHandler: SignalHandler is a singleton");
+	ASSERT_EQUAL(gm_counter == 0, true, "SignalHandler can only be instantiated once");
 	SignalHandler::gm_counter++;
 }
 
@@ -22,10 +20,8 @@ SignalHandler::~SignalHandler()
 {
 	for (size_t i = 0; i < m_pipes.size(); ++i)
 	{
-		if (close(getPipeRead(i)) == -1)
-			m_globals->logError("close(): " + std::string(std::strerror(errno)));
-		if (close(getPipeWrite(i)) == -1)
-			m_globals->logError("close(): " + std::string(std::strerror(errno)));
+		::close(getPipeRead(i));
+		::close(getPipeWrite(i));
 	}
 	m_pipes.clear();	
 }
@@ -54,7 +50,9 @@ void		SignalHandler::signal_handler(int sigNum)
 {
 	size_t count;
 
+	g_SignalHandler.setSignal(sigNum);
 	count = g_SignalHandler.getPipes().size();
+
 	if (sigNum == SIGINT || sigNum == SIGQUIT)
 	{
 		g_SignalHandler.setSignal(sigNum);
@@ -75,7 +73,6 @@ void		SignalHandler::prepare_signal(void (*handler)(int), size_t numServers, Glo
 {
 	int pipefd[2];
 
-	m_globals = &globals;
 	m_pipes.reserve(numServers);
 
 	m_sigact.sa_flags = SA_RESTART;
@@ -83,19 +80,19 @@ void		SignalHandler::prepare_signal(void (*handler)(int), size_t numServers, Glo
 
 	if (sigemptyset(&(m_sigact.sa_mask)) == -1)
 	{
-		m_globals->logError("SignalHandler::prepare_signal, sigemptyset(): " + std::string(std::strerror(errno)));
+		globals.logError("SignalHandler::prepare_signal, sigemptyset(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: sigemptyset() failed");
 	}
 
 	if (sigaction(SIGINT, &m_sigact, NULL) == -1)
 	{
-		m_globals->logError("m_sigact(): " + std::string(std::strerror(errno)));
+		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: m_sigact() failed");
 	}
 
 	if (sigaction(SIGQUIT, &m_sigact, NULL) == -1)
 	{
-		m_globals->logError("m_sigact(): " + std::string(std::strerror(errno)));
+		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::prepare_signal: m_sigact() failed");
 	}
 
@@ -103,13 +100,13 @@ void		SignalHandler::prepare_signal(void (*handler)(int), size_t numServers, Glo
 	{
 		if (pipe(pipefd) == -1)
 		{
-			m_globals->logError("pipe(): " + std::string(std::strerror(errno)));
+			globals.logError("pipe(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, pipe() failed");
 		}
 		if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0])
 		|| !FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
 		{
-			m_globals->logError("fcntl(): " + std::string(std::strerror(errno)));
+			globals.logError("fcntl(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, fcntl() failed");
 		}
 
@@ -122,8 +119,7 @@ SignalHandler::SignalHandler(const SignalHandler& copy)
 {
 	(void)copy;
 
-	if (SignalHandler::gm_counter != 0)
-		throw std::runtime_error("SignalHandler::SignalHandler: SignalHandler is a singleton");
+	ASSERT_EQUAL(gm_counter == 0, true, "SignalHandler can't be copied");
 	SignalHandler::gm_counter++;
 }
 
@@ -131,8 +127,7 @@ SignalHandler& SignalHandler::operator=(const SignalHandler& assign)
 {
 	(void)assign;
 	
-	if (SignalHandler::gm_counter != 0)
-		throw std::runtime_error("SignalHandler::SignalHandler: SignalHandler is a singleton");
+	ASSERT_EQUAL(gm_counter == 0, true, "SignalHandler can't be copied");
 	SignalHandler::gm_counter++;	
 	return (*this);
 }
