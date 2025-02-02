@@ -8,17 +8,16 @@ ROOT_PATH               =       $(shell git rev-parse --show-toplevel)
 SRC_PATH                =       $(ROOT_PATH)
 OBJ_PATH                =       $(ROOT_PATH)/_build
 
-SUBJECT_PATH            =       $(SRC_PATH)/Webserv/Globals
+SUBJECT_PATH            =       $(SRC_PATH)/Webserv
 
 # Sources
 SRCS_TEST               =       $(SUBJECT_PATH)/SignalHandler/_Tests/test.cpp  \
 								\
 								$(SUBJECT_PATH)/SignalHandler/SignalHandler.cpp \
-								$(SUBJECT_PATH)/LogFile/LogFile.cpp \
-								$(SUBJECT_PATH)/Clock/Clock.cpp \
-								$(SUBJECT_PATH)/Globals.cpp	\
-								\
-								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
+								$(SUBJECT_PATH)/Globals/_Mock/MockClock.cpp \
+								$(SUBJECT_PATH)/Globals/_Mock/MockLogFile.cpp \
+								$(SUBJECT_PATH)/Globals/_Mock/MockGlobals.cpp \
+								$(SUBJECT_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp
 
 OBJS_TEST               =       $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_TEST))
 
@@ -40,7 +39,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #####################################################
 
 test: $(TARGET_TEST)
-	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(TARGET_TEST)
+	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
 
 debug: test
 

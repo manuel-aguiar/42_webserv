@@ -5,6 +5,7 @@
 #include "../LogFile/LogFile.hpp"
 
 #include <iostream>
+#include <vector>
 
 std::vector<std::string> g_mockGlobals_ErrorMsgs;
 

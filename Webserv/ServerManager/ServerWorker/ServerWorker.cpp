@@ -47,7 +47,7 @@ ServerWorker::~ServerWorker()
 int ServerWorker::prepareLaunch()
 {
 	//setup signal handler
-	m_mySignalEvent.setFdFlagsCallback(g_SignalHandler.getPipeRead(m_myID), EPOLLIN, this, &ServerWorker::EventCallbackExit);
+	m_mySignalEvent.setFdFlagsCallback(g_SignalHandler.getSignalListener(m_myID), EPOLLIN, this, &ServerWorker::EventCallbackExit);
 	m_mySignalEvent.setCallback(this, &ServerWorker::EventCallbackExit);
 
 	m_eventManager.monitor(m_mySignalEvent);

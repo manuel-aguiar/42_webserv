@@ -4,10 +4,13 @@
 
 # define SIGNALHANDLER_HPP
 
-# include "../../Ws_Namespace.h"
+// Project headers
+# include "../Ws_Namespace.h"
+# include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
+
+// C headers
 # include <signal.h>
-# include <vector>
-# include <unistd.h>
+
 
 
 class Globals;
@@ -18,34 +21,44 @@ extern SignalHandler 	g_SignalHandler;
 
 class SignalHandler
 {
+	private:
+
 	public:
 		SignalHandler();
 		~SignalHandler();
 
-		void									prepare_signal(void (*handler)(int), size_t numServers, Globals& globals);
+		void			openSignalListeners(const size_t numServers, Globals& globals);
 
-		static void								signal_handler(int sigNum);
+		void			registerSignal(const int sigNum, Globals& globals);
+		void			ignoreSignal(const int sigNum, Globals& globals);
+		void			unregisterSignal(const int sigNum, Globals& globals);
 
-		// getters
-		int										getSignal();
-		const std::vector<std::pair<Ws::fd, Ws::fd> >&		
-												getPipes();
+		void			notifySignalReception(int sigNum);
 
-		Ws::fd									getPipeRead(int serverID);
-		Ws::fd									getPipeWrite(int serverID);
+		void			setSignal(int sigNum);
+		int				getSignal();
+
+		Ws::fd			getSignalListener(int serverID);
 		
-
+		enum { SIG_NONE = 0, SIG_INT = SIGINT, SIG_QUIT = SIGQUIT};
 		//setters
-		void									setSignal(int sig);
 
 	private:
-		std::vector<std::pair<Ws::fd, Ws::fd> >	m_pipes;
-		int 									m_signal;
-		struct sigaction						m_sigact;
+
+		struct PipeFds
+		{
+			Ws::fd read;
+			Ws::fd write;
+		}; // helper struct
+
+		void				mf_clearOpenPipes();
+		static void			mf_defaultHandler(int sigNum);
+
+		DynArray<PipeFds>	m_pipes;
+		int 				m_signal;
 
 		//shared to all instances
-		static size_t							gm_counter;
-
+		static bool			m_isInstantiated;
 
 		//private
 		SignalHandler(const SignalHandler& copy);

@@ -22,7 +22,7 @@ ServerManager::ServerManager(const ServerConfig& config, Globals& globals) :
 	mf_prepareWorkers();
 
 	//prepare signal handler
-	g_SignalHandler.prepare_signal(SignalHandler::signal_handler, m_config.getNumWorkers(), globals);
+	g_SignalHandler.prepareSignal(SignalHandler::mf_defaultHandler, m_config.getNumWorkers(), globals);
 }
 
 /*

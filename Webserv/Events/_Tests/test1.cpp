@@ -14,6 +14,9 @@
 // C++ headers
 # include <iostream>
 
+// C headers
+# include <unistd.h>
+
 class Calculator
 {
 	public:
