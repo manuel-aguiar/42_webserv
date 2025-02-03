@@ -31,14 +31,19 @@ ServerContext& ServerContext::operator=(const ServerContext& assign)
 	return (*this);
 }
 
-void	ServerContext::setServerConfig(ServerConfig* config)
+void	ServerContext::setServerConfig(ServerConfig& config)
 {
-	m_config = config;
+	m_config = &config;
 }
 
-void	ServerContext::setGlobals(Globals* globals)
+void	ServerContext::setGlobals(Globals& globals)
 {
-	m_globals = globals;
+	m_globals = &globals;
+}
+
+void	ServerContext::setBlockFinder(BlockFinder& blockFinder)
+{
+	m_blockFinder = &blockFinder;
 }
 
 void	ServerContext::setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init)

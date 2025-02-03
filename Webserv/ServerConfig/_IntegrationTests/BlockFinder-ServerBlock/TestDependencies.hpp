@@ -11,6 +11,7 @@
 # include "../../../Ws_Namespace.h"
 #include "../../ServerBlock/ServerBlock.hpp"
 #include "../../BlockFinder/BlockFinder.hpp"
+# include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 
 
 #endif

@@ -1,15 +1,9 @@
 
 
 #include "BlockFinder.hpp"
-#include <cassert>
 
-
-// Choose between mock and real implementation
-# ifdef TESTMODE
-#  include "_Tests/TestDependencies.hpp"
-# else
-#  include "../ServerBlock/ServerBlock.hpp"
-# endif
+#include "../ServerBlock/ServerBlock.hpp"
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 BlockFinder::BlockFinder():
     m_wildcardKey() {
@@ -20,9 +14,10 @@ BlockFinder::BlockFinder():
 
 BlockFinder::~BlockFinder() {}
 
-std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr* addr) const {
-    assert(addr != NULL && "Address is NULL");
-    assert(addr->sa_family == AF_INET && "Invalid address family");
+std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr* addr) const
+{
+    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_extractIpPort(): Address is NULL");
+    ASSERT_EQUAL(addr->sa_family, AF_INET, "BlockFinder::mf_extractIpPort(): Currently supports only ipv4");
 
     Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
     return std::make_pair(ipv4->sin_addr.s_addr, ipv4->sin_port);
@@ -34,7 +29,7 @@ std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr
 **	uses normalized directives
 */
 BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const Ws::Sock::addr* addr, const std::string& serverName) const {
-    assert(addr != NULL && "Address is NULL");
+    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_createIdentifier(): Address is NULL");
 
     BlockIdentifier key;
     std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(addr);
@@ -73,7 +68,7 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
     {
         // Port directive is mandatory and cannot be wildcard
         std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(*lit);
-        assert(ipPort.second != 0 && "Port directive is mandatory");
+        ASSERT_EQUAL(ipPort.second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
 
         // For each server name
         for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)

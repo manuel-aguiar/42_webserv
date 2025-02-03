@@ -11,6 +11,7 @@
 //forward declarations
 class ServerConfig;
 class Globals;
+class BlockFinder;
 
 class ServerContext
 {
@@ -20,8 +21,9 @@ class ServerContext
 		ServerContext(const ServerContext& copy);
 		ServerContext& operator=(const ServerContext& assign);
 
-		void					setServerConfig(ServerConfig* config);
-		void					setGlobals(Globals* globals);
+		void					setServerConfig(ServerConfig& config);
+		void					setGlobals(Globals& globals);
+		void					setBlockFinder(BlockFinder& blockFinder);
 		void					setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init);
 		void					setAddonLayer(Ws::AddonLayer::Type type, Ws::AddonLayer::State state);
 
@@ -34,6 +36,7 @@ class ServerContext
 	private:
 		ServerConfig*												m_config;
 		Globals*													m_globals;
+		BlockFinder*												m_blockFinder;
 		StackArray<Ws::AppLayer::Module,	Ws::AppLayer::COUNT>	m_appLayerState;
 		StackArray<Ws::AppLayer::Init, 		Ws::AppLayer::COUNT>	m_appLayerInit;
 		StackArray<Ws::AddonLayer::State, 	Ws::AddonLayer::COUNT>	m_addonLayer;

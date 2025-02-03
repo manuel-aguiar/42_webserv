@@ -9,14 +9,6 @@
 # include <sys/un.h>
 # include <netdb.h>
 
-# ifdef __linux__
-#  include <sys/epoll.h>
-# endif
-
-# ifdef __APPLE__
-#  include <sys/event.h>
-# endif
-
 # include <string>
 
 // forward declarations

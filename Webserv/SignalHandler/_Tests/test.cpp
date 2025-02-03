@@ -93,6 +93,11 @@ int main(void)
 		EXPECT_EQUAL(bytesRead, 6, "SignalHandler should have read 6 bytes from the pipe");
 		EXPECT_EQUAL(g_SignalHandler.getSignal(), SIGINT, "Signal handler should have noticed SIGINT");
 		EXPECT_EQUAL(buffer[0], SIGINT, "Signal handler should have read SIGINT from the pipe");
+		EXPECT_EQUAL(buffer[1], SIGINT, "Signal handler should have read SIGINT from the pipe");
+		EXPECT_EQUAL(buffer[2], SIGINT, "Signal handler should have read SIGINT from the pipe");
+		EXPECT_EQUAL(buffer[3], SIGINT, "Signal handler should have read SIGINT from the pipe");
+		EXPECT_EQUAL(buffer[4], SIGINT, "Signal handler should have read SIGINT from the pipe");
+		EXPECT_EQUAL(buffer[5], SIGINT, "Signal handler should have read SIGINT from the pipe");
 
 		TEST_PASSED_MSG("sending a signal and confirming all good");
 	}
