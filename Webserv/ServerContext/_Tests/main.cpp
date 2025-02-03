@@ -1,10 +1,13 @@
 
 
 # include "../ServerContext.hpp"
+# include "../../../Toolkit/TestHelpers/TestHelpers.h"
 
 int main (void)
 {
-	ServerContext ctx;
+	TEST_HEADER("ServerContext");
 
+
+	TEST_FOOTER;
 	return (0);
 }
