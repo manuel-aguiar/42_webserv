@@ -51,7 +51,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         DynArray<int> assign;
@@ -91,7 +91,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         DynArray<int> assign(array);
@@ -130,7 +130,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         DynArray<int> assign;
