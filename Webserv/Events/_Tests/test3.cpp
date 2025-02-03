@@ -15,20 +15,28 @@
 // C++ headers
 # include <iostream>
 
+// C headers
+# include <unistd.h>
+
 class Calculator
 {
 	public:
-		Calculator() : m_data(0) {}
+
+		enum {NOT_CALCULATED = -1, RESULT = 42};
+
+		Calculator() : m_data(NOT_CALCULATED) {}
 
 		void doSomething()
 		{
-			m_data = 42;
+			m_data = RESULT;
 		}
 
 		static void MyCallback_doSomething(Events::Subscription& event)
 		{
 			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
-			me->doSomething();
+			if (event.getTriggeredEvents() == Events::Monitor::NONE
+			|| event.getTriggeredEvents() & Events::Monitor::WRITE)
+				me->doSomething();
 		}
 
 		int getData() const
@@ -66,13 +74,13 @@ int TestPart3(int testNumber)
 		manager.ProcessEvents(-1); 
 
 		// data should be 0, triggered but not handled because event fd was market as stale
-		EXPECT_EQUAL(user.getData(), 0, "Events should not be handled, marked as stale");
+		EXPECT_EQUAL(user.getData(), Calculator::NOT_CALCULATED, "Events should not be handled, marked as stale");
 		
 		// after processing events, all fds are marked as good again, until proven otherwise
 		manager.ProcessEvents(-1);
 
 		// handler should be called now, and user data should be 42
-		EXPECT_EQUAL(user.getData(), 42, "Events should now be handled, not stale anymore");
+		EXPECT_EQUAL(user.getData(), Calculator::RESULT, "Events should now be handled, not stale anymore");
 
 		 //stopMonitoring event, (indifferent to mark as stale here)
 		manager.stopMonitoring(*subscription, true);

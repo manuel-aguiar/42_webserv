@@ -4,10 +4,13 @@
 
 # define GLOBALS_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
-# include "LogFile/LogFile.hpp"
-# include "Clock/Clock.hpp"
-# include "SignalHandler/SignalHandler.hpp"
+// C++ headers
+# include <cstddef>
+# include <string>
+
+//forward declarations
+class Clock;
+class LogFile;
 
 class Globals
 {

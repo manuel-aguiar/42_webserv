@@ -12,12 +12,6 @@
 # include <exception>
 # include <sstream>
 
-// Own Headers
-# include "../../GenericUtils/Validation/Validation.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../GenericUtils/Webserver_Definitions.h"
-# include "../DefaultConfig/DefaultConfig.hpp"
-
 class ServerBlock;
 
 class ServerLocation
@@ -37,7 +31,6 @@ class ServerLocation
 		ServerLocation(const ServerLocation &other);
 
 		// Getters & Setters
-		const ServerBlock&				getServerBlock() const;
 		const std::string&				getPath() const;
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;

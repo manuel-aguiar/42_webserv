@@ -29,7 +29,7 @@ int TestPart1(int testNumber)
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -57,7 +57,7 @@ int TestPart1(int testNumber)
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -85,7 +85,7 @@ int TestPart1(int testNumber)
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -111,7 +111,7 @@ int TestPart1(int testNumber)
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -160,7 +160,7 @@ int TestPart1(int testNumber)
 		std::list<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -187,7 +187,7 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -223,7 +223,7 @@ int TestPart1(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -250,7 +250,7 @@ int TestPart1(int testNumber)
 		List<ToolkitDummy>::iterator it = list.begin();
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -286,7 +286,7 @@ int TestPart1(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}

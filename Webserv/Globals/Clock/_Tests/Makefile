@@ -1,31 +1,52 @@
+# Compiler and flags
+TARGET_TEST             =       test.out
+CXX                     =       c++
+CXXFLAGS                =       -Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 
-# 
-# This is just a Makefile to compile tests
-# It must be adjusted acoording to dependencies of tests themselves
-#
+# Paths
+ROOT_PATH               =       $(shell git rev-parse --show-toplevel)
+SRC_PATH                =       $(ROOT_PATH)
+OBJ_PATH                =       $(ROOT_PATH)/_build
 
-CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-TARGET = test.out
+SUBJECT_PATH            =       $(SRC_PATH)/Webserv
 
-SRCS = $(wildcard *.cpp)
-OBJS = $(SRCS:.cpp=.o)
+# Sources
+SRCS_TEST               =       $(SUBJECT_PATH)/Globals/Clock/_Tests/test.cpp  \
+								\
+								$(SUBJECT_PATH)/Globals/LogFile/LogFile.cpp \
+								$(SUBJECT_PATH)/Globals/Globals.cpp \
+								$(SUBJECT_PATH)/Globals/Clock/Clock.cpp
 
-all: $(TARGET)
+OBJS_TEST               =       $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_TEST))
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+DEPS_TEST               =       $(OBJS_TEST:.o=.d)
 
-%.o: %.cpp
+#####################################################
+
+all: $(TARGET_TEST)
+
+$(TARGET_TEST): $(OBJS_TEST)
+	$(CXX) $(CXXFLAGS)  $(OBJS_TEST) -o $(TARGET_TEST)
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	rm -rf $(OBJS) $(TARGET)
+-include $(DEPS_TEST)
 
-fclean: clean
+#####################################################
 
-test: $(TARGET) 
+test: $(TARGET_TEST)
+	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
 
 debug: test
 
-.PHONY: clean test debug fclean
+clean:
+	rm -rf vgcore*
+
+fclean: clean
+	rm -rf $(TARGET_TEST) $(OBJ_PATH)
+
+re: fclean all
+
+.PHONY: clean fclean run test debug

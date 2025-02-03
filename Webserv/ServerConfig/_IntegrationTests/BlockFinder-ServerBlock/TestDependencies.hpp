@@ -8,9 +8,10 @@
 # include <cstring>
 # include <exception>
 
-# include "../../../GenericUtils/Webserver_Definitions.h"
+# include "../../../Ws_Namespace.h"
 #include "../../ServerBlock/ServerBlock.hpp"
 #include "../../BlockFinder/BlockFinder.hpp"
+# include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 
 
 #endif

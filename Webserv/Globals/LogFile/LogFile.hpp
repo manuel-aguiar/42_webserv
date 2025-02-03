@@ -4,20 +4,14 @@
 
 # define LOGFILE_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
-
-// C headers
-# include <unistd.h>
-# include <fcntl.h>
-
-// C++ Headers
-# include <exception>
-# include <stdexcept>
-# include <cstring>
+// C++ headers
+# include <cstddef> // defines NULL
 # include <string>
-# include <cerrno>
 
 class Globals;
+
+// not making the full namespace a dependency when i just want the fd typedef
+namespace Ws {typedef int fd;}
 
 class LogFile
 {
@@ -37,9 +31,9 @@ class LogFile
 		Globals*	m_globals;
 
 
-		//Log();
-		//Log(const Log& copy);
-		//Log& operator=(const Log& assign);
+		LogFile();
+		LogFile(const LogFile& copy);
+		LogFile& operator=(const LogFile& assign);
 
 };
 

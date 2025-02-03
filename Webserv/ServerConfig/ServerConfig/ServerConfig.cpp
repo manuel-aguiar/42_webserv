@@ -1,6 +1,13 @@
 
 
+// Own Headers
+
 # include "ServerConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
+# include "../ServerLocation/ServerLocation.hpp"
+# include "../ServerBlock/ServerBlock.hpp"
+
 
 ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
 	m_configFilePath(configFilePath),
@@ -44,7 +51,7 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 
 bool	ServerConfig::m_updateFile()
 {
-	m_configFileStream.open(m_configFilePath.c_str());
+	m_configFileStream.open(m_configFilePath);
 	if (!m_configFileStream.is_open())
 	{
 		std::cerr << "Error: Could not open configuration file." << std::endl;
@@ -231,7 +238,7 @@ int		ServerConfig::parseConfigFile()
 }
 
 // Getters & Setters
-const t_path&		ServerConfig::getConfigPath() const
+const char*		ServerConfig::getConfigPath() const
 {
 	return (m_configFilePath);
 }
@@ -254,11 +261,6 @@ const std::string		&ServerConfig::getMaxConcurrentCgi() const
 const std::string		&ServerConfig::getMaxCgiBacklog() const
 {
 	return (m_max_cgi_backlog);
-}
-
-void		ServerConfig::setConfigPath(const t_path &path)
-{
-	m_configFilePath = path;
 }
 
 void		ServerConfig::setMaxConnections(const std::string &value)
@@ -292,7 +294,7 @@ void	ServerConfig::m_setDefaults()
 		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
 }
 
-const std::vector<BindAddress>&	ServerConfig::getAllBindAddresses() const
+const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const
 {
 	return (m_bindAddresses);
 }
