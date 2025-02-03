@@ -20,15 +20,21 @@
 class Calculator
 {
 	public:
+
+		enum {NOT_CALCULATED = -1, RESULT = 42};
+
+		Calculator() : m_data(NOT_CALCULATED) {}
 		void Calculate()
 		{
-			m_data = 42;
+			m_data = RESULT;
 		}
 
 		static void EventCallback_Calculate(Events::Subscription& event)
 		{
 			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
-			me->Calculate();
+			if (event.getTriggeredEvents() == Events::Monitor::NONE
+			|| event.getTriggeredEvents() & Events::Monitor::WRITE)
+				me->Calculate();
 		}
 
 		int getData() const
@@ -59,8 +65,8 @@ int TestPart1(int testNumber)
 		Events::Subscription	subscription;
 
 		EXPECT_EQUAL(subscription.getFd(), -1, "fd not correctly initialized");
-		EXPECT_EQUAL(subscription.getMonitoredEvents(), Events::Monitor::NONE, "Monitored events not correctly initialized");
-		EXPECT_EQUAL(subscription.getTriggeredEvents(), Events::Monitor::NONE, "Triggered events not correctly initialized");
+		EXPECT_EQUAL(subscription.getMonitoredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Monitored events not correctly initialized");
+		EXPECT_EQUAL(subscription.getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::NONE, "Triggered events not correctly initialized");
 		EXPECT_EQUAL(subscription.accessUser(), (Events::Subscription::User)NULL, "User not correctly initialized");
 		EXPECT_EQUAL(subscription.accessCallback(), (Events::Subscription::Callback)NULL, "Callback not correctly initialized");
 		
@@ -130,7 +136,7 @@ int TestPart1(int testNumber)
 		
 		subscription.notify();
 
-		EXPECT_EQUAL(calculator.getData(), 42, "Failed to call the user function");
+		EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
 		
 		TEST_PASSED_MSG("using a Subscription");
 	}
@@ -175,12 +181,12 @@ int TestPart1(int testNumber)
 
 		manager.ProcessEvents(10);
 
-				EXPECT_EQUAL(calculator.getData(), -1, "Should not have triggered any event, STDOUT is not available for reading");
+				EXPECT_EQUAL(calculator.getData(), Calculator::NOT_CALCULATED, "Should not have triggered any event, STDOUT is not available for reading");
 
 		subscription->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::HANGUP | Events::Monitor::ERROR);
 	
 		manager.ProcessEvents(10);
-				EXPECT_EQUAL(calculator.getData(), -1, "Should not have triggered any event, \
+				EXPECT_EQUAL(calculator.getData(), Calculator::NOT_CALCULATED, "Should not have triggered any event, \
 			Subscription now tracks writing but the event manager was not informed");
 
 		manager.updateEvents(*subscription, false);
@@ -192,7 +198,7 @@ int TestPart1(int testNumber)
 
 		// should only trigger the write event
 				EXPECT_EQUAL(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Failed to trigger the event");
-				EXPECT_EQUAL(calculator.getData(), 42, "Failed to call the user function");
+				EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
 		
 		//manager.startMonitoring(*subscription, false);  <- correctly asserts, subscription is already being monitored
 

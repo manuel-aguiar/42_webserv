@@ -15,7 +15,6 @@ ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
 SRC_PATH	=	$(ROOT_PATH)/.
 OBJ_PATH	=	$(ROOT_PATH)/_build
 
-
 SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testSocket.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
@@ -24,6 +23,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testAccepter.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/common.cpp \
 				\
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
@@ -70,7 +70,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 all: $(NAME)
 
 test: $(NAME)
-	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(NAME)
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all --trace-children=yes ./$(NAME)
 
 clean:
 	rm -rf $(NAME) vgcore*

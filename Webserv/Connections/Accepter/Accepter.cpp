@@ -74,7 +74,7 @@ int		Accepter::accept(const Socket& listen, Socket& accept)
 
 	if (sockfd == -1)
 		return (0);
-
+	
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
 		::close(sockfd);

@@ -64,10 +64,11 @@ Monitor::modify(Events::Manager& eventManager, bool isCalledFromEventLoop)
 	eventManager.updateEvents(*m_eventSubs, isCalledFromEventLoop);
 }
 
-Events::Subscription*
+Events::Subscription&
 Monitor::accessEvent()
 {
-	return (m_eventSubs);
+	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::accessEvent() accessing event when none was acquired");
+	return (*m_eventSubs);
 }
 
 

@@ -26,7 +26,7 @@ namespace Conn
 			ServerContext&				accessServerContext();
 			Events::Manager&			accessEventManager();
 
-			Events::Subscription*		accessEvent();
+			Events::Subscription&		accessEvent();
 			void						startMonitoring(bool isCalledFromEventLoop);
 			void						stopMonitoring(bool isCalledFromEventLoop);
 			void						updateMonitoring(bool isCalledFromEventLoop);

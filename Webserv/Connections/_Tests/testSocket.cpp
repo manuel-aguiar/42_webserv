@@ -11,20 +11,7 @@
 // C headers
 #include <arpa/inet.h>
 
-static Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port)
-{
-    Ws::Sock::addr_in addr = (Ws::Sock::addr_in){};
-
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(std::atoi(port.c_str()));
-
-    if (ip.empty() || ip == "0.0.0.0")
-        addr.sin_addr.s_addr = INADDR_ANY;  // 0.0.0.0
-    else
-        inet_pton(AF_INET, ip.c_str(), &(addr.sin_addr));
-
-    return (addr);
-}
+Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);
 
 struct BindInfo_Internals : public Ws::BindInfo
 {
@@ -109,7 +96,7 @@ void testSocket(int& testNumber)
             EXPECT_EQUAL(get_info, set_info, "BindInfo doesn't match");
         }
 
-        TEST_PASSED_MSG("Socket sub-class tests passed");
+        TEST_PASSED_MSG("Socket: tests passed");
     }
     catch(const std::exception& e)
     {

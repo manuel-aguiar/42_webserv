@@ -20,7 +20,7 @@ namespace Conn
 	}
 
 
-	Events::Subscription*
+	Events::Subscription&
 	Connection::accessEvent()
 	{
 		return (m_monitor.accessEvent());

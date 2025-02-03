@@ -13,15 +13,15 @@ int		ListeningSocket::open()
 		return (0);
 
 	m_monitor.acquire(mf_accessEventManager());
-	Events::Subscription* event = m_monitor.accessEvent();
+	Events::Subscription& event = m_monitor.accessEvent();
 
-	event->setFd(m_socket.getSockFd());
-	event->setMonitoredEvents(Events::Monitor::READ 
+	event.setFd(m_socket.getSockFd());
+	event.setMonitoredEvents(Events::Monitor::READ 
 							| Events::Monitor::ERROR 
 							| Events::Monitor::HANGUP 
 							| Events::Monitor::EDGE_TRIGGERED);
-	event->setUser(this);
-	event->setCallback(EventCallbackAccept);
+	event.setUser(this);
+	event.setCallback(EventCallbackAccept);
 	m_monitor.subscribe(mf_accessEventManager(), true);
 
 	return (1);
