@@ -96,19 +96,23 @@ struct DNSLookupHelper
 /*
 	Find out who is the unique listener that setup that addrinfo, originally, and map us to that listener
 */
-static void mapEquivalentListener(DNSLookupHelper& helper, const Config::Listen& dupListener, const Ws::Sock::Info& targetAddrinfo)
+static const Config::Listen& mapEquivalentListener(DNSLookupHelper& helper, const Config::Listen& dupListener, const Ws::Sock::Info& targetAddrinfo)
 {
-	if (helper.listenerToUniqueListener.find(&dupListener) != helper.listenerToUniqueListener.end())
-		return ; // already mapped
+	Map_toUniqueListener::iterator unique = helper.listenerToUniqueListener.find(&dupListener);
+
+	if (unique != helper.listenerToUniqueListener.end())
+		return (*unique->second); // already mapped
 
 	for (MMap_uniqueListenToAddr::iterator it = helper.uniqueListenToAddr.begin(); it != helper.uniqueListenToAddr.end(); ++it)
 	{
 		if (it->second == &targetAddrinfo)
 		{
-			helper.listenerToUniqueListener.insert(Pair_toUniqueListener(&dupListener, it->first)).first;
-			break ;
+			std::pair<Map_toUniqueListener::iterator, bool> returnVal;
+			returnVal = helper.listenerToUniqueListener.insert(Pair_toUniqueListener(&dupListener, it->first));
+			unique = returnVal.first;
 		}
 	}
+	return (*unique->second);
 }
 
 /*
@@ -146,8 +150,12 @@ static bool Map_Listener_and_Addrinfo(const Config::Listen& listener, DNSLookupH
 
 		if (addrIter != helper.uniqueAddr.end())
 		{
-			//std::cout << listener.first << ":" << listener.second << " is duplicated" << std::endl;
-			mapEquivalentListener(helper, listener, **addrIter);
+			const Config::Listen& equivalent = mapEquivalentListener(helper, listener, **addrIter);
+			if (listener.appLayer != equivalent.appLayer)
+			{
+				std::cerr << "Error: " << listener.hostname << ":" << listener.port << " is being used for more than one protocol" << std::endl;
+				return (false);
+			}
 			continue ;
 		}
 
