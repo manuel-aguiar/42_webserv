@@ -4,7 +4,7 @@
 
 # define LOGFILE_HPP
 
-# include "../../GenericUtils/Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 
 // C headers
 # include <unistd.h>

@@ -14,15 +14,14 @@
 # include <sstream>
 # include <iostream>
 
-// Own Headers
-# include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../ServerLocation/ServerLocation.hpp"
+//Own headers
+# include "../../Ws_Namespace.h"
 # include "../DefaultConfig/DefaultConfig.hpp"
-# include "../ServerBlock/ServerBlock.hpp"
 
 // forward declarations
 class Globals;
+class ServerBlock;
+class ServerLocation;
 
 class ServerConfig
 {
@@ -32,13 +31,12 @@ class ServerConfig
 		ServerConfig &operator=(const ServerConfig &other);
 
 		// Getters & Setters
-		const t_path&								getConfigPath() const;
+		const char*									getConfigPath() const;
 		const std::vector<ServerBlock>&				getServerBlocks() const;
 		const std::string&							getMaxConnections() const;
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
-		const std::vector<BindAddress>&				getAllBindAddresses() const;
-		void										setConfigPath(const t_path &path);
+		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
@@ -68,14 +66,14 @@ class ServerConfig
 		std::string							m_max_concurrent_cgi;
 		std::string							m_max_cgi_backlog;
 		DefaultConfig						m_configDefault;
-		t_path								m_configFilePath;
+		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
 		Globals*							m_globals; // mostly for logs and debuging, see Globals class
 		
 
-		std::vector<BindAddress>			m_bindAddresses;
+		std::vector<Ws::BindInfo>			m_bindAddresses;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
@@ -87,8 +85,8 @@ class ServerConfig
 		bool								m_updateFile();
 		void								m_setDefaults();
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
-												std::vector<ServerBlock> &servers, 
-												std::vector<ServerLocation> &locations);
+															std::vector<ServerBlock> &servers, 
+															std::vector<ServerLocation> &locations);
 
 
 		bool								mf_listenDNSlookup();

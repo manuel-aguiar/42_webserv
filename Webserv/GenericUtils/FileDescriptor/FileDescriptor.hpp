@@ -4,15 +4,15 @@
 
 # define FILEDESCRIPTOR_HPP
 
-# include "../Webserver_Definitions.h"
+# include "../../Ws_Namespace.h"
 # include <fcntl.h>
 
 namespace FileDescriptor
 {
-	int  setNonBlocking                  (t_fd fd);
-	int  setCloseOnExec                  (t_fd fd);
-	int  setFdFlags                      (t_fd fd, const int flags);
-	int  setCloseOnExec_NonBlocking      (t_fd fd);
+	int  setNonBlocking                  (Ws::fd fd);
+	int  setCloseOnExec                  (Ws::fd fd);
+	int  setFdFlags                      (Ws::fd fd, const int flags);
+	int  setCloseOnExec_NonBlocking      (Ws::fd fd);
 };
 
 #endif

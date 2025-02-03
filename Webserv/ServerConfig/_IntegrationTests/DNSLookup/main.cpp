@@ -1,6 +1,7 @@
 
 
 # include "../../ServerConfig/ServerConfig.hpp"
+# include "../../ServerBlock/ServerBlock.hpp"
 # include "../../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 # include <iostream>
 # include <arpa/inet.h>
@@ -30,24 +31,24 @@ int main(void)
         EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
 
         EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
         
          //confirming match is correct ,ORDER DEPENDS ON SETS
-        struct sockaddr_in *addr;
+        Ws::Sock::addr_in *addr;
         char ip[INET_ADDRSTRLEN];
 
 
         // checking first address
-        addr = (struct sockaddr_in*)(sockAddr[0]);
+        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server");
         EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
         
         //checking second address
-        addr = (struct sockaddr_in*)(sockAddr[1]);
+        addr = (Ws::Sock::addr_in*)(sockAddr[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server");
@@ -77,20 +78,20 @@ int main(void)
         EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
         EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
 
          //confirming match is correct ,ORDER DEPENDS ON SETS
         char ip[INET_ADDRSTRLEN];
-        struct sockaddr_in *addr;
+        Ws::Sock::addr_in *addr;
 
-        addr = (struct sockaddr_in*)(sockAddr[0]);
+        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
         EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
 
-        addr = (struct sockaddr_in*)(sockAddr[1]);
+        addr = (Ws::Sock::addr_in*)(sockAddr[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
@@ -122,15 +123,15 @@ int main(void)
         EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
 
         // checking mapping
-        const std::vector<const struct sockaddr*>& sockAddr = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
 
         EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
 
         //confirming match is correct ,ORDER DEPENDS ON SETS
         char ip[INET_ADDRSTRLEN];
-        struct sockaddr_in *addr;
+        Ws::Sock::addr_in *addr;
         
-        addr = (struct sockaddr_in*)(sockAddr[0]);
+        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
@@ -159,8 +160,8 @@ int main(void)
 
         EXPECT_EQUAL(serverBlocks.size(), 2, "there should be 2 server blocks");
 
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
         EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
         EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
@@ -168,7 +169,7 @@ int main(void)
         EXPECT_EQUAL(sockAddr1[0], sockAddr2[0], "both servers should be pointing to the same sockaddr");
 
         char ip[INET_ADDRSTRLEN];
-        struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
+        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed");
@@ -194,8 +195,8 @@ int main(void)
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
         EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
         EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
@@ -204,13 +205,13 @@ int main(void)
         EXPECT_EQUAL(sockAddr1[1], sockAddr2[1], "servers should share the same sockaddr for 123.123.123.123:80");
 
         char ip[INET_ADDRSTRLEN];
-        struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
+        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed for first address");
         EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "IP mapping failed for first address");
 
-        addr = (struct sockaddr_in*)(sockAddr1[1]);
+        addr = (Ws::Sock::addr_in*)(sockAddr1[1]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed for second address");
@@ -236,15 +237,15 @@ int main(void)
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        const std::vector<const struct sockaddr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const struct sockaddr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
+        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
 
         EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
         EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
         EXPECT_EQUAL(sockAddr1[0], sockAddr2[0], "both servers should point to the same localhost sockaddr");
 
         char ip[INET_ADDRSTRLEN];
-        struct sockaddr_in* addr = (struct sockaddr_in*)(sockAddr1[0]);
+        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
         ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
 
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed");

@@ -7,6 +7,13 @@
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
+
+// C++ headers
+# include <cerrno>
+
+// C headers
+# include <unistd.h>
+
 namespace Events
 {
 	Manager::Manager(size_t maxSubscriptions, Globals& globals) :
@@ -18,7 +25,7 @@ namespace Events
 		m_availableSubs	(maxSubscriptions),
 		m_staleEvents	((maxSubscriptions * 2) / 8 + 1, 0)
 	{
-		m_epollfd = epoll_create(1);
+		m_epollfd = ::epoll_create(1);
 
 		if (m_epollfd == -1)
 		{
@@ -72,7 +79,7 @@ namespace Events
 	}
 
 	void
-	Manager::mf_markFdStale(t_fd fd)
+	Manager::mf_markFdStale(Ws::fd fd)
 	{
 		m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
 		size_t index = fd / 8;
@@ -81,7 +88,7 @@ namespace Events
 	}
 
 	int
-	Manager::mf_isFdStale(t_fd fd)
+	Manager::mf_isFdStale(Ws::fd fd)
 	{
 		if (fd == Ws::FD_NONE)
 			return (1);
@@ -94,7 +101,7 @@ namespace Events
 	{
 		if (m_epollfd != Ws::FD_NONE)
 		{
-			if (close(m_epollfd) == -1)
+			if (::close(m_epollfd) == -1)
 			{
 				m_globals.logError("Manager::~Manager, close(): " + std::string(strerror(errno)));
 			}
@@ -106,9 +113,9 @@ namespace Events
 	int
 	Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
-		t_epoll_event	epollEvent = (t_epoll_event){};
+		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
 		
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
@@ -122,7 +129,7 @@ namespace Events
 		epollEvent.events = internal->getMonitoredEvents();
 		epollEvent.data.ptr = (void *)internal;
 
-		if (epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
+		if (::epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
 			ASSERT_EQUAL(true, false, "Manager::startMonitoring(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::startMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
@@ -141,9 +148,9 @@ namespace Events
 	int
 	Manager::updateEvents(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
-		t_epoll_event	epollEvent = (t_epoll_event){};
+		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
 
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
@@ -158,7 +165,7 @@ namespace Events
 		epollEvent.data.ptr = (void *)internal;
 		
 		
-		if (epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
+		if (::epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 		{
 			ASSERT_EQUAL(true, false, "Manager::updateEvents(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
@@ -176,7 +183,7 @@ namespace Events
 	int
 	Manager::stopMonitoring(Subscription& event, bool markAsStale)
 	{
-		t_fd			fd;
+		Ws::fd			fd;
 		InternalSub*	internal;
 		
 		internal = static_cast<InternalSub*>(&event);
@@ -186,7 +193,7 @@ namespace Events
 				true, "Manager::stopMonitoring(): Subscription is not part of the EventManager's subscriptions");
 		ASSERT_EQUAL(internal->isSubscribed(), true, "Manager::stopMonitoring(): Subscription is not being monitored");
 
-		if (epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
+		if (::epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
 			ASSERT_EQUAL(true, false, "Manager::stopMonitoring(): Subscription data is not valid for epoll monitoring");
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
@@ -211,7 +218,7 @@ namespace Events
 		if (m_monitoringCount == 0)
 			return (0);
 
-		waitCount = epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
+		waitCount = ::epoll_wait(m_epollfd, m_epollEvents, MAX_EPOLL_EVENTS, timeOut);
 
 		if (waitCount == -1)
 		{
