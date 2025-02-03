@@ -9,14 +9,13 @@
 
 int main(void)
 {
-
-	std::cout << "\n*************** [ServerConfig - DNS Lookup] Integration test ***************\n" << std::endl;
+    TEST_HEADER("Integration ServerConfig - DNS Lookup");
 
     int testNumber = 1;
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("OneServer_TwoListen.conf", NULL);
         const size_t expectedCount = 2;
@@ -54,17 +53,17 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server");
         EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
 
-		std::cout << "	PASSED (one server, two listeners)" << std::endl;
+        TEST_PASSED_MSG("one server, two listeners");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("OneServer_Wildcard.conf", NULL);
         const size_t expectedCount = 2;
@@ -97,18 +96,18 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
         EXPECT_EQUAL(std::string(ip), std::string("123.123.123.123"), "sockaddr was not correctly mapped to the server");
 
-		std::cout << "	PASSED (one server, two listeners(one concrete and one wildcard ip)" << std::endl;
+        TEST_PASSED_MSG("one server, two listeners(one concrete and one wildcard ip");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("OneServer_LocalHost.conf", NULL);
         const size_t expectedCount = 1;
@@ -137,17 +136,17 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
         EXPECT_EQUAL(std::string(ip), std::string("127.0.0.1"), "sockaddr was not correctly mapped to the server");
 
-		std::cout << "	PASSED (one server, two equivalent listeners - localhost" << std::endl;
+        TEST_PASSED_MSG("one server, two equivalent listeners - localhost");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("TwoServer_SameListen.conf", NULL);
         const size_t expectedCount = 1;
@@ -175,17 +174,17 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed");
         EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "IP mapping failed");
 
-        std::cout << "\tPASSED (two servers, same listener)" << std::endl;
+        TEST_PASSED_MSG("two servers, same listener");
     }
     catch (const std::exception& e)
     {
-        std::cout << "\tFAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("TwoServer_Wildcard.conf", NULL);
         const size_t expectedCount = 2;
@@ -217,17 +216,17 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed for second address");
         EXPECT_EQUAL(std::string(ip), std::string("123.123.123.123"), "IP mapping failed for second address");
 
-        std::cout << "\tPASSED (two servers, two listeners, shared wildcard and concrete IPs)" << std::endl;
+        TEST_PASSED_MSG("two servers, two listeners, shared wildcard and concrete IPs");
     }
     catch (const std::exception& e)
     {
-        std::cout << "\tFAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("TwoServer_LocalHost.conf", NULL);
         const size_t expectedCount = 1;
@@ -251,18 +250,18 @@ int main(void)
         EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed");
         EXPECT_EQUAL(std::string(ip), std::string("127.0.0.1"), "IP mapping failed");
 
-        std::cout << "\tPASSED (two servers, single listener, localhost)" << std::endl;
+        TEST_PASSED_MSG("two servers, single listener, localhost");
     }
     catch (const std::exception& e)
     {
-        std::cout << "\tFAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         ServerConfig config("OneServer_BadDNS.conf", NULL);
 
@@ -291,16 +290,16 @@ int main(void)
         EXPECT_EQUAL(success, false, "DNS lookup should fail");
         EXPECT_EQUAL(std::string(buffer), expected, "Error message is incorrect");
 
-        std::cout << "\tPASSED (passing an IP that cannot be resolved)" << std::endl;
+        TEST_PASSED_MSG("passing an IP that cannot be resolved");
     }
     catch (const std::exception& e)
     {
-        std::cout << "\tFAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-std::cout << "\n*************** ******************************************** ***************" << std::endl;
+    TEST_FOOTER;
 
     close(STDERR_FILENO);
 

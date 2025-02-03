@@ -20,7 +20,7 @@ int TestPart1(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
         const int queueSize = 10;
         const int frontNumber = 5;
@@ -120,11 +120,11 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
         EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
@@ -135,7 +135,7 @@ int TestPart1(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
         const int queueSize = 2;
         const int frontNumber = 5;
@@ -224,15 +224,15 @@ int TestPart1(int testNumber)
         EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
         EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     // iterators, empty queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -242,15 +242,15 @@ int TestPart1(int testNumber)
 
         EXPECT_EQUAL(it == itEnd, true, "iterators, empty queue, begin and end should be equal");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_back, non-full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -271,15 +271,15 @@ int TestPart1(int testNumber)
 
         EXPECT_EQUAL(i, queue.size(), "iterators, push_back, non-full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_back, full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(2);
@@ -300,15 +300,15 @@ int TestPart1(int testNumber)
 
         EXPECT_EQUAL(i, queue.size(), "iterators, push_back, full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_front, non-full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -329,15 +329,15 @@ int TestPart1(int testNumber)
 
         EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
 //####################################################################################################
- std::cout << "TEST " << testNumber++ << ": ";
+ TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(2);
@@ -358,15 +358,15 @@ try
 
     EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy constructor, full copy-from
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(2);
@@ -386,15 +386,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, full copy-from, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy constructor, not-full copy-from
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(10);
@@ -414,15 +414,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, not-full copy-from value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy constructor, empty copy-from
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(10);
@@ -439,15 +439,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, empty copy-from value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy assignment, full copy-from, empty copy-to
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(2);
@@ -469,15 +469,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, empty copy-to, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy assignment, non-full copy-from, empty copy-to
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(10);
@@ -499,15 +499,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, empty copy-to, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy assignment, empty copy-from, empty copy-to
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(10);
@@ -525,15 +525,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, empty copy-from, empty copy-to, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy assignment, full copy-from, non-empty copy-to
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(2);
@@ -556,15 +556,15 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, non-empty copy-to, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
 
 // copy assignment, non-full copy-from, non-empty copy-to
-std::cout << "TEST " << testNumber++ << ": ";
+TEST_INTRO(testNumber++);
 try
 {
     HeapCircularQueue<int> queue(10);
@@ -587,11 +587,11 @@ try
         EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, non-empty copy-to, value mismatch");
     }
 
-    std::cout << "	PASSED" << std::endl;
+    TEST_PASSED;
 }
 catch (const std::exception& e)
 {
-    std::cout << "	FAILED: " << e.what()  << std::endl;
+    TEST_FAILED_MSG(e.what());
 }
     return (testNumber);
 }

@@ -36,7 +36,7 @@ int TestPart2(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<int> std;
 		DynArray<int> array;
 
@@ -67,16 +67,16 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "copy assignment, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<int> std;
 		DynArray<int> array;
 
@@ -106,16 +106,16 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(std.size(), assign.size(), "copy constructor, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<int> std;
 		DynArray<int> array;
 
@@ -161,11 +161,11 @@ int TestPart2(int testNumber)
 
         EXPECT_EQUAL(array.size(), 0, "::clear failed, array not empty");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************************************************************** */
@@ -173,7 +173,7 @@ int TestPart2(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<EmplaceTwo> std;
 		DynArray<EmplaceTwo> array;
 		
@@ -183,11 +183,11 @@ int TestPart2(int testNumber)
 			array.push_back(EmplaceTwo("name", i));
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

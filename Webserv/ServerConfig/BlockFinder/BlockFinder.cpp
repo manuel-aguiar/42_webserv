@@ -1,4 +1,5 @@
 #include "BlockFinder.hpp"
+#include "../ServerBlock/ServerBlock.hpp"
 
 BlockFinder::BlockFinder():
     m_wildcardKey() {

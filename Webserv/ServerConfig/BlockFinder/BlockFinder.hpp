@@ -5,13 +5,6 @@
 # include "../../GenericUtils/Webserver_Definitions.h"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
-// Choose between mock and real implementation
-# ifdef TESTMODE
-#  include "_Tests/TestDependencies.hpp"
-# else
-#  include "../ServerBlock/ServerBlock.hpp"
-# endif
-
 // C++ headers
 # include <string>
 # include <map>
@@ -19,6 +12,8 @@
 # include <iostream>
 # include <iomanip>
 
+// forward declarations
+class ServerBlock;
 
 class BlockFinder {
 	public:

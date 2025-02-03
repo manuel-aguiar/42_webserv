@@ -56,4 +56,6 @@ fclean: clean
 re: fclean
 	make
 
-.PHONY: clean fclean run
+debug: test
+
+.PHONY: clean fclean run test

@@ -69,22 +69,22 @@ int TestPart2(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Manager manager(100, globals);
 		
-		std::cout << "	PASSED (instantiation test)" << std::endl;
+		TEST_PASSED_MSG("Events::Manager instantiation");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/************************************************** */
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Events::Manager	manager(100, globals);
 
@@ -171,11 +171,11 @@ int TestPart2(int testNumber)
 		close(sockfd[0]);
 		close(sockfd[1]);
 
-		std::cout << "	PASSED (handling communication between a writer and a reader)" << std::endl;
+		TEST_PASSED_MSG("handling communication between a writer and a reader");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);
