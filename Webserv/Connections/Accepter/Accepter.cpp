@@ -70,6 +70,7 @@ int		Accepter::accept(const Socket& listen, Socket& accept)
 	const Ws::BindInfo&	m_info = listen.getBindInfo();
 	Ws::BindInfo&		modifyInfo = accept.modifyBindInfo();
 
+	modifyInfo.addrlen = m_info.addrlen;
 	sockfd = ::accept(listen.getSockFd(), (struct sockaddr*)(&modifyInfo.addr), &modifyInfo.addrlen);
 
 	if (sockfd == -1)
@@ -84,6 +85,17 @@ int		Accepter::accept(const Socket& listen, Socket& accept)
 	modifyInfo.family = m_info.family;
 	modifyInfo.socktype = m_info.socktype;
 	modifyInfo.proto = m_info.proto;
+
+	// ovewritting the ephemeral port with that of the listeningSocket, that's what matters for us
+	switch (modifyInfo.family)
+	{
+		case AF_INET:
+			modifyInfo.addr.sockaddr_in.sin_port = m_info.addr.sockaddr_in.sin_port;
+			break;
+		default:
+			ASSERT_EQUAL(1, 0, "Accepter::accept(), unsupported family");
+	}
+
 	accept.setSockFd(sockfd);
 
 	return (1);

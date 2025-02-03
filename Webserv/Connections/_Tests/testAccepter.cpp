@@ -140,6 +140,9 @@ void testAccepter(int& testNumber)
         EXPECT_EQUAL(internalConnect.getBindInfo().family, externalConnect.getBindInfo().family, "family: InternalConnect and ExternalConnect info must be the same");
         EXPECT_EQUAL(internalConnect.getBindInfo().socktype, externalConnect.getBindInfo().socktype, "socktype: InternalConnect and ExternalConnect info must be the same");
         EXPECT_EQUAL(internalConnect.getBindInfo().proto, externalConnect.getBindInfo().proto, "proto: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.getBindInfo().addrlen, externalConnect.getBindInfo().addrlen, "addrlen: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.getBindInfo().addr.sockaddr_in.sin_addr.s_addr, externalConnect.getBindInfo().addr.sockaddr_in.sin_addr.s_addr, "addr: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.getBindInfo().addr.sockaddr_in.sin_port, externalConnect.getBindInfo().addr.sockaddr_in.sin_port, "port: InternalConnect and ExternalConnect info must be the same");
 
         accepter.close(listenInfo);
         ::close(internalConnect.getSockFd());
