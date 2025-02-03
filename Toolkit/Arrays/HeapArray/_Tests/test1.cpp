@@ -64,7 +64,7 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with ToolkitDummy");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -95,7 +95,7 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch during emplace_back iteration with ToolkitDummy");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -128,7 +128,7 @@ int TestPart1(int testNumber)
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch during iteration with duplicated ToolkitDummy");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}

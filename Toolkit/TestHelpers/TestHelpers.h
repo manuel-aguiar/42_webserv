@@ -149,7 +149,7 @@ namespace TestHelpers
 		void expectEqualImpl(const T& actual, const U& expected, const char* actualExpr, 
 							const char* expectedExpr, const std::string& message, 
 							const char* file, int line, const char* function) {
-			if (actual != static_cast<T>(expected)) {
+			if (actual != static_cast<const T>(expected)) {
 				std::ostringstream oss;
 				oss << "\t----------------------------------\n"
 					<< "\tError:     '" << message << "'\n"
@@ -164,7 +164,7 @@ namespace TestHelpers
 		}
 
 		#define EXPECT_EQUAL(actual, expected, message)                               			\
-			TestHelpers::expectEqualImpl((actual), (expected), #actual, #expected, message, __FILE__, __LINE__, __FUNCTION__);																
+			TestHelpers::expectEqualImpl((actual), (expected), #actual, #expected, (message), __FILE__, __LINE__, __FUNCTION__);																
 		
 	#endif
 

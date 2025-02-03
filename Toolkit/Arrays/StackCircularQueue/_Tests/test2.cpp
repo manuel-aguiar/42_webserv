@@ -69,7 +69,7 @@ int TestPart2(int testNumber)
 
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "Value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         StackCircularQueue<int, queueSize> assign;
