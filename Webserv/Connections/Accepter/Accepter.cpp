@@ -9,7 +9,7 @@
 // C headers
 # include <unistd.h>
 
-Accepter::Accepter(int backlog) : 
+Accepter::Accepter(Ws::Listen::backlog backlog) : 
 	m_backlog(backlog) {}
 
 Accepter::~Accepter() {}

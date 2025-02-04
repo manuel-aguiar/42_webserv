@@ -68,6 +68,7 @@ void testAccepter(int& testNumber)
         listenInfo.modifyBindInfo() = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+            .backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
@@ -78,6 +79,7 @@ void testAccepter(int& testNumber)
         externalConnect.modifyBindInfo() = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+            .backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,

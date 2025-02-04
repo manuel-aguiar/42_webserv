@@ -22,7 +22,7 @@ namespace Events { class Manager; }
 class ListeningSocket
 {
 	public:
-		ListeningSocket(const int backlog, const Ws::BindInfo& info, InternalManager& connManager);
+		ListeningSocket(const Ws::BindInfo& info, InternalManager& connManager);
 		~ListeningSocket();
 
 		// methods

@@ -62,6 +62,7 @@ void testSocket(int& testNumber)
         info = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+            .backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
@@ -80,6 +81,7 @@ void testSocket(int& testNumber)
         Ws::BindInfo    new_info = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+            .backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,

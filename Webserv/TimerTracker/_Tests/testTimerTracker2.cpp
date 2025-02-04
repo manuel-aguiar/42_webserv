@@ -30,10 +30,10 @@ void testTimerTracker2(int& testNumber)
         tracker.insert(Timer::now(), (SomeStruct){ .a = 1});
         tracker.insert(Timer::now(), (SomeStruct){ .a = 2});
 
-        Timer cuttoff = Timer::now();
+        Timer cuttoff = Timer::now() + 1;
         
-        tracker.insert(Timer::now(), (SomeStruct){ .a = 3});
-        tracker.insert(Timer::now(), (SomeStruct){ .a = 4});
+        tracker.insert(Timer::now() + 2 , (SomeStruct){ .a = 3});
+        tracker.insert(Timer::now() + 3, (SomeStruct){ .a = 4});
 
         //tracker.insert(Timer::now(), (SomeStruct){ .a = 5}); <- correctly asserts, room for only 4 timers
 
@@ -64,7 +64,7 @@ void testTimerTracker2(int& testNumber)
         tracker.insert(Timer::now(), (SomeStruct){ .a = 1});
         tracker.insert(Timer::now(), (SomeStruct){ .a = 2});
 
-        Timer target = Timer::now();
+        Timer target = Timer::now() + 10;
         
         tracker.insert(target, (SomeStruct){ .a = 3});
         tracker.insert(Timer::now(), (SomeStruct){ .a = 4});

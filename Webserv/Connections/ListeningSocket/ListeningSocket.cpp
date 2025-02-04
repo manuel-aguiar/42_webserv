@@ -3,9 +3,9 @@
 # include "ListeningSocket.hpp"
 # include "../InternalManager/InternalManager.hpp"
 
-ListeningSocket::ListeningSocket(const int backlog, const Ws::BindInfo& info, InternalManager& connManager) :
+ListeningSocket::ListeningSocket(const Ws::BindInfo& info, InternalManager& connManager) :
 	m_socket(-1, info),
-	m_accepter(backlog),
+	m_accepter(info.backlog),
 	m_connManager(connManager)
 {
 	

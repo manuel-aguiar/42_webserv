@@ -28,7 +28,7 @@ InternalManager::InternalManager(const size_t maxConnections,
 	}
 	for (size_t i = 0; i < bindAddresses.size(); i++)
 	{
-		m_listeningSockets.emplace_back(128, bindAddresses[i], *this);
+		m_listeningSockets.emplace_back(bindAddresses[i], *this);
 	}
 }
 

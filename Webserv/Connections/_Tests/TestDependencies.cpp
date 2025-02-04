@@ -129,6 +129,7 @@ ClientManager::ClientManager(const size_t countConnectors, const size_t countLis
         m_connectors[i].m_socket.modifyBindInfo() = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+			.backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
@@ -216,6 +217,7 @@ void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const siz
         bindAddresses[i] = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+			.backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,

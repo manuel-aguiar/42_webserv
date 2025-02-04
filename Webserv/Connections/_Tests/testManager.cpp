@@ -31,7 +31,7 @@ class FakeHttp
 
         static void InitConnection(Conn::Connection& conn)
         {
-            FakeHttp* fakeHttp = reinterpret_cast<FakeHttp*>(conn.accessServerContext().getAppLayerModule(conn.accessSocket().getBindInfo().appLayer));
+            FakeHttp* fakeHttp = reinterpret_cast<FakeHttp*>(conn.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP));
             unsigned char response = 200;
             ::write(conn.accessSocket().getSockFd(), &response, 1);
             conn.close();
@@ -138,7 +138,7 @@ void testManager(int& testNumber)
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
 
         prepareBindAddresses(bindAddresses, countListeners);
-        Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+        Conn::Manager        manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
 
         TestConnector   connector;
@@ -147,6 +147,7 @@ void testManager(int& testNumber)
         externalConnect.modifyBindInfo() = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
+            .backlog = 128,
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
@@ -201,8 +202,6 @@ void testManager(int& testNumber)
 
         ClientManagerTask clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
         tp.addTask(clientManagerTask);
-        tp.addTask(clientManagerTask);
-        tp.addTask(clientManagerTask);
 
         bool run = true;
         while (run)
@@ -224,7 +223,7 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
-        TEST_PASSED_MSG("Manager: instantiation");
+        TEST_PASSED_MSG("Manager: ClientManager attempting to connect all clients");
     }
     catch (const std::exception& e)
     {
