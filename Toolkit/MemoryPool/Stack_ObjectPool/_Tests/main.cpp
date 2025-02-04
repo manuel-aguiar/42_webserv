@@ -3,17 +3,16 @@
 #include "../Stack_ObjectPool.hpp"
 #include <list>
 
-#include "../../../_Tests/test.h"
+#include "../../../TestHelpers/TestHelpers.h"
 
 
 int main(void)
 {
     //int testNumber = 1;
 
-	std::cout << "\n*************** Stack ObjectPool tests ***************" << std::endl;
+	TEST_HEADER("Stack_ObjectPool");
+
+	TEST_FOOTER;
 	
-
-	std::cout << "*****************************************************\n" << std::endl;
-
     return 0;
 }

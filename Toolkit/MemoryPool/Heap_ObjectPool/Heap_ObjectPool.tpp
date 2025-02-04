@@ -4,14 +4,15 @@
 #ifndef HEAP_OBJECTPOOL_TPP
 #define HEAP_OBJECTPOOL_TPP
 
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
+#include "../../Arrays/DynArray/DynArray.hpp"
+
+// C++ headers
 #include <limits>
-#include <stdint.h>
-#include <stddef.h>
+#include <cstddef>
 #include <cstring>
 #include <cassert>
-
-#include <vector>
-#include "../../Arrays/DynArray/DynArray.hpp"
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
@@ -76,7 +77,7 @@ class Heap_ObjectPool
 			(void)hint;
 			(void)n;
 			
-			assert(m_elemCount < m_maxElems);
+			ASSERT_EQUAL(m_elemCount < m_maxElems, true, "Heap_ObjectPool: Out of memory");
 			m_elements.reserve(m_maxElems);
 			if (m_freeSlot != 0)
 			{

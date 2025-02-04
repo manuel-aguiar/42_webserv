@@ -1,9 +1,7 @@
-
-
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>
@@ -17,11 +15,10 @@ int TestPart3(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
-
-		std::list<int> 	    std;
-        List<int>           list;   
+		std::list<int>  std;
+        List<int>     list;   
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -32,33 +29,29 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
-		std::list   <int>::iterator    iter = std.begin();
-		List        <int>::iterator    it = list.begin();
-		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		std::list<int>::iterator iter = std.begin();
+		List<int>::iterator it = list.begin();
+		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
-
-		std::list<int> 	    std;
-		List<int> 			list;
+		std::list<int> std;
+		List<int> list;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -69,29 +62,26 @@ int TestPart3(int testNumber)
 			list.splice(list.end(), list, list.begin());
 		}
 
-		if (std.size() != list.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(std.size(), list.size(), "size mismatch");
 
-		std::list<int>::iterator    iter = std.begin();
-		List<int>::iterator         it = list.begin();
-		for ( ; it != list.end() && iter != std.end(); ++it, ++iter)
+		std::list<int>::iterator iter = std.begin();
+		List<int>::iterator it = list.begin();
+		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* TEST ::erase() ************************/
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
 
         std::list<int> stdList;
         List<int> list;
@@ -110,26 +100,22 @@ int TestPart3(int testNumber)
         std::advance(listIter, 10);
         list.erase(listIter);
 
-        if (stdList.size() != list.size())
-            throw std::logic_error("size mismatch");
+        EXPECT_EQUAL(stdList.size(), list.size(), "size mismatch");
 
         std::list<int>::iterator stdIt = stdList.begin();
         List<int>::iterator listIt = list.begin();
-        for ( ; stdIt != stdList.end() && listIt != list.end(); ++stdIt, ++listIt)
+        for (; stdIt != stdList.end() && listIt != list.end(); ++stdIt, ++listIt)
         {
-            if (*stdIt != *listIt)
-                throw std::logic_error("value mismatch");
+            EXPECT_EQUAL(*stdIt, *listIt, "value mismatch");
         }
 
-        if (stdList.size() == 99 && list.size() != 99)
-            throw std::logic_error("Erase operation did not behave as expected");
+        EXPECT_EQUAL(list.size(), 99, "Erase operation did not behave as expected");
             
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
         std::cout << "  FAILED: " << e.what() << std::endl;
-        TEST_FAIL_INFO();
     }
 
     return (testNumber);

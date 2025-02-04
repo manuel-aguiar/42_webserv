@@ -9,7 +9,7 @@
 // Project headers
 # include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 # include "TimerTrackerOld.hpp"
 
 int TestPart1(int testNumber)
@@ -17,7 +17,7 @@ int TestPart1(int testNumber)
     // instantiation
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
         Heap_MemoryPool pool(4096);
         
         //Nginx_MemoryPool pool2;   // fails as expected, private default constructor
@@ -33,16 +33,16 @@ int TestPart1(int testNumber)
         
         // RAII, no leaks, everything is destructed
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try
     {
-        std::cout << "TEST " << testNumber++ << ": ";
+        TEST_INTRO(testNumber++);
         Heap_MemoryPool pool(4096);
         
         Nginx_PoolAllocator<int, Heap_MemoryPool > alloc(pool);
@@ -50,18 +50,13 @@ int TestPart1(int testNumber)
         
         vec.reserve(100);
 
-        if (pool.getFreeSpace() != 4096 - 100 * sizeof(int))
-            throw std::runtime_error("free space is not correct, got: " 
-            + to_string(pool.getFreeSpace()) + " expected: " 
-            + to_string(4096 - 100 * sizeof(int)) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(pool.getFreeSpace(), 4096 - 100 * sizeof(int), "free space is not correct");
 
-
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     try

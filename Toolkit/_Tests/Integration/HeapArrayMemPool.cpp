@@ -14,7 +14,7 @@ int testHeapArrayMemPool(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		array(500, alloc);
@@ -58,20 +58,19 @@ int testHeapArrayMemPool(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
-	}
+		TEST_FAILED_MSG(e.what());
+        	}
     testNumber++;
 
 /*******************  *****************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		HeapArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(400, alloc);
@@ -144,12 +143,11 @@ int testHeapArrayMemPool(int testNumber)
 			(*iter)->~ToolkitBase();
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 
@@ -157,7 +155,7 @@ int testHeapArrayMemPool(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitDummy> alloc(pool);
 		std::vector<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 			std(alloc);
 		HeapArray<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 			array(100, alloc);
@@ -179,12 +177,11 @@ int testHeapArrayMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 

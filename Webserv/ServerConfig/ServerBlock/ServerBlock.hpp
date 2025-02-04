@@ -13,12 +13,23 @@
 
 // Own headers
 
-# include "../../GenericUtils/Webserver_Definitions.h"
-# include "../../GenericUtils/Validation/Validation.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../ServerLocation/ServerLocation.hpp"
-# include "../DefaultConfig/DefaultConfig.hpp"
+# include "../../Ws_Namespace.h"
+
+//forward declarations
 class ServerLocation;
+
+//necessary structs
+namespace Config
+{
+	struct Listen
+	{
+		Ws::AppLayer::Type	appLayer;
+		Ws::strIP			hostname;
+		Ws::strPort			port;
+
+		bool operator<(const Listen &rhs) const;
+	};
+}
 
 class ServerBlock
 {
@@ -38,7 +49,7 @@ class ServerBlock
 		void							addListener(const std::string &value);
 		void							addServerName(const std::string &value);
 		void							addErrorPage(const std::string &value);
-		const std::set<t_listeners>&	getListeners() const;
+		const std::set<Config::Listen>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
@@ -52,18 +63,25 @@ class ServerBlock
 		// Debug
 		void							printServerConfig() const;
 
+		void							addListenAddress(const struct sockaddr* addr);
+		const std::vector<const struct sockaddr*>&	
+										getListenAddresses() const;
+
 	private:
+
 		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);
 		std::map<std::string, f_addConfigValue> 		m_keys;
 
-		std::set<t_listeners>							m_listen;
+		std::set<Config::Listen>						m_listen;
 		std::set<std::string>							m_server_name;
 		std::string										m_client_body_size;
 		std::string										m_client_header_size;
 		std::string										m_root;
 		std::set<std::string>							m_error_pages;
 
-		std::map<t_path, ServerLocation>				m_locations;
+		std::map<Ws::path, ServerLocation>				m_locations;
+
+		std::vector<const Ws::Sock::addr*>				m_myListenAddresses;
 };
 
 #endif

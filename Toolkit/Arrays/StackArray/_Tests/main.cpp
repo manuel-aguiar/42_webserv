@@ -12,15 +12,17 @@
 #include "../../../_Tests/ToolkitDerived.hpp"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** StackArray tests ***************" << std::endl;
+	TEST_HEADER("StackArray");
 
 	testNumber = TestPart1(testNumber);
-	testNumber = StressTest(testNumber);
+	testNumber = TestPart2(testNumber);
 
-	std::cout << "*********************************************\n" << std::endl;
+	TEST_FOOTER;
+
+	return (0);
 }

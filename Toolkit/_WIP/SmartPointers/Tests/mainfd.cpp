@@ -9,8 +9,10 @@
 
 int main(void)
 {
-    UniquePtr<FileDescriptor> fd1 = FdCreators::open("main2.cpp", O_RDONLY);
-    UniquePtr<FileDescriptor> fd2 = FdCreators::open("mainfd.cpp", O_RDONLY);
+    UniquePtr<FileDescriptor
+> fd1 = FdCreators::open("main2.cpp", O_RDONLY);
+    UniquePtr<FileDescriptor
+> fd2 = FdCreators::open("mainfd.cpp", O_RDONLY);
 
     char buffer[3024];
 

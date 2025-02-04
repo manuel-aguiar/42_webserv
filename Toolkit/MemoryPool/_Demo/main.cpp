@@ -11,7 +11,7 @@
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../Heap_ObjectPool/Heap_ObjectPool.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 /*
 
@@ -138,7 +138,7 @@ int main(void)
         {
             vec[i].erase(vec[i].size() - 3);
             vec[i] += " ";
-            vec[i] += to_string(i).c_str();
+            vec[i] += TestHelpers::to_string(i).c_str();
             
             std::cout << vec[i];
             vec[i] = " potato";

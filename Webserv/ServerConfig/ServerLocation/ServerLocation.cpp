@@ -1,6 +1,11 @@
 
 
-#include "./ServerLocation.hpp"
+// Own Headers
+# include "./ServerLocation.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../Ws_Namespace.h"
+# include "../DefaultConfig/DefaultConfig.hpp"
 
 ServerLocation::ServerLocation()
 {

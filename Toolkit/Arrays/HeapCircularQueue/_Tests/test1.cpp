@@ -13,14 +13,14 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
         const int queueSize = 10;
         const int frontNumber = 5;
@@ -38,13 +38,9 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
                
@@ -52,45 +48,24 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
-        if (queue[0] != frontNumber)
-            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		
-        if (queue[1] != backNumber)
-			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        if (queue.back() != backNumber)
-            throw std::logic_error("back is " + to_string(queue.back()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        if (queue.front() != frontNumber)
-            throw std::logic_error("back is " + to_string(queue.front()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-
+        EXPECT_EQUAL(queue[0], frontNumber, "index 0 doesn't match ");
+        EXPECT_EQUAL(queue[1], backNumber, "index 1 doesn't match ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");        
+        EXPECT_EQUAL(queue.back(), backNumber, "back doesn't match ");
+        EXPECT_EQUAL(queue.front(), frontNumber, "front doesn't match ");        
 
         resultInsertion = queue.push_back(10);
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
 
         /************* */
        
@@ -98,16 +73,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
- 
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }  
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
         
@@ -115,15 +82,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }  
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
@@ -131,16 +91,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }   
-        
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
@@ -148,9 +100,8 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
     /************* */
 
@@ -158,41 +109,33 @@ int TestPart1(int testNumber)
 
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
         /************* */
 
         resultInsertion = queue.push_back(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "insertion result is not the same ");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size is not the same ");
 
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        } 
-
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
 
 
 /******************************************************************** */
+/******************************************************************** */
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
         const int queueSize = 2;
         const int frontNumber = 5;
@@ -207,161 +150,89 @@ int TestPart1(int testNumber)
         /************* */
         
         resultInsertion = queue.push_front(backNumber);
-
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
         /************* */
                
         resultInsertion = queue.push_front(frontNumber);
-
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
         /************* */
 
-        if (queue[0] != frontNumber)
-            throw std::logic_error("index 0 is: " + to_string(queue[0]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		
-        
-        if (queue[1] != backNumber)
-			throw std::logic_error("index 1 is: " + to_string(queue[1]) + " but should be: " + to_string(frontNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        
-        if (queue.size() != expectedElemCount)
-            throw std::logic_error("size is " + to_string(queue.size()) + " but should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        
-        if (queue.back() != backNumber)
-            throw std::logic_error("back is " + to_string(queue.back()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        
-        
-        if (queue.front() != frontNumber)
-            throw std::logic_error("back is " + to_string(queue.front()) + " but should be: " + to_string(backNumber) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        EXPECT_EQUAL(queue[0], frontNumber, "index 0 mismatch");
+        EXPECT_EQUAL(queue[1], backNumber, "index 1 mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size mismatch");
+        EXPECT_EQUAL(queue.back(), backNumber, "back mismatch");
+        EXPECT_EQUAL(queue.front(), frontNumber, "front mismatch");
 
         resultInsertion = queue.push_front(10);
-
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
 
         /************* */
        
         resultInsertion = queue.push_front(10);
-
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
- 
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }  
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "size mismatch after push_front");
 
         /************* */
         
         resultInsertion = queue.pop_front();
-
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }  
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.pop_front();
-
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }   
-        
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.pop_front();
-
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
     /************* */
 
         resultInsertion = queue.pop_front();
-
         expectedInsertion = (expectedElemCount > 0);
         expectedElemCount -= expectedInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "pop_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "pop_front size mismatch");
 
         /************* */
 
         resultInsertion = queue.push_front(10);
         expectedInsertion = (expectedElemCount < queueSize);
         expectedElemCount += resultInsertion;
-        if (resultInsertion != expectedInsertion)
-            throw std::logic_error("result was " + to_string(resultInsertion) + " but expected: " + to_string(expectedInsertion) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(resultInsertion, expectedInsertion, "push_front result mismatch");
+        EXPECT_EQUAL(queue.size(), expectedElemCount, "push_front size mismatch");
 
-        if (queue.size() != expectedElemCount)
-        {
-            throw std::logic_error("size doesn't match, size is: " + to_string(queue.size()) + ", should be: " + to_string(expectedElemCount) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        } 
-
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     // iterators, empty queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -369,19 +240,17 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        if (it != itEnd)
-            throw std::logic_error("iterators, empty queue, begin and end should be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(it == itEnd, true, "iterators, empty queue, begin and end should be equal");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_back, non-full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -392,31 +261,25 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        if (it == itEnd)
-            throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_back, non-full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            if (*it != queue[i])
-                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_back, non-full queue, value mismatch");
         }
 
-        if (i != queue.size())
-            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_back, non-full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_back, full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(2);
@@ -427,31 +290,25 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        if (it == itEnd)
-            throw std::logic_error("iterators, push_back, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_back, full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            if (*it != queue[i])
-                throw std::logic_error("iterators, push_back, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_back, full queue, value mismatch");
         }
 
-        if (i != queue.size())
-            throw std::logic_error("iterators, push_back, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_back, full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
     // iterators, push_front, non-full queue
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         HeapCircularQueue<int> queue(10);
@@ -462,464 +319,280 @@ int TestPart1(int testNumber)
         HeapCircularQueue<int>::iterator it = queue.begin();
         HeapCircularQueue<int>::iterator itEnd = queue.end();
 
-        if (it == itEnd)
-            throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal");
 
         size_t i = 0;
         for ( ; it != itEnd; ++it, ++i)
         {
-            if (*it != queue[i])
-                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+            EXPECT_EQUAL(*it, queue[i], "iterators, push_front, non-full queue, value mismatch");
         }
 
-        if (i != queue.size())
-            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+        EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
-    // iterators, push_front, full queue
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+//####################################################################################################
+ TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(2);
+
+    queue.push_front(1);
+    queue.push_front(2);
+
+    HeapCircularQueue<int>::iterator it = queue.begin();
+    HeapCircularQueue<int>::iterator itEnd = queue.end();
+
+    EXPECT_EQUAL(it != itEnd, true, "iterators, push_front, non-full queue, begin and end should not be equal");
+
+    size_t i = 0;
+    for ( ; it != itEnd; ++it, ++i)
     {
-        HeapCircularQueue<int> queue(2);
-
-        queue.push_front(1);
-        queue.push_front(2);
-
-        HeapCircularQueue<int>::iterator it = queue.begin();
-        HeapCircularQueue<int>::iterator itEnd = queue.end();
-
-        if (it == itEnd)
-            throw std::logic_error("iterators, push_front, non-full queue, begin and end should not be equal" + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        size_t i = 0;
-        for ( ; it != itEnd; ++it, ++i)
-        {
-            if (*it != queue[i])
-                throw std::logic_error("iterators, push_front, non-full queue, value mismatch, got " + to_string(*it) + " expected: " + to_string(queue[i]) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-        if (i != queue.size())
-            throw std::logic_error("iterators, push_front, non-full queue, size mismatch, got " + to_string(i) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        std::cout << "	PASSED" << std::endl;
-    }
-    catch (const std::exception& e)
-    {
-        std::cout << "	FAILED: " << e.what()  << std::endl;
+        EXPECT_EQUAL(*it, queue[i], "iterators, push_front, non-full queue, value mismatch");
     }
 
-    //copy constructor, full copy-from
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    EXPECT_EQUAL(i, queue.size(), "iterators, push_front, non-full queue, size mismatch");
+
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
+
+// copy constructor, full copy-from
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(2);
+
+    queue.push_back(1);
+    queue.push_back(2);
+
+    HeapCircularQueue<int> copy(queue);
+
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, full copy-from, size mismatch");
+
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = copy.begin();
+
+    for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(2);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, full copy-from, value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        HeapCircularQueue<int> copy(queue);
+// copy constructor, not-full copy-from
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(10);
 
-        if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    queue.push_back(1);
+    queue.push_back(2);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = copy.begin();
+    HeapCircularQueue<int> copy(queue);
 
-        for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, full copy-from, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, not-full copy-from, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = copy.begin();
 
-    //copy constructor, not-full copy-from
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(10);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, not-full copy-from value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        HeapCircularQueue<int> copy(queue);
+// copy constructor, empty copy-from
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(10);
 
-        if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, not-full copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    HeapCircularQueue<int> copy(queue);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = copy.begin();
+    EXPECT_EQUAL(queue.size(), copy.size(), "copy constructor, empty copy-from, size mismatch");
 
-        for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, not-full copy-from value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = copy.begin();
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
-    //copy constructor, empty copy-from
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(10);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "copy constructor, empty copy-from value mismatch");
+    }
 
-        HeapCircularQueue<int> copy(queue);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        if (queue.size() != copy.size())
-            throw std::logic_error("copy constructor, empty copy-from, size mismatch, got " + to_string(copy.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+// copy assignment, full copy-from, empty copy-to
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(2);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = copy.begin();
+    queue.push_back(1);
+    queue.push_back(2);
 
-        for ( ; itOriginal != queue.end() && itCopy != copy.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("copy constructor, empty copy-from value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    HeapCircularQueue<int> assign(2);
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    assign = queue;
 
-     //copy assignment, full copy-from, empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, full copy-from, empty copy-to, size mismatch");
+
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+    for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(2);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, empty copy-to, value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        HeapCircularQueue<int> assign(2);
+// copy assignment, non-full copy-from, empty copy-to
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(10);
 
-        assign = queue;
+    queue.push_back(1);
+    queue.push_back(2);
 
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    HeapCircularQueue<int> assign(10);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+    assign = queue;
 
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, non-full copy-from, empty copy-to, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
- //copy assignment, non-full copy-from, empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(10);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, empty copy-to, value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        HeapCircularQueue<int> assign(10);
+// copy assignment, empty copy-from, empty copy-to
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(10);
+    HeapCircularQueue<int> assign(10);
 
-        assign = queue;
+    assign = queue;
 
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, empty copy-from, empty copy-to, size mismatch");
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
- //copy assignment, empty copy-from, empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(10);
-        HeapCircularQueue<int> assign(10);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, empty copy-from, empty copy-to, value mismatch");
+    }
 
-        assign = queue;
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+// copy assignment, full copy-from, non-empty copy-to
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(2);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+    queue.push_back(1);
+    queue.push_back(2);
 
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    HeapCircularQueue<int> assign(2);
+    assign.push_back(123);
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    assign = queue;
 
-     //copy assignment, full copy-from, non-empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, full copy-from, non-empty copy-to, size mismatch");
+
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = assign.begin();
+
+    for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(2);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, full copy-from, non-empty copy-to, value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
 
-        HeapCircularQueue<int> assign(2);
-        assign.push_back(123);
+// copy assignment, non-full copy-from, non-empty copy-to
+TEST_INTRO(testNumber++);
+try
+{
+    HeapCircularQueue<int> queue(10);
 
-        assign = queue;
+    queue.push_back(1);
+    queue.push_back(2);
 
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+    HeapCircularQueue<int> assign(10);
+    assign.push_back(123);
 
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
+    assign = queue;
 
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
+    EXPECT_EQUAL(queue.size(), assign.size(), "assignment, non-full copy-from, non-empty copy-to, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
+    HeapCircularQueue<int>::iterator itOriginal = queue.begin();
+    HeapCircularQueue<int>::iterator itCopy = assign.begin();
 
-     //copy assignment, non-full copy-from, non-empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
+    for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
     {
-        HeapCircularQueue<int> queue(10);
+        EXPECT_EQUAL(*itOriginal, *itCopy, "assignment, non-full copy-from, non-empty copy-to, value mismatch");
+    }
 
-        queue.push_back(1);
-        queue.push_back(2);
-
-        HeapCircularQueue<int> assign(10);
-        assign.push_back(123);
-
-        assign = queue;
-
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
-
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
-     //copy assignment, empty copy-from, non-empty copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
-    {
-        HeapCircularQueue<int> queue(10);
-
-        HeapCircularQueue<int> assign(10);
-        assign.push_back(123);
-
-        assign = queue;
-
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, non-empty copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
-
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, non-empty copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
- //copy assignment, full copy-from, full copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
-    {
-        HeapCircularQueue<int> queue(2);
-
-        queue.push_back(1);
-        queue.push_back(2);
-
-        HeapCircularQueue<int> assign(2);
-
-        assign.push_back(3);
-        assign.push_back(4);
-
-        assign = queue;
-
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
-
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
- //copy assignment, non-full copy-from, full copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
-    {
-        HeapCircularQueue<int> queue(2);
-
-        queue.push_back(1);
-
-        HeapCircularQueue<int> assign(2);
-
-        assign.push_back(3);
-        assign.push_back(4);
-
-        assign = queue;
-
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, non-full copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
-
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, non-full copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
- //copy assignment, empty copy-from, full copy-to
-    std::cout << "TEST " << testNumber++ << ": ";
-    try
-    {
-        HeapCircularQueue<int> queue(2);
-
-        HeapCircularQueue<int> assign(2);
-
-        assign.push_back(3);
-        assign.push_back(4);
-
-        assign = queue;
-
-        if (queue.size() != assign.size())
-            throw std::logic_error("assignment, empty copy-from, full copy-to, size mismatch, got " + to_string(assign.size()) + " expected: " + to_string(queue.size()) + '\n'
-            + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-
-        HeapCircularQueue<int>::iterator itOriginal = queue.begin();
-        HeapCircularQueue<int>::iterator itCopy = assign.begin();
-
-        for ( ; itOriginal != queue.end() && itCopy != assign.end(); ++itOriginal, ++itCopy)
-        {
-            if (*itOriginal != *itCopy)
-                throw std::logic_error("assignment, empty copy-from, full copy-to, value mismatch, got " + to_string(*itCopy) + " expected: " + to_string(*itOriginal) + '\n'
-                + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-        }
-
-		std::cout << "	PASSED" << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-	}
-
+    TEST_PASSED;
+}
+catch (const std::exception& e)
+{
+    TEST_FAILED_MSG(e.what());
+}
     return (testNumber);
 }
 

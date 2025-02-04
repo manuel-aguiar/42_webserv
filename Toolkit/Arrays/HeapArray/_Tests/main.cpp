@@ -12,23 +12,23 @@
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 extern int TestPart3(int testNumber);
 
 int main()
 {
     int testNumber = 1;
     
-	std::cout << "\n*************** HeapArray tests ***************" << std::endl;
+    TEST_HEADER("HeapArray");
 	
     testNumber = TestPart1(testNumber);
-    testNumber = StressTest(testNumber);
+    testNumber = TestPart2(testNumber);
     testNumber = TestPart3(testNumber);
 
-	std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return (0);
 }

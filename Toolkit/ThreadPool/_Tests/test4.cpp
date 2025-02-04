@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -55,7 +55,7 @@ class FiboTask : public IThreadTask
 int TestPart4(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 
 	// Simulating a TaskQueue congestion and users waiting for a slot to execute: addTask(waitForSlot = true)
 
@@ -84,16 +84,14 @@ int TestPart4(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			if (fiboExpected[i] != fiboPlaceResult[i])
-				throw std::runtime_error("Didn't calculate fibonacci right");
+			EXPECT_EQUAL(fiboExpected[i], fiboPlaceResult[i], "Fibonacci value mismatch");
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 	return (testNumber);
 }

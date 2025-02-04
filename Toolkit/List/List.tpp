@@ -4,7 +4,10 @@
 
 # define LIST_TPP
 
-#include <cassert>
+// Project headers
+# include "../Assert/AssertEqual/AssertEqual.h"
+
+// C++ headers
 #include <cstddef>
 
 template <typename T, typename Allocator>
@@ -161,8 +164,17 @@ class List
 			m_header.m_prev = &m_header;
 		}
 
-		T&		front() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_next)->m_data; }
-		T&		back() { assert(m_size > 0); return static_cast<DataNode*>(m_header.m_prev)->m_data; }
+		T&		front()
+		{
+			ASSERT_EQUAL((m_size > 0), true, "List: No elements in list");
+			return static_cast<DataNode*>(m_header.m_next)->m_data;
+		}
+
+		T&		back()
+		{
+			ASSERT_EQUAL((m_size > 0), true, "List: No elements in list");
+			return static_cast<DataNode*>(m_header.m_prev)->m_data;
+		}
 
 		void	push_back(const T& data)
 		{
@@ -484,8 +496,8 @@ class List
 		void	erase(iterator pos)
 		{
 			BaseNode* target = pos.getPtr();
-
-			assert(mf_iterIsInList(target));
+			
+			ASSERT_EQUAL(mf_iterIsInList(target), true, "List: Iterator not in list");
 			mf_removeTarget(target);
 			mf_deallocate(target);
 			--m_size;
@@ -496,9 +508,9 @@ class List
 			BaseNode* thisTgt = pos.getPtr();
 			BaseNode* otherTgt = itOther.getPtr();
 
-			assert(mf_iterIsInList(thisTgt));
-			assert(other.mf_iterIsInList(otherTgt));
-			assert(m_nodeAllocator == other.m_nodeAllocator);	
+			ASSERT_EQUAL(mf_iterIsInList(thisTgt), true, "List: Iterator not in list");
+			ASSERT_EQUAL(other.mf_iterIsInList(otherTgt), true, "List: Iterator not in list");
+			ASSERT_EQUAL(m_nodeAllocator == other.m_nodeAllocator, true, "List: lists have different allocators");
 
 			if (other.m_size == 0)
 				return ;
@@ -516,11 +528,12 @@ class List
 			BaseNode* start = otherStart.getPtr();
 			BaseNode* end = otherEnd.getPtr();
 
-			assert(mf_iterIsInList(thisTgt));
-			assert(other.mf_iterIsInList(start));
-			assert(other.mf_iterIsInList(end));
-			assert(other.mf_canReach(start, end));
-			assert(m_nodeAllocator == other.m_nodeAllocator);
+
+			ASSERT_EQUAL(mf_iterIsInList(thisTgt), true, "List: Iterator not in list");
+			ASSERT_EQUAL(other.mf_iterIsInList(start), true, "List: Iterator not in list");
+			ASSERT_EQUAL(other.mf_iterIsInList(end), true, "List: Iterator not in list");
+			ASSERT_EQUAL(other.mf_canReach(start, end), true, "List: Iterator not in list");
+			ASSERT_EQUAL(m_nodeAllocator == other.m_nodeAllocator, true, "List: lists have different allcoators");
 			
 			if (other.m_size == 0)
 				return ;

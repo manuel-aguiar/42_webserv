@@ -12,14 +12,14 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 
 int TestPart3(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::vector<ToolkitBase*> 		std;
 		HeapArray<ToolkitBase*> 		array(500);
 
@@ -42,17 +42,13 @@ int TestPart3(int testNumber)
 			std.push_back(new ToolkitBase(i));
 			array.push_back(new ToolkitBase(i));
 		}
-		if (std.size() != array.size())
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(std.size()) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(std.size(), array.size(), "size mismatch");
 
 		HeapArray<ToolkitBase*>::iterator it = array.begin();
 		std::vector<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (**it != **iter)
-				throw std::runtime_error("value mismatch " + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			EXPECT_EQUAL((*it)->getValue() == (*iter)->getValue(), true, "value mismatch");
 		}
 
 		it = array.begin();
@@ -64,11 +60,11 @@ int TestPart3(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

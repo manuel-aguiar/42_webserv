@@ -8,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -139,7 +139,7 @@ class Promise : public IThreadTask
 int TestPart3(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 
@@ -155,18 +155,15 @@ int TestPart3(int testNumber)
 
         size_t result = future.get();           // code blocks until this value is available
 
-        if (result != fiboExpected)
-            throw std::runtime_error("Didn't calculate fibonacci right");
+        EXPECT_EQUAL(result, fiboExpected, "Didn't calculate fibonacci right");
 
         tp.waitForCompletion();
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;	
 	return (testNumber);
 }

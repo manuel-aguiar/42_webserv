@@ -1,0 +1,132 @@
+
+
+The Events.h header encompasses the full Events namespace.
+
+This namespace exposes 2 classes: Events::Manager and Events::Subscription
+
+Tests are available at: (cd "$(git rev-parse --show-toplevel)/Webserv/Events/_Tests" && make test)
+
+####################################################51
+Events::Manager
+
+The Events::Manager tracks fds and their availability for input/output/hang-up
+by using the C epoll API.
+
+
+To subscribe a file descriptor to the Events::Manager, you need to first acquire
+an Events::Subscription from the Events::Manager
+
+The Manager works by assuming a maximum number of subscriptions at any given time
+which is possible to calculate in our Webserv as:
+	max connections + (max cgi workers)  * 3.
+
+So, assuming 1000 connections and 10 Cgi Workers, the maximum number of events is 1030.
+
+The only way to obtaining a Events::Subscription instance is by calling:
+
+	Events::Manager 			manager(100, globals);
+	Events::Subscription* sub = manager.acquireSubscription();
+
+Then, by setting parameters in the Subscription (more on it later), we can then start monitoring
+the events that were set by calling:
+
+	manager.startMonitoring(sub, true);
+
+(the boolean flag concerns stale events, more on that later).
+
+To stop monitoring the events in the subscription, you can:
+
+	manager.stopMonitoring(sub, true);
+
+To return a subscription back to the pool, you call:
+
+	manager.returnSubscription(sub);
+
+
+In our case, Subscriptions never have to be returned but, here it is.
+The Events::Manager is the sole responsible for constructing and destructing
+the Events::Subscription instances.
+
+The most important method is:
+
+	ProcessEvents() 
+		It takes a timeout parameter just like the epoll_wait system call, which will be useful later-
+		This method pools all events that took place since the last time it was called, from
+		all Subscriptions currently monitored, and notifies (calls the Subscription::Callback) the 
+		subscriptors that an event took palce, informs what events took place, and lets the user
+		deal with it via the callback it provided.
+
+
+###############################################################
+
+Events::Subscription
+
+The Subscription object exposes a couple of getters that are needed for it to be usefull:
+
+	setFd() <- set the file descriptior to be monitored
+	setMonitoredEvents() <- set the Events you want to track for that file descriptor.
+		Events available are under namespace Events::Monitor:
+				NONE 		  	
+				READ            
+				WRITE           
+				ERROR           
+				HANGUP          
+				RDHANGUP        
+				EDGE_TRIGGERED 
+		The events are subscribed by or'ing (|) these flags as a mask (hence the setter parameter: Events::Monitor::Mask)
+	setCallback() <- tell us what function to call when ANY of the events you want to subscribe are triggered
+		(it is up to the caller to internally act according to what events were triggered, the Events::Manager does not do
+		such segregation)
+	setUser() <- a parameter you will most likely need for your callback to access extra data
+		(think pthreads.h were the threadfunction is void* (*func)(void *), you pass a variable as void*, typecast it, etc)
+
+Please refer to the _Tests folder for concrete examples of usage of the namespace.	
+
+
+##################################################################51
+Stale events:
+
+Consider a case where an event handler adds/removes file descriptors from EventManager's epoll.
+This means such a handler is called in the middle of EventManager::ProcessEvents.
+You are iterating through events, you are currently on number 5, and the handler leads to
+closing and unsubscribing the fd that triggers event number 9.
+Number 6 event handler opens new sockets, it just happens the fd NUMBER is the same
+that triggers event number 9.
+...
+Keep iterating....
+....
+Event number 9, "It is active! Call the handler!" and in reality the new file with the same FD NUMBER
+is not ready to read/write, so you fail to read/write, oh no downfall.
+
+Because we have the CgiModule, the same event hander will potentially change multiple file descriptors
+(pipes to/from the script, and more, in due time i'll explain).
+So this is something very likely to occur.
+
+So we have two choices:
+	-> do not subscribe/unsubcribe (or open/close, because you may miss activity) file descriptors from and event handler,
+	so, DURING EventManager::ProcessEvents.
+		-> all at the end, no conflicts, you delete and re-add, so when you call ProcessEvents you are sure that all events
+		are "up to date"
+	-> add a way to monitor if an event has gone "stale", that is: "i closed and unsubscribed this file descriptor.
+	if anybody subscribes it again, and coincidently there is an old event associated with it in this ProcessEvents
+	iterator, DO NOT CALL THE HANDLER"
+
+#################################
+Design considerations:
+
+The Event Manager serves as a dispatcher, it doesn't know anything about their users so it is essentially decoupled
+and the users can customize what they want from the event handling.
+
+We are monitoring stale events, meaning an fd that was unsubscribed and reused withing the same ProcessEvents() iteration
+This will help maintain performance of our server as we can accept/start processes as soon as we want.
+
+To monitor we have an array of bits that are set when the event manager is informed that a file descriptor
+was closed/opened as a result of a notification to a Subscription during ProcessEvents() and to disregard any
+events that may be associated with that fd in the current loop iteration.
+
+In the array of bytes, we use a magic constant 10 times the number of subscriptions. This will be adjusted but we know:
+	the kernel attributes the lowest available index into the fdTable when you open an fd
+	the maxmium number of fds is (stdin + stdout + stderr + number of connections + (number of cgi workers * 6)).
+	Since we may inherit fds as the process is opened, we could go past this number.
+	So to keep it simple, multiply the max by 10 more or less and run with it, we should be fine and is not
+	too much memory for our use cases.

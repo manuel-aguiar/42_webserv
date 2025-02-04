@@ -1,6 +1,13 @@
 
 
+// Own Headers
+
 # include "ServerConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
+# include "../ServerLocation/ServerLocation.hpp"
+# include "../ServerBlock/ServerBlock.hpp"
+
 
 ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
 	m_configFilePath(configFilePath),
@@ -44,7 +51,7 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 
 bool	ServerConfig::m_updateFile()
 {
-	m_configFileStream.open(m_configFilePath.c_str());
+	m_configFileStream.open(m_configFilePath);
 	if (!m_configFileStream.is_open())
 	{
 		std::cerr << "Error: Could not open configuration file." << std::endl;
@@ -160,7 +167,6 @@ int		ServerConfig::parseConfigFile()
 	int				currentLevel = PROGRAM_LEVEL;
 	ServerLocation	location;
 
-	std::vector<ServerBlock>			servers;
 	std::vector<ServerLocation>			locations;
 
 	if (!m_updateFile())
@@ -184,7 +190,7 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			servers.push_back(ServerBlock());
+			m_serverBlocks.push_back(ServerBlock());
 			m_serverCount++;
 			currentLevel = SERVER_LEVEL;
 		}
@@ -201,12 +207,12 @@ int		ServerConfig::parseConfigFile()
 		}
 		else if (line == "}")
 		{
-			if (!m_handleClosingBracket(currentLevel, currentLine, servers, locations))
+			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks, locations))
 				return (0);
 		}
 		else
 		{
-			if (!m_parseConfigLine(line, currentLine, servers, locations, currentLevel))
+			if (!m_parseConfigLine(line, currentLine, m_serverBlocks, locations, currentLevel))
 			{
 				std::cerr << "Error: config parsing: invalid input on line "
 					<< currentLine << std::endl;
@@ -224,18 +230,20 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
+	if (!mf_listenDNSlookup())
+		return (0);
+		
 	m_setDefaults();
-	m_setServers(servers);
 	return (1);
 }
 
 // Getters & Setters
-const t_path&		ServerConfig::getConfigPath() const
+const char*		ServerConfig::getConfigPath() const
 {
 	return (m_configFilePath);
 }
 
-const std::map<std::string, ServerBlock>&	ServerConfig::getServerBlocks() const
+const std::vector<ServerBlock>&	ServerConfig::getServerBlocks() const
 {
 	return (m_serverBlocks);
 }
@@ -253,11 +261,6 @@ const std::string		&ServerConfig::getMaxConcurrentCgi() const
 const std::string		&ServerConfig::getMaxCgiBacklog() const
 {
 	return (m_max_cgi_backlog);
-}
-
-void		ServerConfig::setConfigPath(const t_path &path)
-{
-	m_configFilePath = path;
 }
 
 void		ServerConfig::setMaxConnections(const std::string &value)
@@ -281,24 +284,6 @@ void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 	m_max_cgi_backlog = value;
 }
 
-// Set servers by hostname:port:server_name
-void	ServerConfig::m_setServers(std::vector<ServerBlock> &servers)
-{
-	for (size_t i = 0; i < servers.size(); i++)
-	{
-		std::set<t_listeners> listeners = servers[i].getListeners();
-		std::set<std::string> serverNames = servers[i].getServerNames();
-		for (std::set<t_listeners>::iterator it = listeners.begin(); it != listeners.end(); ++it)
-		{
-			for (std::set<std::string>::iterator it2 = serverNames.begin(); it2 != serverNames.end(); ++it2)
-			{
-				std::string key = it->first + ":" + it->second + ":" + *it2;
-				m_serverBlocks[key] = servers[i];
-			}
-		}
-	}
-}
-
 void	ServerConfig::m_setDefaults()
 {
 	if (m_max_connections.empty())
@@ -307,6 +292,11 @@ void	ServerConfig::m_setDefaults()
 		setMaxConcurrentCgi(m_configDefault.maxCGI);
 	if (m_max_cgi_backlog.empty())
 		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
+}
+
+const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const
+{
+	return (m_bindAddresses);
 }
 
 // Debug functions
@@ -323,11 +313,11 @@ void	ServerConfig::printProgramConfig() const
 void	ServerConfig::printConfigs() const
 {
 	printProgramConfig();
-	for (std::map<std::string, ServerBlock>::const_iterator it = getServerBlocks().begin(); it != getServerBlocks().end(); it++)
+	for (std::vector<ServerBlock>::const_iterator it = getServerBlocks().begin(); it != getServerBlocks().end(); it++)
 	{
-		it->second.printServerConfig();
-		if (!it->second.getLocations().empty())
-			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->second.getLocations().begin(); it2 != it->second.getLocations().end(); it2++)
+		it->printServerConfig();
+		if (!it->getLocations().empty())
+			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->getLocations().begin(); it2 != it->getLocations().end(); it2++)
 				it2->second.printLocationConfig();
 		std::cout << "║ └──────────────────o\n";
 	}

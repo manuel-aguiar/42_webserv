@@ -1,9 +1,7 @@
-
-
 // Project headers
 #include "../List.hpp"
 #include "../../_Tests/ToolkitDummy.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 #include <list>
@@ -12,10 +10,10 @@
 #include <stdexcept>
 
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		List<int> list;
@@ -29,25 +27,21 @@ int StressTest(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("copy constructor, value mismatch");
-			if (it.getPtr() == iter.getPtr())
-				throw std::logic_error("copy constructor, same pointer");
+			EXPECT_EQUAL(*it, *iter, "copy constructor, value mismatch");
+			EXPECT_EQUAL(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer");
 		}
 
-		if (list.size() != copy.size())
-			throw std::logic_error("copy constructor, size mismatch");
+		EXPECT_EQUAL(list.size(), copy.size(), "copy constructor, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 	
 
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		List<int> list;
@@ -63,21 +57,17 @@ int StressTest(int testNumber)
 
 		for ( ; it != list.end() && iter != copy.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("copy assignment, value mismatch");
-			if (it.getPtr() == iter.getPtr())
-				throw std::logic_error("copy constructor, same pointer");
+			EXPECT_EQUAL(*it, *iter, "copy assignment, value mismatch");
+			EXPECT_EQUAL(it.getPtr() != iter.getPtr(), true, "copy constructor, same pointer");
 		}
 
-		if (list.size() != copy.size())
-			throw std::logic_error("copy assignment, size mismatch");
+		EXPECT_EQUAL(list.size(), copy.size(), "copy assignment, size mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 	return (testNumber);
