@@ -55,10 +55,10 @@ struct TestConnector
     Ws::Sock::fd m_socket;
 };
 
-class ConnectTask : public IThreadTask
+class ClientTask : public IThreadTask
 {
 	public:
-		ConnectTask(TestConnector& connector, Socket& socket) : m_connector(connector), m_socket(socket) {}
+		ClientTask(TestConnector& connector, Socket& socket) : m_connector(connector), m_socket(socket) {}
 		void execute()
 		{
 			m_connector.connect(m_socket);
@@ -121,7 +121,7 @@ void testAccepter(int& testNumber)
         EXPECT_EQUAL(accepter.open(listenInfo), 1, "Accepter::open() failed");
         EXPECT_EQUAL(listenInfo.getSockFd() != Ws::FD_NONE, true, "Accepter::open() failed, socket fd not set");
 
-        ConnectTask task(connector, externalConnect);
+        ClientTask task(connector, externalConnect);
         tp.addTask(task);
         
 

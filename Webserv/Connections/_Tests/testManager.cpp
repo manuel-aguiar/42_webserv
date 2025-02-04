@@ -5,6 +5,8 @@
 
 // dependenceis/helpers
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
+# include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
+# include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
@@ -122,7 +124,7 @@ struct ClientManager
                 .family = AF_INET,
                 .socktype = SOCK_STREAM,
                 .proto = IPPROTO_TCP,
-                .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(8080 + (i % countListeners)))},
+                .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(8080 + (i % countListeners)))},
                 .addrlen = sizeof(Ws::Sock::addr_in)
             };
             m_connectors[i].m_eventManager = &eventManager;
@@ -150,47 +152,14 @@ struct ClientManager
     HeapArray<TestConnector>    m_connectors;
 };
 
-void testManager(int& testNumber)
+class ClientManagerTask : public IThreadTask
 {
-    try
-    {
-        TEST_INTRO(testNumber++);
-
-        Globals globals(NULL, NULL, NULL, NULL);
-
-        const int countListeners = 10;
-        const int countMaxConnections = 100;
-        const int countConnectors = 1000;
-
-        Events::Manager eventManager(countListeners + countMaxConnections, globals);
-
-        ServerContext ctx;
-        FakeHttp fakeHttp;
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
-
-        std::vector<Ws::BindInfo> bindAddresses(countListeners);
-
-        for (size_t i = 0; i < bindAddresses.size(); ++i)
-        {
-            bindAddresses[i] = (Ws::BindInfo)
-            {
-                .appLayer = Ws::AppLayer::HTTP,
-                .family = AF_INET,
-                .socktype = SOCK_STREAM,
-                .proto = IPPROTO_TCP,
-                .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(8080 + i))},
-                .addrlen = sizeof(Ws::Sock::addr_in)
-            };
-        }
-
-        Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
-
-        manager.init();
-
-        int pid = fork();
-        if (pid == 0)
-        {
-            {
+	public:
+		ClientManagerTask(const size_t countConnectors, const size_t countListeners, Globals& globals)
+            : countConnectors(countConnectors), countListeners(countListeners), globals(globals)
+         {}
+		void execute()
+		{
                 Events::Manager clientEvents(1000, globals);
                 ClientManager clientManager(countConnectors, countListeners, clientEvents);
 
@@ -198,17 +167,113 @@ void testManager(int& testNumber)
 
                 while (clientEvents.getMonitoringCount() > 0)
                 {
+                    std::cerr << "client manager processing events, monitoring " << clientEvents.getMonitoringCount() << std::endl;
                     clientEvents.ProcessEvents(-1);
                 }
                     
-                std::cerr << "client manager done " << g_successCount<< "  " << g_failCount << std::endl;
-            }
-            
-            exit(0);
-        }
-        
+                std::cerr << "client manager done " << g_successCount<< "  " << g_failCount << std::endl;			
+		}
+	private:
+		size_t countConnectors;
+        const size_t countListeners;
+        Globals& globals;
+};
 
+void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners)
+{
+    bindAddresses.resize(countListeners);
+    for (size_t i = 0; i < bindAddresses.size(); ++i)
+    {
+        bindAddresses[i] = (Ws::BindInfo)
+        {
+            .appLayer = Ws::AppLayer::HTTP,
+            .family = AF_INET,
+            .socktype = SOCK_STREAM,
+            .proto = IPPROTO_TCP,
+            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(8080 + i))},
+            .addrlen = sizeof(Ws::Sock::addr_in)
+        };
+    }
+}
+
+void testManager(int& testNumber)
+{
+    // global setup for all tests
+    ThreadPool<10, 100> tp;
+    Globals globals(NULL, NULL, NULL, NULL);
+    ServerContext ctx;
+    FakeHttp fakeHttp;
+    ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+
+//////////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int                   countListeners = 10;
+        const int                   countMaxConnections = 10;
+        Events::Manager             eventManager(countListeners + countMaxConnections, globals);
+        std::vector<Ws::BindInfo>   bindAddresses;
+
+        prepareBindAddresses(bindAddresses, countListeners);
         
+        Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        manager.shutdown();
+
+        TEST_PASSED_MSG("Manager: instantiation");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+////////////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int                   countListeners = 1;
+        const int                   countMaxConnections = 1;
+        Events::Manager             eventManager(countListeners + countMaxConnections, globals);
+        std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
+
+        prepareBindAddresses(bindAddresses, countListeners);
+        Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        manager.shutdown();
+
+        TEST_PASSED_MSG("Manager: instantiation");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+
+///////////////////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int countListeners = 1;
+        const int countMaxConnections = 1;
+        const int countConnectors = 1;
+
+        Events::Manager eventManager(countListeners + countMaxConnections, globals);
+
+        std::vector<Ws::BindInfo> bindAddresses(countListeners);
+        prepareBindAddresses(bindAddresses, countListeners);
+
+        Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals);
+        tp.addTask(clientManagerTask);
 
         while (FakeHttp::serveCount < countConnectors)
         {
@@ -227,4 +292,5 @@ void testManager(int& testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
+
 }

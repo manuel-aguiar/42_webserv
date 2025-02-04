@@ -3,7 +3,7 @@
 # include "ListeningSocket.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
-
+# include <iostream>
 int		ListeningSocket::open()
 {
 	int res = m_accepter.open(m_socket);
@@ -39,6 +39,7 @@ void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)
 {
 	ListeningSocket*	listener;
 
+	std::cout << " listener callback called" << std::endl;
 	listener = reinterpret_cast<ListeningSocket*>(callback.accessUser());
 	listener->accept();
 }
