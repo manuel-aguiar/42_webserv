@@ -12,11 +12,11 @@ InternalConn::~InternalConn()
 	m_monitor.release(accessEventManager());
 }
 
-
+#include <iostream>
 void
 InternalConn::ForcedClose()
 {
-	if (m_socket.getSockFd() == -1)
+	if (m_socket.getSockFd() == Ws::FD_NONE)
 		return ;
 	mf_callAppLayerForceClose();
 	Conn::Connection::close();

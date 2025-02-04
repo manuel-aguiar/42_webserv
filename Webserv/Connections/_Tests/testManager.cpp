@@ -23,22 +23,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-class FakeHttp
-{
-    public:
-        FakeHttp() : serveCount(0) {};
-        ~FakeHttp() {};
 
-        static void InitConnection(Conn::Connection& conn)
-        {
-            FakeHttp* fakeHttp = reinterpret_cast<FakeHttp*>(conn.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP));
-            unsigned char response = 200;
-            ::write(conn.accessSocket().getSockFd(), &response, 1);
-            conn.close();
-            fakeHttp->serveCount++;
-        }
-    int serveCount;
-};
 
 void testManager(int& testNumber)
 {
@@ -102,8 +87,8 @@ void testManager(int& testNumber)
     {
         TEST_INTRO(testNumber++);
 
-        FakeHttp fakeHttp;
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
 
         const int                   countListeners = 10;
         const int                   countMaxConnections = 1;
@@ -134,8 +119,8 @@ void testManager(int& testNumber)
         const int                   countMaxConnections = 1;
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
-        FakeHttp fakeHttp;
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
 
         prepareBindAddresses(bindAddresses, countListeners);
         Conn::Manager        manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
@@ -186,8 +171,8 @@ void testManager(int& testNumber)
         const int countConnectors = 100;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
-        FakeHttp fakeHttp;
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
         prepareBindAddresses(bindAddresses, countListeners);
@@ -223,7 +208,53 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
-        TEST_PASSED_MSG("Manager: ClientManager attempting to connect all clients");
+        TEST_PASSED_MSG("Manager: Basic Protocol to test connection handling");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+
+///////////////////////////////////////////////////////////
+
+
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int countListeners = 10;
+        const int countMaxConnections = 150;
+        const int countConnectors = 100;
+
+        Events::Manager eventManager(countListeners + countMaxConnections, globals);
+        ProtoNeverClose fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoNeverClose::InitConnection);
+
+        std::vector<Ws::BindInfo> bindAddresses(countListeners);
+        prepareBindAddresses(bindAddresses, countListeners);
+
+        Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        int exitSignal = 0;
+        pthread_mutex_t mutex;
+        pthread_mutex_init(&mutex, NULL);
+
+        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        tp.addTask(clientManagerTask);
+
+        ::sleep(1);
+
+        eventManager.ProcessEvents(100);
+
+        manager.shutdown();
+
+        tp.waitForCompletion();
+
+        EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
+
+        TEST_PASSED_MSG("Manager: Protocol that never closes -> testing ForceClose");
     }
     catch (const std::exception& e)
     {

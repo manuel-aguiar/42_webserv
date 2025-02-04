@@ -21,7 +21,8 @@ namespace Conn
 	void    
 	Connection::close()
 	{
-		m_appLayer.close(m_socket);
+		if (m_socket.getSockFd() != Ws::FD_NONE)
+			m_appLayer.close(m_socket);
 		m_connManager._ReturnConnection(*this);
 	}
 

@@ -54,9 +54,9 @@ AppLayer::accessCloseCallback()
 void
 AppLayer::close(Socket& fill)
 {
-	ASSERT_EQUAL(fill.getSockFd() != -1, true, "AppLayer::close(), socket already closed");
+	ASSERT_EQUAL(fill.getSockFd() != Ws::FD_NONE, true, "AppLayer::close(), socket already closed");
 	::close(fill.getSockFd());
-	fill.setSockFd(-1);
+	fill.setSockFd(Ws::FD_NONE);
 }
 
 void

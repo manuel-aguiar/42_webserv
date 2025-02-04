@@ -92,6 +92,7 @@ void ManagedClient::CallbackSuccess(Events::Subscription& sub)
 
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP) && conn->received == 0)
 	{
+        std::cerr << "connection got disconnect event" << std::endl;
 		conn->disconnect();
 		conn->myManager()->fail++;
 		return ;
@@ -101,7 +102,6 @@ void ManagedClient::CallbackSuccess(Events::Subscription& sub)
     {
 		::read(conn->m_socket.getSockFd(), &conn->received, 1);
 
-        conn->disconnect();
 		if (conn->received == 200)
 		{
 			//std::cerr << "\t client successfully connected" << std::endl;
@@ -170,7 +170,7 @@ ClientManagerTask::ClientManagerTask(const size_t countConnectors, const size_t 
 
 void ClientManagerTask::execute()
 {
-    Events::Manager clientEvents(1000, globals);
+    Events::Manager clientEvents(countConnectors, globals);
     ClientManager clientManager(countConnectors, countListeners, clientEvents);
 	Timer timeout = Timer::now() + 200;
 

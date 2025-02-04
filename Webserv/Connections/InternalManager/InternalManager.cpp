@@ -50,7 +50,6 @@ InternalConn* InternalManager::_Accepter_ProvideConnection()
 
 void InternalManager::_Accepter_MoveToPendingAccept(ListeningSocket& listener)
 {
-	std::cout << "listener moved to pending, no connections available" << std::endl;
 	m_pendingAccepts.push_back(&listener);
 }
 

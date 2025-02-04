@@ -9,6 +9,7 @@
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 # include "../Monitor/Monitor.hpp"
 # include "../Socket/Socket.hpp"
+# include "AppLayerProtos.hpp"
 # include <vector>
 
 

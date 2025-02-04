@@ -24,6 +24,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/TestDependencies.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/AppLayerProtos.cpp \
 				\
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
