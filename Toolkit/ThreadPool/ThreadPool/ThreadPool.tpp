@@ -21,7 +21,7 @@ class ThreadPool
 
 		/************** ThreadPool *************** */
 
-		ThreadPool(size_t InitialThreads);
+		ThreadPool(size_t InitialThreads = ThreadBacklog);
 		~ThreadPool();
 
 		void	waitForCompletion();

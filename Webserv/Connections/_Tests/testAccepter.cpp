@@ -1,11 +1,13 @@
 
+// target
+# include "../Accepter/Accepter.hpp"
+
 // Project headers
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
-# include "../Accepter/Accepter.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Globals/Globals.hpp"
-
+# include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
 # include "../Socket/Socket.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
@@ -45,17 +47,31 @@ struct TestConnector
         return(::connect(m_socket, (struct sockaddr*)&socket.getBindInfo().addr, socket.getBindInfo().addrlen));
     }
 
-    void    disconnect(Socket& socket)
+    void    disconnect()
     {
         ::close(m_socket);
-        ::close(socket.getSockFd());
     }
 
     Ws::Sock::fd m_socket;
 };
 
+class ConnectTask : public IThreadTask
+{
+	public:
+		ConnectTask(TestConnector& connector, Socket& socket) : m_connector(connector), m_socket(socket) {}
+		void execute()
+		{
+			m_connector.connect(m_socket);
+		}
+	private:
+		TestConnector&  m_connector;
+        Socket&         m_socket;
+};
+
 void testAccepter(int& testNumber)
 {
+
+    ThreadPool<10, 100> tp;
     Globals globals(NULL, NULL, NULL, NULL);
 //////////////////////////////////////////////////////
     try
@@ -105,17 +121,9 @@ void testAccepter(int& testNumber)
         EXPECT_EQUAL(accepter.open(listenInfo), 1, "Accepter::open() failed");
         EXPECT_EQUAL(listenInfo.getSockFd() != Ws::FD_NONE, true, "Accepter::open() failed, socket fd not set");
 
-        std::cout.flush();
-        int pid = fork();
-        if (!pid)
-        {
-            // connect and disconnect
-            connector.connect(externalConnect);
-            connector.disconnect(externalConnect);
-            accepter.close(listenInfo);
-            ::close(internalConnect.getSockFd());
-            exit(0);
-        }
+        ConnectTask task(connector, externalConnect);
+        tp.addTask(task);
+        
 
         //ok i'll use the event manager here, easier than sleeps to wait for the child to actually try to connect
         {
@@ -132,7 +140,8 @@ void testAccepter(int& testNumber)
             eventManager.stopMonitoring(*subs, false);
             eventManager.returnSubscription(*subs);
         }
-
+        tp.waitForCompletion();
+        connector.disconnect();
         
 
         // checking the accepter recorded the data from the incoming connection
@@ -146,7 +155,6 @@ void testAccepter(int& testNumber)
 
         accepter.close(listenInfo);
         ::close(internalConnect.getSockFd());
-        ::waitpid(pid, NULL, 0);
 
         TEST_PASSED_MSG("Accepter: accepts and closes connections");
     }

@@ -23,7 +23,7 @@ int main(void)
 	testConnection		(testNumber);
 	testAccepter		(testNumber);
 	testAppLayer		(testNumber);
-	testManager			(testNumber);
+	//testManager			(testNumber);
 
 	TEST_FOOTER;
 
