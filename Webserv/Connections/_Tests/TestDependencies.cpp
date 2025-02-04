@@ -92,28 +92,21 @@ void ManagedClient::CallbackSuccess(Events::Subscription& sub)
 
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP) && conn->received == 0)
 	{
-        std::cerr << "connection got disconnect event" << std::endl;
 		conn->disconnect();
-		conn->myManager()->fail++;
 		return ;
 	}
 
     if (triggeredEvents & Events::Monitor::READ)
-    {
 		::read(conn->m_socket.getSockFd(), &conn->received, 1);
-
-		if (conn->received == 200)
-		{
-			//std::cerr << "\t client successfully connected" << std::endl;
-        	conn->myManager()->success++;
-		}
-		else
-			conn->myManager()->fail++;
-    }
 }
 
 void ManagedClient::disconnect()
 {
+    if (received == 200)
+        m_clientManager->success++;
+    else
+        m_clientManager->fail++;
+
     m_monitor.release(*m_eventManager);
     ::close(m_socket.getSockFd());
 	m_socket.setSockFd(Ws::FD_NONE);
