@@ -55,7 +55,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         HeapArray<int> assign(100);
@@ -99,7 +99,7 @@ int TestPart2(int testNumber)
 		std::vector<std::string>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         HeapArray<std::string> assign(100);
@@ -143,7 +143,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         HeapArray<int> assign(array);
@@ -183,7 +183,7 @@ int TestPart2(int testNumber)
 		std::vector<int>::iterator iter = std.begin();
 		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 
         HeapArray<int> assign(100);

@@ -1,6 +1,12 @@
 
 
 #include "ServerBlock.hpp"
+#include "../../Ws_Namespace.h"
+#include "../../GenericUtils/Validation/Validation.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
+
 
 ServerBlock::ServerBlock()
 {
@@ -64,6 +70,15 @@ void	ServerBlock::setClientHeaderSize(const std::string &value)
 	m_client_header_size = value;
 }
 
+bool	Config::Listen::operator<(const Config::Listen &rhs) const
+{
+	if (appLayer != rhs.appLayer)
+		return (appLayer < rhs.appLayer);
+	if (hostname != rhs.hostname)
+		return (hostname < rhs.hostname);
+	return (port < rhs.port);
+}
+
 void	ServerBlock::addListener(const std::string &value)
 {
 	std::string	hostname;
@@ -89,7 +104,7 @@ void	ServerBlock::addListener(const std::string &value)
 	portValue = StringUtils::stoull(port); // fix throw
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert(t_listeners(hostname, port));
+	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
 }
 
 void	ServerBlock::addServerName(const std::string &value)
@@ -131,7 +146,7 @@ const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
 	return (m_locations);
 }
 
-const std::set<t_listeners>&	ServerBlock::getListeners() const
+const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
 	return (m_listen);
 }
@@ -212,8 +227,8 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ ┌─ Server ─────────o\n";
 	std::cout << "║ │ \n";
 	std::cout << "║ │ listeners: ";
-	for (std::set<t_listeners>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
-		std::cout << it->first << ":" << it->second << " ";
+	for (std::set<Config::Listen>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
+		std::cout << it->hostname << ":" << it->port << " ";
 	std::cout << "\n";
 	std::cout << "║ │ server_name: ";
 	if (!server_name.size())

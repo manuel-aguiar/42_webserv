@@ -1,11 +1,22 @@
 
 
 #include "LogFile.hpp"
+#include "../Clock/Clock.hpp"
 #include "../Globals.hpp"
+
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+
+// C headers
+# include <unistd.h>
+# include <fcntl.h>
+
+// C++ Headers
+# include <cstring>
+# include <cerrno>
 
 LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {
-	assert(filename != NULL);
+	ASSERT_EQUAL(filename != NULL, true, "LogFile: filename cannot be NULL");
 
 	m_fd = ::open(filename, O_CREAT | O_APPEND | O_CLOEXEC | O_NONBLOCK | O_RDWR, 0777);
 	if (m_fd == -1)
@@ -24,20 +35,12 @@ void	LogFile::setGlobals(Globals& globals)
 
 void	LogFile::record(const std::string& entry)
 {
-	assert(m_globals != NULL);
-	m_globals->getClock()->update();
-
-	const char* clockBuf = m_globals->getClock()->get_FormatedTime();
-
-	write(m_fd, clockBuf, std::strlen(clockBuf));
-	write(m_fd, ": ", 2);
-	write(m_fd, entry.c_str(), entry.size());
-	write(m_fd, "\n", 1);
+	record(entry.c_str());
 }
 
 void	LogFile::record(const char* entry)
 {
-	assert(m_globals != NULL);
+	ASSERT_EQUAL(m_globals != NULL, true, "LogFile: Globals cannot be NULL");
 	m_globals->getClock()->update();
 
 	const char* clockBuf = m_globals->getClock()->get_FormatedTime();
@@ -47,3 +50,7 @@ void	LogFile::record(const char* entry)
 	write(m_fd, entry, std::strlen(entry));
 	write(m_fd, "\n", 1);
 }
+
+LogFile::LogFile() {}
+LogFile::LogFile(const LogFile& copy) {(void)copy;}
+LogFile& LogFile::operator=(const LogFile& assign) {(void)assign; return (*this);}

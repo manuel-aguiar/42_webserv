@@ -3,6 +3,10 @@
 #include "Clock.hpp"
 #include "../Globals.hpp"
 
+// C++ headers
+# include <cstring>
+# include <cerrno>
+
 
 Clock::Clock(Globals* globals) : m_globals(globals), m_elapsed_ms(0)
 {

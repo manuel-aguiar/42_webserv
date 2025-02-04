@@ -5,6 +5,7 @@
 # define EVENTSUBSCRIPTION_HPP
 
 # include "../m_EventsDefinitions.h"
+# include "../../Ws_Namespace.h"
 
 namespace Events
 {

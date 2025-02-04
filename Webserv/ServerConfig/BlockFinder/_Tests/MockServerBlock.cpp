@@ -1,6 +1,6 @@
 
 #include "../../ServerBlock/ServerBlock.hpp"
-#include "../../../GenericUtils/Webserver_Definitions.h"
+#include "../../../Ws_Namespace.h"
 #include "../../../GenericUtils/Validation/Validation.hpp"
 #include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../ServerLocation/ServerLocation.hpp"
@@ -33,7 +33,7 @@ void ServerBlock::setClientHeaderSize(const std::string &value) { m_client_heade
 void ServerBlock::addListener(const std::string &value) { (void)value; }
 void ServerBlock::addServerName(const std::string &value) { m_server_name.insert(value); }
 void ServerBlock::addErrorPage(const std::string &value) { m_error_pages.insert(value); }
-const std::set<t_listeners>& ServerBlock::getListeners() const { return m_listen; }
+const std::set<Config::Listen>& ServerBlock::getListeners() const { return m_listen; }
 const std::set<std::string>& ServerBlock::getServerNames() const { return m_server_name; }
 size_t ServerBlock::getClientBodySize() const { return StringUtils::stoull(m_client_body_size);}
 size_t ServerBlock::getClientHeaderSize() const { return StringUtils::stoull(m_client_header_size); }

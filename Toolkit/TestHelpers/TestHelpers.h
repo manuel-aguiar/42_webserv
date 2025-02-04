@@ -144,11 +144,27 @@ namespace TestHelpers
 				expected - what you expect the outcome to be
 				message - a custom message you want to display in case of failing equality (actual != expected)
 		*/
+
+		template <typename T, typename U>
+		void expectEqualImpl(const T& actual, const U& expected, const char* actualExpr, 
+							const char* expectedExpr, const std::string& message, 
+							const char* file, int line, const char* function) {
+			if (actual != static_cast<const T>(expected)) {
+				std::ostringstream oss;
+				oss << "\t----------------------------------\n"
+					<< "\tError:     '" << message << "'\n"
+					<< "\tResult:    '" << actual << "' [" << actualExpr << "]\n"
+					<< "\tExpected:  '" << expected << "' [" << expectedExpr << "]\n"
+					<< "\t----------------------------------\n"
+					<< "\tFile:       " << file << ":" << line << "\n"
+					<< "\tFunction:   " << function << "\n"
+					<< "\t----------------------------------\n";
+				throw std::logic_error("\n\n" + oss.str());
+			}
+		}
+
 		#define EXPECT_EQUAL(actual, expected, message)                               			\
-			do	{                                                                           	\
-				if ((actual) != (expected))														\
-					throw std::logic_error(std::string("\n\n") + TEST_ERROR_MSG(actual, expected, message));	\
-			}	while (0)																	
+			TestHelpers::expectEqualImpl((actual), (expected), #actual, #expected, (message), __FILE__, __LINE__, __FUNCTION__);																
 		
 	#endif
 
