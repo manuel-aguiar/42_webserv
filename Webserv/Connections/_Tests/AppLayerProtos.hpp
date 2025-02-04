@@ -30,6 +30,7 @@ struct ProtoNeverClose
 	Ws::AppLayer::Type appLayer;
 };
 
+struct ProtoSingleRequest;
 
 struct SingleRequest
 {

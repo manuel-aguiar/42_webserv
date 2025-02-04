@@ -185,7 +185,7 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        ClientManagerTask<ManagedClient> clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -241,7 +241,7 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        ClientManagerTask<ManagedClient> clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
         tp.addTask(clientManagerTask);
 
         ::sleep(1);
