@@ -56,12 +56,13 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 	
 	for (size_t i = 0; i < m_threads.getElemCount(); ++i)
 		m_taskQueue.addTask(NULL);
-	
+
 	pthread_mutex_lock(&m_statusLock);
 	while (m_threads.getElemCount())
 	{
-		pthread_cond_wait(&m_exitSignal, &m_statusLock);
-		mf_destroyExitingThreads();		
+		mf_destroyExitingThreads();
+		if (m_threads.getElemCount())
+			pthread_cond_wait(&m_exitSignal, &m_statusLock);
 	}
 	pthread_mutex_unlock(&m_statusLock);
 }
@@ -70,14 +71,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::forceDestroy()
 {
-	m_taskQueue.clear();
-	
-	pthread_mutex_lock(&m_statusLock);
-	
-	for(size_t i = 0; i < m_threads.getElemCount(); ++i)
-		pthread_kill(m_threads[i].getThreadID(), SIGKILL);
-
-	pthread_mutex_unlock(&m_statusLock);
+	destroy(false);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>

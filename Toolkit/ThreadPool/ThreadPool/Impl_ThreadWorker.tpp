@@ -41,8 +41,8 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::ThreadWorker::run()
 		curTask->execute();
 		m_pool.m_taskQueue.finishTask(curTask);
 	}
+	
 	pthread_mutex_lock(&m_pool.m_statusLock);
-
 	m_pool.mf_markExitingThread(*this);
 
 	pthread_cond_signal(&m_pool.m_exitSignal);
