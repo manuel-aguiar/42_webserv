@@ -30,4 +30,30 @@ struct ProtoNeverClose
 	Ws::AppLayer::Type appLayer;
 };
 
+
+struct SingleRequest
+{
+	SingleRequest(ProtoSingleRequest& module, Conn::Connection& conn);
+	~SingleRequest();
+
+	static void ReadWrite_Callback(Events::Subscription& conn);
+
+	void ReadWrite();
+
+	Conn::Connection& 	conn;
+	ProtoSingleRequest& module;
+};
+
+struct ProtoSingleRequest
+{
+	ProtoSingleRequest(const Ws::AppLayer::Type type);
+	~ProtoSingleRequest();
+
+	static void InitConnection(Conn::Connection& conn);
+	static void ForcedClose(Conn::Connection& conn);
+
+	int serveCount;
+	Ws::AppLayer::Type appLayer;
+};
+
 #endif

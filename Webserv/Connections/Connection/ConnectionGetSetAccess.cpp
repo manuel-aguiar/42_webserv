@@ -19,13 +19,10 @@ namespace Conn
 		return (m_socket);
 	}
 
-
 	Events::Subscription&
 	Connection::accessEvent()
 	{
 		return (m_monitor.accessEvent());
 	}
-
-
 }
 
