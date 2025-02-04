@@ -15,14 +15,12 @@
 class Socket;
 class Globals;
 
-class TestConnector
+struct TestConnector
 {
-	public:
-		int connect(Socket& socket);
-		void disconnect();
+	int connect(Socket& socket);
+	void disconnect();
 
-	private:
-		Ws::Sock::fd m_socket;
+	Ws::Sock::fd m_socket;
 };
 
 class ClientTask : public IThreadTask
@@ -36,41 +34,49 @@ class ClientTask : public IThreadTask
 		Socket& m_socket;
 };
 
+class ClientManager;
 
 struct ManagedClient
 {
+	ManagedClient();
+
+	ClientManager* myManager();
 	int open();
 	int connect();
 	void disconnect();
 	static void CallbackSuccess(Events::Subscription& sub);
-
-	Socket m_socket;
-	Monitor m_monitor;
-	Events::Manager* m_eventManager;
+	
+	unsigned char 		received;
+	Socket 				m_socket;
+	Monitor			 	m_monitor;
+	Events::Manager* 	m_eventManager;
+	ClientManager*		m_clientManager;
 };
 
-class ClientManager
+struct ClientManager
 {
-	public:
-		ClientManager(const size_t countConnectors, const size_t countListeners, Events::Manager& eventManager);
-		~ClientManager();
-		
-		void ConnectAll();
+	ClientManager(const size_t countConnectors, const size_t countListeners, Events::Manager& eventManager);
+	~ClientManager();
+	
+	void ConnectAll();
 
-	private:
-		HeapArray<ManagedClient> m_connectors;
+	int success;
+	int fail;
+	HeapArray<ManagedClient> m_connectors;
 };
 
 class ClientManagerTask : public IThreadTask
 {
 	public:
-		ClientManagerTask(const size_t countConnectors, const size_t countListeners, Globals& globals);
+		ClientManagerTask(const size_t countConnectors, const size_t countListeners, Globals& globals, pthread_mutex_t& mutex, int& exitSignal);
 		void execute();
 
 	private:
-		size_t countConnectors;
-		const size_t countListeners;
-		Globals& globals;
+		size_t 				countConnectors;
+		const size_t 		countListeners;
+		Globals& 			globals;
+		pthread_mutex_t& 	mutex;
+		int& 				exitSignal;
 };
 
 Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);

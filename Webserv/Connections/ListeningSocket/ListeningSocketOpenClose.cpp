@@ -38,7 +38,6 @@ void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)
 {
 	ListeningSocket*	listener;
 
-	std::cout << " listener callback called" << std::endl;
 	listener = reinterpret_cast<ListeningSocket*>(callback.accessUser());
 	listener->accept();
 }

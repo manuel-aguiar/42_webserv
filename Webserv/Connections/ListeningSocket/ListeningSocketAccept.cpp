@@ -11,19 +11,21 @@ void  ListeningSocket::accept()
 {
 	InternalConn*	connection;
 
-	connection = m_connManager._Accepter_ProvideConnection();
-
-	if (!connection)
+	while (1)
 	{
-		m_monitor.unsubscribe(mf_accessEventManager(), false);
-		return (m_connManager._Accepter_MoveToPendingAccept(*this));
+		connection = m_connManager._Accepter_ProvideConnection();
+		if (!connection)
+		{
+			m_monitor.unsubscribe(mf_accessEventManager(), false);
+			return (m_connManager._Accepter_MoveToPendingAccept(*this));
+		}
+		if (m_accepter.accept(m_socket, connection->accessSocket()) == -1)
+		{
+			m_connManager._ReturnConnection(*connection);
+			return ;
+		}
+		mf_acceptInternal(*connection);
 	}
-
-	int res = m_accepter.accept(m_socket, connection->accessSocket());
-
-	ASSERT_EQUAL(res != -1, true, "ListeningSocket::accept(), beAccepted() failed, this handler should only be called when we are sure there is a connection via epoll");	
-
-	mf_acceptInternal(*connection);
 }
 
 int ListeningSocket::acceptPending(InternalConn& connection)

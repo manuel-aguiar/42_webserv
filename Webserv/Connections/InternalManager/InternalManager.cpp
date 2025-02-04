@@ -28,7 +28,7 @@ InternalManager::InternalManager(const size_t maxConnections,
 	}
 	for (size_t i = 0; i < bindAddresses.size(); i++)
 	{
-		m_listeningSockets.emplace_back(100, bindAddresses[i], *this);
+		m_listeningSockets.emplace_back(128, bindAddresses[i], *this);
 	}
 }
 
@@ -50,6 +50,7 @@ InternalConn* InternalManager::_Accepter_ProvideConnection()
 
 void InternalManager::_Accepter_MoveToPendingAccept(ListeningSocket& listener)
 {
+	std::cout << "listener moved to pending, no connections available" << std::endl;
 	m_pendingAccepts.push_back(&listener);
 }
 

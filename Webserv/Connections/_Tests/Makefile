@@ -48,6 +48,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
+				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 													\
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
 

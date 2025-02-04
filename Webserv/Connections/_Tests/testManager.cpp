@@ -26,26 +26,19 @@
 class FakeHttp
 {
     public:
-        FakeHttp() {};
+        FakeHttp() : serveCount(0) {};
         ~FakeHttp() {};
 
         static void InitConnection(Conn::Connection& conn)
         {
-            ++serveCount;
+            FakeHttp* fakeHttp = reinterpret_cast<FakeHttp*>(conn.accessServerContext().getAppLayerModule(conn.accessSocket().getBindInfo().appLayer));
+            unsigned char response = 200;
+            ::write(conn.accessSocket().getSockFd(), &response, 1);
             conn.close();
+            fakeHttp->serveCount++;
         }
-    static int serveCount;
+    int serveCount;
 };
-
-int FakeHttp::serveCount = 0;
-
-struct ClientManager;
-
-int g_failCount = 0;
-int g_successCount = 0;
-
-
-
 
 void testManager(int& testNumber)
 {
@@ -53,8 +46,7 @@ void testManager(int& testNumber)
     ThreadPool<10, 100> tp;
     Globals globals(NULL, NULL, NULL, NULL);
     ServerContext ctx;
-    FakeHttp fakeHttp;
-    ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+    
 
 //////////////////////////////////////////////////
     try
@@ -110,7 +102,10 @@ void testManager(int& testNumber)
     {
         TEST_INTRO(testNumber++);
 
-        const int                   countListeners = 1;
+        FakeHttp fakeHttp;
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
+
+        const int                   countListeners = 10;
         const int                   countMaxConnections = 1;
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
@@ -122,7 +117,7 @@ void testManager(int& testNumber)
 
         manager.shutdown();
 
-        TEST_PASSED_MSG("Manager: instantiation");
+        TEST_PASSED_MSG("Manager: instantiation with different starting values");
     }
     catch (const std::exception& e)
     {
@@ -139,6 +134,8 @@ void testManager(int& testNumber)
         const int                   countMaxConnections = 1;
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
+        FakeHttp fakeHttp;
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
 
         prepareBindAddresses(bindAddresses, countListeners);
         Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
@@ -169,7 +166,7 @@ void testManager(int& testNumber)
 
         manager.shutdown();
 
-        TEST_PASSED_MSG("Manager: instantiation");
+        TEST_PASSED_MSG("Manager: passing a single client and see if it connects");
     }
     catch (const std::exception& e)
     {
@@ -178,16 +175,18 @@ void testManager(int& testNumber)
 
 ///////////////////////////////////////////////////////////
 
-/*
+
     try
     {
         TEST_INTRO(testNumber++);
 
-        const int countListeners = 1;
-        const int countMaxConnections = 1;
-        const int countConnectors = 1;
+        const int countListeners = 10;
+        const int countMaxConnections = 10;
+        const int countConnectors = 100;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
+        FakeHttp fakeHttp;
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &FakeHttp::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
         prepareBindAddresses(bindAddresses, countListeners);
@@ -196,19 +195,34 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
 
-        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals);
+        int exitSignal = 0;
+        pthread_mutex_t mutex;
+        pthread_mutex_init(&mutex, NULL);
+
+        ClientManagerTask clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        tp.addTask(clientManagerTask);
+        tp.addTask(clientManagerTask);
         tp.addTask(clientManagerTask);
 
-        while (FakeHttp::serveCount < countConnectors)
+        bool run = true;
+        while (run)
         {
-            std::cout << "served: " << FakeHttp::serveCount << std::endl;
-            eventManager.ProcessEvents(100);
+            int wait = eventManager.ProcessEvents(100);
+            (void)wait;
+            //std::cout << "events received: " << wait;
+            //std::cout  << ", monitoring: " << eventManager.getMonitoringCount();
+            //std::cout  << ", current served: " << fakeHttp.serveCount << " out of " << countConnectors << std::endl;
+             pthread_mutex_lock(&mutex);
+             if (exitSignal)
+                 run = false;
+             pthread_mutex_unlock(&mutex);
         }
-            
-        
+
+        tp.waitForCompletion();
+
         manager.shutdown();
 
-        EXPECT_EQUAL(FakeHttp::serveCount, countConnectors, "All connections should have been served");
+        EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
         TEST_PASSED_MSG("Manager: instantiation");
     }
@@ -216,5 +230,5 @@ void testManager(int& testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-*/
+
 }

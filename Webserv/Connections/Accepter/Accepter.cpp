@@ -74,7 +74,7 @@ int		Accepter::accept(const Socket& listen, Socket& accept)
 	sockfd = ::accept(listen.getSockFd(), (struct sockaddr*)(&modifyInfo.addr), &modifyInfo.addrlen);
 
 	if (sockfd == -1)
-		return (0);
+		return (-1);
 		
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
