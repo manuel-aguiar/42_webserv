@@ -71,14 +71,7 @@ void	ThreadPool<ThreadBacklog, TaskBacklog>::destroy(bool waitForCompletion)
 template <size_t ThreadBacklog, size_t TaskBacklog>
 void	ThreadPool<ThreadBacklog, TaskBacklog>::forceDestroy()
 {
-	m_taskQueue.clear();
-	
-	pthread_mutex_lock(&m_statusLock);
-	
-	for(size_t i = 0; i < m_threads.getElemCount(); ++i)
-		pthread_kill(m_threads[i].getThreadID(), SIGKILL);
-
-	pthread_mutex_unlock(&m_statusLock);
+	destroy(false);
 }
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
