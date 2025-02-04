@@ -162,7 +162,7 @@ void testManager(int& testNumber)
         ClientTask task(connector, externalConnect);
         tp.addTask(task);
 
-        eventManager.ProcessEvents(1000);
+        eventManager.ProcessEvents(-1);
 
         tp.waitForCompletion();
         connector.disconnect();
