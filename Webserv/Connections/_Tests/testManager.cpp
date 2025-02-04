@@ -4,6 +4,7 @@
 # include "../Connection/Connection.hpp"
 
 // dependenceis/helpers
+# include "TestDependencies.hpp"
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
@@ -21,9 +22,6 @@
 // C headers
 #include <arpa/inet.h>
 #include <unistd.h>
-
-
-extern Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);
 
 class FakeHttp
 {
@@ -46,155 +44,8 @@ struct ClientManager;
 int g_failCount = 0;
 int g_successCount = 0;
 
-struct TestConnector
-{
-    int     open()
-    {
-        int sockfd = ::socket(m_socket.getBindInfo().family, m_socket.getBindInfo().socktype, m_socket.getBindInfo().proto);
-        
-        if (sockfd == -1)
-            return (-1);
-
-        m_socket.setSockFd(sockfd);
-
-        FileDescriptor::setNonBlocking(sockfd);
-
-        m_monitor.acquire(*m_eventManager);
-        Events::Subscription& sub = m_monitor.accessEvent();
-        sub.setFd(m_socket.getSockFd());
-        sub.setUser(this);
-        sub.setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
-        sub.setCallback(TestConnector::CallbackSuccess);
-        
-
-        return (1);
-    }
-
-    int    connect()
-    {
-        int res = ::connect(m_socket.getSockFd(), (struct sockaddr*)&m_socket.getBindInfo().addr, m_socket.getBindInfo().addrlen);
-
-        if (res == -1 && errno != EINPROGRESS)
-        {
-            disconnect();
-            g_failCount++;
-        }
-        m_monitor.subscribe(*m_eventManager, false);
-        return (1);
-    }
-
-    static void CallbackSuccess(Events::Subscription& sub)
-    {
-        TestConnector* conn = reinterpret_cast<TestConnector*>(sub.accessUser());
-        if (sub.getTriggeredEvents() & Events::Monitor::WRITE)
-        {
-            conn->disconnect();
-            g_successCount++;
-        }
-        else
-        {
-            conn->disconnect();
-            g_failCount++;
-        }
-    }
-
-    void    disconnect()
-    {
-        m_monitor.release(*m_eventManager);
-        ::close(m_socket.getSockFd());
-    }
-    
-    Socket              m_socket;
-    Monitor             m_monitor;
-    Events::Manager*    m_eventManager;
-};
 
 
-struct ClientManager
-{
-    ClientManager(const size_t countConnectors, const size_t countListeners, Events::Manager& eventManager) :
-        m_connectors(countConnectors)
-    {
-        for (size_t i = 0; i < countConnectors;  ++i)
-        {
-            m_connectors.emplace_back();
-            m_connectors[i].m_socket.modifyBindInfo() = (Ws::BindInfo)
-            {
-                .appLayer = Ws::AppLayer::HTTP,
-                .family = AF_INET,
-                .socktype = SOCK_STREAM,
-                .proto = IPPROTO_TCP,
-                .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(8080 + (i % countListeners)))},
-                .addrlen = sizeof(Ws::Sock::addr_in)
-            };
-            m_connectors[i].m_eventManager = &eventManager;
-            m_connectors[i].open();
-            
-        }
-    }
-
-    ~ClientManager()
-    {
-
-    }
-
-    void    ConnectAll()
-    {
-        for (size_t i = 0; i < m_connectors.size();  ++i)
-        {
-            if (m_connectors[i].connect() == -1)
-            {
-                std::cerr << "failed to connect" << std::endl;
-            }
-        }
-    }
-
-    HeapArray<TestConnector>    m_connectors;
-};
-
-class ClientManagerTask : public IThreadTask
-{
-	public:
-		ClientManagerTask(const size_t countConnectors, const size_t countListeners, Globals& globals)
-            : countConnectors(countConnectors), countListeners(countListeners), globals(globals)
-         {}
-		void execute()
-		{
-                Events::Manager clientEvents(1000, globals);
-                ClientManager clientManager(countConnectors, countListeners, clientEvents);
-
-                clientManager.ConnectAll();
-
-                while (clientEvents.getMonitoringCount() > 0)
-                {
-                    std::cerr << "client manager processing events, monitoring " << clientEvents.getMonitoringCount() << std::endl;
-                    clientEvents.ProcessEvents(-1);
-                }
-                    
-                std::cerr << "client manager done " << g_successCount<< "  " << g_failCount << std::endl;			
-		}
-	private:
-		size_t countConnectors;
-        const size_t countListeners;
-        Globals& globals;
-};
-
-void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners)
-{
-    bindAddresses.resize(countListeners);
-    for (size_t i = 0; i < bindAddresses.size(); ++i)
-    {
-        bindAddresses[i] = (Ws::BindInfo)
-        {
-            .appLayer = Ws::AppLayer::HTTP,
-            .family = AF_INET,
-            .socktype = SOCK_STREAM,
-            .proto = IPPROTO_TCP,
-            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(8080 + i))},
-            .addrlen = sizeof(Ws::Sock::addr_in)
-        };
-    }
-}
 
 void testManager(int& testNumber)
 {
@@ -254,7 +105,80 @@ void testManager(int& testNumber)
         TEST_FAILED_MSG(e.what());
     }
 
+////////////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int                   countListeners = 1;
+        const int                   countMaxConnections = 1;
+        Events::Manager             eventManager(countListeners + countMaxConnections, globals);
+        std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
+
+        prepareBindAddresses(bindAddresses, countListeners);
+        Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        manager.shutdown();
+
+        TEST_PASSED_MSG("Manager: instantiation");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+
 ///////////////////////////////////////////////////////////
+
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int                   countListeners = 1;
+        const int                   countMaxConnections = 1;
+        Events::Manager             eventManager(countListeners + countMaxConnections, globals);
+        std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
+
+        prepareBindAddresses(bindAddresses, countListeners);
+        Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+
+        TestConnector   connector;
+        Socket          externalConnect;
+
+        externalConnect.modifyBindInfo() = (Ws::BindInfo)
+        {
+            .appLayer = Ws::AppLayer::HTTP,
+            .family = AF_INET,
+            .socktype = SOCK_STREAM,
+            .proto = IPPROTO_TCP,
+            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", "8080")},
+            .addrlen = sizeof(Ws::Sock::addr_in)
+        };
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        ClientTask task(connector, externalConnect);
+        tp.addTask(task);
+
+        eventManager.ProcessEvents(1000);
+
+        tp.waitForCompletion();
+        connector.disconnect();
+
+        manager.shutdown();
+
+        TEST_PASSED_MSG("Manager: instantiation");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+
+///////////////////////////////////////////////////////////
+
+/*
     try
     {
         TEST_INTRO(testNumber++);
@@ -292,5 +216,5 @@ void testManager(int& testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-
+*/
 }

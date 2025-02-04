@@ -17,6 +17,34 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+class Calculator
+{
+	public:
+
+		enum {NOT_CALCULATED = -1, RESULT = 42};
+
+		Calculator() : m_data(NOT_CALCULATED) {}
+		void Calculate()
+		{
+			m_data = RESULT;
+		}
+
+		static void EventCallback_Calculate(Events::Subscription& event)
+		{
+			Calculator* me = reinterpret_cast<Calculator*>(event.accessUser());
+			if (event.getTriggeredEvents() == Events::Monitor::NONE
+			|| event.getTriggeredEvents() & Events::Monitor::WRITE)
+				me->Calculate();
+		}
+
+		int getData() const
+		{
+			return (m_data);
+		}
+	private:
+		int	m_data;
+};
+
 void testMonitor(int& testNumber)
 {
     Globals globals(NULL, NULL, NULL, NULL);
@@ -64,6 +92,46 @@ void testMonitor(int& testNumber)
         EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Monitor::release() should have removed the subscription from the event manager");
 
         TEST_PASSED_MSG("Monitor: acquire/release");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+    ////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        Events::Manager eventManager(1, globals);
+
+
+
+
+        Monitor monitor;
+
+        monitor.acquire(eventManager);
+        Events::Subscription& subs = monitor.accessEvent();
+
+		Calculator 				calculator;
+
+
+        subs.setFd(STDIN_FILENO);
+        subs.setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP | Events::Monitor::EDGE_TRIGGERED);
+		subs.setUser(&calculator);
+		subs.setCallback(Calculator::EventCallback_Calculate);
+        
+        monitor.subscribe(eventManager, false);
+
+        eventManager.ProcessEvents(-1);
+
+        // successfully asserts in case the monitor doesn't return the subscription
+        monitor.release(eventManager);
+
+        EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
+
+        EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Monitor::release() should have removed the subscription from the event manager");
+
+        TEST_PASSED_MSG("Monitor: triggering events");
     }
     catch (const std::exception& e)
     {

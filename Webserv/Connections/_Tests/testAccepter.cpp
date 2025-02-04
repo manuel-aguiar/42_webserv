@@ -3,6 +3,7 @@
 # include "../Accepter/Accepter.hpp"
 
 // Project headers
+# include "TestDependencies.hpp"
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
@@ -34,39 +35,6 @@ void  AccepterCallback(Events::Subscription& subs)
     AccepterCallbackBundle* bundle = reinterpret_cast<AccepterCallbackBundle*>(subs.accessUser());
     bundle->accepter.accept(bundle->listenInfo, bundle->internalConnect);
 }
-
-struct TestConnector
-{
-    int    connect(Socket& socket)
-    {
-        m_socket = ::socket(socket.getBindInfo().family, socket.getBindInfo().socktype, socket.getBindInfo().proto);
-        if (m_socket == -1)
-            return (-1);
-
-        // TestConnector will block until it is accepted
-        return(::connect(m_socket, (struct sockaddr*)&socket.getBindInfo().addr, socket.getBindInfo().addrlen));
-    }
-
-    void    disconnect()
-    {
-        ::close(m_socket);
-    }
-
-    Ws::Sock::fd m_socket;
-};
-
-class ClientTask : public IThreadTask
-{
-	public:
-		ClientTask(TestConnector& connector, Socket& socket) : m_connector(connector), m_socket(socket) {}
-		void execute()
-		{
-			m_connector.connect(m_socket);
-		}
-	private:
-		TestConnector&  m_connector;
-        Socket&         m_socket;
-};
 
 void testAccepter(int& testNumber)
 {

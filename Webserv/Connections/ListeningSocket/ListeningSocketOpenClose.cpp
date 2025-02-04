@@ -22,8 +22,7 @@ int		ListeningSocket::open()
 							| Events::Monitor::EDGE_TRIGGERED);
 	event.setUser(this);
 	event.setCallback(EventCallbackAccept);
-	m_monitor.subscribe(mf_accessEventManager(), true);
-
+	m_monitor.subscribe(mf_accessEventManager(), false);
 	return (1);
 }
 
