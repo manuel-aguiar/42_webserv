@@ -112,21 +112,22 @@ void	ServerBlock::addServerName(const std::string &value)
 
 void	ServerBlock::addErrorPage(const std::string &value)
 {
-	std::stringstream	ss;
 	std::string			error_code;
 	std::string			path;
 	size_t				separator;
 
-	ss << value;
 	separator = value.find_first_of(':', 0);
 	if (separator == std::string::npos)
-		throw (std::invalid_argument("no separator \":\" found while adding error page (errorValue:path)"));
+		throw (std::invalid_argument("no separator \":\" found while adding error page (errorNumber:path)"));
 	error_code = value.substr(0, separator);
-	if (!isNumber(error_code))
-		throw (std::invalid_argument("error code is not a number: " + error_code));
-	// path = value.substr(separator + 1, value.size() - (separator - 1));			// To retrieve the path
+	path = value.substr(separator + 1);
+	if (error_code.empty() || path.empty())
+		throw (std::invalid_argument("error code or path is empty"));
+	if (!isNumber(error_code) || stoull(error_code) < 100 || stoull(error_code) > 599)
+		throw (std::invalid_argument("error code is not a valid number: " + error_code + ". It must be a value between 100 and 599"));
+	if (m_error_pages.find(value) != m_error_pages.end())
+		throw (std::invalid_argument("error page already set: " + value));
 	m_error_pages.insert(value);
-	// Get a way to add error pages without repeated values
 }
 
 void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
