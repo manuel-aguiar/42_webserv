@@ -67,19 +67,24 @@ class ClientManagerTask : public IThreadTask
 	public:
 		ClientManagerTask(		const size_t 		countConnectors, 
 								const size_t 		countListeners, 
+								const size_t 		countMaxConnections,
 								Globals& 			globals, 
 								pthread_mutex_t& 	mutex, 
 								int& 				pasteSuccessCount, 
 								int 				timeoutMs = 2000) : 
 		countConnectors(countConnectors), 
 		countListeners(countListeners), 
+		countMaxConnections(countMaxConnections),
 		globals(globals), 
 		mutex(mutex), 
 		pasteSuccessCount(pasteSuccessCount), 
 		timeoutMs(timeoutMs) {}
 		void execute()
 		{
-			Events::Manager clientEvents(countConnectors, globals);
+			int maxEvents = countConnectors + countListeners;
+			int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
+			
+			Events::Manager clientEvents(maxEvents, globals, maxFdsEstimate);
 			ClientManager<Client> clientManager(countConnectors, countListeners, clientEvents);
 			Timer timeout = Timer::now() + timeoutMs;
 
@@ -104,12 +109,13 @@ class ClientManagerTask : public IThreadTask
 		}
 
 	private:
-		size_t 				countConnectors;
+		const size_t		countConnectors;
 		const size_t 		countListeners;
+		const size_t		countMaxConnections;
 		Globals& 			globals;
 		pthread_mutex_t& 	mutex;
 		int& 				pasteSuccessCount;
-		int 				timeoutMs;
+		const int			timeoutMs;
 };
 
 #endif

@@ -176,7 +176,10 @@ void testManager(int& testNumber)
         const int countConnectors = 100;
         const int clientTimeoutMs = 500;
 
-        Events::Manager eventManager(countListeners + countMaxConnections, globals, (countListeners + countMaxConnections + countConnectors) * 1.2f);
+        int maxEvents = countListeners + countMaxConnections;
+		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
+
+        Events::Manager eventManager(maxEvents, globals, maxFdsEstimate);
         Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
@@ -191,7 +194,13 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, 
+                                                                    countListeners,
+                                                                    countMaxConnections,  
+                                                                    globals, 
+                                                                    mutex, 
+                                                                    threadSuccessCount, 
+                                                                    clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -230,7 +239,10 @@ void testManager(int& testNumber)
         const int countConnectors = 100;
         const int clientTimeoutMs = 2000;
 
-        Events::Manager eventManager(countListeners + countMaxConnections, globals, (countListeners + countMaxConnections + countConnectors) * 1.2f);
+        int maxEvents = countListeners + countMaxConnections;
+		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
+
+        Events::Manager eventManager(maxEvents, globals, maxFdsEstimate);
         Server_NeverCloseModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_NeverCloseModule::InitConnection);
 
@@ -245,7 +257,13 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask( countConnectors, 
+                                                                    countListeners,
+                                                                    countMaxConnections, 
+                                                                    globals, 
+                                                                    mutex, 
+                                                                    threadSuccessCount, 
+                                                                    clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         ::sleep(1);
@@ -276,7 +294,10 @@ void testManager(int& testNumber)
         const int countConnectors = 1000;
         const int clientTimeoutMs = 1000;
 
-        Events::Manager eventManager(countListeners + countMaxConnections, globals, (countListeners + countMaxConnections + countConnectors) * 1.2f);
+        int maxEvents = countListeners + countMaxConnections;
+		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
+
+        Events::Manager eventManager(maxEvents, globals, maxFdsEstimate);
         Server_MathModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_MathModule::InitConnection);
 
@@ -291,7 +312,13 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_Math> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
+        ClientManagerTask<Client_Math> clientManagerTask(countConnectors, 
+                                                        countListeners, 
+                                                        countMaxConnections, 
+                                                        globals, 
+                                                        mutex, 
+                                                        threadSuccessCount, 
+                                                        clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         bool run = true;
