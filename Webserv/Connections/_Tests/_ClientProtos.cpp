@@ -167,6 +167,10 @@ void Client_Math::ReadWrite_Callback(Events::Subscription& sub)
 		conn->Write();
 }
 
+/*
+	Client subscribes itself for writting, at first.
+	Once writing is done, changes the subscription to reading to get response from server.
+*/
 void Client_Math::Write()
 {
 	int triggeredEvents = m_monitor.accessEvent().getTriggeredEvents();
@@ -184,6 +188,15 @@ void Client_Math::Write()
 	sub.setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 	m_monitor.modify(*m_eventManager, false);	
 }
+
+/*
+	if read event and readBytes == 0, means server closed connection and there is nothing to read.
+	So don't need to check for ERROR or HANGUP events.
+
+	Transaction is done, unsubscribe all events.
+
+	Check if the result is the expected one, mark on the ClientManager. Disconnect, all done.
+*/
 
 void Client_Math::Read()
 {

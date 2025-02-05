@@ -72,25 +72,20 @@ void Server_MathRequest::ReadWrite()
 {
     int triggeredEvents = conn.accessEvent().getTriggeredEvents();
 
-    //std::cout << "connection reading/writing" << std::endl;
     if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
     {
         conn.close();
         delete (this);
         return ;
     }
-    //std::cout << "\tchecking reading" << std::endl;
     if (triggeredEvents & Events::Monitor::READ)
     {
-         //std::cout << "\tread" << std::endl;
         ::read(conn.accessSocket().getSockFd(), &received, 1);
         conn.accessEvent().setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
         conn.updateMonitoring(false);
     }
-   // std::cout << "\tchecking write" << std::endl;
     if (triggeredEvents & Events::Monitor::WRITE)
     {
-        //std::cout << "\twritten" << std::endl;
         received = (received + 3) % (256);
         ::write(conn.accessSocket().getSockFd(), &received, 1);
         conn.close();
