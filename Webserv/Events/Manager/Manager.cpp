@@ -16,14 +16,14 @@
 
 namespace Events
 {
-	Manager::Manager(size_t maxSubscriptions, Globals& globals) :
+	Manager::Manager(const size_t maxSubscriptions, Globals& globals, const size_t maxFdsEstimate) :
 		m_monitoringCount(0),
 		m_epollfd		(-1),
 		m_maxStaleFd	(0),
 		m_globals		(globals),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	((maxSubscriptions * 100) / 8 + 1, 0)
+		m_staleEvents	((maxFdsEstimate ? maxFdsEstimate : maxSubscriptions * 100) / 8 + 1, 0)
 	{
 		m_epollfd = ::epoll_create(1);
 

@@ -28,7 +28,7 @@ namespace Events
 	{
 		public:
 			
-			Manager(size_t maxSubscriptions, Globals& globals);
+			Manager(const size_t maxSubscriptions, Globals& globals, const size_t maxFdsEstimate = 0);
 			~Manager();
 
 			//methods
