@@ -178,7 +178,7 @@ void testManager(int& testNumber)
 
         int maxEvents = countListeners + countMaxConnections;
 		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
-
+        
         Events::Manager eventManager(maxEvents, globals, maxFdsEstimate);
         Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
@@ -296,7 +296,7 @@ void testManager(int& testNumber)
 
         int maxEvents = countListeners + countMaxConnections;
 		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
-
+        
         Events::Manager eventManager(maxEvents, globals, maxFdsEstimate);
         Server_MathModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_MathModule::InitConnection);
