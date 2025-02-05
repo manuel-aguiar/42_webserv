@@ -23,11 +23,11 @@ Server_FastCloseModule::~Server_FastCloseModule() {}
 void Server_FastCloseModule::InitConnection(Conn::Connection& conn)
 {
     Server_FastCloseModule* fastClose = reinterpret_cast<Server_FastCloseModule*>(
-        conn.accessServerContext().getAppLayerModule(conn.accessSocket().getBindInfo().appLayer)
+        conn.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP)
     );
 
     unsigned char response = 200;
-    ::write(conn.accessSocket().getSockFd(), &response, 1);
+    ::write(conn.sock_getFd(), &response, 1);
     conn.close();
 
     fastClose->serveCount++;
@@ -40,16 +40,16 @@ Server_NeverCloseModule::~Server_NeverCloseModule() {}
 
 void Server_NeverCloseModule::InitConnection(Conn::Connection& conn)
 {
-	conn.accessAppLayer().setCloseCallback(&Server_NeverCloseModule::ForcedClose);
+	conn.appLayer_setCloseCallback(&Server_NeverCloseModule::ForcedClose);
 
     unsigned char response = 200;
-    ::write(conn.accessSocket().getSockFd(), &response, 1);
+    ::write(conn.sock_getFd(), &response, 1);
 }
 
 void Server_NeverCloseModule::ForcedClose(Conn::Connection& conn)
 {
 	Server_NeverCloseModule* neverClose = reinterpret_cast<Server_NeverCloseModule*>(
-        conn.accessServerContext().getAppLayerModule(conn.accessSocket().getBindInfo().appLayer)
+        conn.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP)
     );
 
 	neverClose->serveCount++;
@@ -68,9 +68,27 @@ void Server_MathRequest::ReadWrite_Callback(Events::Subscription& conn)
     request->ReadWrite();
 }
 
+
+/*
+    Client hangup or error, close connection. we are a server, if the client has closed then
+    our purpose is fulfilled.
+
+    The protocol InitConnection function subscribed read first, only (we have nothing to write,
+    without knowing what the client wants). Ideally, do both at the same:
+        if you are lucky you can read, parse and write all in one turn, which is faster. For
+        this tests and to add unpredictability to patterns, we deliberately wait for another turn
+        to write back. (could do nginx style: write, if fails, subscribe, FORBIDDEN BY SUBJECT :'()
+        -> example below of nginx style with optimistic writing.
+    
+    After reading, update event to monitor writting (won't trigger this turn).
+    next turn, write the modified value "pre-agreed" with the client ((client number + 3) % 256).
+    Close connection and mark success for the transaction.
+
+    self deleting -> dangerous, but we are sure the connection is closed, and we are done.
+*/
 void Server_MathRequest::ReadWrite()
 {
-    int triggeredEvents = conn.accessEvent().getTriggeredEvents();
+    int triggeredEvents = conn.events_getTriggeredEvents();
 
     if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
     {
@@ -80,14 +98,41 @@ void Server_MathRequest::ReadWrite()
     }
     if (triggeredEvents & Events::Monitor::READ)
     {
-        ::read(conn.accessSocket().getSockFd(), &received, 1);
-        conn.accessEvent().setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
-        conn.updateMonitoring(false);
+         
+        ::read(conn.sock_getFd(), &received, 1);
+        conn.events_setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
+        conn.events_updateMonitoring(false);
+         
+    
+    /*  
+        //////////////////////////////////////////////////////////  
+        // This is the optimistic writing version, NGINX style: //
+        //////////////////////////////////////////////////////////
+
+        ::read(conn.accessSocket().getSockFd(), &received, 1);  
+        received = (received + 3) % (256);
+        int bytesWritten = ::write(conn.accessSocket().getSockFd(), &received, 1);
+        if (bytesWritten == -1)
+        {
+            // writing failed (client socket is full), start monitoring writing for the next turn
+            conn.events_setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
+            conn.updateMonitoring(false);
+            return ;
+        }
+        else
+        {
+            //success, able to write back in the same turn, close and mark success
+            conn.close();
+            this->module.serveCount++;
+            delete (this);
+        }
+    */
+
     }
     if (triggeredEvents & Events::Monitor::WRITE)
     {
         received = (received + 3) % (256);
-        ::write(conn.accessSocket().getSockFd(), &received, 1);
+        ::write(conn.sock_getFd(), &received, 1);
         conn.close();
         this->module.serveCount++;
         delete (this);
@@ -108,21 +153,21 @@ Server_MathModule::~Server_MathModule()
 void Server_MathModule::InitConnection(Conn::Connection& conn) 
 {
     Server_MathModule* module = reinterpret_cast<Server_MathModule*>(
-        conn.accessServerContext().getAppLayerModule(conn.accessSocket().getBindInfo().appLayer)
+        conn.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP)
     );
 
     Server_MathRequest* request = new Server_MathRequest(*module, conn);
-    conn.accessAppLayer().setConn(request);
-    conn.accessAppLayer().setCloseCallback(&Server_MathModule::ForcedClose);
-    conn.accessEvent().setUser(request);
-    conn.accessEvent().setCallback(&Server_MathRequest::ReadWrite_Callback);
-    conn.accessEvent().setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
-    conn.startMonitoring(false);
+    conn.appLayer_setConn(request);
+    conn.appLayer_setCloseCallback(&Server_MathModule::ForcedClose);
+    conn.events_setUser(request);
+    conn.events_setCallback(&Server_MathRequest::ReadWrite_Callback);
+    conn.events_setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
+    conn.events_startMonitoring(false);
 }
 
 void Server_MathModule::ForcedClose(Conn::Connection& conn) 
 {
-    Server_MathRequest* request = reinterpret_cast<Server_MathRequest*>(conn.accessAppLayer().accessConn());
+    Server_MathRequest* request = reinterpret_cast<Server_MathRequest*>(conn.appLayer_accessConn());
 
     delete (request);
     conn.close();

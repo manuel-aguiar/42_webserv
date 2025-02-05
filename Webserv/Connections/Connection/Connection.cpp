@@ -41,22 +41,47 @@ namespace Conn
 	}
 
 	void
-	Connection::startMonitoring(bool isCalledFromEventLoop)
+	Connection::events_startMonitoring(bool isCalledFromEventLoop)
 	{
 		m_monitor.subscribe(accessEventManager(), isCalledFromEventLoop);
 	}
 	
 	void
-	Connection::stopMonitoring(bool isCalledFromEventLoop)
+	Connection::events_stopMonitoring(bool isCalledFromEventLoop)
 	{
 		m_monitor.unsubscribe(accessEventManager(), isCalledFromEventLoop);
 	}
 	
 	void
-	Connection::updateMonitoring(bool isCalledFromEventLoop)
+	Connection::events_updateMonitoring(bool isCalledFromEventLoop)
 	{
 		m_monitor.modify(accessEventManager(), isCalledFromEventLoop);
 	}
+
+
+	Ws::AppLayer::Conn
+	Connection::appLayer_accessConn()
+	{
+		return (m_appLayer.accessConn());
+	}
 	
+	Ws::AppLayer::CloseCallback
+	Connection::appLayer_accessCloseCallback()
+	{
+		return (m_appLayer.accessCloseCallback());
+	}
+
+	void
+	Connection::appLayer_setConn			(const Ws::AppLayer::Conn& appConn)
+	{
+		m_appLayer.setConn(appConn);
+	}
+	
+	void
+	Connection::appLayer_setCloseCallback	(const Ws::AppLayer::CloseCallback callback)
+	{
+		m_appLayer.setCloseCallback(callback);
+	}
+
 
 }

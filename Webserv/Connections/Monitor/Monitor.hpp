@@ -20,6 +20,7 @@ class Monitor
 		void						unsubscribe(Events::Manager& eventManager, bool isCalledFromEventLoop);
 		void						modify(Events::Manager& eventManager, bool isCalledFromEventLoop);
 		Events::Subscription&		accessEvent();
+		const Events::Subscription&	getEvent() const;
 
 	private:
 		Events::Subscription*		m_eventSubs;

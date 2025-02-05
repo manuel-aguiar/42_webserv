@@ -30,6 +30,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp \
+				$(SRC_PATH)/Webserv/Connections/Connection/ConnectionEvents.cpp \
 				$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp \
 				$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp \
 				$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp \

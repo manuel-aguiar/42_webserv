@@ -8,21 +8,16 @@ namespace Conn
 
 	//setters
 	AppLayer&
-	Connection::accessAppLayer()
+	Connection::mf_accessAppLayer()
 	{
 		return (m_appLayer);
 	}
 
 	Socket&
-	Connection::accessSocket()
+	Connection::mf_accessSocket()
 	{
 		return (m_socket);
 	}
 
-	Events::Subscription&
-	Connection::accessEvent()
-	{
-		return (m_monitor.accessEvent());
-	}
 }
 

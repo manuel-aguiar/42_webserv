@@ -70,6 +70,12 @@ Monitor::accessEvent()
 	return (*m_eventSubs);
 }
 
+const Events::Subscription&
+Monitor::getEvent() const
+{
+	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::accessEvent() accessing event when none was acquired");
+	return (*m_eventSubs);
+}
 
 Monitor::Monitor(const Monitor& copy) : 
 	m_eventSubs(copy.m_eventSubs) {}

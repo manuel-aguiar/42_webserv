@@ -24,11 +24,11 @@ namespace Conn { class Connection; }
 class InternalManager
 {
 	protected:
-		InternalManager(const size_t maxConnections,
-						const std::vector<Ws::BindInfo>& bindAddresses,
-						Events::Manager& eventManager,
-						Globals& globals,
-						ServerContext& context);
+		InternalManager(const size_t						maxConnections,
+						const std::vector<Ws::BindInfo>&	bindAddresses,
+						Events::Manager&					eventManager,
+						Globals&							globals,
+						ServerContext&						context);
 		~InternalManager();
 
 	public:

@@ -18,6 +18,8 @@ class InternalConn : public Conn::Connection
 		void	forcedClose();
 		void	reset();
 
+		Socket&	accessSocket();
+
 	private:
 	
 		void	mf_callAppLayerForceClose();

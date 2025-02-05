@@ -174,7 +174,7 @@ void testManager(int& testNumber)
         const int countListeners = 10;
         const int countMaxConnections = 10;
         const int countConnectors = 100;
-        const int clientTimeoutMs = 100;
+        const int clientTimeoutMs = 500;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
         Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);

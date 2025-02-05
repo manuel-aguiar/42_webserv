@@ -41,7 +41,7 @@ int ListeningSocket::acceptPending(InternalConn& connection)
 
 	if (result == -1)
 	{
-		//listener has nobody waiting
+		//listener has nobody waiting, resubscribe itself in the event manager
 		m_monitor.subscribe(mf_accessEventManager(), false);
 		return (result);
 	}

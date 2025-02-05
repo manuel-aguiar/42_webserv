@@ -79,7 +79,8 @@ int		Accepter::accept(const Socket& listen, Socket& accept)
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
 		::close(sockfd);
-		return (0);
+		modifyInfo = (Ws::BindInfo){};
+		return (-1);
 	}
 
 	modifyInfo.family = m_info.family;
