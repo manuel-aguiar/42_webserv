@@ -131,7 +131,7 @@ namespace Events
 
 		if (::epoll_ctl(m_epollfd, EPOLL_CTL_ADD, fd, &epollEvent) == -1)
 		{
-			ASSERT_EQUAL(true, false, "Manager::startMonitoring(): Subscription data is not valid for epoll monitoring");
+			ASSERT_EQUAL(true, false, std::string("Manager::startMonitoring(): Subscription data is not valid for epoll monitoring: ") + std::string(strerror(errno)));
 			m_globals.logError("Manager::startMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
@@ -167,7 +167,7 @@ namespace Events
 		
 		if (::epoll_ctl(m_epollfd, EPOLL_CTL_MOD, fd, &epollEvent) == -1)
 		{
-			ASSERT_EQUAL(true, false, "Manager::updateEvents(): Subscription data is not valid for epoll monitoring");
+			ASSERT_EQUAL(true, false, std::string("Manager::updateEvents(): Subscription data is not valid for epoll monitoring: ") + std::string(strerror(errno)));
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}
@@ -195,7 +195,7 @@ namespace Events
 
 		if (::epoll_ctl(m_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		{
-			ASSERT_EQUAL(true, false, "Manager::stopMonitoring(): Subscription data is not valid for epoll monitoring");
+			ASSERT_EQUAL(true, false, std::string("Manager::stopMonitoring(): Subscription data is not valid for epoll monitoring: ") + strerror(errno));
 			m_globals.logError("Manager::stopMonitoring, epoll_ctl(): " + std::string(strerror(errno)));
 			return (0);
 		}

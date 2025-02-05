@@ -13,7 +13,9 @@ class InternalConn : public Conn::Connection
 		InternalConn(InternalManager& connManager);
 		~InternalConn();
 
-		void	ForcedClose();
+
+		void	prepareDispatch();
+		void	forcedClose();
 		void	reset();
 
 	private:

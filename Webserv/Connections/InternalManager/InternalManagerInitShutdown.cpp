@@ -24,5 +24,5 @@ void   	InternalManager::shutdown()
 	m_pendingAccepts.clear();
 
 	for (size_t i = 0; i < m_connections.size(); ++i)
-		m_connections[i].ForcedClose();
+		m_connections[i].forcedClose();
 }

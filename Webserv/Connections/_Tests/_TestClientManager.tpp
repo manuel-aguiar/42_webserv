@@ -1,65 +1,14 @@
 
 
-#ifndef TEST_DEPENDENCIES_HPP
+#ifndef _TESTCLIENTMANAGER_HPP
 
-# define TEST_DEPENDENCIES_HPP
+# define _TESTCLIENTMANAGER_HPP
 
-# include "../../Ws_Namespace.h"
-# include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
+# include "_TestDependencies.hpp"
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
+# include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
-# include "../../Globals/Globals.hpp"
 # include "../../Events/Manager/Manager.hpp"
-# include "../../Events/Subscription/Subscription.hpp"
-# include "../Monitor/Monitor.hpp"
-# include "../Socket/Socket.hpp"
-# include "AppLayerProtos.hpp"
-# include <vector>
-
-Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);
-void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners);
-
-class Socket;
-class Globals;
-
-struct TestConnector
-{
-	int connect(Socket& socket);
-	void disconnect();
-
-	Ws::Sock::fd m_socket;
-};
-
-class ClientTask : public IThreadTask
-{
-	public:
-		ClientTask(TestConnector& connector, Socket& socket);
-		void execute();
-
-	private:
-		TestConnector& m_connector;
-		Socket& m_socket;
-};
-
-template <typename Client>
-class ClientManager;
-
-struct ManagedClient
-{
-	ManagedClient();
-
-	ClientManager<ManagedClient>* myManager();
-	int open();
-	int connect();
-	void disconnect();
-	static void CallbackSuccess(Events::Subscription& sub);
-	
-	unsigned char 						received;
-	Socket 								m_socket;
-	Monitor			 					m_monitor;
-	Events::Manager* 					m_eventManager;
-	ClientManager<ManagedClient>*		m_clientManager;
-};
 
 template <typename Client>
 struct ClientManager
@@ -68,7 +17,7 @@ struct ClientManager
 	{
 		for (size_t i = 0; i < countConnectors; ++i)
 		{
-			m_connectors.emplace_back();
+			m_connectors.emplace_back(i);
 			m_connectors[i].m_socket.modifyBindInfo() = (Ws::BindInfo)
 			{
 				.appLayer = Ws::AppLayer::HTTP,
@@ -116,13 +65,23 @@ template <typename Client>
 class ClientManagerTask : public IThreadTask
 {
 	public:
-		ClientManagerTask(const size_t countConnectors, const size_t countListeners, Globals& globals, pthread_mutex_t& mutex, int& exitSignal)
-		    : countConnectors(countConnectors), countListeners(countListeners), globals(globals), mutex(mutex), exitSignal(exitSignal) {}
+		ClientManagerTask(		const size_t 		countConnectors, 
+								const size_t 		countListeners, 
+								Globals& 			globals, 
+								pthread_mutex_t& 	mutex, 
+								int& 				pasteSuccessCount, 
+								int 				timeoutMs = 2000) : 
+		countConnectors(countConnectors), 
+		countListeners(countListeners), 
+		globals(globals), 
+		mutex(mutex), 
+		pasteSuccessCount(pasteSuccessCount), 
+		timeoutMs(timeoutMs) {}
 		void execute()
 		{
 			Events::Manager clientEvents(countConnectors, globals);
 			ClientManager<Client> clientManager(countConnectors, countListeners, clientEvents);
-			Timer timeout = Timer::now() + 200;
+			Timer timeout = Timer::now() + timeoutMs;
 
 			clientManager.ConnectAll();
 
@@ -140,7 +99,7 @@ class ClientManagerTask : public IThreadTask
 			//std::cerr << "\t\t\tclient manager done, success " << clientManager.success << ", fail " << (countConnectors - clientManager.success) << std::endl;
 			
 			pthread_mutex_lock(&mutex);
-			exitSignal = 1;
+			pasteSuccessCount = clientManager.success;
 			pthread_mutex_unlock(&mutex);
 		}
 
@@ -149,9 +108,8 @@ class ClientManagerTask : public IThreadTask
 		const size_t 		countListeners;
 		Globals& 			globals;
 		pthread_mutex_t& 	mutex;
-		int& 				exitSignal;
+		int& 				pasteSuccessCount;
+		int 				timeoutMs;
 };
-
-
 
 #endif

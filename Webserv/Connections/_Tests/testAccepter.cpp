@@ -3,7 +3,8 @@
 # include "../Accepter/Accepter.hpp"
 
 // Project headers
-# include "TestDependencies.hpp"
+# include "_TestDependencies.hpp"
+# include "_ClientProtos.hpp"
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"

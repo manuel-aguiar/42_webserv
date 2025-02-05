@@ -7,6 +7,11 @@
 
 
 
+
+
+// to erase, for tests
+#include "../../Events/Subscription/Subscription.hpp"
+
 void  ListeningSocket::accept()
 {
 	InternalConn*	connection;
@@ -30,6 +35,8 @@ void  ListeningSocket::accept()
 
 int ListeningSocket::acceptPending(InternalConn& connection)
 {
+	if (connection.accessEvent().isSubscribed())
+		std::cout << "pending accept, connection event still susbcribed"<< std::endl;
 	int result = m_accepter.accept(m_socket, connection.accessSocket());
 
 	if (result == -1)
@@ -45,6 +52,7 @@ int ListeningSocket::acceptPending(InternalConn& connection)
 int
 ListeningSocket::mf_acceptInternal(InternalConn& connection)
 {
+	connection.prepareDispatch();
 	mf_accessServerContext().getAppLayerInit(m_socket.getBindInfo().appLayer)(connection);
 	return (1);
 }

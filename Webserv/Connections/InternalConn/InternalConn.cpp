@@ -1,6 +1,7 @@
 
 
 # include "InternalConn.hpp"
+# include "../../Events/Subscription/Subscription.hpp"
 
 InternalConn::InternalConn(InternalManager& connManager) :
 	Conn::Connection(connManager)
@@ -12,9 +13,8 @@ InternalConn::~InternalConn()
 	m_monitor.release(accessEventManager());
 }
 
-#include <iostream>
 void
-InternalConn::ForcedClose()
+InternalConn::forcedClose()
 {
 	if (m_socket.getSockFd() == Ws::FD_NONE)
 		return ;
@@ -22,9 +22,11 @@ InternalConn::ForcedClose()
 	Conn::Connection::close();
 }
 
+#include <iostream>
 void
 InternalConn::reset()
 {
+	//std::cout << "socket fd: " << m_socket.getSockFd() << ", event fd: " << m_monitor.accessEvent().getFd() << std::endl;
 	m_socket.reset();
 	m_monitor.reset(accessEventManager(), false);
 	m_appLayer.reset();
@@ -35,4 +37,9 @@ InternalConn::mf_callAppLayerForceClose()
 {
 	if (m_appLayer.accessCloseCallback())
 		m_appLayer.accessCloseCallback()(*this);
+}
+
+void InternalConn::prepareDispatch()
+{
+	m_monitor.accessEvent().setFd(m_socket.getSockFd());
 }

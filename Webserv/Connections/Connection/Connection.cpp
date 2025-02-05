@@ -21,6 +21,8 @@ namespace Conn
 	void    
 	Connection::close()
 	{
+		//std::cout << "Connection::close()" << std::endl;
+		m_monitor.unsubscribe(accessEventManager(), false);
 		if (m_socket.getSockFd() != Ws::FD_NONE)
 			m_appLayer.close(m_socket);
 		m_connManager._ReturnConnection(*this);

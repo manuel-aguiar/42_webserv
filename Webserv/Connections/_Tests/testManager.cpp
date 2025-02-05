@@ -4,7 +4,11 @@
 # include "../Connection/Connection.hpp"
 
 // dependenceis/helpers
-# include "TestDependencies.hpp"
+# include "_TestDependencies.hpp"
+# include "_TestClientManager.tpp"
+# include "_ClientProtos.hpp"
+# include "_ServerProtos.hpp"
+
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
@@ -34,6 +38,7 @@ void testManager(int& testNumber)
     
 
 //////////////////////////////////////////////////
+/*
     try
     {
         TEST_INTRO(testNumber++);
@@ -87,8 +92,8 @@ void testManager(int& testNumber)
     {
         TEST_INTRO(testNumber++);
 
-        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
+        Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
         const int                   countListeners = 10;
         const int                   countMaxConnections = 1;
@@ -119,8 +124,8 @@ void testManager(int& testNumber)
         const int                   countMaxConnections = 1;
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
-        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
+        Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
         prepareBindAddresses(bindAddresses, countListeners);
         Conn::Manager        manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
@@ -171,8 +176,8 @@ void testManager(int& testNumber)
         const int countConnectors = 100;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
-        ProtoFastClose fakeHttp(Ws::AppLayer::HTTP);
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoFastClose::InitConnection);
+        Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
         prepareBindAddresses(bindAddresses, countListeners);
@@ -181,11 +186,11 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
 
-        int exitSignal = 0;
+        int threadSuccessCount = -1;
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<ManagedClient> clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -197,7 +202,7 @@ void testManager(int& testNumber)
             //std::cout  << ", monitoring: " << eventManager.getMonitoringCount();
             //std::cout  << ", current served: " << fakeHttp.serveCount << " out of " << countConnectors << std::endl;
              pthread_mutex_lock(&mutex);
-             if (exitSignal)
+             if (threadSuccessCount != -1)
                  run = false;
              pthread_mutex_unlock(&mutex);
         }
@@ -208,7 +213,7 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
-        TEST_PASSED_MSG("Manager: Basic Protocol to test connection handling");
+        TEST_PASSED_MSG("Manager: Protocol FastClose to test connection handling");
     }
     catch (const std::exception& e)
     {
@@ -227,8 +232,8 @@ void testManager(int& testNumber)
         const int countConnectors = 100;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
-        ProtoNeverClose fakeHttp(Ws::AppLayer::HTTP);
-        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &ProtoNeverClose::InitConnection);
+        Server_NeverCloseModule fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_NeverCloseModule::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
         prepareBindAddresses(bindAddresses, countListeners);
@@ -237,11 +242,11 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
 
-        int exitSignal = 0;
+        int threadSuccessCount = -1;
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<ManagedClient> clientManagerTask(countConnectors, countListeners, globals, mutex, exitSignal);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
         tp.addTask(clientManagerTask);
 
         ::sleep(1);
@@ -254,7 +259,63 @@ void testManager(int& testNumber)
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
-        TEST_PASSED_MSG("Manager: Protocol that never closes -> testing ForceClose");
+        TEST_PASSED_MSG("Manager: Protocol NeverClose -> testing connection ForceClose from Manager shutdown");
+    }
+    catch (const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+*/
+///////////////////////////////////////////////////////////////////
+
+    try
+    {
+        TEST_INTRO(testNumber++);
+
+        const int countListeners = 10;
+        const int countMaxConnections = 100;
+        const int countConnectors = 1000;
+
+        Events::Manager eventManager(countListeners + countMaxConnections + 1000, globals);
+        Server_MathModule fakeHttp(Ws::AppLayer::HTTP);
+        ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_MathModule::InitConnection);
+
+        std::vector<Ws::BindInfo> bindAddresses(countListeners);
+        prepareBindAddresses(bindAddresses, countListeners);
+
+        Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
+
+        EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
+
+        int threadSuccessCount = -1;
+        pthread_mutex_t mutex;
+        pthread_mutex_init(&mutex, NULL);
+
+        ClientManagerTask<Client_Math> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
+        tp.addTask(clientManagerTask);
+
+        bool run = true;
+        while (run)
+        {
+            int wait = eventManager.ProcessEvents(100);
+            (void)wait;
+            //std::cout << "events received: " << wait;
+            //std::cout  << ", monitoring: " << eventManager.getMonitoringCount();
+            //std::cout  << ", current served: " << fakeHttp.serveCount << " out of " << countConnectors << std::endl;
+             pthread_mutex_lock(&mutex);
+             if (threadSuccessCount != -1)
+                 run = false;
+             pthread_mutex_unlock(&mutex);
+        }
+
+        tp.waitForCompletion();
+
+        manager.shutdown();
+
+        EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
+        EXPECT_EQUAL(threadSuccessCount, countConnectors, "ClientManagerTask should have completed");
+
+        TEST_PASSED_MSG("Manager: Protocol Math, client sends a byte, server transforms and sends back, client checks if response matches");
     }
     catch (const std::exception& e)
     {

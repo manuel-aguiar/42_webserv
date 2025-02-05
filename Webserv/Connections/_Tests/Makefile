@@ -23,8 +23,9 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testAccepter.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
-				$(SRC_PATH)/Webserv/Connections/_Tests/TestDependencies.cpp \
-				$(SRC_PATH)/Webserv/Connections/_Tests/AppLayerProtos.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/_TestDependencies.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/_ServerProtos.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/_ClientProtos.cpp \
 				\
 				$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp \
@@ -75,7 +76,7 @@ test: $(NAME)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all --trace-children=yes ./$(NAME)
 
 clean:
-	rm -rf $(NAME) vgcore*
+	rm -rf vgcore*
 
 fclean: clean
 
