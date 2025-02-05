@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 // C++ headers
 # include <exception>
@@ -19,7 +9,7 @@
 # include "../../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../../Heap_MemoryPool/Heap_MemoryPool.hpp"
 # include "../../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
-
+# include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
 
@@ -27,12 +17,11 @@ int main(void)
 {
     int testNumber = 1;
     
+    TEST_HEADER("Nginx_PoolAllocator");
 
-	std::cout << "\n*************** Nginx_PoolAllocator tests ***************" << std::endl;
-	
     testNumber = TestPart1(testNumber);
 
-    std::cout << "******************************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return 0;
 }

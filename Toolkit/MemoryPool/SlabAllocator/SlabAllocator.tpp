@@ -1,24 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   SlabAllocator.tpp                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/03 14:49:34 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/07 23:48:33 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#ifndef Heap_ObjectPool_TPP
-# define Heap_ObjectPool_TPP
+
+#ifndef SLABALLOCATOR_TPP
+# define SLABALLOCATOR_TPP
 
 # include <limits>
-# include <stdint.h>
-# include <stddef.h>
-# include <cstring>
-
-# include <vector>
+# include <cstddef>
 
 # include "../../Arrays/DynArray/DynArray.hpp"
 # include "../SlabAllocator/SlabAllocator.hpp"

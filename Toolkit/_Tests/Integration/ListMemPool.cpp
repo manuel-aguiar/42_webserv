@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ListMemPool.cpp                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 11:27:04 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:31:11 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 int ListMemPool(int testNumber)
 {
@@ -21,7 +11,7 @@ int ListMemPool(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<ToolkitDummy> alloc(memoryPool);
 		std::list<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > std(alloc);
@@ -42,19 +32,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /********************************************* */
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -77,19 +66,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -136,20 +124,19 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
-    }
+		TEST_FAILED_MSG(e.what());
+		    }
 
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 		Nginx_PoolAllocator<StringInPool>   allocString(memoryPool);
@@ -180,19 +167,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
@@ -238,19 +224,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<char>           allocChar(memoryPool);	//memoryPool allocator for std::string character arrays
 
@@ -275,19 +260,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
@@ -312,19 +296,18 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		std::list<int, Nginx_MPool_FixedElem<int> > 	std(Nginx_MPool_FixedElem<int>(memoryPool, 100));
@@ -349,17 +332,16 @@ int ListMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		Nginx_MPool_FixedElem<int> fixedElem(memoryPool, 300);
@@ -409,19 +391,18 @@ try
 			throw std::logic_error("allocator mismatch");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /****************************************************** */
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		Nginx_MPool_FixedElem<int> fixedElem(memoryPool, 300);
@@ -482,12 +463,11 @@ try
 			throw std::logic_error("copy assignment, allocator mismatch");
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /********************************************************* */
@@ -497,7 +477,7 @@ try
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Nginx_PoolAllocator<ToolkitDummy> alloc(memoryPool);
 		std::list<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > std(alloc);
@@ -534,19 +514,18 @@ try
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************************************************** */
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
 		Nginx_MPool_FixedElem<ToolkitDummy> fixedElem(memoryPool, 200);
@@ -590,13 +569,12 @@ try
 		if (copy.getAllocator() != first.getAllocator())
 			throw std::logic_error("allocator mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-		TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 

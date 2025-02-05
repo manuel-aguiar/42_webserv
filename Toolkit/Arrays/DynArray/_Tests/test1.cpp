@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test1.cpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/23 15:06:14 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:15:44 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 // C++ headers
 #include <iostream>
 #include <cstring>
@@ -21,7 +9,7 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 int TestPart1(int testNumber)
 {
@@ -30,101 +18,95 @@ int TestPart1(int testNumber)
 
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<int> 		std;
-		DynArray<int> 			array;
+		TEST_INTRO(testNumber++);
+		std::vector<int> std;
+		DynArray<int> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<int>::iterator it = array.begin();
 		std::vector<int>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 	/***************************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		TEST_INTRO(testNumber++);
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.push_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 	/*******************  ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		TEST_INTRO(testNumber++);
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
 			std.push_back(i);
 			array.emplace_back(i);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 
-/******************* ************************/
+	/******************* ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
-		std::vector<ToolkitDummy> 		std;
-		DynArray<ToolkitDummy> 			array;
+		TEST_INTRO(testNumber++);
+		std::vector<ToolkitDummy> std;
+		DynArray<ToolkitDummy> array;
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -133,22 +115,20 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 			array.emplace_back(array[0]);
 		}
-		if (std.size() != array.size())
-			throw std::logic_error("size mismatch");
+		EXPECT_EQUAL(array.size(), std.size(), "size mismatch");
 
 		DynArray<ToolkitDummy>::iterator it = array.begin();
 		std::vector<ToolkitDummy>::iterator iter = std.begin();
-		for ( ; it != array.end() && iter != std.end(); ++it, ++iter)
+		for (; it != array.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (*it != *iter)
-				throw std::logic_error("value mismatch");
+			bool resultValueMatch = (*it == *iter);
+			EXPECT_EQUAL(resultValueMatch, true, "value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

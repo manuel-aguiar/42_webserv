@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test1.cpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/06 23:42:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 23:42:39 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 //test target
 # include "../ThreadPool.hpp"
@@ -18,7 +8,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 // C++ headers
 # include <unistd.h>
@@ -65,39 +55,34 @@ class FiboTask : public IThreadTask
 
 int	TestPart1(int testNumber)
 {
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<10, 100> tp(5);
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
 
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<100, 1000> tp(10);
 		tp.removeThread();
 		tp.addThread();
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
-
 
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		ThreadPool<100, 1000> tp(10);
@@ -122,18 +107,14 @@ int	TestPart1(int testNumber)
 		tp.waitForCompletion();
 		tp.removeThread();
 
-		if (placeResult != 8)
-			throw std::runtime_error("Didn't calculate fibonacci right");
+		EXPECT_EQUAL(placeResult, (long)8, "Didn't calculate fibonacci right");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;
-
 	return (testNumber);
 }
 

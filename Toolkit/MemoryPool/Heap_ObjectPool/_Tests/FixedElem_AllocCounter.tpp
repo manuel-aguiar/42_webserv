@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   FixedElem_AllocCounter.tpp                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 09:01:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 01:02:46 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 # ifndef ALLOCCOUNTERS_TPP
 
@@ -16,7 +6,7 @@
 
 #include "../Heap_ObjectPool.hpp"
 
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 template <typename T, typename Allocator = std::allocator<T> >
 class FixedElem_AllocCounter : public Heap_ObjectPool<T, Allocator>

@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   DynArrayMemPool.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 10:57:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/02 11:02:24 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 int DynArrayMemPool(int testNumber)
 {
@@ -19,7 +9,7 @@ int DynArrayMemPool(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitDummy> alloc(pool);
 		std::vector<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 		std(alloc);
 		DynArray<ToolkitDummy, Nginx_PoolAllocator<ToolkitDummy> > 			array(0, alloc);
@@ -42,19 +32,18 @@ int DynArrayMemPool(int testNumber)
 			if (*it != *iter)
 				throw std::logic_error("value mismatch");
 		}
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* TEST 5 ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		DynArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(alloc);
@@ -101,12 +90,11 @@ int DynArrayMemPool(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
 
 
@@ -114,7 +102,7 @@ int DynArrayMemPool(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber << ": ";
+		TEST_INTRO(testNumber++);
 		Nginx_PoolAllocator<ToolkitBase*> alloc(pool);
 		std::vector<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 		std(alloc);
 		DynArray<ToolkitBase*, Nginx_PoolAllocator<ToolkitBase*> > 			array(alloc);
@@ -189,12 +177,11 @@ int DynArrayMemPool(int testNumber)
 			(*iter)->~ToolkitBase();
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
     testNumber++;
 

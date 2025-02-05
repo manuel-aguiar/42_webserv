@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test1.cpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/23 11:00:00 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/06 13:50:34 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 // C++ headers
 #include <iostream>
@@ -21,68 +11,59 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 
 int TestPart1(int testNumber)
 {
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
-		const int arraySize = 100;
+		const size_t arraySize = 100;
 		StackArray<int, arraySize> array;
-
-		if (array.capacity() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.capacity()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		
+		EXPECT_EQUAL(array.capacity(), arraySize, "size mismatch");
 
 
 		for (int i = 0; i < 100; ++i)
 		{
 			array.emplace_back(i);
 		}
-		if (array.size() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+		EXPECT_EQUAL(array.size(), arraySize, "size mismatch");
+
 		for (int i = 0; i < 100; ++i)
-		{
-			if (array[i] != i)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(i) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
-		std::cout << "	PASSED" << std::endl;
+			EXPECT_EQUAL(array[i], i, "value mismatch");
+
+
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/*********************** ************************/
-	std::cout << "TEST " << testNumber++ << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
-		const int arraySize = 100;
+		const size_t arraySize = 100;
 		const int copyInit = 123;
 
 		// copy constructs the elements based on the one element passed
 		StackArray<int, arraySize> array(copyInit);
-		if (array.size() != arraySize)
 
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array.capacity(), arraySize, "size mismatch");
 
 		for (size_t i = 0; i < array.size(); ++i)
-		{
-			if (array[i] != copyInit)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(copyInit) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
-		std::cout << "	PASSED" << std::endl;
+			EXPECT_EQUAL(array[i], copyInit, "value mismatch");
+
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 
@@ -90,10 +71,10 @@ int TestPart1(int testNumber)
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 
-		const int arraySize = 100;
+		const size_t arraySize = 100;
 
 		StackArray<ToolkitDummy, arraySize> array;
 		for (size_t i = 0; i < array.capacity(); ++i)
@@ -101,28 +82,23 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 
-		if (array.size() != arraySize)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(arraySize) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array.size(), arraySize, "size mismatch");
 			
 		for (size_t i = 0; i < array.size(); ++i)
-		{
-			if (array[i] != i)
-				throw std::runtime_error("value mismatch, got: " + to_string(array[i]) + " expected: " + to_string(i) + '\n'
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		}
-		std::cout << "	PASSED" << std::endl;
+			EXPECT_EQUAL(array[i] == i, true, "value mismatch");
+		
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* ***** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 100> array;
 
 		for (int i = 0; i < 100; ++i)
@@ -130,25 +106,21 @@ int TestPart1(int testNumber)
 			array.emplace_back(i);
 		}
 		array.pop_back();
-		if (array.size() != 99)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(99) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		if (array.back() != 98)
-			throw std::runtime_error("value mismatch, got: " + to_string(array.back()) + " expected: " + to_string(98) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array.size(), 99, "size mismatch");
+		EXPECT_EQUAL(array.back(), 98, "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 /******************* *** ************************/
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 100> array;
 		for (int i = 0; i < 100; ++i)
 		{
@@ -156,52 +128,45 @@ int TestPart1(int testNumber)
 		}
 
 		// Check front and back
-		if (array.front() != 0)
-			throw std::runtime_error("incorrect front element, got: " + to_string(array.front()) + " expected: " + to_string(0) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
-		if (array.back() != 99)
-			throw std::runtime_error("incorrect back element, got: " + to_string(array.back()) + " expected: " + to_string(99) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array.front(), 0, "value mismatch");
+		EXPECT_EQUAL(array.back(), 99, "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<int, 5> array;
 		array.emplace_back(1);
 		array.emplace_back(2);
 		array.emplace_back(3);
 
-		if (array.size() != 3)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(3) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array.size(), 3, "size mismatch");
 
 		array.emplace_back(4);
 		array.emplace_back(5);
-		if (array.size() != 5)
-			throw std::runtime_error("size mismatch, got: " + to_string(array.size()) + " expected: " + to_string(5) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
 
-		std::cout << "	PASSED" << std::endl;
+		EXPECT_EQUAL(array.size(), 5, "size mismatch");
+
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		StackArray<int, 5> array;
 		array.emplace_back(1);
@@ -210,50 +175,44 @@ int TestPart1(int testNumber)
 
 		// Test iterator
 		StackArray<int, 5>::iterator it = array.begin();
-		if (*it != 1)
-			throw std::runtime_error("incorrect value at iterator begin, got: " + to_string(*it) + " expected: " + to_string(1) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(*it, 1, "value mismatch");
 
 		it++;
-		if (*it != 2)
-		throw std::runtime_error("incorrect value at second iterator, got: " + to_string(*it) + " expected: " + to_string(2) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(*it, 2, "value mismatch");
 
 		it++;
-		if (*it != 3)
-			throw std::runtime_error("incorrect value at third iterator, got: " + to_string(*it) + " expected: " + to_string(3) + '\n'
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(*it, 3, "value mismatch");
 
 		it++;
+		EXPECT_EQUAL(it == array.end(), true, "iterator should be at end");
 
-		if (it != array.end())
-			throw std::runtime_error("iterator should be at end but is not");
-
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	/******************* *** ************************/
 	/* just strings... */
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		StackArray<std::string, 3> array;
 		array.emplace_back("Hello");
 		array.emplace_back("World");
 		array.emplace_back("StackArray");
 
-		if (array[0] != "Hello" || array[1] != "World" || array[2] != "StackArray")
-			throw std::logic_error("value mismatch\n" + FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+		EXPECT_EQUAL(array[0], std::string("Hello"), "value mismatch");
+		EXPECT_EQUAL(array[1], std::string("World"), "value mismatch");
+		EXPECT_EQUAL(array[2], std::string("StackArray"), "value mismatch");
 
-		std::cout << "	PASSED" << std::endl;
+
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

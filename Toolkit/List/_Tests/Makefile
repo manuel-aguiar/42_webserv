@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/13 00:34:21 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 # Compiler and flags
 CXX						=		c++
@@ -55,5 +45,8 @@ clean:
 fclean: clean
 
 re: fclean all
+
+debug: test
+
 
 .PHONY: clean fclean run

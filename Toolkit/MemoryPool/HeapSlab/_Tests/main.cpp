@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/27 08:40:58 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 18:34:21 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 // C++ headers
 #include <iostream>
@@ -24,16 +14,18 @@
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
+#include "../../../TestHelpers/TestHelpers.h"
 
 extern int TestPart1(int testNumber);
-extern int StressTest(int testNumber);
+extern int TestPart2(int testNumber);
 
 int main(void)
 {
     int testNumber = 1;
-    std::cout << "\n*************** HeapSlab tests ***************" << std::endl;
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_HEADER("HeapSlab");
+
+    TEST_INTRO(testNumber++);
     try
     {
         const size_t nodeSetSize = 40;
@@ -51,14 +43,14 @@ int main(void)
 
 		set1.insert(1);
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
     try
     {
         const size_t nodeSetSize = 48;
@@ -76,14 +68,14 @@ int main(void)
 
 		map1[0] = 1;
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 
-    std::cout << "TEST " << testNumber++ << ": ";
+    TEST_INTRO(testNumber++);
 
  	try
     {
@@ -114,14 +106,16 @@ int main(void)
 
 		map1.begin()->second.insert(1);
 
-        std::cout << "	PASSED" << std::endl;
+        TEST_PASSED;
     }
     catch (const std::exception& e)
     {
-        std::cout << "	FAILED: " << e.what() << std::endl;
+        TEST_FAILED_MSG(e.what());
     }
 	
-    std::cout << "*********************************************\n" << std::endl;
+    TEST_FOOTER;
+
+    return (0);
 }
 
 

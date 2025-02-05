@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Clock.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/27 15:52:22 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:26:14 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef CLOCK_HPP
 
@@ -16,9 +6,6 @@
 
 # include <ctime>
 # include <sys/time.h>
-# include <cerrno>
-# include <cstring>
-# include <cassert>
 
 class Globals;
 

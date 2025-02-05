@@ -1,16 +1,12 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ServerBlock.cpp                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:19:29 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:56:20 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "ServerBlock.hpp"
+#include "../../Ws_Namespace.h"
+#include "../../GenericUtils/Validation/Validation.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
+
 
 ServerBlock::ServerBlock()
 {
@@ -55,7 +51,7 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		parse_size(value);
+		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
@@ -66,12 +62,21 @@ void	ServerBlock::setClientBodySize(const std::string &value)
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		parse_size(value);
+		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
 	m_client_header_size = value;
+}
+
+bool	Config::Listen::operator<(const Config::Listen &rhs) const
+{
+	if (appLayer != rhs.appLayer)
+		return (appLayer < rhs.appLayer);
+	if (hostname != rhs.hostname)
+		return (hostname < rhs.hostname);
+	return (port < rhs.port);
 }
 
 void	ServerBlock::addListener(const std::string &value)
@@ -96,10 +101,10 @@ void	ServerBlock::addListener(const std::string &value)
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
-	portValue = stoull(port); // fix throw
-	if (!isNumber(port) || portValue <= 0 || portValue > 65535)
+	portValue = StringUtils::stoull(port); // fix throw
+	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert(t_listeners(hostname, port));
+	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
 }
 
 void	ServerBlock::addServerName(const std::string &value)
@@ -123,11 +128,13 @@ void	ServerBlock::addErrorPage(const std::string &value)
 	path = value.substr(separator + 1);
 	if (error_code.empty() || path.empty())
 		throw (std::invalid_argument("error code or path is empty"));
-	if (!isNumber(error_code) || stoull(error_code) < 100 || stoull(error_code) > 599)
+	if (!Validation::isNumber(error_code) || StringUtils::stoull(error_code) < 100 || StringUtils::stoull(error_code) > 599)
 		throw (std::invalid_argument("error code is not a valid number: " + error_code + ". It must be a value between 100 and 599"));
 	if (m_error_pages.find(value) != m_error_pages.end())
 		throw (std::invalid_argument("error page already set: " + value));
 	m_error_pages.insert(value);
+
+	
 }
 
 void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
@@ -142,7 +149,7 @@ const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
 	return (m_locations);
 }
 
-const std::set<t_listeners>&	ServerBlock::getListeners() const
+const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
 	return (m_listen);
 }
@@ -154,12 +161,12 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (parse_size(m_client_body_size));
+	return (StringUtils::parse_size(m_client_body_size));
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (parse_size(m_client_header_size));
+	return (StringUtils::parse_size(m_client_header_size));
 }
 
 const std::set<std::string>&	ServerBlock::getErrorPages() const
@@ -223,8 +230,8 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ ┌─ Server ─────────o\n";
 	std::cout << "║ │ \n";
 	std::cout << "║ │ listeners: ";
-	for (std::set<t_listeners>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
-		std::cout << it->first << ":" << it->second << " ";
+	for (std::set<Config::Listen>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
+		std::cout << it->hostname << ":" << it->port << " ";
 	std::cout << "\n";
 	std::cout << "║ │ server_name: ";
 	if (!server_name.size())
@@ -249,3 +256,17 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ │ " <<  std::endl ;
 
 }
+
+void	ServerBlock::addListenAddress(const struct sockaddr* addr)
+{
+	m_myListenAddresses.push_back(addr);
+}
+
+const std::vector<const struct sockaddr*>&	
+ServerBlock::getListenAddresses() const
+{
+	return (m_myListenAddresses);
+}
+
+
+

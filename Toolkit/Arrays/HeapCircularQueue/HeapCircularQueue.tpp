@@ -1,21 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   HeapCircularQueue.tpp                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 13:26:42 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 12:33:34 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef HEAPCIRCULARQUEUE_TPP
 
 # define HEAPCIRCULARQUEUE_TPP
 
-# include <cassert>
-# include <iostream>
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 template <typename T, typename Allocator>
 class HeapCircularQueue
@@ -28,6 +18,7 @@ class HeapCircularQueue
 			m_backIndex(-1), 
 			m_capacity(capacity)
 		{
+			ASSERT_EQUAL(capacity != 0, true, "HeapCircularQueue: capacity must be greater than 0");
 			for (size_t i = 0; i < capacity; ++i)
 			{
 				new(&m_array[i]) T();
@@ -42,6 +33,7 @@ class HeapCircularQueue
 			m_backIndex(-1), 
 			m_capacity(capacity)
 		{
+			ASSERT_EQUAL(capacity != 0, true, "HeapCircularQueue: capacity must be greater than 0");
 			for (size_t i = 0; i < capacity; ++i)
 			{
 				new(&m_array[i]) T(copy);
@@ -55,7 +47,7 @@ class HeapCircularQueue
 			m_array(m_allocator.allocate(other.m_capacity)), 
 			m_capacity(other.m_capacity)
 		{
-			for (int i = 0; i < m_capacity; ++i)
+			for (size_t i = 0; i < m_capacity; ++i)
 				m_allocator.construct(&m_array[i], other.m_array[i]);
 			m_frontIndex = other.m_frontIndex;
 			m_backIndex = other.m_backIndex;
@@ -68,14 +60,14 @@ class HeapCircularQueue
 
 		HeapCircularQueue &operator=(const HeapCircularQueue &other)
 		{
-			assert(m_capacity == other.m_capacity);
+			ASSERT_EQUAL(m_capacity, other.m_capacity, "HeapCircularQueue Copy: capacity of both instances must be equal");
 
 			if (getAllocator() != other.getAllocator())
 			{
 				mf_destroyAll();
 				m_allocator = other.m_allocator;
 				m_array = m_allocator.allocate(m_capacity);
-				for (int i = 0; i < m_capacity; ++i)
+				for (size_t i = 0; i < m_capacity; ++i)
 					m_allocator.construct(&m_array[i], other.m_array[i]);
 			}
 			else
@@ -101,7 +93,7 @@ class HeapCircularQueue
 
 		T& operator[](const size_t index)
 		{
-			assert((int)index < m_capacity);
+			ASSERT_EQUAL(index < m_capacity, true, "HeapCircularQueue Copy: Index out of bounds");
 
 			size_t position;
 
@@ -111,7 +103,7 @@ class HeapCircularQueue
 
 		const T& operator[](const size_t index) const
 		{
-			assert(index < m_capacity);
+			ASSERT_EQUAL(index < m_capacity, true, "HeapCircularQueue Copy: Index out of bounds");
 			
 			size_t position;
 
@@ -147,7 +139,7 @@ class HeapCircularQueue
 
         T& at(size_t index)
         {
-            assert (!isEmpty() && index < size());
+			ASSERT_EQUAL(!isEmpty() && index < size(), true, "HeapCircularQueue Copy: Index out of bounds");
 
 			size_t position;
 
@@ -157,14 +149,14 @@ class HeapCircularQueue
 
 		T& front()
 		{
-			assert (!isEmpty());
+			ASSERT_EQUAL(!isEmpty(), true, "HeapCircularQueue Copy: Index out of bounds");
 			
 			return (m_array[m_frontIndex]);
 		}
 
 		T& back()
 		{
-			assert (!isEmpty());
+			ASSERT_EQUAL(!isEmpty(), true, "HeapCircularQueue Copy: Index out of bounds");
 
 			size_t position;
 
@@ -423,7 +415,7 @@ class HeapCircularQueue
 
 				iterator& operator++()
 				{
-					assert (m_index != -1);
+					ASSERT_EQUAL(m_index != -1, true, "HeapCircularQueue Copy: Index out of bounds");
 					m_index = (m_index + 1) % m_capacity;
 
 					//reached the back
@@ -479,13 +471,13 @@ class HeapCircularQueue
 
 		int							m_frontIndex;
 		int							m_backIndex;
-		int							m_capacity;
+		size_t						m_capacity;
 
 		// helper functions		
 
 		void	mf_destroyAll()
 		{
-			for (int i = 0; i < m_capacity; ++i)
+			for (size_t i = 0; i < m_capacity; ++i)
 				m_allocator.destroy(&m_array[i]);
 			m_allocator.deallocate(m_array, m_capacity);
 		}

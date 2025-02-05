@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/13 00:10:55 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 
 # include <exception>
@@ -21,7 +11,7 @@
 # include "../Nginx_MemoryPool/Nginx_MemoryPool.hpp"
 # include "../Nginx_PoolAllocator/Nginx_PoolAllocator.hpp"
 # include "../Heap_ObjectPool/Heap_ObjectPool.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 /*
 
@@ -148,7 +138,7 @@ int main(void)
         {
             vec[i].erase(vec[i].size() - 3);
             vec[i] += " ";
-            vec[i] += to_string(i).c_str();
+            vec[i] += TestHelpers::to_string(i).c_str();
             
             std::cout << vec[i];
             vec[i] = " potato";

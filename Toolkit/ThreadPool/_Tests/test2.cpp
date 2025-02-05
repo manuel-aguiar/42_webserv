@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test2.cpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/06 23:42:31 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 09:38:03 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 // UnderTest
 # include "../ThreadPool.hpp"
@@ -25,7 +15,7 @@
 # include "../../_Tests/ToolkitDummy.hpp"
 # include "../../_Tests/ToolkitBase.hpp"
 # include "../../_Tests/ToolkitDerived.hpp"
-# include "../../_Tests/test.h"
+# include "../../TestHelpers/TestHelpers.h"
 
 static long fibGood(unsigned int n)
 {
@@ -61,10 +51,10 @@ class FiboTask : public IThreadTask
 		long* 			m_placeResult;
 };
 
-int StressTest(int testNumber)
+int TestPart2(int testNumber)
 {
 /************************************************************** */
-	std::cout << "TEST " << testNumber << ": ";
+	TEST_INTRO(testNumber++);
 	try
 	{
 		const int numberOfTasks = 100;
@@ -89,18 +79,15 @@ int StressTest(int testNumber)
 
 		for (size_t i = 0; i < fiboExpected.size(); ++i)
 		{
-			if (fiboExpected[i] != fiboPlaceResult[i])
-				throw std::runtime_error("Didn't calculate fibonacci right");
+			EXPECT_EQUAL(fiboExpected[i], fiboPlaceResult[i], "Fibonacci mismatch");
 		}
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
-        TEST_FAIL_INFO();
+		TEST_FAILED_MSG(e.what());
 	}
-	testNumber++;	
 	return (testNumber);
 }
 

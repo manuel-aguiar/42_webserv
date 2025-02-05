@@ -1,18 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   HeapArray.tpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/23 16:40:53 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef HEAPARRAY_TPP
 
 # define HEAPARRAY_TPP
+
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 # include <cstdlib>
@@ -39,7 +32,7 @@ class HeapArray
 			m_size(0), 
 			m_capacity(capacity)
 		{
-			assert(capacity);
+			ASSERT_EQUAL(capacity != 0, true, "HeapArray: capacity must be greater than 0");
 		}
 
 		HeapArray(const size_t capacity, const T& value, const Allocator& allocator = Allocator()) : 
@@ -48,8 +41,8 @@ class HeapArray
 			m_size(capacity), 
 			m_capacity(capacity)
 		{
-			assert(capacity);
-			for (size_t i = 0; i < size; i++)
+			ASSERT_EQUAL(capacity != 0, true, "HeapArray: capacity must be greater than 0");
+			for (size_t i = 0; i < m_size; i++)
 				m_allocator.construct(&m_array[i], T(value));
 		}
 
@@ -72,7 +65,7 @@ class HeapArray
 
 		HeapArray &operator=(const HeapArray &other)
 		{
-			assert(m_capacity == other.m_capacity);
+			ASSERT_EQUAL(m_capacity, other.m_capacity, "HeapArray Copy: capacity of both instances must be equal");
 			
 			if (this == &other)
 				return (*this);
@@ -118,13 +111,14 @@ class HeapArray
 
 		T& operator[](const size_t index)
 		{
+			ASSERT_EQUAL(index < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			assert(index < m_capacity);
 			return (m_array[index]);
 		}
 
 		const T& operator[](const size_t index) const
 		{
-			assert(index < m_capacity);
+			ASSERT_EQUAL(index < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			return (m_array[index]);
 		}
 
@@ -155,88 +149,88 @@ class HeapArray
 
         T& at(size_t index)
         {
-            assert (m_size != 0 && index < m_size);
+            ASSERT_EQUAL(index != 0 && index < m_capacity, true, "HeapArray Copy: Index out of bounds");
             return (m_array[index]);
         }
 
 		T& front()
 		{
-            assert (m_size != 0);
+            ASSERT_EQUAL(m_size != 0, true, "HeapArray Copy: Index out of bounds");
 			return (m_array[0]);
 		}
 
 		T& back()
 		{
-            assert (m_size != 0);
+           	ASSERT_EQUAL(m_size != 0, true, "HeapArray Copy: Index out of bounds");
 			return (m_array[(m_size - 1)]);
 		}
 
 		void push_back(const T& value)
 		{
-			assert(m_array && m_size < m_capacity);
-
+			
 			new (m_array + m_size++) T(value);
 		}
 
         void pop_back()
         {
-			assert (m_size != 0);
-
+			ASSERT_EQUAL(m_size != 0, true, "HeapArray Copy: Index out of bounds");
 			m_allocator.destroy(&m_array[(m_size-- - 1)]);
         }
 
 		void emplace_back()
         {
-			assert(m_array && m_size < m_capacity);
-
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T();
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
-
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
-
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
-
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1, arg2, arg3);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
-			assert(m_array && m_size < m_capacity);
-
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
-			assert(m_array && m_size < m_capacity);
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
-			assert(m_array && m_size < m_capacity);
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
 			new (m_array + m_size++) T(arg1, arg2, arg3);
         }	
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_back(const Arg1& arg1, const Arg2& arg2, Arg3& arg3) // lol
+        {
+			ASSERT_EQUAL(m_array && m_size < m_capacity, true, "HeapArray Copy: Index out of bounds");
+			new (m_array + m_size++) T(arg1, arg2, arg3);
+        }	
+
 
 		template <typename U>
 		class ArrayIterator

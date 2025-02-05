@@ -1,22 +1,16 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Globals.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 18:10:56 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/26 10:22:12 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef GLOBALS_HPP
 
 # define GLOBALS_HPP
 
-# include "../GenericUtils/Webserver_Definitions.h"
-# include "LogFile/LogFile.hpp"
-# include "Clock/Clock.hpp"
+// C++ headers
+# include <cstddef>
+# include <string>
+
+//forward declarations
+class Clock;
+class LogFile;
 
 class Globals
 {

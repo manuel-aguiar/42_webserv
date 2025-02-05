@@ -1,18 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Globals.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 18:14:37 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/12/02 14:42:09 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "Globals.hpp"
 #include "Clock/Clock.hpp"
 #include "LogFile/LogFile.hpp"
+#include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile* debugFile) :
 	m_clock(clock),
@@ -36,38 +27,34 @@ void	Globals::setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorF
 
 void	Globals::logStatus(const std::string& message)
 {
-	assert(m_statusFile != NULL);
-	m_statusFile->record(message);
+	logStatus(message.c_str());
 }
 
 void	Globals::logDebug(const std::string& message)
 {
-	assert(m_debugFile != NULL);
-	m_debugFile->record(message);
+	logDebug(message.c_str());
 }
 
 void	Globals::logError(const std::string& message)
 {
-	assert(m_errorFile != NULL);
-	m_errorFile->record(message);
+	logError(message.c_str());
 }
 
 void	Globals::logStatus(const char* message)
 {
-	assert(m_statusFile != NULL);
-	//CUSTOM_ASSERT(message != NULL, "SKILL ISSUE");
+	ASSERT_EQUAL(message != NULL, true, "Globals: logStatus: message cannot be NULL");
 	m_statusFile->record(message);
 }
 
 void	Globals::logDebug(const char* message)
 {
-	assert(m_debugFile != NULL);
+	ASSERT_EQUAL(message != NULL, true, "Globals: logDebug: message cannot be NULL");
 	m_debugFile->record(message);
 }
 
 void	Globals::logError(const char* message)
 {
-	assert(m_errorFile != NULL);
+	ASSERT_EQUAL(message != NULL, true, "Globals: logError: message cannot be NULL");
 	m_errorFile->record(message);
 }
 

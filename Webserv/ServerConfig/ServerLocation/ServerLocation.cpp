@@ -1,16 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ServerLocations.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:56:59 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:57:05 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
-#include "./ServerLocation.hpp"
+
+// Own Headers
+# include "./ServerLocation.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../Ws_Namespace.h"
+# include "../DefaultConfig/DefaultConfig.hpp"
 
 ServerLocation::ServerLocation()
 {
@@ -114,7 +109,7 @@ void		ServerLocation::setAutoindex(const std::string &value)
 
 void		ServerLocation::addMethod(const std::string &value)
 {
-	std::string	lowercaseStr = strToLower(value);
+	std::string	lowercaseStr = StringUtils::strToLower(value);
 	
 	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
 		throw (std::invalid_argument("invalid method"));

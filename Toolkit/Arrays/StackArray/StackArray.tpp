@@ -1,20 +1,13 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   StackArray.tpp                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 08:59:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 16:56:32 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef STACKARRAY_TPP
 
 # define STACKARRAY_TPP
 
-#include <cassert>
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
+
+// C++ headers
 #include <cstddef>
 #include <iterator>
 
@@ -37,7 +30,7 @@ class StackArray
 				m_internalArray[i].~T();
 		};
 
-		StackArray(const StackArray &other)
+		StackArray(const StackArray &other) : m_size(0), m_internalArray(reinterpret_cast<T*>(m_array)) 
 		{
 			*this = other;
 		};
@@ -69,7 +62,13 @@ class StackArray
 
 		T& operator[](const size_t index)
 		{
-			assert(index < ElemCount);
+            ASSERT_EQUAL(index < ElemCount, true, "StackArray Copy: Index out of bounds");
+			return (m_internalArray[index]);
+		}
+
+        const T& operator[](const size_t index) const
+		{
+			ASSERT_EQUAL(index < ElemCount, true, "StackArray Copy: Index out of bounds");
 			return (m_internalArray[index]);
 		}
 
@@ -89,79 +88,79 @@ class StackArray
 
         T& at(size_t index)
         {
-            assert (m_size != 0 && index < m_size);
+            ASSERT_EQUAL(this->m_size != 0 && index < this->m_size, true, "StackArray Copy: Index out of bounds");
             return (m_internalArray[index]);
         }
 
 		T& front()
 		{
-            assert (m_size != 0);
+            ASSERT_EQUAL(this->m_size != 0, true, "StackArray Copy: Index out of bounds");
 			return (m_internalArray[0]);
 		}
 
 		T& back()
 		{
-            assert (m_size != 0);
+            ASSERT_EQUAL(this->m_size != 0, true, "StackArray Copy: Index out of bounds");
 			return (m_internalArray[(m_size - 1)]);
 		}
 
 		void push_back(const T& value)
 		{
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(value);
 		}
 
         void pop_back()
         {
-			assert (m_size != 0);
+			ASSERT_EQUAL(this->m_size != 0, true, "StackArray Copy: Index out of bounds");
             m_internalArray[(m_size-- - 1)].~T();
         }
 
 		void emplace_back()
         {
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T();
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1, arg2, arg3);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
-			assert(m_size < ElemCount);
+			ASSERT_EQUAL(this->m_size < ElemCount, true, "StackArray Copy: Index out of bounds");
 			new (m_internalArray + m_size++) T(arg1, arg2, arg3);
         }		
 

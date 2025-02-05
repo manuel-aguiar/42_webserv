@@ -1,33 +1,20 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Stack_ObjectPool.tpp                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 00:28:05 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:35:27 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 
 #ifndef Stack_ObjectPool_TPP
 #define Stack_ObjectPool_TPP
 
-#include <limits>
-#include <stdint.h>
-#include <stddef.h>
-#include <cstring>
-#include <cassert>
-
-#include <vector>
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
 #include "../../Arrays/StackArray/StackArray.hpp"
+
+// C++ headers
+#include <limits>
+#include <cstddef>
 
 /*
 	Template to get the element size aligned at compile time for correct vector allocation
 */
-
-
 
 template <typename T, size_t Size>
 class Stack_ObjectPool
@@ -79,7 +66,7 @@ class Stack_ObjectPool
 			(void)hint;
 			(void)n;
 			
-			assert(m_elemCount < m_maxElems);
+			ASSERT_EQUAL(m_elemCount < m_maxElems, true, "Stack_ObjectPool: Out of memory");
 			if (m_freeSlot != 0)
 			{
 				pointer result = reinterpret_cast<pointer>(m_freeSlot);

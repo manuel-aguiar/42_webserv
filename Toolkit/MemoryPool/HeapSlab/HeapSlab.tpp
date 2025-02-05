@@ -1,25 +1,15 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   HeapSlab.tpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/08 11:21:01 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/08 11:27:23 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef HEAPSLAB_TPP
 # define HEAPSLABSLOT_TPP
 
 // Project headers
 # include "../../Arrays/HeapArray/HeapArray.hpp"
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 # include <limits>
 # include <cstddef>
-# include <cassert>
 
 template <size_t nodeSize, typename Allocator>
 class HeapSlab
@@ -58,9 +48,8 @@ class HeapSlab
 		template <typename T>
 		T* allocate()
 		{
-
-			assert(sizeof(T) <= nodeSize);
-			assert(m_elemCount < m_elements.capacity());
+			ASSERT_EQUAL(sizeof(T) <= nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
+			ASSERT_EQUAL(m_elemCount < m_elements.capacity(), true, "HeapSlab: Out of memory");
 
 			if (m_freeSlot != NULL)
 			{

@@ -1,24 +1,14 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   DynArray.tpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/08 08:14:03 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/10 11:33:38 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef DYNARRAY_TPP
 
 # define DYNARRAY_TPP
 
+// Project headers
+# include "../../Assert/AssertEqual/AssertEqual.h"
+
 // C++ headers
-# include <cstdlib>
-# include <cassert>
-# include <memory>
-# include <cstring>
+# include <cstddef>
 
 template <typename T, typename Allocator>
 class DynArray
@@ -140,26 +130,26 @@ class DynArray
 
         T& at(size_t index)
         {
-            assert (m_size != 0 && index < m_size);
+            ASSERT_EQUAL(m_size != 0, true, "DynArray: Index out of bounds");
             return (m_array[index]);
         }
 
 		T& front()
 		{
-            assert (m_size != 0);
+            ASSERT_EQUAL((m_size != 0), true, "DynArray: Index out of bounds");
 			return (m_array[0]);
 		}
 
 		T& back()
 		{
-            assert (m_size != 0);
+            ASSERT_EQUAL((m_size != 0), true, "DynArray: Index out of bounds");
 			return (m_array[m_size - 1]);
 		}
 
         void pop_back()
         {
-            if (m_size)
-                m_allocator.destroy(m_array + --m_size);
+            ASSERT_EQUAL((m_size != 0), true, "DynArray: Index out of bounds");
+            m_allocator.destroy(m_array + --m_size);
         }
 
         void clear()
@@ -168,11 +158,8 @@ class DynArray
             {
                 for (size_t i = 0; i < m_size; i++)
                     m_allocator.destroy(m_array + i);
-                m_size = 0;
-                m_allocator.deallocate(m_array, m_capacity);
-                m_array = NULL;
-                m_capacity = 0;
             }
+            m_size = 0;
         }
 
         const Allocator& getAllocator() const

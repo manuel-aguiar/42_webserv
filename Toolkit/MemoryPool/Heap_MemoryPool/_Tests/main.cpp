@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/27 13:55:45 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/11 00:50:03 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 // C++ headers
 # include <exception>
@@ -26,12 +16,11 @@ int main(void)
 {
     int testNumber = 1;
     
-
-	std::cout << "\n*************** Heap_MemoryPool tests ***************" << std::endl;
+    TEST_HEADER("Heap_MemoryPool");
 	
     testNumber = TestPart1(testNumber);
 
-    std::cout << "******************************************************\n" << std::endl;
+    TEST_FOOTER;
 
     return 0;
 }

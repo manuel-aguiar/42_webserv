@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test3.cpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 10:19:53 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/01/03 10:59:52 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 
 // C++ headers
@@ -22,14 +12,14 @@
 # include "../../../_Tests/ToolkitDummy.hpp"
 # include "../../../_Tests/ToolkitBase.hpp"
 # include "../../../_Tests/ToolkitDerived.hpp"
-# include "../../../_Tests/test.h"
+# include "../../../TestHelpers/TestHelpers.h"
 
 
 int TestPart3(int testNumber)
 {
     try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::list<ToolkitBase*> 				std;
 		HeapCircularQueue<ToolkitBase*> 		queue(300);
 
@@ -52,17 +42,15 @@ int TestPart3(int testNumber)
 			std.push_front(new ToolkitBase(i));
 			queue.push_front(new ToolkitBase(i));
 		}
-		if (std.size() != queue.size())
-			throw std::logic_error("size mismatch, got " + to_string(queue.size()) + " expected: " + to_string(std.size())
-			+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+
+
+		EXPECT_EQUAL(std.size(), queue.size(), "size mismatch");
 
 		HeapCircularQueue<ToolkitBase*>::iterator it = queue.begin();
 		std::list<ToolkitBase*>::iterator iter = std.begin();
 		for ( ; it != queue.end() && iter != std.end(); ++it, ++iter)
 		{
-			if (**it != **iter)
-				throw std::logic_error("value mismatch, got " + to_string((*it)->getValue()) + " expected: " + to_string((*iter)->getValue())
-				+ FileLineFunction(__FILE__, __LINE__, __FUNCTION__));
+			EXPECT_EQUAL((*it)->getValue() == (*iter)->getValue(), true, "value mismatch");
 		}
 
 		it = queue.begin();
@@ -74,11 +62,11 @@ int TestPart3(int testNumber)
 		}
 
 
-		std::cout << "	PASSED" << std::endl;
+		TEST_PASSED;
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
     return (testNumber);

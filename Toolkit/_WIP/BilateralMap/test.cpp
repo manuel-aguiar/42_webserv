@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/05 15:25:54 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/10/05 16:05:03 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "BilateralMap.tpp"
 # include "../../MemoryPool/MemoryPool.h"
@@ -16,7 +6,7 @@
 template <typename T>
 class MemoryPool_Wrapper {
 public:
-    typedef T value_type; // Type that this allocator will manage
+    typedef T value_type; // Flags that this allocator will manage
 
     // Pointer types
     typedef T* pointer;

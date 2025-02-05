@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/13 00:33:15 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 # Compiler and flags
 CXX						=		c++
@@ -33,8 +23,7 @@ SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test1.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test3.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp					\
-								\
+								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp				
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
@@ -67,4 +56,6 @@ fclean: clean
 re: fclean
 	make
 
-.PHONY: clean fclean run
+debug: test
+
+.PHONY: clean fclean run test

@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/08 16:31:14 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 # Compiler and flags
 CXX						=		c++
@@ -28,7 +18,7 @@ SRCS					=		$(SRC_PATH)/Arrays/DynArray/_Tests/main.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
+								$(SRC_PATH)/_Tests/ToolkitDerived.cpp		
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
@@ -57,5 +47,7 @@ clean:
 fclean: clean
 
 re: fclean all
+
+debug: test
 
 .PHONY: clean fclean run

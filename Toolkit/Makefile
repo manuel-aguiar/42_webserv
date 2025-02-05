@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/12/23 10:33:17 by mmaria-d          #+#    #+#              #
-#    Updated: 2025/01/08 17:00:00 by mmaria-d         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 
 SUBDIRS = $(shell find . -type f -name "Makefile" -path "*/_Tests/*" -exec dirname {} \;)
@@ -27,6 +17,8 @@ test:
 	@for dir in $(SUBDIRS); do \
 		$(MAKE) -C $$dir test --quiet || exit 1; \
 	done
+
+debug: test
 
 # Clean all subdirectories
 clean:
