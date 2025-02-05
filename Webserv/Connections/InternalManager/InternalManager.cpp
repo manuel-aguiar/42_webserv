@@ -6,6 +6,13 @@
 # include "../../Events/Manager/Manager.hpp"
 
 
+
+
+
+
+// erase, for tests only
+# include "../../Events/Subscription/Subscription.hpp"
+
 InternalManager::InternalManager(const size_t maxConnections,
 						const std::vector<Ws::BindInfo>& bindAddresses,
 						Events::Manager& eventManager, 
@@ -61,15 +68,25 @@ void InternalManager::_ReturnConnection(Conn::Connection& connection)
 	"Manager::returnConnection : Connection is not managed by this manager");   //confirm it is in the managed list
 
 	internal->reset();
+	//if (internal->accessEvent().isSubscribed())
+	//	std::cout <<  internal << " InternalManager::_ReturnConnection() : Connection event still subscribed after reset" << std::endl;
+	//else
+	//	std::cout <<  internal << " InternalManager::_ReturnConnection() : Connection event is not subscribed after reset" << std::endl;
 	while (m_pendingAccepts.size())
 	{
 		ListeningSocket* listener = m_pendingAccepts.front();
 		m_pendingAccepts.pop_front();
+		//std::cout << internal << " before trying listener, is event subscribed? " << internal->accessEvent().isSubscribed() << std::endl;
 		if (listener->acceptPending(*internal) != -1) // success, push it back again, may have more to accept
 		{
+			//std::cout <<  internal << " success this listener, is event subscribed? " << internal->accessEvent().isSubscribed() << std::endl;
 			m_pendingAccepts.push_back(listener);
 			return ;
-		};
+		}
+		//else
+		//{
+		//	std::cout << internal << " trying another listener, is event subscribed? " << internal->accessEvent().isSubscribed() << std::endl;
+		//}
 		// else, this socket has no more to accept, move on to the next
 	}
 	//nobody to take the connection back in circulation, push it back in the spare list

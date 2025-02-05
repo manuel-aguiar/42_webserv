@@ -111,14 +111,14 @@ class HeapArray
 
 		T& operator[](const size_t index)
 		{
-			ASSERT_EQUAL(index < m_capacity, true, "HeapArray Copy: Index out of bounds");
+			ASSERT_EQUAL(index < m_capacity, true, std::string("HeapArray: Index out of bounds: ") + TestHelpers::to_string(index));
 			assert(index < m_capacity);
 			return (m_array[index]);
 		}
 
 		const T& operator[](const size_t index) const
 		{
-			ASSERT_EQUAL(index < m_capacity, true, "HeapArray Copy: Index out of bounds");
+			ASSERT_EQUAL(index < m_capacity, true, "HeapArray: Index out of bounds");
 			return (m_array[index]);
 		}
 

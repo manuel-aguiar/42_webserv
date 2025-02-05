@@ -38,7 +38,7 @@ void testManager(int& testNumber)
     
 
 //////////////////////////////////////////////////
-/*
+
     try
     {
         TEST_INTRO(testNumber++);
@@ -174,6 +174,7 @@ void testManager(int& testNumber)
         const int countListeners = 10;
         const int countMaxConnections = 10;
         const int countConnectors = 100;
+        const int clientTimeoutMs = 100;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
         Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
@@ -190,7 +191,7 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -198,9 +199,6 @@ void testManager(int& testNumber)
         {
             int wait = eventManager.ProcessEvents(100);
             (void)wait;
-            //std::cout << "events received: " << wait;
-            //std::cout  << ", monitoring: " << eventManager.getMonitoringCount();
-            //std::cout  << ", current served: " << fakeHttp.serveCount << " out of " << countConnectors << std::endl;
              pthread_mutex_lock(&mutex);
              if (threadSuccessCount != -1)
                  run = false;
@@ -230,6 +228,7 @@ void testManager(int& testNumber)
         const int countListeners = 10;
         const int countMaxConnections = 150;
         const int countConnectors = 100;
+        const int clientTimeoutMs = 2000;
 
         Events::Manager eventManager(countListeners + countMaxConnections, globals);
         Server_NeverCloseModule fakeHttp(Ws::AppLayer::HTTP);
@@ -246,7 +245,7 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
+        ClientManagerTask<Client_FastNeverClose> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         ::sleep(1);
@@ -265,7 +264,7 @@ void testManager(int& testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-*/
+
 ///////////////////////////////////////////////////////////////////
 
     try
@@ -275,8 +274,9 @@ void testManager(int& testNumber)
         const int countListeners = 10;
         const int countMaxConnections = 100;
         const int countConnectors = 1000;
+        const int clientTimeoutMs = 1000;
 
-        Events::Manager eventManager(countListeners + countMaxConnections + 1000, globals);
+        Events::Manager eventManager(countListeners + countMaxConnections, globals);
         Server_MathModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_MathModule::InitConnection);
 
@@ -291,7 +291,7 @@ void testManager(int& testNumber)
         pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
 
-        ClientManagerTask<Client_Math> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount);
+        ClientManagerTask<Client_Math> clientManagerTask(countConnectors, countListeners, globals, mutex, threadSuccessCount, clientTimeoutMs);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -313,7 +313,7 @@ void testManager(int& testNumber)
         manager.shutdown();
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
-        EXPECT_EQUAL(threadSuccessCount, countConnectors, "ClientManagerTask should have completed");
+        EXPECT_EQUAL(threadSuccessCount, countConnectors, "Client should report that all clients received the right value");
 
         TEST_PASSED_MSG("Manager: Protocol Math, client sends a byte, server transforms and sends back, client checks if response matches");
     }

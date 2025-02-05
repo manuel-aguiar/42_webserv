@@ -52,8 +52,6 @@ Monitor::unsubscribe(Events::Manager& eventManager, bool isCalledFromEventLoop)
 	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::subscribe() called on a Monitor with a NULL Subscription");
 	if (m_eventSubs->isSubscribed())
 		eventManager.stopMonitoring(*m_eventSubs, isCalledFromEventLoop);
-	else
-		std::cout << "Monitor::unsubscribe() called on a Monitor with a Subscription that is not subscribed" << std::endl;
 }
 
 void

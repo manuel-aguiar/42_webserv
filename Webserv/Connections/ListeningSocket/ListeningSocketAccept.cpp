@@ -35,15 +35,14 @@ void  ListeningSocket::accept()
 
 int ListeningSocket::acceptPending(InternalConn& connection)
 {
-	if (connection.accessEvent().isSubscribed())
-		std::cout << "pending accept, connection event still susbcribed"<< std::endl;
+	//if (connection.accessEvent().isSubscribed())
+	//	std::cout << "pending accept, connection event still susbcribed"<< std::endl;
 	int result = m_accepter.accept(m_socket, connection.accessSocket());
 
 	if (result == -1)
 	{
 		//listener has nobody waiting
 		m_monitor.subscribe(mf_accessEventManager(), false);
-		m_connManager._ReturnConnection(connection);
 		return (result);
 	}
 	return (mf_acceptInternal(connection));
