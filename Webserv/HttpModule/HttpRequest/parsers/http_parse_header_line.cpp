@@ -7,6 +7,7 @@
 /* *********************************/
 
 #include "../HttpRequest.hpp"
+#include "../../../GenericUtils/StringUtils/StringUtils.hpp"
 #include <sstream>
 
 int HttpRequest::mf_parseHeaders(const std::string& data)
@@ -18,16 +19,17 @@ int HttpRequest::mf_parseHeaders(const std::string& data)
 	{
 		if (line[line.size() - 1] == '\r')
 			line.erase(line.size() - 1);
+		// Check for semicolons (there should only be one)
 		std::size_t colonPos = line.find(':');
-		if (colonPos == std::string::npos)
+		if (colonPos == std::string::npos || line.find(':', colonPos + 1) != std::string::npos)
 			return (Http::Status::BAD_REQUEST);
-		std::string key = line.substr(0, colonPos);
-		std::string value = line.substr(colonPos + 1);
-
-		while (!value.empty() && (value[0] == ' ' || value[0] == '\t')) {
-			value.erase(0, 1);
-		}
+		// Trim key and value into separate variables
+		std::string key = StringUtils::strtrim(line.substr(0, colonPos));
+		std::string value = StringUtils::strtrim(line.substr(colonPos + 1));
+		if (key.empty() || value.empty())
+			return (Http::Status::BAD_REQUEST);
 		m_headers[key] = value;
 	}
+	
 	return (Http::Status::OK);
 }
