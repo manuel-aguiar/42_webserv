@@ -146,20 +146,40 @@ namespace TestHelpers
 		*/
 
 		template <typename T, typename U>
-		void expectEqualImpl(const T& actual, const U& expected, const char* actualExpr, 
-							const char* expectedExpr, const std::string& message, 
-							const char* file, int line, const char* function) {
-			if (actual != static_cast<const T>(expected)) {
-				std::ostringstream oss;
-				oss << "\t----------------------------------\n"
-					<< "\tError:     '" << message << "'\n"
-					<< "\tResult:    '" << actual << "' [" << actualExpr << "]\n"
-					<< "\tExpected:  '" << expected << "' [" << expectedExpr << "]\n"
-					<< "\t----------------------------------\n"
-					<< "\tFile:       " << file << ":" << line << "\n"
-					<< "\tFunction:   " << function << "\n"
-					<< "\t----------------------------------\n";
-				throw std::logic_error("\n\n" + oss.str());
+		std::string generateErrorMessage(const T& 			actual, 
+										const U& 			expected, 
+										const char* 		actualExpr, 
+										const char* 		expectedExpr, 
+										const std::string& 	message, 
+										const char* 		file, 
+										int 				line, 
+										const char* 		function)
+		{
+			std::ostringstream oss;
+			oss << "\t----------------------------------\n"
+				<< "\tError:     '" << message << "'\n"
+				<< "\tResult:    '" << actual << "' [" << actualExpr << "]\n"
+				<< "\tExpected:  '" << expected << "' [" << expectedExpr << "]\n"
+				<< "\t----------------------------------\n"
+				<< "\tFile:       " << file << ":" << line << "\n"
+				<< "\tFunction:   " << function << "\n"
+				<< "\t----------------------------------\n";
+			return (oss.str());
+		}
+
+		template <typename T, typename U>
+		void expectEqualImpl(const T& 			actual, 
+							const U& 			expected, 
+							const char* 		actualExpr, 
+							const char* 		expectedExpr, 
+							const std::string&	message, 
+							const char* 		file, 
+							int 				line, 
+							const char* 		function)
+		{
+			if (actual != static_cast<const T>(expected))
+			{
+				throw std::logic_error("\n\n" + TestHelpers::generateErrorMessage(actual, expected, actualExpr, expectedExpr, message, file, line, function));
 			}
 		}
 
