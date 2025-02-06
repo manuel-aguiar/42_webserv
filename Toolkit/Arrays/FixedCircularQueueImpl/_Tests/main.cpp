@@ -16,7 +16,7 @@ extern int TestPart0(int testNumber);
 int main(void)
 {
 	int testNumber = 1;
-	TEST_HEADER("ArrayFixedSize Implementation");
+	TEST_HEADER("FixedCircularQueue Implementation");
 
 	testNumber = TestPart0(testNumber);
 
