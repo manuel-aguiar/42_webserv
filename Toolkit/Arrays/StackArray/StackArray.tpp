@@ -7,10 +7,7 @@
 // Project headers
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
-// C++ headers
-#include <cstddef>
-#include <iterator>
-
+// Base class
 # include "../ArrayFixedSizeImpl/ArrayFixedSizeImpl.hpp"
 
 template <typename T, size_t ElemCount>

@@ -198,7 +198,7 @@ int TestPart2(int testNumber)
         assign.push_back(1);
         assign.push_back(2);
 
-        assign.move(array);
+        assign.swap(array);
 
         it = assign.begin();
         iter = std.begin();

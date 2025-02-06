@@ -1,6 +1,7 @@
 
 
 #include "ImplModule.hpp"
+#include "../Worker/Worker.hpp"
 
 
 const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&

@@ -5,6 +5,9 @@
 #include "../../Events/Subscription/Subscription.hpp"
 #include "../../Events/Manager/Manager.hpp"
 
+// C++ headers
+# include <cstring> // memset
+
 // C Headers
 # include <unistd.h>
 # include <sys/wait.h>

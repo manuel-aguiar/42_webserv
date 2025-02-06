@@ -6,12 +6,9 @@
 
 // Project headers
 # include "../../Assert/AssertEqual/AssertEqual.h"
+
+// Base class
 # include "../ArrayFixedSizeImpl/ArrayFixedSizeImpl.hpp"
-// C++ headers
-# include <cstdlib>
-# include <cassert>
-# include <memory>
-# include <cstring>
 
 template <typename T, typename Allocator>
 class HeapArray : public ArrayFixedSizeImpl<T>
@@ -19,7 +16,7 @@ class HeapArray : public ArrayFixedSizeImpl<T>
 	public:
 		
 		HeapArray(size_t capacity = 0, const Allocator& allocator = Allocator()) : 
-			ArrayFixedSizeImpl<T>(0, 0, 0),
+			ArrayFixedSizeImpl<T>(NULL, NULL, 0),
 			m_allocator(allocator), 
 			m_array(0)
 		{
@@ -44,8 +41,6 @@ class HeapArray : public ArrayFixedSizeImpl<T>
 
 		HeapArray &operator=(const HeapArray &other)
 		{
-			//std::cout << "assign, begin equal end? " << " begin: " << &(*this->begin()) << " end:" << &(*this->end()) << std::endl;
-
 			if (this == &other)
 				return *this;
 
@@ -76,7 +71,7 @@ class HeapArray : public ArrayFixedSizeImpl<T>
 				m_allocator.deallocate(m_array, capacity);
 		}
 
-		void	move(HeapArray& from)
+		void	swap(HeapArray& from)
 		{
 			size_t capacity = this->capacity();
 			ArrayFixedSizeImpl<T>::reset(NULL, NULL, 0);

@@ -3,6 +3,7 @@
 # include "FdTracker.hpp"
 # include <dirent.h>
 # include <cstdlib>
+# include <cstring> // memcpy, memset
 
 FdTracker::FdTracker(const size_t maxFdsEstimate) :
 	m_maxStaleFd(0)
