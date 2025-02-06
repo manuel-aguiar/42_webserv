@@ -7,8 +7,8 @@
 #include <sstream>
 
 // Project headers
-#include "../../StackArray/StackArray.hpp"
-#include "../../HeapArray/HeapArray.hpp"
+#include "../../StackCircularQueue/StackCircularQueue.hpp"
+#include "../../HeapCircularQueue/HeapCircularQueue.hpp"
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"
@@ -16,20 +16,20 @@
 
 # include <vector>
 
-int TestPart0(int testNumber)
+int TestPart1(int testNumber)
 {
 	/*********************** ************************/
 	TEST_INTRO(testNumber++);
 	try
 	{
-		StackArray<int, 10>     array1;
-        StackArray<int, 1>      array2;
-        StackArray<int, 100>    array3;
-		HeapArray<int>          array4(100);
-		HeapArray<int>          array5(10);
-		HeapArray<int>          array6(array5);
+		StackCircularQueue<int, 10>     array1;
+        StackCircularQueue<int, 1>      array2;
+        StackCircularQueue<int, 100>    array3;
+		HeapCircularQueue<int>          array4(100);
+		HeapCircularQueue<int>          array5(10);
+		HeapCircularQueue<int>          array6(array5);
 
-		std::vector<ArrayFixedSizeImpl<int>* > vec;
+		std::vector<FixedCircularQueueImpl<int>* > vec;
 
         vec.push_back(&array1);
         vec.push_back(&array2);

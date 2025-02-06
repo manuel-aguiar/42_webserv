@@ -11,14 +11,14 @@
 #include "../../../_Tests/ToolkitDerived.hpp"
 # include "../../../TestHelpers/TestHelpers.h"
 
-extern int TestPart0(int testNumber);
+extern int TestPart1(int testNumber);
 
 int main(void)
 {
 	int testNumber = 1;
 	TEST_HEADER("ArrayFixedSize Implementation");
 
-	testNumber = TestPart0(testNumber);
+	testNumber = TestPart1(testNumber);
 
 	TEST_FOOTER;
 

@@ -12,7 +12,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
 SRCS					=		$(SRC_PATH)/Arrays/FixedCircularQueueImpl/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/FixedCircularQueueImpl/_Tests/test0.cpp	\
+								$(SRC_PATH)/Arrays/FixedCircularQueueImpl/_Tests/test1.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
