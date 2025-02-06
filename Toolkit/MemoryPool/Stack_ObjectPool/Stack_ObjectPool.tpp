@@ -134,7 +134,6 @@ class Stack_ObjectPoolImpl
 			}
 		}
 
-
 		t_slot_pointer 				m_begin;
 		size_t 						m_elemCount;
 		size_t 						m_maxElems;
