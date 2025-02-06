@@ -7,9 +7,9 @@
 
 // Project headers
 #include "../StackArray.hpp"
-#include "../../../_Tests/ToolkitDummy.hpp"
-#include "../../../_Tests/ToolkitBase.hpp"
-#include "../../../_Tests/ToolkitDerived.hpp"
+#include "../../../Toolkit/_Tests/ToolkitDummy.hpp"
+#include "../../../Toolkit/_Tests/ToolkitBase.hpp"
+#include "../../../Toolkit/_Tests/ToolkitDerived.hpp"
 
 extern int TestPart0(int testNumber);
 extern int TestPart1(int testNumber);

@@ -5,7 +5,7 @@
 # define STACKARRAY_TPP
 
 // Project headers
-# include "../../Assert/AssertEqual/AssertEqual.h"
+# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 #include <cstddef>
