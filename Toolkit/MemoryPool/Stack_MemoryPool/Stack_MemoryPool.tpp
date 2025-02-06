@@ -11,7 +11,7 @@
 # include <cstddef>
 
 // Base class
-# include "../FixedMemoryPoolImpl/FixedMemoryPoolImpl.hpp"
+# include "../_FixedMemoryPoolImpl/FixedMemoryPoolImpl.hpp"
 
 template <size_t BlockSize, typename T>
 class Stack_MemoryPoolGeneric : public FixedMemoryPoolImpl<T>

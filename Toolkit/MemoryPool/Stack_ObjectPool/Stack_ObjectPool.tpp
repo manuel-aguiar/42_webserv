@@ -17,7 +17,7 @@
 */
 
 //Base class
-#include "../ObjectPoolImpl/ObjectPoolImpl.hpp"
+#include "../_ObjectPoolImpl/ObjectPoolImpl.hpp"
 
 template <typename T, size_t Size>
 class Stack_ObjectPool : public ObjectPoolImpl<T>

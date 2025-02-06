@@ -8,7 +8,7 @@
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
 // Base class
-# include "../ArrayFixedSizeImpl/ArrayFixedSizeImpl.hpp"
+# include "../_ArrayFixedSizeImpl/ArrayFixedSizeImpl.hpp"
 
 template <typename T, typename Allocator>
 class HeapArray : public ArrayFixedSizeImpl<T>

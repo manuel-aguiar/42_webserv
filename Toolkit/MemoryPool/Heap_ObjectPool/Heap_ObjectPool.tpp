@@ -19,7 +19,7 @@
 */
 
 // Base class
-#include "../ObjectPoolImpl/ObjectPoolImpl.hpp"
+#include "../_ObjectPoolImpl/ObjectPoolImpl.hpp"
 
 template <typename T, typename Allocator>
 class Heap_ObjectPool : public ObjectPoolImpl<T>

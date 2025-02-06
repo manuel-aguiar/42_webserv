@@ -12,7 +12,7 @@
 
 
 //Base class
-# include "../SlabImpl/SlabImpl.hpp"
+# include "../_SlabImpl/SlabImpl.hpp"
 
 template <size_t nodeSize, size_t Capacity>
 class StackSlab : public SlabImpl

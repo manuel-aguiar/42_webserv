@@ -10,7 +10,7 @@
 # include <cstddef>
 
 // base class
-# include "../SlabImpl/SlabImpl.hpp"
+# include "../_SlabImpl/SlabImpl.hpp"
 
 template <size_t nodeSize, typename Allocator>
 class HeapSlab : public SlabImpl

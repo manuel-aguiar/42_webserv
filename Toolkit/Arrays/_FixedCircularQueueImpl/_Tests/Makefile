@@ -11,8 +11,8 @@ SRC_PATH				=		$(ROOT_PATH)/Toolkit
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 # Sources
-SRCS					=		$(SRC_PATH)/Arrays/ArrayFixedSizeImpl/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/ArrayFixedSizeImpl/_Tests/test1.cpp	\
+SRCS					=		$(SRC_PATH)/Arrays/_FixedCircularQueueImpl/_Tests/main.cpp	\
+								$(SRC_PATH)/Arrays/_FixedCircularQueueImpl/_Tests/test1.cpp	\
 								\
 								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
 								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\

@@ -7,7 +7,7 @@
 // Project headers
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
-# include "../FixedCircularQueueImpl/FixedCircularQueueImpl.hpp"
+# include "../_FixedCircularQueueImpl/FixedCircularQueueImpl.hpp"
 
 template <typename T, size_t queueCapacity>
 class StackCircularQueue : public FixedCircularQueueImpl<T>
