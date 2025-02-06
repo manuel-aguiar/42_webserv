@@ -54,6 +54,23 @@ class FixedMemoryPoolImpl
             m_endOfBlock(m_begin + BlockSize) {}
 
         ~FixedMemoryPoolImpl() {}
+        
+        FixedMemoryPoolImpl(const FixedMemoryPoolImpl& pool) :
+            m_begin(pool.m_begin),
+            m_freePosition(pool.m_freePosition),
+            m_endOfBlock(pool.m_endOfBlock) {}
+
+        FixedMemoryPoolImpl& operator=(const FixedMemoryPoolImpl& pool)
+        {
+            if (this == &pool)
+                return (*this);
+
+            m_begin = pool.m_begin;
+            m_freePosition = pool.m_freePosition;
+            m_endOfBlock = pool.m_endOfBlock;
+
+            return (*this);
+        }
 
         void reset(T* array, size_t BlockSize)
         {
@@ -68,8 +85,6 @@ class FixedMemoryPoolImpl
         T*                          m_endOfBlock;
 
         
-        FixedMemoryPoolImpl(const FixedMemoryPoolImpl& pool) {(void)pool;}
-        FixedMemoryPoolImpl& operator=(const FixedMemoryPoolImpl& pool){(void)pool; return (*this);}
 
         static T*      mf_allignedAlloc(T *location, size_t alignment)
         {

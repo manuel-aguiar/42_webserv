@@ -9,8 +9,26 @@ SlabImpl::SlabImpl(t_slot_pointer array, size_t nodeSize, size_t capacity)
 
 SlabImpl::~SlabImpl() {}
 
-SlabImpl::SlabImpl(const SlabImpl& memoryPool) {(void)memoryPool;}
-SlabImpl& SlabImpl::operator=(const SlabImpl& assign) {(void)assign; return(*this);}
+SlabImpl::SlabImpl(const SlabImpl& memoryPool) :
+    m_begin(memoryPool.m_begin),
+    m_nodeSize(memoryPool.m_nodeSize),
+    m_elemCount(memoryPool.m_elemCount),
+    m_capacity(memoryPool.m_capacity),
+    m_freeSlot(memoryPool.m_freeSlot) {}
+
+SlabImpl& SlabImpl::operator=(const SlabImpl& assign)
+{
+    if (this == &assign)
+        return (*this);
+
+    m_begin = assign.m_begin;
+    m_nodeSize = assign.m_nodeSize;
+    m_elemCount = assign.m_elemCount;
+    m_capacity = assign.m_capacity;
+    m_freeSlot = assign.m_freeSlot;
+    
+    return (*this);
+}
 
 void
 SlabImpl::reset(t_slot_pointer array, size_t nodeSize, size_t capacity)

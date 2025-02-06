@@ -35,6 +35,8 @@ class SlabImpl
         typedef s_Slot*     t_slot_pointer;
         
         SlabImpl(t_slot_pointer array, size_t nodeSize, size_t capacity);
+        SlabImpl(const SlabImpl& memoryPool);
+        SlabImpl& operator=(const SlabImpl& assign);
         ~SlabImpl();
 
         void    reset(t_slot_pointer array, size_t nodeSize, size_t capacity);
@@ -46,8 +48,6 @@ class SlabImpl
         size_t          m_capacity;
         t_slot_pointer  m_freeSlot;
 
-        SlabImpl(const SlabImpl& memoryPool);
-        SlabImpl& operator=(const SlabImpl& assign);
 };
 
 template <typename T>
