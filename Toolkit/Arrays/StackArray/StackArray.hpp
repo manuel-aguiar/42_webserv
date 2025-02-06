@@ -5,9 +5,6 @@
 
 # include <cstddef>
 
-template <typename T>
-class StackArrayImpl;
-
 template <typename T, size_t ElemCount>
 class StackArray;
 

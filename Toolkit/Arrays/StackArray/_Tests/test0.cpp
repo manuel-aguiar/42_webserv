@@ -25,7 +25,7 @@ int TestPart0(int testNumber)
         StackArray<int, 1>      array2;
         StackArray<int, 100>    array3;
 		
-		std::vector<StackArrayImpl<int>* > vec;
+		std::vector<ArrayFixedSizeImpl<int>* > vec;
 
         vec.push_back(&array1);
         vec.push_back(&array2);

@@ -32,6 +32,7 @@ class HeapArray
 			m_size(0), 
 			m_capacity(capacity)
 		{
+			ASSERT_EQUAL(capacity != 0, true, "HeapArray: capacity must be greater than 0");
 		}
 
 		HeapArray(const size_t capacity, const T& value, const Allocator& allocator = Allocator()) : 
@@ -40,6 +41,7 @@ class HeapArray
 			m_size(capacity), 
 			m_capacity(capacity)
 		{
+			ASSERT_EQUAL(capacity != 0, true, "HeapArray: capacity must be greater than 0");
 			for (size_t i = 0; i < m_size; i++)
 				m_allocator.construct(&m_array[i], T(value));
 		}
@@ -96,19 +98,15 @@ class HeapArray
 			return (*this);
 		}
 
-		void swap(HeapArray& from)
+		void move(HeapArray& from)
 		{
 			clear();
-			
-			if (m_array)
-				m_allocator.deallocate(&m_array[0], m_capacity);
+			m_allocator.deallocate(&m_array[0], m_capacity);
 
 			m_array = from.m_array;
 			m_size = from.m_size;
-			m_capacity = from.m_capacity;
 			from.m_array = NULL;
 			from.m_size = 0;
-			from.m_capacity = 0;
 		}
 
 		T& operator[](const size_t index)
@@ -319,7 +317,7 @@ class HeapArray
 		Allocator					m_allocator;
 		T*							m_array;
 		size_t						m_size;
-		size_t						m_capacity;
+		const size_t				m_capacity;
 };
 
 

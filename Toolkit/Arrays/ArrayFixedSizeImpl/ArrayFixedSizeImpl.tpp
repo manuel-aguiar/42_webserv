@@ -1,23 +1,21 @@
 
 
-#ifndef STACKARRAY_TPP
+#ifndef ARRAYFIXEDSIZEIMPL_TPP
 
-# define STACKARRAY_TPP
+# define ARRAYFIXEDSIZEIMPL_TPP
 
 // Project headers
-# include "../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+# include "../../Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 #include <cstddef>
-#include <iterator>
-
 
 template <typename T>
-class StackArrayImpl
+class ArrayFixedSizeImpl
 {
     public:
         class Iterator;
-        typedef StackArrayImpl::Iterator iterator;
+        typedef ArrayFixedSizeImpl::Iterator iterator;
 
         iterator begin()    { return iterator(m_begin); }
         iterator end()      { return iterator(m_end); }
@@ -70,6 +68,13 @@ class StackArrayImpl
 			return (m_end[-1]);
 		}
 
+        void clear()
+        {
+            for (T* ptr = m_begin; ptr != m_end; ++ptr)
+                ptr->~T();
+            m_end = m_begin;
+        }
+
 		void emplace_back()
         {
 			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
@@ -119,26 +124,26 @@ class StackArrayImpl
         }
 
     protected:
-        StackArrayImpl(T* begin, T* end, const size_t capacity) : m_begin(begin), m_end(end), m_capacity(capacity) {}
-        StackArrayImpl(T* begin, T* end, const size_t capacity, const T& value) : m_begin(begin), m_end(end), m_capacity(capacity)
+        ArrayFixedSizeImpl(T* begin, T* end, const size_t capacity) : m_begin(begin), m_end(end), m_capacity(capacity) {}
+        ArrayFixedSizeImpl(T* begin, T* end, const size_t capacity, const T& value) : m_begin(begin), m_end(end), m_capacity(capacity)
         {
             for (size_t i = 0; i < m_capacity; i++)
                 new (&m_begin[i]) T(value);
         }
 
 
-        ~StackArrayImpl()
+        ~ArrayFixedSizeImpl()
         {
             for (T* ptr = m_begin; ptr != m_end; ++ptr)
                 ptr->~T();
         }
 
-        StackArrayImpl(const StackArrayImpl& other) : 
+        ArrayFixedSizeImpl(const ArrayFixedSizeImpl& other) : 
             m_begin(other.m_begin), 
             m_end(other.m_end), 
             m_capacity(other.m_capacity) {}
 
-        StackArrayImpl& operator=(const StackArrayImpl& other)
+        ArrayFixedSizeImpl& operator=(const ArrayFixedSizeImpl& other)
         {
 
 			if (this == &other)
@@ -242,53 +247,6 @@ class StackArrayImpl
                 pointer m_ptr;
         };
 };
-
-template <typename T, size_t ElemCount>
-class StackArray : public StackArrayImpl<T>
-{
-	public:
-		StackArray() : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array), ElemCount),
-            m_internalArray(reinterpret_cast<T*>(m_array)) {}
-
-
-        StackArray(const T& value) : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array) + ElemCount, ElemCount, value),
-            m_internalArray(reinterpret_cast<T*>(m_array)) {}
-
-		~StackArray() {};
-
-		StackArray(const StackArray &other) : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array) + other.size(), ElemCount),
-            m_internalArray(reinterpret_cast<T*>(m_array)) 
-		{
-			*this = other;
-		};
-
-		StackArray &operator=(const StackArray &other)
-		{
-            if (this == &other)
-                return (*this);
-
-            StackArrayImpl<T>::operator=(other);
-
-            return (*this);
-		};
-
-
-        T* getArray() const {return (m_internalArray);}
-
-
-
-
-
-
-	private:
-		typedef unsigned char 		t_byte;
-        T*                          m_internalArray;
-		t_byte  					m_array[sizeof(T) * ElemCount];
-};
-
 
 
 
