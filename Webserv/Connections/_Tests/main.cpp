@@ -10,6 +10,7 @@ extern void testListeningSocket(int& testNumber);
 extern void testConnection(int& testNumber);
 extern void testAccepter(int& testNumber);
 extern void testAppLayer(int& testNumber);
+extern void testStressTest(int& testNumber);
 
 int main(void)
 {
@@ -24,6 +25,7 @@ int main(void)
 	testAccepter		(testNumber);
 	testAppLayer		(testNumber);
 	testManager			(testNumber);
+	testStressTest		(testNumber);
 
 	TEST_FOOTER;
 

@@ -23,6 +23,8 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testAccepter.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testStressTest.cpp \
+				$(SRC_PATH)/Webserv/Connections/_Tests/testMultiServer.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/_TestDependencies.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/_ServerProtos.cpp \
 				$(SRC_PATH)/Webserv/Connections/_Tests/_ClientProtos.cpp \
