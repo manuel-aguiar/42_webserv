@@ -73,6 +73,7 @@ class ArrayFixedSizeImpl
             for (T* ptr = m_begin; ptr != m_end; ++ptr)
                 ptr->~T();
             m_end = m_begin;
+            //std::cout << "clear begin equal to end? " << (m_begin == m_end) << " begin: " << m_begin << " end:" << m_end << std::endl;
         }
 
 		void emplace_back()
@@ -154,7 +155,7 @@ class ArrayFixedSizeImpl
             size_t smaller = (mySize < otherSize) ? mySize : otherSize;
             
             for (size_t i = 0; i < smaller; i++)
-                m_begin[i] = other.m_begin[i];
+               m_begin[i] = other.m_begin[i];
                 
             if (smaller == mySize)
             {
@@ -167,16 +168,25 @@ class ArrayFixedSizeImpl
                     m_begin[i].~T();
             }
             
-            m_begin = other.m_begin;
-            m_end = other.m_end;
+            m_end = m_begin + otherSize;
 
 			return (*this);
+        }
+
+        void   reset(T* begin, T* end, const size_t capacity)
+        {
+            for (T* ptr = m_begin; ptr != m_end; ++ptr)
+                ptr->~T();
+            
+            m_begin = begin;
+            m_end = end;
+            m_capacity = capacity;
         }
 
     private:
         T*              m_begin;
         T*              m_end;
-        const size_t    m_capacity;
+        size_t          m_capacity;
     
     public:
         class Iterator
