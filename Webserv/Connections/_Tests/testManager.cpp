@@ -436,7 +436,7 @@ void testManager(int& testNumber)
     }
 /////////////////////////////////////////////////////////////////////////////////
     //Stress tests
-    std::cout << TEST_CLR_BROWN << "\tStress tests (failure is not an error)" << TEST_CLR_RESET << std::endl;
+    std::cout << TEST_CLR_BROWN << "\n\tStress tests (failure is not an error)" << TEST_CLR_RESET << std::endl;
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 10, 100, 5000);
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 10, 100, 5000);
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 100, 1000, 1000);
@@ -446,5 +446,7 @@ void testManager(int& testNumber)
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 100, 1000, 10000, 3000);
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 5000, 10000, 3000);
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 5000, 10000, 5000);
+    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 2000, 10000, 5000);
+    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 1000, 10000, 5000);
 }
 
