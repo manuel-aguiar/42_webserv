@@ -4,10 +4,7 @@
 
 # define STACKCIRCULARQUEUE_HPP
 
-#include <memory>
-
-template <typename T>
-class StackCircularQueueImpl;
+#include <cstddef>
 
 template <typename T, size_t queueCapacity>
 class StackCircularQueue;

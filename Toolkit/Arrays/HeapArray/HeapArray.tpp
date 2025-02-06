@@ -45,7 +45,7 @@ class HeapArray : public ArrayFixedSizeImpl<T>
 				return *this;
 
 			
-			if (m_array && this->capacity() != other.capacity())
+			if (m_array && (this->capacity() != other.capacity() || m_allocator != other.m_allocator))
 			{
 				ArrayFixedSizeImpl<T>::reset(NULL, NULL, 0);
 				m_allocator.deallocate(m_array, this->capacity());
