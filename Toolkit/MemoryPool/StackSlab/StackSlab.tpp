@@ -11,43 +11,32 @@
 # include <limits>
 # include <cstddef>
 
-template <size_t nodeSize, size_t Capacity>
-class StackSlab
+class StackSlabImpl
 {
 	public:
-		template <size_t TSize, size_t Alignment>
-		struct AlignedSize
-		{
-			static const size_t value = (TSize + Alignment - 1) & ~(Alignment - 1);
-		};
+
 
 		union s_Slot
 		{
-			char            m_data[AlignedSize<nodeSize, __alignof__(nodeSize)>::value];
-			s_Slot*         m_next;
+			s_Slot*		m_next;
 		};
 
-		typedef char*       t_data_pointer;
-		typedef s_Slot      t_slot_type;
-		typedef s_Slot*     t_slot_pointer;
+		typedef char*		t_data_pointer;
+		typedef s_Slot		t_slot_type;
+		typedef s_Slot*		t_slot_pointer;
 
-	private:
-		size_t									m_elemCount;
-		t_slot_pointer							m_freeSlot;
-    	StackArray<s_Slot, Capacity>			m_elements;
-
-	public:
-		StackSlab() :
+		StackSlabImpl(t_slot_pointer array, size_t nodeSize, size_t capacity)
+			: m_begin(array),
+			m_nodeSize(nodeSize),
 			m_elemCount(0),
-			m_freeSlot(NULL) {};
-
-		~StackSlab() {};
+			m_capacity(capacity),
+			m_freeSlot(NULL) {}
 
 		template <typename T>
 		T* allocate()
 		{
-			ASSERT_EQUAL(sizeof(T) <= nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
-			ASSERT_EQUAL(m_elemCount < m_elements.capacity(), true, "HeapSlab: Out of memory");
+			ASSERT_EQUAL(sizeof(T) <= m_nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
+			ASSERT_EQUAL(m_elemCount < m_capacity, true, "HeapSlab: Out of memory");
 
 			if (m_freeSlot != NULL)
 			{
@@ -57,13 +46,15 @@ class StackSlab
 				return result;
 			}
 			else
-				return (reinterpret_cast<T*>(&m_elements[m_elemCount++]));
+			{
+				return reinterpret_cast<T*>(reinterpret_cast<char*>(m_begin) + (m_nodeSize * m_elemCount++));
+			}
 		}
 
 		template <typename T>
 		void deallocate(T* p)
 		{
-			ASSERT_EQUAL(sizeof(T) <= nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
+			ASSERT_EQUAL(sizeof(T) <= m_nodeSize, true, "HeapSlab: Size of T is greater than nodeSize");
 
 			if (p != NULL)
 			{
@@ -73,19 +64,42 @@ class StackSlab
 			}
 		}
 
-		size_t size() const
-		{
-			return (m_elemCount);
-		}
-
-		size_t capacity() const
-		{
-			return (m_elements.capacity());
-		}
+		size_t size() const { return m_elemCount; }
+		size_t capacity() const { return m_capacity; }
 
 	private:
+		t_slot_pointer	m_begin;
+		size_t			m_nodeSize;
+		size_t			m_elemCount;
+		size_t			m_capacity;
+		t_slot_pointer	m_freeSlot;
+
+		StackSlabImpl(const StackSlabImpl& memoryPool);
+		StackSlabImpl& operator=(const StackSlabImpl& assign);
+};
+
+template <size_t nodeSize, size_t Capacity>
+class StackSlab : public StackSlabImpl
+{
+	public:
+
+		template <size_t TSize, size_t Alignment>
+		struct AlignedSize
+		{
+			enum { value = (TSize + Alignment - 1) & ~(Alignment - 1) };
+		};
+
+		StackSlab()
+			: StackSlabImpl(reinterpret_cast<t_slot_pointer>(m_byteArray), AlignedSize<nodeSize, sizeof(void*)>::value, Capacity) {}
+
+		~StackSlab() {}
+
+	private:
+		char m_byteArray[Capacity * AlignedSize<nodeSize, sizeof(void*)>::value];
+
+
 		StackSlab(const StackSlab& memoryPool) {(void)memoryPool;};
-		StackSlab& operator=(const StackSlab& assign) {(void)assign; return(*this);};
+		StackSlab& operator=(const StackSlab& assign) {(void)assign; return (*this);};
 };
 
 #endif // MEMORY_BLOCK_TCC
