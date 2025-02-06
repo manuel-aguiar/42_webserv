@@ -113,7 +113,7 @@ class DynArray
             return (m_size);
         }
 
-        size_t capacity()
+        size_t capacity() const
         {
             return (m_capacity);
         }
