@@ -98,25 +98,25 @@ void Server_MathRequest::ReadWrite()
     }
     if (triggeredEvents & Events::Monitor::READ)
     {
-         
+              
         ::read(conn.sock_getFd(), &received, 1);
         conn.events_setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
         conn.events_updateMonitoring(false);
-         
+        
     
-    /*  
+    /*
         //////////////////////////////////////////////////////////  
         // This is the optimistic writing version, NGINX style: //
         //////////////////////////////////////////////////////////
 
-        ::read(conn.accessSocket().getSockFd(), &received, 1);  
+        ::read(conn.sock_getFd(), &received, 1);  
         received = (received + 3) % (256);
-        int bytesWritten = ::write(conn.accessSocket().getSockFd(), &received, 1);
+        int bytesWritten = ::write(conn.sock_getFd(), &received, 1);
         if (bytesWritten == -1)
         {
             // writing failed (client socket is full), start monitoring writing for the next turn
             conn.events_setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
-            conn.updateMonitoring(false);
+            conn.events_updateMonitoring(false);
             return ;
         }
         else
@@ -126,7 +126,7 @@ void Server_MathRequest::ReadWrite()
             this->module.serveCount++;
             delete (this);
         }
-    */
+    */ 
 
     }
     if (triggeredEvents & Events::Monitor::WRITE)
