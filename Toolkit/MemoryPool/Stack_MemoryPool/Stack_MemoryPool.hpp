@@ -9,7 +9,7 @@
 typedef unsigned char t_byte;
 
 template <typename T = t_byte>
-class Stack_MemoryPoolImpl;
+class FixedMemoryPoolImpl;
 
 template <size_t BlockSize, typename T = t_byte>
 class Stack_MemoryPoolGeneric;
