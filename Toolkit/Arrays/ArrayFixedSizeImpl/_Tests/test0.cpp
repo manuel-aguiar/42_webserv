@@ -8,7 +8,7 @@
 
 // Project headers
 #include "../../StackArray/StackArray.hpp"
-#include "../../HeapArray2/HeapArray.hpp"
+#include "../../HeapArray/HeapArray.hpp"
 #include "../../../_Tests/ToolkitDummy.hpp"
 #include "../../../_Tests/ToolkitBase.hpp"
 #include "../../../_Tests/ToolkitDerived.hpp"

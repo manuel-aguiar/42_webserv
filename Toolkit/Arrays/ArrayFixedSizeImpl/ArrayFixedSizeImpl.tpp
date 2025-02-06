@@ -22,13 +22,13 @@ class ArrayFixedSizeImpl
 
         void    push_back(const T& value)
         {
-            ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+            ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
             new (m_end++) T(value);
         }
 
         void    pop_back()
         {
-            ASSERT_EQUAL(size() != 0, true, "StackArray pop: Index out of bounds");
+            ASSERT_EQUAL(size() != 0, true, "ArrayFixedSizeImpl pop: Index out of bounds");
             m_end--;
             m_end->~T();
         }
@@ -40,31 +40,31 @@ class ArrayFixedSizeImpl
 
 		T& operator[](const size_t index)
 		{
-            ASSERT_EQUAL(index < size(), true, "StackArray operator[]: Index out of bounds");
+            ASSERT_EQUAL(index < size(), true, "ArrayFixedSizeImpl operator[]: Index out of bounds");
 			return (m_begin[index]);
 		}
 
         const T& operator[](const size_t index) const
 		{
-			ASSERT_EQUAL(index < size(), true, "StackArray operator[]: Index out of bounds");
+			ASSERT_EQUAL(index < size(), true, "ArrayFixedSizeImpl operator[]: Index out of bounds");
 			return (m_begin[index]);
 		}
 
         T& at(size_t index)
         {
-            ASSERT_EQUAL(index < size(), true, "StackArray Copy: Index out of bounds");
+            ASSERT_EQUAL(index < size(), true, "ArrayFixedSizeImpl Copy: Index out of bounds");
             return (m_begin[index]);
         }
 
 		T& front()
 		{
-            ASSERT_EQUAL(size() != 0, true, "StackArray Copy: Index out of bounds");
+            ASSERT_EQUAL(size() != 0, true, "ArrayFixedSizeImpl Copy: Index out of bounds");
 			return (m_begin[0]);
 		}
 
 		T& back()
 		{
-            ASSERT_EQUAL(size() != 0, true, "StackArray Copy: Index out of bounds");
+            ASSERT_EQUAL(size() != 0, true, "ArrayFixedSizeImpl Copy: Index out of bounds");
 			return (m_end[-1]);
 		}
 
@@ -78,49 +78,49 @@ class ArrayFixedSizeImpl
 
 		void emplace_back()
         {
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T();
 		}
 
 		template <typename Arg1 >
 		void emplace_back(Arg1& arg1)
 		{
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(Arg1& arg1, Arg2& arg2)
         {
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(Arg1& arg1, Arg2& arg2, Arg3& arg3)
         {
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1, arg2, arg3);
         }
 
 		template <typename Arg1 >
 		void emplace_back(const Arg1& arg1)
 		{
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1);
         }
 
         template <typename Arg1, typename Arg2 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2)
         {
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1, arg2);
         }
 
         template <typename Arg1, typename Arg2 , typename Arg3 >
         void emplace_back(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
         {
-			ASSERT_EQUAL(size() < m_capacity, true, "StackArray push: Index out of bounds");
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1, arg2, arg3);
         }
 
