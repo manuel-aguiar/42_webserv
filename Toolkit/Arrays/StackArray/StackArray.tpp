@@ -248,19 +248,16 @@ class StackArray : public StackArrayImpl<T>
 {
 	public:
 		StackArray() : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array), ElemCount),
-            m_internalArray(reinterpret_cast<T*>(m_array)) {}
+            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array), ElemCount) {}
 
 
         StackArray(const T& value) : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array) + ElemCount, ElemCount, value),
-            m_internalArray(reinterpret_cast<T*>(m_array)) {}
+            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array) + ElemCount, ElemCount, value) {}
 
 		~StackArray() {};
 
 		StackArray(const StackArray &other) : 
-            StackArrayImpl<T>(reinterpret_cast<T*>(m_array), reinterpret_cast<T*>(m_array) + other.size(), ElemCount),
-            m_internalArray(reinterpret_cast<T*>(m_array)) 
+            StackArrayImpl<T>(other)
 		{
 			*this = other;
 		};
@@ -276,16 +273,11 @@ class StackArray : public StackArrayImpl<T>
 		};
 
 
-        T* getArray() const {return (m_internalArray);}
-
-
-
-
+        T* getArray() const {return (reinterpret_cast<T*>(m_array));}
 
 
 	private:
 		typedef unsigned char 		t_byte;
-        T*                          m_internalArray;
 		t_byte  					m_array[sizeof(T) * ElemCount];
 };
 

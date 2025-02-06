@@ -6,6 +6,9 @@
 
 #include <memory>
 
+template <typename T>
+class StackCircularQueueImpl;
+
 template <typename T, size_t queueCapacity>
 class StackCircularQueue;
 

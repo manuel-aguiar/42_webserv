@@ -7,136 +7,16 @@
 // Project headers
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
-template <typename T, size_t queueCapacity>
-class StackCircularQueue
+template <typename T>
+class StackCircularQueueImpl
 {
 	public:
-		StackCircularQueue() : 
-			m_typeArray(reinterpret_cast<T*>(m_byteArray)),
-			m_frontIndex(-1),
-			m_backIndex(-1)
-		{
-			ASSERT_EQUAL(queueCapacity != 0, true, "StackCircularQueue: capacity must be greater than 0");
-			for (size_t i = 0; i < queueCapacity; ++i)
-			{
-				new(&m_typeArray[i]) T();
-			}
-		}
-
-		// user can avoid default construction by initializing copies, buffer will stiil have "zero" elements inserted
-		StackCircularQueue(const T& copy) : 
-			m_typeArray(reinterpret_cast<T*>(m_byteArray)),
-			m_frontIndex(-1),
-			m_backIndex(-1)
-		{
-			for (size_t i = 0; i < queueCapacity; ++i)
-			{
-				new(&m_typeArray[i]) T(copy);
-			}
-		}
-
-		StackCircularQueue(const StackCircularQueue &other) :
-			m_typeArray(reinterpret_cast<T*>(m_byteArray))
-		{
-			for (size_t i = 0; i < queueCapacity; ++i)
-				new(&m_typeArray[i]) T(other.m_typeArray[i]);
-			m_frontIndex = other.m_frontIndex;
-			m_backIndex = other.m_backIndex;
-		}
-
-		~StackCircularQueue()
-		{
-			mf_destroyAll();
-		}
-
-		StackCircularQueue &operator=(const StackCircularQueue &other)
-		{
-			int srcIndex;
-			int destIndex;
-			size_t otherSize = other.size();
-
-			m_frontIndex = other.m_frontIndex;
-			for (size_t i = 0; i < otherSize; ++i)
-			{
-				srcIndex = (other.m_frontIndex + i) % queueCapacity;
-				destIndex = (m_frontIndex + i) % queueCapacity;
-				m_typeArray[destIndex] = other.m_typeArray[srcIndex];
-			}
-			
-			m_frontIndex = other.m_frontIndex;
-			m_backIndex = other.m_backIndex;
-
-			return (*this);
-		}
+		class Iterator;
+		typedef StackCircularQueueImpl::Iterator iterator;
 
 
-		T& operator[](const size_t index)
-		{
-			ASSERT_EQUAL(index < queueCapacity, true, "StackCircularQueue Copy: Index out of bounds");
-			size_t position;
-
-			position = (m_frontIndex + index) % queueCapacity;
-			return (m_typeArray[position]);
-		}
-
-		const T& operator[](const size_t index) const
-		{
-			ASSERT_EQUAL(index < queueCapacity, true, "StackCircularQueue Copy: Index out of bounds");
-			
-			size_t position;
-
-			position = (m_frontIndex + index) % queueCapacity;
-			return (m_typeArray[position]);
-		}
-
-		size_t size() const
-		{
-			if (isFull())
-				return queueCapacity;
-			else if (m_frontIndex <= m_backIndex)
-				return m_backIndex - m_frontIndex;
-			else 
-				return queueCapacity - (m_frontIndex - m_backIndex);
-		}
-
-		size_t capacity()
-		{
-			return (queueCapacity);
-		}
-
-		void clear()
-		{
-			m_frontIndex = -1;
-			m_backIndex = -1;
-		}
-		
-        T& at(size_t index)
-        {
-			ASSERT_EQUAL(!isEmpty() && index < size(), true, "StackCircularQueue Copy: Index out of bounds");
-
-			size_t position;
-
-			position = (m_frontIndex + index) % queueCapacity;
-			return (m_typeArray[position]);
-        }
-
-		T& front()
-		{
-			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue Copy: Index out of bounds");
-			
-			return (m_typeArray[m_frontIndex]);
-		}
-
-		T& back()
-		{
-			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue Copy: Index out of bounds");
-
-			size_t position;
-
-			position = (m_backIndex == 0) ? queueCapacity - 1 : m_backIndex - 1;
-
-			return (m_typeArray[position]);
-		}
+		iterator	begin() { return iterator(m_begin, m_capacity, m_backIndex, m_frontIndex); }
+		iterator	end() { return iterator(m_begin, m_capacity, m_backIndex, -1); }
 
 		// m_backIndex is one past last (iter::end()), so the new one will be exactly there
 		// so construct first, adjust after
@@ -144,8 +24,8 @@ class StackCircularQueue
 		{
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex] = value;
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex] = value;
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
 		}
 
@@ -155,7 +35,7 @@ class StackCircularQueue
 			if (isEmpty())
 				return (false);
 			
-			m_backIndex = (m_backIndex == 0) ? queueCapacity - 1 : m_backIndex - 1;
+			m_backIndex = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
 			mf_PopResetIndexes();
 			return (true);
 		}
@@ -168,8 +48,8 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 			
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex] = value;
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex] = value;
 
 			return (true);
 		}
@@ -180,29 +60,94 @@ class StackCircularQueue
 			if (isEmpty())
 				return (false);
 			
-			m_frontIndex = (m_frontIndex + 1) % queueCapacity;
+			m_frontIndex = (m_frontIndex + 1) % m_capacity;
 			mf_PopResetIndexes();
 			return (true);
 		}
 
-
-		bool isEmpty() const
+		T& operator[](const size_t index)
 		{
-			return (m_frontIndex == m_backIndex && m_frontIndex == -1);
+			ASSERT_EQUAL(!isEmpty() && index < size(), true, "StackCircularQueue access: index out of bounds");
+			size_t position;
+
+			position = (m_frontIndex + index) % m_capacity;
+			return (m_begin[position]);
 		}
 
-		bool isFull() const
+		const T& operator[](const size_t index) const
 		{
-			return (m_frontIndex == m_backIndex && m_frontIndex != -1);
+			ASSERT_EQUAL(!isEmpty() && index < size(), true, "StackCircularQueue access: index out of bounds");
+			
+			size_t position;
+
+			position = (m_frontIndex + index) % m_capacity;
+			return (m_begin[position]);
 		}
 
-		bool emplace_back()
+		
+        T& at(size_t index)
+        {
+			ASSERT_EQUAL(!isEmpty() && index < size(), true, "StackCircularQueue access: index out of bounds");
+
+			size_t position;
+
+			position = (m_frontIndex + index) % m_capacity;
+			return (m_begin[position]);
+        }
+
+		T& front()
+		{
+			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue access: index out of bounds");
+			
+			return (m_begin[m_frontIndex]);
+		}
+
+		T& back()
+		{
+			ASSERT_EQUAL(!isEmpty(), true, "StackCircularQueue access: index out of bounds");
+
+			size_t position;
+
+			position = (m_backIndex == 0) ? m_capacity - 1 : m_backIndex - 1;
+
+			return (m_begin[position]);
+		}
+
+
+		bool		isEmpty() const { return (m_frontIndex == m_backIndex && m_frontIndex == -1);}
+		bool		isFull() const { return (m_frontIndex == m_backIndex && m_frontIndex != -1);}
+
+
+
+
+		size_t size() const
+		{
+			if (isFull())
+				return (m_capacity);
+			else if (m_frontIndex <= m_backIndex)
+				return (m_backIndex - m_frontIndex);
+			else 
+				return (m_capacity - (m_frontIndex - m_backIndex));
+		}
+
+		size_t capacity()
+		{
+			return (m_capacity);
+		}
+
+		void clear()
+		{
+			m_frontIndex = -1;
+			m_backIndex = -1;
+		}
+
+bool emplace_back()
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T();
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T();
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
 		}
 
@@ -211,9 +156,9 @@ class StackCircularQueue
 		{
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }
 
@@ -222,9 +167,9 @@ class StackCircularQueue
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1, arg2);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }
 
@@ -233,9 +178,9 @@ class StackCircularQueue
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1, arg2, arg3);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }
 
@@ -244,9 +189,9 @@ class StackCircularQueue
 		{
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }
 
@@ -255,9 +200,9 @@ class StackCircularQueue
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1, arg2);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1, arg2);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }
 
@@ -266,9 +211,9 @@ class StackCircularQueue
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_typeArray[m_backIndex].~T();
-			new (m_typeArray + m_backIndex) T(arg1, arg2, arg3);
-			m_backIndex = (m_backIndex + 1) % queueCapacity;
+			m_begin[m_backIndex].~T();
+			new (&m_begin[m_backIndex]) T(arg1, arg2, arg3);
+			m_backIndex = (m_backIndex + 1) % m_capacity;
 			return (true);
         }	
 
@@ -276,9 +221,9 @@ class StackCircularQueue
         {
 			if (!mf_PushPrepare())
 				return (false);
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T();
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T();
 			return (true);
 		}
 
@@ -288,9 +233,9 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T(arg1);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T(arg1);
 			return (true);
         }
 
@@ -300,9 +245,9 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T(arg1, arg2);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T(arg1, arg2);
 			return (true);
 		}
 		template <typename Arg1 >
@@ -311,9 +256,9 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T(arg1);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T(arg1);
 			return (true);
         }
 
@@ -323,9 +268,9 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T(arg1, arg2);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T(arg1, arg2);
 			return (true);
         }
 
@@ -335,13 +280,76 @@ class StackCircularQueue
 			if (!mf_PushPrepare())
 				return (false);
 
-			m_frontIndex = (m_frontIndex == 0) ? queueCapacity - 1 : m_frontIndex - 1;
-			m_typeArray[m_frontIndex].~T();
-			new (m_typeArray + m_frontIndex) T(arg1, arg2, arg3);
+			m_frontIndex = (m_frontIndex == 0) ? m_capacity - 1 : m_frontIndex - 1;
+			m_begin[m_frontIndex].~T();
+			new (&m_begin[m_frontIndex]) T(arg1, arg2, arg3);
 			return (true);
-        }	
+        }			
 
-		class iterator
+	protected:
+		StackCircularQueueImpl(T* begin, T* end, int frontIndex, int backIndex, const size_t capacity) : 
+			m_begin(begin), 
+			m_end(end),
+			m_frontIndex(frontIndex),
+			m_backIndex(backIndex),
+			m_capacity(capacity)
+		{
+			for (size_t i = 0; i < m_capacity; i++)
+				new (&m_begin[i]) T();
+		}
+
+		StackCircularQueueImpl(T* begin, T* end, int frontIndex, int backIndex, const size_t capacity, const T& value) : 
+			m_begin(begin), 
+			m_end(end),
+			m_frontIndex(frontIndex),
+			m_backIndex(backIndex),
+			m_capacity(capacity)
+		{
+			for (size_t i = 0; i < m_capacity; i++)
+				new (&m_begin[i]) T(value);
+		}
+
+		StackCircularQueueImpl(const StackCircularQueueImpl& other) : 
+			m_begin(other.m_begin), 
+			m_end(other.m_end), 
+			m_frontIndex(other.m_frontIndex),
+			m_backIndex(other.m_backIndex),
+			m_capacity(other.m_capacity)
+		{
+			for (size_t i = 0; i < m_capacity; i++)
+				new (&m_begin[i]) T(other.m_begin[i]);
+		}
+
+		StackCircularQueueImpl& operator=(const StackCircularQueueImpl& other)
+		{
+			if (this == &other)
+				return (*this);
+
+			int srcIndex;
+			int destIndex;
+			size_t otherSize = other.size();
+
+			m_frontIndex = other.m_frontIndex;
+			for (size_t i = 0; i < otherSize; ++i)
+			{
+				srcIndex = (other.m_frontIndex + i) % m_capacity;
+				destIndex = (m_frontIndex + i) % m_capacity;
+				m_begin[destIndex] = other.m_begin[srcIndex];
+			}
+			
+			m_frontIndex = other.m_frontIndex;
+			m_backIndex = other.m_backIndex;
+
+			return (*this);
+		}
+
+		~StackCircularQueueImpl()
+		{
+			mf_destroyAll();
+		}
+
+	public:
+		class Iterator
 		{
 			public:
 				typedef T                                   value_type;
@@ -350,15 +358,15 @@ class StackCircularQueue
 				typedef std::ptrdiff_t                      difference_type;
 				typedef std::random_access_iterator_tag     iterator_category;
 
-				iterator(pointer array, size_t capacity, size_t tail, size_t index)
+				Iterator(pointer array, size_t capacity, size_t tail, size_t index)
 					: m_typeArray(array), m_capacity(capacity), m_backIndex(tail), m_index(index) {}
 
-				iterator(const iterator& other)
+				Iterator(const Iterator& other)
 					: m_typeArray(other.m_typeArray), m_capacity(other.m_capacity), m_backIndex(other.m_backIndex), m_index(other.m_index) {}
 
-				~iterator() {}
+				~Iterator() {}
 
-				iterator& operator=(const iterator& other)
+				Iterator& operator=(const Iterator& other)
 				{
 					if (this != &other)
 					{
@@ -373,9 +381,9 @@ class StackCircularQueue
 				reference operator*() const { return (m_typeArray[m_index]); }
 				pointer operator->() const { return (&m_typeArray[m_index]); }
 
-				iterator& operator++()
+				Iterator& operator++()
 				{
-					ASSERT_EQUAL(m_index != -1, true, "StackCircularQueue Copy: Index out of bounds");
+					ASSERT_EQUAL(m_index != -1, true, "StackCircularQueue access: index out of bounds");
 					m_index = (m_index + 1) % m_capacity;
 
 					//reached the back
@@ -383,29 +391,29 @@ class StackCircularQueue
 					return (*this);
 				}
 
-				iterator operator++(int)
+				Iterator operator++(int)
 				{
-					iterator tmp = *this;
+					Iterator tmp = *this;
 					++(*this);
 					return (tmp);
 				}
 
-				iterator& operator--()
+				Iterator& operator--()
 				{
 					m_index = (m_index == -1) ? m_backIndex - 1 : m_index; // Wrap-around
 					m_index = (m_index == 0) ? m_capacity - 1 : m_index - 1; // Wrap-around
 					return *(this);
 				}
 
-				iterator operator--(int)
+				Iterator operator--(int)
 				{
 					iterator tmp = *this;
 					--(*this);
 					return (tmp);
 				}
 
-				bool operator==(const iterator& other) const { return (m_index == other.m_index); }
-				bool operator!=(const iterator& other) const { return (!(*this == other)); }
+				bool operator==(const Iterator& other) const { return (m_index == other.m_index); }
+				bool operator!=(const Iterator& other) const { return (!(*this == other)); }
 
 			private:
 				pointer			m_typeArray;       
@@ -414,30 +422,19 @@ class StackCircularQueue
 				int				m_index;
 		};
 
-		iterator begin() 
-		{ 
-			return iterator(m_typeArray, queueCapacity, m_backIndex, m_frontIndex); 
-		}
 
-		iterator end() 
-		{ 
-			return iterator(m_typeArray, queueCapacity, m_backIndex, -1); 
-		}
 
 	private:
-		// private member variables
-		typedef unsigned char		t_byte;	
-		t_byte						m_byteArray[queueCapacity * sizeof(T)];
-		T*							m_typeArray;
-		int							m_frontIndex;
-		int							m_backIndex;
-
-		// helper functions		
+		T*              m_begin;
+		T*              m_end;
+		int				m_frontIndex;
+		int				m_backIndex;
+		const size_t    m_capacity;	
 
 		void	mf_destroyAll()
 		{
-			for (size_t i = 0; i < queueCapacity; ++i)
-				m_typeArray[i].~T();
+			for (T* ptr = m_begin; ptr != m_end; ++ptr)
+				ptr->~T();
 		}
 
 		void	mf_PopResetIndexes()
@@ -463,6 +460,44 @@ class StackCircularQueue
 			}
 			return (true);
 		}
+
+};
+
+
+template <typename T, size_t queueCapacity>
+class StackCircularQueue : public StackCircularQueueImpl<T>
+{
+	public:
+		StackCircularQueue() : 
+			StackCircularQueueImpl<T>(reinterpret_cast<T*>(m_byteArray), reinterpret_cast<T*>(m_byteArray) + queueCapacity, -1, -1, queueCapacity) {}
+
+		// user can avoid default construction by initializing copies, buffer will stiil have "zero" elements inserted
+		StackCircularQueue(const T& copy) : 
+			StackCircularQueueImpl<T>(reinterpret_cast<T*>(m_byteArray), reinterpret_cast<T*>(m_byteArray) + queueCapacity, -1, -1, queueCapacity, copy) {}
+
+		StackCircularQueue(const StackCircularQueue &other) :
+			StackCircularQueueImpl<T>(other)
+		{
+			*this = other;
+		}
+
+		~StackCircularQueue() {}
+
+		StackCircularQueue &operator=(const StackCircularQueue &other)
+		{
+			if (this == &other)
+				return (*this);
+			
+			StackCircularQueueImpl<T>::operator=(other);
+
+			return (*this);
+		}
+
+	private:
+		// private member variables
+		typedef unsigned char		t_byte;	
+		t_byte						m_byteArray[queueCapacity * sizeof(T)];
+
 };
 
 #endif
