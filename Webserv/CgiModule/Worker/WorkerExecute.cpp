@@ -9,6 +9,9 @@
 
 # include "../../Globals/Globals.hpp"
 
+// C++ headers
+# include <cerrno>
+
 // C Headers
 # include <unistd.h>
 # include <sys/wait.h>

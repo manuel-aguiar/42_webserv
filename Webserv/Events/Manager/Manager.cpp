@@ -19,11 +19,10 @@ namespace Events
 	Manager::Manager(const size_t maxSubscriptions, Globals& globals, const size_t maxFdsEstimate) :
 		m_monitoringCount(0),
 		m_epollfd		(-1),
-		m_maxStaleFd	(0),
 		m_globals		(globals),
 		m_subscriptions (maxSubscriptions, InternalSub()),
 		m_availableSubs	(maxSubscriptions),
-		m_staleEvents	((maxFdsEstimate ? maxFdsEstimate : maxSubscriptions * 100) / 8 + 1, 0)
+		m_fdTracker		(maxFdsEstimate)
 	{
 		m_epollfd = ::epoll_create(1);
 
@@ -38,8 +37,6 @@ namespace Events
 			m_globals.logError("fcntl(): " + std::string(strerror(errno)));
 			throw std::runtime_error("setCloseOnExec(), critical error: " + std::string(strerror(errno)));
 		}
-
-		std::memset(m_staleEvents.getArray(), 0, sizeof(m_staleEvents[0]) * m_staleEvents.size());
 
 		for (size_t i = 0 ; i < m_subscriptions.size(); ++i)
 			m_availableSubs.emplace_back(&m_subscriptions[i]);
@@ -76,25 +73,6 @@ namespace Events
 		internal->reset();
 
 		m_availableSubs.emplace_back(internal);
-	}
-
-	void
-	Manager::mf_markFdStale(Ws::fd fd)
-	{
-		m_maxStaleFd = (fd > m_maxStaleFd) ? fd : m_maxStaleFd;
-		size_t index = fd / 8;
-		size_t bit = fd % 8;
-		m_staleEvents[index] |= (1 << bit);
-	}
-
-	int
-	Manager::mf_isFdStale(Ws::fd fd)
-	{
-		if (fd == Ws::FD_NONE)
-			return (1);
-		size_t index = fd / 8;
-		size_t bit = fd % 8;
-		return ((m_staleEvents[index] & (1 << bit)) != 0);
 	}
 
 	Manager::~Manager()
@@ -137,7 +115,7 @@ namespace Events
 		}
 
 		if (markAsStale)
-			mf_markFdStale(fd);
+			m_fdTracker.markFdStale(fd);
 		internal->updateSubscription();
 
 		++m_monitoringCount;
@@ -173,7 +151,7 @@ namespace Events
 		}
 
 		if (markAsStale)
-			mf_markFdStale(fd);
+			m_fdTracker.markFdStale(fd);
 			
 		internal->updateSubscription();
 
@@ -201,7 +179,7 @@ namespace Events
 		}
 		
 		if (markAsStale)
-			mf_markFdStale(fd);
+			m_fdTracker.markFdStale(fd);
 		internal->unSubscribe();
 
 		--m_monitoringCount;
@@ -231,14 +209,13 @@ namespace Events
 			event = static_cast<InternalSub*>(m_epollEvents[i].data.ptr);
 
 			if (event->isInvalid() 
-			|| mf_isFdStale(event->getFd()))
+			|| m_fdTracker.isFdStale(event->getFd()))
 				continue ;
 			event->setTriggeredEvents(m_epollEvents[i].events);
 			event->notify();
 		}
 
-		std::memset(m_staleEvents.getArray(), 0, sizeof(m_staleEvents[0]) * (((m_maxStaleFd / 8)) + 1));
-		m_maxStaleFd = 0;
+		m_fdTracker.clear();
 		return (waitCount);
 	}
 
@@ -250,7 +227,8 @@ namespace Events
 
 	//private, bare minimum to compile
 	Manager::Manager(const Manager& copy) :
-		m_globals		(copy.m_globals)
+		m_globals		(copy.m_globals),
+		m_fdTracker		(copy.m_fdTracker)
 	{}
 
 	// private, bare minimum to compile

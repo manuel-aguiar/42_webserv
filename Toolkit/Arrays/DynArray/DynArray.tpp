@@ -83,7 +83,7 @@ class DynArray
             return (*this);
         }
 
-        void move(DynArray& from)
+        void swap(DynArray& from)
         {
             if (m_array)
             {

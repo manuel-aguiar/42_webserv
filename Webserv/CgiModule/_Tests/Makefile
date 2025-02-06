@@ -33,6 +33,9 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestCgiGateway.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockLogFile.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockGlobals.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockClock.cpp \
 									\
 				$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
@@ -53,13 +56,10 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
+				$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
 				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \
-				$(SRC_PATH)/Webserv/Globals/_Mock/MockLogFile.cpp \
-				$(SRC_PATH)/Webserv/Globals/_Mock/MockGlobals.cpp \
-				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
-				$(SRC_PATH)/Webserv/Globals/SignalHandler/SignalHandler.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp

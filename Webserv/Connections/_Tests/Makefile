@@ -43,6 +43,7 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Connections/Accepter/Accepter.cpp \
 				\
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
+				$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp \
 				$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp \
 				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \

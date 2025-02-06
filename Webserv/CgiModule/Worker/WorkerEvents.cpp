@@ -126,13 +126,6 @@ void	Worker::mf_readEmergencyPhone()
 							sizeof(m_EmergencyBuffer) - m_EmergencyBytesRead);
 
 		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readEmergencyPhone(): read() should never return -1");
-		
-		if (bytesRead == -1)
-		{
-			std::cout << " emergency stale event on fd: " << m_EmergencyEvent->getFd() << " " << strerror(errno) << std::endl;
-			// a stale read i cannot fix, but apparently is causing no extra problems
-			return ;
-		}
 
 		m_EmergencyBytesRead += bytesRead;
 

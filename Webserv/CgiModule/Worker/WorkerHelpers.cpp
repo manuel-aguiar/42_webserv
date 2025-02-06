@@ -5,6 +5,9 @@
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
+// C++ headers
+# include <cerrno>
+
 // C Headers
 # include <unistd.h>
 # include <sys/wait.h>
