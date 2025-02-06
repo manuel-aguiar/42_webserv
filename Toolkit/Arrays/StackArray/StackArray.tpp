@@ -273,7 +273,7 @@ class StackArray : public StackArrayImpl<T>
 		};
 
 
-        T* getArray() const {return (reinterpret_cast<T*>(m_array));}
+        T* getArray() {return (reinterpret_cast<T*>(m_array));}
 
 
 	private:

@@ -16,8 +16,9 @@
 	Template to get the element size aligned at compile time for correct vector allocation
 */
 
-template <typename T, size_t Size>
-class Stack_ObjectPool
+
+template <typename T>
+class Stack_ObjectPoolImpl
 {
 	public:
 
@@ -35,19 +36,30 @@ class Stack_ObjectPool
 		typedef size_t          size_type;
 		typedef ptrdiff_t       difference_type;
 
-		Stack_ObjectPool() :
-			m_elements(),
+
+		union s_Slot
+		{
+			char			m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
+			s_Slot*			m_next;
+		};
+
+		typedef char*		t_data_pointer;
+		typedef s_Slot		t_slot_type;
+		typedef s_Slot*		t_slot_pointer;
+
+		Stack_ObjectPoolImpl(t_slot_pointer begin, size_t maxElems) :
+			m_begin(begin),
 			m_elemCount(0),
-			m_maxElems(Size),
+			m_maxElems(maxElems),
 			m_freeSlot(NULL) {}
 
-		Stack_ObjectPool(const Stack_ObjectPool& copy)  :
-			m_elements(0),
+		Stack_ObjectPoolImpl(const Stack_ObjectPoolImpl& copy)  :
+			m_begin(copy.m_begin),
 			m_elemCount(copy.m_elemCount),
 			m_maxElems(copy.m_maxElems),
 			m_freeSlot(copy.m_freeSlot) {}
 
-		~Stack_ObjectPool() {}
+		~Stack_ObjectPoolImpl() {}
 
 		size_t		getElemCount() const { return (m_elemCount); }
 
@@ -66,7 +78,7 @@ class Stack_ObjectPool
 			(void)hint;
 			(void)n;
 			
-			ASSERT_EQUAL(m_elemCount < m_maxElems, true, "Stack_ObjectPool: Out of memory");
+			ASSERT_EQUAL(m_elemCount < m_maxElems, true, "Stack_ObjectPoolImpl: Out of memory");
 			if (m_freeSlot != 0)
 			{
 				pointer result = reinterpret_cast<pointer>(m_freeSlot);
@@ -75,7 +87,7 @@ class Stack_ObjectPool
 				return (result);
 			}
 			else
-				return reinterpret_cast<pointer>(&m_elements[m_elemCount++]);
+				return reinterpret_cast<pointer>(&m_begin[m_elemCount++]);
 		}
 
 		void deallocate(pointer p, size_type n = 1)
@@ -122,25 +134,45 @@ class Stack_ObjectPool
 			}
 		}
 
-		union s_Slot
-		{
-			char			m_data[AlignedSize<sizeof(value_type), __alignof__(value_type)>::value];
-			s_Slot*			m_next;
-		};
 
-		typedef char*		t_data_pointer;
-		typedef s_Slot		t_slot_type;
-		typedef s_Slot*		t_slot_pointer;
-
-		StackArray<s_Slot, Size> 	m_elements;
+		t_slot_pointer 				m_begin;
 		size_t 						m_elemCount;
 		size_t 						m_maxElems;
 		t_slot_pointer 				m_freeSlot;
 
-		bool operator==(const Stack_ObjectPool& other) const
-		{ return (m_elements.getAllocator() == other.m_elements.getAllocator()); }
-		bool operator!=(const Stack_ObjectPool& other) const
-		{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
+		bool operator==(const Stack_ObjectPoolImpl& other) const
+		{ return (m_begin == other.m_begin); }
+		bool operator!=(const Stack_ObjectPoolImpl& other) const
+		{ return (m_begin != other.m_begin); }
+};
+
+template <typename T, size_t Size>
+class Stack_ObjectPool : public Stack_ObjectPoolImpl<T>
+{
+	public:
+		Stack_ObjectPool() : 
+			Stack_ObjectPoolImpl<T>(m_storage.getArray(), Size) {}
+
+		Stack_ObjectPool(const Stack_ObjectPool &other) :
+			Stack_ObjectPoolImpl<T>(other)
+		{
+			*this = other;
+		}
+
+		~Stack_ObjectPool() {}
+
+		Stack_ObjectPool &operator=(const Stack_ObjectPool &other)
+		{
+			if (this == &other)
+				return (*this);
+			
+			Stack_ObjectPoolImpl<T>::operator=(other);
+
+			return (*this);
+		}
+	
+	private:
+		StackArray<typename Stack_ObjectPoolImpl<T>::t_slot_type, Size> m_storage;
 };
 
 

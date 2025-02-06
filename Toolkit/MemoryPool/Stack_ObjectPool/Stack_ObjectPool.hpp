@@ -11,6 +11,9 @@
 # include <iostream>
 # include <memory>
 
+template <typename T>
+class Stack_ObjectPoolImpl;
+
 template <typename T, size_t Size>
 class Stack_ObjectPool;
 
