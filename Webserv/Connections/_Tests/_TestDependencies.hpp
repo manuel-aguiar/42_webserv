@@ -8,7 +8,8 @@
 # include <vector>
 
 Ws::Sock::addr_in 	createSockAddr_in(const std::string& ip, const std::string& port);
-void    			prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners);
+void    			prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners, const int portStart);
 
 
 #endif
+

@@ -13,7 +13,7 @@
 template <typename Client>
 struct ClientManager
 {
-	ClientManager(const size_t countConnectors, const size_t countListeners, Events::Manager& eventManager)   : success(0), fail(0), m_connectors(countConnectors)
+	ClientManager(const size_t countConnectors, const size_t countListeners, Events::Manager& eventManager, const int portStart)   : success(0), fail(0), m_connectors(countConnectors)
 	{
 		for (size_t i = 0; i < countConnectors; ++i)
 		{
@@ -25,7 +25,7 @@ struct ClientManager
 				.family = AF_INET,
 				.socktype = SOCK_STREAM,
 				.proto = IPPROTO_TCP,
-				.addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(8080 + (i % countListeners)))},
+				.addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(portStart + (i % countListeners)))},
 				.addrlen = sizeof(Ws::Sock::addr_in)
 			};
 			m_connectors[i].m_eventManager = &eventManager;
@@ -71,21 +71,23 @@ class ClientManagerTask : public IThreadTask
 								Globals& 			globals, 
 								pthread_mutex_t& 	mutex, 
 								int& 				pasteSuccessCount, 
-								int 				timeoutMs = 2000) : 
+								int 				timeoutMs,
+								const int 			portStart) : 
 		countConnectors(countConnectors), 
 		countListeners(countListeners), 
 		countMaxConnections(countMaxConnections),
 		globals(globals), 
 		mutex(mutex), 
 		pasteSuccessCount(pasteSuccessCount), 
-		timeoutMs(timeoutMs) {}
+		timeoutMs(timeoutMs),
+		portStart(portStart) {}
 		void execute()
 		{
 			int maxEvents = countConnectors + countListeners;
 			int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
 			
 			Events::Manager clientEvents(maxEvents, globals, maxFdsEstimate);
-			ClientManager<Client> clientManager(countConnectors, countListeners, clientEvents);
+			ClientManager<Client> clientManager(countConnectors, countListeners, clientEvents, portStart);
 			Timer timeout = Timer::now() + timeoutMs;
 
 			clientManager.ConnectAll();
@@ -116,6 +118,7 @@ class ClientManagerTask : public IThreadTask
 		pthread_mutex_t& 	mutex;
 		int& 				pasteSuccessCount;
 		const int			timeoutMs;
+		const int			portStart;
 };
 
 #endif

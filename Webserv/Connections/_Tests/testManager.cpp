@@ -44,10 +44,12 @@ void testManager(int& testNumber)
 
         const int                   countListeners = 10;
         const int                   countMaxConnections = 10;
+        const int                   portStart = 8080;
+        
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses;
 
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
         
         Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
@@ -69,10 +71,12 @@ void testManager(int& testNumber)
 
         const int                   countListeners = 1;
         const int                   countMaxConnections = 1;
+        const int                   portStart = 8080;
+        
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
 
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
         Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
         EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
@@ -96,10 +100,12 @@ void testManager(int& testNumber)
 
         const int                   countListeners = 10;
         const int                   countMaxConnections = 1;
+        const int                   portStart = 8080;
+        
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
 
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
         Conn::Manager               manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
         EXPECT_EQUAL(manager.init(), true, "Manager::init() should initialize without issue");
@@ -121,12 +127,14 @@ void testManager(int& testNumber)
 
         const int                   countListeners = 1;
         const int                   countMaxConnections = 1;
+        const int                   portStart = 8080;
+
         Events::Manager             eventManager(countListeners + countMaxConnections, globals);
         std::vector<Ws::BindInfo>   bindAddresses(countListeners, (Ws::BindInfo){});
         Server_FastCloseModule fakeHttp(Ws::AppLayer::HTTP);
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
         Conn::Manager        manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
 
@@ -140,7 +148,7 @@ void testManager(int& testNumber)
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
-            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", "8080")},
+            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(portStart))},
             .addrlen = sizeof(Ws::Sock::addr_in)
         };
 
@@ -174,6 +182,7 @@ void testManager(int& testNumber)
         const int countMaxConnections = 10;
         const int countConnectors = 100;
         const int clientTimeoutMs = 500;
+        const int portStart = 8080;
 
         int maxEvents = countListeners + countMaxConnections;
 		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
@@ -183,7 +192,7 @@ void testManager(int& testNumber)
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_FastCloseModule::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
 
         Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
@@ -199,7 +208,8 @@ void testManager(int& testNumber)
                                                                     globals, 
                                                                     mutex, 
                                                                     threadSuccessCount, 
-                                                                    clientTimeoutMs);
+                                                                    clientTimeoutMs,
+                                                                    portStart);
         tp.addTask(clientManagerTask);
 
         bool run = true;
@@ -238,6 +248,7 @@ void testManager(int& testNumber)
         const int countMaxConnections = 150;
         const int countConnectors = 100;
         const int clientTimeoutMs = 2000;
+        const int portStart = 8080;
 
         int maxEvents = countListeners + countMaxConnections;
 		int maxFdsEstimate = (countConnectors + countListeners + countMaxConnections) * 1.2f;
@@ -247,7 +258,7 @@ void testManager(int& testNumber)
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_NeverCloseModule::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
 
         Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
@@ -263,7 +274,8 @@ void testManager(int& testNumber)
                                                                     globals, 
                                                                     mutex, 
                                                                     threadSuccessCount, 
-                                                                    clientTimeoutMs);
+                                                                    clientTimeoutMs,
+                                                                    portStart);
         tp.addTask(clientManagerTask);
 
         ::sleep(1);
@@ -295,6 +307,7 @@ void testManager(int& testNumber)
         const int countMaxConnections = 100;
         const int countConnectors = 1000;
         const int clientTimeoutMs = 5000;
+        const int portStart = 8080;
 
         std::string msg = "Manager: MathProtocol, two way communication, simple math request and response";
 
@@ -306,7 +319,7 @@ void testManager(int& testNumber)
         ctx.setAppLayer(Ws::AppLayer::HTTP, &fakeHttp, &Server_MathModule::InitConnection);
 
         std::vector<Ws::BindInfo> bindAddresses(countListeners);
-        prepareBindAddresses(bindAddresses, countListeners);
+        prepareBindAddresses(bindAddresses, countListeners, portStart);
 
         Conn::Manager manager(countMaxConnections, bindAddresses, eventManager, globals, ctx);
 
@@ -322,7 +335,8 @@ void testManager(int& testNumber)
                                                         globals, 
                                                         mutex, 
                                                         threadSuccessCount, 
-                                                        clientTimeoutMs);
+                                                        clientTimeoutMs,
+                                                        portStart);
         tp.addTask(clientManagerTask);
 
         bool run = true;

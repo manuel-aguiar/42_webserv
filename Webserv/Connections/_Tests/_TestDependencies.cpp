@@ -37,7 +37,7 @@ Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& po
     return (addr);
 }
 
-void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners)
+void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners, const int portStart)
 {
     bindAddresses.resize(countListeners);
     for (size_t i = 0; i < bindAddresses.size(); ++i)
@@ -49,7 +49,7 @@ void    prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const siz
             .family = AF_INET,
             .socktype = SOCK_STREAM,
             .proto = IPPROTO_TCP,
-            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(8080 + i))},
+            .addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("0.0.0.0", TestHelpers::to_string(portStart + i))},
             .addrlen = sizeof(Ws::Sock::addr_in)
         };
     }

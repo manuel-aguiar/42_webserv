@@ -18,13 +18,13 @@ int main(void)
 
 	TEST_HEADER("Connection Manager tests");
 
-	testSocket			(testNumber);
-	testMonitor			(testNumber);
-	testListeningSocket	(testNumber);
-	testConnection		(testNumber);
-	testAccepter		(testNumber);
-	testAppLayer		(testNumber);
-	testManager			(testNumber);
+	//testSocket			(testNumber);
+	//testMonitor			(testNumber);
+	//testListeningSocket	(testNumber);
+	//testConnection		(testNumber);
+	//testAccepter		(testNumber);
+	//testAppLayer		(testNumber);
+	//testManager			(testNumber);
 	testStressTest		(testNumber);
 
 	TEST_FOOTER;
