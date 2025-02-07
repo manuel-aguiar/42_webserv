@@ -43,7 +43,11 @@ void ClientTask::execute()
 }
 
 
-Client_FastNeverClose::Client_FastNeverClose(int index) : myIndex(index), actualResponse(0) {}
+Client_FastNeverClose::Client_FastNeverClose(int index, Events::Manager& eventManager, ClientManager<Client_FastNeverClose>& clientManager) : 
+    myIndex(index), 
+    actualResponse(0),
+    m_monitor(eventManager),
+    m_clientManager(clientManager) {}
 
 int Client_FastNeverClose::open()
 {
@@ -55,7 +59,7 @@ int Client_FastNeverClose::open()
     m_socket.setSockFd(sockfd);
     FileDescriptor::setNonBlocking(sockfd);
 
-    m_monitor.acquire(*m_eventManager);
+    m_monitor.acquire();
     Events::Subscription& sub = m_monitor.accessEvent();
     sub.setFd(m_socket.getSockFd());
     sub.setUser(this);
@@ -72,13 +76,13 @@ int Client_FastNeverClose::connect()
     if (res == -1 && errno != EINPROGRESS)
     {
         disconnect();
-        m_clientManager->fail++;
+        m_clientManager.fail++;
     }
-    m_monitor.subscribe(*m_eventManager, false);
+    m_monitor.subscribe(false);
     return 1;
 }
 
-ClientManager<Client_FastNeverClose>* Client_FastNeverClose::myManager()
+ClientManager<Client_FastNeverClose>& Client_FastNeverClose::myManager()
 {
 	return m_clientManager;
 }
@@ -102,23 +106,25 @@ void Client_FastNeverClose::ReadWrite_Callback(Events::Subscription& sub)
 void Client_FastNeverClose::disconnect()
 {
     if (actualResponse == 200)
-        m_clientManager->success++;
+        m_clientManager.success++;
     else
-        m_clientManager->fail++;
+        m_clientManager.fail++;
 
-    m_monitor.release(*m_eventManager);
+    m_monitor.release();
     ::close(m_socket.getSockFd());
 	m_socket.setSockFd(Ws::FD_NONE);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Client_Math::Client_Math(int index) : 
+Client_Math::Client_Math(int index, Events::Manager& eventManager, ClientManager<Client_Math>& clientManager) : 
 	myIndex(index),
 	request((unsigned char)index),
 	expectedResponse((request + 3) % 256),
 	actualResponse(0),
-	hasWritten(false) {}
+	hasWritten(false),
+    m_monitor(eventManager),
+    m_clientManager(clientManager) {}
 
 int Client_Math::open()
 {
@@ -130,7 +136,7 @@ int Client_Math::open()
     m_socket.setSockFd(sockfd);
     FileDescriptor::setNonBlocking(sockfd);
 
-    m_monitor.acquire(*m_eventManager);
+    m_monitor.acquire();
     Events::Subscription& sub = m_monitor.accessEvent();
     sub.setFd(m_socket.getSockFd());
     sub.setUser(this);
@@ -147,13 +153,13 @@ int Client_Math::connect()
     if (res == -1 && errno != EINPROGRESS)
     {
         disconnect();
-        m_clientManager->fail++;
+        m_clientManager.fail++;
     }
-    m_monitor.subscribe(*m_eventManager, false);
+    m_monitor.subscribe(false);
     return 1;
 }
 
-ClientManager<Client_Math>* Client_Math::myManager()
+ClientManager<Client_Math>& Client_Math::myManager()
 {
 	return m_clientManager;
 }
@@ -177,7 +183,7 @@ void Client_Math::Write()
 
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
 	{
-		m_clientManager->fail++;
+		m_clientManager.fail++;
 		disconnect();
 		return ;
 	}
@@ -186,7 +192,7 @@ void Client_Math::Write()
 	hasWritten = true;
 	Events::Subscription& sub = m_monitor.accessEvent();
 	sub.setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
-	m_monitor.modify(*m_eventManager, false);	
+	m_monitor.modify(false);	
 }
 
 /*
@@ -204,28 +210,28 @@ void Client_Math::Read()
 
 	if (bytesRead == 0)
 	{
-		m_clientManager->fail++;
+		m_clientManager.fail++;
 		disconnect();
 		return ;
 	}
 
-	m_monitor.unsubscribe(*m_eventManager, false);
+	m_monitor.unsubscribe(false);
 	if (actualResponse == expectedResponse)
 	{
 		//std::cerr << "client success!!" << std::endl;
-		m_clientManager->success++;
+		m_clientManager.success++;
 	}
 	else
 	{
 		//std::cerr << "client fail!!" << std::endl;	
-		m_clientManager->fail++;
+		m_clientManager.fail++;
 	}
 	disconnect();
 }
 
 void Client_Math::disconnect()
 {
-    m_monitor.release(*m_eventManager);
+    m_monitor.release();
     ::close(m_socket.getSockFd());
 	m_socket.setSockFd(Ws::FD_NONE);
 }

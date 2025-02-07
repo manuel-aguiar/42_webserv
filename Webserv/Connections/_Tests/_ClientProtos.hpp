@@ -52,13 +52,13 @@ class ClientManager;
 */
 struct Client_FastNeverClose
 {
-	Client_FastNeverClose(int index);
+	Client_FastNeverClose(int index, Events::Manager& eventManager, ClientManager<Client_FastNeverClose>& clientManager);
 
-	ClientManager<Client_FastNeverClose>* myManager();
-	int open();
-	int connect();
-	void disconnect();
-	static void ReadWrite_Callback(Events::Subscription& sub);
+	ClientManager<Client_FastNeverClose>& 	myManager();
+	int 									open();
+	int 									connect();
+	void 									disconnect();
+	static void 							ReadWrite_Callback(Events::Subscription& sub);
 	
 	int										myIndex;
 	unsigned char 							request;
@@ -66,8 +66,7 @@ struct Client_FastNeverClose
 	unsigned char 							actualResponse;
 	Socket 									m_socket;
 	Monitor			 						m_monitor;
-	Events::Manager* 						m_eventManager;
-	ClientManager<Client_FastNeverClose>*	m_clientManager;
+	ClientManager<Client_FastNeverClose>&	m_clientManager;
 };
 
 /*
@@ -75,9 +74,9 @@ struct Client_FastNeverClose
 */
 struct Client_Math
 {
-	Client_Math(int index);
+	Client_Math(int index, Events::Manager& eventManager, ClientManager<Client_Math>& clientManager);
 
-	ClientManager<Client_Math>* 		myManager();
+	ClientManager<Client_Math>& 		myManager();
 	int 								open();
 	int 								connect();
 	void 								disconnect();
@@ -92,8 +91,7 @@ struct Client_Math
 	bool								hasWritten;
 	Socket 								m_socket;
 	Monitor			 					m_monitor;
-	Events::Manager* 					m_eventManager;
-	ClientManager<Client_Math>*			m_clientManager;
+	ClientManager<Client_Math>&			m_clientManager;
 };
 
 

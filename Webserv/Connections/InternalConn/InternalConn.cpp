@@ -10,7 +10,7 @@ InternalConn::InternalConn(InternalManager& connManager) :
 
 InternalConn::~InternalConn()
 {
-	m_monitor.release(accessEventManager());
+	m_monitor.release();
 }
 
 void
@@ -28,7 +28,7 @@ InternalConn::reset()
 {
 	//std::cout << "socket fd: " << m_socket.getSockFd() << ", event fd: " << m_monitor.accessEvent().getFd() << std::endl;
 	m_socket.reset();
-	m_monitor.reset(accessEventManager(), false);
+	m_monitor.reset(false);
 	m_appLayer.reset();
 }
 

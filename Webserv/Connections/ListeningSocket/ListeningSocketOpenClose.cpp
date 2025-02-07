@@ -12,7 +12,7 @@ int		ListeningSocket::open()
 		// failed to open
 		return (0);
 
-	m_monitor.acquire(mf_accessEventManager());
+	m_monitor.acquire();
 	Events::Subscription& event = m_monitor.accessEvent();
 
 	event.setFd(m_socket.getSockFd());
@@ -22,14 +22,13 @@ int		ListeningSocket::open()
 							| Events::Monitor::EDGE_TRIGGERED);
 	event.setUser(this);
 	event.setCallback(EventCallbackAccept);
-	m_monitor.subscribe(mf_accessEventManager(), false);
+	m_monitor.subscribe(false);
 	return (1);
 }
 
 void	ListeningSocket::close()
 {
-	m_monitor.reset(mf_accessEventManager(), false);
-	m_monitor.release(mf_accessEventManager());
+	m_monitor.release();
 	if (m_socket.getSockFd() != -1)
 		m_accepter.close(m_socket);
 }

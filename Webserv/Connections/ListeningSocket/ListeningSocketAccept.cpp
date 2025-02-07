@@ -21,7 +21,7 @@ void  ListeningSocket::accept()
 		connection = m_connManager._Accepter_ProvideConnection();
 		if (!connection)
 		{
-			m_monitor.unsubscribe(mf_accessEventManager(), false);
+			m_monitor.unsubscribe(false);
 			return (m_connManager._Accepter_MoveToPendingAccept(*this));
 		}
 		if (m_accepter.accept(m_socket, connection->accessSocket()) == -1)
@@ -42,7 +42,7 @@ int ListeningSocket::acceptPending(InternalConn& connection)
 	if (result == -1)
 	{
 		//listener has nobody waiting, resubscribe itself in the event manager
-		m_monitor.subscribe(mf_accessEventManager(), false);
+		m_monitor.subscribe(false);
 		return (result);
 	}
 	return (mf_acceptInternal(connection));

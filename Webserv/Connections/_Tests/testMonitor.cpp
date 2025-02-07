@@ -48,11 +48,16 @@ class Calculator
 void testMonitor(int& testNumber)
 {
     Globals globals(NULL, NULL, NULL, NULL);
+    Events::Manager eventManager(1, globals);
     ////////////////////////////////////////////
     try
     {
         TEST_INTRO(testNumber++);
-        Monitor monitor;
+
+        Monitor monitor(eventManager);
+
+        monitor.acquire();
+
         TEST_PASSED_MSG("Monitor: instantiation");
     }
     catch (const std::exception& e)
@@ -64,12 +69,11 @@ void testMonitor(int& testNumber)
     {
         TEST_INTRO(testNumber++);
 
-        Events::Manager eventManager(1, globals);
-        Monitor monitor;
+        Monitor monitor(eventManager);
 
         //Events::Subscription& subs = monitor.accessEvent(); <- correctly asserts, trying to access event before having subscribed one
         
-        monitor.acquire(eventManager);
+        monitor.acquire();
         //monitor.acquire(eventManager); <- correctly asserts, already acquired
 
         //monitor.subscribe(eventManager, true); <- event manager asserts, fd = FD_NONE
@@ -79,15 +83,15 @@ void testMonitor(int& testNumber)
         subs.setFd(STDIN_FILENO);
         subs.setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP | Events::Monitor::EDGE_TRIGGERED);
 
-        monitor.subscribe(eventManager, true);
+        monitor.subscribe(true);
 
         subs.setMonitoredEvents(Events::Monitor::WRITE);
         //monitor.subscribe(eventManager, true); <- correctly asserts, already subscribed
 
-        monitor.modify(eventManager, true);
+        monitor.modify(true);
 
         // successfully asserts in case the monitor doesn't return the subscription
-        monitor.release(eventManager);
+        monitor.release();
 
         EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Monitor::release() should have removed the subscription from the event manager");
 
@@ -107,9 +111,9 @@ void testMonitor(int& testNumber)
 
 
 
-        Monitor monitor;
+        Monitor monitor(eventManager);
 
-        monitor.acquire(eventManager);
+        monitor.acquire();
         Events::Subscription& subs = monitor.accessEvent();
 
 		Calculator 				calculator;
@@ -120,12 +124,12 @@ void testMonitor(int& testNumber)
 		subs.setUser(&calculator);
 		subs.setCallback(Calculator::EventCallback_Calculate);
         
-        monitor.subscribe(eventManager, false);
+        monitor.subscribe(false);
 
         eventManager.ProcessEvents(-1);
 
         // successfully asserts in case the monitor doesn't return the subscription
-        monitor.release(eventManager);
+        monitor.release();
 
         EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
 

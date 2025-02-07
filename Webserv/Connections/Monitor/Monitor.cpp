@@ -1,66 +1,71 @@
 
+
 # include "Monitor.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
+
+
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
-# include <cstddef>
+Monitor::Monitor(Events::Manager& eventManager) : 
+	m_eventSubs(NULL),
+	m_eventManager(eventManager) {}
 
-Monitor::Monitor() : 
-	m_eventSubs(NULL)
+Monitor::Monitor(const Monitor& copy) : 
+	m_eventSubs(copy.m_eventSubs),
+	m_eventManager(copy.m_eventManager)
 {
-
+	ASSERT_EQUAL(copy.m_eventSubs == NULL, true, "Monitor::Monitor(const Monitor& copy) from a Monitor that still has a subscription");
 }
+
 
 Monitor::~Monitor()
 {
-	ASSERT_EQUAL(m_eventSubs == NULL, true, "Monitor::~Monitor() called on a Monitor that still has a subscription");
+	release();
 }
 
-
-
 void
-Monitor::acquire(Events::Manager& eventManager)
+Monitor::acquire()
 {
 	ASSERT_EQUAL(m_eventSubs == NULL, true, "Monitor::acquire() called on a Monitor thal already has a subscription");
 	
-	m_eventSubs = eventManager.acquireSubscription();
+	m_eventSubs = m_eventManager.acquireSubscription();
 }
 
 void
-Monitor::release(Events::Manager& eventManager)
+Monitor::release()
 {
 	if (m_eventSubs == NULL)
 		return ;
 
-	reset(eventManager, true);
-	eventManager.returnSubscription(*m_eventSubs);
+	reset(true);
+	m_eventManager.returnSubscription(*m_eventSubs);
 	m_eventSubs = NULL;
 }
 
 void
-Monitor::subscribe(Events::Manager& eventManager, bool isCalledFromEventLoop)
+Monitor::subscribe(bool isCalledFromEventLoop)
 {
 	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::subscribe() called on a Monitor with a NULL Subscription");
 	ASSERT_EQUAL(m_eventSubs->isSubscribed(), false, "Monitor::subscribe() called on a Monitor with a Subscription that is already subscribed");
-	eventManager.startMonitoring(*m_eventSubs, isCalledFromEventLoop);
+	m_eventManager.startMonitoring(*m_eventSubs, isCalledFromEventLoop);
 }
 
 void
-Monitor::unsubscribe(Events::Manager& eventManager, bool isCalledFromEventLoop)
+Monitor::unsubscribe(bool isCalledFromEventLoop)
 {
 	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::subscribe() called on a Monitor with a NULL Subscription");
 	if (m_eventSubs->isSubscribed())
-		eventManager.stopMonitoring(*m_eventSubs, isCalledFromEventLoop);
+		m_eventManager.stopMonitoring(*m_eventSubs, isCalledFromEventLoop);
 }
 
 void
-Monitor::modify(Events::Manager& eventManager, bool isCalledFromEventLoop)
+Monitor::modify(bool isCalledFromEventLoop)
 {
 	ASSERT_EQUAL(m_eventSubs != NULL, true, "Monitor::subscribe() called on a Monitor with a NULL Subscription");
 	ASSERT_EQUAL(m_eventSubs->isSubscribed(), true, "Monitor::subscribe() called on an already subscribed Monitor");
 
-	eventManager.updateEvents(*m_eventSubs, isCalledFromEventLoop);
+	m_eventManager.updateEvents(*m_eventSubs, isCalledFromEventLoop);
 }
 
 Events::Subscription&
@@ -77,24 +82,23 @@ Monitor::getEvent() const
 	return (*m_eventSubs);
 }
 
-Monitor::Monitor(const Monitor& copy) : 
-	m_eventSubs(copy.m_eventSubs) {}
-
-Monitor&
-Monitor::operator=(const Monitor& assign)
-{
-	if (this == &assign)
-		return (*this);
-	return *this;
-}
-
 void
-Monitor::reset(Events::Manager& eventManager, bool isCalledFromEventLoop)
+Monitor::reset(bool isCalledFromEventLoop)
 {
 	if (!m_eventSubs)
 		return;
 	
 	if (m_eventSubs->isSubscribed())
-		unsubscribe(eventManager, isCalledFromEventLoop);
+		unsubscribe(isCalledFromEventLoop);
 	m_eventSubs->reset();
+}
+
+Monitor&
+Monitor::operator=(const Monitor& assign)
+{
+	ASSERT_EQUAL(false, true, "Monitor::operator= called, monitor is not assignable");
+
+	if (this == &assign)
+		return (*this);
+	return (*this);
 }

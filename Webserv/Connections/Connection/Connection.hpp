@@ -20,6 +20,9 @@ namespace Conn
 	class Connection
 	{
 		public:
+			Connection(InternalManager& connManager);
+			~Connection();
+
 			void    					close();
 
 			// server context access
@@ -49,8 +52,6 @@ namespace Conn
 			Events::Manager&			accessEventManager();
 
 		protected:
-			Connection(InternalManager& connManager);
-			~Connection();
 
 			Socket						m_socket;
 			Monitor						m_monitor;

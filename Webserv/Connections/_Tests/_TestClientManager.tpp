@@ -17,7 +17,7 @@ struct ClientManager
 	{
 		for (size_t i = 0; i < countConnectors; ++i)
 		{
-			m_connectors.emplace_back(i);
+			m_connectors.emplace_back(i, eventManager, *this);
 			m_connectors[i].m_socket.modifyBindInfo() = (Ws::BindInfo)
 			{
 				.appLayer = Ws::AppLayer::HTTP,
@@ -28,8 +28,6 @@ struct ClientManager
 				.addr = (Ws::Sock::union_addr){.sockaddr_in = createSockAddr_in("127.0.0.1", TestHelpers::to_string(portStart + (i % countListeners)))},
 				.addrlen = sizeof(Ws::Sock::addr_in)
 			};
-			m_connectors[i].m_eventManager = &eventManager;
-			m_connectors[i].m_clientManager = this;
 			m_connectors[i].open();
 		}
 	}
