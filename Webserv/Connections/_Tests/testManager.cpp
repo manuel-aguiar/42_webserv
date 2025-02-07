@@ -139,7 +139,7 @@ void testManager(int& testNumber)
 
 
         TestConnector   connector;
-        Socket          externalConnect;
+        ConnInfo          externalConnect;
 
         externalConnect.modifyBindInfo() = (Ws::BindInfo)
         {

@@ -14,7 +14,7 @@
 Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);
 void    			prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners, const int portStart);
 
-class Socket;
+class ConnInfo;
 class Globals;
 
 namespace Events
@@ -25,7 +25,7 @@ namespace Events
 
 struct TestConnector
 {
-	int connect(Socket& socket);
+	int connect(ConnInfo& socket);
 	void disconnect();
 
 	Ws::Sock::fd m_socket;
@@ -34,12 +34,12 @@ struct TestConnector
 class ClientTask : public IThreadTask
 {
 	public:
-		ClientTask(TestConnector& connector, Socket& socket);
+		ClientTask(TestConnector& connector, ConnInfo& socket);
 		void execute();
 
 	private:
 		TestConnector& m_connector;
-		Socket& m_socket;
+		ConnInfo& m_socket;
 };
 
 template <typename Client>
@@ -64,7 +64,7 @@ struct Client_FastNeverClose
 	unsigned char 							request;
 	unsigned char							expectedResponse;
 	unsigned char 							actualResponse;
-	Socket 									m_socket;
+	ConnInfo 									m_socket;
 	Monitor			 						m_monitor;
 	ClientManager<Client_FastNeverClose>&	m_clientManager;
 };
@@ -89,7 +89,7 @@ struct Client_Math
 	unsigned char						expectedResponse;
 	unsigned char 						actualResponse;
 	bool								hasWritten;
-	Socket 								m_socket;
+	ConnInfo 								m_socket;
 	Monitor			 					m_monitor;
 	ClientManager<Client_Math>&			m_clientManager;
 };

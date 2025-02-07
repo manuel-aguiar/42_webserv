@@ -44,7 +44,7 @@ void InternalConn::prepareDispatch()
 	m_monitor.accessEvent().setFd(m_socket.getSockFd());
 }
 
-Socket&
+ConnInfo&
 InternalConn::accessSocket()
 {
 	return (m_socket);

@@ -14,7 +14,7 @@ class AppLayer
 		AppLayer(const AppLayer& copy);
 		AppLayer& operator=(const AppLayer& assign);
 
-		void						close(Socket& fill);
+		void						close(ConnInfo& fill);
 		void						reset();
 
 		void						setConn				(const Ws::AppLayer::Conn& appConn);

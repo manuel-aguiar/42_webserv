@@ -19,7 +19,7 @@
 #include <vector>
 #include <cerrno>
 
-int TestConnector::connect(Socket& socket)
+int TestConnector::connect(ConnInfo& socket)
 {
     m_socket = ::socket(socket.getBindInfo().family, socket.getBindInfo().socktype, socket.getBindInfo().proto);
     if (m_socket == -1)
@@ -34,7 +34,7 @@ void TestConnector::disconnect()
     ::close(m_socket);
 }
 
-ClientTask::ClientTask(TestConnector& connector, Socket& socket)
+ClientTask::ClientTask(TestConnector& connector, ConnInfo& socket)
     : m_connector(connector), m_socket(socket) {}
 
 void ClientTask::execute()

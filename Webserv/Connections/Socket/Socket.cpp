@@ -2,21 +2,21 @@
 
 #include "Socket.hpp"
 
-Socket::Socket(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) : 
+ConnInfo::ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) : 
 	m_sockfd(sockfd),
 	m_info(info) {}
 
-Socket::Socket() : 
+ConnInfo::ConnInfo() : 
 	m_sockfd(Ws::FD_NONE),
 	m_info((Ws::BindInfo){}) {}
 
-Socket::~Socket() {}
+ConnInfo::~ConnInfo() {}
 
-Socket::Socket(const Socket& copy) : 
+ConnInfo::ConnInfo(const ConnInfo& copy) : 
 	m_sockfd(copy.m_sockfd),
 	m_info(copy.m_info) {}
 
-Socket& Socket::operator=(const Socket& assign)
+ConnInfo& ConnInfo::operator=(const ConnInfo& assign)
 {
 	if (this == &assign)
 		return (*this);
@@ -28,38 +28,38 @@ Socket& Socket::operator=(const Socket& assign)
 }
 
 Ws::Sock::fd
-Socket::getSockFd() const
+ConnInfo::getSockFd() const
 {
 	return (m_sockfd);
 }
 
 const Ws::BindInfo&
-Socket::getBindInfo() const
+ConnInfo::getBindInfo() const
 {
 	return (m_info);
 }
 
 
 void
-Socket::setSockFd(const Ws::Sock::fd sockfd)
+ConnInfo::setSockFd(const Ws::Sock::fd sockfd)
 {
 	m_sockfd = sockfd;
 }
 
 void
-Socket::setBindInfo(const Ws::BindInfo& info)
+ConnInfo::setBindInfo(const Ws::BindInfo& info)
 {
 	m_info = info;
 }
 
 Ws::BindInfo&
-Socket::modifyBindInfo()
+ConnInfo::modifyBindInfo()
 {
 	return (m_info);
 }
 
 void
-Socket::reset()
+ConnInfo::reset()
 {
 	m_sockfd = Ws::FD_NONE;
 	m_info = (Ws::BindInfo){};

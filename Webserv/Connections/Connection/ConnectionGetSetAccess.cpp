@@ -13,7 +13,7 @@ namespace Conn
 		return (m_appLayer);
 	}
 
-	Socket&
+	ConnInfo&
 	Connection::mf_accessSocket()
 	{
 		return (m_socket);

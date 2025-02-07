@@ -4,18 +4,19 @@
 # include "../../Events/Subscription/Subscription.hpp"
 
 # include <iostream>
+
+
 int		ListeningSocket::open()
 {
-	int res = m_accepter.open(m_socket);
+	int res = m_listener.open();
 	
 	if (!res)
-		// failed to open
 		return (0);
 
 	m_monitor.acquire();
 	Events::Subscription& event = m_monitor.accessEvent();
 
-	event.setFd(m_socket.getSockFd());
+	event.setFd(m_listener.getSockFd());
 	event.setMonitoredEvents(Events::Monitor::READ 
 							| Events::Monitor::ERROR 
 							| Events::Monitor::HANGUP 
@@ -29,8 +30,7 @@ int		ListeningSocket::open()
 void	ListeningSocket::close()
 {
 	m_monitor.release();
-	if (m_socket.getSockFd() != -1)
-		m_accepter.close(m_socket);
+	m_listener.close();
 }
 
 void ListeningSocket::EventCallbackAccept(Events::Subscription& callback)

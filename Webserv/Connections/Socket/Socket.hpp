@@ -5,14 +5,14 @@
 
 # include "../../Ws_Namespace.h"
 
-class Socket
+class ConnInfo
 {
 	public:
-		Socket(const Ws::Sock::fd sockfd, const Ws::BindInfo& info);
-		Socket();
-		~Socket();
-		Socket(const Socket& copy);
-		Socket& operator=(const Socket& assign);
+		ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info);
+		ConnInfo();
+		~ConnInfo();
+		ConnInfo(const ConnInfo& copy);
+		ConnInfo& operator=(const ConnInfo& assign);
 
 		void				reset();
 

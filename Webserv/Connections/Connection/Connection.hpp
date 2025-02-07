@@ -53,12 +53,12 @@ namespace Conn
 
 		protected:
 
-			Socket						m_socket;
+			ConnInfo						m_socket;
 			Monitor						m_monitor;
 			AppLayer					m_appLayer;
 			InternalManager&			m_connManager;
 
-			Socket&						mf_accessSocket();
+			ConnInfo&						mf_accessSocket();
 			AppLayer&					mf_accessAppLayer();
 
 	};

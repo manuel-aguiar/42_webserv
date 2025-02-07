@@ -18,7 +18,7 @@ class InternalConn : public Conn::Connection
 		void	forcedClose();
 		void	reset();
 
-		Socket&	accessSocket();
+		ConnInfo&	accessSocket();
 
 	private:
 	

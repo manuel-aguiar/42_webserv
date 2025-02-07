@@ -24,7 +24,7 @@ void  ListeningSocket::accept()
 			m_monitor.unsubscribe(false);
 			return (m_connManager._Accepter_MoveToPendingAccept(*this));
 		}
-		if (m_accepter.accept(m_socket, connection->accessSocket()) == -1)
+		if (m_listener.accept(connection->accessSocket()) == -1)
 		{
 			m_connManager._ReturnConnection(*connection);
 			return ;
@@ -37,7 +37,7 @@ int ListeningSocket::acceptPending(InternalConn& connection)
 {
 	//if (connection.accessEvent().isSubscribed())
 	//	std::cout << "pending accept, connection event still susbcribed"<< std::endl;
-	int result = m_accepter.accept(m_socket, connection.accessSocket());
+	int result = m_listener.accept(connection.accessSocket());
 
 	if (result == -1)
 	{
@@ -52,6 +52,6 @@ int
 ListeningSocket::mf_acceptInternal(InternalConn& connection)
 {
 	connection.prepareDispatch();
-	mf_accessServerContext().getAppLayerInit(m_socket.getBindInfo().appLayer)(connection);
+	mf_accessServerContext().getAppLayerInit(m_listener.getBindInfo().appLayer)(connection);
 	return (1);
 }

@@ -77,7 +77,7 @@ public:
 
 int main() {
 
-    std::vector <Socket >v;
+    std::vector <ConnInfo >v;
 
     // Create specific interpreters with state
     HTTPInterpreter httpInterpreter;
