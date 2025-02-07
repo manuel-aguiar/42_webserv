@@ -93,6 +93,18 @@ Monitor::reset(bool isCalledFromEventLoop)
 	m_eventSubs->reset();
 }
 
+Events::Manager&
+Monitor::accessEventManager()
+{
+	return (m_eventManager);
+}
+
+const Events::Manager&
+Monitor::getEventManager() const
+{
+	return (m_eventManager);
+}
+
 Monitor&
 Monitor::operator=(const Monitor& assign)
 {

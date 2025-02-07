@@ -20,7 +20,9 @@ namespace Conn
 	class Connection
 	{
 		public:
-			Connection(InternalManager& connManager);
+			Connection(	Events::Manager& eventManager, 
+						ServerContext& context, 
+						InternalManager* connManager);
 			~Connection();
 
 			void    					close();
@@ -52,11 +54,12 @@ namespace Conn
 			Events::Manager&			accessEventManager();
 
 		protected:
-		
-			ConnInfo					m_socket;
 			Monitor						m_monitor;
+
+			ConnInfo					m_socket;
 			AppLayer					m_appLayer;
-			InternalManager&			m_connManager;
+			ServerContext&				m_serverContext;
+			InternalManager*			m_connManager;
 
 			ConnInfo&					mf_accessSocket();
 			AppLayer&					mf_accessAppLayer();

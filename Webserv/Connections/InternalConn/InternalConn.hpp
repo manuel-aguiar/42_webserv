@@ -10,7 +10,7 @@
 class InternalConn : public Conn::Connection
 {
 	public:
-		InternalConn(InternalManager& connManager);
+		InternalConn(Events::Manager& eventManager, ServerContext& context, InternalManager& connManager);
 		~InternalConn();
 
 

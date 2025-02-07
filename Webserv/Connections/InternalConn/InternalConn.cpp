@@ -3,8 +3,8 @@
 # include "InternalConn.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
-InternalConn::InternalConn(InternalManager& connManager) :
-	Conn::Connection(connManager)
+InternalConn::InternalConn(Events::Manager& eventManager, ServerContext& context, InternalManager& connManager) :
+	Conn::Connection(eventManager, context, &connManager)
 {
 }
 

@@ -7,8 +7,9 @@
 
 namespace Conn
 {
-	Connection::Connection(InternalManager& connManager) :
-		m_monitor(connManager._accessEventManager()),
+	Connection::Connection(Events::Manager& eventManager, ServerContext& context, InternalManager* connManager) :
+		m_monitor(eventManager),
+		m_serverContext(context),
 		m_connManager(connManager)
 	{
 		m_monitor.acquire();
@@ -22,23 +23,24 @@ namespace Conn
 	void    
 	Connection::close()
 	{
+		ASSERT_EQUAL(m_connManager != NULL, true, "Connection::close(), connManager is NULL");
 		//std::cout << "Connection::close()" << std::endl;
 		m_monitor.unsubscribe(false);
 		if (m_socket.getSockFd() != Ws::FD_NONE)
 			m_appLayer.close(m_socket);
-		m_connManager._ReturnConnection(*this);
+		m_connManager->_ReturnConnection(*this);
 	}
 
 	ServerContext&
 	Connection::accessServerContext()
 	{
-		return (m_connManager._accessServerContext());
+		return (m_serverContext);
 	}
 
 	Events::Manager&
 	Connection::accessEventManager()
 	{
-		return (m_connManager._accessEventManager());
+		return (m_monitor.accessEventManager());
 	}
 
 	void

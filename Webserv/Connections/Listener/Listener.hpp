@@ -23,7 +23,8 @@ class Listener
 
 		Ws::fd					getSockFd();
 		const Ws::BindInfo&		getBindInfo();
-	private:
+
+	protected:
 		Ws::Sock::fd			m_sockfd;
 		Ws::BindInfo			m_bindInfo;
 

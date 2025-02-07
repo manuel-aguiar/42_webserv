@@ -8,7 +8,6 @@
 // Project Headers
 # include "../../Ws_Namespace.h"
 
-# include "../Socket/Socket.hpp"
 # include "../Monitor/Monitor.hpp"
 # include "../Listener/Listener.hpp"
 
@@ -23,6 +22,7 @@ class InternalListener
 {
 	public:
 		InternalListener(const Ws::BindInfo& info, InternalManager& connManager);
+		InternalListener(const InternalListener& copy);
 		~InternalListener();
 
 		// methods
@@ -33,8 +33,8 @@ class InternalListener
 		int							acceptPending(InternalConn& connection);
 
 	private:
-		Monitor						m_monitor;
 		Listener					m_listener;
+		Monitor						m_monitor;
 		InternalManager&			m_connManager;
 
 		Events::Manager&			mf_accessEventManager();
@@ -44,7 +44,7 @@ class InternalListener
 
 		static void                 EventCallbackAccept(Events::Subscription& callback);
 
-		InternalListener(const InternalListener& copy);
+		// private
 		InternalListener& operator=(const InternalListener& assign);
 
 };

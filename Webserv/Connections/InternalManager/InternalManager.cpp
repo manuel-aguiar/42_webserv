@@ -30,7 +30,7 @@ InternalManager::InternalManager(const size_t						maxConnections,
 
 	for (size_t i = 0; i < maxConnections; i++)
 	{
-		m_connections.emplace_back(*this);
+		m_connections.emplace_back(m_eventManager, m_context, *this);
 		m_spareConnections.push_back(&m_connections[i]);
 	}
 	for (size_t i = 0; i < bindAddresses.size(); i++)
