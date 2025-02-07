@@ -23,7 +23,12 @@ SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test1.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
 								$(SRC_PATH)/ThreadPool/_Tests/test3.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp				
+								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp					\
+								\
+								$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp			\
+								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp	\
+								$(SRC_PATH)/ThreadPool/ThreadPoolImpl/ThreadPoolImpl.cpp					
+
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

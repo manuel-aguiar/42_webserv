@@ -56,7 +56,11 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				$(SRC_PATH)/Webserv/Globals/_Mock/MockClock.cpp \
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 													\
-				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
+				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+				\
+				$(SRC_PATH)/Toolkit/ThreadPool/TaskQueue/TaskQueue.cpp \
+				$(SRC_PATH)/Toolkit/ThreadPool/ThreadWorker/ThreadWorker.cpp \
+				$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolImpl/ThreadPoolImpl.cpp
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS 			= 	$(OBJS:.o=.d)

@@ -16,8 +16,7 @@ class ThreadWorker
     public:
         ThreadWorker(ThreadPoolImpl& pool);
         ~ThreadWorker();
-        ThreadWorker(const ThreadWorker& copy);
-        ThreadWorker& operator=(const ThreadWorker& assign);
+
 
         void		start();
         void		finish();
@@ -40,7 +39,10 @@ class ThreadWorker
         EThreadState			m_state;
         pthread_t	   			m_thread;
 
-        ThreadPoolImpl&				m_pool;
+        ThreadPoolImpl&			m_pool;
+
+        ThreadWorker(const ThreadWorker& copy);
+        ThreadWorker& operator=(const ThreadWorker& assign);
 
 };
 

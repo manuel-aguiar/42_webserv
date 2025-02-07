@@ -11,11 +11,16 @@
 class ThreadPoolImpl;
 class IThreadTask;
 
+template <typename T>
+class FixedCircularQueueImpl;
+
 class TaskQueue
 {
     public:
         TaskQueue();
         ~TaskQueue();
+
+        void                init(FixedCircularQueueImpl<IThreadTask*>& tasks);
 
         bool				addTask(IThreadTask* newTask, bool waitForSlot = false);
         void				clear();
@@ -27,7 +32,7 @@ class TaskQueue
         size_t			 	getTaskCount();
 
     private:
-        StackCircularQueue<IThreadTask*, TaskBacklog>	m_tasks;
+        FixedCircularQueueImpl<IThreadTask*>*        	m_tasks;
         unsigned int									m_tasksExecuting;
         pthread_mutex_t									m_taskAccess;
         pthread_cond_t									m_newTaskSignal;								   

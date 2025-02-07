@@ -214,6 +214,8 @@ void testManager(int& testNumber)
 
         tp.waitForCompletion();
 
+        pthread_mutex_destroy(&mutex);
+
         manager.shutdown();
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
@@ -271,6 +273,8 @@ void testManager(int& testNumber)
         manager.shutdown();
 
         tp.waitForCompletion();
+
+        pthread_mutex_destroy(&mutex);
 
         EXPECT_EQUAL(fakeHttp.serveCount, countConnectors, "All connections should have been served");
 
@@ -332,6 +336,8 @@ void testManager(int& testNumber)
         }
 
         tp.waitForCompletion();
+
+        pthread_mutex_destroy(&mutex);
 
         manager.shutdown();
 

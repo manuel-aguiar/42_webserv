@@ -28,7 +28,7 @@
 #include <unistd.h>
 
 void    StressTestManager_MathProtocol(  int& testNumber,
-                            ThreadPool<1, 1>& tp, 
+                            ThreadPoolGeneric& tp, 
                             Globals& globals, 
                             ServerContext& ctx,
                             const int input_countListeners,
@@ -43,7 +43,7 @@ void testStressTest(int& testNumber)
     ThreadPool<1, 1>    tp;
     Globals             globals(NULL, NULL, NULL, NULL);
     ServerContext       ctx;
-
+    
     //Stress tests
     std::cout << TEST_CLR_BROWN << "\n\tStress tests (failure is not an error)" << TEST_CLR_RESET << std::endl;
     StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 10, 100, 5000);
@@ -60,7 +60,7 @@ void testStressTest(int& testNumber)
 }
 
 void    StressTestManager_MathProtocol(  int& testNumber,
-                            ThreadPool<1, 1>& tp, 
+                            ThreadPoolGeneric& tp, 
                             Globals& globals, 
                             ServerContext& ctx,
                             const int input_countListeners,
@@ -122,6 +122,8 @@ void    StressTestManager_MathProtocol(  int& testNumber,
         }
 
         tp.waitForCompletion();
+
+        pthread_mutex_destroy(&mutex);
 
         manager.shutdown();
 

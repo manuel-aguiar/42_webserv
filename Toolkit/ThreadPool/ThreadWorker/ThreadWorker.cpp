@@ -11,12 +11,11 @@
 // Project headers
 # include "../ThreadPoolImpl/ThreadPoolImpl.hpp"
 # include "../ThreadTask/IThreadTask.hpp"
-# include "../TaskQueue/TaskQueue.hpp"
 
 // C++ headers
 # include <iostream>
 
-ThreadWorker::ThreadWorker(ThreadPool& pool) :
+ThreadWorker::ThreadWorker(ThreadPoolImpl& pool) :
 	m_state(EThread_Unitialized),
 	m_thread(0),
 	m_pool(pool)
@@ -37,17 +36,15 @@ void	ThreadWorker::run()
 {   
 	IThreadTask* curTask = NULL;
 
-	while ((curTask = m_pool.m_taskQueue.acquireTask()))
+	while ((curTask = m_pool.mf_acquireTask()))
 	{
 		curTask->execute();
-		m_pool.m_taskQueue.finishTask(curTask);
+		m_pool.mf_finishTask(curTask);
 	}
 	
-	pthread_mutex_lock(&m_pool.m_statusLock);
-	m_pool.mf_markExitingThread(*this);
-
-	pthread_cond_signal(&m_pool.m_exitSignal);
-	pthread_mutex_unlock(&m_pool.m_statusLock);
+	pthread_mutex_lock(&m_pool.mf_accessStatusLock());
+	pthread_cond_signal(&m_pool.mf_accessExitSignal());
+	pthread_mutex_unlock(&m_pool.mf_accessStatusLock());
 }
 
 pthread_t	ThreadWorker::getThreadID() const
@@ -85,9 +82,7 @@ void*	ThreadWorker::ThreadFunction(void* args)
 	return (NULL);
 }
 
-ThreadWorker(const ThreadWorker& copy) : 
-	m_state(copy.m_state),
-	m_thread(copy.m_thread),
+ThreadWorker::ThreadWorker(const ThreadWorker& copy) : 
 	m_pool(copy.m_pool) {}
 	
 ThreadWorker& 	
@@ -96,10 +91,6 @@ ThreadWorker::operator=(const ThreadWorker& assign)
 	if (this == &assign)
 		return (*this);
 	
-	m_state = assign.m_state;
-	m_thread = assign.m_thread;
-	m_pool = assign.m_pool;
-
 	return (*this);
 }
 
