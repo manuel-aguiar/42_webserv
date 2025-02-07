@@ -27,7 +27,10 @@ SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
 								\
 								$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp			\
 								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp	\
-								$(SRC_PATH)/ThreadPool/ThreadPoolImpl/ThreadPoolImpl.cpp					
+								$(SRC_PATH)/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp	\
+								$(SRC_PATH)/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp	\
+								\
+								$(SRC_PATH)/MemoryPool/_SlabImpl/SlabImpl.cpp	
 
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
