@@ -69,8 +69,6 @@ int	TestPart1(int testNumber)
 		TEST_FAILED_MSG(e.what());
 	}
 
-	return (testNumber);
-
 	TEST_INTRO(testNumber++);
 	try
 	{

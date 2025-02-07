@@ -40,8 +40,8 @@ void    StressTestManager_MathProtocol(  int& testNumber,
 
 void testStressTest(int& testNumber)
 {
-    ThreadPoolHeap      tpHeap(1, 1);
-    ThreadPool<1, 1>    tp;
+    ThreadPoolHeap      tpHeap(3, 10);
+    ThreadPool<4, 5>    tp;
     Globals             globals(NULL, NULL, NULL, NULL);
     ServerContext       ctx;
     

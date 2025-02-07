@@ -60,8 +60,10 @@ SRCS		 =  $(SRC_PATH)/Webserv/Connections/_Tests/main.cpp \
 				\
 				$(SRC_PATH)/Toolkit/ThreadPool/TaskQueue/TaskQueue.cpp \
 				$(SRC_PATH)/Toolkit/ThreadPool/ThreadWorker/ThreadWorker.cpp \
-				$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolImpl/ThreadPoolImpl.cpp \
-				$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp
+				$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp \
+				$(SRC_PATH)/Toolkit/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp \
+				\
+				$(SRC_PATH)/Toolkit/MemoryPool/_SlabImpl/SlabImpl.cpp
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS 			= 	$(OBJS:.o=.d)
