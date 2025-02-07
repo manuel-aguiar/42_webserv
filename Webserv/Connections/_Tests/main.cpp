@@ -11,6 +11,7 @@ extern void testConnection(int& testNumber);
 extern void testAccepter(int& testNumber);
 extern void testAppLayer(int& testNumber);
 extern void testStressTest(int& testNumber);
+extern void testMultiServer(int& testNumber);
 
 int main(void)
 {
@@ -18,15 +19,14 @@ int main(void)
 
 	TEST_HEADER("Connection Manager tests");
 
-	//testSocket			(testNumber);
-	//testMonitor			(testNumber);
-	//testListeningSocket	(testNumber);
-	//testConnection		(testNumber);
-	//testAccepter		(testNumber);
-	//testAppLayer		(testNumber);
-	//testManager			(testNumber);
-	testStressTest		(testNumber);
-
+	testSocket			(testNumber);
+	testMonitor			(testNumber);
+	testListeningSocket	(testNumber);
+	testConnection		(testNumber);
+	testAccepter		(testNumber);
+	testAppLayer		(testNumber);
+	testManager			(testNumber);
+	
 	TEST_FOOTER;
 
 	return (0);
