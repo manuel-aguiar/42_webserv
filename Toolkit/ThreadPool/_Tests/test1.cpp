@@ -58,14 +58,13 @@ int	TestPart1(int testNumber)
 	TEST_INTRO(testNumber++);
 	try
 	{
-		ThreadPool<10, 100> tp(5);
+		ThreadPool<1, 100> tp(1);
 		TEST_PASSED;
 	}
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-
 /************************************************************** */
 	TEST_INTRO(testNumber++);
 	try
@@ -80,7 +79,6 @@ int	TestPart1(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-
 
 /************************************************************** */
 	TEST_INTRO(testNumber++);

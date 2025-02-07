@@ -11,20 +11,17 @@
 // ThreadPool headers
 # include "../ThreadTask/IThreadTask.hpp"
 
-// C headers
-# include <signal.h>
-
 //Base class
 # include "../ThreadPoolImpl/ThreadPoolImpl.hpp"
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-class ThreadPool : public ThreadPoolImpl
+class ThreadPool : public ThreadPoolGeneric
 {
 	public:
 
 		ThreadPool(size_t InitialThreads = ThreadBacklog) :
-			ThreadPoolImpl()
-		{ThreadPoolImpl::init(m_threads, m_exitingThreads, m_taskQueue, InitialThreads);};
+			ThreadPoolGeneric()
+		{ThreadPoolGeneric::init(m_threads, m_exitingThreads, m_taskQueue, InitialThreads);};
 
 		~ThreadPool() {};
 

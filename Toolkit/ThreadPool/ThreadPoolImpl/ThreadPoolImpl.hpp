@@ -35,7 +35,6 @@ class ThreadPoolImpl
 		size_t	getTaskCount();
 
 		void										mf_markExitingThread(ThreadWorker& worker);
-		void										mf_destroyExitingThreads();
 		IThreadTask*								mf_acquireTask();
 		void										mf_finishTask(IThreadTask* delTask);
 		pthread_mutex_t&							mf_accessStatusLock();
@@ -48,7 +47,6 @@ class ThreadPoolImpl
 
 		ThreadPoolImpl();
 		~ThreadPoolImpl();
-		// Private copy and assignment
 		ThreadPoolImpl(const ThreadPoolImpl& copy);
 		ThreadPoolImpl& operator=(const ThreadPoolImpl& assign);
 
@@ -68,11 +66,13 @@ class ThreadPoolImpl
 		ObjectPoolImpl<ThreadWorker>*				m_threads;
 		FixedCircularQueueImpl<ThreadWorker*>*		m_exitingThreads;		
 
+		void										mf_destroyExitingThreads();
 
 
 
 };
 
+/////////////////////////////////////////////////////////////////////////////
 
 class ThreadPoolGeneric : private ThreadPoolImpl
 {
@@ -104,8 +104,8 @@ class ThreadPoolGeneric : private ThreadPoolImpl
 	private:
 
 		// Private copy and assignment
-		ThreadPoolGeneric(const ThreadPoolGeneric& copy) : ThreadPoolImpl(copy) {(void)copy;}
-		ThreadPoolGeneric& operator=(const ThreadPoolGeneric& assign) {(void)assign; return (*this);}
+		ThreadPoolGeneric(const ThreadPoolGeneric& copy);
+		ThreadPoolGeneric& operator=(const ThreadPoolGeneric& assign);
 
 };
 

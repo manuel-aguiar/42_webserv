@@ -171,11 +171,13 @@ pthread_cond_t&	ThreadPoolImpl::mf_accessExitSignal()
 
 ThreadPoolImpl::ThreadPoolImpl(const ThreadPoolImpl& copy)
 {
+	ASSERT_EQUAL(false, true, "ThreadPoolImpl: Cannot copy");
 	(void)copy;
 }
 
 ThreadPoolImpl& ThreadPoolImpl::operator=(const ThreadPoolImpl& assign)
 {
+	ASSERT_EQUAL(false, true, "ThreadPoolImpl: Cannot assign");
 	(void)assign;
 	return (*this);
 }
@@ -184,6 +186,15 @@ ThreadPoolImpl& ThreadPoolImpl::operator=(const ThreadPoolImpl& assign)
 
 ThreadPoolGeneric::ThreadPoolGeneric() : ThreadPoolImpl() {}
 ThreadPoolGeneric::~ThreadPoolGeneric() {}
+ThreadPoolGeneric::ThreadPoolGeneric(const ThreadPoolGeneric& copy) : ThreadPoolImpl(copy) {}
+ThreadPoolGeneric& ThreadPoolGeneric::operator=(const ThreadPoolGeneric& assign)
+{
+	if (this == &assign)
+		return (*this);
+	ThreadPoolImpl::operator=(assign);
+	return (*this);
+}
+
 void ThreadPoolGeneric::waitForCompletion() {ThreadPoolImpl::waitForCompletion();}
 void ThreadPoolGeneric::destroy(bool waitForCompletion) {ThreadPoolImpl::destroy(waitForCompletion);}
 void ThreadPoolGeneric::forceDestroy() {ThreadPoolImpl::forceDestroy();}
@@ -192,6 +203,7 @@ void ThreadPoolGeneric::removeThread() {ThreadPoolImpl::removeThread();}
 bool ThreadPoolGeneric::addTask(IThreadTask& newTask, bool waitForSlot) {return ThreadPoolImpl::addTask(newTask, waitForSlot);}
 size_t ThreadPoolGeneric::getThreadCount() const {return ThreadPoolImpl::getThreadCount();}
 size_t ThreadPoolGeneric::getTaskCount() {return ThreadPoolImpl::getTaskCount();}
+
 void ThreadPoolGeneric::init(ObjectPoolImpl<ThreadWorker>& threads, 
                               FixedCircularQueueImpl<ThreadWorker*>& exitingThreads,
                               FixedCircularQueueImpl<IThreadTask*>& taskQueue,
