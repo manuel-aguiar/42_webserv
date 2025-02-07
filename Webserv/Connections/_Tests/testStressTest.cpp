@@ -40,23 +40,24 @@ void    StressTestManager_MathProtocol(  int& testNumber,
 
 void testStressTest(int& testNumber)
 {
+    ThreadPoolHeap      tpHeap(1, 1);
     ThreadPool<1, 1>    tp;
     Globals             globals(NULL, NULL, NULL, NULL);
     ServerContext       ctx;
     
     //Stress tests
     std::cout << TEST_CLR_BROWN << "\n\tStress tests (failure is not an error)" << TEST_CLR_RESET << std::endl;
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 10, 100, 5000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 10, 100, 5000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 100, 1000, 1000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 100, 10000, 2000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 100, 10000, 5000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 100, 100, 10000, 2000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 100, 1000, 10000, 3000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 10, 5000, 10000, 3000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 5000, 10000, 5000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 2000, 10000, 5000);
-    StressTestManager_MathProtocol(testNumber, tp, globals, ctx, 1, 1000, 10000, 5000);   
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 1, 10, 100, 5000);
+    StressTestManager_MathProtocol(testNumber, tpHeap   , globals, ctx, 10, 10, 100, 5000);
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 10, 100, 1000, 1000);
+    StressTestManager_MathProtocol(testNumber, tpHeap   , globals, ctx, 10, 100, 10000, 2000);
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 10, 100, 10000, 5000);
+    StressTestManager_MathProtocol(testNumber, tpHeap   , globals, ctx, 100, 100, 10000, 2000);
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 100, 1000, 10000, 3000);
+    StressTestManager_MathProtocol(testNumber, tpHeap   , globals, ctx, 10, 5000, 10000, 3000);
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 1, 5000, 10000, 5000);
+    StressTestManager_MathProtocol(testNumber, tpHeap   , globals, ctx, 1, 2000, 10000, 5000);
+    StressTestManager_MathProtocol(testNumber, tp       , globals, ctx, 1, 1000, 10000, 5000);   
 }
 
 void    StressTestManager_MathProtocol(  int& testNumber,

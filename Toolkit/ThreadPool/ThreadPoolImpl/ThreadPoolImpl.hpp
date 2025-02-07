@@ -2,20 +2,23 @@
 
 #ifndef THREADPOOLIMPL_HPP
 
-# define THREADPOOLMPL_HPP
-
-// Project headers
-# include "../../MemoryPool/Stack_ObjectPool/Stack_ObjectPool.hpp"
-# include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
+# define THREADPOOLIMPL_HPP
 
 # include "../ThreadWorker/ThreadWorker.hpp"
 # include "../TaskQueue/TaskQueue.hpp"
 
 // C headers
 # include <signal.h>
+# include <pthread.h>
 
 // forward declarations
 class IThreadTask;
+
+template <typename T>
+class ObjectPoolImpl;
+
+template <typename T>
+class FixedCircularQueueImpl;
 
 class ThreadPoolImpl
 {

@@ -4,6 +4,7 @@
 
 # define OBJECTPOOLIMPL_TPP
 
+# include <cstddef>
 
 template <typename T>
 class ObjectPoolImpl

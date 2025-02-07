@@ -7,8 +7,10 @@
 # include "../ThreadWorker/ThreadWorker.hpp"
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
-// C headers
-# include <pthread.h>
+// Project headers
+# include "../../MemoryPool/_ObjectPoolImpl/ObjectPoolImpl.hpp"
+# include "../../Arrays/_FixedCircularQueueImpl/FixedCircularQueueImpl.hpp"
+
 
 ThreadPoolImpl::ThreadPoolImpl() :
 	m_threads(NULL),

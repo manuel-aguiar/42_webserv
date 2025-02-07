@@ -26,10 +26,6 @@ class ThreadPool : public ThreadPoolGeneric
 		~ThreadPool() {};
 
 	private:
-
-		pthread_mutex_t									m_statusLock;
-		pthread_cond_t									m_exitSignal;
-
 		Stack_ObjectPool<ThreadWorker, ThreadBacklog>	m_threads;
 		StackCircularQueue<ThreadWorker*, ThreadBacklog>m_exitingThreads;		
 		StackCircularQueue<IThreadTask*, TaskBacklog>	m_taskQueue;
