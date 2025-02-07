@@ -12,8 +12,6 @@ ModifyConnection::setConnInfo(const ConnInfo& info)
 	m_info = info;
 }
 
-
-
 ModifyConnection::ModifyConnection(Events::Manager& eventManager, ServerContext& context) :
 	Conn::Connection(eventManager, context, NULL)
 {
