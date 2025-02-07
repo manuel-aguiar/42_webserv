@@ -14,11 +14,10 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 
 SUBJECT_PATH			=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo
 # Sources
-SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testSocket.cpp \
-								$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
+SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testListeningSocket.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testAppLayer.cpp \
-								$(SRC_PATH)/Webserv/Connections/_Tests/testAccepter.cpp \
+								$(SRC_PATH)/Webserv/Connections/_Tests/testListener.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testStressTest.cpp \
@@ -41,7 +40,7 @@ SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testSocket.cpp \
 								$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/AppLayer/AppLayer.cpp \
 								$(SRC_PATH)/Webserv/Connections/Socket/Socket.cpp \
-								$(SRC_PATH)/Webserv/Connections/Accepter/Accepter.cpp \
+								$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp \
 								\
 								$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 								$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp \

@@ -24,7 +24,7 @@ void  ListeningSocket::accept()
 			m_monitor.unsubscribe(false);
 			return (m_connManager._Accepter_MoveToPendingAccept(*this));
 		}
-		if (m_listener.accept(connection->accessSocket()) == -1)
+		if (m_listener.accept(connection->accessSocket()) == Ws::FD_NONE)
 		{
 			m_connManager._ReturnConnection(*connection);
 			return ;

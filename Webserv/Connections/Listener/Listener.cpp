@@ -102,6 +102,12 @@ int		Listener::accept(ConnInfo& accept)
 	return (1);
 }
 
+Ws::fd
+Listener::getSockFd()
+{
+	return (m_sockfd);
+}
+
 const Ws::BindInfo&
 Listener::getBindInfo()
 {
@@ -112,7 +118,7 @@ Listener::Listener(const Listener& copy) :
 	m_sockfd(copy.m_sockfd),
 	m_bindInfo(copy.m_bindInfo)
 {
-	ASSERT_EQUAL (copy.m_sockfd, Ws::FD_NONE, "Listener::Listener(), copy constructor, copy-from socket fd not set to none");
+	ASSERT_EQUAL (copy.m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy constructor, copy-from socket fd not set to none");
 }
 
 Listener& Listener::operator=(const Listener& assign)
@@ -120,8 +126,8 @@ Listener& Listener::operator=(const Listener& assign)
 	if (this == &assign)
 		return (*this);
 
-	ASSERT_EQUAL (m_sockfd, Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-to socket fd not set to none");
-	ASSERT_EQUAL (assign.m_sockfd, Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-from socket fd not set to none");
+	ASSERT_EQUAL (m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-to socket fd not set to none");
+	ASSERT_EQUAL (assign.m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-from socket fd not set to none");
 
 	m_bindInfo = assign.m_bindInfo;
 

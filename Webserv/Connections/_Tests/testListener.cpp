@@ -36,7 +36,7 @@ void  AccepterCallback(Events::Subscription& subs)
     bundle->listener.accept(bundle->internalConnect);
 }
 
-void testAccepter(int& testNumber)
+void testListener(int& testNumber)
 {
 
     ThreadPool<10, 100> tp;
@@ -71,10 +71,10 @@ void testAccepter(int& testNumber)
             .addrlen = sizeof(Ws::Sock::addr_in)                
         };
 
-        Listener        listener(listenInfo);
-        TestConnector   connector;
-        ConnInfo          externalConnect;
-        ConnInfo          internalConnect;
+        Listener            listener(listenInfo);
+        TestConnector       connector;
+        ConnInfo            externalConnect;
+        ConnInfo            internalConnect;
 
         externalConnect.modifyBindInfo() = (Ws::BindInfo)
         {
@@ -87,11 +87,10 @@ void testAccepter(int& testNumber)
             .addrlen = sizeof(Ws::Sock::addr_in)
         };
 
-        ConnInfo& listeningSocket = listener.accessSocket();
 
-        EXPECT_EQUAL(listeningSocket.getSockFd() == Ws::FD_NONE, true, "Sockfd shouldn't be set at this point");
+        EXPECT_EQUAL(listener.getSockFd() == Ws::FD_NONE, true, "Sockfd shouldn't be set at this point");
         EXPECT_EQUAL(listener.open(), 1, "Listener::open() failed");
-        EXPECT_EQUAL(listeningSocket.getSockFd() != Ws::FD_NONE, true, "Listener::open() failed, socket fd not set");
+        EXPECT_EQUAL(listener.getSockFd() != Ws::FD_NONE, true, "Listener::open() failed, socket fd not set");
 
         ClientTask task(connector, externalConnect);
         tp.addTask(task);
@@ -101,7 +100,7 @@ void testAccepter(int& testNumber)
         {
             Events::Manager eventManager(1, globals);
             Events::Subscription* subs = eventManager.acquireSubscription();
-            subs->setFd(listeningSocket.getSockFd());
+            subs->setFd(listener.getSockFd());
             subs->setUser(&listener);
             subs->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP | Events::Monitor::EDGE_TRIGGERED);
             AccepterCallbackBundle bundle = {.listener = listener, .internalConnect = internalConnect};
