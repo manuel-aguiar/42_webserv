@@ -216,7 +216,7 @@ void    StressTestManager_MathProtocol(
     TEST_INTRO(testNumber++);
 
     if ((fakeHttp.serveCount != countConnectors) || (threadSuccessCount != countConnectors))
-        TEST_FAILED_MSG(msg + ": served " + TestHelpers::to_string(fakeHttp.serveCount) + "/" + TestHelpers::to_string(countConnectors) + " connections");
+        TEST_FAILED_MSG(msg + ": served " + TestHelpers::to_string(threadSuccessCount) + "/" + TestHelpers::to_string(countConnectors) + " connections");
     else
         TEST_PASSED_MSG(msg);
     pthread_mutex_unlock(&writeMutex);
