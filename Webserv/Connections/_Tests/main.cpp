@@ -5,7 +5,7 @@
 
 extern void testMonitor(int& testNumber);
 extern void testManager(int& testNumber);
-extern void testListeningSocket(int& testNumber);
+extern void testInternalListener(int& testNumber);
 extern void testConnection(int& testNumber);
 extern void testListener(int& testNumber);
 extern void testAppLayer(int& testNumber);
@@ -20,7 +20,7 @@ int main(void)
 	TEST_HEADER("Connection Manager tests");
 
 	testMonitor			(testNumber);
-	testListeningSocket	(testNumber);
+	testInternalListener	(testNumber);
 	testConnection		(testNumber);
 	testListener		(testNumber);
 	testAppLayer		(testNumber);

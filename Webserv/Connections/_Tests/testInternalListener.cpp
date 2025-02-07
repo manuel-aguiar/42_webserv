@@ -1,7 +1,7 @@
 
 // Project headers
 # include "../../../Toolkit/TestHelpers/TestHelpers.h"
-# include "../ListeningSocket/ListeningSocket.hpp"
+# include "../InternalListener/InternalListener.hpp"
 
 // C++ headers
 #include <cstdlib>
@@ -10,7 +10,7 @@
 // C headers
 #include <arpa/inet.h>
 
-void testListeningSocket(int& testNumber)
+void testInternalListener(int& testNumber)
 {
     try
     {
@@ -20,7 +20,7 @@ void testListeningSocket(int& testNumber)
 
 
 
-        TEST_PASSED_MSG("ListeningSocket tests passed");
+        TEST_PASSED_MSG("InternalListener tests passed");
     }
     catch (const std::exception& e)
     {

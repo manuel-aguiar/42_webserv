@@ -1,9 +1,9 @@
 
 
-# include "ListeningSocket.hpp"
+# include "InternalListener.hpp"
 # include "../InternalManager/InternalManager.hpp"
 
-ListeningSocket::ListeningSocket(const Ws::BindInfo& info, InternalManager& connManager) :
+InternalListener::InternalListener(const Ws::BindInfo& info, InternalManager& connManager) :
 	m_monitor(connManager._accessEventManager()),
 	m_listener(info),
 	m_connManager(connManager)
@@ -11,25 +11,25 @@ ListeningSocket::ListeningSocket(const Ws::BindInfo& info, InternalManager& conn
 	
 }
 
-ListeningSocket::~ListeningSocket()
+InternalListener::~InternalListener()
 {
 	close();
 }
 
 Globals&
-ListeningSocket::mf_accessGlobals()
+InternalListener::mf_accessGlobals()
 {
 	return (m_connManager._accessGlobals());
 }
 
 ServerContext&
-ListeningSocket::mf_accessServerContext()
+InternalListener::mf_accessServerContext()
 {
 	return (m_connManager._accessServerContext());
 }
 
 Events::Manager&
-ListeningSocket::mf_accessEventManager()
+InternalListener::mf_accessEventManager()
 {
 	return (m_connManager._accessEventManager());
 }

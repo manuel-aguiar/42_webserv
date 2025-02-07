@@ -20,17 +20,24 @@ namespace Cgi
 			Request(const Request &copy);
 			Request &operator=(const Request &assign);
 		
-			void					setUser				(const Cgi::User user);
-			void					setNotify_Callback	(const Cgi::Notify::Type type, 
-														const Cgi::Notify::Callback handler);
-			void					setIO_Callback		(const Cgi::IO::Type type, 
-														const Cgi::IO::Callback handler);
-			void					setEnvBase			(const Cgi::Env::Enum::Type env, const Cgi::EnvValue& value);
-			void					setEnvExtra			(const Cgi::EnvKey& key, const Cgi::EnvValue& value);
-			void					setExtension		(const Cgi::InterpExtension& extension);
-			void					setScriptPath		(const Cgi::ScriptPath& path);
-			void					setTimeoutMs		(const unsigned int timeoutMs);
-			void					setRuntimeOptions	(const Cgi::Options::Mask options);		
+			void						setUser				(const Cgi::User user);
+
+			void						setNotify_Callback	(const Cgi::Notify::Type type, 
+															const Cgi::Notify::Callback handler);
+
+			void						setIO_Callback		(const Cgi::IO::Type type, 
+															const Cgi::IO::Callback handler);
+
+			void						setEnvBase			(const Cgi::Env::Enum::Type env, 
+															const Cgi::EnvValue& value);
+															
+			void						setEnvExtra			(const Cgi::EnvKey& key, 
+															const Cgi::EnvValue& value);
+															
+			void						setExtension		(const Cgi::InterpExtension& extension);
+			void						setScriptPath		(const Cgi::ScriptPath& path);
+			void						setTimeoutMs		(const unsigned int timeoutMs);
+			void						setRuntimeOptions	(const Cgi::Options::Mask options);		
 
 			const Cgi::EnvVariables&	getEnvVars() const;
 			const Cgi::InterpExtension&	getExtension() const;

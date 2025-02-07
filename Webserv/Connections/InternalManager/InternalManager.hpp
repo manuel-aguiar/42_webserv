@@ -14,7 +14,7 @@
 // forward declarations
 class InternalConn;
 class Globals;
-class ListeningSocket;
+class InternalListener;
 class ServerContext;
 
 namespace Events { class Manager; }
@@ -41,7 +41,7 @@ class InternalManager
 		// will be hidden via private inheritance for the public interface
 
 		InternalConn*						_Accepter_ProvideConnection();
-		void								_Accepter_MoveToPendingAccept(ListeningSocket& listener);
+		void								_Accepter_MoveToPendingAccept(InternalListener& listener);
 		void								_ReturnConnection(Conn::Connection& connection);
 		Events::Manager&					_accessEventManager();
 		Globals&							_accessGlobals();
@@ -52,8 +52,8 @@ class InternalManager
 		HeapArray<InternalConn>				m_connections;
 		HeapCircularQueue<InternalConn*>	m_spareConnections;
 
-		HeapArray<ListeningSocket>			m_listeningSockets;
-		HeapCircularQueue<ListeningSocket*>	m_pendingAccepts;
+		HeapArray<InternalListener>			m_listeningSockets;
+		HeapCircularQueue<InternalListener*>	m_pendingAccepts;
 
 		Events::Manager&					m_eventManager;
 		Globals&							m_globals;

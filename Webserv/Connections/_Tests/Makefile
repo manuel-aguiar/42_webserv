@@ -15,7 +15,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 SUBJECT_PATH			=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo
 # Sources
 SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
-								$(SRC_PATH)/Webserv/Connections/_Tests/testListeningSocket.cpp \
+								$(SRC_PATH)/Webserv/Connections/_Tests/testInternalListener.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testAppLayer.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testListener.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
@@ -34,9 +34,9 @@ SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp \
 								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp \
 								$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp \
-								$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocket.cpp \
-								$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketOpenClose.cpp \
-								$(SRC_PATH)/Webserv/Connections/ListeningSocket/ListeningSocketAccept.cpp \
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListener.cpp \
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerOpenClose.cpp \
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerAccept.cpp \
 								$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/AppLayer/AppLayer.cpp \
 								$(SRC_PATH)/Webserv/Connections/Socket/Socket.cpp \
