@@ -55,10 +55,13 @@ class FiboTask : public IThreadTask
 
 int	TestPart1(int testNumber)
 {
+
+/************************************************************** */
 	TEST_INTRO(testNumber++);
 	try
 	{
-		ThreadPool<10, 100> tp(5);
+		ThreadPoolHeap tp(1, 1);
+
 		TEST_PASSED;
 	}
 	catch(const std::exception& e)
@@ -66,6 +69,16 @@ int	TestPart1(int testNumber)
 		TEST_FAILED_MSG(e.what());
 	}
 
+	TEST_INTRO(testNumber++);
+	try
+	{
+		ThreadPool<1, 100> tp(1);
+		TEST_PASSED;
+	}
+	catch(const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
 /************************************************************** */
 	TEST_INTRO(testNumber++);
 	try
@@ -80,6 +93,7 @@ int	TestPart1(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
+
 
 
 /************************************************************** */

@@ -8,11 +8,14 @@
 
 typedef unsigned char t_byte;
 
+template <typename T = t_byte>
+class FixedMemoryPoolImpl;
+
 template <size_t BlockSize, typename T = t_byte>
-class Impl_Stack_MemoryPool;
+class Stack_MemoryPoolGeneric;
 
 template <size_t BlockSize>
-class Stack_MemoryPool : public Impl_Stack_MemoryPool<BlockSize, t_byte> {};
+class Stack_MemoryPool : public Stack_MemoryPoolGeneric<BlockSize, t_byte> {};
 
 # include "Stack_MemoryPool.tpp"
 

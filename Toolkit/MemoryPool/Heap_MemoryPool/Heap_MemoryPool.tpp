@@ -10,69 +10,47 @@
 // C++ headers
 # include <cstddef>
 
+//Base class
+# include "../_FixedMemoryPoolImpl/FixedMemoryPoolImpl.hpp"
+
+
 template <typename T, typename Allocator>
-class Impl_Heap_MemoryPool
+class Heap_MemoryPoolGeneric : public FixedMemoryPoolImpl<T>
 {
     public:
 
         typedef typename Allocator::template rebind<T>::other TypeAllocator;
 
-        Impl_Heap_MemoryPool(size_t blockSize, const Allocator& allocator = Allocator()) :
+        Heap_MemoryPoolGeneric(size_t blockSize, const Allocator& allocator = Allocator()) :
+            FixedMemoryPoolImpl<T>(NULL, 0),
             m_allocator(allocator),
-            m_array(m_allocator.allocate(blockSize)), 
-            m_freePosition(m_array),
-            m_endOfBlock(m_array + blockSize),
-            m_blockSize(blockSize) {}
-
-        ~Impl_Heap_MemoryPool() { destroy(); }
-
-        T*  allocate(size_t size)
+            m_array(NULL)
         {
-            ASSERT_EQUAL(m_array != NULL, true, "Heap Memory Pool: Array is NULL");
-            return (allocate(size, (size * sizeof(T) > sizeof(size_t)) ? sizeof(size_t) : size * sizeof(T)));
+            initialize(blockSize);
+        } 
+
+        ~Heap_MemoryPoolGeneric()
+        {
+            if (m_array)
+                m_allocator.deallocate(m_array, this->capacity());
         }
 
-        T*  allocate(size_t size, size_t alignment)
-        {
-            ASSERT_EQUAL(m_array != NULL, true, "Heap Memory Pool: Array is NULL");
-
-            T* location = mf_allignedAlloc(m_freePosition, alignment);
-
-            ASSERT_EQUAL(location + size <= m_endOfBlock, true, "Heap Memory Pool: Out of memory");
-            m_freePosition = location + size;
-            return (location);    
-        }
-
-        int getElementSize() const { return (sizeof(T)); }
-
-        void reset() { m_freePosition = m_array; }
-
-        void destroy()
-        {
-            m_allocator.deallocate(m_array, m_blockSize);
-            m_array = NULL;
-        }
-
-        size_t getBlockSize() const { return (m_blockSize); }
-
-        size_t getFreeSpace() const { return (m_endOfBlock - m_freePosition); } 
 
         const Allocator& getAllocator() const { return (m_allocator); }
 
     private:
         TypeAllocator   m_allocator;
         T*              m_array;
-        T*              m_freePosition;
-        T*              m_endOfBlock;
-        const size_t    m_blockSize;
 
-        Impl_Heap_MemoryPool() : m_array(NULL), m_blockSize(0) {}
-        Impl_Heap_MemoryPool(const Impl_Heap_MemoryPool& copy) : m_blockSize(copy.m_blockSize) {(void)copy;}
-        Impl_Heap_MemoryPool& operator=(const Impl_Heap_MemoryPool& assign) {(void)assign; return (*this);}
-
-        static T* mf_allignedAlloc(T* position, size_t alignment) {
-            return ((T*)(((size_t)(position) + ((size_t)alignment - 1)) & ~((size_t)alignment - 1)));
+        void    initialize(size_t blockSize)
+        {
+            m_array = m_allocator.allocate(blockSize);
+            FixedMemoryPoolImpl<T>::reset(m_array, blockSize);
         }
+
+        Heap_MemoryPoolGeneric(const Heap_MemoryPoolGeneric& copy) {(void)copy;}
+        Heap_MemoryPoolGeneric& operator=(const Heap_MemoryPoolGeneric& assign) {(void)assign; return (*this);}
+
 };
 
 

@@ -58,15 +58,6 @@ int TestPart1(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-
-    try
-    {
-        TimerTrackerOld<int, int, std::allocator<int> > tracker(123);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
     
 
     return (testNumber);

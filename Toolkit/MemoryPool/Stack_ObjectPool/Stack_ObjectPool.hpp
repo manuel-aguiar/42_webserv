@@ -5,11 +5,7 @@
 
 # define Stack_ObjectPool_Hpp
 
-# include <limits.h>
-# include <stddef.h>
-# include <cstring>
-# include <iostream>
-# include <memory>
+# include <cstddef> //size_T
 
 template <typename T, size_t Size>
 class Stack_ObjectPool;

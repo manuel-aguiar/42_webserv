@@ -14,6 +14,7 @@
 
 int TestPart4(int testNumber)
 {
+
     try
     {
         TEST_INTRO(testNumber++);
@@ -47,7 +48,7 @@ int TestPart4(int testNumber)
         TEST_FAILED_MSG(e.what());
     }
 
-    /******************* ***** ************************/
+    /////////////////////////////////////////////////////////
 
     try
     {
@@ -79,7 +80,7 @@ int TestPart4(int testNumber)
         TEST_FAILED_MSG(e.what());
     }
 
-    /******************* *****************************/
+    ////////////////////////////////////////////////
 
     try
     {
@@ -111,7 +112,7 @@ int TestPart4(int testNumber)
         TEST_FAILED_MSG(e.what());
     }
 
-    /******************* ***** ************************/
+    /////////////////////////////////////////////////////////
 
     try
     {
@@ -144,7 +145,7 @@ int TestPart4(int testNumber)
         TEST_FAILED_MSG(e.what());
     }
 
-    /***************************************** */
+    //////////////////////////////////////////////////
 
     return (testNumber);
 }
