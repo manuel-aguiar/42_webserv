@@ -47,11 +47,21 @@ namespace Ws
 		}   union_addr;
 	}
 
+	namespace Listen
+	{
+		typedef int		backlog;
+
+		enum { DEFAULT_BACKLOG = 128 };
+	}
+
 	namespace AppLayer
 	{
 		typedef enum
 		{
 			HTTP = 0,
+			_FREE1,
+			_FREE2,
+			_FREE3,
 			COUNT
 		}	Type;
 		typedef void* Module;
@@ -65,6 +75,9 @@ namespace Ws
 		typedef enum
 		{
 			CGI = 0,
+			_FREE1,
+			_FREE2,
+			_FREE3,
 			COUNT
 		}	Type;
 		typedef void* State;
@@ -73,6 +86,7 @@ namespace Ws
 	struct BindInfo
 	{
 		AppLayer::Type		appLayer;
+		Listen::backlog		backlog;
 		Sock::addrFamily	family;
 		Sock::type			socktype;
 		Sock::protocol		proto;

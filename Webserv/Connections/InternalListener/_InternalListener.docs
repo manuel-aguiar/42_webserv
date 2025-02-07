@@ -1,0 +1,90 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    _ListeningSocket.docs                              :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/22 10:48:25 by manuel            #+#    #+#              #
+#    Updated: 2024/12/23 09:06:56 by mmaria-d         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Internal class, the user will essentially never use a ListeningSocket directly
+
+The purpose of ListeningSocket is to accept incoming connections from clients.
+It will ask the ConnectionManager for a free connection to use, setting its
+handler function and contact the ServerManager to place it in the EventManager for incoming
+traffic.
+
+Given our server is a single purpose HTTP server, we know that any traffic comming from the connection
+will be handled by the http interpreter, so the handler function for reading traffic
+will be provided by the http interpreter.
+
+The listening socket is one of the most important components of the program.
+A single listening socket can serve two or more server blocks, IF THEY OPERATE ON THE SAME PROTOCOL
+
+
+for instance:
+
+http {
+	server {
+		listen 80;
+	}
+}
+
+mail {
+	server {
+		listen 80;
+	}	
+}
+
+is not allowed and results in nginx configuration error since it is the listening socket that informs
+which protocol is in use (such being deduced when parsing and prepare the runtime from the configuration file)
+
+
+
+
+Nginx implements multiple protocols. the same listening socket can only serve a single protocol.
+
+When configuring, the configuration parsing determines which protocol is associated with each serverblock
+and therefore, each listening socket.
+
+for http
+
+listening socket -> handler = ngx_http_init_connection
+
+
+then, listening socket will have the accept event subscribed on epoll.
+
+	newconnection = listening->accept();
+	listening->handler(new connection).
+
+	where handler in this case is the ngx_http_init we figured before from the connection.
+
+We are only implementing http, we don't really have to do it like this but effectively, we achieve decoupling this way
+
+for other protocols, the handler function would be for instance ngx_mail_init_connection, etc.
+and then everything is taken from then on.
+
+And this is how nginx achieves modularity between protocols.
+
+IN OUR CASE, we don't need any of this, but it is mindblowing enough such that i want to do it.
+In terms of implementation, it won't be a problem for those implementing the module.
+
+#################################################################
+
+We have a limited number of connections per worker, so if a listening socket doesn't find 
+a free connection, it must be put in a queue to wait until a connection is retrieved
+
+For that reason, we will be sub scribing listening sockets as edge-triggered (EPOLLET)
+so if they don't find a conenction they are placed in the queue of the connectionManager.
+
+When a connection is given back to the connectionManager, the connection manager will ask
+the first waiting listening socket of the queue to take it and place the listening socket at the end of the queue
+the queue will be rotating as connections are retrieved. if an accept fails, it means that
+there were no new tcp-connections waiting to connect so we can take the listeningSocket out of the queue
+and try the next and so on.
+
+So we give equal chance to every socket regardless of traffic but hopefully the ones with less traffic get
+queued out quickly
