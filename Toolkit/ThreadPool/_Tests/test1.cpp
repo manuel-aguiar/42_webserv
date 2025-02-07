@@ -60,7 +60,7 @@ int	TestPart1(int testNumber)
 	TEST_INTRO(testNumber++);
 	try
 	{
-		ThreadPoolHeap tp(2, 2);
+		ThreadPoolHeap tp(1, 1);
 
 		TEST_PASSED;
 	}

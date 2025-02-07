@@ -5,14 +5,14 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "../../MemoryPool/Stack_ObjectPool/Stack_ObjectPool.hpp"
+# include "../../MemoryPool/StackSlab/StackSlab.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 
 // ThreadPool headers
 # include "../ThreadTask/IThreadTask.hpp"
 
 //Base class
-# include "../ThreadPoolImpl/ThreadPoolImpl.hpp"
+# include "../_ThreadPoolImpl/ThreadPoolImpl.hpp"
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
 class ThreadPool : public ThreadPoolGeneric
@@ -26,7 +26,7 @@ class ThreadPool : public ThreadPoolGeneric
 		~ThreadPool() {};
 
 	private:
-		Stack_ObjectPool<ThreadWorker, ThreadBacklog>	m_threads;
+		StackSlab<sizeof(ThreadWorker), ThreadBacklog>	m_threads;
 		StackCircularQueue<ThreadWorker*, ThreadBacklog>m_exitingThreads;		
 		StackCircularQueue<IThreadTask*, TaskBacklog>	m_taskQueue;
 

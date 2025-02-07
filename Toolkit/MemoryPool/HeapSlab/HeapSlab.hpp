@@ -5,6 +5,7 @@
 # define HEAPSLAB_HPP
 
 # include <memory>
+# include <cstddef>
 
 template <size_t nodeSize, typename Allocator = std::allocator<char> >
 class HeapSlab;

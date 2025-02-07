@@ -17,6 +17,8 @@ class IThreadTask;
 template <typename T>
 class ObjectPoolImpl;
 
+class SlabImpl;
+
 template <typename T>
 class FixedCircularQueueImpl;
 
@@ -53,7 +55,7 @@ class ThreadPoolImpl
 		ThreadPoolImpl(const ThreadPoolImpl& copy);
 		ThreadPoolImpl& operator=(const ThreadPoolImpl& assign);
 
-		void init(ObjectPoolImpl<ThreadWorker>& 		threads, 
+		void init(SlabImpl& 							threads, 
 				FixedCircularQueueImpl<ThreadWorker*>& 	exitingThreads,
 				FixedCircularQueueImpl<IThreadTask*>& 	taskQueue,
 				const size_t 							InitialThreads);
@@ -66,7 +68,7 @@ class ThreadPoolImpl
 		pthread_cond_t								m_exitSignal;
 
 		TaskQueue									m_taskQueue;
-		ObjectPoolImpl<ThreadWorker>*				m_threads;
+		SlabImpl*									m_threads;
 		FixedCircularQueueImpl<ThreadWorker*>*		m_exitingThreads;		
 
 		void										mf_destroyExitingThreads();
@@ -99,7 +101,7 @@ class ThreadPoolGeneric : private ThreadPoolImpl
 
 	protected:
 
-		void	init(ObjectPoolImpl<ThreadWorker>& 		threads, 
+		void	init(SlabImpl&					 		threads, 
 				FixedCircularQueueImpl<ThreadWorker*>& 	exitingThreads,
 				FixedCircularQueueImpl<IThreadTask*>& 	taskQueue,
 				const size_t 							InitialThreads);

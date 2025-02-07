@@ -12,6 +12,6 @@ class ThreadPool;
 class ThreadPoolHeap;
 
 # include "ThreadPool/ThreadPool.tpp"
-# include "ThreadPool/ThreadPoolHeap.tpp"
+# include "ThreadPoolHeap/ThreadPoolHeap.hpp"
 
 #endif

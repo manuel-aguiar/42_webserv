@@ -10,7 +10,7 @@
 // Project headers
 # include "../../MemoryPool/_ObjectPoolImpl/ObjectPoolImpl.hpp"
 # include "../../Arrays/_FixedCircularQueueImpl/FixedCircularQueueImpl.hpp"
-
+# include "../../MemoryPool/_SlabImpl/SlabImpl.hpp"
 
 ThreadPoolImpl::ThreadPoolImpl() :
 	m_threads(NULL),
@@ -26,7 +26,7 @@ ThreadPoolImpl::~ThreadPoolImpl()
 	pthread_cond_destroy(&m_exitSignal);
 }
 
-void	ThreadPoolImpl::init(ObjectPoolImpl<ThreadWorker>& threads, 
+void	ThreadPoolImpl::init(SlabImpl& threads, 
 							FixedCircularQueueImpl<ThreadWorker*>& exitingThreads,
 							FixedCircularQueueImpl<IThreadTask*>& taskQueue,
 							const size_t InitialThreads)
@@ -44,7 +44,7 @@ void	ThreadPoolImpl::init(ObjectPoolImpl<ThreadWorker>& threads,
 	
 	for (unsigned int i = 0; i < InitialThreads; ++i)
 	{
-		worker = m_threads->allocate();
+		worker = m_threads->allocate<ThreadWorker>();
 		new (worker) ThreadWorker(*this);
 		worker->start();
 	}
@@ -91,7 +91,7 @@ void	ThreadPoolImpl::addThread()
 
 	pthread_mutex_lock(&m_statusLock);
 
-	worker = m_threads->allocate();
+	worker = m_threads->allocate<ThreadWorker>();
 	new (worker) ThreadWorker(*this);
 	worker->start();
 	
@@ -143,8 +143,8 @@ void	ThreadPoolImpl::mf_destroyExitingThreads()
 	for (size_t i = 0; i < total; ++i)
 	{
 		m_exitingThreads->front()->finish();
-		m_threads->destroy(m_exitingThreads->front());
-		m_threads->deallocate(m_exitingThreads->front());
+		m_threads->destroy<ThreadWorker>(m_exitingThreads->front());
+		m_threads->deallocate<ThreadWorker>(m_exitingThreads->front());
 		m_exitingThreads->pop_front();
 	}
 }
@@ -206,7 +206,7 @@ bool ThreadPoolGeneric::addTask(IThreadTask& newTask, bool waitForSlot) {return 
 size_t ThreadPoolGeneric::getThreadCount() const {return ThreadPoolImpl::getThreadCount();}
 size_t ThreadPoolGeneric::getTaskCount() {return ThreadPoolImpl::getTaskCount();}
 
-void ThreadPoolGeneric::init(ObjectPoolImpl<ThreadWorker>& threads, 
+void ThreadPoolGeneric::init(	SlabImpl& threads, 
                               FixedCircularQueueImpl<ThreadWorker*>& exitingThreads,
                               FixedCircularQueueImpl<IThreadTask*>& taskQueue,
                               const size_t InitialThreads) 
