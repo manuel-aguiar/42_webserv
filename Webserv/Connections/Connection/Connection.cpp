@@ -20,6 +20,28 @@ namespace Conn
 		m_monitor.release();
 	}
 
+	Connection::Connection(const Connection& copy) :
+		m_monitor(copy.m_monitor),
+		m_serverContext(copy.m_serverContext),
+		m_connManager(copy.m_connManager)
+	{
+		m_monitor.acquire();
+	}
+
+	Connection&
+	Connection::operator=(const Connection& assign)
+	{
+		ASSERT_EQUAL(m_connManager, assign.m_connManager, "Connection::operator=(), copy assignment, copy-from InternalManager not the same as copy-to InternalManager");
+		ASSERT_EQUAL(&m_serverContext, &assign.m_serverContext, "Connection::operator=(), copy assignment, copy-from connections from different servercontexts");
+		if (this == &assign)
+			return (*this);
+
+		m_monitor = assign.m_monitor;
+		m_connManager = assign.m_connManager;
+
+		return (*this);
+	}
+
 	void    
 	Connection::close()
 	{

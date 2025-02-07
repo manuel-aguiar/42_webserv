@@ -13,6 +13,18 @@ InternalConn::~InternalConn()
 	m_monitor.release();
 }
 
+InternalConn::InternalConn(const InternalConn& copy) :
+	Conn::Connection(copy) {}
+
+InternalConn&
+InternalConn::operator=(const InternalConn& assign)
+{
+	if (this == &assign)
+		return (*this);
+	Conn::Connection::operator=(assign);
+	return (*this);
+}
+
 void
 InternalConn::forcedClose()
 {

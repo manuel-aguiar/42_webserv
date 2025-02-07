@@ -16,7 +16,7 @@ int		InternalListener::open()
 	m_monitor.acquire();
 	Events::Subscription& event = m_monitor.accessEvent();
 
-	event.setFd(m_listener.getSockFd());
+	event.setFd(m_listener.getConnInfo().sockfd);
 	event.setMonitoredEvents(Events::Monitor::READ 
 							| Events::Monitor::ERROR 
 							| Events::Monitor::HANGUP 

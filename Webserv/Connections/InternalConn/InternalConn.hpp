@@ -11,6 +11,8 @@ class InternalConn : public Conn::Connection
 {
 	public:
 		InternalConn(Events::Manager& eventManager, ServerContext& context, InternalManager& connManager);
+		InternalConn(const InternalConn& copy);
+		InternalConn& operator=(const InternalConn& assign);
 		~InternalConn();
 
 

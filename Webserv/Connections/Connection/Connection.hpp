@@ -13,7 +13,6 @@
 class InternalManager;
 class ServerContext;
 
-
 namespace Conn
 {
 	class Connection
@@ -22,6 +21,9 @@ namespace Conn
 			Connection(	Events::Manager& eventManager, 
 						ServerContext& context, 
 						InternalManager* connManager);
+
+			Connection(const Connection& copy);
+			Connection& operator=(const Connection& assign);
 			~Connection();
 
 			void    					close();
@@ -61,9 +63,6 @@ namespace Conn
 			
 			ServerContext&				m_serverContext;
 			InternalManager*			m_connManager;
-
-			ConnInfo&					mf_connInfo();
-
 	};
 }
 

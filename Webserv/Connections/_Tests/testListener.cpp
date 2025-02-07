@@ -88,9 +88,9 @@ void testListener(int& testNumber)
         };
 
 
-        EXPECT_EQUAL(listener.getSockFd() == Ws::FD_NONE, true, "Sockfd shouldn't be set at this point");
+        EXPECT_EQUAL(listener.getConnInfo().sockfd == Ws::FD_NONE, true, "Sockfd shouldn't be set at this point");
         EXPECT_EQUAL(listener.open(), 1, "Listener::open() failed");
-        EXPECT_EQUAL(listener.getSockFd() != Ws::FD_NONE, true, "Listener::open() failed, socket fd not set");
+        EXPECT_EQUAL(listener.getConnInfo().sockfd != Ws::FD_NONE, true, "Listener::open() failed, socket fd not set");
 
         ClientTask task(connector, externalConnect);
         tp.addTask(task);
@@ -100,7 +100,7 @@ void testListener(int& testNumber)
         {
             Events::Manager eventManager(1, globals);
             Events::Subscription* subs = eventManager.acquireSubscription();
-            subs->setFd(listener.getSockFd());
+            subs->setFd(listener.getConnInfo().sockfd);
             subs->setUser(&listener);
             subs->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP | Events::Monitor::EDGE_TRIGGERED);
             AccepterCallbackBundle bundle = {.listener = listener, .internalConnect = internalConnect};

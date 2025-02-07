@@ -51,7 +51,9 @@ int InternalListener::acceptPending(InternalConn& connection)
 int
 InternalListener::mf_acceptInternal(InternalConn& connection)
 {
+	Ws::AppLayer::Type initializer = m_listener.getConnInfo().bind.appLayer;
+
 	connection.prepareDispatch();
-	mf_accessServerContext().getAppLayerInit(m_listener.getBindInfo().appLayer)(connection);
+	mf_accessServerContext().getAppLayerInit(initializer)(connection);
 	return (1);
 }

@@ -5,13 +5,6 @@
 //getters
 namespace Conn
 {
-
-	ConnInfo&
-	Connection::mf_connInfo()
-	{
-		return (m_info);
-	}
-
 	Ws::Sock::fd
 	Connection::info_getFd() const
 	{

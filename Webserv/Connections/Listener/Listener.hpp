@@ -22,8 +22,7 @@ class Listener
 		void					close();
 		int						accept(ConnInfo& accept);
 
-		Ws::fd					getSockFd();
-		const Ws::BindInfo&		getBindInfo();
+		const ConnInfo&			getConnInfo() const;
 
 	protected:
 		ConnInfo				m_info;

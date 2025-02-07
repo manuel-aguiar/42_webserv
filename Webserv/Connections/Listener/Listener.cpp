@@ -101,16 +101,10 @@ int		Listener::accept(ConnInfo& accept)
 	return (1);
 }
 
-Ws::fd
-Listener::getSockFd()
+const ConnInfo&
+Listener::getConnInfo() const
 {
-	return (m_info.sockfd);
-}
-
-const Ws::BindInfo&
-Listener::getBindInfo()
-{
-	return (m_info.bind);
+	return (m_info);
 }
 
 Listener::Listener(const Listener& copy) : 
