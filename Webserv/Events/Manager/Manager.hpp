@@ -7,6 +7,7 @@
 // Project headers
 # include "../m_EventsDefinitions.h"
 # include "../../Ws_Namespace.h"
+# include "../FdTracker/FdTracker.hpp"
 
 //Toolkit headers
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
@@ -28,7 +29,7 @@ namespace Events
 	{
 		public:
 			
-			Manager(size_t maxSubscriptions, Globals& globals);
+			Manager(const size_t maxSubscriptions, Globals& globals, const size_t maxFdsEstimate = 0);
 			~Manager();
 
 			//methods
@@ -49,19 +50,15 @@ namespace Events
 		private:
 			size_t								m_monitoringCount;
 			Ws::fd								m_epollfd;
-			Ws::fd								m_maxStaleFd;
 			Globals&							m_globals;
 
 			enum {MAX_EPOLL_EVENTS = 64};
 
 			HeapArray<InternalSub>				m_subscriptions;
 			HeapCircularQueue<InternalSub*>		m_availableSubs;
-			HeapArray<Ws::byte>					m_staleEvents;
+			FdTracker							m_fdTracker;
 			Events::Monitor::Event				m_epollEvents[MAX_EPOLL_EVENTS];
 
-			void								mf_markFdStale(Ws::fd fd);
-			int									mf_isFdStale(Ws::fd fd);
-			
 			Manager(const Manager& copy);
 			Manager& operator=(const Manager& assign);
 	};
