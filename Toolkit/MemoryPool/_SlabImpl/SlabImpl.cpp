@@ -42,4 +42,3 @@ SlabImpl::reset(t_slot_pointer array, size_t nodeSize, size_t capacity)
 
 size_t SlabImpl::size() const { return m_elemCount; }
 size_t SlabImpl::capacity() const { return m_capacity; }
-size_t SlabImpl::getElemCount() const { return m_elemCount; }

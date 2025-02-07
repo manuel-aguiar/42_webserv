@@ -9,7 +9,7 @@
 # define IMPL_THREADWORKER_TPP
 
 // Project headers
-# include "../_ThreadPoolImpl/ThreadPoolImpl.hpp"
+# include "../ThreadPoolImpl/ThreadPoolImpl.hpp"
 # include "../ThreadTask/IThreadTask.hpp"
 
 // C++ headers
@@ -45,7 +45,7 @@ void	ThreadWorker::run()
 	pthread_mutex_lock(&m_pool.mf_accessStatusLock());
 
 	m_pool.mf_markExitingThread(*this);
-
+	
 	pthread_cond_signal(&m_pool.mf_accessExitSignal());
 	pthread_mutex_unlock(&m_pool.mf_accessStatusLock());
 }

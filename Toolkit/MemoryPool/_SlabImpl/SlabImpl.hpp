@@ -21,13 +21,9 @@ class SlabImpl
         template <typename T>
         void deallocate(T* p);
 
-        template <typename T>
-        void destroy(T* p);
-
         size_t size() const;
         size_t capacity() const;
-        size_t getElemCount() const;
-        
+
     protected:
         union s_Slot
         {
@@ -86,11 +82,5 @@ void SlabImpl::deallocate(T* p)
     }
 }
 
-template <typename T>
-void SlabImpl::destroy(T* p)
-{
-    if (p != NULL)
-        p->~T();
-}
 
 #endif

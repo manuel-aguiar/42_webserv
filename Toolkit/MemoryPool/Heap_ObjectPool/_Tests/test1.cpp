@@ -17,7 +17,6 @@
 
 int TestPart1(int testNumber)
 {
-
 	TEST_INTRO(testNumber++);
 	
 	try
