@@ -26,8 +26,11 @@ namespace Conn
 		ASSERT_EQUAL(m_connManager != NULL, true, "Connection::close(), connManager is NULL");
 		//std::cout << "Connection::close()" << std::endl;
 		m_monitor.unsubscribe(false);
-		if (m_socket.getSockFd() != Ws::FD_NONE)
-			m_appLayer.close(m_socket);
+		if (m_info.sockfd != Ws::FD_NONE)
+		{
+			::close(m_info.sockfd);
+			m_info.sockfd = Ws::FD_NONE;
+		}
 		m_connManager->_ReturnConnection(*this);
 	}
 
@@ -65,25 +68,25 @@ namespace Conn
 	Ws::AppLayer::Conn
 	Connection::appLayer_accessConn()
 	{
-		return (m_appLayer.accessConn());
+		return (m_appConn);
 	}
 	
 	Ws::AppLayer::CloseCallback
 	Connection::appLayer_accessCloseCallback()
 	{
-		return (m_appLayer.accessCloseCallback());
+		return (m_appForceClose);
 	}
 
 	void
 	Connection::appLayer_setConn			(const Ws::AppLayer::Conn& appConn)
 	{
-		m_appLayer.setConn(appConn);
+		m_appConn = appConn;
 	}
 	
 	void
 	Connection::appLayer_setCloseCallback	(const Ws::AppLayer::CloseCallback callback)
 	{
-		m_appLayer.setCloseCallback(callback);
+		m_appForceClose = callback;
 	}
 
 

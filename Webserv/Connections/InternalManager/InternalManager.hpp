@@ -52,7 +52,7 @@ class InternalManager
 		HeapArray<InternalConn>				m_connections;
 		HeapCircularQueue<InternalConn*>	m_spareConnections;
 
-		HeapArray<InternalListener>			m_listeningSockets;
+		HeapArray<InternalListener>			m_listeningConnInfos;
 		HeapCircularQueue<InternalListener*>	m_pendingAccepts;
 
 		Events::Manager&					m_eventManager;

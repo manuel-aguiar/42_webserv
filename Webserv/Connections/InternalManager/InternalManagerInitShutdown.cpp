@@ -5,9 +5,9 @@
 
 bool	InternalManager::init()
 {
-	for (size_t i = 0; i < m_listeningSockets.size(); ++i)
+	for (size_t i = 0; i < m_listeningConnInfos.size(); ++i)
 	{
-		if (!m_listeningSockets[i].open())
+		if (!m_listeningConnInfos[i].open())
 		{	
 			this->shutdown();
 			return (false);
@@ -18,8 +18,8 @@ bool	InternalManager::init()
 
 void   	InternalManager::shutdown()
 {
-	for (size_t i = 0; i< m_listeningSockets.size(); ++i)
-		m_listeningSockets[i].close();
+	for (size_t i = 0; i< m_listeningConnInfos.size(); ++i)
+		m_listeningConnInfos[i].close();
 
 	m_pendingAccepts.clear();
 

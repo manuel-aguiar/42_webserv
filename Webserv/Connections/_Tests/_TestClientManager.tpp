@@ -18,7 +18,7 @@ struct ClientManager
 		for (size_t i = 0; i < countConnectors; ++i)
 		{
 			m_connectors.emplace_back(i, eventManager, *this);
-			m_connectors[i].m_socket.modifyBindInfo() = (Ws::BindInfo)
+			m_connectors[i].m_socket.bind = (Ws::BindInfo)
 			{
 				.appLayer = Ws::AppLayer::HTTP,
 				.backlog = 128,
@@ -35,7 +35,7 @@ struct ClientManager
 	{
 		for (size_t i = 0; i < m_connectors.size(); ++i)
 		{
-			if (m_connectors[i].m_socket.getSockFd() != Ws::FD_NONE)
+			if (m_connectors[i].m_socket.sockfd != Ws::FD_NONE)
 			{
 				m_connectors[i].disconnect();
 				fail++;

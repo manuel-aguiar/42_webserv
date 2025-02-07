@@ -21,7 +21,7 @@ InternalManager::InternalManager(const size_t						maxConnections,
 	m_maxConnections(maxConnections),
 	m_connections(m_maxConnections),
 	m_spareConnections(m_maxConnections),
-	m_listeningSockets(bindAddresses.size()),
+	m_listeningConnInfos(bindAddresses.size()),
 	m_pendingAccepts(bindAddresses.size()),
 	m_eventManager(eventManager),
 	m_globals(globals),
@@ -35,7 +35,7 @@ InternalManager::InternalManager(const size_t						maxConnections,
 	}
 	for (size_t i = 0; i < bindAddresses.size(); i++)
 	{
-		m_listeningSockets.emplace_back(bindAddresses[i], *this);
+		m_listeningConnInfos.emplace_back(bindAddresses[i], *this);
 	}
 }
 

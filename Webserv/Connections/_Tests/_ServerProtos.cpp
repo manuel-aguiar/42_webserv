@@ -27,7 +27,7 @@ void Server_FastCloseModule::InitConnection(Conn::Connection& conn)
     );
 
     unsigned char response = 200;
-    ::write(conn.sock_getFd(), &response, 1);
+    ::write(conn.info_getFd(), &response, 1);
     conn.close();
 
     fastClose->serveCount++;
@@ -43,7 +43,7 @@ void Server_NeverCloseModule::InitConnection(Conn::Connection& conn)
 	conn.appLayer_setCloseCallback(&Server_NeverCloseModule::ForcedClose);
 
     unsigned char response = 200;
-    ::write(conn.sock_getFd(), &response, 1);
+    ::write(conn.info_getFd(), &response, 1);
 }
 
 void Server_NeverCloseModule::ForcedClose(Conn::Connection& conn)
@@ -99,7 +99,7 @@ void Server_MathRequest::ReadWrite()
     if (triggeredEvents & Events::Monitor::READ)
     {
               
-        ::read(conn.sock_getFd(), &received, 1);
+        ::read(conn.info_getFd(), &received, 1);
         conn.events_setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
         conn.events_updateMonitoring(false);
         
@@ -109,9 +109,9 @@ void Server_MathRequest::ReadWrite()
         // This is the optimistic writing version, NGINX style: //
         //////////////////////////////////////////////////////////
 
-        ::read(conn.sock_getFd(), &received, 1);  
+        ::read(conn.info_getFd(), &received, 1);  
         received = (received + 3) % (256);
-        int bytesWritten = ::write(conn.sock_getFd(), &received, 1);
+        int bytesWritten = ::write(conn.info_getFd(), &received, 1);
         if (bytesWritten == -1)
         {
             // writing failed (client socket is full), start monitoring writing for the next turn
@@ -132,7 +132,7 @@ void Server_MathRequest::ReadWrite()
     if (triggeredEvents & Events::Monitor::WRITE)
     {
         received = (received + 3) % (256);
-        ::write(conn.sock_getFd(), &received, 1);
+        ::write(conn.info_getFd(), &received, 1);
         conn.close();
         this->module.serveCount++;
         delete (this);

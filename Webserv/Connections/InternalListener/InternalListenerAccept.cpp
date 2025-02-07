@@ -24,7 +24,7 @@ void  InternalListener::accept()
 			m_monitor.unsubscribe(false);
 			return (m_connManager._Accepter_MoveToPendingAccept(*this));
 		}
-		if (m_listener.accept(connection->accessSocket()) == Ws::FD_NONE)
+		if (m_listener.accept(connection->accessConnInfo()) == Ws::FD_NONE)
 		{
 			m_connManager._ReturnConnection(*connection);
 			return ;
@@ -37,7 +37,7 @@ int InternalListener::acceptPending(InternalConn& connection)
 {
 	//if (connection.accessEvent().isSubscribed())
 	//	std::cout << "pending accept, connection event still susbcribed"<< std::endl;
-	int result = m_listener.accept(connection.accessSocket());
+	int result = m_listener.accept(connection.accessConnInfo());
 
 	if (result == -1)
 	{

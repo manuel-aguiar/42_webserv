@@ -7,7 +7,7 @@
 
 # include "../../Ws_Namespace.h"
 # include "../Monitor/Monitor.hpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 # include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
 # include <vector>
 

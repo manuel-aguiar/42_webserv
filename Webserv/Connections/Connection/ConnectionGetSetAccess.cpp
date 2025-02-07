@@ -6,18 +6,22 @@
 namespace Conn
 {
 
-	//setters
-	AppLayer&
-	Connection::mf_accessAppLayer()
-	{
-		return (m_appLayer);
-	}
-
 	ConnInfo&
-	Connection::mf_accessSocket()
+	Connection::mf_connInfo()
 	{
-		return (m_socket);
+		return (m_info);
 	}
 
+	Ws::Sock::fd
+	Connection::info_getFd() const
+	{
+		return (m_info.sockfd);
+	}
+
+	const Ws::BindInfo&
+	Connection::info_getBindInfo() const
+	{
+		return (m_info.bind);
+	}
 }
 

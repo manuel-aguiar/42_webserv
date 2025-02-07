@@ -16,7 +16,6 @@ SUBJECT_PATH			=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo
 # Sources
 SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testInternalListener.cpp \
-								$(SRC_PATH)/Webserv/Connections/_Tests/testAppLayer.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testListener.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testConnection.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
@@ -38,8 +37,7 @@ SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testMonitor.cpp \
 								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerOpenClose.cpp \
 								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerAccept.cpp \
 								$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp \
-								$(SRC_PATH)/Webserv/Connections/AppLayer/AppLayer.cpp \
-								$(SRC_PATH)/Webserv/Connections/Socket/Socket.cpp \
+								$(SRC_PATH)/Webserv/Connections/ConnInfo/ConnInfo.cpp \
 								$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp \
 								\
 								$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \

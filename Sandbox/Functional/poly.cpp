@@ -6,27 +6,27 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 07:43:43 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/02/07 15:55:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:47:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include <iostream>
 
-class ConnInfo
+class Socket
 {
 public:
-    virtual ~ConnInfo() {}
+    virtual ~Socket() {}
     virtual void f() = 0;
 };
 
-class Derived1 : public ConnInfo
+class Derived1 : public Socket
 {
 public:
     void f() {}
 };
 
-class Derived2 : public ConnInfo
+class Derived2 : public Socket
 {
 public:
     void f() {}
@@ -34,8 +34,8 @@ public:
 
 int main(void)
 {
-    ConnInfo *b1 = new Derived1();
-    ConnInfo *b2 = new Derived2();
+    Socket *b1 = new Derived1();
+    Socket *b2 = new Derived2();
 
     for (int i = 0; i < 1000000; i++)
     {

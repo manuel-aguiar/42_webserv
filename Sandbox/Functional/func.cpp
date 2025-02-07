@@ -6,7 +6,7 @@
 /*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 07:43:41 by mmaria-d          #+#    #+#             */
-/*   Updated: 2025/02/07 15:55:43 by mmaria-d         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:47:17 by mmaria-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 #include <iostream>
 
 
-class ConnInfo;
+class Socket;
 class HttpManager;
 
-typedef class ConnInfo t_socket;
+typedef class Socket t_socket;
 typedef void*   t_interpreter;
 typedef void (*t_interpreterRead)   (const t_socket& me);
 typedef void (*t_socketRead)        (const t_socket& me, t_interpreterRead);
 
-class ConnInfo
+class Socket
 {
     public:
-        ConnInfo( t_socketRead    sockRead, t_interpreterRead interpRead, t_interpreter interpreter) :
+        Socket( t_socketRead    sockRead, t_interpreterRead interpRead, t_interpreter interpreter) :
                 _sockVar(42),
                 _interpreter(interpreter),
                 _sockRead(sockRead),
@@ -62,7 +62,7 @@ class HttpManager
         void setState(int state) { m_state = state; }
         int getState() { return m_state; }
 
-        void    onRead(const ConnInfo& me) {std::cout << "Http onRead: "  << m_state << " socket sockVar: " << me._sockVar << std::endl;}
+        void    onRead(const Socket& me) {std::cout << "Http onRead: "  << m_state << " socket sockVar: " << me._sockVar << std::endl;}
 
     private:
         int m_state;
@@ -71,7 +71,7 @@ class HttpManager
 class HttpInterpreteronRead
 {
     public:
-        static void onRead(const ConnInfo& me)
+        static void onRead(const Socket& me)
         {
 
             HttpManager* local = static_cast<HttpManager*>(me._interpreter);
@@ -87,7 +87,7 @@ class FtpInterpreter
         void    setState(int state) { m_state = state; }
         int     getState() { return m_state; }
 
-        void    onRead(const ConnInfo& me) {std::cout << "Ftp onRead: "  << m_state  << " socket sockVar: " << me._sockVar << std::endl;}
+        void    onRead(const Socket& me) {std::cout << "Ftp onRead: "  << m_state  << " socket sockVar: " << me._sockVar << std::endl;}
 
     private:
         int m_state;
@@ -96,7 +96,7 @@ class FtpInterpreter
 class FtpInterpreterGetter
 {
     public:
-        static void onRead(const ConnInfo& me)
+        static void onRead(const Socket& me)
         {
             FtpInterpreter* local = static_cast<FtpInterpreter*>(me._interpreter);
             local->onRead(me);
@@ -106,7 +106,7 @@ class FtpInterpreterGetter
 class ClientFunc
 {
     public:
-        static void onRead(const ConnInfo& me, t_interpreterRead interpRead)
+        static void onRead(const Socket& me, t_interpreterRead interpRead)
         {
             interpRead(me);
         }
@@ -122,12 +122,12 @@ class ServerFunc
 };
 
 
-typedef ConnInfo t_serversocket;
-typedef ConnInfo t_clientsocket;
+typedef Socket t_serversocket;
+typedef Socket t_clientsocket;
 
 int main(void)
 {
-    std::vector<ConnInfo> sockets;
+    std::vector<Socket> sockets;
 
     HttpManager http;
     FtpInterpreter ftp;

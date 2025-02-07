@@ -5,7 +5,6 @@
 
 namespace Conn
 {
-
 	void
 	Connection::events_setUser		(const Events::Subscription::User data)
 	{
@@ -27,17 +26,5 @@ namespace Conn
 	Connection::events_getTriggeredEvents() const
 	{
 		return (m_monitor.getEvent().getTriggeredEvents());
-	}
-
-	Ws::Sock::fd
-	Connection::sock_getFd() const
-	{
-		return (m_socket.getSockFd());
-	}
-
-	const Ws::BindInfo&
-	Connection::sock_getBindInfo() const
-	{
-		return (m_socket.getBindInfo());
 	}
 }

@@ -16,7 +16,7 @@ InternalConn::~InternalConn()
 void
 InternalConn::forcedClose()
 {
-	if (m_socket.getSockFd() == Ws::FD_NONE)
+	if (m_info.sockfd == Ws::FD_NONE)
 		return ;
 	mf_callAppLayerForceClose();
 	Conn::Connection::close();
@@ -27,25 +27,26 @@ void
 InternalConn::reset()
 {
 	//std::cout << "socket fd: " << m_socket.getSockFd() << ", event fd: " << m_monitor.accessEvent().getFd() << std::endl;
-	m_socket.reset();
+	m_info.reset();
 	m_monitor.reset(false);
-	m_appLayer.reset();
+	m_appConn = NULL;
+	m_appForceClose = NULL;
 }
 
 void
 InternalConn::mf_callAppLayerForceClose()
 {
-	if (m_appLayer.accessCloseCallback())
-		m_appLayer.accessCloseCallback()(*this);
+	if (m_appForceClose)
+		m_appForceClose(*this);
 }
 
 void InternalConn::prepareDispatch()
 {
-	m_monitor.accessEvent().setFd(m_socket.getSockFd());
+	m_monitor.accessEvent().setFd(m_info.sockfd);
 }
 
 ConnInfo&
-InternalConn::accessSocket()
+InternalConn::accessConnInfo()
 {
-	return (m_socket);
+	return (m_info);
 }

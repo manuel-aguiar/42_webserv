@@ -2,7 +2,7 @@
 
 // Project headers
 # include "Listener.hpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
@@ -10,8 +10,7 @@
 # include <unistd.h>
 
 Listener::Listener(const Ws::BindInfo& socketInfo) : 
-	m_sockfd(Ws::FD_NONE),
-	m_bindInfo(socketInfo) {}
+	m_info(Ws::FD_NONE, socketInfo) {}
 
 Listener::~Listener() {}
 
@@ -20,7 +19,7 @@ int	Listener::open()
 	int 				options;
 	int 				sockfd;
 
-	sockfd = ::socket(m_bindInfo.family, m_bindInfo.socktype, m_bindInfo.proto);
+	sockfd = ::socket(m_info.bind.family, m_info.bind.socktype, m_info.bind.proto);
 
 	if (sockfd == -1)
 		return (0);
@@ -42,36 +41,36 @@ int	Listener::open()
 		::close(sockfd);
 		return (0);
 	}	
-	if (::bind(sockfd, (struct sockaddr*)(&m_bindInfo.addr), m_bindInfo.addrlen) == -1)
+	if (::bind(sockfd, (struct sockaddr*)(&m_info.bind.addr), m_info.bind.addrlen) == -1)
 	{
 		::close(sockfd);
 		return (0);
 	}
-	if (::listen(sockfd, m_bindInfo.backlog) == -1)
+	if (::listen(sockfd, m_info.bind.backlog) == -1)
 	{
 		::close(sockfd);
 		return (0);
 	}
 
-	m_sockfd = sockfd;
+	m_info.sockfd = sockfd;
 	return (1);
 }
 
 void	Listener::close()
 {
-	if (m_sockfd == Ws::FD_NONE)
+	if (m_info.sockfd == Ws::FD_NONE)
 		return ;
-	::close(m_sockfd);
-	m_sockfd = Ws::FD_NONE;
+	::close(m_info.sockfd);
+	m_info.sockfd = Ws::FD_NONE;
 }
 
 int		Listener::accept(ConnInfo& accept)
 {
 	int 				sockfd;
-	Ws::BindInfo&		modifyInfo = accept.modifyBindInfo();
+	Ws::BindInfo&		acceptInfo = accept.bind;
 
-	modifyInfo.addrlen = m_bindInfo.addrlen;
-	sockfd = ::accept(m_sockfd, (struct sockaddr*)(&modifyInfo.addr), &modifyInfo.addrlen);
+	acceptInfo.addrlen = m_info.bind.addrlen;
+	sockfd = ::accept(m_info.sockfd, (struct sockaddr*)(&acceptInfo.addr), &acceptInfo.addrlen);
 
 	if (sockfd == -1)
 		return (-1);
@@ -79,25 +78,25 @@ int		Listener::accept(ConnInfo& accept)
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
 		::close(sockfd);
-		modifyInfo = (Ws::BindInfo){};
+		acceptInfo = (Ws::BindInfo){};
 		return (-1);
 	}
 
-	modifyInfo.family = m_bindInfo.family;
-	modifyInfo.socktype = m_bindInfo.socktype;
-	modifyInfo.proto = m_bindInfo.proto;
+	acceptInfo.family = m_info.bind.family;
+	acceptInfo.socktype = m_info.bind.socktype;
+	acceptInfo.proto = m_info.bind.proto;
 
-	// ovewritting the ephemeral port with that of the listeningSocket, that's what matters for us
-	switch (modifyInfo.family)
+	// ovewritting the ephemeral port with that of the listeningConnInfo, that's what matters for us
+	switch (acceptInfo.family)
 	{
 		case AF_INET:
-			modifyInfo.addr.sockaddr_in.sin_port = m_bindInfo.addr.sockaddr_in.sin_port;
+			acceptInfo.addr.sockaddr_in.sin_port = m_info.bind.addr.sockaddr_in.sin_port;
 			break;
 		default:
 			ASSERT_EQUAL(1, 0, "Accepter::accept(), unsupported family");
 	}
 
-	accept.setSockFd(sockfd);
+	accept.sockfd = sockfd;
 
 	return (1);
 }
@@ -105,20 +104,19 @@ int		Listener::accept(ConnInfo& accept)
 Ws::fd
 Listener::getSockFd()
 {
-	return (m_sockfd);
+	return (m_info.sockfd);
 }
 
 const Ws::BindInfo&
 Listener::getBindInfo()
 {
-	return (m_bindInfo);
+	return (m_info.bind);
 }
 
 Listener::Listener(const Listener& copy) : 
-	m_sockfd(copy.m_sockfd),
-	m_bindInfo(copy.m_bindInfo)
+	m_info(copy.m_info)
 {
-	ASSERT_EQUAL (copy.m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy constructor, copy-from socket fd not set to none");
+	ASSERT_EQUAL (copy.m_info.sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy constructor, copy-from socket fd not set to none");
 }
 
 Listener& Listener::operator=(const Listener& assign)
@@ -126,10 +124,10 @@ Listener& Listener::operator=(const Listener& assign)
 	if (this == &assign)
 		return (*this);
 
-	ASSERT_EQUAL (m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-to socket fd not set to none");
-	ASSERT_EQUAL (assign.m_sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-from socket fd not set to none");
+	ASSERT_EQUAL (m_info.sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-to socket fd not set to none");
+	ASSERT_EQUAL (assign.m_info.sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-from socket fd not set to none");
 
-	m_bindInfo = assign.m_bindInfo;
+	m_info.bind = assign.m_info.bind;
 
 	return (*this);
 }

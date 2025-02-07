@@ -6,9 +6,8 @@
 # include "../../Ws_Namespace.h"
 
 # include "../../Events/Subscription/Subscription.hpp"
-# include "../AppLayer/AppLayer.hpp"
 # include "../Monitor/Monitor.hpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 
 // forawrd declarations
 class InternalManager;
@@ -31,8 +30,8 @@ namespace Conn
 			ServerContext&				accessServerContext();
 
 			// socket info access
-			Ws::Sock::fd				sock_getFd() const;
-			const Ws::BindInfo&			sock_getBindInfo() const;
+			Ws::Sock::fd				info_getFd() const;
+			const Ws::BindInfo&			info_getBindInfo() const;
 
 			// appLayer access
 			Ws::AppLayer::Conn			appLayer_accessConn();
@@ -55,14 +54,15 @@ namespace Conn
 
 		protected:
 			Monitor						m_monitor;
+			ConnInfo					m_info;
 
-			ConnInfo					m_socket;
-			AppLayer					m_appLayer;
+			Ws::AppLayer::Conn			m_appConn;
+			Ws::AppLayer::CloseCallback	m_appForceClose;
+			
 			ServerContext&				m_serverContext;
 			InternalManager*			m_connManager;
 
-			ConnInfo&					mf_accessSocket();
-			AppLayer&					mf_accessAppLayer();
+			ConnInfo&					mf_connInfo();
 
 	};
 }

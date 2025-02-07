@@ -3,7 +3,7 @@
 // Prooject headers
 # include "_TestDependencies.hpp"
 # include "_TestClientManager.tpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../ServerContext/ServerContext.hpp"

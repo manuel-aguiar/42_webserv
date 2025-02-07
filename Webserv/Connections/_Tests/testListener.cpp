@@ -10,7 +10,7 @@
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../../Toolkit/ThreadPool/ThreadPool.hpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 
 // C++ headers
@@ -76,7 +76,7 @@ void testListener(int& testNumber)
         ConnInfo            externalConnect;
         ConnInfo            internalConnect;
 
-        externalConnect.modifyBindInfo() = (Ws::BindInfo)
+        externalConnect.bind = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
             .backlog = 128,
@@ -116,16 +116,16 @@ void testListener(int& testNumber)
         
 
         // checking the listener recorded the data from the incoming connection
-        EXPECT_EQUAL(internalConnect.getSockFd() != -1, true, "Listener::accept(), should have set the socket fd");
-        EXPECT_EQUAL(internalConnect.getBindInfo().family, externalConnect.getBindInfo().family, "family: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.getBindInfo().socktype, externalConnect.getBindInfo().socktype, "socktype: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.getBindInfo().proto, externalConnect.getBindInfo().proto, "proto: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.getBindInfo().addrlen, externalConnect.getBindInfo().addrlen, "addrlen: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.getBindInfo().addr.sockaddr_in.sin_addr.s_addr, externalConnect.getBindInfo().addr.sockaddr_in.sin_addr.s_addr, "addr: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.getBindInfo().addr.sockaddr_in.sin_port, externalConnect.getBindInfo().addr.sockaddr_in.sin_port, "port: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.sockfd != Ws::FD_NONE, true, "Listener::accept(), should have set the socket fd");
+        EXPECT_EQUAL(internalConnect.bind.family, externalConnect.bind.family, "family: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.bind.socktype, externalConnect.bind.socktype, "socktype: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.bind.proto, externalConnect.bind.proto, "proto: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.bind.addrlen, externalConnect.bind.addrlen, "addrlen: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.bind.addr.sockaddr_in.sin_addr.s_addr, externalConnect.bind.addr.sockaddr_in.sin_addr.s_addr, "addr: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.bind.addr.sockaddr_in.sin_port, externalConnect.bind.addr.sockaddr_in.sin_port, "port: InternalConnect and ExternalConnect info must be the same");
 
         listener.close();
-        ::close(internalConnect.getSockFd());
+        ::close(internalConnect.sockfd);
 
         TEST_PASSED_MSG("Listener: accepts and closes connections");
     }

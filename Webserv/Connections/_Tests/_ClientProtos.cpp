@@ -3,7 +3,7 @@
 # include "_TestDependencies.hpp"
 # include "_TestClientManager.tpp"
 # include "_ClientProtos.hpp"
-# include "../Socket/Socket.hpp"
+# include "../ConnInfo/ConnInfo.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
@@ -21,12 +21,12 @@
 
 int TestConnector::connect(ConnInfo& socket)
 {
-    m_socket = ::socket(socket.getBindInfo().family, socket.getBindInfo().socktype, socket.getBindInfo().proto);
+    m_socket = ::socket(socket.bind.family, socket.bind.socktype, socket.bind.proto);
     if (m_socket == -1)
         return -1;
 
     // TestConnector will block until it is accepted
-    return (::connect(m_socket, (struct sockaddr*)&socket.getBindInfo().addr, socket.getBindInfo().addrlen));
+    return (::connect(m_socket, (struct sockaddr*)&socket.bind.addr, socket.bind.addrlen));
 }
 
 void TestConnector::disconnect()
@@ -51,17 +51,17 @@ Client_FastNeverClose::Client_FastNeverClose(int index, Events::Manager& eventMa
 
 int Client_FastNeverClose::open()
 {
-    int sockfd = ::socket(m_socket.getBindInfo().family, m_socket.getBindInfo().socktype, m_socket.getBindInfo().proto);
+    int sockfd = ::socket(m_socket.bind.family, m_socket.bind.socktype, m_socket.bind.proto);
 
     if (sockfd == -1)
         return -1;
 
-    m_socket.setSockFd(sockfd);
+    m_socket.sockfd = sockfd;
     FileDescriptor::setNonBlocking(sockfd);
 
     m_monitor.acquire();
     Events::Subscription& sub = m_monitor.accessEvent();
-    sub.setFd(m_socket.getSockFd());
+    sub.setFd(m_socket.sockfd);
     sub.setUser(this);
     sub.setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
     sub.setCallback(Client_FastNeverClose::ReadWrite_Callback);
@@ -71,7 +71,7 @@ int Client_FastNeverClose::open()
 
 int Client_FastNeverClose::connect()
 {
-    int res = ::connect(m_socket.getSockFd(), (struct sockaddr*)&m_socket.getBindInfo().addr, m_socket.getBindInfo().addrlen);
+    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.bind.addr, m_socket.bind.addrlen);
 
     if (res == -1 && errno != EINPROGRESS)
     {
@@ -100,7 +100,7 @@ void Client_FastNeverClose::ReadWrite_Callback(Events::Subscription& sub)
 	}
 
     if (triggeredEvents & Events::Monitor::READ)
-		::read(conn->m_socket.getSockFd(), &conn->actualResponse, 1);
+		::read(conn->m_socket.sockfd, &conn->actualResponse, 1);
 }
 
 void Client_FastNeverClose::disconnect()
@@ -111,8 +111,8 @@ void Client_FastNeverClose::disconnect()
         m_clientManager.fail++;
 
     m_monitor.release();
-    ::close(m_socket.getSockFd());
-	m_socket.setSockFd(Ws::FD_NONE);
+    ::close(m_socket.sockfd);
+	m_socket.sockfd = Ws::FD_NONE;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -128,17 +128,17 @@ Client_Math::Client_Math(int index, Events::Manager& eventManager, ClientManager
 
 int Client_Math::open()
 {
-    int sockfd = ::socket(m_socket.getBindInfo().family, m_socket.getBindInfo().socktype, m_socket.getBindInfo().proto);
+    int sockfd = ::socket(m_socket.bind.family, m_socket.bind.socktype, m_socket.bind.proto);
 
     if (sockfd == -1)
         return -1;
 
-    m_socket.setSockFd(sockfd);
+    m_socket.sockfd = sockfd;
     FileDescriptor::setNonBlocking(sockfd);
 
     m_monitor.acquire();
     Events::Subscription& sub = m_monitor.accessEvent();
-    sub.setFd(m_socket.getSockFd());
+    sub.setFd(m_socket.sockfd);
     sub.setUser(this);
     sub.setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::ERROR | Events::Monitor::HANGUP);
     sub.setCallback(Client_Math::ReadWrite_Callback);
@@ -148,7 +148,7 @@ int Client_Math::open()
 
 int Client_Math::connect()
 {
-    int res = ::connect(m_socket.getSockFd(), (struct sockaddr*)&m_socket.getBindInfo().addr, m_socket.getBindInfo().addrlen);
+    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.bind.addr, m_socket.bind.addrlen);
 
     if (res == -1 && errno != EINPROGRESS)
     {
@@ -188,7 +188,7 @@ void Client_Math::Write()
 		return ;
 	}
 
-	::write(m_socket.getSockFd(), &request, 1);
+	::write(m_socket.sockfd, &request, 1);
 	hasWritten = true;
 	Events::Subscription& sub = m_monitor.accessEvent();
 	sub.setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
@@ -206,7 +206,7 @@ void Client_Math::Write()
 
 void Client_Math::Read()
 {
-	int bytesRead = ::read(m_socket.getSockFd(), &actualResponse, 1);
+	int bytesRead = ::read(m_socket.sockfd, &actualResponse, 1);
 
 	if (bytesRead == 0)
 	{
@@ -232,6 +232,6 @@ void Client_Math::Read()
 void Client_Math::disconnect()
 {
     m_monitor.release();
-    ::close(m_socket.getSockFd());
-	m_socket.setSockFd(Ws::FD_NONE);
+    ::close(m_socket.sockfd);
+	m_socket.sockfd = Ws::FD_NONE;
 }

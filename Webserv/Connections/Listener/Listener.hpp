@@ -6,7 +6,8 @@
 
 # include "../../Ws_Namespace.h"
 
-class ConnInfo;
+# include "../ConnInfo/ConnInfo.hpp"
+
 namespace Ws { namespace Listen { typedef int backlog; } }
 
 class Listener
@@ -25,8 +26,7 @@ class Listener
 		const Ws::BindInfo&		getBindInfo();
 
 	protected:
-		Ws::Sock::fd			m_sockfd;
-		Ws::BindInfo			m_bindInfo;
+		ConnInfo				m_info;
 
 };
 
