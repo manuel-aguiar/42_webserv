@@ -3,9 +3,6 @@
 # include "InternalListener.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
-# include <iostream>
-
-
 int		InternalListener::open()
 {
 	int res = m_listener.open();

@@ -34,7 +34,6 @@ InternalConn::forcedClose()
 	Conn::Connection::close();
 }
 
-#include <iostream>
 void
 InternalConn::reset()
 {

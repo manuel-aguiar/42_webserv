@@ -20,7 +20,7 @@ namespace Conn
 		public:
 			Connection(	Events::Manager& eventManager, 
 						ServerContext& context, 
-						InternalManager* connManager);
+						InternalManager* connManager = NULL);
 
 			Connection(const Connection& copy);
 			Connection& operator=(const Connection& assign);
