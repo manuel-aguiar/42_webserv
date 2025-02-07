@@ -12,6 +12,7 @@ extern void testAccepter(int& testNumber);
 extern void testAppLayer(int& testNumber);
 extern void testStressTest(int& testNumber);
 extern void testMultiServer(int& testNumber);
+extern void testValgrindStress(int& testNumber);
 
 int main(void)
 {
@@ -26,6 +27,7 @@ int main(void)
 	testAccepter		(testNumber);
 	testAppLayer		(testNumber);
 	testManager			(testNumber);
+	testValgrindStress	(testNumber);
 	
 	TEST_FOOTER;
 

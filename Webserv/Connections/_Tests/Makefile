@@ -23,6 +23,7 @@ SRCS_COMMON				=  		$(SRC_PATH)/Webserv/Connections/_Tests/testSocket.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testManager.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testStressTest.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/testMultiServer.cpp \
+								$(SRC_PATH)/Webserv/Connections/_Tests/testValgrindStress.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/_TestDependencies.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/_ServerProtos.cpp \
 								$(SRC_PATH)/Webserv/Connections/_Tests/_ClientProtos.cpp \
