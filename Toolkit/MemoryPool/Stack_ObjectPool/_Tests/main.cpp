@@ -12,6 +12,8 @@ int main(void)
 
 	TEST_HEADER("Stack_ObjectPool");
 
+    Stack_ObjectPool<int, 10>     pool1;
+    
 	TEST_FOOTER;
 	
     return 0;
