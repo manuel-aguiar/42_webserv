@@ -2,23 +2,22 @@
 
 # include <iostream>
 # include <unistd.h>
+# include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
-extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
-//extern int SpecificTest(int testNumber);
+extern void TestPart1(int& testNumber);
+extern void TestPart2(int& testNumber);
 
 int main(void)
 {
 	int testNumber = 1;
-	std::cout << "\n*************** Module Functional Tests ***************" << std::endl;
+	TEST_HEADER("CgiModule Functional Tests");
 
-	testNumber = TestPart1(testNumber);
-	//testNumber = TestPart2(testNumber);
-	//testNumber = SpecificTest(testNumber);
+	TestPart1(testNumber);
+	TestPart2(testNumber);
 
 	close(STDERR_FILENO);
 
+	TEST_FOOTER;
 
-
-	std::cout << "***********************************************\n" << std::endl;
+	return (0);
 }

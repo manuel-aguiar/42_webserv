@@ -2,7 +2,7 @@
 
 # Compiler and flags
 CXX 					= 	c++
-CXXFLAGS 				= 	-Wall -Wextra -Werror -g -std=c++98 -MMD -MP -O3
+CXXFLAGS 				= 	-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 TARGET_BASE 			= 	functional_test.out
 TARGET_STRESSTEST 		= 	stress_test.out
 TARGET_STRESSVALG		= 	val_stress.out

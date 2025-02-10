@@ -23,23 +23,23 @@
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
-int TestPart1(int testNumber)
+void TestPart1(int& testNumber)
 {
 /******************************************************* */
 /******************************************************* */
 	//instantiation and cleanup test	
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
-		std::cout << "	PASSED (instantiation and cleanup)" << std::endl;
+		TEST_PASSED_MSG("instantiation and cleanup");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -48,18 +48,18 @@ int TestPart1(int testNumber)
 	//instantiation and cleanup test	
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
 
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 		Cgi::Request* data = cgi.acquireRequest();
 		(void)data;
-		std::cout << "	PASSED (acquiring and just going away)" << std::endl;
+		TEST_PASSED_MSG("acquiring and just going away");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -68,17 +68,17 @@ int TestPart1(int testNumber)
 	//instantiation and cleanup test	
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
 		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
 
 		cgi.processRequests();
-		std::cout << "	PASSED (finish timeout with empty queues)" << std::endl;
+		TEST_PASSED_MSG("finish timeout with empty queues");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -88,7 +88,7 @@ int TestPart1(int testNumber)
 	// script should run without issue
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
@@ -139,11 +139,11 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice");
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
 		
-		std::cout << "	PASSED (executing a script)" << std::endl;
+		TEST_PASSED_MSG("executing a script");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -154,7 +154,7 @@ int TestPart1(int testNumber)
 	// Testing timeout cleanup
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
@@ -211,11 +211,11 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
 
-		std::cout << "	PASSED (finishing requests that timed out)" << std::endl;
+		TEST_PASSED_MSG("finishing requests that timed out");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -226,7 +226,7 @@ int TestPart1(int testNumber)
 	
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::string		testFailure;
 		g_mockGlobals_ErrorMsgs.clear();
 
@@ -282,11 +282,11 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 
-		std::cout << "	PASSED (using a non-existant interpreter)" << std::endl;
+		TEST_PASSED_MSG("using a non-existant interpreter");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -297,7 +297,7 @@ int TestPart1(int testNumber)
 	
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 		std::string		testFailure;
 
 		Globals globals(NULL, NULL, NULL, NULL);
@@ -374,11 +374,11 @@ int TestPart1(int testNumber)
 
 		if (!testFailure.empty())
 			throw std::runtime_error(testFailure);
-		std::cout << "	PASSED (valid interpreter, bad script)" << std::endl;
+		TEST_PASSED_MSG("valid interpreter, bad script");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
@@ -388,7 +388,7 @@ int TestPart1(int testNumber)
 // passing an extension that is not registered
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
@@ -439,16 +439,14 @@ int TestPart1(int testNumber)
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0].length(), expectedError.length(), "Expected message length is not the same");
 		EXPECT_EQUAL(g_mockGlobals_ErrorMsgs[0], expectedError, "Expected error message not found in logs");
 
-		std::cout << "	PASSED (demanding an interpreter extension that is not set)" << std::endl;
+		TEST_PASSED_MSG("demanding an interpreter extension that is not set");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 
-
-	return (testNumber);
 }

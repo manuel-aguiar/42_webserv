@@ -30,13 +30,13 @@ extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 	if the cleanup is done properly
 */
 
-int TestPart2(int testNumber)
+void TestPart2(int& testNumber)
 {
 	// executing a script, no environment variables so far
 	// script should run without issue
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": ";
+		TEST_INTRO(testNumber++);
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
@@ -100,15 +100,14 @@ int TestPart2(int testNumber)
 		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Length doesn't match");
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
 
-		std::cout << "	PASSED (env vars + testing env variables)" << std::endl;
+		TEST_PASSED_MSG("env vars + testing env variables");
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
 
-	return (testNumber);
 }

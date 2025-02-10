@@ -3,27 +3,26 @@
 # include <iostream>
 # include "CgiStressTest.hpp"
 # include <unistd.h>
+# include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
-extern int TestPart1(int testNumber);
-extern int TestPart2(int testNumber);
+extern void TestPart1(int& testNumber);
+extern void TestPart2(int& testNumber);
 
 int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** Module Stress Children with Valgrind ***************" << std::endl;
+    TEST_HEADER("CgiModule Stress Tests, trace-children valgrind");
 
-    testNumber = TestPart1(testNumber);
-    testNumber = TestPart2(testNumber);
-    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidInterpreterPath, "InvalidInterpreterPath");	
-    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidInterpreter, "InvalidInterpreter");	
-    //testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::InvalidScript, "InvalidScript");
-	testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
-    testNumber = CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
-    testNumber = CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
+    TestPart1(testNumber);
+    TestPart2(testNumber);
+	CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
+    CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
+    CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
 
     close(STDERR_FILENO);
 
-    std::cout << "\n*******************************************************************" << std::endl;
+    TEST_FOOTER;
+
 	return (0);
 }

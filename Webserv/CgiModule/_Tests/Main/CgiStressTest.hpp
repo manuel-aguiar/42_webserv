@@ -24,13 +24,14 @@ class CgiStressTest
         
         static std::string 
                         ValgrindReadandClear(const char* filename);
-        static int     StressTest(int testNumber, 
+        static void     StressTest(int& testNumber, 
                                 const int workers, 
                                 const int backlog, 
                                 const int connectionCount, 
                                 const unsigned int timeoutMs,
                                 void (*AssignmentCriteria)(TestProtoRequest& proto, int index),
-                                const char* assignmentDescription);
+                                const char* assignmentDescription,
+                                const bool isDebugPrint = false);
         
         static void prepareExpectedOutput(bool isExpectedValid, TestProtoRequest& proto);
 };

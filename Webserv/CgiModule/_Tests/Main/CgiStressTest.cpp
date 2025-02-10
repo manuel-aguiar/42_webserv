@@ -194,17 +194,18 @@ void	CgiStressTest::AllInvalidCriteria(TestProtoRequest& proto, int index)
 	}
 }
 
-int CgiStressTest::StressTest(int testNumber, 
+void CgiStressTest::StressTest(int& testNumber, 
 					const int workers, 
 					const int backlog, 
 					const int connectionCount, 
 					const unsigned int timeoutMs,
 					void (*AssignmentCriteria)(TestProtoRequest& proto, int index),
-					const char* assignmentDescription)
+					const char* assignmentDescription,
+					const bool isDebugPrint)
 {
 	try
 	{
-		std::cout << "TEST " << testNumber++ << ": "  << assignmentDescription << '\n';
+		TEST_INTRO(testNumber++);
 
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(workers * 3, globals);
@@ -343,36 +344,42 @@ int CgiStressTest::StressTest(int testNumber,
 		if (!valLog.empty())
 			FailureMessages = FailureMessages + TEST_ERROR_MSG(valLog, std::string(""), "Valgrind errors in this test");
 
+		if (isDebugPrint)
+		{
+			std::cout << "\t=================================" << std::endl
+			<< "\t| success:           " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_SUCCESS] << " |\n"
+			<< "\t| failed acquire:    " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE] << " |\n"
+			<< "\t| timedout:          " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_TIMEOUT] << " |\n"
+			<< "\t| error startup:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_STARTUP] << " |\n"
+			<< "\t| error runtime:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME] << " |\n"
+			<< "\t| working:           " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_WORKING] << " |\n"
+			<< "\t---------------------------------" << '\n'
+			<< "\t| Total Connections: " << std::setw(10) << connectionCount << " |\n"
+			<< "\t| Total Workers:     " << std::setw(10) << workers << " |\n"
+			<< "\t| Total Backlog:     " << std::setw(10) << backlog << " |\n"
+			<< "\t| Req TimeOut (ms):  " << std::setw(10) << timeoutMs << " |\n"
+			<< "\t=================================" << std::endl;
+		}
 			
-		std::cout << "\t=================================" << std::endl
-		<< "\t| success:           " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_SUCCESS] << " |\n"
-		<< "\t| failed acquire:    " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE] << " |\n"
-		<< "\t| timedout:          " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_TIMEOUT] << " |\n"
-		<< "\t| error startup:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_STARTUP] << " |\n"
-		<< "\t| error runtime:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME] << " |\n"
-		<< "\t| working:           " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_WORKING] << " |\n"
-		<< "\t---------------------------------" << '\n'
-		<< "\t| Total Connections: " << std::setw(10) << connectionCount << " |\n"
-		<< "\t| Total Workers:     " << std::setw(10) << workers << " |\n"
-		<< "\t| Total Backlog:     " << std::setw(10) << backlog << " |\n"
-		<< "\t| Req TimeOut (ms):  " << std::setw(10) << timeoutMs << " |\n"
-		<< "\t=================================" << std::endl;
 	
 		if (!FailureMessages.empty())
 			throw std::logic_error(FailureMessages);
 
+		std::string summary =  "Workers: " +TestHelpers::to_string(workers) +
+                      ", Backlog: " + TestHelpers::to_string(backlog) +
+                      ", Timeout(ms): " + TestHelpers::to_string(timeoutMs) + "]" +
+					  " || Success: " + TestHelpers::to_string(statusCounter[TestProtoRequest::E_CGI_STATUS_SUCCESS]) +
+                      "/" + TestHelpers::to_string(connectionCount) + " connections" + 
+					  ", Policy: " + std::string(assignmentDescription);
 
-		// me and the gpadi			
-		std::cout << "	PASSED [Stress Testing]\n\n" << std::endl;
 
+		TEST_PASSED_MSG(summary);
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "	FAILED: " << e.what()  << '\n' << std::endl;
+		TEST_FAILED_MSG(e.what());
 	}
 
 	// clear the error messages not to mess with the remaining tests
 	g_mockGlobals_ErrorMsgs.clear();
-
-	return (testNumber);
 }

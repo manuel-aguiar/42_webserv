@@ -3,33 +3,24 @@
 # include <iostream>
 # include <unistd.h>
 # include "CgiStressTest.hpp"
+# include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 int main(void)
 {
 	int testNumber = 1;
 
-	std::cout << "\n*************** CgiModule Stress Tests ***************" << std::endl;
+	TEST_HEADER("CgiModule Stress Tests");
 	
-	testNumber = CgiStressTest::StressTest(testNumber, 5, 5, 5, 50, &CgiStressTest::ValidPython, "ValidPython");
-	testNumber = CgiStressTest::StressTest(testNumber, 20, 50, 500, 500, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 100, 100, 15000, &CgiStressTest::InvalidInterpreterPath, "InvalidInterpreterPath");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 100, 100, 15000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 500, 5000, 15000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::MixedCriteria, "MixedCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::InvalidInterpreter, "InvalidInterpreter");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::InvalidScript, "InvalidScript");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::InvalidInterpreterPath, "InvalidInterpreterPath");
-	//testNumber = CgiStressTest::StressTest(testNumber, 5, 100, 1000, 15000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 20, 500, 5000, 15000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 20, 500, 5000, 15000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 20, 500, 5000, 80, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 500, 5000, 50, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 500, 5000, 100, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	//testNumber = CgiStressTest::StressTest(testNumber, 10, 500, 5000, 10, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
-	std::cout << "\n*************** ********************************" << std::endl;
+	CgiStressTest::StressTest(testNumber, 5, 5, 5, 50, &CgiStressTest::ValidPython, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 1, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 2, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 5, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 10, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 20, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
 	
 	close(STDERR_FILENO);
+
+	TEST_FOOTER;
 
 	return (0);
 }
