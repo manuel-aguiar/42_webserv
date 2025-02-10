@@ -20,7 +20,7 @@ class File
 		const char* path() const;
 
 	private:
-		t_fd		m_fd;
+		Ws::fd		m_fd;
 		size_t 		m_size;
 		size_t		offset;
 

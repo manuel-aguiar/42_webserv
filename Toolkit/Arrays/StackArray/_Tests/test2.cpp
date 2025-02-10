@@ -39,7 +39,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         // Test copy assignment
@@ -91,7 +91,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         // Test copy constructor
@@ -137,7 +137,7 @@ int TestPart2(int testNumber)
 
         for (; it != array.end() && iter != std.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         // Test copy constructor

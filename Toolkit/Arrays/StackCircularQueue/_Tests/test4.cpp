@@ -37,7 +37,7 @@ int TestPart4(int testNumber)
         std::list<int>::iterator iter = list.begin();
         for (; it != queue.end() && iter != list.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch in first test");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         TEST_PASSED;
@@ -69,7 +69,7 @@ int TestPart4(int testNumber)
         std::list<ToolkitDummy>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch in second test");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch in second test");
         }
 
         TEST_PASSED;
@@ -101,7 +101,7 @@ int TestPart4(int testNumber)
         std::list<ToolkitDummy>::iterator iter = std.begin();
         for (; it != queue.end() && iter != std.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch in third test");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         TEST_PASSED;
@@ -134,7 +134,7 @@ int TestPart4(int testNumber)
 
         for (; it != queue.end() && iter != list.end(); ++it, ++iter)
         {
-            EXPECT_EQUAL(*it, *iter, "value mismatch in fourth test");
+            EXPECT_EQUAL(*it == *iter, true, "value mismatch");
         }
 
         TEST_PASSED;

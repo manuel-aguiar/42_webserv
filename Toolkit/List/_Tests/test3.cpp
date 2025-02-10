@@ -35,7 +35,7 @@ int TestPart3(int testNumber)
 		List<int>::iterator it = list.begin();
 		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}
@@ -68,7 +68,7 @@ int TestPart3(int testNumber)
 		List<int>::iterator it = list.begin();
 		for (; it != list.end() && iter != std.end(); ++it, ++iter)
 		{
-			EXPECT_EQUAL(*it, *iter, "value mismatch");
+			EXPECT_EQUAL(*it == *iter, true, "value mismatch");
 		}
 		TEST_PASSED;
 	}

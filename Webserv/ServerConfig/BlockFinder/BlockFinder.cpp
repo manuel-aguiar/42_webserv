@@ -1,5 +1,9 @@
+
+
 #include "BlockFinder.hpp"
+
 #include "../ServerBlock/ServerBlock.hpp"
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 BlockFinder::BlockFinder():
     m_wildcardKey() {
@@ -10,11 +14,12 @@ BlockFinder::BlockFinder():
 
 BlockFinder::~BlockFinder() {}
 
-std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const struct sockaddr* addr) const {
-    assert(addr != NULL && "Address is NULL");
-    assert(addr->sa_family == AF_INET && "Invalid address family");
+std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr* addr) const
+{
+    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_extractIpPort(): Address is NULL");
+    ASSERT_EQUAL(addr->sa_family, AF_INET, "BlockFinder::mf_extractIpPort(): Currently supports only ipv4");
 
-    struct sockaddr_in* ipv4 = (struct sockaddr_in*)addr;
+    Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
     return std::make_pair(ipv4->sin_addr.s_addr, ipv4->sin_port);
 }
 
@@ -23,8 +28,8 @@ std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const struct sockadd
 **	creates a BlockIdentifier struct for a given address and server name
 **	uses normalized directives
 */
-BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const struct sockaddr* addr, const std::string& serverName) const {
-    assert(addr != NULL && "Address is NULL");
+BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const Ws::Sock::addr* addr, const std::string& serverName) const {
+    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_createIdentifier(): Address is NULL");
 
     BlockIdentifier key;
     std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(addr);
@@ -41,7 +46,7 @@ BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const struct socka
 **	checks if a server block with the given ip, port and server name exists
 **	uses normalized directives
 */
-bool	BlockFinder::hasServerBlock(struct sockaddr* address, const std::string& serverName)
+bool	BlockFinder::hasServerBlock(Ws::Sock::addr* address, const std::string& serverName)
 {
     return (findServerBlock(address, serverName) != NULL);
 }
@@ -55,15 +60,15 @@ bool	BlockFinder::hasServerBlock(struct sockaddr* address, const std::string& se
 */
 void	BlockFinder::addServerBlock(const ServerBlock& block)
 {
-    const std::vector<const struct sockaddr*>& listeners = block.getListenAddresses();
+    const std::vector<const Ws::Sock::addr*>& listeners = block.getListenAddresses();
     const std::set<std::string>& serverNames = block.getServerNames();
 
     // For each listener (IP:port pair)
-    for (std::vector<const struct sockaddr*>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
+    for (std::vector<const Ws::Sock::addr*>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
     {
         // Port directive is mandatory and cannot be wildcard
         std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(*lit);
-        assert(ipPort.second != 0 && "Port directive is mandatory");
+        ASSERT_EQUAL(ipPort.second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
 
         // For each server name
         for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)
@@ -77,6 +82,12 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
     }
 }
 
+void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
+{
+    for (std::vector<ServerBlock>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
+        addServerBlock(*it);
+}
+
 /*
 **	findServerBlock
 **	Finds the server block that matches the given IP, port, and server name.
@@ -88,7 +99,7 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
 **	- IP wildcard (0.0.0.0), but exact port and server name.
 **	- IP:port match, but server name is a wildcard (*).
 */
-const ServerBlock*	BlockFinder::findServerBlock(struct sockaddr* address, const std::string& serverName)
+const ServerBlock*	BlockFinder::findServerBlock(Ws::Sock::addr* address, const std::string& serverName)
 {
     BlockIdentifier key = mf_createIdentifier(address, serverName);
 
@@ -120,7 +131,7 @@ const ServerBlock*	BlockFinder::findServerBlock(struct sockaddr* address, const 
 **	removeServerBlock
 **	removes a server block from the server_blocks map
 */
-void	BlockFinder::removeServerBlock(struct sockaddr* address, const std::string& serverName)
+void	BlockFinder::removeServerBlock(Ws::Sock::addr* address, const std::string& serverName)
 {
     BlockIdentifier key = mf_createIdentifier(address, serverName);
     std::map<BlockIdentifier, const ServerBlock*>::iterator it = m_serverBlocks.find(key);

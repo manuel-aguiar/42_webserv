@@ -1,6 +1,12 @@
 
 
 #include "ServerBlock.hpp"
+#include "../../Ws_Namespace.h"
+#include "../../GenericUtils/Validation/Validation.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
+
 
 ServerBlock::ServerBlock()
 {
@@ -48,7 +54,7 @@ void	ServerBlock::setClientBodySize(const std::string &value)
 		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
-		throw(e.what());
+		throw (std::invalid_argument(e.what()));
 	}
 	m_client_body_size = value;
 }
@@ -59,9 +65,18 @@ void	ServerBlock::setClientHeaderSize(const std::string &value)
 		StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
-		throw(e.what());
+		throw (std::invalid_argument(e.what()));
 	}
 	m_client_header_size = value;
+}
+
+bool	Config::Listen::operator<(const Config::Listen &rhs) const
+{
+	if (appLayer != rhs.appLayer)
+		return (appLayer < rhs.appLayer);
+	if (hostname != rhs.hostname)
+		return (hostname < rhs.hostname);
+	return (port < rhs.port);
 }
 
 void	ServerBlock::addListener(const std::string &value)
@@ -89,7 +104,7 @@ void	ServerBlock::addListener(const std::string &value)
 	portValue = StringUtils::stoull(port); // fix throw
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert(t_listeners(hostname, port));
+	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
 }
 
 void	ServerBlock::addServerName(const std::string &value)
@@ -102,21 +117,24 @@ void	ServerBlock::addServerName(const std::string &value)
 
 void	ServerBlock::addErrorPage(const std::string &value)
 {
-	std::stringstream	ss;
 	std::string			error_code;
 	std::string			path;
 	size_t				separator;
 
-	ss << value;
 	separator = value.find_first_of(':', 0);
 	if (separator == std::string::npos)
-		throw (std::invalid_argument("no separator \":\" found while adding error page (errorValue:path)"));
+		throw (std::invalid_argument("no separator \":\" found while adding error page (errorNumber:path)"));
 	error_code = value.substr(0, separator);
-	if (!Validation::isNumber(error_code))
-		throw (std::invalid_argument("error code is not a number: " + error_code));
-	// path = value.substr(separator + 1, value.size() - (separator - 1));			// To retrieve the path
+	path = value.substr(separator + 1);
+	if (error_code.empty() || path.empty())
+		throw (std::invalid_argument("error code or path is empty"));
+	if (!Validation::isNumber(error_code) || StringUtils::stoull(error_code) < 100 || StringUtils::stoull(error_code) > 599)
+		throw (std::invalid_argument("error code is not a valid number: " + error_code + ". It must be a value between 100 and 599"));
+	if (m_error_pages.find(value) != m_error_pages.end())
+		throw (std::invalid_argument("error page already set: " + value));
 	m_error_pages.insert(value);
-	// Get a way to add error pages without repeated values
+
+	
 }
 
 void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
@@ -131,7 +149,7 @@ const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
 	return (m_locations);
 }
 
-const std::set<t_listeners>&	ServerBlock::getListeners() const
+const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
 	return (m_listen);
 }
@@ -212,8 +230,8 @@ void	ServerBlock::printServerConfig() const
 	std::cout << "║ ┌─ Server ─────────o\n";
 	std::cout << "║ │ \n";
 	std::cout << "║ │ listeners: ";
-	for (std::set<t_listeners>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
-		std::cout << it->first << ":" << it->second << " ";
+	for (std::set<Config::Listen>::const_iterator it = getListeners().begin(); it != getListeners().end(); it++)
+		std::cout << it->hostname << ":" << it->port << " ";
 	std::cout << "\n";
 	std::cout << "║ │ server_name: ";
 	if (!server_name.size())

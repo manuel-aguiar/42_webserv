@@ -1,6 +1,13 @@
 
 
+// Own Headers
+
 # include "ServerConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
+# include "../ServerLocation/ServerLocation.hpp"
+# include "../ServerBlock/ServerBlock.hpp"
+
 
 ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
 	m_configFilePath(configFilePath),
@@ -44,7 +51,7 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 
 bool	ServerConfig::m_updateFile()
 {
-	m_configFileStream.open(m_configFilePath.c_str());
+	m_configFileStream.open(m_configFilePath);
 	if (!m_configFileStream.is_open())
 	{
 		std::cerr << "Error: Could not open configuration file." << std::endl;
@@ -77,7 +84,6 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 		{
 			case PROGRAM_LEVEL:
 				try {
-					// std::cout << "programLevel Set!! " << value << "\n";
 					m_setConfigValue(key, value);
 				}
 				catch (std::exception &e) {
@@ -231,7 +237,7 @@ int		ServerConfig::parseConfigFile()
 }
 
 // Getters & Setters
-const t_path&		ServerConfig::getConfigPath() const
+const char*		ServerConfig::getConfigPath() const
 {
 	return (m_configFilePath);
 }
@@ -256,29 +262,57 @@ const std::string		&ServerConfig::getMaxCgiBacklog() const
 	return (m_max_cgi_backlog);
 }
 
-void		ServerConfig::setConfigPath(const t_path &path)
-{
-	m_configFilePath = path;
-}
-
 void		ServerConfig::setMaxConnections(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_connections must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_connections value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_connections must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_connections = value;
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_concurrent_cgi = value;
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_cgi_backlog value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_cgi_backlog must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_cgi_backlog = value;
 }
 
@@ -292,7 +326,7 @@ void	ServerConfig::m_setDefaults()
 		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
 }
 
-const std::vector<BindAddress>&	ServerConfig::getAllBindAddresses() const
+const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const
 {
 	return (m_bindAddresses);
 }

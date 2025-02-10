@@ -6,9 +6,6 @@
 
 # include <ctime>
 # include <sys/time.h>
-# include <cerrno>
-# include <cstring>
-# include <cassert>
 
 class Globals;
 

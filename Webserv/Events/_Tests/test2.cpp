@@ -15,6 +15,9 @@
 // C++ headers
 # include <iostream>
 
+// C headers
+# include <unistd.h>
+
 static long fibonacci(unsigned int n)
 {
 	long a;
@@ -56,7 +59,7 @@ struct WriteHello
 	static void onWriteHello(Events::Subscription& cb)
 	{
 		WriteHello* writeHello = reinterpret_cast<WriteHello*>(cb.accessUser());
-		write(writeHello->m_fd, "Hello", 5);
+		::write(writeHello->m_fd, "Hello", 5);
 	}
 
 	int	m_fd;
@@ -168,8 +171,8 @@ int TestPart2(int testNumber)
 
 
 		// close the socketpair
-		close(sockfd[0]);
-		close(sockfd[1]);
+		::close(sockfd[0]);
+		::close(sockfd[1]);
 
 		TEST_PASSED_MSG("handling communication between a writer and a reader");
 	}

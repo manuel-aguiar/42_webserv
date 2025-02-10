@@ -24,7 +24,7 @@ StringUtils::stoull(const std::string &str)
 	size_t				value;
 
 	ss >> value;
-    if (ss.fail() || !ss.eof())
+	if (ss.fail() || !ss.eof())
 		throw (std::invalid_argument("Invalid value (not a number): " + str));
 	return (value);
 }
