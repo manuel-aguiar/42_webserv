@@ -15,6 +15,7 @@
 # include <set>
 # include <iostream>
 # include "../HttpDefinitions.hpp"
+# include "../../GenericUtils/Files/FilesUtils.hpp"
 
 // Forward declarations
 class HttpConnection;
@@ -27,6 +28,11 @@ class HttpRequest {
 
         // Main parsing interface
         int parse(const std::string& rawData);
+
+		/* IDEA: instead of returning int, parse stores an "errcode value that when
+		 *	generateResponse() is called it is checked and if it isnt the default value,
+		 *	instantly generates the error " */
+		int generateResponse();
 
         // Getters for components
         const std::string& 							getMethod() const;
