@@ -109,7 +109,7 @@ void TestPart1(int& testNumber)
 		request.setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		request.setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
 		request.setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
-		request.setRuntimeOptions(Cgi::Options::HOLD_WRITE);
+		request.setRuntimeOptions(Cgi::Options::HOLD_WRITE); // "if write events gets triggered, don't write just yet"
 		request.setTimeoutMs(5000); // 5ms
 		request.setExtension("py");
 		request.setScriptPath("TestScripts/py/envPrint.py");
