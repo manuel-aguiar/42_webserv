@@ -95,42 +95,67 @@ void TestPart1(int& testNumber)
 		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
 		TestProtoRequest protoRequest(globals, cgi, 0);
 
+		// configuration of the CgiModule
 		cgi.addInterpreter("py", "/usr/bin/python3");
 
+		// acquiring a request
 		protoRequest.m_CgiRequestData = cgi.acquireRequest();
 		
 		Cgi::Request& request = *protoRequest.m_CgiRequestData;
 
-		// preparing request with relevant data
+		// tell the request who the user of the callbacks is
 		request.setUser(&protoRequest);
+
+		// notification callbacks
 		request.setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
 		request.setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
 		request.setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
 		request.setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+
+		// IO callbacks
 		request.setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
 		request.setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+
+		// options, you can ignore this
 		request.setRuntimeOptions(Cgi::Options::HOLD_WRITE); // "if write events gets triggered, don't write just yet"
+		
+		// if the request cannot be completed in 5ms, time out
 		request.setTimeoutMs(5000); // 5ms
+
+		// setting extension
 		request.setExtension("py");
+
+		// where the script is
 		request.setScriptPath("TestScripts/py/envPrint.py");
+
+		// set an environment variable that is part of the Cgi specification
 		request.setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+
+		// set an environment variable that is not part of the Cgi specification, maybe HTTP_SOME_STUFF
+		request.setEnvExtra("CUSTOM_ENTRY1", "a random value");
 
 		CgiStressTest::prepareExpectedOutput(true, protoRequest);
 
+		// place the request for execution. if the user attempts to change execution parameters, the program will ABORT
 		cgi.enqueueRequest(request, false);
+
+		// options, don't worry about it, but if you want to change the request, you "can" do it here
 		cgi.modifyRequest(request, false, Cgi::Options::RESTART_WRITE);
 
 		//event loop
 		while (1)
 		{
+			// Controller incorporating the CgiModule in its event loop
 			unsigned int nextWait = cgi.processRequests();
 			
 			if (eventManager.getMonitoringCount() != 0)
+				// event handler, used by the cgimodule as well as the Conn::Manager, etc
 				eventManager.ProcessEvents(nextWait);
 			else
 				break ;
 		}
 
+		// no need to call finish request, the CgiModule takes the request as finished.
 
 		// tests
 		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
