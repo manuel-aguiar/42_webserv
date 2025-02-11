@@ -45,11 +45,8 @@ namespace Http
     Module::ForcedClose(Conn::Connection& connection)
     {
         Http::Connection*   httpConnection = reinterpret_cast<Http::Connection*>(connection.appLayer_accessConn());
-        Http::Module&       module = *reinterpret_cast<Http::Module*>(connection.accessServerContext().getAppLayerModule(Ws::AppLayer::HTTP));
 
         httpConnection->close();
-        module.returnConnection(*httpConnection);
-        connection.close();
     }
 
 }	// end of http namespace

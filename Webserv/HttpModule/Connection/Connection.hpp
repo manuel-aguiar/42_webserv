@@ -8,10 +8,13 @@
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 
+// C++ headers
+# include <deque>
+
 // forward declarations
 namespace Events { class Subscription; }
 namespace Conn { class Connection; }
-namespace Http { class Module;}
+namespace Http { class Module; class Request; class Response;}
 
 
 namespace Http
@@ -34,7 +37,7 @@ namespace Http
 			void 	setMyTCP(Conn::Connection* tcpConn);
 
 
-			// clean all stored stated to be reused later
+			// clean all stored state to be reused later
 			void	close();
 
 		private:
@@ -47,6 +50,8 @@ namespace Http
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
+			std::deque<Http::Request> 							m_requests;
+			std::deque<Http::Response> 							m_responses;
 	};
 };
 

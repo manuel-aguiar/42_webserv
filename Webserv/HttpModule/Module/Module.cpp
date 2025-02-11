@@ -62,4 +62,28 @@ Module::Module(const size_t maxConnections, const DefaultConfig& config, Globals
         m_timers.erase(position);
     }
 
+    int 
+    Module::closeTimedOutConnections()
+    {
+        Timer timer = Timer::now();
+
+        TimerTracker<Timer, Http::Connection*>::iterator 	it = m_timers.begin();
+        Http::Connection* 								    curRequest;
+        
+        for (; it != m_timers.end(); ++it) 
+        {
+            if (it->first < timer)
+            {
+                curRequest = it->second;
+                curRequest->close();
+            }
+            else
+                break ;
+        }
+                     
+        if (m_timers.begin() == m_timers.end())
+            return (-1);
+        return ((timer < m_timers.begin()->first) ? 1 : (m_timers.begin()->first - timer).getMilliseconds());        
+    }
+
 }	// end of namespace Http
