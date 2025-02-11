@@ -36,6 +36,10 @@ class DefaultConfig
 		std::string	methods;
 		std::string	type;
 
+		std::string timeoutFullHeader;
+		std::string timeoutInterSend;
+		std::string timeoutInterReceive;
+
 };
 
 #endif

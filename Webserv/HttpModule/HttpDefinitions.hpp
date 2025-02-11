@@ -84,6 +84,40 @@ namespace Http
     // {
     //     const std::set<std::string>& getAllowedHeaders();
     // }
+
+    enum { GLOBAL_MAXHEADERSIZE = 30000000};
+
+    // Global max header size:
+    //
+    // Server Blocks have their own limits on header size. However, it is during parsing of headers that we figure which
+    // Server Block is the one in control (Host header + IP::port combination -> BlockFinder). So, until then,
+    // unless we have some form of protection to detect the correct server, a malicious client could be sending garbage and we
+    // would not stop it. Therefore, we must set a globalmaxheadersize.
+    // As for the body, that problem no longer exists -> we know the server block, we know the limits.
+    // 
+
+    // timeouts expressed in miliseconds (ms)
+	namespace Timeout
+	{
+		typedef enum
+		{
+			CONNECTION = 0,				// connection timeout
+			FULL_REQUEST,			// full request timeout, from first byte to parsing::OK
+			FULL_RESPONSE,			// full response timeout, from first byte to last
+			INTER_SEND,				// max time between two write calls
+			INTER_RECEIV,			// max time between two read calls
+            COUNT,
+		}
+		Type;
+	}
+    // Timeouts:
+    //
+    // The same thing happens with timeouts. Timeout values are configured per server block but, before identifying
+    // the relevant server block, we need some fallback protection such that, until we identify the server block
+    // we have some timeout that won't let the client write bogus bytes forever. Therefore, these timeouts are considered "global" as well
+    // In our implementation, we don't allow such configuration for the user, so we will always default to the global timeouts.
+    // For clarity in purpose, we maintain the "global" name for the variable.
+
 }
 
 #endif
