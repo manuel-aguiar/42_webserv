@@ -101,9 +101,7 @@ namespace Http
 	{
 		typedef enum
 		{
-			CONNECTION = 0,				// connection timeout
 			FULL_REQUEST,			// full request timeout, from first byte to parsing::OK
-			FULL_RESPONSE,			// full response timeout, from first byte to last
 			INTER_SEND,				// max time between two write calls
 			INTER_RECEIV,			// max time between two read calls
             COUNT,

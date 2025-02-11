@@ -29,7 +29,7 @@ class ServerContext
 
 		ServerConfig*			getServerConfig() const;
 		Globals*				getGlobals() const;
-		Ws::AppLayer::Module	getAppLayerModule(Ws::AppLayer::Type type) const;
+		Ws::AppLayer::Module	getAppLayerModule(Ws::AppLayer::Type type);
 		Ws::AppLayer::Init		getAppLayerInit(Ws::AppLayer::Type type) const;
 		Ws::AddonLayer::State	getAddonLayer(Ws::AddonLayer::Type type) const;
 

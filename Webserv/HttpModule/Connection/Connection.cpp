@@ -1,22 +1,15 @@
 
 # include "Connection.hpp"
-
+# include "../../Events/Subscription/Subscription.hpp"
 namespace Http
 {
-	
-Connection::Connection() {}
-Connection::~Connection() {}
-Connection::Connection(const Connection& other) {(void)other;}
-Connection& Connection::operator=(const Connection& other) {(void)other; return (*this);}
 
-void	Connection::onIO()
+void
+Connection::ReadWrite_Callback(Events::Subscription& subscription)
 {
-	// gotta read and write, parse, all the good stuff, create a request, save it
-}
+	Http::Connection* connection = reinterpret_cast<Http::Connection*>(subscription.accessUser());
+	connection->ReadWrite();
 
-void	Connection::setMyTCP(Conn::Connection* tcpConn)
-{
-	m_tcpConn = tcpConn;
 }
 
 }	// end of http namespace

@@ -4,25 +4,49 @@
 
 # define HTTPCONNECTION_HPP
 
+// Project headers
+# include "../../TimerTracker/TimerTracker.hpp"
+# include "../../TimerTracker/Timer/Timer.hpp"
+
+// forward declarations
 namespace Events { class Subscription; }
 namespace Conn { class Connection; }
+namespace Http { class Module;}
+
 
 namespace Http
 {
 	class Connection
 	{
 		public:
-			Connection();
+			Connection(Http::Module& module);
 			~Connection();
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);
 
-			static void IO_Callback(Events::Subscription& subscription);
-			void onIO();
-			void setMyTCP(Conn::Connection* tcpConn);
-		
+			static void ReadWrite_Callback(Events::Subscription& subscription);
+
+			void 	ReadWrite();
+
+
+
+			void 	setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer);
+			void 	setMyTCP(Conn::Connection* tcpConn);
+
+
+			// clean all stored stated to be reused later
+			void	close();
+
 		private:
-			Conn::Connection* m_tcpConn;
+
+        	char m_readBuffer[1024];
+        	char m_writeBuffer[1024];
+
+			Http::Module& 										m_module;
+			Timer 												m_readTimer;
+			Timer 												m_writeTimer;
+			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
+			Conn::Connection* 									m_tcpConn;
 	};
 };
 

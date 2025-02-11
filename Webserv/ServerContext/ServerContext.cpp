@@ -67,7 +67,7 @@ Globals*			ServerContext::getGlobals() const
 	return (m_globals);
 }
 
-Ws::AppLayer::Module		ServerContext::getAppLayerModule(Ws::AppLayer::Type type) const
+Ws::AppLayer::Module		ServerContext::getAppLayerModule(Ws::AppLayer::Type type)
 {
 	return (m_appLayerState[type]);
 }

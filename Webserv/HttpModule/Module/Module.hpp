@@ -24,12 +24,27 @@ namespace Http
 	class Module
 	{
 		public:
-			Module(const size_t maxConnections, DefaultConfig& config, Globals& globals);
+			Module(const size_t maxConnections, const DefaultConfig& config, Globals& globals);
 			~Module();
 
+			//starter pack
 			static void    	InitConnection(Conn::Connection& connection);
 			static void		ForcedClose(Conn::Connection& connection);
-		
+
+			// event loop
+			int 				closeTimedOutConnections();
+
+			// connection management
+			Http::Connection*	acquireConnection();
+			void                returnConnection(Http::Connection& connection);
+
+			// timer management
+			TimerTracker<Timer, Http::Connection*>::iterator 
+			insertTimer(const Timer& timer, Http::Connection& connection);
+
+			void
+			removeTimer(TimerTracker<Timer, Http::Connection*>::iterator position);
+
 			// config getters
 			int				getClientMaxHeaderSize() const;
 			int				getClientMaxBodySize() const;
