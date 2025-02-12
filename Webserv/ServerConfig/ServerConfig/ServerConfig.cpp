@@ -12,15 +12,14 @@
 // C++ headers
 # include <cstdlib> // atoi
 
-ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals) :
+ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
 	m_max_connections(DefaultConfig::UINT_NONE),
 	m_max_concurrent_cgi(DefaultConfig::UINT_NONE),
 	m_max_cgi_backlog(DefaultConfig::UINT_NONE),
 	m_max_workers(DefaultConfig::UINT_NONE),	
 	m_configDefault(defaultConfig),
 	m_configFilePath(configFilePath),
-	m_serverCount(0),
-	m_globals(globals)
+	m_serverCount(0)
 {
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
@@ -272,6 +271,11 @@ int		ServerConfig::getMaxCgiBacklog() const
 int		ServerConfig::getMaxWorkers() const
 {
 	return (m_max_workers);
+}
+
+const DefaultConfig&	ServerConfig::getDefaultConfig() const
+{
+	return (m_configDefault);
 }
 
 void		ServerConfig::setMaxConnections(const std::string &value)

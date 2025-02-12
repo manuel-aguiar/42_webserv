@@ -21,7 +21,7 @@ class ServerContext
 		ServerContext(const ServerContext& copy);
 		ServerContext& operator=(const ServerContext& assign);
 
-		void					setServerConfig(ServerConfig& config);
+		void					setServerConfig(const ServerConfig& config);
 		void					setGlobals(Globals& globals);
 		void					setBlockFinder(BlockFinder& blockFinder);
 		void					setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init);

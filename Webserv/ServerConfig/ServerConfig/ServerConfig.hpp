@@ -26,7 +26,7 @@ struct DefaultConfig;
 class ServerConfig
 {
 	public:
-		ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals);
+		ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig);
 		~ServerConfig();
 		ServerConfig &operator=(const ServerConfig &other);
 
@@ -38,6 +38,7 @@ class ServerConfig
 		int											getMaxCgiBacklog() const;
 		int											getMaxWorkers() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
+		const DefaultConfig&						getDefaultConfig() const;
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
@@ -72,9 +73,6 @@ class ServerConfig
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
-		Globals*							m_globals; // mostly for logs and debuging, see Globals class
-		
-
 		std::vector<Ws::BindInfo>			m_bindAddresses;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)

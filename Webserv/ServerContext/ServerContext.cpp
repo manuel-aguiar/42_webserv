@@ -31,9 +31,9 @@ ServerContext& ServerContext::operator=(const ServerContext& assign)
 	return (*this);
 }
 
-void	ServerContext::setServerConfig(ServerConfig& config)
+void	ServerContext::setServerConfig(const ServerConfig& config)
 {
-	m_config = &config;
+	m_config = const_cast<ServerConfig*>(&config); //horrible stuff
 }
 
 void	ServerContext::setGlobals(Globals& globals)

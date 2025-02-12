@@ -16,6 +16,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build
 SRCS 					=																	\
 																							\
 		$(SRC_PATH)/main.cpp																\
+		$(SRC_PATH)/Run/WebservRun.cpp														\
 																							\
 																							\
 		$(SRC_PATH)/TimerTracker/Timer/Timer.cpp											\

@@ -30,7 +30,7 @@ void testFunction(const std::string &filePath, int testNbr, bool expectedValid)
 
 	bool passed = false;
 	DefaultConfig defaultConfig;
-	ServerConfig config(filePath.c_str(), defaultConfig, NULL);
+	ServerConfig config(filePath.c_str(), defaultConfig);
 	if (config.parseConfigFile() == (int)expectedValid)
 		passed = true;
 									//cleanup

@@ -21,7 +21,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_TwoListen.conf", defaultConfig, NULL);
+        ServerConfig config("OneServer_TwoListen.conf", defaultConfig);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -69,7 +69,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_Wildcard.conf", defaultConfig, NULL);
+        ServerConfig config("OneServer_Wildcard.conf", defaultConfig);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -113,7 +113,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_LocalHost.conf", defaultConfig, NULL);
+        ServerConfig config("OneServer_LocalHost.conf", defaultConfig);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -152,7 +152,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_SameListen.conf", defaultConfig, NULL);
+        ServerConfig config("TwoServer_SameListen.conf", defaultConfig);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -190,7 +190,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_Wildcard.conf", defaultConfig, NULL);
+        ServerConfig config("TwoServer_Wildcard.conf", defaultConfig);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -232,7 +232,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_LocalHost.conf", defaultConfig, NULL);
+        ServerConfig config("TwoServer_LocalHost.conf", defaultConfig);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -267,7 +267,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_BadDNS.conf", defaultConfig, NULL);
+        ServerConfig config("OneServer_BadDNS.conf", defaultConfig);
 
                                             // setting pipes to read stderr
                                             int pipefd[2];
