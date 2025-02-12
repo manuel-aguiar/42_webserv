@@ -92,6 +92,8 @@ void    ServerManager::mf_runMultiThreaded()
 
 	if (::sigemptyset(&threadSigSet) != 0)
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigemptyset failed");
+	if (::sigaddset(&threadSigSet, SIGTERM))
+		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
 	if (::sigaddset(&threadSigSet, SIGINT))
 		throw std::runtime_error("ServerManager::mf_runMultiThreaded: sigaddset failed");
 	if (::sigaddset(&threadSigSet, SIGQUIT))

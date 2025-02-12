@@ -3,23 +3,29 @@
 
 // Project headers
 # include "Globals/Globals.hpp"
+# include "Globals/Clock/Clock.hpp"
+# include "Globals/LogFile/LogFile.hpp"
+# include "SignalHandler/SignalHandler.hpp"
 # include "ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "ServerManager/ServerManager/ServerManager.hpp"
+# include "ServerConfig/BlockFinder/BlockFinder.hpp"
+# include "ServerContext/ServerContext.hpp"
+# include "CgiModule/Module/Module.hpp"
+# include "HttpModule/Module/Module.hpp"
+# include "Events/Manager/Manager.hpp"
+# include "Connections/Manager/Manager.hpp"
 
 // C++ headers
 # include <iostream>
 # include <cstdlib>
 
-/*
-	WIP
+int maxFdsEstimate(const ServerConfig& config)
+{
+	int res = 0;
+	res += std::atoi(config.getMaxConnections().c_str());
+	res += (std::atoi(config.getMaxConcurrentCgi().c_str()) * 3); // read + write + emergency
+	res += config.getAllBindAddresses().size();
+}
 
-	Main function for the project
-	Estabablish pseudo-global variables
-	Load and parse the configuration file
-	Instantiate the ServerManager
-
-	RUN
-*/
 int main(int ac, char** av)
 {
     if (ac != 2)
@@ -37,11 +43,12 @@ int main(int ac, char** av)
 		LogFile			debugFile("debug.log");
 		Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
 		ServerConfig	config(av[1], &globals);
+		if (!config.parseConfigFile())
+			return (EXIT_FAILURE);
 		ServerContext	context;
 		BlockFinder		blockFinder;
 		Events::Manager	eventManager(200, globals);
-		Conn::Manager	connManager(100, config.getBindAddresses(), eventManager, globals, context);
-		ServerManager	webserver(config, globals);
+		Conn::Manager	connManager(100, config.getAllBindAddresses(), eventManager, globals, context);
 
 		webserver.run();
 	}

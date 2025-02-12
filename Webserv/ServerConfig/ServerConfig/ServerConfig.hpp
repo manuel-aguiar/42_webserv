@@ -37,6 +37,7 @@ class ServerConfig
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
+		const DefaultConfig&						getDefaultConfig() const;
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
