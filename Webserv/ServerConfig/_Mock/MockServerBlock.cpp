@@ -257,11 +257,11 @@ void	ServerBlock::setDefaults(const int &flag)
 	DefaultConfig	defaults;
 
 	try {
-		setClientBodySize(defaults.maxClientBodySize, flag);
+		setClientBodySize(defaults.http_maxClientBodySize, flag);
 	}
 	catch (std::exception &e) {}
 	try {
-		setClientHeaderSize(defaults.maxClientHeaderSize, flag);
+		setClientHeaderSize(defaults.http_maxClientHeaderSize, flag);
 	}
 	catch (std::exception &e) {}
 }

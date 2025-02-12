@@ -22,7 +22,7 @@ namespace Http
         "Http::Module::InitConnection - failed to acquire connection, there should be connections available for everyone");
 
         // giving httpConn access to Conn::Connection (fd, ip, port, sockaddr)
-        httpConnection->setMyTCP(&connection);
+        httpConnection->setMyTCP(connection);
 
         // informing server connection who we are
         connection.appLayer_setCloseCallback(Http::Module::ForcedClose);

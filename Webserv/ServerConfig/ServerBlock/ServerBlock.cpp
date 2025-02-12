@@ -1,5 +1,6 @@
 
 
+// Project headers
 #include "ServerBlock.hpp"
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
@@ -7,8 +8,12 @@
 #include "../ServerLocation/ServerLocation.hpp"
 #include "../DefaultConfig/DefaultConfig.hpp"
 
+// C++ headers
+# include <cstdlib> // for atoi
 
-ServerBlock::ServerBlock()
+ServerBlock::ServerBlock() :
+	m_client_body_size(DefaultConfig::UINT_NONE),
+	m_client_header_size(DefaultConfig::UINT_NONE)
 {
 	m_keys["listen"]				= &ServerBlock::addListener;
 	m_keys["server_name"]			= &ServerBlock::addServerName;
@@ -51,23 +56,21 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_client_body_size = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_body_size = value;
 }
 
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_client_header_size = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_header_size = value;
 }
 
 bool	Config::Listen::operator<(const Config::Listen &rhs) const
@@ -161,12 +164,12 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (StringUtils::parse_size(m_client_body_size));
+	return (m_client_body_size);
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (StringUtils::parse_size(m_client_header_size));
+	return (m_client_header_size);
 }
 
 const std::set<std::string>&	ServerBlock::getErrorPages() const
@@ -182,11 +185,11 @@ const std::string&	ServerBlock::getRoot() const
 void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
 	if (m_root.empty())
-		setRootPath(defaultConfig.serverRoot);
-	if (m_client_body_size.empty())
-		setClientBodySize(defaultConfig.maxClientBodySize);
-	if (m_client_header_size.empty())
-		setClientHeaderSize(defaultConfig.maxClientHeaderSize);
+		setRootPath(defaultConfig.server_Root);
+	if (m_client_body_size == DefaultConfig::UINT_NONE)
+		m_client_body_size = defaultConfig.http_maxClientBodySize;
+	if (m_client_header_size == DefaultConfig::UINT_NONE)
+		m_client_header_size = defaultConfig.http_maxClientHeaderSize;
 }
 
 bool	ServerBlock::validate() const

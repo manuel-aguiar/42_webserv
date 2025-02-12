@@ -13,10 +13,10 @@
 # include <cstdlib> // atoi
 
 ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals) :
-	m_max_connections(-1),
-	m_max_concurrent_cgi(-1),
-	m_max_cgi_backlog(-1),
-	m_max_workers(-1),	
+	m_max_connections(DefaultConfig::UINT_NONE),
+	m_max_concurrent_cgi(DefaultConfig::UINT_NONE),
+	m_max_cgi_backlog(DefaultConfig::UINT_NONE),
+	m_max_workers(DefaultConfig::UINT_NONE),	
 	m_configDefault(defaultConfig),
 	m_configFilePath(configFilePath),
 	m_serverCount(0),
@@ -348,10 +348,10 @@ void		ServerConfig::setMaxWorkers(const std::string &value)
 
 void	ServerConfig::m_setDefaults()
 {
-	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.max_connections 		: m_max_connections;
-	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.max_concurrent_cgi 	: m_max_concurrent_cgi;
-	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.max_cgi_backlog 		: m_max_cgi_backlog;
-	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.max_workers 			: m_max_workers;
+	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.server_maxConnections 		: m_max_connections;
+	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 	: m_max_concurrent_cgi;
+	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.server_cgiBacklog 		: m_max_cgi_backlog;
+	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.server_Workers 			: m_max_workers;
 }
 
 const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const

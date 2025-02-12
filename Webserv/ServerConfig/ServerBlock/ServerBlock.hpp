@@ -75,8 +75,8 @@ class ServerBlock
 
 		std::set<Config::Listen>						m_listen;
 		std::set<std::string>							m_server_name;
-		std::string										m_client_body_size;
-		std::string										m_client_header_size;
+		int												m_client_body_size;
+		int												m_client_header_size;
 		std::string										m_root;
 		std::set<std::string>							m_error_pages;
 

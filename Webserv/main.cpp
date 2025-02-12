@@ -51,7 +51,7 @@ struct RunCheck
 {
 	RunCheck() : yes(true) {}
 
-	static void RunCheck_Callback(Events::Subscription& event)
+	static void Callback(Events::Subscription& event)
 	{
 		RunCheck* check = static_cast<RunCheck*>(event.accessUser());
 		check->yes = false;
@@ -67,6 +67,7 @@ int main(int ac, char** av)
 		std::cerr << av[0] << ": Usage: " << av[0] << " <config_file>" << std::endl;
 		return (EXIT_FAILURE);
 	}
+	
 	////////////////////////////////////
 	////////// Single Server ///////////
 	////////////////////////////////////
@@ -84,7 +85,7 @@ int main(int ac, char** av)
 		if (!config.parseConfigFile())
 			return (EXIT_FAILURE);
 
-		// major dependency
+		// our number 10
 		Events::Manager	eventManager(maxEventsEstimate(config), globals, maxFdsEstimate(config));
 
 		// preparing ServerContext;
@@ -114,9 +115,9 @@ int main(int ac, char** av)
 		RunCheck run;
 		Events::Subscription* signalListener = eventManager.acquireSubscription();
 		signalListener->setFd(g_SignalHandler.getSignalListener(0));
-		signalListener->setMonitoredEvents(Events::Monitor::READ);
+		signalListener->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 		signalListener->setUser(&run);
-		signalListener->setCallback(&RunCheck::RunCheck_Callback);
+		signalListener->setCallback(&RunCheck::Callback);
 		eventManager.startMonitoring(*signalListener, false);
 
 
@@ -134,10 +135,7 @@ int main(int ac, char** av)
 		}
 		/////////////////////////////////////////
 
-		// Non-RAII cleanup
-		connManager.shutdown();
-		eventManager.stopMonitoring(*signalListener, false);
-		eventManager.returnSubscription(*signalListener);
+		// all RAII cleanup
 	}
 	catch(const std::exception& e)
 	{

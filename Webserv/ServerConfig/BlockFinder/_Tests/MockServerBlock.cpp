@@ -1,4 +1,5 @@
 
+
 #include "../../ServerBlock/ServerBlock.hpp"
 #include "../../../Ws_Namespace.h"
 #include "../../../GenericUtils/Validation/Validation.hpp"
@@ -6,6 +7,10 @@
 #include "../../ServerLocation/ServerLocation.hpp"
 #include "../../DefaultConfig/DefaultConfig.hpp"
 
+
+// C++ headers
+
+#include <cstdlib> // atoi 
 //chatgpt, just getters
 
 ServerBlock::ServerBlock() {}
@@ -28,15 +33,15 @@ const std::set<std::string>& ServerBlock::getDomainNames() const { return m_serv
 const std::map<std::string, ServerLocation>& ServerBlock::getLocations() const { return m_locations; }
 void ServerBlock::setLocations(const std::vector<ServerLocation> &Locations) { (void)Locations; }
 void ServerBlock::setRootPath(const std::string &value) { m_root = value; }
-void ServerBlock::setClientBodySize(const std::string &value) { m_client_body_size = value; }
-void ServerBlock::setClientHeaderSize(const std::string &value) { m_client_header_size = value; }
+void ServerBlock::setClientBodySize(const std::string &value) { m_client_body_size = std::atoi(value.c_str()); }
+void ServerBlock::setClientHeaderSize(const std::string &value) { m_client_header_size = std::atoi(value.c_str()); }
 void ServerBlock::addListener(const std::string &value) { (void)value; }
 void ServerBlock::addServerName(const std::string &value) { m_server_name.insert(value); }
 void ServerBlock::addErrorPage(const std::string &value) { m_error_pages.insert(value); }
 const std::set<Config::Listen>& ServerBlock::getListeners() const { return m_listen; }
 const std::set<std::string>& ServerBlock::getServerNames() const { return m_server_name; }
-size_t ServerBlock::getClientBodySize() const { return StringUtils::stoull(m_client_body_size);}
-size_t ServerBlock::getClientHeaderSize() const { return StringUtils::stoull(m_client_header_size); }
+size_t ServerBlock::getClientBodySize() const { return m_client_body_size;}
+size_t ServerBlock::getClientHeaderSize() const { return m_client_header_size; }
 const std::set<std::string>& ServerBlock::getErrorPages() const { return m_error_pages; }
 const std::string& ServerBlock::getRoot() const { return m_root; }
 void ServerBlock::setDefaults(const DefaultConfig& config) {(void)config;}

@@ -135,16 +135,16 @@ bool		ServerLocation::validate() const
 
 void	ServerLocation::setDefaults(const DefaultConfig& defaultConfig)
 {
-	std::istringstream iss(defaultConfig.methods);
+	std::istringstream iss(defaultConfig.loc_http_methods);
 	std::string value;
 
 	if (m_type.empty())
-		setType(defaultConfig.type);
+		setType(defaultConfig.loc_type);
 	if (m_methods.empty())
 		while (iss >> value)
 			addMethod(value);
 	if (m_autoIndex.empty())
-		setAutoindex(defaultConfig.autoIndex);
+		setAutoindex(defaultConfig.loc_autoIndex);
 }
 
 void		ServerLocation::printLocationConfig() const

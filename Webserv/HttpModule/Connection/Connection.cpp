@@ -2,19 +2,40 @@
 
 # include "Connection.hpp"
 # include "../Module/Module.hpp"
+# include "../Request/Request.hpp"
+# include "../Response/Response.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Connections/Connection/Connection.hpp"
 
 namespace Http
 {
 
+
+Connection::Connection(Http::Module& module)
+	: m_module(module),
+	  m_readTimer(),
+	  m_writeTimer(),
+	  m_myTimer(),
+	  m_tcpConn(NULL),
+	  m_requests(),
+	  m_responses() {}
+
+Connection::~Connection() {}
+
 void
 Connection::ReadWrite_Callback(Events::Subscription& subscription)
 {
 	Http::Connection* connection = reinterpret_cast<Http::Connection*>(subscription.accessUser());
 	connection->ReadWrite();
-
 }
+
+
+void
+Connection::ReadWrite()
+{
+	//empty for now
+}
+
 
 
 /*
@@ -25,6 +46,12 @@ Connection::ReadWrite_Callback(Events::Subscription& subscription)
 	- return itself to the Http::Module
 	- lastly, close the Conn::Connection associated with it
 */
+
+void
+Connection::setMyTCP(Conn::Connection& tcpConn)
+{
+	m_tcpConn = &tcpConn;
+}
 
 void
 Connection::close()

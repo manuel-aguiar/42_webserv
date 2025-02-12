@@ -2,12 +2,6 @@
 
 #include "ThreadWorker.hpp"
 
-
-
-#ifndef IMPL_THREADWORKER_TPP
-
-# define IMPL_THREADWORKER_TPP
-
 // Project headers
 # include "../_ThreadPoolImpl/ThreadPoolImpl.hpp"
 # include "../ThreadTask/IThreadTask.hpp"
@@ -96,5 +90,3 @@ ThreadWorker::operator=(const ThreadWorker& assign)
 	
 	return (*this);
 }
-
-#endif

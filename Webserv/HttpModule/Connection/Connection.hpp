@@ -34,7 +34,7 @@ namespace Http
 
 
 			void 	setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer);
-			void 	setMyTCP(Conn::Connection* tcpConn);
+			void 	setMyTCP(Conn::Connection& tcpConn);
 
 
 			// clean all stored state to be reused later
