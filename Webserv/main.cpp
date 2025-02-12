@@ -67,10 +67,12 @@ int main(int ac, char** av)
 		std::cerr << av[0] << ": Usage: " << av[0] << " <config_file>" << std::endl;
 		return (EXIT_FAILURE);
 	}
-
+	////////////////////////////////////
+	////////// Single Server ///////////
+	////////////////////////////////////
 	try
 	{
-
+		// starting point and parse config file
 		Clock			clock;
 		LogFile			statusFile("status.log");
 		LogFile			errorFile("error.log");
@@ -82,20 +84,33 @@ int main(int ac, char** av)
 		if (!config.parseConfigFile())
 			return (EXIT_FAILURE);
 
+		// major dependency
 		Events::Manager	eventManager(maxEventsEstimate(config), globals, maxFdsEstimate(config));
 
+		// preparing ServerContext;
 		ServerContext	context;
 		BlockFinder		blockFinder;
 		Http::Module	httpModule(config.getMaxConnections(), defaultConfig, globals);
 		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals);
+
+		blockFinder.loadServerBlocks(config.getServerBlocks());
+
+		context.setAppLayer(Ws::AppLayer::HTTP, &httpModule, &Http::Module::InitConnection);
+		context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);
+		context.setBlockFinder(blockFinder);
+		context.setGlobals(globals);
+		context.setServerConfig(config);
+
+		// preparing server launch
 		Conn::Manager	connManager(config.getMaxConnections(), config.getAllBindAddresses(), eventManager, globals, context);
 
+		// setup signal handling
 		g_SignalHandler.openSignalListeners(1, globals);
 		g_SignalHandler.registerSignal(SIGINT, globals);
 		g_SignalHandler.registerSignal(SIGTERM, globals);
 		g_SignalHandler.registerSignal(SIGQUIT, globals);
 
-
+		// monitor signal handler
 		RunCheck run;
 		Events::Subscription* signalListener = eventManager.acquireSubscription();
 		signalListener->setFd(g_SignalHandler.getSignalListener(0));
@@ -104,13 +119,22 @@ int main(int ac, char** av)
 		signalListener->setCallback(&RunCheck::RunCheck_Callback);
 		eventManager.startMonitoring(*signalListener, false);
 
+
+		// oficially open the listening sockets
 		connManager.init();
+
+		//////////////////////////////////////////
+		/////////// Main Server Loop /////////////
+		//////////////////////////////////////////
 		while (run.yes)
 		{
 			int cgiTimeout = cgiModule.processRequests();
 			int httpTimeout = httpModule.closeTimedOutConnections();
 			eventManager.ProcessEvents(std::min(cgiTimeout, httpTimeout));
 		}
+		/////////////////////////////////////////
+
+		// Non-RAII cleanup
 		connManager.shutdown();
 		eventManager.stopMonitoring(*signalListener, false);
 		eventManager.returnSubscription(*signalListener);
