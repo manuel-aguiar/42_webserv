@@ -24,6 +24,8 @@ int maxFdsEstimate(const ServerConfig& config)
 	res += std::atoi(config.getMaxConnections().c_str());
 	res += (std::atoi(config.getMaxConcurrentCgi().c_str()) * 3); // read + write + emergency
 	res += config.getAllBindAddresses().size();
+
+	res *= std::atoi(config.get)
 }
 
 int main(int ac, char** av)

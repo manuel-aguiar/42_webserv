@@ -13,6 +13,7 @@
 # include <sstream>
 
 class ServerBlock;
+class DefaultConfig;
 
 class ServerLocation
 {
@@ -42,7 +43,7 @@ class ServerLocation
 		void							setAutoindex(const std::string &value);
 		void							addMethod(const std::string &value);
 
-		void							setDefaults();
+		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 

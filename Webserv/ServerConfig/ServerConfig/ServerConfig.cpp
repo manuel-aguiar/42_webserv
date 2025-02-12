@@ -3,13 +3,16 @@
 // Own Headers
 
 # include "ServerConfig.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../GenericUtils/Validation/Validation.hpp"
 # include "../ServerLocation/ServerLocation.hpp"
 # include "../ServerBlock/ServerBlock.hpp"
+# include "../DefaultConfig/DefaultConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
 
 
-ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
+
+ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals):
+	m_configDefault(defaultConfig),
 	m_configFilePath(configFilePath),
 	m_serverCount(0),
 	m_globals(globals)
@@ -24,17 +27,11 @@ ServerConfig::~ServerConfig()
 	// Nothing to do here
 }
 
-ServerConfig::ServerConfig()
-{
-	// Nothing to do here
-}
-
 ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 {
 	if (this == &other)
 		return (*this);
 	m_keys = other.m_keys;
-	m_configDefault = other.m_configDefault;
 	m_configFilePath = other.m_configFilePath;
 	m_serverBlocks = other.m_serverBlocks;
 	m_serverCount = other.m_serverCount;
@@ -44,7 +41,8 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 	return (*this);
 }
 
-ServerConfig::ServerConfig(const ServerConfig &other)
+ServerConfig::ServerConfig(const ServerConfig &other) :
+	m_configDefault(other.m_configDefault)
 {
 	*this = other;
 }
@@ -84,7 +82,6 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 		{
 			case PROGRAM_LEVEL:
 				try {
-					// std::cout << "programLevel Set!! " << value << "\n";
 					m_setConfigValue(key, value);
 				}
 				catch (std::exception &e) {
@@ -132,7 +129,7 @@ bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine
 			return (0);
 		case SERVER_LEVEL:
 			currentLevel = PROGRAM_LEVEL;
-			servers.back().setDefaults();
+			servers.back().setDefaults(m_configDefault);
 			if (!servers.back().validate())
 			{
 				std::cerr << "Error: config parsing: invalid server block closing on line "
@@ -144,7 +141,7 @@ bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine
 			break ;
 		case LOCATION_LEVEL:
 			currentLevel = SERVER_LEVEL;
-			locations.back().setDefaults();
+			locations.back().setDefaults(m_configDefault);
 			if (!locations.back().validate())
 			{
 				std::cerr << "Error: config parsing: invalid location block closing on line "
@@ -265,22 +262,55 @@ const std::string		&ServerConfig::getMaxCgiBacklog() const
 
 void		ServerConfig::setMaxConnections(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_connections must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_connections value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_connections must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_connections = value;
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_concurrent_cgi must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_concurrent_cgi = value;
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	if (!Validation::isNumber(value)) // && less than x?
-		throw (std::invalid_argument("max_cgi_backlog must be a positive number"));
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_cgi_backlog value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_cgi_backlog must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
 	m_max_cgi_backlog = value;
 }
 

@@ -16,17 +16,17 @@
 
 //Own headers
 # include "../../Ws_Namespace.h"
-# include "../DefaultConfig/DefaultConfig.hpp"
 
 // forward declarations
 class Globals;
 class ServerBlock;
 class ServerLocation;
+class DefaultConfig;
 
 class ServerConfig
 {
 	public:
-		ServerConfig(const char* configFilePath, Globals* globals);
+		ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals);
 		~ServerConfig();
 		ServerConfig &operator=(const ServerConfig &other);
 
@@ -37,7 +37,6 @@ class ServerConfig
 		const std::string&							getMaxConcurrentCgi() const;
 		const std::string&							getMaxCgiBacklog() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
-		const DefaultConfig&						getDefaultConfig() const;
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
@@ -48,7 +47,6 @@ class ServerConfig
 		void										printConfigs() const;
 
 	private:
-		ServerConfig();
 		ServerConfig(const ServerConfig &other);
 
 		enum config_levels
@@ -66,7 +64,7 @@ class ServerConfig
 		std::string							m_max_connections;
 		std::string							m_max_concurrent_cgi;
 		std::string							m_max_cgi_backlog;
-		DefaultConfig						m_configDefault;
+		const DefaultConfig&				m_configDefault;
 		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;
 		size_t								m_serverCount;

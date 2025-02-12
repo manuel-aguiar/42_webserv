@@ -17,6 +17,7 @@
 
 //forward declarations
 class ServerLocation;
+class DefaultConfig;
 
 //necessary structs
 namespace Config
@@ -56,7 +57,7 @@ class ServerBlock
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
 
-		void							setDefaults();
+		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 

@@ -1,5 +1,5 @@
 
-
+# include "../../DefaultConfig/DefaultConfig.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 # include "../../ServerBlock/ServerBlock.hpp"
 # include "../../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
@@ -14,11 +14,14 @@ int main(void)
 
     int testNumber = 1;
 ///////////////////////////////////////////////////////////////////////////////////////
+
+    DefaultConfig defaultConfig;
+
     try
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_TwoListen.conf", NULL);
+        ServerConfig config("OneServer_TwoListen.conf", defaultConfig, NULL);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -66,7 +69,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_Wildcard.conf", NULL);
+        ServerConfig config("OneServer_Wildcard.conf", defaultConfig, NULL);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -110,7 +113,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_LocalHost.conf", NULL);
+        ServerConfig config("OneServer_LocalHost.conf", defaultConfig, NULL);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -149,7 +152,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_SameListen.conf", NULL);
+        ServerConfig config("TwoServer_SameListen.conf", defaultConfig, NULL);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -187,7 +190,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_Wildcard.conf", NULL);
+        ServerConfig config("TwoServer_Wildcard.conf", defaultConfig, NULL);
         const size_t expectedCount = 2;
 
         config.parseConfigFile();
@@ -229,7 +232,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_LocalHost.conf", NULL);
+        ServerConfig config("TwoServer_LocalHost.conf", defaultConfig, NULL);
         const size_t expectedCount = 1;
 
         config.parseConfigFile();
@@ -264,7 +267,7 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_BadDNS.conf", NULL);
+        ServerConfig config("OneServer_BadDNS.conf", defaultConfig, NULL);
 
                                             // setting pipes to read stderr
                                             int pipefd[2];

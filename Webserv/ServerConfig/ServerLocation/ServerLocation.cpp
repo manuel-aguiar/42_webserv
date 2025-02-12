@@ -133,19 +133,18 @@ bool		ServerLocation::validate() const
 	return (1);
 }
 
-void	ServerLocation::setDefaults()
+void	ServerLocation::setDefaults(const DefaultConfig& defaultConfig)
 {
-	DefaultConfig	defaults;
-	std::istringstream iss(defaults.methods);
+	std::istringstream iss(defaultConfig.methods);
 	std::string value;
 
 	if (m_type.empty())
-		setType(defaults.type);
+		setType(defaultConfig.type);
 	if (m_methods.empty())
 		while (iss >> value)
 			addMethod(value);
 	if (m_autoIndex.empty())
-		setAutoindex(defaults.autoIndex);
+		setAutoindex(defaultConfig.autoIndex);
 }
 
 void		ServerLocation::printLocationConfig() const
