@@ -13,7 +13,7 @@
 # include <sstream>
 
 class ServerBlock;
-class DefaultConfig;
+struct DefaultConfig;
 
 class ServerLocation
 {

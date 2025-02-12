@@ -11,31 +11,30 @@
 # include <stddef.h>
 # include <string>
 
-class DefaultConfig
+struct DefaultConfig
 {
-	public:
-		DefaultConfig();
+	DefaultConfig();
 
-		//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
+	//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
 
-		// Program
-		std::string	maxConnections;
-		std::string	maxCGI;
-		std::string cgi_maxBacklog;
+	// Program
+	const int	max_connections;
+	const int	max_concurrent_cgi;
+	const int 	max_cgi_backlog;
+	const int	max_workers;
 
-		// Server
-		std::string serverRoot;
-		std::string	maxClientBodySize;
-		std::string	maxClientHeaderSize;
-		std::string	IPListen;
-		std::string	http400Path;
-		std::string	http404Path; // add the remaining error pages
+	// Server
+	const char* serverRoot;
+	const int	maxClientBodySize;
+	const int	maxClientHeaderSize;
+	const char*	IPListen;
+	const char*	http400Path;
+	const char*	http404Path; // add the remaining error pages
 
-		// Location
-		std::string autoIndex;
-		std::string	methods;
-		std::string	type;
-
+	// Location
+	const char* autoIndex;
+	const char*	methods;
+	const char*	type;
 };
 
 #endif

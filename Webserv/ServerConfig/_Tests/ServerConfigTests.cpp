@@ -17,8 +17,8 @@
 void testPass(const std::string &filePath, int testNbr, int printDetails)
 {
 	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
-			DefaultConfig defaultConfig;
-		ServerConfig config(filePath.c_str(), defaultConfig, NULL);
+	DefaultConfig defaultConfig;
+	ServerConfig config(filePath.c_str(), defaultConfig, NULL);
 	if (config.parseConfigFile())
 	{
 		std::cout << CLR_PASS << std::endl;
@@ -32,8 +32,8 @@ void testPass(const std::string &filePath, int testNbr, int printDetails)
 void testFail(const std::string &filePath, int testNbr, int printDetails)
 {
 	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
-			DefaultConfig defaultConfig;
-		ServerConfig config(filePath.c_str(), defaultConfig, NULL);
+	DefaultConfig defaultConfig;
+	ServerConfig config(filePath.c_str(), defaultConfig, NULL);
 	if (config.parseConfigFile())
 	{
 		std::cout << CLR_FAIL << std::endl;
@@ -48,7 +48,7 @@ void testNoThrow(const std::string &filePath, int testNbr, int printDetails)
 {
 	std::cout << CLR_BLUE << "Test " << testNbr << " : " << filePath << " " << CLR_RESET << std::endl;
 	try {
-				DefaultConfig defaultConfig;
+		DefaultConfig defaultConfig;
 		ServerConfig config(filePath.c_str(), defaultConfig, NULL);
 		config.parseConfigFile();
 		if (printDetails)

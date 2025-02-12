@@ -39,7 +39,7 @@ size_t ServerBlock::getClientBodySize() const { return StringUtils::stoull(m_cli
 size_t ServerBlock::getClientHeaderSize() const { return StringUtils::stoull(m_client_header_size); }
 const std::set<std::string>& ServerBlock::getErrorPages() const { return m_error_pages; }
 const std::string& ServerBlock::getRoot() const { return m_root; }
-void ServerBlock::setDefaults() {}
+void ServerBlock::setDefaults(const DefaultConfig& config) {(void)config;}
 void ServerBlock::addConfigValue(const std::string &key, const std::string &value) {(void)key; (void)value;}
 bool ServerBlock::validate() const { return true; }
 void ServerBlock::printServerConfig() const {}

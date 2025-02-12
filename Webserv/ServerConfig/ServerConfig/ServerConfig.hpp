@@ -21,7 +21,7 @@
 class Globals;
 class ServerBlock;
 class ServerLocation;
-class DefaultConfig;
+struct DefaultConfig;
 
 class ServerConfig
 {
@@ -33,13 +33,15 @@ class ServerConfig
 		// Getters & Setters
 		const char*									getConfigPath() const;
 		const std::vector<ServerBlock>&				getServerBlocks() const;
-		const std::string&							getMaxConnections() const;
-		const std::string&							getMaxConcurrentCgi() const;
-		const std::string&							getMaxCgiBacklog() const;
+		int											getMaxConnections() const;
+		int											getMaxConcurrentCgi() const;
+		int											getMaxCgiBacklog() const;
+		int											getMaxWorkers() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
+		void										setMaxWorkers(const std::string &value);		
 
 		int											parseConfigFile();
 		// Debug
@@ -61,9 +63,10 @@ class ServerConfig
 		std::map<std::string, f_addConfigValue>				m_keys;
 
 
-		std::string							m_max_connections;
-		std::string							m_max_concurrent_cgi;
-		std::string							m_max_cgi_backlog;
+		int									m_max_connections;
+		int									m_max_concurrent_cgi;
+		int									m_max_cgi_backlog;
+		int									m_max_workers;
 		const DefaultConfig&				m_configDefault;
 		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;

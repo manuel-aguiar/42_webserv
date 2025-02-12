@@ -13,7 +13,7 @@
 
 
 // forward declarations
-class DefaultConfig;
+struct DefaultConfig;
 class Timer;
 class Globals;
 namespace Conn {class Connection;}

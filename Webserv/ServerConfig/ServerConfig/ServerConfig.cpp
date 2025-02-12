@@ -9,9 +9,14 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../GenericUtils/Validation/Validation.hpp"
 
+// C++ headers
+# include <cstdlib> // atoi
 
-
-ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals):
+ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig, Globals* globals) :
+	m_max_connections(-1),
+	m_max_concurrent_cgi(-1),
+	m_max_cgi_backlog(-1),
+	m_max_workers(-1),	
 	m_configDefault(defaultConfig),
 	m_configFilePath(configFilePath),
 	m_serverCount(0),
@@ -20,6 +25,7 @@ ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defa
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
 	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
+	m_keys["max_workers"]			= &ServerConfig::setMaxWorkers;
 }
 
 ServerConfig::~ServerConfig()
@@ -31,13 +37,16 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_keys = other.m_keys;
-	m_configFilePath = other.m_configFilePath;
-	m_serverBlocks = other.m_serverBlocks;
-	m_serverCount = other.m_serverCount;
 	m_max_concurrent_cgi = other.m_max_concurrent_cgi;
 	m_max_connections = other.m_max_connections;
 	m_max_cgi_backlog = other.m_max_cgi_backlog;
+	m_max_workers = other.m_max_workers;
+	m_configFilePath = other.m_configFilePath;
+	m_serverBlocks = other.m_serverBlocks;
+	m_serverCount = other.m_serverCount;
+
 	return (*this);
 }
 
@@ -245,19 +254,24 @@ const std::vector<ServerBlock>&	ServerConfig::getServerBlocks() const
 	return (m_serverBlocks);
 }
 
-const std::string		&ServerConfig::getMaxConnections() const
+int		ServerConfig::getMaxConnections() const
 {
 	return (m_max_connections);
 }
 
-const std::string		&ServerConfig::getMaxConcurrentCgi() const
+int		ServerConfig::getMaxConcurrentCgi() const
 {
 	return (m_max_concurrent_cgi);
 }
 
-const std::string		&ServerConfig::getMaxCgiBacklog() const
+int		ServerConfig::getMaxCgiBacklog() const
 {
 	return (m_max_cgi_backlog);
+}
+
+int		ServerConfig::getMaxWorkers() const
+{
+	return (m_max_workers);
 }
 
 void		ServerConfig::setMaxConnections(const std::string &value)
@@ -275,7 +289,7 @@ void		ServerConfig::setMaxConnections(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_connections = value;
+	m_max_connections = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
@@ -293,7 +307,7 @@ void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_concurrent_cgi = value;
+	m_max_concurrent_cgi = std::atoi(value.c_str());
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
@@ -311,17 +325,33 @@ void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_cgi_backlog = value;
+	m_max_cgi_backlog = std::atoi(value.c_str());
+}
+
+void		ServerConfig::setMaxWorkers(const std::string &value)
+{
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_max_workers = std::atoi(value.c_str());
 }
 
 void	ServerConfig::m_setDefaults()
 {
-	if (m_max_connections.empty())
-		setMaxConnections(m_configDefault.maxConnections);
-	if (m_max_concurrent_cgi.empty())
-		setMaxConcurrentCgi(m_configDefault.maxCGI);
-	if (m_max_cgi_backlog.empty())
-		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
+	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.max_connections 		: m_max_connections;
+	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.max_concurrent_cgi 	: m_max_concurrent_cgi;
+	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.max_cgi_backlog 		: m_max_cgi_backlog;
+	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.max_workers 			: m_max_workers;
 }
 
 const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const

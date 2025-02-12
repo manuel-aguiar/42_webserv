@@ -17,7 +17,7 @@
 
 //forward declarations
 class ServerLocation;
-class DefaultConfig;
+struct DefaultConfig;
 
 //necessary structs
 namespace Config
