@@ -1,5 +1,5 @@
-#include "../HttpRequest.hpp"
-#include "../../../../Toolkit/TestHelpers/TestHelpers.h"
+#include "../../HttpRequest.hpp"
+#include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void lineTests(int &testNumber)
 {

@@ -2,7 +2,7 @@
 # Makefile
 
 # TARGET_DEBUG 			=		debug_httpRequest.out
-TARGET_TEST 			=		test_httpRequest.out
+TARGET_TEST 			=		test_httpBody.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
@@ -11,22 +11,11 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests2/main.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests2/headerTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests2/bodyTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests2/lineTests.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/
 
+# SRCS_DEBUG				=		$(SRC_PATH)/Webserv/
 
-
-# SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
-
-SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
+SRCS_COMMON				=		$(SRC_PATH)/Webserv
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
@@ -51,7 +40,7 @@ TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 #=== RULES ===#
 
-all: $(TARGET_TEST) # $(TARGET_DEBUG) 
+all: $(TARGET_TEST) # $(TARGET_DEBUG)
 
 $(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
 	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
