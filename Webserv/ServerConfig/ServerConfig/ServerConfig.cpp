@@ -25,6 +25,7 @@ ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defa
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
 	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
 	m_keys["max_workers"]			= &ServerConfig::setMaxWorkers;
+	m_keys["cgi"]					= &ServerConfig::addCgiInterpreter;
 }
 
 ServerConfig::~ServerConfig()
@@ -350,10 +351,35 @@ void		ServerConfig::setMaxWorkers(const std::string &value)
 	m_max_workers = std::atoi(value.c_str());
 }
 
+void		ServerConfig::addCgiInterpreter(const std::string &value)
+{
+	std::string	extension;
+	std::string	path;
+	size_t		colonPos;
+
+	colonPos = value.find(':');
+	if (colonPos == 0 || colonPos == value.length() - 1)
+		goto exitError;
+	if (value.find(':', colonPos + 1) != std::string::npos)
+		goto exitError;
+	extension = value.substr(0, colonPos);
+	path = value.substr(colonPos + 1);
+
+	if (extension.empty() || path.empty())
+		goto exitError;
+		
+	m_cgiInterpreters[extension] = path;
+
+	return ;
+
+exitError:
+	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
+}
+
 void	ServerConfig::m_setDefaults()
 {
-	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.server_maxConnections 		: m_max_connections;
-	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 	: m_max_concurrent_cgi;
+	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.server_maxConnections 	: m_max_connections;
+	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 		: m_max_concurrent_cgi;
 	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.server_cgiBacklog 		: m_max_cgi_backlog;
 	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.server_Workers 			: m_max_workers;
 }

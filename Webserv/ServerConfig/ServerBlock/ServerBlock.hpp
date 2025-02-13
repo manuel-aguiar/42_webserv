@@ -24,10 +24,13 @@ namespace Config
 {
 	struct Listen
 	{
-		Ws::AppLayer::Type	appLayer;
-		Ws::strIP			hostname;
-		Ws::strPort			port;
-
+		Ws::AppLayer::Type		appLayer;
+		Ws::Listen::backlog		backlog;
+		Ws::strIP				hostname;
+		Ws::strPort				port;
+		Ws::Sock::addrFamily 	family;
+		Ws::Sock::type			socktype;
+		Ws::Sock::protocol		proto;
 		bool operator<(const Listen &rhs) const;
 	};
 }

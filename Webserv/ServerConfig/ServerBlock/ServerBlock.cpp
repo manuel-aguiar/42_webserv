@@ -107,7 +107,16 @@ void	ServerBlock::addListener(const std::string &value)
 	portValue = StringUtils::stoull(port); // fix throw
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
+		
+	m_listen.insert((Config::Listen) {
+		.appLayer = Ws::AppLayer::HTTP,
+		.backlog = Ws::Listen::DEFAULT_BACKLOG,
+		.hostname = hostname, 
+		.port = port,
+		.family = AF_INET,
+		.socktype = SOCK_STREAM,
+		.proto = IPPROTO_TCP,
+	});
 }
 
 void	ServerBlock::addServerName(const std::string &value)

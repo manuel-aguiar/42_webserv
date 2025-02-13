@@ -23,6 +23,12 @@ class ServerBlock;
 class ServerLocation;
 struct DefaultConfig;
 
+namespace Config
+{
+	typedef std::string CgiExtension;
+	typedef std::string CgiInterpreter;
+}
+
 class ServerConfig
 {
 	public:
@@ -39,10 +45,12 @@ class ServerConfig
 		int											getMaxWorkers() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		const DefaultConfig&						getDefaultConfig() const;
+
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
 		void										setMaxWorkers(const std::string &value);		
+		void										addCgiInterpreter(const std::string &value);
 
 		int											parseConfigFile();
 		// Debug
@@ -74,6 +82,8 @@ class ServerConfig
 		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
 		std::vector<Ws::BindInfo>			m_bindAddresses;
+		std::map<Config::CgiExtension, Config::CgiInterpreter>	
+											m_cgiInterpreters;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
