@@ -1,5 +1,5 @@
-#include "../HttpRequest.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../HttpRequest.hpp"
+#include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
@@ -321,6 +321,28 @@ void testRequestLineParsing() {
 
         std::cout << "\n─────────────────────────────────────────\n" << std::endl;
     }
+
+	{
+		std::cout << "  Test12: common browser request\n";
+		try {
+            const std::string raw_request = "GET /index.html HTTP/1.1\r\nHost: www.example.com\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nConnection: keep-alive\r\n\r\n";
+
+            printRequest("GET", "/", "HTTP/1.1", "Host: www.example.com\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nConnection: keep-alive\r\n\r\n");
+
+            HttpRequest request;
+            int status = request.parse(raw_request);
+
+            if (status != Http::Status::OK)
+                throw std::runtime_error("Expected status BAD_REQUEST, got: " + StringUtils::to_string(status));
+
+            std::cout << "      PASSED\n";
+        }
+        catch(const std::exception& e) {
+            std::cerr << "      FAILED: " << e.what() << '\n';
+        }
+
+        std::cout << "\n─────────────────────────────────────────\n" << std::endl;
+	}
 }
 
 int main() {
