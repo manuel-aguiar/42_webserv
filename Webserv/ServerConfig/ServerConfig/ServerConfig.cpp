@@ -428,10 +428,7 @@ bool	ServerConfig::mf_expandCgiToLocations()
 			for (; thisInterpreter != locationInterpreters.end(); thisInterpreter++)
 			{
 				if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
-				{
-					std::cout << "not empty" << std::endl;
 					continue ;
-				}	
 
 				// ServerConfig looks up the path from the extension at the program level
 				Config::CgiInterpreterMap::iterator serverLevel;

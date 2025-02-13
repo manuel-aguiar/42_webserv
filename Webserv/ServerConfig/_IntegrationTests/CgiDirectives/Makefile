@@ -18,7 +18,8 @@ SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/CgiDirectives/mai
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
 								
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
