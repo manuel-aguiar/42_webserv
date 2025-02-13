@@ -45,6 +45,8 @@ class ServerConfig
 		int											getMaxWorkers() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		const DefaultConfig&						getDefaultConfig() const;
+		const std::map<Config::CgiExtension, Config::CgiInterpreter>&	
+													getCgiInterpreters() const;
 
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);

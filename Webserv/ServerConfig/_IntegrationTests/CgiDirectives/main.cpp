@@ -2,6 +2,7 @@
 # include "../../DefaultConfig/DefaultConfig.hpp"
 # include "../../ServerConfig/ServerConfig.hpp"
 # include "../../ServerBlock/ServerBlock.hpp"
+# include "../../ServerLocation/ServerLocation.hpp"
 # include "../../../GenericUtils/WsTestHelpers/WsTestHelpers.h"
 # include <iostream>
 # include <arpa/inet.h>
@@ -10,7 +11,7 @@
 
 int main(void)
 {
-    TEST_HEADER("Integration ServerConfig - DNS Lookup");
+    TEST_HEADER("Integration ServerConfig - CgiDirectives");
 
     int testNumber = 1;
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -21,291 +22,138 @@ int main(void)
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_TwoListen.conf", defaultConfig);
-        const size_t expectedCount = 2;
+        ServerConfig config("GlobalDirective.conf", defaultConfig);
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
+        EXPECT_EQUAL(config.getMaxConnections(), 100, "Wrong max connections");
 
-        // checking single server
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        cgiInterpreters = config.getCgiInterpreters();
 
-        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
+        EXPECT_EQUAL(cgiInterpreters.size(), 1, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(cgiInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.begin()->second, "/cgi/cgi/cgi", "wrong match");
 
-        // checking mapping
-        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
+        TEST_PASSED_MSG("simple global directive");
+	}
+	catch (const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
+////////////////////////////////////////////////////////////////////////
+    try
+    {
+        TEST_INTRO(testNumber++);
 
-        EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
-        
-         //confirming match is correct ,ORDER DEPENDS ON SETS
-        Ws::Sock::addr_in *addr;
-        char ip[INET_ADDRSTRLEN];
+        ServerConfig config("GlobalOverride.conf", defaultConfig);
 
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
-        // checking first address
-        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        EXPECT_EQUAL(config.getMaxConnections(), 100, "Wrong max connections");
 
-        EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)80, "sockaddr was not correctly mapped to the server");
-        EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
-        
-        //checking second address
-        addr = (Ws::Sock::addr_in*)(sockAddr[1]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        cgiInterpreters = config.getCgiInterpreters();
 
-        EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)81, "sockaddr was not correctly mapped to the server");
-        EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
+        EXPECT_EQUAL(cgiInterpreters.size(), 1, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(cgiInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.begin()->second, "/potato", "wrong match");
 
-        TEST_PASSED_MSG("one server, two listeners");
+        TEST_PASSED_MSG("global directive override");
 	}
 	catch (const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
     try
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_Wildcard.conf", defaultConfig);
-        const size_t expectedCount = 2;
+        ServerConfig config("GlobalSameLineOverride.conf", defaultConfig);
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
-        
-        // checking single server
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
+        EXPECT_EQUAL(config.getMaxConnections(), 100, "Wrong max connections");
 
-        // checking mapping
-        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
-        EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        cgiInterpreters = config.getCgiInterpreters();
 
-         //confirming match is correct ,ORDER DEPENDS ON SETS
-        char ip[INET_ADDRSTRLEN];
-        Ws::Sock::addr_in *addr;
+        EXPECT_EQUAL(cgiInterpreters.size(), 1, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(cgiInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.begin()->second, "/potato", "wrong match");
 
-        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
-        EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "sockaddr was not correctly mapped to the server");
-
-        addr = (Ws::Sock::addr_in*)(sockAddr[1]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
-        EXPECT_EQUAL(std::string(ip), std::string("123.123.123.123"), "sockaddr was not correctly mapped to the server");
-
-        TEST_PASSED_MSG("one server, two listeners(one concrete and one wildcard ip");
+        TEST_PASSED_MSG("global same line override");
 	}
 	catch (const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////
     try
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("OneServer_LocalHost.conf", defaultConfig);
-        const size_t expectedCount = 1;
+        ServerConfig config("GlobalMultiple.conf", defaultConfig);
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
-        
-        // checking single server
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
+        EXPECT_EQUAL(config.getMaxConnections(), 100, "Wrong max connections");
 
-        EXPECT_EQUAL(serverBlocks.size(), 1, "there should be only 1 server block");
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        cgiInterpreters = config.getCgiInterpreters();
 
-        // checking mapping
-        const std::vector<const Ws::Sock::addr*>& sockAddr = serverBlocks[0].getListenAddresses();
+        EXPECT_EQUAL(cgiInterpreters.size(), 2, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(cgiInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.begin()->second, "/potato", "wrong match");
 
-        EXPECT_EQUAL(sockAddr.size(), expectedCount, "sockaddr was not correctly mapped to the server");
+        EXPECT_EQUAL(cgiInterpreters.rbegin()->first, ".py", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.rbegin()->second, "/usr/bin/python3", "wrong match");
 
-        //confirming match is correct ,ORDER DEPENDS ON SETS
-        char ip[INET_ADDRSTRLEN];
-        Ws::Sock::addr_in *addr;
-        
-        addr = (Ws::Sock::addr_in*)(sockAddr[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "sockaddr was not correctly mapped to the server");
-        EXPECT_EQUAL(std::string(ip), std::string("127.0.0.1"), "sockaddr was not correctly mapped to the server");
-
-        TEST_PASSED_MSG("one server, two equivalent listeners - localhost");
+        TEST_PASSED_MSG("global multiple interpreters");
 	}
 	catch (const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
     try
     {
         TEST_INTRO(testNumber++);
 
-        ServerConfig config("TwoServer_SameListen.conf", defaultConfig);
-        const size_t expectedCount = 1;
+        ServerConfig config("Location.conf", defaultConfig);
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
+        EXPECT_EQUAL(config.getMaxConnections(), 100, "Wrong max connections");
 
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        cgiInterpreters = config.getCgiInterpreters();
 
-        EXPECT_EQUAL(serverBlocks.size(), 2, "there should be 2 server blocks");
+        EXPECT_EQUAL(cgiInterpreters.size(), 2, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(cgiInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.begin()->second, "/potato", "wrong match");
 
-        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
+        EXPECT_EQUAL(cgiInterpreters.rbegin()->first, ".py", "wrong match");
+        EXPECT_EQUAL(cgiInterpreters.rbegin()->second, "/usr/bin/python3", "wrong match");
 
-        EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
-        EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
+        const std::map<Config::CgiExtension, Config::CgiInterpreter>& 
+        locationInterpreters = config.getServerBlocks()[0].getLocations().begin()->second.getCgiInterpreters();
 
-        EXPECT_EQUAL(sockAddr1[0], sockAddr2[0], "both servers should be pointing to the same sockaddr");
+        EXPECT_EQUAL(locationInterpreters.size(), 1, "Wrong number of cgi interpreters");
+        EXPECT_EQUAL(locationInterpreters.begin()->first, ".cgi", "wrong match");
+        EXPECT_EQUAL(locationInterpreters.begin()->second, "/potato", "wrong match");
 
-        char ip[INET_ADDRSTRLEN];
-        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), (uint16_t)80, "Port mapping failed");
-        EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "IP mapping failed");
-
-        TEST_PASSED_MSG("two servers, same listener");
-    }
-    catch (const std::exception& e)
-    {
-        TEST_FAILED_MSG(e.what());
-    }
-
-///////////////////////////////////////////////////////////////////////////////////////
-    try
-    {
-        TEST_INTRO(testNumber++);
-
-        ServerConfig config("TwoServer_Wildcard.conf", defaultConfig);
-        const size_t expectedCount = 2;
-
-        config.parseConfigFile();
-
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
-
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
-
-        EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
-        EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
-
-        EXPECT_EQUAL(sockAddr1[0], sockAddr2[0], "servers should share the same sockaddr for 0.0.0.0:80");
-        EXPECT_EQUAL(sockAddr1[1], sockAddr2[1], "servers should share the same sockaddr for 123.123.123.123:80");
-
-        char ip[INET_ADDRSTRLEN];
-        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed for first address");
-        EXPECT_EQUAL(std::string(ip), std::string("0.0.0.0"), "IP mapping failed for first address");
-
-        addr = (Ws::Sock::addr_in*)(sockAddr1[1]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed for second address");
-        EXPECT_EQUAL(std::string(ip), std::string("123.123.123.123"), "IP mapping failed for second address");
-
-        TEST_PASSED_MSG("two servers, two listeners, shared wildcard and concrete IPs");
-    }
-    catch (const std::exception& e)
-    {
-        TEST_FAILED_MSG(e.what());
-    }
-
-///////////////////////////////////////////////////////////////////////////////////////
-    try
-    {
-        TEST_INTRO(testNumber++);
-
-        ServerConfig config("TwoServer_LocalHost.conf", defaultConfig);
-        const size_t expectedCount = 1;
-
-        config.parseConfigFile();
-
-        EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
-
-        const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
-        const std::vector<const Ws::Sock::addr*>& sockAddr1 = serverBlocks[0].getListenAddresses();
-        const std::vector<const Ws::Sock::addr*>& sockAddr2 = serverBlocks[1].getListenAddresses();
-
-        EXPECT_EQUAL(sockAddr1.size(), expectedCount, "sockaddr was not correctly mapped to server 1");
-        EXPECT_EQUAL(sockAddr2.size(), expectedCount, "sockaddr was not correctly mapped to server 2");
-        EXPECT_EQUAL(sockAddr1[0], sockAddr2[0], "both servers should point to the same localhost sockaddr");
-
-        char ip[INET_ADDRSTRLEN];
-        Ws::Sock::addr_in* addr = (Ws::Sock::addr_in*)(sockAddr1[0]);
-        ::inet_ntop(AF_INET, &addr->sin_addr, ip, INET_ADDRSTRLEN);
-
-        EXPECT_EQUAL(::ntohs(addr->sin_port), 80, "Port mapping failed");
-        EXPECT_EQUAL(std::string(ip), std::string("127.0.0.1"), "IP mapping failed");
-
-        TEST_PASSED_MSG("two servers, single listener, localhost");
-    }
-    catch (const std::exception& e)
-    {
-        TEST_FAILED_MSG(e.what());
-    }
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-    try
-    {
-        TEST_INTRO(testNumber++);
-
-        ServerConfig config("OneServer_BadDNS.conf", defaultConfig);
-
-                                            // setting pipes to read stderr
-                                            int pipefd[2];
-                                            int dupstrerr = dup(STDERR_FILENO);
-                                            pipe(pipefd);
-                                            dup2(pipefd[1], STDERR_FILENO);
-
-        // test
-        bool success = config.parseConfigFile();
-
-                                            // reading from pipe
-                                            char buffer[1024];
-                                            int bytesRead = read(pipefd[0], buffer, 1024);
-                                            buffer[bytesRead] = '\0';
-
-                                            // restoring stderr
-                                            dup2(dupstrerr, STDERR_FILENO);
-                                            close(dupstrerr);
-                                            close(pipefd[0]);
-                                            close(pipefd[1]);
-
-        std::string expected = "Error: DNS lookup failed for asfasfasfasfasfasfasfasfasf.com:80\n";
-
-        EXPECT_EQUAL(success, false, "DNS lookup should fail");
-        EXPECT_EQUAL(std::string(buffer), expected, "Error message is incorrect");
-
-        TEST_PASSED_MSG("passing an IP that cannot be resolved");
-    }
-    catch (const std::exception& e)
-    {
-        TEST_FAILED_MSG(e.what());
-    }
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-    TEST_FOOTER;
-
-    close(STDERR_FILENO);
+        TEST_PASSED_MSG("Location cgi, resolving to global");
+	}
+	catch (const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
 
     return (0);
 }

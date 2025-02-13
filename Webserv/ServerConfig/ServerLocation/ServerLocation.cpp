@@ -126,6 +126,7 @@ void		ServerLocation::addMethod(const std::string &value)
 
 void	ServerLocation::addCgiInterpreter(const std::string &value)
 {
+	std::cout << "location add interpreter called" << std::endl;
 	std::string	extension;
 	std::string	path;
 	size_t		colonPos;
@@ -142,6 +143,8 @@ void	ServerLocation::addCgiInterpreter(const std::string &value)
 		goto exitError;
 		
 	m_cgiInterpreters[extension] = path;
+	
+	std::cout << "location added '" << extension << ":" << path << "'" << std::endl;
 
 	return ;
 

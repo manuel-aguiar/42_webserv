@@ -57,10 +57,13 @@ bool	Worker::mf_prepareExecve()
 		{
 			if (m_curRequestData->getExtension().empty())
 				throw std::runtime_error("interpreter not found");
+
 			std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpreterLookup 
 			= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
+
 			if (interpreterLookup == m_CgiModule.getInterpreters().end())
 				throw std::runtime_error("interpreter not found");
+			
 			m_argPtr.push_back(const_cast<char*>(interpreterLookup->second.c_str()));
 		}
 

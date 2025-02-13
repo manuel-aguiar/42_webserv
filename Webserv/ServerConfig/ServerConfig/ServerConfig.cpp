@@ -280,6 +280,12 @@ const DefaultConfig&	ServerConfig::getDefaultConfig() const
 	return (m_configDefault);
 }
 
+const std::map<Config::CgiExtension, Config::CgiInterpreter>&
+ServerConfig::getCgiInterpreters() const
+{
+	return (m_cgiInterpreters);
+}
+
 void		ServerConfig::setMaxConnections(const std::string &value)
 {
 	size_t	number;
@@ -359,6 +365,8 @@ void		ServerConfig::addCgiInterpreter(const std::string &value)
 	size_t		colonPos;
 
 	colonPos = value.find(':');
+	if (colonPos == std::string::npos)
+		goto exitError;
 	if (colonPos == 0 || colonPos == value.length() - 1)
 		goto exitError;
 	if (value.find(':', colonPos + 1) != std::string::npos)

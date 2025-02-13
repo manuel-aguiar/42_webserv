@@ -24,7 +24,7 @@ int main(void)
         ServerConfig config("OneServer_TwoListen.conf", defaultConfig);
         const size_t expectedCount = 2;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
@@ -72,7 +72,7 @@ int main(void)
         ServerConfig config("OneServer_Wildcard.conf", defaultConfig);
         const size_t expectedCount = 2;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
         
@@ -116,7 +116,7 @@ int main(void)
         ServerConfig config("OneServer_LocalHost.conf", defaultConfig);
         const size_t expectedCount = 1;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
         
@@ -155,7 +155,7 @@ int main(void)
         ServerConfig config("TwoServer_SameListen.conf", defaultConfig);
         const size_t expectedCount = 1;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
@@ -193,7 +193,7 @@ int main(void)
         ServerConfig config("TwoServer_Wildcard.conf", defaultConfig);
         const size_t expectedCount = 2;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
@@ -235,7 +235,7 @@ int main(void)
         ServerConfig config("TwoServer_LocalHost.conf", defaultConfig);
         const size_t expectedCount = 1;
 
-        config.parseConfigFile();
+        EXPECT_EQUAL(config.parseConfigFile(), true, "Should parse without issues");
 
         EXPECT_EQUAL(config.getAllBindAddresses().size(), expectedCount, "Wrong number of addresses");
 
