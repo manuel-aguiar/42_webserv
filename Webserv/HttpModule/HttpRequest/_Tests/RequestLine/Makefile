@@ -65,7 +65,7 @@ clean:
 
 fclean: clean
 	@echo "$(TAG) Full clean."
-	@rm -f $(NAME)
+	@rm -f $(TARGET_TEST)
 
 test: $(TARGET_TEST)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
