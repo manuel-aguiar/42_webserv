@@ -71,7 +71,7 @@ class ServerLocation
 										accessCgiInterpreters();
 
 	private:
-
+		
 		struct DirectiveToSetter
 		{
 			DirectiveToSetter();
@@ -95,8 +95,8 @@ class ServerLocation
 		std::string						m_type;
 		int								m_autoIndex;
 		std::set<std::string>			m_methods;
-		Config::CgiInterpreterMap	
-										m_cgiInterpreters;
+		Config::CgiInterpreterMap		m_cgiInterpreters;
+
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };
