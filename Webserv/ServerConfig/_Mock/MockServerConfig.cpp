@@ -200,7 +200,7 @@ int		ServerConfig::parseConfigFile()
 							<< currentLine << std::endl;
 						return (0);
 					}
-					server.setLocations(m_locations);
+					server.MapLocations(m_locations);
 					m_servers.push_back(server);
 					m_locations.clear();
 					break ;

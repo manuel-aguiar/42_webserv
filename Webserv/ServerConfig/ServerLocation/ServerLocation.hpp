@@ -18,6 +18,7 @@ namespace Config
 {
 	typedef std::string CgiExtension;
 	typedef std::string CgiInterpreter;
+	typedef std::map<CgiExtension, CgiInterpreter> CgiInterpreterMap;
 }
 
 
@@ -43,7 +44,7 @@ class ServerLocation
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
 		const std::string&				getType() const;
-		const std::map<Config::CgiExtension, Config::CgiInterpreter>&
+		const Config::CgiInterpreterMap&
 										getCgiInterpreters() const;
 
 
@@ -61,6 +62,9 @@ class ServerLocation
 		// DEBUG
 		void							printLocationConfig() const;
 
+		Config::CgiInterpreterMap&
+										accessCgiInterpreters();
+
 	private:
 
 		// Key/value storing for config settings
@@ -75,7 +79,7 @@ class ServerLocation
 		std::string						m_type;
 		std::string						m_autoIndex;
 		std::set<std::string>			m_methods;
-		std::map<Config::CgiExtension, Config::CgiInterpreter>	
+		Config::CgiInterpreterMap	
 										m_cgiInterpreters;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here

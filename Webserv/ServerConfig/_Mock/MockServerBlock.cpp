@@ -287,7 +287,7 @@ bool	ServerBlock::validate() const
 	return (1);
 }
 
-void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
+void	ServerBlock::MapLocations(const std::vector<ServerLocation> &locations)
 {
 	if (locations.empty())
 		return ;

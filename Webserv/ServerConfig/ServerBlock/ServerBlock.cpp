@@ -39,7 +39,7 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
 	m_keys = other.m_keys;
-	m_locations = other.m_locations;
+	m_mapLocations = other.m_mapLocations;
 	return (*this);
 }
 
@@ -156,10 +156,17 @@ void	ServerBlock::addConfigValue(const std::string &key, const std::string &valu
 	(this->*m_keys[key])(value);
 }
 
-const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
+const std::vector<ServerLocation>&		ServerBlock::getLocations() const
 {
 	return (m_locations);
 }
+
+const std::map<std::string, const ServerLocation*>&		ServerBlock::getMappedLocations() const
+{
+	return (m_mapLocations);
+}
+
+
 
 const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
@@ -191,6 +198,17 @@ const std::string&	ServerBlock::getRoot() const
 	return (m_root);
 }
 
+
+std::vector<ServerLocation>&	ServerBlock::accessLocations()
+{
+	return (m_locations);
+}
+
+std::map<std::string, const ServerLocation*>&	ServerBlock::accessMappedLocations()
+{
+	return (m_mapLocations);
+}
+
 void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
 	if (m_root.empty())
@@ -217,16 +235,16 @@ bool	ServerBlock::validate() const
 	return (1);
 }
 
-void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
+void	ServerBlock::mapLocations()
 {
-	if (locations.empty())
+	if (m_locations.empty())
 		return ;
 	
-	std::vector<ServerLocation>::const_iterator it = locations.begin();
+	std::vector<ServerLocation>::const_iterator it = m_locations.begin();
 
-	for (; it != locations.end(); it++)
+	for (; it != m_locations.end(); it++)
 	{
-		m_locations[it->getPath()] = *it;
+		m_mapLocations[it->getPath()] = &(*it);
 	}
 }
 

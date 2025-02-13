@@ -34,6 +34,7 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_keys = other.m_keys;
 	m_path = other.m_path;
 	m_root = other.m_root;
@@ -42,13 +43,21 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_methods = other.m_methods;
 	m_validTypes = other.m_validTypes;
 	m_validMethods = other.m_validMethods;
+	m_cgiInterpreters = other.m_cgiInterpreters;
+
 	return (*this);
 }
 
-ServerLocation::ServerLocation(const ServerLocation &other)
-{
-	*this = other;
-}
+ServerLocation::ServerLocation(const ServerLocation &other) :
+	m_keys				(other.m_keys),
+	m_validTypes		(other.m_validTypes),
+	m_validMethods		(other.m_validMethods),
+	m_path				(other.m_path),
+	m_root				(other.m_root),
+	m_type				(other.m_type),
+	m_autoIndex			(other.m_autoIndex),
+	m_methods			(other.m_methods),
+	m_cgiInterpreters	(other.m_cgiInterpreters) {}
 
 void	ServerLocation::addConfigValue(const std::string &key, const std::string &value)
 {
@@ -84,8 +93,14 @@ const std::string&	ServerLocation::getType() const
 	return (m_type);
 }
 
-const std::map<Config::CgiExtension, Config::CgiInterpreter>&	
+const Config::CgiInterpreterMap&	
 ServerLocation::getCgiInterpreters() const
+{
+	return (m_cgiInterpreters);
+}
+
+Config::CgiInterpreterMap&
+ServerLocation::accessCgiInterpreters()
 {
 	return (m_cgiInterpreters);
 }
@@ -126,9 +141,8 @@ void		ServerLocation::addMethod(const std::string &value)
 
 void	ServerLocation::addCgiInterpreter(const std::string &value)
 {
-	std::cout << "location add interpreter called" << std::endl;
 	std::string	extension;
-	std::string	path;
+	std::string	path("");
 	size_t		colonPos;
 
 	colonPos = value.find(':');
@@ -137,15 +151,16 @@ void	ServerLocation::addCgiInterpreter(const std::string &value)
 	if (value.find(':', colonPos + 1) != std::string::npos)
 		goto exitError;
 	extension = value.substr(0, colonPos);
-	path = value.substr(colonPos + 1);
+
 
 	if (extension.empty())									// allow extension only, later resolved by ServerConfig
 		goto exitError;
+
+	if (colonPos != std::string::npos)
+		path = value.substr(colonPos + 1);
 		
 	m_cgiInterpreters[extension] = path;
 	
-	std::cout << "location added '" << extension << ":" << path << "'" << std::endl;
-
 	return ;
 
 exitError:

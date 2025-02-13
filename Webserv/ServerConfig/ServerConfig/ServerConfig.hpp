@@ -27,6 +27,7 @@ namespace Config
 {
 	typedef std::string CgiExtension;
 	typedef std::string CgiInterpreter;
+	typedef std::map<CgiExtension, CgiInterpreter> CgiInterpreterMap;
 }
 
 class ServerConfig
@@ -45,7 +46,7 @@ class ServerConfig
 		int											getMaxWorkers() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		const DefaultConfig&						getDefaultConfig() const;
-		const std::map<Config::CgiExtension, Config::CgiInterpreter>&	
+		const Config::CgiInterpreterMap&	
 													getCgiInterpreters() const;
 
 		void										setMaxConnections(const std::string &value);
@@ -84,21 +85,19 @@ class ServerConfig
 		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
 		std::vector<Ws::BindInfo>			m_bindAddresses;
-		std::map<Config::CgiExtension, Config::CgiInterpreter>	
+		Config::CgiInterpreterMap	
 											m_cgiInterpreters;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
 		int									m_parseConfigLine(const std::string &line, const size_t &currentLine,
 															std::vector<ServerBlock> &servers,
-															std::vector<ServerLocation> &locations,
 															const int &currentLevel);
 		void								m_setConfigValue(const std::string &key, const std::string &value);
 		bool								m_updateFile();
 		void								m_setDefaults();
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
-															std::vector<ServerBlock> &servers, 
-															std::vector<ServerLocation> &locations);
+															std::vector<ServerBlock> &servers);
 
 		bool								mf_expandCgiToLocations();
 		bool								mf_listenDNSlookup();

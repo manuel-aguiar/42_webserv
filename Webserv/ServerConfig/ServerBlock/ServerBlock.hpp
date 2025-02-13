@@ -45,8 +45,10 @@ class ServerBlock
 
 		const std::set<std::string>&	
 										getDomainNames() const;
-		const std::map<std::string, ServerLocation>& 		
+		const std::vector<ServerLocation>&
 										getLocations() const;
+		const std::map<std::string, const ServerLocation*>& 		
+										getMappedLocations() const;
 
 		const std::set<Config::Listen>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
@@ -58,7 +60,6 @@ class ServerBlock
 										getListenAddresses() const;
 
 
-		void							setLocations(const std::vector<ServerLocation> &Locations);
 		void							setRootPath(const std::string &value);
 		void							setClientBodySize(const std::string &value);
 		void							setClientHeaderSize(const std::string &value);
@@ -70,10 +71,14 @@ class ServerBlock
 
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
+		void							mapLocations();
 
 		// Debug
 		void							printServerConfig() const;
 
+		std::vector<ServerLocation>&	accessLocations();
+		std::map<std::string, const ServerLocation*>&
+										accessMappedLocations();
 
 	private:
 
@@ -86,8 +91,8 @@ class ServerBlock
 		int												m_client_header_size;
 		std::string										m_root;
 		std::set<std::string>							m_error_pages;
-
-		std::map<Ws::path, ServerLocation>				m_locations;
+		std::vector<ServerLocation>						m_locations;						
+		std::map<Ws::path, const ServerLocation*>		m_mapLocations;
 
 		std::vector<const Ws::Sock::addr*>				m_myListenAddresses;
 };

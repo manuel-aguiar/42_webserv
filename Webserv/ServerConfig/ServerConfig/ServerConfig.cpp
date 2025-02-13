@@ -74,8 +74,10 @@ void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &v
 	(this->*m_keys[key])(value);
 }
 
-int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, std::vector<ServerBlock> &servers,
-										std::vector<ServerLocation> &locations, const int &currentLevel)
+int		ServerConfig::m_parseConfigLine(const std::string &line, 
+										const size_t &currentLine, 
+										std::vector<ServerBlock> &servers, 
+										const int &currentLevel)
 {
 	std::istringstream iss(line);
 	std::string key, value;
@@ -109,7 +111,7 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 				break ;
 			case LOCATION_LEVEL:
 				try {
-					locations.back().addConfigValue(key, value);
+					servers.back().accessLocations().back().addConfigValue(key, value);
 				}
 				catch (std::exception &e) {
 					std::cerr << "Error: " << e.what() << " on line " << currentLine << std::endl;
@@ -127,16 +129,18 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 }
 
 bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine,
-										std::vector<ServerBlock> &servers, 
-										std::vector<ServerLocation> &locations)
+										std::vector<ServerBlock> &servers)
 {
 	switch (currentLevel)
 	{
 		case PROGRAM_LEVEL:
+		{
 			std::cerr << "Error: config parsing: stray closing bracket on line "
 				<< currentLine << std::endl;
 			return (0);
+		}
 		case SERVER_LEVEL:
+		{
 			currentLevel = PROGRAM_LEVEL;
 			servers.back().setDefaults(m_configDefault);
 			if (!servers.back().validate())
@@ -145,19 +149,22 @@ bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine
 					<< currentLine << std::endl;
 				return (0);
 			}
-			servers.back().setLocations(locations);
-			locations.clear();
+			servers.back().mapLocations();
 			break ;
+		}
 		case LOCATION_LEVEL:
+		{
 			currentLevel = SERVER_LEVEL;
-			locations.back().setDefaults(m_configDefault);
-			if (!locations.back().validate())
+			ServerLocation& location = servers.back().accessLocations().back();
+			location.setDefaults(m_configDefault);
+			if (!location.validate())
 			{
 				std::cerr << "Error: config parsing: invalid location block closing on line "
 					<< currentLine << std::endl;
 				return (0);
 			}
 			break ;
+		}
 		default:
 			std::cerr << "Parsing: Unexpected Error" << std::endl;
 			return (0);
@@ -171,9 +178,6 @@ int		ServerConfig::parseConfigFile()
 	std::string		line;
 	size_t			currentLine = 0;
 	int				currentLevel = PROGRAM_LEVEL;
-	ServerLocation	location;
-
-	std::vector<ServerLocation>			locations;
 
 	if (!m_updateFile())
 		return (0);
@@ -208,17 +212,17 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			locations.push_back(ServerLocation());
+			m_serverBlocks.back().accessLocations().push_back(ServerLocation());
 			currentLevel = LOCATION_LEVEL;
 		}
 		else if (line == "}")
 		{
-			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks, locations))
+			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks))
 				return (0);
 		}
 		else
 		{
-			if (!m_parseConfigLine(line, currentLine, m_serverBlocks, locations, currentLevel))
+			if (!m_parseConfigLine(line, currentLine, m_serverBlocks, currentLevel))
 			{
 				std::cerr << "Error: config parsing: invalid input on line "
 					<< currentLine << std::endl;
@@ -241,6 +245,23 @@ int		ServerConfig::parseConfigFile()
 		return (0);
 		
 	m_setDefaults();
+
+/*
+	if (!m_serverBlocks.size())
+		std::cout << "no server blocks" << std::endl;
+	else if (!m_serverBlocks.back().accessLocations().size())
+		std::cout << "no locations" << std::endl;
+	else if (!m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size())
+		std::cout << "no interpreters" << std::endl;
+	else
+	{
+		std::cout << "server blocks: " << m_serverBlocks.size()
+		<< "\nlocations: " << m_serverBlocks.back().accessLocations().size()
+		<< "\ninterpreters: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size()
+		<< "\n extension: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->first
+		<< "\n path: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->second;
+	}
+*/
 	return (1);
 }
 
@@ -280,7 +301,7 @@ const DefaultConfig&	ServerConfig::getDefaultConfig() const
 	return (m_configDefault);
 }
 
-const std::map<Config::CgiExtension, Config::CgiInterpreter>&
+const Config::CgiInterpreterMap&
 ServerConfig::getCgiInterpreters() const
 {
 	return (m_cgiInterpreters);
@@ -396,24 +417,31 @@ void	ServerConfig::m_setDefaults()
 // for each server block, for each location, for each cgi entry, uffffffff
 bool	ServerConfig::mf_expandCgiToLocations()
 {
-	for (std::vector<ServerBlock>::iterator it = m_serverBlocks.begin(); it != m_serverBlocks.end(); it++)
+	for (std::vector<ServerBlock>::iterator thisBlock = m_serverBlocks.begin(); thisBlock != m_serverBlocks.end(); thisBlock++)
 	{
-		std::map<Ws::path, ServerLocation>::const_iterator it2 = it->getLocations().begin();
-		for (; it2 != it->getLocations().end(); it2++)
+		std::vector<ServerLocation>& locations = thisBlock->accessLocations();
+		std::vector<ServerLocation>::iterator thisLocation = locations.begin();
+		for (; thisLocation != locations.end(); thisLocation++)
 		{
-			std::map<Config::CgiExtension, Config::CgiInterpreter>::iterator it3 = m_cgiInterpreters.begin();
-			for (; it3 != m_cgiInterpreters.end(); it3++)
+			Config::CgiInterpreterMap& locationInterpreters = thisLocation->accessCgiInterpreters();
+			Config::CgiInterpreterMap::iterator thisInterpreter = locationInterpreters.begin();
+			for (; thisInterpreter != locationInterpreters.end(); thisInterpreter++)
 			{
-				if (!it3->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
+				if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
+				{
+					std::cout << "not empty" << std::endl;
 					continue ;
+				}	
 
-				std::map<Config::CgiExtension, Config::CgiInterpreter>::iterator serverLevel;
-				serverLevel = m_cgiInterpreters.find(it3->first);
+				// ServerConfig looks up the path from the extension at the program level
+				Config::CgiInterpreterMap::iterator serverLevel;
+				serverLevel = m_cgiInterpreters.find(thisInterpreter->first);
 				if (serverLevel != m_cgiInterpreters.end())
-					it3->second = serverLevel->second;
+					thisInterpreter->second = serverLevel->second;
+					
 				else
 				{
-					std::cerr << "Error: location «" << it2->first << "» 'cgi': no interpreter for extension '" << it3->first << "'" << std::endl;
+					std::cerr << "Error: location «" << thisLocation->getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
 					return (false);
 				}
 			}
@@ -442,12 +470,12 @@ void	ServerConfig::printProgramConfig() const
 void	ServerConfig::printConfigs() const
 {
 	printProgramConfig();
-	for (std::vector<ServerBlock>::const_iterator it = getServerBlocks().begin(); it != getServerBlocks().end(); it++)
+	for (std::vector<ServerBlock>::const_iterator thisBlock = getServerBlocks().begin(); thisBlock != getServerBlocks().end(); thisBlock++)
 	{
-		it->printServerConfig();
-		if (!it->getLocations().empty())
-			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->getLocations().begin(); it2 != it->getLocations().end(); it2++)
-				it2->second.printLocationConfig();
+		thisBlock->printServerConfig();
+		if (!thisBlock->getLocations().empty())
+			for (size_t i = 0; i < thisBlock->getLocations().size(); i++)
+				thisBlock->getLocations()[i].printLocationConfig();
 		std::cout << "║ └──────────────────o\n";
 	}
 	std::cout << "╚═════════════════════════════O" << std::endl;
