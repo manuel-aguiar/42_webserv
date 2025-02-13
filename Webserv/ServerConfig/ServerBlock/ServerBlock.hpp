@@ -12,8 +12,10 @@
 # include <exception>
 
 // Own headers
-
 # include "../../Ws_Namespace.h"
+
+// for the KeySetters
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
 
 //forward declarations
 class ServerLocation;
@@ -82,8 +84,19 @@ class ServerBlock
 
 	private:
 
-		typedef void (ServerBlock::*f_addConfigValue)(const std::string &);
-		std::map<std::string, f_addConfigValue> 		m_keys;
+		struct DirectiveToSetter
+		{
+			DirectiveToSetter();
+			typedef void 															(ServerBlock::*Setter)(const std::string &);
+			typedef std::pair<const std::string, Setter> 							DirectiveSetterPair;
+			typedef Heap_ObjectPool<DirectiveSetterPair>							mapPool;
+			typedef std::map<std::string, Setter, std::less<std::string>, mapPool> 	DirectiveSetterMap;
+
+			DirectiveSetterMap	map;
+		};
+
+		// common to all instances
+		static DirectiveToSetter						m_directiveToSetter;
 
 		std::set<Config::Listen>						m_listen;
 		std::set<std::string>							m_server_name;

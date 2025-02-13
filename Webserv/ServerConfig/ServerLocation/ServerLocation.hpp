@@ -4,6 +4,11 @@
 
 # define SERVERLOCATION_HPP
 
+// Project headers
+
+// for the KeySetters
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
+
 // C++ Headers
 # include <string>
 # include <set>
@@ -67,12 +72,23 @@ class ServerLocation
 
 	private:
 
-		// Key/value storing for config settings
-		typedef void (ServerLocation::*f_addConfigValue)(const std::string &);
-		std::map<std::string, f_addConfigValue> 		m_keys;
+		struct DirectiveToSetter
+		{
+			DirectiveToSetter();
+			typedef void 															(ServerLocation::*Setter)(const std::string &);
+			typedef std::pair<const std::string, Setter> 							DirectiveSetterPair;
+			typedef Heap_ObjectPool<DirectiveSetterPair>							mapPool;
+			typedef std::map<std::string, Setter, std::less<std::string>, mapPool> 	DirectiveSetterMap;
 
-		std::set<std::string> 			m_validTypes;
-		std::set<std::string>			m_validMethods;
+			typedef std::set<std::string, std::less<std::string>, Heap_ObjectPool<std::string> >
+																					MatchSet;
+			DirectiveSetterMap	map;
+			MatchSet			validTypes;
+			MatchSet			validMethods;
+		};
+
+		// common to all instances
+		static DirectiveToSetter		m_directiveToSetter;
 
 		std::string						m_path;
 		std::string						m_root;

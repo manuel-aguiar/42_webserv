@@ -17,6 +17,9 @@
 //Own headers
 # include "../../Ws_Namespace.h"
 
+// for the KeySetters
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
+
 // forward declarations
 class Globals;
 class ServerBlock;
@@ -29,6 +32,8 @@ namespace Config
 	typedef std::string CgiInterpreter;
 	typedef std::map<CgiExtension, CgiInterpreter> CgiInterpreterMap;
 }
+
+
 
 class ServerConfig
 {
@@ -70,10 +75,19 @@ class ServerConfig
 			LOCATION_LEVEL
 		};
 
-		// Key/value storing for config settings
-		typedef void (ServerConfig::*f_addConfigValue)(const std::string &);
-		std::map<std::string, f_addConfigValue>				m_keys;
+		struct DirectiveToSetter
+		{
+			DirectiveToSetter();
+			typedef void 															(ServerConfig::*Setter)(const std::string &);
+			typedef std::pair<const std::string, Setter> 							DirectiveSetterPair;
+			typedef Heap_ObjectPool<DirectiveSetterPair>							mapPool;
+			typedef std::map<std::string, Setter, std::less<std::string>, mapPool> 	DirectiveSetterMap;
 
+			DirectiveSetterMap	map;
+		};
+
+		// common to all instances
+		static DirectiveToSetter			m_directiveToSetter;
 
 		int									m_max_connections;
 		int									m_max_concurrent_cgi;

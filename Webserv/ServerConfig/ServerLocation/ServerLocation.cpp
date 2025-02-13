@@ -7,24 +7,32 @@
 # include "../../Ws_Namespace.h"
 # include "../DefaultConfig/DefaultConfig.hpp"
 
-ServerLocation::ServerLocation() :
-	m_autoIndex(DefaultConfig::UINT_NONE)
+ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
+
+ServerLocation::DirectiveToSetter::DirectiveToSetter() :
+	map(std::less<std::string>(), mapPool(6)),									// 6 magic: number of keys
+	validTypes(std::less<std::string>(), Heap_ObjectPool<std::string>(3)),		// 3 magic: number of types
+	validMethods(std::less<std::string>(), Heap_ObjectPool<std::string>(3))		// 3 magic: number of methods
 {
-	m_keys["path"]				= &ServerLocation::setPath;
-	m_keys["root"]				= &ServerLocation::setRoot;
-	m_keys["type"]				= &ServerLocation::setType;
-	m_keys["auto_index"]		= &ServerLocation::setAutoindex;
-	m_keys["methods"]			= &ServerLocation::addMethod;
-	m_keys["cgi"]				= &ServerLocation::addCgiInterpreter;
+	map["path"]				= &ServerLocation::setPath;
+	map["root"]				= &ServerLocation::setRoot;
+	map["type"]				= &ServerLocation::setType;
+	map["auto_index"]		= &ServerLocation::setAutoindex;
+	map["methods"]			= &ServerLocation::addMethod;
+	map["cgi"]				= &ServerLocation::addCgiInterpreter;
 
-	m_validTypes.insert("regular"); 
-	m_validTypes.insert("redirection");
-	m_validTypes.insert("cgi");
+	validTypes.insert("regular"); 
+	validTypes.insert("redirection");
+	validTypes.insert("cgi");
 
-	m_validMethods.insert("get");
-	m_validMethods.insert("post");
-	m_validMethods.insert("delete");
+	validMethods.insert("get");
+	validMethods.insert("post");
+	validMethods.insert("delete");
 }
+
+ServerLocation::ServerLocation() :
+	m_autoIndex(DefaultConfig::UINT_NONE) {}
+
 
 ServerLocation::~ServerLocation()
 {
@@ -36,23 +44,17 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	if (this == &other)
 		return (*this);
 
-	m_keys = other.m_keys;
 	m_path = other.m_path;
 	m_root = other.m_root;
 	m_type = other.m_type;
 	m_autoIndex = other.m_autoIndex;
 	m_methods = other.m_methods;
-	m_validTypes = other.m_validTypes;
-	m_validMethods = other.m_validMethods;
 	m_cgiInterpreters = other.m_cgiInterpreters;
 
 	return (*this);
 }
 
 ServerLocation::ServerLocation(const ServerLocation &other) :
-	m_keys				(other.m_keys),
-	m_validTypes		(other.m_validTypes),
-	m_validMethods		(other.m_validMethods),
 	m_path				(other.m_path),
 	m_root				(other.m_root),
 	m_type				(other.m_type),
@@ -62,9 +64,9 @@ ServerLocation::ServerLocation(const ServerLocation &other) :
 
 void	ServerLocation::addConfigValue(const std::string &key, const std::string &value)
 {
-	if (m_keys.find(key) == m_keys.end())
+	if (m_directiveToSetter.map.find(key) == m_directiveToSetter.map.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value);
+	(this->*m_directiveToSetter.map[key])(value);
 }
 
 // Getters & Setters
@@ -108,7 +110,8 @@ ServerLocation::accessCgiInterpreters()
 
 void		ServerLocation::setType(const std::string &value)
 {
-	if (m_validTypes.find(value) == m_validTypes.end())
+	m_directiveToSetter.validTypes.find(value);
+	if (m_directiveToSetter.validTypes.find(value) == m_directiveToSetter.validTypes.end())
 		throw (std::invalid_argument("invalid type value"));
 	m_type = value;
 }
@@ -134,7 +137,7 @@ void		ServerLocation::addMethod(const std::string &value)
 {
 	std::string	lowercaseStr = StringUtils::strToLower(value);
 	
-	if (m_validMethods.find(lowercaseStr) == m_validMethods.end())
+	if (m_directiveToSetter.validMethods.find(lowercaseStr) == m_directiveToSetter.validMethods.end())
 		throw (std::invalid_argument("invalid method"));
 	if (m_methods.find(lowercaseStr) == m_methods.end())
 		m_methods.insert(lowercaseStr);
