@@ -11,17 +11,22 @@
 // C++ headers
 # include <cstdlib> // for atoi
 
+ServerBlock::DirectiveToSetter ServerBlock::m_directiveToSetter;
+
+ServerBlock::DirectiveToSetter::DirectiveToSetter() :
+	map(std::less<std::string>(), mapPool(6))	// 6 magic: number of keys
+{
+	map["listen"]				= &ServerBlock::addListener;
+	map["server_name"]			= &ServerBlock::addServerName;
+	map["client_body_size"]		= &ServerBlock::setClientBodySize;
+	map["client_header_size"]	= &ServerBlock::setClientHeaderSize;
+	map["root"]					= &ServerBlock::setRootPath;
+	map["error_pages"]			= &ServerBlock::addErrorPage;
+}
+
 ServerBlock::ServerBlock() :
 	m_client_body_size(DefaultConfig::UINT_NONE),
-	m_client_header_size(DefaultConfig::UINT_NONE)
-{
-	m_keys["listen"]				= &ServerBlock::addListener;
-	m_keys["server_name"]			= &ServerBlock::addServerName;
-	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
-	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
-	m_keys["root"]					= &ServerBlock::setRootPath;
-	m_keys["error_pages"]			= &ServerBlock::addErrorPage;
-}
+	m_client_header_size(DefaultConfig::UINT_NONE) {}
 
 ServerBlock::~ServerBlock()
 {
@@ -32,20 +37,20 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_listen = other.m_listen;
 	m_server_name = other.m_server_name;
 	m_client_body_size = other.m_client_body_size;
 	m_client_header_size = other.m_client_header_size;
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
-	m_keys = other.m_keys;
 	m_locations = other.m_locations;
 	m_mapLocations = other.m_mapLocations;
+
 	return (*this);
 }
 
 ServerBlock::ServerBlock(const ServerBlock &other) :
-	m_keys					(other.m_keys),
 	m_listen				(other.m_listen),
 	m_server_name			(other.m_server_name),
 	m_client_body_size		(other.m_client_body_size),
@@ -158,9 +163,9 @@ void	ServerBlock::addErrorPage(const std::string &value)
 
 void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
 {
-	if (m_keys.find(key) == m_keys.end())
+	if (m_directiveToSetter.map.find(key) == m_directiveToSetter.map.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value);
+	(this->*m_directiveToSetter.map[key])(value);
 }
 
 const std::vector<ServerLocation>&		ServerBlock::getLocations() const

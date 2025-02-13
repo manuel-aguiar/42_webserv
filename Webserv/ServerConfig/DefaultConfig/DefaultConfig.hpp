@@ -37,7 +37,7 @@ struct DefaultConfig
 	const char*	http_error404Path; // add the remaining error pages
 
 	// Location
-	const char* loc_autoIndex;
+	int			loc_autoIndex;
 	const char*	loc_http_methods;
 	const char*	loc_type;
 

@@ -12,21 +12,26 @@
 // C++ headers
 # include <cstdlib> // atoi
 
-ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
-	m_max_connections(DefaultConfig::UINT_NONE),
-	m_max_concurrent_cgi(DefaultConfig::UINT_NONE),
-	m_max_cgi_backlog(DefaultConfig::UINT_NONE),
-	m_max_workers(DefaultConfig::UINT_NONE),	
-	m_configDefault(defaultConfig),
-	m_configFilePath(configFilePath),
-	m_serverCount(0)
+ServerConfig::DirectiveToSetter ServerConfig::m_directiveToSetter;
+
+ServerConfig::DirectiveToSetter::DirectiveToSetter() :
+	map(std::less<std::string>(), mapPool(5))	// 5 magic: number of keys
 {
-	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
-	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
-	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
-	m_keys["max_workers"]			= &ServerConfig::setMaxWorkers;
-	m_keys["cgi"]					= &ServerConfig::addCgiInterpreter;
+	map["max_connections"]		= &ServerConfig::setMaxConnections;
+	map["max_concurrent_cgi"]		= &ServerConfig::setMaxConcurrentCgi;
+	map["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
+	map["max_workers"]			= &ServerConfig::setMaxWorkers;
+	map["cgi"]					= &ServerConfig::addCgiInterpreter;
 }
+
+ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
+	m_max_connections		(DefaultConfig::UINT_NONE),
+	m_max_concurrent_cgi	(DefaultConfig::UINT_NONE),
+	m_max_cgi_backlog		(DefaultConfig::UINT_NONE),
+	m_max_workers			(DefaultConfig::UINT_NONE),	
+	m_configDefault			(defaultConfig),
+	m_configFilePath		(configFilePath),
+	m_serverCount			(0) {}
 
 ServerConfig::~ServerConfig()
 {
@@ -38,7 +43,6 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 	if (this == &other)
 		return (*this);
 
-	m_keys = other.m_keys;
 	m_max_concurrent_cgi = other.m_max_concurrent_cgi;
 	m_max_connections = other.m_max_connections;
 	m_max_cgi_backlog = other.m_max_cgi_backlog;
@@ -69,9 +73,9 @@ bool	ServerConfig::m_updateFile()
 
 void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &value)
 {
-	if (m_keys.find(key) == m_keys.end())
+	if (m_directiveToSetter.map.find(key) == m_directiveToSetter.map.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value);
+	(this->*m_directiveToSetter.map[key])(value);
 }
 
 int		ServerConfig::m_parseConfigLine(const std::string &line, 
@@ -246,22 +250,6 @@ int		ServerConfig::parseConfigFile()
 		
 	m_setDefaults();
 
-/*
-	if (!m_serverBlocks.size())
-		std::cout << "no server blocks" << std::endl;
-	else if (!m_serverBlocks.back().accessLocations().size())
-		std::cout << "no locations" << std::endl;
-	else if (!m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size())
-		std::cout << "no interpreters" << std::endl;
-	else
-	{
-		std::cout << "server blocks: " << m_serverBlocks.size()
-		<< "\nlocations: " << m_serverBlocks.back().accessLocations().size()
-		<< "\ninterpreters: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size()
-		<< "\n extension: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->first
-		<< "\n path: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->second;
-	}
-*/
 	return (1);
 }
 

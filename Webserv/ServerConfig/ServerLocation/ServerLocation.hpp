@@ -4,6 +4,11 @@
 
 # define SERVERLOCATION_HPP
 
+// Project headers
+
+// for the KeySetters
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
+
 // C++ Headers
 # include <string>
 # include <set>
@@ -41,7 +46,7 @@ class ServerLocation
 		// Getters & Setters
 		const std::string&				getPath() const;
 		const std::string&				getRoot() const;
-		bool							getAutoindex() const;
+		bool							getAutoIndex() const;
 		const std::set<std::string>&	getMethods() const;
 		const std::string&				getType() const;
 		const Config::CgiInterpreterMap&
@@ -66,21 +71,32 @@ class ServerLocation
 										accessCgiInterpreters();
 
 	private:
+		
+		struct DirectiveToSetter
+		{
+			DirectiveToSetter();
+			typedef void 															(ServerLocation::*Setter)(const std::string &);
+			typedef std::pair<const std::string, Setter> 							DirectiveSetterPair;
+			typedef Heap_ObjectPool<DirectiveSetterPair>							mapPool;
+			typedef std::map<std::string, Setter, std::less<std::string>, mapPool> 	DirectiveSetterMap;
 
-		// Key/value storing for config settings
-		typedef void (ServerLocation::*f_addConfigValue)(const std::string &);
-		std::map<std::string, f_addConfigValue> 		m_keys;
+			typedef std::set<std::string, std::less<std::string>, Heap_ObjectPool<std::string> >
+																					MatchSet;
+			DirectiveSetterMap	map;
+			MatchSet			validTypes;
+			MatchSet			validMethods;
+		};
 
-		std::set<std::string> 			m_validTypes;
-		std::set<std::string>			m_validMethods;
+		// common to all instances
+		static DirectiveToSetter		m_directiveToSetter;
 
 		std::string						m_path;
 		std::string						m_root;
 		std::string						m_type;
-		std::string						m_autoIndex;
+		int								m_autoIndex;
 		std::set<std::string>			m_methods;
-		Config::CgiInterpreterMap	
-										m_cgiInterpreters;
+		Config::CgiInterpreterMap		m_cgiInterpreters;
+
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };
