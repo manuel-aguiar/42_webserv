@@ -32,6 +32,7 @@ namespace Cgi
 
 	void	Cgi::Request::mf_reset()
 	{
+		m_interpreterPath.clear();
 		m_extension.clear();
 		m_scriptPath.clear();
 		m_env.envBase.clear();

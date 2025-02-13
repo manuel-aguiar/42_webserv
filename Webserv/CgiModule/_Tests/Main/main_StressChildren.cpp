@@ -17,7 +17,7 @@ int main(void)
     TestPart1(testNumber);
     TestPart2(testNumber);
 	CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllInvalidCriteria, "AllInvalidCriteria");	
-    CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
+    CgiStressTest::StressTest(testNumber, 3, 10, 100, 5000, &CgiStressTest::MixedCriteria, "MixedCriteria");	
     CgiStressTest::StressTest(testNumber, 5, 50, 100, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");	
 
     close(STDERR_FILENO);

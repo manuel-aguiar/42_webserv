@@ -34,7 +34,7 @@ bool	Worker::mf_prepareExecve()
 {
 	typedef DynArray<std::pair<Cgi::EnvKey, Cgi::EnvValue> >::const_iterator	t_EnvExtraIter;
 
-	const Cgi::EnvVariables& 			envRequest = m_curRequestData->getEnvVars();
+	const Cgi::EnvVariables& 		envRequest = m_curRequestData->getEnvVars();
 	const StackArray<Cgi::EnvKey, Cgi::Env::Enum::COUNT>&
 									envBase = m_CgiModule.getBaseEnvKeys();
 	size_t							entryCount = envRequest.envExtra.size() + envRequest.envBase.size();
@@ -43,17 +43,35 @@ bool	Worker::mf_prepareExecve()
 
 	try
 	{
-		std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpExtension 
-		= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
-
-		if (interpExtension == m_CgiModule.getInterpreters().end())
-			throw std::runtime_error("interpreter not found");
-
-		assert (m_envStr.size() == 0 && m_envPtr.size() == 0 && m_argPtr.size() == 0);
+		ASSERT_EQUAL(m_envStr.size() == 0 && m_envPtr.size() == 0 && m_argPtr.size() == 0, true, 
+		"InternalCgiWorker::mf_prepareExecve(), already prepared");
 
 		m_envStr.reserve(entryCount);
 		m_envPtr.reserve(entryCount + 1);
 		m_argPtr.reserve(3);
+
+		// interpreter lookup: if given, use it. If not, use extension to find interpreter. If not, there is no interpreter
+		if (!m_curRequestData->getInterpreterPath().empty())
+			m_argPtr.push_back(const_cast<char*>(m_curRequestData->getInterpreterPath().c_str()));
+		else
+		{
+			if (m_curRequestData->getExtension().empty())
+				throw std::runtime_error("interpreter not found");
+
+			std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpreterLookup 
+			= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
+
+			if (interpreterLookup == m_CgiModule.getInterpreters().end())
+				throw std::runtime_error("interpreter not found");
+			
+			m_argPtr.push_back(const_cast<char*>(interpreterLookup->second.c_str()));
+		}
+
+		if (m_curRequestData->getScriptPath().empty())
+			throw std::runtime_error("script path not found");
+		
+		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
+		m_argPtr.push_back(NULL);
 
 		for (size_t i = 0; i < envRequest.envBase.size(); i++)
 		{
@@ -74,9 +92,6 @@ bool	Worker::mf_prepareExecve()
 
 		m_envPtr.push_back(NULL);
 
-		m_argPtr.push_back(const_cast<char*>(interpExtension->second.c_str()));
-		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
-		m_argPtr.push_back(NULL);
 		
 		return (true);
 	}

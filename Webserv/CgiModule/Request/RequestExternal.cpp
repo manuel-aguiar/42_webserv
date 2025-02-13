@@ -42,6 +42,13 @@ namespace Cgi
 	}
 
 	void
+	Cgi::Request::setInterpreterPath(const Cgi::InterpPath& path)
+	{
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
+		m_interpreterPath = path;
+	}
+
+	void
 	Cgi::Request::setExtension(const Cgi::InterpExtension& extension)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
@@ -74,6 +81,12 @@ namespace Cgi
 	Cgi::Request::getEnvVars() const
 	{
 		return (m_env);
+	}
+
+	const Cgi::InterpPath&
+	Cgi::Request::getInterpreterPath() const
+	{
+		return (m_interpreterPath);
 	}
 
 	const Cgi::InterpExtension&
