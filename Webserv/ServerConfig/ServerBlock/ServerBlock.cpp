@@ -32,6 +32,7 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_listen = other.m_listen;
 	m_server_name = other.m_server_name;
 	m_client_body_size = other.m_client_body_size;
@@ -39,14 +40,22 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
 	m_keys = other.m_keys;
+	m_locations = other.m_locations;
 	m_mapLocations = other.m_mapLocations;
+	
 	return (*this);
 }
 
-ServerBlock::ServerBlock(const ServerBlock &other)
-{
-	*this = other;
-}
+ServerBlock::ServerBlock(const ServerBlock &other) :
+	m_keys					(other.m_keys),
+	m_listen				(other.m_listen),
+	m_server_name			(other.m_server_name),
+	m_client_body_size		(other.m_client_body_size),
+	m_client_header_size	(other.m_client_header_size),
+	m_root					(other.m_root),
+	m_error_pages			(other.m_error_pages),
+	m_locations				(other.m_locations),
+	m_mapLocations			(other.m_mapLocations) {}
 
 void	ServerBlock::setRootPath(const std::string &value)
 {
