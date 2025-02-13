@@ -246,22 +246,6 @@ int		ServerConfig::parseConfigFile()
 		
 	m_setDefaults();
 
-/*
-	if (!m_serverBlocks.size())
-		std::cout << "no server blocks" << std::endl;
-	else if (!m_serverBlocks.back().accessLocations().size())
-		std::cout << "no locations" << std::endl;
-	else if (!m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size())
-		std::cout << "no interpreters" << std::endl;
-	else
-	{
-		std::cout << "server blocks: " << m_serverBlocks.size()
-		<< "\nlocations: " << m_serverBlocks.back().accessLocations().size()
-		<< "\ninterpreters: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size()
-		<< "\n extension: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->first
-		<< "\n path: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->second;
-	}
-*/
 	return (1);
 }
 

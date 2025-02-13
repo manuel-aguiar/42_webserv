@@ -41,7 +41,7 @@ class ServerLocation
 		// Getters & Setters
 		const std::string&				getPath() const;
 		const std::string&				getRoot() const;
-		bool							getAutoindex() const;
+		bool							getAutoIndex() const;
 		const std::set<std::string>&	getMethods() const;
 		const std::string&				getType() const;
 		const Config::CgiInterpreterMap&
@@ -77,7 +77,7 @@ class ServerLocation
 		std::string						m_path;
 		std::string						m_root;
 		std::string						m_type;
-		std::string						m_autoIndex;
+		int								m_autoIndex;
 		std::set<std::string>			m_methods;
 		Config::CgiInterpreterMap	
 										m_cgiInterpreters;

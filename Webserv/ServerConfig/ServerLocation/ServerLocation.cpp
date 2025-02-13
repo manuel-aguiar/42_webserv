@@ -7,7 +7,8 @@
 # include "../../Ws_Namespace.h"
 # include "../DefaultConfig/DefaultConfig.hpp"
 
-ServerLocation::ServerLocation()
+ServerLocation::ServerLocation() :
+	m_autoIndex(DefaultConfig::UINT_NONE)
 {
 	m_keys["path"]				= &ServerLocation::setPath;
 	m_keys["root"]				= &ServerLocation::setRoot;
@@ -78,9 +79,9 @@ const std::string&	ServerLocation::getRoot() const
 	return (m_root);
 }
 
-bool	ServerLocation::getAutoindex() const
+bool	ServerLocation::getAutoIndex() const
 {
-	return (m_autoIndex[0] == 1);
+	return (m_autoIndex);
 }
 
 const std::set<std::string>&	ServerLocation::getMethods() const
@@ -193,8 +194,8 @@ void	ServerLocation::setDefaults(const DefaultConfig& defaultConfig)
 	if (m_methods.empty())
 		while (iss >> value)
 			addMethod(value);
-	if (m_autoIndex.empty())
-		setAutoindex(defaultConfig.loc_autoIndex);
+	if (m_autoIndex == DefaultConfig::UINT_NONE)
+		m_autoIndex = defaultConfig.loc_autoIndex;
 }
 
 void		ServerLocation::printLocationConfig() const
@@ -203,7 +204,7 @@ void		ServerLocation::printLocationConfig() const
 	std::cout << "║ │ │ path: " << getPath() << "\n";
 	std::cout << "║ │ │ root: " << getRoot() << "\n";
 	std::cout << "║ │ │ type: " << getType() << "\n";
-	std::cout << "║ │ │ autoIndex: " << getAutoindex() << "\n";
+	std::cout << "║ │ │ autoIndex: " << getAutoIndex() << "\n";
 	std::cout << "║ │ └ methods: ";
 	for (std::set<std::string>::const_iterator it = getMethods().begin(); it != getMethods().end(); it++)
 		std::cout << *it << " ";
