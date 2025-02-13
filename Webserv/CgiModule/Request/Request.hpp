@@ -37,8 +37,12 @@ namespace Cgi
 			// extra variables (http specific variables, for example)												
 			void						setEnvExtra			(const Cgi::EnvKey& key, 
 															const Cgi::EnvValue& value);
-			// interpreter extension, script path, timeout to execute the script												
+			
+			// user must pass interpreter OR extension. Module will use Path if available, and fallback to extension + internal config
+			void						setInterpreterPath	(const Cgi::InterpPath& path);
 			void						setExtension		(const Cgi::InterpExtension& extension);
+
+			// script path and timeout
 			void						setScriptPath		(const Cgi::ScriptPath& path);
 			void						setTimeoutMs		(const unsigned int timeoutMs);
 
@@ -46,6 +50,7 @@ namespace Cgi
 			void						setRuntimeOptions	(const Cgi::Options::Mask options);		
 
 			const Cgi::EnvVariables&	getEnvVars() const;
+			const Cgi::InterpPath&		getInterpreterPath() const;
 			const Cgi::InterpExtension&	getExtension() const;
 			const Cgi::ScriptPath&		getScriptPath() const;
 			unsigned int				getTimeoutMs() const;
@@ -57,6 +62,7 @@ namespace Cgi
 			Cgi::Notify::Callback					m_runtime_Handlers[Cgi::Notify::COUNT];
 
 			unsigned int							m_timeoutMs;
+			Cgi::InterpPath							m_interpreterPath;
 			Cgi::InterpExtension					m_extension;
 			std::string								m_scriptPath;
 			Cgi::EnvVariables						m_env;

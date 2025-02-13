@@ -43,33 +43,37 @@ class ServerBlock
 		ServerBlock &operator=(const ServerBlock &other);
 		ServerBlock(const ServerBlock &other);
 
-		const std::set<std::string>&						getDomainNames() const;
-		const std::map<std::string, ServerLocation>& 		getLocations() const;
+		const std::set<std::string>&	
+										getDomainNames() const;
+		const std::map<std::string, ServerLocation>& 		
+										getLocations() const;
 
-		void							setLocations(const std::vector<ServerLocation> &Locations);
-		void							setRootPath(const std::string &value);
-		void							setClientBodySize(const std::string &value);
-		void							setClientHeaderSize(const std::string &value);
-		void							addListener(const std::string &value);
-		void							addServerName(const std::string &value);
-		void							addErrorPage(const std::string &value);
 		const std::set<Config::Listen>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
+		const std::vector<const struct sockaddr*>&	
+										getListenAddresses() const;
 
+
+		void							setLocations(const std::vector<ServerLocation> &Locations);
+		void							setRootPath(const std::string &value);
+		void							setClientBodySize(const std::string &value);
+		void							setClientHeaderSize(const std::string &value);
 		void							setDefaults(const DefaultConfig& defaultConfig);
+		void							addListener(const std::string &value);
+		void							addServerName(const std::string &value);
+		void							addErrorPage(const std::string &value);
+		void							addListenAddress(const struct sockaddr* addr);
+
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;
 
 		// Debug
 		void							printServerConfig() const;
 
-		void							addListenAddress(const struct sockaddr* addr);
-		const std::vector<const struct sockaddr*>&	
-										getListenAddresses() const;
 
 	private:
 

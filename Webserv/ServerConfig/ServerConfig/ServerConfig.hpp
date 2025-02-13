@@ -98,7 +98,7 @@ class ServerConfig
 															std::vector<ServerBlock> &servers, 
 															std::vector<ServerLocation> &locations);
 
-
+		bool								mf_expandCgiToLocations();
 		bool								mf_listenDNSlookup();
 };
 

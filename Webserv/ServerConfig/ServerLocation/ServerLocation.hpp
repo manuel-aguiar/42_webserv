@@ -14,6 +14,12 @@
 
 class ServerBlock;
 struct DefaultConfig;
+namespace Config
+{
+	typedef std::string CgiExtension;
+	typedef std::string CgiInterpreter;
+}
+
 
 class ServerLocation
 {
@@ -36,12 +42,17 @@ class ServerLocation
 		const std::string&				getRoot() const;
 		bool							getAutoindex() const;
 		const std::set<std::string>&	getMethods() const;
-		std::string						getType() const;
+		const std::string&				getType() const;
+		const std::map<Config::CgiExtension, Config::CgiInterpreter>&
+										getCgiInterpreters() const;
+
+
 		void							setType(const std::string &value);
 		void							setPath(const std::string &value);
 		void							setRoot(const std::string &value);
 		void							setAutoindex(const std::string &value);
 		void							addMethod(const std::string &value);
+		void							addCgiInterpreter(const std::string &value);
 
 		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addConfigValue(const std::string &key, const std::string &value);
@@ -64,6 +75,8 @@ class ServerLocation
 		std::string						m_type;
 		std::string						m_autoIndex;
 		std::set<std::string>			m_methods;
+		std::map<Config::CgiExtension, Config::CgiInterpreter>	
+										m_cgiInterpreters;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };

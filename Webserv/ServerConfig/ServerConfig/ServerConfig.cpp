@@ -236,7 +236,8 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
-	if (!mf_listenDNSlookup())
+	if (!mf_listenDNSlookup()
+	|| !mf_expandCgiToLocations())
 		return (0);
 		
 	m_setDefaults();
@@ -382,6 +383,36 @@ void	ServerConfig::m_setDefaults()
 	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 		: m_max_concurrent_cgi;
 	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.server_cgiBacklog 		: m_max_cgi_backlog;
 	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.server_Workers 			: m_max_workers;
+}
+
+// for each server block, for each location, for each cgi entry, uffffffff
+bool	ServerConfig::mf_expandCgiToLocations()
+{
+	for (std::vector<ServerBlock>::iterator it = m_serverBlocks.begin(); it != m_serverBlocks.end(); it++)
+	{
+		std::map<Ws::path, ServerLocation>::const_iterator it2 = it->getLocations().begin();
+		for (; it2 != it->getLocations().end(); it2++)
+		{
+			std::map<Config::CgiExtension, Config::CgiInterpreter>::iterator it3 = m_cgiInterpreters.begin();
+			for (; it3 != m_cgiInterpreters.end(); it3++)
+			{
+				if (!it3->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
+					continue ;
+
+				std::map<Config::CgiExtension, Config::CgiInterpreter>::iterator serverLevel;
+				serverLevel = m_cgiInterpreters.find(it3->first);
+				if (serverLevel != m_cgiInterpreters.end())
+					it3->second = serverLevel->second;
+				else
+				{
+					std::cerr << "Error: location «" << it2->first << "» 'cgi': no interpreter for extension '" << it3->first << "'" << std::endl;
+					return (false);
+				}
+			}
+		}
+	}
+
+	return (true);
 }
 
 const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const

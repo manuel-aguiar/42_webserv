@@ -14,6 +14,7 @@ ServerLocation::ServerLocation()
 	m_keys["type"]				= &ServerLocation::setType;
 	m_keys["auto_index"]		= &ServerLocation::setAutoindex;
 	m_keys["methods"]			= &ServerLocation::addMethod;
+	m_keys["cgi"]				= &ServerLocation::addCgiInterpreter;
 
 	m_validTypes.insert("regular"); 
 	m_validTypes.insert("redirection");
@@ -78,9 +79,15 @@ const std::set<std::string>&	ServerLocation::getMethods() const
 	return (m_methods);
 }
 
-std::string	ServerLocation::getType() const
+const std::string&	ServerLocation::getType() const
 {
 	return (m_type);
+}
+
+const std::map<Config::CgiExtension, Config::CgiInterpreter>&	
+ServerLocation::getCgiInterpreters() const
+{
+	return (m_cgiInterpreters);
 }
 
 void		ServerLocation::setType(const std::string &value)
@@ -115,6 +122,31 @@ void		ServerLocation::addMethod(const std::string &value)
 		throw (std::invalid_argument("invalid method"));
 	if (m_methods.find(lowercaseStr) == m_methods.end())
 		m_methods.insert(lowercaseStr);
+}
+
+void	ServerLocation::addCgiInterpreter(const std::string &value)
+{
+	std::string	extension;
+	std::string	path;
+	size_t		colonPos;
+
+	colonPos = value.find(':');
+	if (colonPos == 0 || colonPos == value.length() - 1)
+		goto exitError;
+	if (value.find(':', colonPos + 1) != std::string::npos)
+		goto exitError;
+	extension = value.substr(0, colonPos);
+	path = value.substr(colonPos + 1);
+
+	if (extension.empty())									// allow extension only, later resolved by ServerConfig
+		goto exitError;
+		
+	m_cgiInterpreters[extension] = path;
+
+	return ;
+
+exitError:
+	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
 }
 
 
