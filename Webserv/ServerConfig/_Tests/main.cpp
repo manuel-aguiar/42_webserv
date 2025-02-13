@@ -29,8 +29,8 @@ void testFunction(const std::string &filePath, int testNbr, bool expectedValid)
 	TEST_INTRO(testNbr);
 
 	bool passed = false;
-
-	ServerConfig config(filePath.c_str(), NULL);
+	DefaultConfig defaultConfig;
+	ServerConfig config(filePath.c_str(), defaultConfig);
 	if (config.parseConfigFile() == (int)expectedValid)
 		passed = true;
 									//cleanup

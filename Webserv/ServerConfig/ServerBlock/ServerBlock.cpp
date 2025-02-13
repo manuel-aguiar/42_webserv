@@ -1,5 +1,6 @@
 
 
+// Project headers
 #include "ServerBlock.hpp"
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
@@ -7,8 +8,12 @@
 #include "../ServerLocation/ServerLocation.hpp"
 #include "../DefaultConfig/DefaultConfig.hpp"
 
+// C++ headers
+# include <cstdlib> // for atoi
 
-ServerBlock::ServerBlock()
+ServerBlock::ServerBlock() :
+	m_client_body_size(DefaultConfig::UINT_NONE),
+	m_client_header_size(DefaultConfig::UINT_NONE)
 {
 	m_keys["listen"]				= &ServerBlock::addListener;
 	m_keys["server_name"]			= &ServerBlock::addServerName;
@@ -34,7 +39,7 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
 	m_keys = other.m_keys;
-	m_locations = other.m_locations;
+	m_mapLocations = other.m_mapLocations;
 	return (*this);
 }
 
@@ -51,23 +56,21 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_client_body_size = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_body_size = value;
 }
 
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_client_header_size = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_header_size = value;
 }
 
 bool	Config::Listen::operator<(const Config::Listen &rhs) const
@@ -104,7 +107,16 @@ void	ServerBlock::addListener(const std::string &value)
 	portValue = StringUtils::stoull(port); // fix throw
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
+		
+	m_listen.insert((Config::Listen) {
+		.appLayer = Ws::AppLayer::HTTP,
+		.backlog = Ws::Listen::DEFAULT_BACKLOG,
+		.hostname = hostname, 
+		.port = port,
+		.family = AF_INET,
+		.socktype = SOCK_STREAM,
+		.proto = IPPROTO_TCP,
+	});
 }
 
 void	ServerBlock::addServerName(const std::string &value)
@@ -144,10 +156,17 @@ void	ServerBlock::addConfigValue(const std::string &key, const std::string &valu
 	(this->*m_keys[key])(value);
 }
 
-const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
+const std::vector<ServerLocation>&		ServerBlock::getLocations() const
 {
 	return (m_locations);
 }
+
+const std::map<std::string, const ServerLocation*>&		ServerBlock::getMappedLocations() const
+{
+	return (m_mapLocations);
+}
+
+
 
 const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
@@ -161,12 +180,12 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (StringUtils::parse_size(m_client_body_size));
+	return (m_client_body_size);
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (StringUtils::parse_size(m_client_header_size));
+	return (m_client_header_size);
 }
 
 const std::set<std::string>&	ServerBlock::getErrorPages() const
@@ -179,16 +198,25 @@ const std::string&	ServerBlock::getRoot() const
 	return (m_root);
 }
 
-void	ServerBlock::setDefaults()
-{
-	DefaultConfig	defaults;
 
+std::vector<ServerLocation>&	ServerBlock::accessLocations()
+{
+	return (m_locations);
+}
+
+std::map<std::string, const ServerLocation*>&	ServerBlock::accessMappedLocations()
+{
+	return (m_mapLocations);
+}
+
+void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
+{
 	if (m_root.empty())
-		setRootPath(defaults.serverRoot);
-	if (m_client_body_size.empty())
-		setClientBodySize(defaults.maxClientBodySize);
-	if (m_client_header_size.empty())
-		setClientHeaderSize(defaults.maxClientHeaderSize);
+		setRootPath(defaultConfig.server_Root);
+	if (m_client_body_size == DefaultConfig::UINT_NONE)
+		m_client_body_size = defaultConfig.http_maxClientBodySize;
+	if (m_client_header_size == DefaultConfig::UINT_NONE)
+		m_client_header_size = defaultConfig.http_maxClientHeaderSize;
 }
 
 bool	ServerBlock::validate() const
@@ -207,16 +235,16 @@ bool	ServerBlock::validate() const
 	return (1);
 }
 
-void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
+void	ServerBlock::mapLocations()
 {
-	if (locations.empty())
+	if (m_locations.empty())
 		return ;
 	
-	std::vector<ServerLocation>::const_iterator it = locations.begin();
+	std::vector<ServerLocation>::const_iterator it = m_locations.begin();
 
-	for (; it != locations.end(); it++)
+	for (; it != m_locations.end(); it++)
 	{
-		m_locations[it->getPath()] = *it;
+		m_mapLocations[it->getPath()] = &(*it);
 	}
 }
 

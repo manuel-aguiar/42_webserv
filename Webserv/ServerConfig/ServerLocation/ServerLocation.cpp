@@ -14,6 +14,7 @@ ServerLocation::ServerLocation()
 	m_keys["type"]				= &ServerLocation::setType;
 	m_keys["auto_index"]		= &ServerLocation::setAutoindex;
 	m_keys["methods"]			= &ServerLocation::addMethod;
+	m_keys["cgi"]				= &ServerLocation::addCgiInterpreter;
 
 	m_validTypes.insert("regular"); 
 	m_validTypes.insert("redirection");
@@ -33,6 +34,7 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_keys = other.m_keys;
 	m_path = other.m_path;
 	m_root = other.m_root;
@@ -41,13 +43,21 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_methods = other.m_methods;
 	m_validTypes = other.m_validTypes;
 	m_validMethods = other.m_validMethods;
+	m_cgiInterpreters = other.m_cgiInterpreters;
+
 	return (*this);
 }
 
-ServerLocation::ServerLocation(const ServerLocation &other)
-{
-	*this = other;
-}
+ServerLocation::ServerLocation(const ServerLocation &other) :
+	m_keys				(other.m_keys),
+	m_validTypes		(other.m_validTypes),
+	m_validMethods		(other.m_validMethods),
+	m_path				(other.m_path),
+	m_root				(other.m_root),
+	m_type				(other.m_type),
+	m_autoIndex			(other.m_autoIndex),
+	m_methods			(other.m_methods),
+	m_cgiInterpreters	(other.m_cgiInterpreters) {}
 
 void	ServerLocation::addConfigValue(const std::string &key, const std::string &value)
 {
@@ -78,9 +88,21 @@ const std::set<std::string>&	ServerLocation::getMethods() const
 	return (m_methods);
 }
 
-std::string	ServerLocation::getType() const
+const std::string&	ServerLocation::getType() const
 {
 	return (m_type);
+}
+
+const Config::CgiInterpreterMap&	
+ServerLocation::getCgiInterpreters() const
+{
+	return (m_cgiInterpreters);
+}
+
+Config::CgiInterpreterMap&
+ServerLocation::accessCgiInterpreters()
+{
+	return (m_cgiInterpreters);
 }
 
 void		ServerLocation::setType(const std::string &value)
@@ -117,6 +139,34 @@ void		ServerLocation::addMethod(const std::string &value)
 		m_methods.insert(lowercaseStr);
 }
 
+void	ServerLocation::addCgiInterpreter(const std::string &value)
+{
+	std::string	extension;
+	std::string	path("");
+	size_t		colonPos;
+
+	colonPos = value.find(':');
+	if (colonPos == 0 || colonPos == value.length() - 1)
+		goto exitError;
+	if (value.find(':', colonPos + 1) != std::string::npos)
+		goto exitError;
+	extension = value.substr(0, colonPos);
+
+
+	if (extension.empty())									// allow extension only, later resolved by ServerConfig
+		goto exitError;
+
+	if (colonPos != std::string::npos)
+		path = value.substr(colonPos + 1);
+		
+	m_cgiInterpreters[extension] = path;
+	
+	return ;
+
+exitError:
+	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
+}
+
 
 bool		ServerLocation::validate() const
 {
@@ -133,19 +183,18 @@ bool		ServerLocation::validate() const
 	return (1);
 }
 
-void	ServerLocation::setDefaults()
+void	ServerLocation::setDefaults(const DefaultConfig& defaultConfig)
 {
-	DefaultConfig	defaults;
-	std::istringstream iss(defaults.methods);
+	std::istringstream iss(defaultConfig.loc_http_methods);
 	std::string value;
 
 	if (m_type.empty())
-		setType(defaults.type);
+		setType(defaultConfig.loc_type);
 	if (m_methods.empty())
 		while (iss >> value)
 			addMethod(value);
 	if (m_autoIndex.empty())
-		setAutoindex(defaults.autoIndex);
+		setAutoindex(defaultConfig.loc_autoIndex);
 }
 
 void		ServerLocation::printLocationConfig() const

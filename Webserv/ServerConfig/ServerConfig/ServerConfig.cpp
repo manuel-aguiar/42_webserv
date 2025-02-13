@@ -3,28 +3,32 @@
 // Own Headers
 
 # include "ServerConfig.hpp"
-# include "../../GenericUtils/StringUtils/StringUtils.hpp"
-# include "../../GenericUtils/Validation/Validation.hpp"
 # include "../ServerLocation/ServerLocation.hpp"
 # include "../ServerBlock/ServerBlock.hpp"
+# include "../DefaultConfig/DefaultConfig.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Validation/Validation.hpp"
 
+// C++ headers
+# include <cstdlib> // atoi
 
-ServerConfig::ServerConfig(const char* configFilePath, Globals* globals):
+ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
+	m_max_connections(DefaultConfig::UINT_NONE),
+	m_max_concurrent_cgi(DefaultConfig::UINT_NONE),
+	m_max_cgi_backlog(DefaultConfig::UINT_NONE),
+	m_max_workers(DefaultConfig::UINT_NONE),	
+	m_configDefault(defaultConfig),
 	m_configFilePath(configFilePath),
-	m_serverCount(0),
-	m_globals(globals)
+	m_serverCount(0)
 {
 	m_keys["max_connections"]		= &ServerConfig::setMaxConnections;
 	m_keys["max_concurrent_cgi"]	= &ServerConfig::setMaxConcurrentCgi;
 	m_keys["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
+	m_keys["max_workers"]			= &ServerConfig::setMaxWorkers;
+	m_keys["cgi"]					= &ServerConfig::addCgiInterpreter;
 }
 
 ServerConfig::~ServerConfig()
-{
-	// Nothing to do here
-}
-
-ServerConfig::ServerConfig()
 {
 	// Nothing to do here
 }
@@ -33,18 +37,21 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_keys = other.m_keys;
-	m_configDefault = other.m_configDefault;
-	m_configFilePath = other.m_configFilePath;
-	m_serverBlocks = other.m_serverBlocks;
-	m_serverCount = other.m_serverCount;
 	m_max_concurrent_cgi = other.m_max_concurrent_cgi;
 	m_max_connections = other.m_max_connections;
 	m_max_cgi_backlog = other.m_max_cgi_backlog;
+	m_max_workers = other.m_max_workers;
+	m_configFilePath = other.m_configFilePath;
+	m_serverBlocks = other.m_serverBlocks;
+	m_serverCount = other.m_serverCount;
+
 	return (*this);
 }
 
-ServerConfig::ServerConfig(const ServerConfig &other)
+ServerConfig::ServerConfig(const ServerConfig &other) :
+	m_configDefault(other.m_configDefault)
 {
 	*this = other;
 }
@@ -67,8 +74,10 @@ void	ServerConfig::m_setConfigValue(const std::string &key, const std::string &v
 	(this->*m_keys[key])(value);
 }
 
-int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &currentLine, std::vector<ServerBlock> &servers,
-										std::vector<ServerLocation> &locations, const int &currentLevel)
+int		ServerConfig::m_parseConfigLine(const std::string &line, 
+										const size_t &currentLine, 
+										std::vector<ServerBlock> &servers, 
+										const int &currentLevel)
 {
 	std::istringstream iss(line);
 	std::string key, value;
@@ -102,7 +111,7 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 				break ;
 			case LOCATION_LEVEL:
 				try {
-					locations.back().addConfigValue(key, value);
+					servers.back().accessLocations().back().addConfigValue(key, value);
 				}
 				catch (std::exception &e) {
 					std::cerr << "Error: " << e.what() << " on line " << currentLine << std::endl;
@@ -120,37 +129,42 @@ int		ServerConfig::m_parseConfigLine(const std::string &line, const size_t &curr
 }
 
 bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine,
-										std::vector<ServerBlock> &servers, 
-										std::vector<ServerLocation> &locations)
+										std::vector<ServerBlock> &servers)
 {
 	switch (currentLevel)
 	{
 		case PROGRAM_LEVEL:
+		{
 			std::cerr << "Error: config parsing: stray closing bracket on line "
 				<< currentLine << std::endl;
 			return (0);
+		}
 		case SERVER_LEVEL:
+		{
 			currentLevel = PROGRAM_LEVEL;
-			servers.back().setDefaults();
+			servers.back().setDefaults(m_configDefault);
 			if (!servers.back().validate())
 			{
 				std::cerr << "Error: config parsing: invalid server block closing on line "
 					<< currentLine << std::endl;
 				return (0);
 			}
-			servers.back().setLocations(locations);
-			locations.clear();
+			servers.back().mapLocations();
 			break ;
+		}
 		case LOCATION_LEVEL:
+		{
 			currentLevel = SERVER_LEVEL;
-			locations.back().setDefaults();
-			if (!locations.back().validate())
+			ServerLocation& location = servers.back().accessLocations().back();
+			location.setDefaults(m_configDefault);
+			if (!location.validate())
 			{
 				std::cerr << "Error: config parsing: invalid location block closing on line "
 					<< currentLine << std::endl;
 				return (0);
 			}
 			break ;
+		}
 		default:
 			std::cerr << "Parsing: Unexpected Error" << std::endl;
 			return (0);
@@ -164,9 +178,6 @@ int		ServerConfig::parseConfigFile()
 	std::string		line;
 	size_t			currentLine = 0;
 	int				currentLevel = PROGRAM_LEVEL;
-	ServerLocation	location;
-
-	std::vector<ServerLocation>			locations;
 
 	if (!m_updateFile())
 		return (0);
@@ -201,17 +212,17 @@ int		ServerConfig::parseConfigFile()
 					<< currentLine << std::endl;
 				return (0);
 			}
-			locations.push_back(ServerLocation());
+			m_serverBlocks.back().accessLocations().push_back(ServerLocation());
 			currentLevel = LOCATION_LEVEL;
 		}
 		else if (line == "}")
 		{
-			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks, locations))
+			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks))
 				return (0);
 		}
 		else
 		{
-			if (!m_parseConfigLine(line, currentLine, m_serverBlocks, locations, currentLevel))
+			if (!m_parseConfigLine(line, currentLine, m_serverBlocks, currentLevel))
 			{
 				std::cerr << "Error: config parsing: invalid input on line "
 					<< currentLine << std::endl;
@@ -229,10 +240,28 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
-	if (!mf_listenDNSlookup())
+	if (!mf_listenDNSlookup()
+	|| !mf_expandCgiToLocations())
 		return (0);
 		
 	m_setDefaults();
+
+/*
+	if (!m_serverBlocks.size())
+		std::cout << "no server blocks" << std::endl;
+	else if (!m_serverBlocks.back().accessLocations().size())
+		std::cout << "no locations" << std::endl;
+	else if (!m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size())
+		std::cout << "no interpreters" << std::endl;
+	else
+	{
+		std::cout << "server blocks: " << m_serverBlocks.size()
+		<< "\nlocations: " << m_serverBlocks.back().accessLocations().size()
+		<< "\ninterpreters: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().size()
+		<< "\n extension: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->first
+		<< "\n path: " << m_serverBlocks.back().accessLocations().back().accessCgiInterpreters().begin()->second;
+	}
+*/
 	return (1);
 }
 
@@ -247,19 +276,35 @@ const std::vector<ServerBlock>&	ServerConfig::getServerBlocks() const
 	return (m_serverBlocks);
 }
 
-const std::string		&ServerConfig::getMaxConnections() const
+int		ServerConfig::getMaxConnections() const
 {
 	return (m_max_connections);
 }
 
-const std::string		&ServerConfig::getMaxConcurrentCgi() const
+int		ServerConfig::getMaxConcurrentCgi() const
 {
 	return (m_max_concurrent_cgi);
 }
 
-const std::string		&ServerConfig::getMaxCgiBacklog() const
+int		ServerConfig::getMaxCgiBacklog() const
 {
 	return (m_max_cgi_backlog);
+}
+
+int		ServerConfig::getMaxWorkers() const
+{
+	return (m_max_workers);
+}
+
+const DefaultConfig&	ServerConfig::getDefaultConfig() const
+{
+	return (m_configDefault);
+}
+
+const Config::CgiInterpreterMap&
+ServerConfig::getCgiInterpreters() const
+{
+	return (m_cgiInterpreters);
 }
 
 void		ServerConfig::setMaxConnections(const std::string &value)
@@ -277,7 +322,7 @@ void		ServerConfig::setMaxConnections(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_connections = value;
+	m_max_connections = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
@@ -295,7 +340,7 @@ void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_concurrent_cgi = value;
+	m_max_concurrent_cgi = std::atoi(value.c_str());
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
@@ -313,17 +358,94 @@ void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
-	m_max_cgi_backlog = value;
+	m_max_cgi_backlog = std::atoi(value.c_str());
+}
+
+void		ServerConfig::setMaxWorkers(const std::string &value)
+{
+	size_t	number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > 1048576)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_max_workers = std::atoi(value.c_str());
+}
+
+void		ServerConfig::addCgiInterpreter(const std::string &value)
+{
+	std::string	extension;
+	std::string	path;
+	size_t		colonPos;
+
+	colonPos = value.find(':');
+	if (colonPos == std::string::npos)
+		goto exitError;
+	if (colonPos == 0 || colonPos == value.length() - 1)
+		goto exitError;
+	if (value.find(':', colonPos + 1) != std::string::npos)
+		goto exitError;
+	extension = value.substr(0, colonPos);
+	path = value.substr(colonPos + 1);
+
+	if (extension.empty() || path.empty())
+		goto exitError;
+		
+	m_cgiInterpreters[extension] = path;
+
+	return ;
+
+exitError:
+	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
 }
 
 void	ServerConfig::m_setDefaults()
 {
-	if (m_max_connections.empty())
-		setMaxConnections(m_configDefault.maxConnections);
-	if (m_max_concurrent_cgi.empty())
-		setMaxConcurrentCgi(m_configDefault.maxCGI);
-	if (m_max_cgi_backlog.empty())
-		setMaxCgiBacklog(m_configDefault.cgi_maxBacklog);
+	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.server_maxConnections 	: m_max_connections;
+	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 		: m_max_concurrent_cgi;
+	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.server_cgiBacklog 		: m_max_cgi_backlog;
+	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.server_Workers 			: m_max_workers;
+}
+
+// for each server block, for each location, for each cgi entry, uffffffff
+bool	ServerConfig::mf_expandCgiToLocations()
+{
+	for (std::vector<ServerBlock>::iterator thisBlock = m_serverBlocks.begin(); thisBlock != m_serverBlocks.end(); thisBlock++)
+	{
+		std::vector<ServerLocation>& locations = thisBlock->accessLocations();
+		std::vector<ServerLocation>::iterator thisLocation = locations.begin();
+		for (; thisLocation != locations.end(); thisLocation++)
+		{
+			Config::CgiInterpreterMap& locationInterpreters = thisLocation->accessCgiInterpreters();
+			Config::CgiInterpreterMap::iterator thisInterpreter = locationInterpreters.begin();
+			for (; thisInterpreter != locationInterpreters.end(); thisInterpreter++)
+			{
+				if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
+					continue ;
+
+				// ServerConfig looks up the path from the extension at the program level
+				Config::CgiInterpreterMap::iterator serverLevel;
+				serverLevel = m_cgiInterpreters.find(thisInterpreter->first);
+				if (serverLevel != m_cgiInterpreters.end())
+					thisInterpreter->second = serverLevel->second;
+					
+				else
+				{
+					std::cerr << "Error: location «" << thisLocation->getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
+					return (false);
+				}
+			}
+		}
+	}
+
+	return (true);
 }
 
 const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const
@@ -345,12 +467,12 @@ void	ServerConfig::printProgramConfig() const
 void	ServerConfig::printConfigs() const
 {
 	printProgramConfig();
-	for (std::vector<ServerBlock>::const_iterator it = getServerBlocks().begin(); it != getServerBlocks().end(); it++)
+	for (std::vector<ServerBlock>::const_iterator thisBlock = getServerBlocks().begin(); thisBlock != getServerBlocks().end(); thisBlock++)
 	{
-		it->printServerConfig();
-		if (!it->getLocations().empty())
-			for (std::map<std::string, ServerLocation>::const_iterator it2 = it->getLocations().begin(); it2 != it->getLocations().end(); it2++)
-				it2->second.printLocationConfig();
+		thisBlock->printServerConfig();
+		if (!thisBlock->getLocations().empty())
+			for (size_t i = 0; i < thisBlock->getLocations().size(); i++)
+				thisBlock->getLocations()[i].printLocationConfig();
 		std::cout << "║ └──────────────────o\n";
 	}
 	std::cout << "╚═════════════════════════════O" << std::endl;

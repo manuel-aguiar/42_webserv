@@ -12,14 +12,34 @@
 	Not needed anywhere else outside of this file.
 */
 
+	struct Listen
+	{
+		Ws::AppLayer::Type		appLayer;
+		Ws::Listen::backlog		backlog;
+		Ws::strIP				hostname;
+		Ws::strPort				port;
+		Ws::Sock::addrFamily 	family;
+		Ws::Sock::type			socktype;
+		Ws::Sock::protocol		proto;
+		bool operator<(const Listen &rhs) const;
+	};
+
 struct ListenerPtrComparator {
 	bool operator()(const Config::Listen* a, const Config::Listen* b) const
 	{
 		if (a->appLayer != b->appLayer)
 			return (a->appLayer < b->appLayer);
+		if (a->backlog != b->backlog)
+			return (a->backlog < b->backlog);
 		if (a->hostname != b->hostname)
 			return (a->hostname < b->hostname);
-		return (a->port < b->port);
+		if (a->port != b->port)
+			return (a->port < b->port);
+		if (a->family != b->family)
+			return (a->family < b->family);
+		if (a->socktype != b->socktype)
+			return (a->socktype < b->socktype);
+		return (a->proto < b->proto);
 	}
 };
 
@@ -64,14 +84,17 @@ struct AddrinfoPtrComparator
 };
 
 typedef std::pair<const Config::Listen*, const Config::Listen*> 								Pair_toUniqueListener;
-typedef std::map<const Config::Listen*, const Config::Listen*, ListenerPtrComparator> 		Map_toUniqueListener;
+typedef std::map<const Config::Listen*, const Config::Listen*, ListenerPtrComparator> 			Map_toUniqueListener;
 
-typedef std::set<const Ws::Sock::Info*, AddrinfoPtrComparator> 								Set_uniqueAddr;
+typedef std::set<const Ws::Sock::Info*, AddrinfoPtrComparator> 									Set_uniqueAddr;
 
 typedef std::pair<const Config::Listen*, const Ws::Sock::Info*> 								Pair_uniqueListenToAddr;
-typedef std::multimap<const Config::Listen*, const Ws::Sock::Info*, ListenerPtrComparator> 	MMap_uniqueListenToAddr;
+typedef std::multimap<const Config::Listen*, const Ws::Sock::Info*, ListenerPtrComparator> 		MMap_uniqueListenToAddr;
 
-typedef std::pair<const Ws::Sock::Info*, const Ws::BindInfo*> 								Pair_uniqueAddrToBind;
+typedef std::pair<const Ws::Sock::Info*, const Config::Listen*> 								Pair_uniqueAddrToUniqueListen;
+typedef std::map<const Ws::Sock::Info*, const Config::Listen*, AddrinfoPtrComparator> 			Map_uniqueAddrToUniqueListen;
+
+typedef std::pair<const Ws::Sock::Info*, const Ws::BindInfo*> 									Pair_uniqueAddrToBind;
 typedef std::map<const Ws::Sock::Info*, const Ws::BindInfo*, AddrinfoPtrComparator> 			Map_uniqueAddrToBind;
 
 struct DNSLookupHelper
@@ -83,14 +106,15 @@ struct DNSLookupHelper
 	}
 	std::vector<Ws::Sock::Info*>	allAddr;		// all Ws::Sock::Info structs we find
 
-	Map_toUniqueListener		listenerToUniqueListener; 	// a map of listeners (if two resolve to the same Ws::Sock::Info, point to the one who resolved)
+	Map_toUniqueListener			listenerToUniqueListener; 	// a map of listeners (if two resolve to the same Ws::Sock::Info, point to the one who resolved)
 
-	MMap_uniqueListenToAddr		uniqueListenToAddr;
-	Set_uniqueAddr				uniqueAddr;
+	MMap_uniqueListenToAddr			uniqueListenToAddr;
+	Map_uniqueAddrToUniqueListen	uniqueAddrToUniqueListen;
+	Set_uniqueAddr					uniqueAddr;
 
-	Map_uniqueAddrToBind		uniqueAddrToBind;
+	Map_uniqueAddrToBind			uniqueAddrToBind;
 
-	std::vector<Ws::BindInfo>	uniqueBind;
+	std::vector<Ws::BindInfo>		uniqueBind;
 };
 
 /*
@@ -133,8 +157,8 @@ static bool Map_Listener_and_Addrinfo(const Config::Listen& listener, DNSLookupH
 	Ws::Sock::Info		hints;
 
 	hints = (Ws::Sock::Info){};
-	hints.ai_family = AF_INET;    			//listener would tell me if it is ipv4 or ipv6
-	hints.ai_socktype = SOCK_STREAM;		//listener would tell me if it is tcp or udp or something else
+	hints.ai_family = listener.family;    		//listener would tell me if it is ipv4 or ipv6
+	hints.ai_socktype = listener.socktype;		//listener would tell me if it is tcp or udp or something else
 
 	if (::getaddrinfo(listener.hostname.c_str(), listener.port.c_str(), &hints, &res) != 0)
 	{
@@ -166,6 +190,7 @@ static bool Map_Listener_and_Addrinfo(const Config::Listen& listener, DNSLookupH
 		std::pair<Set_uniqueAddr::iterator, bool> returnVal;
 		returnVal = helper.uniqueAddr.insert(cur);
 		helper.uniqueListenToAddr.insert(Pair_uniqueListenToAddr(unique->second, *(returnVal.first)));
+		helper.uniqueAddrToUniqueListen.insert(Pair_uniqueAddrToUniqueListen(*(returnVal.first), unique->second));
 	}
 
 	return (true);
@@ -187,10 +212,12 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 
 	for (; it != helper.uniqueAddr.end(); ++it)
 	{
+		const Config::Listen* thisListener = helper.uniqueAddrToUniqueListen.find(*it)->second;
 		Ws::BindInfo info = (Ws::BindInfo){};
 
 		std::memcpy(&info.addr, (*it)->ai_addr, (*it)->ai_addrlen);
-		info.appLayer = Ws::AppLayer::HTTP;
+		info.appLayer = thisListener->appLayer;				
+		info.backlog = thisListener->backlog;					
 		info.addrlen = (*it)->ai_addrlen;
 		info.family = (*it)->ai_family;
 		info.socktype = (*it)->ai_socktype;
