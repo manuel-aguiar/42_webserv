@@ -93,8 +93,7 @@ int TestPart2(int testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-    testNumber++;
-
+    
 /******************************************************************** */
 
     try
@@ -140,8 +139,7 @@ int TestPart2(int testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-    testNumber++;
-
+    
 /******************************************************************** */
 
     try
@@ -185,8 +183,6 @@ int TestPart2(int testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-    testNumber++;
-
 /******************************************************************** */
 
     try
@@ -228,7 +224,6 @@ int TestPart2(int testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-    testNumber++;
 
 /******************************************************************** */
 /* Emplace two */
@@ -260,7 +255,6 @@ int TestPart2(int testNumber)
     {
         TEST_FAILED_MSG(e.what());
     }
-    testNumber++;
 
     return (testNumber);
 }

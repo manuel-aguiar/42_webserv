@@ -45,7 +45,6 @@ int TestPart4(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-    testNumber++;
 	/******************* ***** ************************/
 
 	try
@@ -73,7 +72,6 @@ int TestPart4(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-    testNumber++;
 	/******************* *****************************/
 
 	try
@@ -101,7 +99,6 @@ int TestPart4(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-    testNumber++;
 
 
 
@@ -133,7 +130,6 @@ int TestPart4(int testNumber)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
-    testNumber++;
 
 /***************************************** */
 

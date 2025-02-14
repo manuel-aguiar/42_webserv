@@ -6,10 +6,6 @@
 
 # define Heap_ObjectPool_H
 
-# include <limits.h>
-# include <stddef.h>
-# include <cstring>
-# include <iostream>
 # include <memory>
 
 template <typename T, typename Allocator = std::allocator<T> >

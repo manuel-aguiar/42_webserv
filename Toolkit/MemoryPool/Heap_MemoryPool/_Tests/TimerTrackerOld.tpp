@@ -37,7 +37,7 @@ class TimerTrackerOld
 		static const size_t nodeSetSize = AlignedStorage<sizeof(U) + sizeof(void*) * 3>::value;
 		static const size_t nodeMapSize = AlignedStorage<sizeof(std::pair<const T, std::set<U> >) + sizeof(void*) * 3>::value;
 
-		typedef Impl_Heap_MemoryPool <t_byte, typename Allocator::template rebind<unsigned char>::other>
+		typedef Heap_MemoryPoolGeneric <t_byte, typename Allocator::template rebind<unsigned char>::other>
 																			fixedBlock;
 		typedef Nginx_PoolAllocator<T, fixedBlock> 							poolAlloc;
 		typedef HeapSlab<nodeSetSize, poolAlloc>							setSlab;

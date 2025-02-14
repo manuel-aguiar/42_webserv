@@ -5,126 +5,36 @@
 # define THREADPOOL_TPP
 
 // Project headers
-# include "../../MemoryPool/Stack_ObjectPool/Stack_ObjectPool.hpp"
+# include "../../MemoryPool/StackSlab/StackSlab.hpp"
 # include "../../Arrays/StackCircularQueue/StackCircularQueue.hpp"
 
 // ThreadPool headers
 # include "../ThreadTask/IThreadTask.hpp"
 
-// C headers
-# include <signal.h>
+//Base class
+# include "../_ThreadPoolImpl/ThreadPoolImpl.hpp"
 
 template <size_t ThreadBacklog, size_t TaskBacklog>
-class ThreadPool
+class ThreadPool : public ThreadPoolGeneric
 {
 	public:
 
-		/************** ThreadPool *************** */
+		ThreadPool(size_t InitialThreads = ThreadBacklog) :
+			ThreadPoolGeneric()
+		{ThreadPoolGeneric::init(m_threads, m_exitingThreads, m_taskQueue, InitialThreads);};
 
-		ThreadPool(size_t InitialThreads = ThreadBacklog);
-		~ThreadPool();
-
-		void	waitForCompletion();
-		void	destroy(bool waitForCompletion);
-		void	forceDestroy();
-
-		void	addThread();
-		void	removeThread();
-		
-		bool	addTask(IThreadTask& newTask, bool waitForSlot = false);
-		bool	addTask(const IThreadTask& newTask, bool waitForSlot = false);
-
-		size_t	getThreadCount() const;
-		size_t	getTaskCount();
+		~ThreadPool() {};
 
 	private:
-
-		/************** ThreadWorker *************** */
-
-		class ThreadWorker
-		{
-			public:
-				ThreadWorker(ThreadPool& pool);
-				~ThreadWorker();
-				ThreadWorker(const ThreadWorker& copy);
-				ThreadWorker& operator=(const ThreadWorker& assign);
-
-				void		start();
-				void		finish();
-
-				pthread_t	getThreadID() const;
-
-			private:
-				void	run();
-
-				static void*   ThreadFunction(void* args);
-
-				enum EThreadState
-				{
-					EThread_Unitialized,
-					EThread_Initialized,
-					EThread_Joinable,
-					EThread_Joined
-				};
-
-				EThreadState			m_state;
-				pthread_t	   			m_thread;
-
-				ThreadPool&				m_pool;
-
-		};
-
-		/***************Task Queue****************** */
-
-		class TaskQueue
-		{
-			public:
-				TaskQueue();
-				~TaskQueue();
-
-				bool				addTask(IThreadTask* newTask, bool waitForSlot = false);
-				void				clear();
-				void				waitForCompletion();		
-				void				finishTask(IThreadTask* delTask);
-
-				IThreadTask*		acquireTask();
-
-				size_t			 	getTaskCount();
-
-			private:
-				StackCircularQueue<IThreadTask*, TaskBacklog>	m_tasks;
-				unsigned int									m_tasksExecuting;
-				pthread_mutex_t									m_taskAccess;
-				pthread_cond_t									m_newTaskSignal;								   
-				pthread_cond_t									m_allTasksDone;
-				pthread_cond_t									m_fullQueue;									 
-
-				TaskQueue(const TaskQueue& copy);
-				TaskQueue& operator=(const TaskQueue& assign);
-		};
-
-		void										mf_markExitingThread(ThreadWorker& worker);
-		void										mf_destroyExitingThreads();
-
-		TaskQueue									m_taskQueue;
-		Stack_ObjectPool<ThreadWorker, ThreadBacklog>
-													m_threads;
-		pthread_mutex_t								m_statusLock;
-		pthread_cond_t								m_exitSignal;
-
-		StackCircularQueue<ThreadWorker*, ThreadBacklog>
-													m_exitingThreads;		
-
+		StackSlab<sizeof(ThreadWorker), ThreadBacklog>	m_threads;
+		StackCircularQueue<ThreadWorker*, ThreadBacklog>m_exitingThreads;		
+		StackCircularQueue<IThreadTask*, TaskBacklog>	m_taskQueue;
 
 		// Private copy and assignment
-		ThreadPool(const ThreadPool& copy);
-		ThreadPool& operator=(const ThreadPool& assign);
+		ThreadPool(const ThreadPool& copy) {(void)copy;}
+		ThreadPool& operator=(const ThreadPool& assign) {(void)assign; return (*this);}
 
 };
-
-# include "Impl_TaskQueue.tpp"
-# include "Impl_ThreadWorker.tpp"
-# include "Impl_ThreadPool.tpp"
 
 
 #endif

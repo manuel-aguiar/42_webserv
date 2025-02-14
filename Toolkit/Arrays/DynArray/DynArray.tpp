@@ -83,7 +83,7 @@ class DynArray
             return (*this);
         }
 
-        void move(DynArray& from)
+        void swap(DynArray& from)
         {
             if (m_array)
             {
@@ -113,7 +113,7 @@ class DynArray
             return (m_size);
         }
 
-        size_t capacity()
+        size_t capacity() const
         {
             return (m_capacity);
         }

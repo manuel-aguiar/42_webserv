@@ -8,10 +8,15 @@
 
 typedef unsigned char t_byte;
 
-template <typename T = t_byte, typename Allocator = std::allocator<T> >
-class Impl_Heap_MemoryPool;
+template <typename T>
+class FixedMemoryPoolImpl;
 
-typedef Impl_Heap_MemoryPool<> Heap_MemoryPool;
+template <typename T = t_byte, typename Allocator = std::allocator<T> >
+class Heap_MemoryPoolGeneric;
+
+typedef Heap_MemoryPoolGeneric<> Heap_MemoryPool;
+
+
 
 # include "Heap_MemoryPool.tpp"
 

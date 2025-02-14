@@ -191,6 +191,7 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 
 		std::memcpy(&info.addr, (*it)->ai_addr, (*it)->ai_addrlen);
 		info.appLayer = Ws::AppLayer::HTTP;
+		info.backlog = Ws::Listen::DEFAULT_BACKLOG;
 		info.addrlen = (*it)->ai_addrlen;
 		info.family = (*it)->ai_family;
 		info.socktype = (*it)->ai_socktype;
