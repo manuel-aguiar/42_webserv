@@ -15,7 +15,7 @@
 ServerConfig::DirectiveToSetter ServerConfig::m_directiveToSetter;
 
 ServerConfig::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(9))	// 9 magic: number of keys
+	map(std::less<std::string>(), mapPool(10))	// 10 magic: number of keys
 {
 	map["max_connections"]			= &ServerConfig::setMaxConnections;
 	map["max_concurrent_cgi"]		= &ServerConfig::setMaxConcurrentCgi;
@@ -259,11 +259,13 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
+
+	m_setDefaults();
+
 	if (!mf_listenDNSlookup()
-	|| !mf_expandCgiToLocations())
+	|| 	!mf_applyInheritedSettings())
 		return (0);
 		
-	m_setDefaults();
 
 	return (1);
 }
@@ -509,10 +511,12 @@ void		ServerConfig::addCgiInterpreter(const std::string &value)
 		
 	m_cgiInterpreters[extension] = path;
 
+exitSuccess:
 	return ;
 
 exitError:
 	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
+	goto exitSuccess; // just messing with ya
 }
 
 void	ServerConfig::m_setDefaults()
@@ -528,34 +532,21 @@ void	ServerConfig::m_setDefaults()
 	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterReceive : m_http_timeoutInterReceive;
 }
 
-// for each server block, for each location, for each cgi entry, uffffffff
-bool	ServerConfig::mf_expandCgiToLocations()
+bool	ServerConfig::mf_applyInheritedSettings()
 {
 	for (std::vector<ServerBlock>::iterator thisBlock = m_serverBlocks.begin(); thisBlock != m_serverBlocks.end(); thisBlock++)
 	{
+		// fills inherited
+		if (!thisBlock->fillInheritedSettings(*this))
+			return (false);
+
+		// each location fills inherited
 		std::vector<ServerLocation>& locations = thisBlock->accessLocations();
 		std::vector<ServerLocation>::iterator thisLocation = locations.begin();
 		for (; thisLocation != locations.end(); thisLocation++)
 		{
-			Config::CgiInterpreterMap& locationInterpreters = thisLocation->accessCgiInterpreters();
-			Config::CgiInterpreterMap::iterator thisInterpreter = locationInterpreters.begin();
-			for (; thisInterpreter != locationInterpreters.end(); thisInterpreter++)
-			{
-				if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
-					continue ;
-
-				// ServerConfig looks up the path from the extension at the program level
-				Config::CgiInterpreterMap::iterator serverLevel;
-				serverLevel = m_cgiInterpreters.find(thisInterpreter->first);
-				if (serverLevel != m_cgiInterpreters.end())
-					thisInterpreter->second = serverLevel->second;
-					
-				else
-				{
-					std::cerr << "Error: location «" << thisLocation->getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
-					return (false);
-				}
-			}
+			if (!thisLocation->fillInheritedSettings(*this))
+				return (false);
 		}
 	}
 

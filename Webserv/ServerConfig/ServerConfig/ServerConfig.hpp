@@ -128,7 +128,7 @@ class ServerConfig
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
 															std::vector<ServerBlock> &servers);
 
-		bool								mf_expandCgiToLocations();
+		bool								mf_applyInheritedSettings();
 		bool								mf_listenDNSlookup();
 };
 

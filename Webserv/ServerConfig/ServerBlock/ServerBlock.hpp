@@ -18,6 +18,7 @@
 # include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
 
 //forward declarations
+class ServerConfig;
 class ServerLocation;
 struct DefaultConfig;
 
@@ -76,6 +77,8 @@ class ServerBlock
 		void							addServerName(const std::string &value);
 		void							addErrorPage(const std::string &value);
 		void							addListenAddress(const struct sockaddr* addr);
+
+		bool							fillInheritedSettings(const ServerConfig& config);
 
 		void							addConfigValue(const std::string &key, const std::string &value);
 		bool							validate() const;

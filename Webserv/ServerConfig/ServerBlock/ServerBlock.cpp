@@ -2,11 +2,12 @@
 
 // Project headers
 #include "ServerBlock.hpp"
+#include "../ServerConfig/ServerConfig.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
-#include "../ServerLocation/ServerLocation.hpp"
-#include "../DefaultConfig/DefaultConfig.hpp"
 
 // C++ headers
 # include <cstdlib> // for atoi
@@ -60,14 +61,17 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 }
 
 ServerBlock::ServerBlock(const ServerBlock &other) :
-	m_listen				(other.m_listen),
-	m_server_name			(other.m_server_name),
-	m_http_maxClientBodySize		(other.m_http_maxClientBodySize),
+	m_listen					(other.m_listen),
+	m_server_name				(other.m_server_name),
+	m_http_maxClientBodySize	(other.m_http_maxClientBodySize),
 	m_http_maxClientHeaderSize	(other.m_http_maxClientHeaderSize),
-	m_root					(other.m_root),
-	m_error_pages			(other.m_error_pages),
-	m_locations				(other.m_locations),
-	m_mapLocations			(other.m_mapLocations) {}
+	m_http_timeoutFullHeader 	(other.m_http_timeoutFullHeader),
+	m_http_timeoutInterSend 	(other.m_http_timeoutInterSend),
+	m_http_timeoutInterReceive 	(other.m_http_timeoutInterReceive),
+	m_root						(other.m_root),
+	m_error_pages				(other.m_error_pages),
+	m_locations					(other.m_locations),
+	m_mapLocations				(other.m_mapLocations) {}
 
 void	ServerBlock::setRootPath(const std::string &value)
 {
@@ -306,12 +310,16 @@ void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
 	if (m_root.empty())
 		setRootPath(defaultConfig.server_Root);
+}
 
-	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? defaultConfig.http_maxClientBodySize 	: m_http_maxClientBodySize; 
-	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? defaultConfig.http_maxClientHeaderSize 	: m_http_maxClientHeaderSize; 
-	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? defaultConfig.http_timeoutFullHeader 	: m_http_timeoutFullHeader;
-	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? defaultConfig.http_timeoutInterSend 		: m_http_timeoutInterSend;
-	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? defaultConfig.http_timeoutInterReceive 	: m_http_timeoutInterReceive;
+bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)
+{
+	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? config.getClientBodySize() 	: m_http_maxClientBodySize; 
+	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? config.getClientHeaderSize()	: m_http_maxClientHeaderSize; 
+	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? config.getTimeoutFullHeader() 	: m_http_timeoutFullHeader;
+	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? config.getTimeoutInterSend() 	: m_http_timeoutInterSend;
+	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? config.getTimeoutInterReceive() 	: m_http_timeoutInterReceive;
+	return (true);
 }
 
 bool	ServerBlock::validate() const

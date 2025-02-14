@@ -2,10 +2,11 @@
 
 // Own Headers
 # include "./ServerLocation.hpp"
+# include "../DefaultConfig/DefaultConfig.hpp"
+# include "../ServerConfig/ServerConfig.hpp"
 # include "../../GenericUtils/Validation/Validation.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../Ws_Namespace.h"
-# include "../DefaultConfig/DefaultConfig.hpp"
 
 ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
 
@@ -171,6 +172,30 @@ exitError:
 	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
 }
 
+bool ServerLocation::fillInheritedSettings(const ServerConfig& config)
+{
+	const Config::CgiInterpreterMap& base = config.getCgiInterpreters();
+	Config::CgiInterpreterMap::iterator thisInterpreter = m_cgiInterpreters.begin();
+
+	for (; thisInterpreter != m_cgiInterpreters.end(); thisInterpreter++)
+	{
+		if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
+			continue ;
+
+		// ServerConfig looks up the path from the extension at the program level
+		Config::CgiInterpreterMap::const_iterator serverLevel;
+		serverLevel = base.find(thisInterpreter->first);
+		if (serverLevel != base.end())
+			thisInterpreter->second = serverLevel->second;
+			
+		else
+		{
+			std::cerr << "Error: location «" << getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
+			return (false);
+		}
+	}
+	return (true);	
+}
 
 bool		ServerLocation::validate() const
 {
