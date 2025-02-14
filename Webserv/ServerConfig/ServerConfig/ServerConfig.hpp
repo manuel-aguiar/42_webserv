@@ -49,6 +49,11 @@ class ServerConfig
 		int											getMaxConcurrentCgi() const;
 		int											getMaxCgiBacklog() const;
 		int											getMaxWorkers() const;
+		size_t										getClientBodySize() const;
+		size_t										getClientHeaderSize() const;
+		int											getTimeoutFullHeader() const;
+		int											getTimeoutInterSend() const;
+		int											getTimeoutInterReceive() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		const DefaultConfig&						getDefaultConfig() const;
 		const Config::CgiInterpreterMap&	
@@ -57,7 +62,12 @@ class ServerConfig
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
-		void										setMaxWorkers(const std::string &value);		
+		void										setMaxWorkers(const std::string &value);
+		void										setClientBodySize(const std::string &value);
+		void										setClientHeaderSize(const std::string &value);
+		void										setTimeoutFullHeader(const std::string &value);
+		void										setTimeoutInterSend(const std::string &value);
+		void										setTimeoutInterReceive(const std::string &value);		
 		void										addCgiInterpreter(const std::string &value);
 
 		int											parseConfigFile();
@@ -93,6 +103,11 @@ class ServerConfig
 		int									m_max_concurrent_cgi;
 		int									m_max_cgi_backlog;
 		int									m_max_workers;
+		size_t								m_http_maxClientBodySize;
+		size_t								m_http_maxClientHeaderSize;
+		int									m_http_timeoutFullHeader;
+		int									m_http_timeoutInterSend;
+		int									m_http_timeoutInterReceive;
 		const DefaultConfig&				m_configDefault;
 		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;
@@ -113,7 +128,7 @@ class ServerConfig
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
 															std::vector<ServerBlock> &servers);
 
-		bool								mf_expandCgiToLocations();
+		bool								mf_applyInheritedSettings();
 		bool								mf_listenDNSlookup();
 };
 

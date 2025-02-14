@@ -15,23 +15,33 @@
 ServerConfig::DirectiveToSetter ServerConfig::m_directiveToSetter;
 
 ServerConfig::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(5))	// 5 magic: number of keys
+	map(std::less<std::string>(), mapPool(10))	// 10 magic: number of keys
 {
-	map["max_connections"]		= &ServerConfig::setMaxConnections;
+	map["max_connections"]			= &ServerConfig::setMaxConnections;
 	map["max_concurrent_cgi"]		= &ServerConfig::setMaxConcurrentCgi;
-	map["max_cgi_backlog"]		= &ServerConfig::setMaxCgiBacklog;
-	map["max_workers"]			= &ServerConfig::setMaxWorkers;
-	map["cgi"]					= &ServerConfig::addCgiInterpreter;
+	map["max_cgi_backlog"]			= &ServerConfig::setMaxCgiBacklog;
+	map["max_workers"]				= &ServerConfig::setMaxWorkers;
+	map["cgi"]						= &ServerConfig::addCgiInterpreter;
+	map["client_body_size"]			= &ServerConfig::setClientBodySize;
+	map["client_header_size"]		= &ServerConfig::setClientHeaderSize;
+	map["timeout_full_header"]		= &ServerConfig::setTimeoutFullHeader;
+	map["timeout_inter_send"]		= &ServerConfig::setTimeoutInterSend;
+	map["timeout_inter_receive"]	= &ServerConfig::setTimeoutInterReceive;
 }
 
 ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
-	m_max_connections		(DefaultConfig::UINT_NONE),
-	m_max_concurrent_cgi	(DefaultConfig::UINT_NONE),
-	m_max_cgi_backlog		(DefaultConfig::UINT_NONE),
-	m_max_workers			(DefaultConfig::UINT_NONE),	
-	m_configDefault			(defaultConfig),
-	m_configFilePath		(configFilePath),
-	m_serverCount			(0) {}
+	m_max_connections			(DefaultConfig::UINT_NONE),
+	m_max_concurrent_cgi		(DefaultConfig::UINT_NONE),
+	m_max_cgi_backlog			(DefaultConfig::UINT_NONE),
+	m_max_workers				(DefaultConfig::UINT_NONE),	
+	m_http_maxClientBodySize	(DefaultConfig::UINT_NONE),	
+	m_http_maxClientHeaderSize	(DefaultConfig::UINT_NONE),	
+	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),	
+	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),	
+	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE),	
+	m_configDefault				(defaultConfig),
+	m_configFilePath			(configFilePath),
+	m_serverCount				(0) {}
 
 ServerConfig::~ServerConfig()
 {
@@ -47,6 +57,11 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 	m_max_connections = other.m_max_connections;
 	m_max_cgi_backlog = other.m_max_cgi_backlog;
 	m_max_workers = other.m_max_workers;
+	m_http_maxClientBodySize = other.m_http_maxClientBodySize;
+	m_http_maxClientHeaderSize = other.m_http_maxClientHeaderSize;
+	m_http_timeoutFullHeader = other.m_http_timeoutFullHeader;
+	m_http_timeoutInterSend = other.m_http_timeoutInterSend;
+	m_http_timeoutInterReceive = other.m_http_timeoutInterReceive;
 	m_configFilePath = other.m_configFilePath;
 	m_serverBlocks = other.m_serverBlocks;
 	m_serverCount = other.m_serverCount;
@@ -244,11 +259,13 @@ int		ServerConfig::parseConfigFile()
 		std::cerr << "Error: missing closing bracket" << std::endl;
 		return (0);
 	}
+
+	m_setDefaults();
+
 	if (!mf_listenDNSlookup()
-	|| !mf_expandCgiToLocations())
+	|| 	!mf_applyInheritedSettings())
 		return (0);
 		
-	m_setDefaults();
 
 	return (1);
 }
@@ -284,6 +301,31 @@ int		ServerConfig::getMaxWorkers() const
 	return (m_max_workers);
 }
 
+size_t	ServerConfig::getClientBodySize() const
+{
+	return (m_http_maxClientBodySize);
+}
+
+size_t	ServerConfig::getClientHeaderSize() const
+{
+	return (m_http_maxClientHeaderSize);
+}
+
+int		ServerConfig::getTimeoutFullHeader() const
+{
+	return (m_http_timeoutFullHeader);
+}
+
+int		ServerConfig::getTimeoutInterSend() const
+{
+	return (m_http_timeoutInterSend);
+}
+
+int		ServerConfig::getTimeoutInterReceive() const
+{
+	return (m_http_timeoutInterReceive);
+}
+
 const DefaultConfig&	ServerConfig::getDefaultConfig() const
 {
 	return (m_configDefault);
@@ -315,11 +357,12 @@ void		ServerConfig::setMaxConnections(const std::string &value)
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
-	size_t	number;
+	const size_t 	max = StringUtils::parse_size("10M");
+	size_t			number;
 	
 	try {
 		number = StringUtils::stoull(value);
-		if (number > 1048576)
+		if (number > max)
 			throw (std::invalid_argument("max_concurrent_cgi value too high"));
 		if (value[0] == '-')
 			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
@@ -333,11 +376,12 @@ void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
-	size_t	number;
+	const size_t 	max = StringUtils::parse_size("10M");
+	size_t			number;
 	
 	try {
 		number = StringUtils::stoull(value);
-		if (number > 1048576)
+		if (number > max)
 			throw (std::invalid_argument("max_cgi_backlog value too high"));
 		if (value[0] == '-')
 			throw (std::invalid_argument("max_cgi_backlog must be a positive number,"));
@@ -351,11 +395,12 @@ void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 
 void		ServerConfig::setMaxWorkers(const std::string &value)
 {
-	size_t	number;
+	const size_t 	max = StringUtils::parse_size("10M");
+	size_t			number;
 	
 	try {
 		number = StringUtils::stoull(value);
-		if (number > 1048576)
+		if (number > max)
 			throw (std::invalid_argument("max_concurrent_cgi value too high"));
 		if (value[0] == '-')
 			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
@@ -366,6 +411,84 @@ void		ServerConfig::setMaxWorkers(const std::string &value)
 	}
 	m_max_workers = std::atoi(value.c_str());
 }
+
+void	ServerConfig::setClientBodySize(const std::string &value)
+{
+	try {
+		m_http_maxClientBodySize = StringUtils::parse_size(value);
+	}
+	catch (std::exception &e) {
+		throw (std::invalid_argument(e.what()));
+	}
+}
+
+void	ServerConfig::setClientHeaderSize(const std::string &value)
+{
+	try {
+		m_http_maxClientHeaderSize = StringUtils::parse_size(value);
+	}
+	catch (std::exception &e) {
+		throw (std::invalid_argument(e.what()));
+	}
+}
+
+void		ServerConfig::setTimeoutFullHeader(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutFullHeader = std::atoi(value.c_str());
+}
+
+void		ServerConfig::setTimeoutInterSend(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterSend = std::atoi(value.c_str());
+}
+
+void		ServerConfig::setTimeoutInterReceive(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterReceive = std::atoi(value.c_str());
+}
+
 
 void		ServerConfig::addCgiInterpreter(const std::string &value)
 {
@@ -388,48 +511,42 @@ void		ServerConfig::addCgiInterpreter(const std::string &value)
 		
 	m_cgiInterpreters[extension] = path;
 
+exitSuccess:
 	return ;
 
 exitError:
 	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
+	goto exitSuccess; // just messing with ya
 }
 
 void	ServerConfig::m_setDefaults()
 {
-	m_max_connections 		= (m_max_connections == -1) 	? m_configDefault.server_maxConnections 	: m_max_connections;
-	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == -1) 	? m_configDefault.server_cgiWorkers 		: m_max_concurrent_cgi;
-	m_max_cgi_backlog 		= (m_max_cgi_backlog == -1) 	? m_configDefault.server_cgiBacklog 		: m_max_cgi_backlog;
-	m_max_workers 			= (m_max_workers == -1) 		? m_configDefault.server_Workers 			: m_max_workers;
+	m_max_connections 		= (m_max_connections 	== DefaultConfig::UINT_NONE) ? m_configDefault.server_maxConnections: m_max_connections;
+	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == DefaultConfig::UINT_NONE) ? m_configDefault.server_cgiWorkers 	: m_max_concurrent_cgi;
+	m_max_cgi_backlog 		= (m_max_cgi_backlog 	== DefaultConfig::UINT_NONE) ? m_configDefault.server_cgiBacklog 	: m_max_cgi_backlog;
+	m_max_workers 			= (m_max_workers 		== DefaultConfig::UINT_NONE) ? m_configDefault.server_Workers 		: m_max_workers;
+	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientBodySize 	: m_http_maxClientBodySize; 
+	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientHeaderSize : m_http_maxClientHeaderSize; 
+	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutFullHeader 	: m_http_timeoutFullHeader;
+	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterSend 	: m_http_timeoutInterSend;
+	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterReceive : m_http_timeoutInterReceive;
 }
 
-// for each server block, for each location, for each cgi entry, uffffffff
-bool	ServerConfig::mf_expandCgiToLocations()
+bool	ServerConfig::mf_applyInheritedSettings()
 {
 	for (std::vector<ServerBlock>::iterator thisBlock = m_serverBlocks.begin(); thisBlock != m_serverBlocks.end(); thisBlock++)
 	{
+		// fills inherited
+		if (!thisBlock->fillInheritedSettings(*this))
+			return (false);
+
+		// each location fills inherited
 		std::vector<ServerLocation>& locations = thisBlock->accessLocations();
 		std::vector<ServerLocation>::iterator thisLocation = locations.begin();
 		for (; thisLocation != locations.end(); thisLocation++)
 		{
-			Config::CgiInterpreterMap& locationInterpreters = thisLocation->accessCgiInterpreters();
-			Config::CgiInterpreterMap::iterator thisInterpreter = locationInterpreters.begin();
-			for (; thisInterpreter != locationInterpreters.end(); thisInterpreter++)
-			{
-				if (!thisInterpreter->second.empty())	//location set its own interpreter for this extension (may or may not be equal to the global one)
-					continue ;
-
-				// ServerConfig looks up the path from the extension at the program level
-				Config::CgiInterpreterMap::iterator serverLevel;
-				serverLevel = m_cgiInterpreters.find(thisInterpreter->first);
-				if (serverLevel != m_cgiInterpreters.end())
-					thisInterpreter->second = serverLevel->second;
-					
-				else
-				{
-					std::cerr << "Error: location «" << thisLocation->getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
-					return (false);
-				}
-			}
+			if (!thisLocation->fillInheritedSettings(*this))
+				return (false);
 		}
 	}
 

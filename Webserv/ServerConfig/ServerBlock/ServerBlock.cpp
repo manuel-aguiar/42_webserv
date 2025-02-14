@@ -2,11 +2,12 @@
 
 // Project headers
 #include "ServerBlock.hpp"
+#include "../ServerConfig/ServerConfig.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
-#include "../ServerLocation/ServerLocation.hpp"
-#include "../DefaultConfig/DefaultConfig.hpp"
 
 // C++ headers
 # include <cstdlib> // for atoi
@@ -14,19 +15,25 @@
 ServerBlock::DirectiveToSetter ServerBlock::m_directiveToSetter;
 
 ServerBlock::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(6))	// 6 magic: number of keys
+	map(std::less<std::string>(), mapPool(9))	// 9 magic: number of keys
 {
 	map["listen"]				= &ServerBlock::addListener;
 	map["server_name"]			= &ServerBlock::addServerName;
 	map["client_body_size"]		= &ServerBlock::setClientBodySize;
 	map["client_header_size"]	= &ServerBlock::setClientHeaderSize;
+	map["timeout_full_header"]	= &ServerBlock::setTimeoutFullHeader;
+	map["timeout_inter_send"]	= &ServerBlock::setTimeoutInterSend;
+	map["timeout_inter_receive"]= &ServerBlock::setTimeoutInterReceive;
 	map["root"]					= &ServerBlock::setRootPath;
 	map["error_pages"]			= &ServerBlock::addErrorPage;
 }
 
 ServerBlock::ServerBlock() :
-	m_client_body_size(DefaultConfig::UINT_NONE),
-	m_client_header_size(DefaultConfig::UINT_NONE) {}
+	m_http_maxClientBodySize	(DefaultConfig::UINT_NONE),
+	m_http_maxClientHeaderSize	(DefaultConfig::UINT_NONE),
+	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),
+	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),
+	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE)  {}
 
 ServerBlock::~ServerBlock()
 {
@@ -40,8 +47,11 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 
 	m_listen = other.m_listen;
 	m_server_name = other.m_server_name;
-	m_client_body_size = other.m_client_body_size;
-	m_client_header_size = other.m_client_header_size;
+	m_http_maxClientBodySize = other.m_http_maxClientBodySize;
+	m_http_maxClientHeaderSize = other.m_http_maxClientHeaderSize;
+	m_http_timeoutFullHeader = other.m_http_timeoutFullHeader;
+	m_http_timeoutInterSend = other.m_http_timeoutInterSend;
+	m_http_timeoutInterReceive = other.m_http_timeoutInterReceive;
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
 	m_locations = other.m_locations;
@@ -51,14 +61,17 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 }
 
 ServerBlock::ServerBlock(const ServerBlock &other) :
-	m_listen				(other.m_listen),
-	m_server_name			(other.m_server_name),
-	m_client_body_size		(other.m_client_body_size),
-	m_client_header_size	(other.m_client_header_size),
-	m_root					(other.m_root),
-	m_error_pages			(other.m_error_pages),
-	m_locations				(other.m_locations),
-	m_mapLocations			(other.m_mapLocations) {}
+	m_listen					(other.m_listen),
+	m_server_name				(other.m_server_name),
+	m_http_maxClientBodySize	(other.m_http_maxClientBodySize),
+	m_http_maxClientHeaderSize	(other.m_http_maxClientHeaderSize),
+	m_http_timeoutFullHeader 	(other.m_http_timeoutFullHeader),
+	m_http_timeoutInterSend 	(other.m_http_timeoutInterSend),
+	m_http_timeoutInterReceive 	(other.m_http_timeoutInterReceive),
+	m_root						(other.m_root),
+	m_error_pages				(other.m_error_pages),
+	m_locations					(other.m_locations),
+	m_mapLocations				(other.m_mapLocations) {}
 
 void	ServerBlock::setRootPath(const std::string &value)
 {
@@ -68,7 +81,7 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		m_client_body_size = StringUtils::parse_size(value);
+		m_http_maxClientBodySize = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
@@ -78,7 +91,7 @@ void	ServerBlock::setClientBodySize(const std::string &value)
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		m_client_header_size = StringUtils::parse_size(value);
+		m_http_maxClientHeaderSize = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
@@ -168,6 +181,63 @@ void	ServerBlock::addConfigValue(const std::string &key, const std::string &valu
 	(this->*m_directiveToSetter.map[key])(value);
 }
 
+void		ServerBlock::setTimeoutFullHeader(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutFullHeader = std::atoi(value.c_str());
+}
+
+void		ServerBlock::setTimeoutInterSend(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterSend = std::atoi(value.c_str());
+}
+
+void		ServerBlock::setTimeoutInterReceive(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterReceive = std::atoi(value.c_str());
+}
+
 const std::vector<ServerLocation>&		ServerBlock::getLocations() const
 {
 	return (m_locations);
@@ -192,12 +262,27 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (m_client_body_size);
+	return (m_http_maxClientBodySize);
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (m_client_header_size);
+	return (m_http_maxClientHeaderSize);
+}
+
+int		ServerBlock::getTimeoutFullHeader() const
+{
+	return (m_http_timeoutFullHeader);
+}
+
+int		ServerBlock::getTimeoutInterSend() const
+{
+	return (m_http_timeoutInterSend);
+}
+
+int		ServerBlock::getTimeoutInterReceive() const
+{
+	return (m_http_timeoutInterReceive);
 }
 
 const std::set<std::string>&	ServerBlock::getErrorPages() const
@@ -225,10 +310,16 @@ void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
 	if (m_root.empty())
 		setRootPath(defaultConfig.server_Root);
-	if (m_client_body_size == DefaultConfig::UINT_NONE)
-		m_client_body_size = defaultConfig.http_maxClientBodySize;
-	if (m_client_header_size == DefaultConfig::UINT_NONE)
-		m_client_header_size = defaultConfig.http_maxClientHeaderSize;
+}
+
+bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)
+{
+	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? config.getClientBodySize() 	: m_http_maxClientBodySize; 
+	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? config.getClientHeaderSize()	: m_http_maxClientHeaderSize; 
+	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? config.getTimeoutFullHeader() 	: m_http_timeoutFullHeader;
+	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? config.getTimeoutInterSend() 	: m_http_timeoutInterSend;
+	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? config.getTimeoutInterReceive() 	: m_http_timeoutInterReceive;
+	return (true);
 }
 
 bool	ServerBlock::validate() const

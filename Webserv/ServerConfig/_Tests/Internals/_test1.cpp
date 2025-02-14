@@ -39,6 +39,12 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(config.getMaxConcurrentCgi(), defaultConfig.server_cgiWorkers, "Wrong max concurrent cgi");
         EXPECT_EQUAL(config.getMaxCgiBacklog(), defaultConfig.server_cgiBacklog, "Wrong max cgi backlog");
         EXPECT_EQUAL(config.getMaxWorkers(), defaultConfig.server_Workers, "Wrong max workers");
+        EXPECT_EQUAL(config.getClientBodySize(), defaultConfig.http_maxClientBodySize, "Wrong client body size");
+        EXPECT_EQUAL(config.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
+        EXPECT_EQUAL(config.getTimeoutFullHeader(), defaultConfig.http_timeoutFullHeader, "Wrong full header timeout");
+        EXPECT_EQUAL(config.getTimeoutInterSend(), defaultConfig.http_timeoutInterSend, "Wrong inter send timeout");
+        EXPECT_EQUAL(config.getTimeoutInterReceive(), defaultConfig.http_timeoutInterReceive, "Wrong inter receive timeout");
+
 
         // blocks
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
@@ -99,6 +105,11 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(config.getMaxConcurrentCgi(), defaultConfig.server_cgiWorkers, "Wrong max concurrent cgi");
         EXPECT_EQUAL(config.getMaxCgiBacklog(), defaultConfig.server_cgiBacklog, "Wrong max cgi backlog");
         EXPECT_EQUAL(config.getMaxWorkers(), defaultConfig.server_Workers, "Wrong max workers");
+        EXPECT_EQUAL(config.getClientBodySize(), defaultConfig.http_maxClientBodySize, "Wrong client body size");
+        EXPECT_EQUAL(config.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
+        EXPECT_EQUAL(config.getTimeoutFullHeader(), defaultConfig.http_timeoutFullHeader, "Wrong full header timeout");
+        EXPECT_EQUAL(config.getTimeoutInterSend(), defaultConfig.http_timeoutInterSend, "Wrong inter send timeout");
+        EXPECT_EQUAL(config.getTimeoutInterReceive(), defaultConfig.http_timeoutInterReceive, "Wrong inter receive timeout");
 
         // blocks
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
@@ -114,6 +125,9 @@ void testPart1(int& testNumber)
         //defaults
         EXPECT_EQUAL(serverBlock.getClientBodySize(), StringUtils::parse_size("1M"), "Wrong client body size");
         EXPECT_EQUAL(serverBlock.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
+        EXPECT_EQUAL(serverBlock.getTimeoutFullHeader(), defaultConfig.http_timeoutFullHeader, "Wrong full header timeout");
+        EXPECT_EQUAL(serverBlock.getTimeoutInterSend(), defaultConfig.http_timeoutInterSend, "Wrong inter send timeout");
+        EXPECT_EQUAL(serverBlock.getTimeoutInterReceive(), defaultConfig.http_timeoutInterReceive, "Wrong inter receive timeout");
         EXPECT_EQUAL(serverBlock.getRoot(), defaultConfig.server_Root, "Wrong root path");
 
         // default bind addresses
@@ -188,6 +202,11 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(config.getMaxConcurrentCgi(), defaultConfig.server_cgiWorkers, "Wrong max concurrent cgi");
         EXPECT_EQUAL(config.getMaxCgiBacklog(), 420, "Wrong max cgi backlog");
         EXPECT_EQUAL(config.getMaxWorkers(), 10, "Wrong max workers");
+        EXPECT_EQUAL(config.getClientBodySize(), 69420, "Wrong client body size");
+        EXPECT_EQUAL(config.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
+        EXPECT_EQUAL(config.getTimeoutFullHeader(), defaultConfig.http_timeoutFullHeader, "Wrong full header timeout");
+        EXPECT_EQUAL(config.getTimeoutInterSend(), defaultConfig.http_timeoutInterSend, "Wrong inter send timeout");
+        EXPECT_EQUAL(config.getTimeoutInterReceive(), defaultConfig.http_timeoutInterReceive, "Wrong inter receive timeout");
 
         // blocks
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
@@ -220,6 +239,7 @@ void testPart1(int& testNumber)
         //defaults
         EXPECT_EQUAL(serverBlock.getClientBodySize(), StringUtils::parse_size("1M"), "Wrong client body size");
         EXPECT_EQUAL(serverBlock.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
+        EXPECT_EQUAL(serverBlock.getTimeoutInterSend(), 1000, "Wrong timeout inter send");
         EXPECT_EQUAL(serverBlock.getRoot(), defaultConfig.server_Root, "Wrong root path");
 
         // default bind addresses
@@ -283,7 +303,7 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(*thisName, "tretas.com", "Wrong server name");
 
         //defaults
-        EXPECT_EQUAL(serverBlock.getClientBodySize(), defaultConfig.http_maxClientBodySize, "Wrong client header size");
+        EXPECT_EQUAL(serverBlock.getClientBodySize(), 69420, "Wrong client header size");
         EXPECT_EQUAL(serverBlock.getClientHeaderSize(), StringUtils::parse_size("1K"), "Wrong client body size");
         EXPECT_EQUAL(serverBlock.getRoot(), defaultConfig.server_Root, "Wrong root path");
 

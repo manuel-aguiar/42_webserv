@@ -17,6 +17,7 @@
 # include <exception>
 # include <sstream>
 
+class ServerConfig;
 class ServerBlock;
 struct DefaultConfig;
 namespace Config
@@ -59,6 +60,8 @@ class ServerLocation
 		void							setAutoindex(const std::string &value);
 		void							addMethod(const std::string &value);
 		void							addCgiInterpreter(const std::string &value);
+
+		bool							fillInheritedSettings(const ServerConfig& config);
 
 		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addConfigValue(const std::string &key, const std::string &value);
