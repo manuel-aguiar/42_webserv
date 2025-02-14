@@ -55,10 +55,10 @@ namespace Http
 			// infrastructure
 			Globals&								m_globals;
 			int										m_global_maxHeaderSize;
-			StackArray<int, Http::Timeout::COUNT>	m_global_timeouts;
 			HeapArray<Http::Connection>				m_connections;
 			HeapCircularQueue<Http::Connection*>	m_availableConnections;
 			TimerTracker<Timer, Http::Connection*>	m_timers;
+			StackArray<int, Http::Timeout::COUNT>	m_global_timeouts;
 
 
 	};

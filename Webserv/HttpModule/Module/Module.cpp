@@ -15,10 +15,10 @@ namespace Http
 Module::Module(const size_t maxConnections, const DefaultConfig& config, Globals& globals)
     : m_globals(globals),
       m_global_maxHeaderSize(config.http_maxClientHeaderSize),
-      m_global_timeouts(0),
       m_connections(maxConnections),
       m_availableConnections(maxConnections),
-      m_timers(maxConnections)
+      m_timers(maxConnections),
+      m_global_timeouts(0)
 {
     // setup global timeouts
     m_global_timeouts[Http::Timeout::FULL_REQUEST] = config.http_timeoutFullHeader;
