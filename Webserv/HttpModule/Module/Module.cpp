@@ -23,7 +23,7 @@ Module::Module(const size_t maxConnections, const DefaultConfig& config, Globals
     // setup global timeouts
     m_global_timeouts[Http::Timeout::FULL_REQUEST] = config.http_timeoutFullHeader;
     m_global_timeouts[Http::Timeout::INTER_SEND] = config.http_timeoutInterSend;
-    m_global_timeouts[Http::Timeout::INTER_RECEIV] =config.http_timeoutInterReceive;
+    m_global_timeouts[Http::Timeout::INTER_RECEIV] = config.http_timeoutInterReceive;
 
     // create and load connections
     for (size_t i = 0; i < maxConnections; ++i)
@@ -39,6 +39,7 @@ Module::~Module() {}
 Http::Connection*
 Module::acquireConnection()
 {
+    ASSERT_EQUAL(m_availableConnections.isEmpty(), false, "Http::Module::acquireConnection - there should be connections available for everyone");
     if (m_availableConnections.isEmpty())
         return (NULL);
     Http::Connection* connection = m_availableConnections.front();
