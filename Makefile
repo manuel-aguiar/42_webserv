@@ -134,7 +134,7 @@ clean:
 	rm -rf $(OBJ_PATH)
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(NAME) $(BUILD_DIR)
 
 re: fclean all
 

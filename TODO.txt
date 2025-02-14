@@ -1,8 +1,0 @@
-change eventmanager to have an array of fixed size max fds to track stale events.
-if i have multiple epolls, the number
-of fds will be significantly higher...
-
-Connections/Monitor takes an 
-eventmanager & directly. one less dereference and
-is easier to manage.
-
