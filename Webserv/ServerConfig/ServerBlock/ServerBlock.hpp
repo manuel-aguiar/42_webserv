@@ -56,6 +56,9 @@ class ServerBlock
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
+		int								getTimeoutFullHeader() const;
+		int								getTimeoutInterSend() const;
+		int								getTimeoutInterReceive() const;
 		const std::set<std::string>&	getErrorPages() const;
 		const std::string&				getRoot() const;
 		const std::vector<const struct sockaddr*>&	
@@ -65,6 +68,9 @@ class ServerBlock
 		void							setRootPath(const std::string &value);
 		void							setClientBodySize(const std::string &value);
 		void							setClientHeaderSize(const std::string &value);
+		void							setTimeoutFullHeader(const std::string &value);
+		void							setTimeoutInterSend(const std::string &value);
+		void							setTimeoutInterReceive(const std::string &value);
 		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addListener(const std::string &value);
 		void							addServerName(const std::string &value);
@@ -100,8 +106,11 @@ class ServerBlock
 
 		std::set<Config::Listen>						m_listen;
 		std::set<std::string>							m_server_name;
-		int												m_client_body_size;
-		int												m_client_header_size;
+		size_t											m_http_maxClientBodySize;
+		size_t											m_http_maxClientHeaderSize;
+		int												m_http_timeoutFullHeader;
+		int												m_http_timeoutInterSend;
+		int												m_http_timeoutInterReceive;
 		std::string										m_root;
 		std::set<std::string>							m_error_pages;
 		std::vector<ServerLocation>						m_locations;						

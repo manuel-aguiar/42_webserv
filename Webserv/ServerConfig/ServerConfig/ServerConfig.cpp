@@ -299,12 +299,12 @@ int		ServerConfig::getMaxWorkers() const
 	return (m_max_workers);
 }
 
-int		ServerConfig::getClientBodySize() const
+size_t	ServerConfig::getClientBodySize() const
 {
 	return (m_http_maxClientBodySize);
 }
 
-int		ServerConfig::getClientHeaderSize() const
+size_t	ServerConfig::getClientHeaderSize() const
 {
 	return (m_http_maxClientHeaderSize);
 }
@@ -521,8 +521,8 @@ void	ServerConfig::m_setDefaults()
 	m_max_concurrent_cgi 	= (m_max_concurrent_cgi == DefaultConfig::UINT_NONE) ? m_configDefault.server_cgiWorkers 	: m_max_concurrent_cgi;
 	m_max_cgi_backlog 		= (m_max_cgi_backlog 	== DefaultConfig::UINT_NONE) ? m_configDefault.server_cgiBacklog 	: m_max_cgi_backlog;
 	m_max_workers 			= (m_max_workers 		== DefaultConfig::UINT_NONE) ? m_configDefault.server_Workers 		: m_max_workers;
-	m_http_maxClientBodySize 	= (m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientBodySize 	: m_http_maxClientBodySize; 
-	m_http_maxClientHeaderSize 	= (m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientHeaderSize : m_http_maxClientHeaderSize; 
+	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientBodySize 	: m_http_maxClientBodySize; 
+	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_maxClientHeaderSize : m_http_maxClientHeaderSize; 
 	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutFullHeader 	: m_http_timeoutFullHeader;
 	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterSend 	: m_http_timeoutInterSend;
 	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterReceive : m_http_timeoutInterReceive;
