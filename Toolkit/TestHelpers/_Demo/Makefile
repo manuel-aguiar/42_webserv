@@ -8,8 +8,8 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SUBJECT_PATH			=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo
 # Sources

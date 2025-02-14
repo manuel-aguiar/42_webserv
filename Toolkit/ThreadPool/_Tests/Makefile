@@ -7,8 +7,8 @@ NAME					=		test.out
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 EXTERN_LINKER 			= 		-lpthread
 
@@ -19,18 +19,18 @@ BUILD_FLAGS 			= 		-DNDEBUG
 LIBS 					= 		$(EXTERN_LINKER)
 
 # Sources
-SRCS					=		$(SRC_PATH)/ThreadPool/_Tests/main.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test1.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test2.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test3.cpp					\
-								$(SRC_PATH)/ThreadPool/_Tests/test4.cpp					\
+SRCS					=		$(SRC_PATH)/Toolkit/ThreadPool/_Tests/main.cpp					\
+								$(SRC_PATH)/Toolkit/ThreadPool/_Tests/test1.cpp					\
+								$(SRC_PATH)/Toolkit/ThreadPool/_Tests/test2.cpp					\
+								$(SRC_PATH)/Toolkit/ThreadPool/_Tests/test3.cpp					\
+								$(SRC_PATH)/Toolkit/ThreadPool/_Tests/test4.cpp					\
 								\
-								$(SRC_PATH)/ThreadPool/TaskQueue/TaskQueue.cpp			\
-								$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp	\
-								$(SRC_PATH)/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp	\
-								$(SRC_PATH)/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp	\
+								$(SRC_PATH)/Toolkit/ThreadPool/TaskQueue/TaskQueue.cpp			\
+								$(SRC_PATH)/Toolkit/ThreadPool/ThreadWorker/ThreadWorker.cpp	\
+								$(SRC_PATH)/Toolkit/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp	\
+								$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp	\
 								\
-								$(SRC_PATH)/MemoryPool/_SlabImpl/SlabImpl.cpp	
+								$(SRC_PATH)/Toolkit/MemoryPool/_SlabImpl/SlabImpl.cpp	
 
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))

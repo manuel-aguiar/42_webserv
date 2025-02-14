@@ -13,7 +13,7 @@ VALGRIND_OUTPUT 		= 	valgrind_output.log
 # Paths
 ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
 SRC_PATH	=	$(ROOT_PATH)/.
-OBJ_PATH	=	$(ROOT_PATH)/_build
+OBJ_PATH	=	$(ROOT_PATH)/_build/debug
 
 # Sources
 

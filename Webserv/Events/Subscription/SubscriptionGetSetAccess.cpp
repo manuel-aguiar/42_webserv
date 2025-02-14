@@ -48,17 +48,17 @@ namespace Events
 	void
 	Subscription::setMonitoredEvents(const Events::Monitor::Mask flags)
 	{
-		//solved at compile time :)
-		const int validFlags = 0 	|	Events::Monitor::NONE
-									| 	Events::Monitor::READ 
-									| 	Events::Monitor::WRITE 
-									| 	Events::Monitor::ERROR 
-									| 	Events::Monitor::HANGUP 
-									| 	Events::Monitor::RDHANGUP 
-									| 	Events::Monitor::EDGE_TRIGGERED;
-
+		#ifndef NDEBUG
+			const int validFlags = 0 	|	Events::Monitor::NONE
+										| 	Events::Monitor::READ 
+										| 	Events::Monitor::WRITE 
+										| 	Events::Monitor::ERROR 
+										| 	Events::Monitor::HANGUP 
+										| 	Events::Monitor::RDHANGUP 
+										| 	Events::Monitor::EDGE_TRIGGERED;
+		#endif
 		ASSERT_EQUAL((flags & ~validFlags) == 0, true, "Subscription::setMonitoredEvents: invalid flag combination");
-
+		
 		m_monitoredEvents = flags;
 	}
 

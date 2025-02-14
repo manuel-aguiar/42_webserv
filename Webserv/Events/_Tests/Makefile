@@ -13,7 +13,7 @@ NAME = test.out
 # Paths
 ROOT_PATH	=	$(shell git rev-parse --show-toplevel)
 SRC_PATH	=	$(ROOT_PATH)/.
-OBJ_PATH	=	$(ROOT_PATH)/_build
+OBJ_PATH	=	$(ROOT_PATH)/_build/debug
 
 
 SRCS		 =  $(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \

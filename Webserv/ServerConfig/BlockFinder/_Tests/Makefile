@@ -11,7 +11,7 @@ CXXFLAGS			= 	-Wall -Wextra -Werror -std=c++98 -g -MMD -MP -DTESTMODE
 # Directories
 ROOT_PATH 			= 	$(shell git rev-parse --show-toplevel)
 SRC_PATH			=	$(ROOT_PATH)/.
-OBJ_PATH			=	$(ROOT_PATH)/_build
+OBJ_PATH			=	$(ROOT_PATH)/_build/debug
 
 # main target, in this case blockfinder
 SUBJECT_PATH 		=	$(SRC_PATH)/Webserv/ServerConfig/BlockFinder

@@ -2,7 +2,6 @@
 
 // Project headers
 # include "ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "ServerConfig/BlockFinder/BlockFinder.hpp"
 # include "ServerConfig/DefaultConfig/DefaultConfig.hpp"
 # include "Run/WebservRun.h"
 

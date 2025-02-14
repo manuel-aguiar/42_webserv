@@ -8,6 +8,7 @@
 // C++ headers
 # include <cstring>
 # include <cerrno>
+# include <stdexcept>
 
 // C headers
 # include <unistd.h>

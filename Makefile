@@ -6,96 +6,108 @@ NAME 					= 		webserv
 CXX						=		c++
 CXXFLAGS				=		-Wall -Wextra -Werror -std=c++98 -MMD -MP
 
+DEBUG_FLAGS				=		-g -DDEBUG
+PROD_FLAGS				=		-O3 -DNDEBUG
+
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Webserv/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+BUILD_DIR               =       $(ROOT_PATH)/_build
+
+# Build type (default to prod)
+BUILD                   ?=      prod
+ifeq ($(BUILD), debug)
+    OBJ_PATH            =       $(BUILD_DIR)/debug
+    CXXFLAGS           +=       $(DEBUG_FLAGS)
+else
+    OBJ_PATH            =       $(BUILD_DIR)/prod
+    CXXFLAGS           +=       $(PROD_FLAGS)
+endif
 
 # Sources
-
-SRCS 					=																	\
-																							\
-		$(SRC_PATH)/main.cpp																\
-		$(SRC_PATH)/Run/WebservRun.cpp														\
-																							\
-																							\
-		$(SRC_PATH)/TimerTracker/Timer/Timer.cpp											\
-																							\
-																							\
-		$(SRC_PATH)/SignalHandler/SignalHandler.cpp											\
-																							\
-																							\
-		$(SRC_PATH)/CgiModule/Module/Module.cpp												\
-		$(SRC_PATH)/CgiModule/Worker/WorkerHelpers.cpp										\
-		$(SRC_PATH)/CgiModule/Worker/WorkerEvents.cpp										\
-		$(SRC_PATH)/CgiModule/Worker/WorkerExecute.cpp										\
-		$(SRC_PATH)/CgiModule/Worker/WorkerToImplModule.cpp									\
-		$(SRC_PATH)/CgiModule/Worker/Worker.cpp												\
-		$(SRC_PATH)/CgiModule/InternalReq/InternalReq.cpp									\
-		$(SRC_PATH)/CgiModule/InternalReq/InternalReqGetSetAccess.cpp						\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModuleRecycle.cpp								\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp							\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModuleReturn.cpp								\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModule.cpp										\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModuleExternal.cpp								\
-		$(SRC_PATH)/CgiModule/ImplModule/ImplModuleInternal.cpp								\
-		$(SRC_PATH)/CgiModule/Request/Request.cpp											\
-		$(SRC_PATH)/CgiModule/Request/RequestExternal.cpp									\
-																							\
-																							\
-		$(SRC_PATH)/Events/InternalSub/InternalSub.cpp										\
-		$(SRC_PATH)/Events/FdTracker/FdTracker.cpp											\
-		$(SRC_PATH)/Events/Manager/Manager.cpp												\
-		$(SRC_PATH)/Events/Subscription/SubscriptionGetSetAccess.cpp						\
-		$(SRC_PATH)/Events/Subscription/Subscription.cpp									\
-																							\
-																							\
-		$(SRC_PATH)/ServerContext/ServerContext.cpp											\
-																							\
-																							\
-		$(SRC_PATH)/HttpModule/Module/Module.cpp											\
-		$(SRC_PATH)/HttpModule/Module/ModuleInitClose.cpp									\
-		$(SRC_PATH)/HttpModule/Response/Response.cpp										\
-		$(SRC_PATH)/HttpModule/HttpRequest/HttpRequest.cpp									\
-		$(SRC_PATH)/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp				\
-		$(SRC_PATH)/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp				\
-		$(SRC_PATH)/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp				\
-		$(SRC_PATH)/HttpModule/Connection/Connection.cpp									\
-		$(SRC_PATH)/HttpModule/HttpDefinitions.cpp											\
-		$(SRC_PATH)/HttpModule/Request/Request.cpp											\
-																							\
-																							\
-		$(SRC_PATH)/ServerConfig/ServerBlock/ServerBlock.cpp								\
-		$(SRC_PATH)/ServerConfig/ServerLocation/ServerLocation.cpp							\
-		$(SRC_PATH)/ServerConfig/DefaultConfig/DefaultConfig.cpp							\
-		$(SRC_PATH)/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp						\
-		$(SRC_PATH)/ServerConfig/ServerConfig/ServerConfig.cpp								\
-		$(SRC_PATH)/ServerConfig/BlockFinder/BlockFinder.cpp								\
-																							\
-																							\
-		$(SRC_PATH)/Globals/Globals.cpp														\
-		$(SRC_PATH)/Globals/Clock/Clock.cpp													\
-		$(SRC_PATH)/Globals/LogFile/LogFile.cpp												\
-																							\
-																							\
-		$(SRC_PATH)/Connections/InternalConn/InternalConn.cpp								\
-		$(SRC_PATH)/Connections/ConnInfo/ConnInfo.cpp										\
-		$(SRC_PATH)/Connections/Monitor/Monitor.cpp											\
-		$(SRC_PATH)/Connections/InternalManager/InternalManagerInitShutdown.cpp				\
-		$(SRC_PATH)/Connections/InternalManager/InternalManager.cpp							\
-		$(SRC_PATH)/Connections/Connection/ConnectionGetSetAccess.cpp						\
-		$(SRC_PATH)/Connections/Connection/ConnectionEvents.cpp								\
-		$(SRC_PATH)/Connections/Connection/Connection.cpp									\
-		$(SRC_PATH)/Connections/Manager/Manager.cpp											\
-		$(SRC_PATH)/Connections/InternalListener/InternalListener.cpp						\
-		$(SRC_PATH)/Connections/InternalListener/InternalListenerAccept.cpp					\
-		$(SRC_PATH)/Connections/InternalListener/InternalListenerOpenClose.cpp				\
-		$(SRC_PATH)/Connections/Listener/Listener.cpp										\
-																							\
-																							\
-		$(SRC_PATH)/GenericUtils/FileDescriptor/FileDescriptor.cpp							\
-		$(SRC_PATH)/GenericUtils/StringUtils/StringUtils.cpp								\
-		$(SRC_PATH)/GenericUtils/Validation/Validation.cpp									
+SRCS 					=																			\
+																									\
+		$(SRC_PATH)/Webserv/main.cpp																\
+		$(SRC_PATH)/Webserv/Run/WebservRun.cpp														\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/SignalHandler/SignalHandler.cpp											\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp												\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerEvents.cpp										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp									\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/Worker.cpp												\
+		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReq.cpp									\
+		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReqGetSetAccess.cpp						\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp								\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp							\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp								\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp										\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp								\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp								\
+		$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp											\
+		$(SRC_PATH)/Webserv/CgiModule/Request/RequestExternal.cpp									\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp										\
+		$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp											\
+		$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp												\
+		$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp						\
+		$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp									\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp											\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/Module/Module.cpp											\
+		$(SRC_PATH)/Webserv/HttpModule/Module/ModuleInitClose.cpp									\
+		$(SRC_PATH)/Webserv/HttpModule/Response/Response.cpp										\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp				\
+		$(SRC_PATH)/Webserv/HttpModule/Connection/Connection.cpp									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp											\
+		$(SRC_PATH)/Webserv/HttpModule/Request/Request.cpp											\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp								\
+		$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp							\
+		$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp							\
+		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp						\
+		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp								\
+		$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp								\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/Globals/Globals.cpp														\
+		$(SRC_PATH)/Webserv/Globals/Clock/Clock.cpp													\
+		$(SRC_PATH)/Webserv/Globals/LogFile/LogFile.cpp												\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp								\
+		$(SRC_PATH)/Webserv/Connections/ConnInfo/ConnInfo.cpp										\
+		$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp											\
+		$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp				\
+		$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp							\
+		$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp						\
+		$(SRC_PATH)/Webserv/Connections/Connection/ConnectionEvents.cpp								\
+		$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp									\
+		$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp											\
+		$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListener.cpp						\
+		$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerAccept.cpp					\
+		$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerOpenClose.cpp				\
+		$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp										\
+																									\
+																									\
+		$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp							\
+		$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp								\
+		$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp									
 
 ######################################################
 
@@ -126,4 +138,10 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: clean fclean re									
+debug:
+	@$(MAKE) BUILD=debug
+
+prod:
+	@$(MAKE) BUILD=prod
+
+.PHONY: clean fclean re	debug prod								

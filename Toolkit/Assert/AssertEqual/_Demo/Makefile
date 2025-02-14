@@ -7,11 +7,11 @@ NAME					=		test.out
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 # Sources
-SRCS					=		$(SRC_PATH)/Assert/AssertEqual/_Demo/main.cpp
+SRCS					=		$(SRC_PATH)/Toolkit/Assert/AssertEqual/_Demo/main.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

@@ -6,19 +6,19 @@ NAME					=		test.out
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 # Sources
-SRCS					=		$(SRC_PATH)/Arrays/StackCircularQueue/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/StackCircularQueue/_Tests/test1.cpp	\
-								$(SRC_PATH)/Arrays/StackCircularQueue/_Tests/test2.cpp	\
-								$(SRC_PATH)/Arrays/StackCircularQueue/_Tests/test3.cpp	\
-								$(SRC_PATH)/Arrays/StackCircularQueue/_Tests/test4.cpp	\
+SRCS					=		$(SRC_PATH)/Toolkit/Arrays/StackCircularQueue/_Tests/main.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackCircularQueue/_Tests/test1.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackCircularQueue/_Tests/test2.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackCircularQueue/_Tests/test3.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/StackCircularQueue/_Tests/test4.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDummy.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitBase.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDerived.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

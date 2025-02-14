@@ -7,16 +7,16 @@ NAME					=		test.out
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+SRC_PATH				=		$(ROOT_PATH)
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 # Sources
-SRCS					=		$(SRC_PATH)/MemoryPool/Heap_MemoryPool/_Tests/main.cpp	\
-								$(SRC_PATH)/MemoryPool/Heap_MemoryPool/_Tests/test1.cpp	\
+SRCS					=		$(SRC_PATH)/Toolkit/MemoryPool/Heap_MemoryPool/_Tests/main.cpp	\
+								$(SRC_PATH)/Toolkit/MemoryPool/Heap_MemoryPool/_Tests/test1.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDummy.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitBase.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDerived.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)
