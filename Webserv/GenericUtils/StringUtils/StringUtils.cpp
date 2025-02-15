@@ -17,6 +17,33 @@ StringUtils::strtrim(const std::string &str)
 	return (str.substr(first, last - first + 1));
 }
 
+std::string
+StringUtils::strToLower(const std::string& str)
+{
+	std::string lowercaseString = str;
+	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
+		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
+	
+	return (lowercaseString);
+}
+
+int
+StringUtils::strToInt(const std::string& str, bool &error)
+{
+    std::stringstream	ss(str);
+    int					value;
+    ss >> value;
+
+	if (ss.fail())
+	{
+        error = true;
+        return 0;
+    }
+	error = false;
+
+    return (value);
+}
+
 size_t
 StringUtils::stoull(const std::string &str)
 {
@@ -27,6 +54,16 @@ StringUtils::stoull(const std::string &str)
 	if (ss.fail() || !ss.eof())
 		throw (std::invalid_argument("Invalid value (not a number): " + str));
 	return (value);
+}
+
+// No fail check
+std::string
+StringUtils::intToStr(int &value)
+{
+	std::stringstream	ss;
+
+	ss << value;
+	return (ss.str());
 }
 
 size_t
@@ -64,16 +101,6 @@ StringUtils::split(const std::string &str, char delimiter)
 		tokens.push_back(token);
 
 	return (tokens);
-}
-
-std::string
-StringUtils::strToLower(const std::string& str)
-{
-	std::string lowercaseString = str;
-	for (std::string::iterator it = lowercaseString.begin(); it != lowercaseString.end(); ++it)
-		*it = static_cast<char>(std::tolower(static_cast<unsigned char>(*it)));
-	
-	return (lowercaseString);
 }
 
 void
