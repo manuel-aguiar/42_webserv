@@ -76,6 +76,7 @@ int HttpRequest::mf_parseFirstIncomming(const std::string& rawData)
     // Handle body for POST requests
     if (m_method == "POST") {
         m_status = mf_handlePostBody(rawData, pos + 4);
+        return m_status;
     }
 
     m_parsingState = COMPLETED;
@@ -89,8 +90,12 @@ int HttpRequest::parse(const std::string& rawData)
             m_status = mf_parseFirstIncomming(rawData);
         }
 
-        if (m_parsingState == INCOMPLETE) {
+        else if (m_parsingState == INCOMPLETE) {
             m_status = mf_handleStreamedBody(rawData);
+        }
+
+        else if (m_parsingState == ERROR || m_parsingState == COMPLETED) {
+            return m_status;
         }
     }
     catch (const std::exception& e) {

@@ -9,25 +9,35 @@
 #include "../HttpRequest.hpp"
 #include <sstream>
 #include <cstdlib>
+#include <climits>
 
-// Helper function to convert string to size_t, takes a base
-static size_t strToSizeT(const std::string& str, int base = 10)
+
+// Helper function to convert string to integer, takes a base
+static int strToInteger(const std::string& str, int base = 10)
 {
-    std::istringstream iss(str);
-    size_t value;
+    std::string trimmed = str;
+    trimmed.erase(0, trimmed.find_first_not_of(" \t\n\r"));
+    trimmed.erase(trimmed.find_last_not_of(" \t\n\r") + 1);
 
-    if (base == 16) {
-        unsigned long ul;
-        iss >> std::hex >> ul;
-        value = static_cast<size_t>(ul);
-    } else {
-        iss >> value;
+    if (trimmed.empty()) {
+        throw std::runtime_error("Invalid number format: empty string");
     }
 
-    if (iss.fail() || !iss.eof()) {
+    // Use strtol for parsing (C++98 compatible)
+    char* endptr;
+    long value = strtol(trimmed.c_str(), &endptr, base);
+
+    // Check if conversion was successful
+    if (*endptr != '\0') {
         throw std::runtime_error("Invalid number format");
     }
-    return value;
+
+    // Check if value fits in an int
+    if (value > INT_MAX || value < INT_MIN) {
+        throw std::runtime_error("Number out of int range");
+    }
+
+    return static_cast<int>(value);
 }
 
 ChunkInfo HttpRequest::mf_parseChunkHeader(const std::string& data, size_t pos)
@@ -46,7 +56,7 @@ ChunkInfo HttpRequest::mf_parseChunkHeader(const std::string& data, size_t pos)
     }
 
     // Parse chunk size
-    size_t chunkSize = strToSizeT(chunkSizeStr, 16);
+    size_t chunkSize = static_cast<size_t>(strToInteger(chunkSizeStr, 16));
 
     // Validate chunk size
     if (chunkSize > Http::HttpStandard::MAX_CHUNK_SIZE) {
@@ -140,15 +150,22 @@ int HttpRequest::mf_parseChunkedBody(const std::string& data)
 // status = COMPLETED
 // next raw body = "!!!" -> total: 3 bytes
 // #ignored, we already have the full body for this request
-int HttpRequest::mf_parsePlainBody(const std::string& data)
+int HttpRequest::mf_parseRegularBody(const std::string& data)
 {
-    size_t contentLength;
+    int contentLengthInt;
     try {
-        contentLength = strToSizeT(m_headers["Content-Length"]);
+        contentLengthInt = strToInteger(m_headers["Content-Length"]);
     } catch (const std::exception& e) {
         return Http::Status::BAD_REQUEST; // since the value was not a valid number
     }
 
+    // negative value are not accepted
+    if (contentLengthInt < 0) {
+        m_parsingState = ERROR;
+        return Http::Status::BAD_REQUEST;
+    }
+
+    size_t contentLength = static_cast<size_t>(contentLengthInt);
     // TODO: later get this from server config
     if (contentLength > Http::HttpStandard::MAX_BODY_LENGTH) {
         return Http::Status::PAYLOAD_TOO_LARGE;
@@ -180,7 +197,7 @@ int HttpRequest::mf_parseBody(const std::string& data)
         }
 
         else if (m_headers.find("Content-Length") != m_headers.end()) {
-            m_status = mf_parsePlainBody(data);
+            m_status = mf_parseRegularBody(data);
         }
 
         else {

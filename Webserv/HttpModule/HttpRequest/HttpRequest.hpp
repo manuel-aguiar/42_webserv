@@ -113,7 +113,7 @@ class HttpRequest {
         ChunkInfo mf_parseChunkHeader(const std::string& data, size_t pos);
         int mf_parseChunkedBody(const std::string& data);
         bool mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
-        int mf_parsePlainBody(const std::string& data);
+        int mf_parseRegularBody(const std::string& data);
 };
 
 #endif
