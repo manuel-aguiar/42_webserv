@@ -67,6 +67,11 @@ Globals*			ServerContext::getGlobals() const
 	return (m_globals);
 }
 
+BlockFinder*		ServerContext::getBlockFinder() const
+{
+	return (m_blockFinder);
+}
+
 Ws::AppLayer::Module		ServerContext::getAppLayerModule(Ws::AppLayer::Type type) const
 {
 	return (m_appLayerState[type]);
