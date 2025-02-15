@@ -30,6 +30,6 @@ int HttpRequest::mf_parseHeaders(const std::string& data)
 			return (Http::Status::BAD_REQUEST);
 		m_headers[key] = value;
 	}
-	
+
 	return (Http::Status::OK);
 }

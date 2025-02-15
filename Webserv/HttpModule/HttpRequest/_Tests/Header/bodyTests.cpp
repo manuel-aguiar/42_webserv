@@ -20,6 +20,7 @@ void bodyTests(int &testNumber)
 		"Authorization: Bearer YOUR_ACCESS_TOKEN\r\n" +
 		"Content-Type: application/json\r\n" +
 		"Accept: application/json\r\n" +
+		"Content-Length: 78\r\n" +
 		"User-Agent: MyApp/1.0\r\n\r\n"
 		"{\"name\":\"John Doe\",\"email\":\"johndoe@example.com\",\"password\":\"securepassword\"}";
 

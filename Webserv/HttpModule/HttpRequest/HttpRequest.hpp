@@ -46,6 +46,7 @@ class HttpRequest {
         bool isError() const;
         bool isIncomplete() const;
         bool isCompleted() const;
+
         const ParsingState& getParsingState() const;
 
         // http status for this request

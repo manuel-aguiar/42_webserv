@@ -145,13 +145,8 @@ void encodedUriTests(int &testNumber)
 int main()
 {
     int testNumber = 1;
-
-    std::cout << "Starting HTTP Request Line Parser Tests...\n\n";
-
     validRequestLineTests(testNumber);
     invalidRequestLineTests(testNumber);
     encodedUriTests(testNumber);
-
-    std::cout << "\nAll tests completed!\n";
     return 0;
 }
