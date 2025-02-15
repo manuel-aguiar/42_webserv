@@ -55,6 +55,7 @@ int HttpRequest::mf_parseFirstIncomming(const std::string& rawData)
     m_status = mf_parseRequestLine(rawData.substr(0, pos));
     if (m_status != Http::Status::OK) {
         m_parsingState = ERROR;
+        return m_status;
     }
 
     // Parse headers
@@ -69,6 +70,7 @@ int HttpRequest::mf_parseFirstIncomming(const std::string& rawData)
     m_status = mf_parseHeaders(rawData.substr(headerStart, pos - headerStart));
     if (m_status != Http::Status::OK) {
         m_parsingState = ERROR;
+        return m_status;
     }
 
     // Handle body for POST requests
