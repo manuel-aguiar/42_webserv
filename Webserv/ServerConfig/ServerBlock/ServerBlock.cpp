@@ -117,22 +117,23 @@ void	ServerBlock::addServerName(const std::string &value)
 
 void	ServerBlock::addErrorPage(const std::string &value)
 {
-	std::string			error_code;
+	std::string			errorCode;
 	std::string			path;
 	size_t				separator;
+	bool				conversionError;
 
 	separator = value.find_first_of(':', 0);
 	if (separator == std::string::npos)
 		throw (std::invalid_argument("no separator \":\" found while adding error page (errorNumber:path)"));
-	error_code = value.substr(0, separator);
+	errorCode = value.substr(0, separator);
 	path = value.substr(separator + 1);
-	if (error_code.empty() || path.empty())
+	if (errorCode.empty() || path.empty())
 		throw (std::invalid_argument("error code or path is empty"));
-	if (!Validation::isNumber(error_code) || StringUtils::stoull(error_code) < 100 || StringUtils::stoull(error_code) > 599)
-		throw (std::invalid_argument("error code is not a valid number: " + error_code + ". It must be a value between 100 and 599"));
-	if (m_error_pages.find(value) != m_error_pages.end())
+	if (!Validation::isNumber(errorCode) || StringUtils::stoull(errorCode) < 100 || StringUtils::stoull(errorCode) > 599)
+		throw (std::invalid_argument("error code is not a valid number: " + errorCode + ". It must be a value between 100 and 599"));
+	if (m_error_pages.find(StringUtils::strToInt(errorCode, conversionError)) != m_error_pages.end())
 		throw (std::invalid_argument("error page already set: " + value));
-	m_error_pages.insert(value);
+	m_error_pages[StringUtils::strToInt(errorCode, conversionError)] = path;
 
 	
 }
@@ -169,7 +170,7 @@ size_t	ServerBlock::getClientHeaderSize() const
 	return (StringUtils::parse_size(m_client_header_size));
 }
 
-const std::set<std::string>&	ServerBlock::getErrorPages() const
+const std::map<int, std::string>&	ServerBlock::getErrorPages() const
 {
 	return (m_error_pages);
 }
@@ -224,8 +225,8 @@ void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
 
 void	ServerBlock::printServerConfig() const
 {
-	std::set<std::string>	server_name = getServerNames();
-	std::set<std::string>	error_pages = getErrorPages();
+	std::set<std::string>		server_name = getServerNames();
+	std::map<int, std::string>	error_pages = getErrorPages();
 	
 	std::cout << "║ ┌─ Server ─────────o\n";
 	std::cout << "║ │ \n";
@@ -250,8 +251,8 @@ void	ServerBlock::printServerConfig() const
 	if (!error_pages.size())
 		std::cout << "(empty)";
 	else
-		for (std::set<std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
-			std::cout << *it << " ";
+		for (std::map<int, std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
+			std::cout << it->first << ":" << it->second << " ";
 	std::cout << "\n";
 	std::cout << "║ │ " <<  std::endl ;
 
