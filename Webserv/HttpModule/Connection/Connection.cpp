@@ -30,10 +30,25 @@ Connection::ReadWrite_Callback(Events::Subscription& subscription)
 }
 
 
+/*
+
+	If the client closes the connection, there is nothing left to do:
+	close all interactions with other modules (eg stop cgi), remove timers
+	delete request/responses, close the Conn::Connection, return
+	the Http::Connection back to the Http::Module for future use
+
+*/
+
 void
 Connection::ReadWrite()
 {
-	//empty for now
+	int triggeredEvents = m_tcpConn->events_getTriggeredEvents();
+
+	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
+	{
+		close();
+		return ;
+	}
 }
 
 

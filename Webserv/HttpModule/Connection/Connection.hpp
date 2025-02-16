@@ -15,7 +15,7 @@
 namespace Events { class Subscription; }
 namespace Conn { class Connection; }
 namespace Http { class Module; class Request; class Response;}
-
+class HttpRequest;
 
 namespace Http
 {
@@ -50,7 +50,7 @@ namespace Http
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
-			std::deque<Http::Request> 							m_requests;
+			std::deque<HttpRequest> 							m_requests;
 			std::deque<Http::Response> 							m_responses;
 	};
 };
