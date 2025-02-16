@@ -44,7 +44,7 @@ ChunkInfo HttpRequest::mf_parseChunkHeader(const std::string& data, size_t pos)
 {
     ChunkInfo chunk = {0, 0};
     size_t lineEnd = data.find("\r\n", pos);
-    if (lineEnd == std::string::npos) {
+    if (lineEnd == std::string::npos || lineEnd == pos) {
         return chunk;
     }
 
@@ -55,24 +55,39 @@ ChunkInfo HttpRequest::mf_parseChunkHeader(const std::string& data, size_t pos)
         chunkSizeStr = chunkSizeStr.substr(0, semicolonPos);
     }
 
-    // Parse chunk size
-    size_t chunkSize = static_cast<size_t>(strToInteger(chunkSizeStr, 16));
+    try {
+        // Parse chunk size as hex
+        size_t chunkSize = static_cast<size_t>(strToInteger(chunkSizeStr, 16));
 
-    // Validate chunk size
-    if (chunkSize > Http::HttpStandard::MAX_CHUNK_SIZE) {
-        return chunk;
+        // Validate chunk size
+        if (chunkSize > Http::HttpStandard::MAX_CHUNK_SIZE) {
+            chunk.size = 0;
+            chunk.headerEnd = 0;
+            return chunk;
+        }
+
+        chunk.size = chunkSize;
+        chunk.headerEnd = lineEnd + 2;  // CRLF
+    }
+    catch (const std::exception& e) {
+        // Invalid chunk size format
+        chunk.size = 0;
+        chunk.headerEnd = 0;
     }
 
-    chunk.size = chunkSize;
-    chunk.headerEnd = lineEnd + 2;
     return chunk;
 }
 
-bool HttpRequest::mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body)
+bool HttpRequest::mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos, std::string& assembled_body)
 {
     // Check if we have enough data for this chunk
     if (chunk.headerEnd + chunk.size + 2 > data.length()) {
-        m_parsingState = INCOMPLETE;
+        return false;
+    }
+
+    // Verify chunk ends with \r\n
+    if (data.substr(chunk.headerEnd + chunk.size, 2) != "\r\n") {
+        m_parsingState = ERROR;
         return false;
     }
 
@@ -96,47 +111,70 @@ bool HttpRequest::mf_validateAndExtractChunk(const std::string& data, const Chun
 // status = COMPLETED
 int HttpRequest::mf_parseChunkedBody(const std::string& data)
 {
-    if (data.empty() && m_parsingState == INCOMPLETE) {
-        m_parsingState = ERROR;
-        return Http::Status::BAD_REQUEST;
-    }
-
     try {
-        std::string _body;
+        std::string assembled_body;
         size_t pos = 0;
 
         while (pos < data.length()) {
+            // Parse chunk header
             ChunkInfo chunk = mf_parseChunkHeader(data, pos);
-
-            // Zero-sized chunk indicates end of body
-            if (chunk.size == 0) {
-                m_body = _body;
-                return Http::Status::OK;
-            }
-
-            // Validate and extract chunk data
-            if (!mf_validateAndExtractChunk(data, chunk, pos, _body)) {
+            if (chunk.headerEnd == 0) {
                 m_parsingState = ERROR;
                 return Http::Status::BAD_REQUEST;
             }
 
-            // Check total body size
-            if (_body.length() > Http::HttpStandard::MAX_BODY_LENGTH) {
+            // Check for final chunk
+            if (chunk.size == 0) {
+                size_t endPos = data.find("\r\n\r\n", chunk.headerEnd);
+                if (endPos != std::string::npos) {
+                    m_body = assembled_body;
+                    m_parsingState = COMPLETED;
+                    return Http::Status::OK;
+                }
+
+                m_parsingState = INCOMPLETE;
+                return Http::Status::OK;
+            }
+
+            // Check if chunk size exceeds limit
+            if (chunk.size > Http::HttpStandard::MAX_CHUNK_SIZE) {
                 m_parsingState = ERROR;
                 return Http::Status::PAYLOAD_TOO_LARGE;
             }
+
+            // Ensure we have the full chunk data
+            if (chunk.headerEnd + chunk.size + 2 > data.length()) {
+                m_body = assembled_body;
+                m_parsingState = INCOMPLETE;
+                return Http::Status::OK;
+            }
+
+            // Validate chunk format (must end with CRLF)
+            if (data.substr(chunk.headerEnd + chunk.size, 2) != "\r\n") {
+                m_parsingState = ERROR;
+                return Http::Status::BAD_REQUEST;
+            }
+
+            assembled_body += data.substr(chunk.headerEnd, chunk.size);
+            pos = chunk.headerEnd + chunk.size + 2;
+
+            // Look for end chunk after processing current chunk
+            size_t endChunk = data.find("\r\n\r\n", pos);
+            if (endChunk != std::string::npos) {
+                m_body = assembled_body;
+                m_parsingState = COMPLETED;
+                return Http::Status::OK;
+            }
         }
 
-        if (data.find("0\r\n\r\n") == std::string::npos)
-            m_parsingState = INCOMPLETE;
-        else
-            m_parsingState = COMPLETED;
-
-        return Http::Status::OK; // No zero-sized chunk found
+        // Update body and state
+        m_body = assembled_body;
+        m_parsingState = INCOMPLETE;
+        return Http::Status::OK;
     }
     catch (const std::exception& e) {
         m_parsingState = ERROR;
-        return Http::Status::INTERNAL_ERROR;
+        return Http::Status::BAD_REQUEST;
     }
 }
 
