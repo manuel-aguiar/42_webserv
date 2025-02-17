@@ -13,10 +13,10 @@
 # include <deque>
 
 // forward declarations
-namespace Events { class Subscription; }
-namespace Conn { class Connection; }
-namespace Http { class Module; class Request; class Response;}
-class HttpRequest;
+namespace	Events { class Subscription; }
+namespace	Conn { class Connection; }
+namespace	Http { class Module; class Request; class Response;}
+class		HttpRequest;
 
 namespace Http
 {

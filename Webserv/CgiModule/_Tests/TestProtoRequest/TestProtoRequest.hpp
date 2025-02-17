@@ -42,7 +42,7 @@ class TestProtoRequest
 		void	printBufStdout();
 
 		Globals&			m_globals;
-		Cgi::Module&			m_cgi;
+		Cgi::Module&		m_cgi;
 		
 		Cgi::Request*		m_CgiRequestData;
 
