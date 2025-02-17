@@ -236,7 +236,10 @@ class ArrayFixedSizeImpl
 
                 bool operator==(const Iterator& other) const { return m_ptr == other.m_ptr; }
                 bool operator!=(const Iterator& other) const { return m_ptr != other.m_ptr; }
-
+                bool operator<(const Iterator& other) const { return m_ptr < other.m_ptr; }
+                bool operator<=(const Iterator& other) const { return m_ptr <= other.m_ptr; }
+                bool operator>(const Iterator& other) const { return m_ptr > other.m_ptr; }
+                bool operator>=(const Iterator& other) const { return m_ptr >= other.m_ptr; }
 
                 reference operator[](size_t index) const { return *(m_ptr + index); }
                 Iterator operator+(size_t n) const { return Iterator(m_ptr + n); }
