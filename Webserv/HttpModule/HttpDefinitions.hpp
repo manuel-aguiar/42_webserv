@@ -11,6 +11,7 @@
 
 #include <string>
 #include <set>
+#include "./Response/Response.hpp"
 
 namespace Http
 {

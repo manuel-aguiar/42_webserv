@@ -58,7 +58,7 @@ StringUtils::stoull(const std::string &str)
 
 // No fail check
 std::string
-StringUtils::intToStr(int &value)
+StringUtils::intToStr(int value)
 {
 	std::stringstream	ss;
 
