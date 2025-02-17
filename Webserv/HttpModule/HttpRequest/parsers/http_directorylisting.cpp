@@ -109,6 +109,11 @@ void generateDirectoryListing(const std::string &path, DynArray<DirEntry> &entri
     output 	+= "</table>\n</body>\n</html>\n";
 }
 
+/*
+	Generates the message body in html for the directory listing on a target folder
+	@param path: the path to the target folder
+	@param placeOutput: the string to place the html output
+*/
 int	DirectoryListing(const std::string& path, std::string& placeOutput)
 {
 	try
