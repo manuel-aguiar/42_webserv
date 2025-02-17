@@ -23,7 +23,7 @@ int main(void)
 		TEST_INTRO(testNumber++);
 		
 		// open file, read into buffer, close file
-		int fd = ::open("testInput.txt", O_RDONLY, 777);
+		int fd = ::open("main.cpp", O_RDONLY, 777);
 		if (fd == -1)
 			throw std::runtime_error("failed to open file");
 		Buffer buffer;
@@ -34,7 +34,7 @@ int main(void)
 		BufferView view = buffer.view();
 		
 		// should be at position 0
-		EXPECT_EQUAL(view.find("int main(void)", std::strlen("int main(void)")), 0, "should find the main function");
+		EXPECT_EQUAL(view.find("int main(void)", std::strlen("int main(void)")) != BufferView::npos, true, "should find the main function");
 
 		TEST_PASSED_MSG("simple test");
 	}
@@ -61,7 +61,7 @@ try
 	// get a view of the buffer, to do searches and substrings
 	BufferView view = buffer.view();
 	
-	EXPECT_EQUAL(view.length(), 0, "should be empty");
+	EXPECT_EQUAL(view.size(), 0, "should be empty");
 	EXPECT_EQUAL(view.find("int main(void)", std::strlen("int main(void)")), BufferView::npos, "should not find anything, it is empty");
 
 	TEST_PASSED_MSG("testing clear");
@@ -90,7 +90,7 @@ catch(const std::exception& e)
 		buffer.push(str);
 
 		BufferView view = buffer.view();
-		EXPECT_EQUAL(view.length(), str.size() + str.size(), "should be equal to Hello World!Hello World!");
+		EXPECT_EQUAL(view.size(), str.size() + str.size(), "should be equal to Hello World!Hello World!");
 
 		buffer.write(fd);
 
