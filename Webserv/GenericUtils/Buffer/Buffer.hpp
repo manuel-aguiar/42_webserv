@@ -19,8 +19,7 @@ class Buffer
 	public:
 		Buffer();
 		~Buffer();
-		Buffer(const Buffer& copy);
-		Buffer& operator=(const Buffer& assign);
+
 
 		int			read(Ws::fd fd, int startIndex = 0);
 		int			write(Ws::fd fd, int startIndex = 0);
@@ -39,6 +38,12 @@ class Buffer
 		size_t			m_writeOffset;
 		size_t			m_size;
 		const size_t	m_capacity;
+
+
+		// private
+		Buffer(const Buffer& copy);
+		Buffer& operator=(const Buffer& assign);
+
 };
 
 

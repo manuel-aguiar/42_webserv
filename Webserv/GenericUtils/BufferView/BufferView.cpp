@@ -13,6 +13,17 @@ BufferView::size_type BufferView::npos = static_cast<size_type>(-1);
 // Constructors
 BufferView::BufferView(const char* str, const size_type len) : m_data(str), m_length(len) {}
 
+BufferView::~BufferView() {}
+
+BufferView::BufferView(const BufferView& other) : m_data(other.m_data), m_length(other.m_length) {}
+
+BufferView& BufferView::operator=(const BufferView& other)
+{
+	if (this == &other)
+		return (*this);
+	return (*this);
+}
+
 // Iterators
 BufferView::const_iterator
 BufferView::begin() const        { return (m_data); }

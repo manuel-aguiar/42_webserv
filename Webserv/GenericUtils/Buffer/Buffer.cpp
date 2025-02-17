@@ -14,25 +14,6 @@ Buffer::Buffer() : m_writeOffset(0), m_size(0), m_capacity(sizeof(m_buffer)) {}
 
 Buffer::~Buffer() {}
 
-Buffer::Buffer(const Buffer& copy) : m_size(copy.m_size), m_capacity(copy.m_capacity)
-{
-    std::memcpy(m_buffer, copy.m_buffer, m_size);
-}
-
-Buffer& Buffer::operator=(const Buffer& assign)
-{
-    if (this == &assign)
-        return (*this);
-
-    ASSERT_EQUAL(m_capacity, assign.m_capacity, "assignment operator between buffers of different sizes is forbidden");
-
-    m_size = assign.m_size;
-
-    std::memcpy(m_buffer, assign.m_buffer, m_size);
-
-    return (*this);
-}
-
 int Buffer::read(Ws::fd fd, int startIndex)
 {
     ASSERT_EQUAL((size_t)startIndex < m_capacity - 1, true, "Buffer::read(): starting index is beyond buffer capacity");
@@ -93,4 +74,25 @@ BufferView
 Buffer::view() const
 {
     return (BufferView(m_buffer, m_size));
+}
+
+
+// private
+Buffer::Buffer(const Buffer& copy) : m_size(copy.m_size), m_capacity(copy.m_capacity)
+{
+    std::memcpy(m_buffer, copy.m_buffer, m_size);
+}
+
+Buffer& Buffer::operator=(const Buffer& assign)
+{
+    if (this == &assign)
+        return (*this);
+
+    ASSERT_EQUAL(m_capacity, assign.m_capacity, "assignment operator between buffers of different sizes is forbidden");
+
+    m_size = assign.m_size;
+
+    std::memcpy(m_buffer, assign.m_buffer, m_size);
+
+    return (*this);
 }
