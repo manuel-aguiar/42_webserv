@@ -1,9 +1,9 @@
-#include "../../HttpRequest.hpp"
+#include "../../Http::Request.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void bodyTests(int &testNumber)
 {
-	HttpRequest	httpRequest;
+	Http::Request	Http::Request;
 	std::string	requestData;
 
 	TEST_HEADER("Http Request - Body");
@@ -20,12 +20,13 @@ void bodyTests(int &testNumber)
 		"Authorization: Bearer YOUR_ACCESS_TOKEN\r\n" +
 		"Content-Type: application/json\r\n" +
 		"Accept: application/json\r\n" +
+		"Content-Length: 78\r\n" +
 		"User-Agent: MyApp/1.0\r\n\r\n"
 		"{\"name\":\"John Doe\",\"email\":\"johndoe@example.com\",\"password\":\"securepassword\"}";
 
 	try
 	{
-		EXPECT_EQUAL(httpRequest.parse(requestData), (int)Http::Status::OK, "Should pass");
+		EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::OK, "Should pass");
 		TEST_PASSED_MSG("Common request");
 	}
 	catch(const std::exception& e)

@@ -1,7 +1,7 @@
 # Makefile
 
 # TARGET_DEBUG 			=		debug_Http::Request.out
-TARGET_TEST 			=		test_Http::Request.out
+TARGET_TEST 			=		test_req.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
@@ -10,12 +10,7 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/main.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/headerTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/bodyTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/lineTests.cpp
-
-
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Request/test.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
@@ -26,7 +21,6 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
-
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
 OBJS_DEBUG				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_DEBUG))
@@ -46,7 +40,7 @@ MAGENTA =	\033[0;35m
 CYAN =		\033[96m
 RESET =		\033[0m
 
-TAG =		$(CYAN)[$(NAME)]$(RESET)
+TAG =		$(CYAN)[$(TARGET_TEST)]$(RESET)
 
 #=== RULES ===#
 

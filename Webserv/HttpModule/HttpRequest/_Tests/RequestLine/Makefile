@@ -1,6 +1,6 @@
 # Makefile
 
-# TARGET_DEBUG 			=		debug_httpRequest.out
+# TARGET_DEBUG 			=		debug_Http::Request.out
 TARGET_TEST 			=		test_reqLine.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
@@ -10,15 +10,15 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/RequestLine/test_req_line.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/RequestLine/test_req_line.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/Http::Request/Http::Request.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_header_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_message_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 
@@ -65,7 +65,7 @@ clean:
 
 fclean: clean
 	@echo "$(TAG) Full clean."
-	@rm -f $(NAME)
+	@rm -f $(TARGET_TEST)
 
 test: $(TARGET_TEST)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
