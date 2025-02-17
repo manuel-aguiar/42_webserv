@@ -26,7 +26,9 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+							 	$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp
+# Delete the 1 above
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))

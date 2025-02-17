@@ -58,34 +58,6 @@ int HttpRequest::parse(const std::string& rawData)
     }
 }
 
-// Move this to a wider scope
-#define METHOD_GET 0
-#define METHOD_POST 1
-#define METHOD_DELETE 2
-
-int HttpRequest::generateResponse()
-{
-	// get the actual thing for the values
-	Http::Response response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context);
-
-	// Convert method strings into numbers for switch (could be done at parsing)
-	int requestMethod;
-	if (m_method == "GET")
-		requestMethod = METHOD_GET;
-	else if (m_method == "POST")
-		requestMethod = METHOD_POST;
-	else if (m_method == "DELETE")
-		requestMethod = METHOD_DELETE;
-	else
-		requestMethod = 100;
-	
-	// Check if there is a path on the request (should be done at parsing)
-	if (it == m_uriComponents.end())
-		response.load(Http::Status::BAD_REQUEST);
-
-	return response;
-}
-
 // Getters
 const std::string& HttpRequest::getMethod() const
 {
@@ -115,4 +87,9 @@ const std::string& HttpRequest::getBody() const
 const std::map<std::string, std::string>& HttpRequest::getUriComponents() const
 {
     return m_uriComponents;
+}
+
+int	HttpRequest::getStatus() const
+{
+	return m_status;
 }
