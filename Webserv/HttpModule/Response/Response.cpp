@@ -41,83 +41,66 @@ std::string getCurrentDate() {
 
 /************************************/
 
-// move to relevant place
-#define METHOD_GET 0
-#define METHOD_POST 1
-#define METHOD_DELETE 2
+// // move to relevant place
+// #define METHOD_GET 0
+// #define METHOD_POST 1
+// #define METHOD_DELETE 2
 
-Http::Response::Response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context):
-	m_myConnection(myConnection),
+// Http::Response::Response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context):
+Http::Response::Response(HttpRequest &myRequest, ServerContext &context):
+	// m_myConnection(myConnection),
 	m_myRequest(myRequest),
 	m_context(context)
 {
 	// If there were errors during parsing, respond with error page
 	if (myRequest.getStatus() != Http::Status::OK)
 	{
+		std::cerr << "DEBUG: " << "Errors During Parsing!\n";
 		this->generateResponse(myRequest.getStatus());
 		return ;
 	}
 
 	// Get server block
-	m_serverBlock = context.getBlockFinder()->findServerBlock(myConnection.getAddr(), m_myRequest.getHost());
-	if (m_serverBlock == NULL)
-	{
-		this->generateResponse(Http::Status::NOT_FOUND);
-		return ;
-	}
+	//m_serverBlock = context.getBlockFinder()->findServerBlock(myConnection.getAddr(), m_myRequest.getHost());
+	m_serverBlock = NULL;
+	// if (m_serverBlock == NULL)
+	// {
+	// 	std::cerr << "DEBUG: " << "ServerBlock Not Found!\n";
+	// 	this->generateResponse(Http::Status::NOT_FOUND);
+	// 	return ;
+	// }
 
-	// get location (we will need to strip possible extra stuff on the uri)
-	if (m_serverBlock->getLocations().find(m_myRequest.getURI()) == m_serverBlock->getLocations().end())
-	{
-		this->generateResponse(Http::Status::NOT_FOUND);
-		return ;
-	}
-	m_location = m_serverBlock->getLocations().find(m_myRequest.getURI())->second;
+	// // get location
+	m_location = NULL;
+	// if (m_serverBlock->getLocations().find(m_myRequest.getUri()) == m_serverBlock->getLocations().end())
+	// {
+	// 	std::cerr << "DEBUG: " << "Location Not Found!\n";
+	// 	this->generateResponse(Http::Status::NOT_FOUND);
+	// 	return ;
+	// }
+	// m_location = m_serverBlock->getLocations().find(m_myRequest.getUri())->second;
 
 	// check for file (extension, exists)
-	if (FilesUtils::isFile(m_myRequest.getURI().c_str()))
+	if (FilesUtils::isFile(m_myRequest.getUri().c_str()))
+	{
+		std::cerr << "DEBUG: " << "Requested URI is File\n";
 		this->generateResponse(Http::Status::OK);
-	else if (FilesUtils::isDirectory(m_myRequest.getURI().c_str()))
+	}
+	else if (FilesUtils::isDirectory(m_myRequest.getUri().c_str()))
+	{
+		std::cerr << "DEBUG: " << "Requested URI is Directory\n";
 		this->generateResponse(Http::Status::FORBIDDEN);
+	}
 	else
+	{
+		std::cerr << "DEBUG: " << "Requested URI Not Found\n";
 		this->generateResponse(Http::Status::NOT_FOUND);
+	}
 }
 
-
-// 	if (m_myRequest.getMethod() /* NOT IN ALLOWED METHODS */)
-// 		this->generateResponse(Http::Status::METHOD_NOT_ALLOWED);
-// 	switch (m_myRequest.getMethod())
-// 	{
-// 		case METHOD_GET:
-// 			// Check if path is a file
-// 			if (FilesUtils::isFile(it->second.c_str()))
-// 				// read file into buffer
-// 				this->generateResponse(Http::Status::OK, it->second.c_str());
-// 			// Check if path is a directory
-// 			else if (FilesUtils::isDirectory(it->second.c_str()))
-// 				this->generateResponse(Http::Status::FORBIDDEN);
-// 			else
-// 				this->generateResponse(Http::Status::NOT_FOUND);
-// 			break;
-// 		case METHOD_POST:
-// 			break;
-// 		case METHOD_DELETE:
-// 			/* DELETE CASES
-// 				200 OK
-// 				204 NO_CONTENT
-// 				404 NOT_FOUND
-// 				405 METHOD_NOT_ALLOWED
-// 			*/
-// 			break;
-// 		default:
-// 			// 501 NOT IMPLEMENTED or 405 METHOD NOT ALLOWED (normally used in implemented methods)
-// 			break;
-// 	}
-// }
-
-int	Http::Response::generateResponse(int statusCode)
+void	Http::Response::generateResponse(int statusCode)
 {
-	std::string simpleHTMLpage = 
+		std::string simpleErrorpage = 
         "<!DOCTYPE html>\n"
         "<html lang=\"en\">\n"
         "<head>\n"
@@ -126,10 +109,7 @@ int	Http::Response::generateResponse(int statusCode)
         "    <title>Simple Debug Page</title>\n"
         "</head>\n"
         "<body>\n"
-        "    <h1>Hello, Debugging World!</h1>\n"
-        "    <p>This is a simple webpage for debugging purposes.</p>\n"
-        "    <p>Current date and time: <strong>2025-02-15 14:30</strong></p>\n"
-        "    <p>Feel free to modify this page to suit your needs.</p>\n"
+        "    <h1>Error!</h1>\n"
         "</body>\n"
         "</html>";
 
@@ -137,29 +117,47 @@ int	Http::Response::generateResponse(int statusCode)
 	std::string	headers;
 	std::string	body;
 
+	// should extracting file extension go to HttpRequest parsing?
+	std::string fileExtension;
+	size_t dotPos = m_myRequest.getUri().find_last_of('.');
+	if (dotPos != std::string::npos)
+		fileExtension = m_myRequest.getUri().substr(m_myRequest.getUri().find_last_of('.') + 1);
+	else
+		fileExtension = "";
+
 	// Status line
 	statusLine = Http::HttpStandard::HTTP_VERSION +  " " + StringUtils::intToStr(statusCode) + " " + getMessage(statusCode) + "\r\n";
 
 	// Body
 	if (statusCode == Http::Status::OK)
 	{
-		body = simpleHTMLpage; //readFile(m_myRequest.getURI()); // strip down extra stuff from URI
+		File file(m_myRequest.getUri().c_str());
+		char testBuffer[1024];
+		memset(&testBuffer, '\0', 1024);
+		file.read(&testBuffer, 1024);
+		body = testBuffer;
 	}
 	else
 	{
-		if (m_serverBlock->getErrorPages().find(statusCode) != m_serverBlock->getErrorPages().end())
-			body = simpleHTMLpage; //readFile(m_serverBlock->getErrorPages().find(statusCode)->second); // where will the user error pages be located?
-		else
-			body = simpleHTMLpage; //readFile(DEFAULT_ERROR_PAGES_PATH + StringUtils::intToStr(statusCode));
+		// // where will the user error pages be located?
+		// if (m_serverBlock->getErrorPages().find(statusCode) != m_serverBlock->getErrorPages().end())
+		// 	readFile(m_serverBlock->getErrorPages().find(statusCode)->second);
+		// else
+		// 	readFile(DEFAULT_ERROR_PAGES_PATH + StringUtils::intToStr(statusCode));
+		body = simpleErrorpage;
 	}
 
 	// Headers
-	std::string response_headers =
+	headers =
 		"Date: " + getCurrentDate() + "\r\n"
 		"Content-Length: " + StringUtils::intToStr(body.size()) + "\r\n"
 		"Content-Type: text/html; charset=UTF-8" + "\r\n"
 		"Server: 42_webserv/1.0" + "\r\n\r\n" ;
+
+	std::string	fullResponse = statusLine + headers + body;
+	std::cerr << "DEBUG: " << "FULL RESPONSE:" << "\n" << fullResponse << "\n*** END OF RESPONSE ***\n";
 }
+
 std::string	&Http::Response::getMessage(size_t statusCode)
 {
 	static std::map<size_t, std::string>	messages;
@@ -218,5 +216,3 @@ std::string	&Http::Response::getMessage(size_t statusCode)
 // Blockfinder to get server
 // identify location given path
 // identify extension
-// DELETE \/ 
-// unlink a file syscall

@@ -58,22 +58,15 @@ int HttpRequest::parse(const std::string& rawData)
     }
 }
 
-
+// Move this to a wider scope
 #define METHOD_GET 0
 #define METHOD_POST 1
 #define METHOD_DELETE 2
 
-class HttpResponse;
-
 int HttpRequest::generateResponse()
 {
-	HttpResponse response;
-	std::map<std::string, std::string>::iterator it = m_uriComponents.find("path");
-
-	// If there were errors during parsing, respond with error page
-	if (m_errorStatus != Http::Status::OK)
-		// Set response to m_errorStatus, retrieve error page data into response.
-		response.load(m_errorStatus);
+	// get the actual thing for the values
+	Http::Response response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context);
 
 	// Convert method strings into numbers for switch (could be done at parsing)
 	int requestMethod;
@@ -90,40 +83,6 @@ int HttpRequest::generateResponse()
 	if (it == m_uriComponents.end())
 		response.load(Http::Status::BAD_REQUEST);
 
-
-	switch (requestMethod)
-	{
-		case METHOD_GET:
-			if (/* Method not alowed */)
-				response.load(Http::Status::METHOD_NOT_ALLOWED);
-			// Check if path is a file
-			if (FilesUtils::isFile(it->second.c_str()))
-				// read file into buffer
-				response.load(Http::Status::OK, it->second.c_str());
-			// Check if path is a directory
-			else if (FilesUtils::isDirectory(it->second.c_str()))
-				response.load(Http::Status::FORBIDDEN);
-			else
-				response.load(Http::Status::NOT_FOUND);
-			break;
-		case METHOD_POST:
-			if (/* Method not alowed */)
-				response.load(Http::Status::METHOD_NOT_ALLOWED);
-			break;
-		case METHOD_DELETE:
-			if (/* Method not alowed */)
-				response.load(Http::Status::METHOD_NOT_ALLOWED);
-			/* DELETE CASES
-				200 OK
-				204 NO_CONTENT
-				404 NOT_FOUND
-				405 METHOD_NOT_ALLOWED
-			*/
-			break;
-		default:
-			// 501 NOT IMPLEMENTED or 405 METHOD NOT ALLOWED (normally used in implemented methods)
-			break;
-	}
 	return response;
 }
 
