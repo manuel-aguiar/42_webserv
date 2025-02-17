@@ -28,6 +28,8 @@ namespace Http
 
 			Http::Connection&
 						getConnection();
+			
+			const std::string& getMsgBody() const;
 
 		private:
 			Http::Connection& m_connection;

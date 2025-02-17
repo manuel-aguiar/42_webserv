@@ -5,6 +5,7 @@
 # define HTTP_CGIGATEWAY_HPP
 
 # include "../../CgiModule/CgiModule.h"
+# include "../../Ws_Namespace.h"
 
 namespace Http { class Connection; class Request; class Response;}
 
@@ -16,9 +17,18 @@ namespace Http
 			CgiGateway(Cgi::Module& module, Http::Response& request);
 			~CgiGateway();
 
+			// to be called with interactions from client
+			void	read();
 
+
+			
 			void	close();
 			void	prepareRequest();
+			
+			void	storeReadAvailable(const Ws::fd& readFd);
+
+			// to be called via callback from the CgiModule
+			Cgi::IO::BytesCount	write(Ws::fd writeFd);
 
 			// Cgi Callbacks
 			static void onPrepareRequest  			(Http::CgiGateway& gateway);
@@ -26,15 +36,12 @@ namespace Http
 			static void onErrorStartup				(Cgi::User user);
 			static void onErrorRuntime				(Cgi::User user);
 			static void onErrorTimeOut				(Cgi::User user);
-			static Cgi::IO::BytesCount 		onRead	(Cgi::User user, int readFd);
-			static Cgi::IO::BytesCount 		onWrite	(Cgi::User user, int writeFd);
+			static Cgi::IO::BytesCount 		onRead	(Cgi::User user, Ws::fd readFd);
+			static Cgi::IO::BytesCount 		onWrite	(Cgi::User user, Ws::fd writeFd);
 
 
 		private:
 
-
-
-			
 			Cgi::Module&		m_module;
 			Cgi::Request*		m_cgiRequest;
 			// Http
@@ -44,11 +51,16 @@ namespace Http
 
 			enum Parsing
 			{
+				NONE,
 				HEADERS,
-				BODY
+				CHUNKED,
+				STREAM
 			};
-			
+
 			Parsing 			m_state;
+			Ws::fd				m_readFd;
+			bool				m_readAvailable;
+			size_t				m_msgBodyOffset;
 	};
 }
 

@@ -4,6 +4,10 @@
 # include "../Request/Request.hpp"
 # include "../Response/Response.hpp"
 
+# include "../../GenericUtils/Buffer/Buffer.hpp"
+
+# include <unistd.h> // read/write
+
 namespace Http
 {
 CgiGateway::CgiGateway(Cgi::Module& cgi, Http::Response& response) : 
@@ -11,7 +15,11 @@ CgiGateway::CgiGateway(Cgi::Module& cgi, Http::Response& response) :
 	m_cgiRequest(NULL),
 	m_response(response),
 	m_request(response.getRequest()),
-	m_connection(m_request.getConnection())
+	m_connection(m_request.getConnection()),
+	m_state(NONE),
+	m_readFd(Ws::FD_NONE),
+	m_readAvailable(false),
+	m_msgBodyOffset(0)
 {
 }
 
@@ -34,7 +42,11 @@ void	CgiGateway::prepareRequest()
 	if (!m_cgiRequest)
 	{
 		// inform response, no can do
+		return ;
 	}
+
+	// fill request
+
 }
 
 void
@@ -62,17 +74,73 @@ CgiGateway::onErrorTimeOut				(Cgi::User user)
 }
 
 Cgi::IO::BytesCount
-CgiGateway::onRead	(Cgi::User user, int readFd)
+CgiGateway::onRead	(Cgi::User user, Ws::fd readFd)
 {
-
+	Http::CgiGateway* gateway = reinterpret_cast<Http::CgiGateway*>(user);
+	gateway->storeReadAvailable(readFd);
+	return (1);
 }
 
 Cgi::IO::BytesCount
-CgiGateway::onWrite	(Cgi::User user, int writeFd)
+CgiGateway::onWrite	(Cgi::User user, Ws::fd writeFd)
 {
-
+	Http::CgiGateway* gateway = reinterpret_cast<Http::CgiGateway*>(user);
+	return (gateway->write(writeFd));
 }
 
 
+void
+CgiGateway::storeReadAvailable(const Ws::fd& readFd)
+{
+	m_readFd = readFd;
+	m_readAvailable = true;
+}
+
+/*
+
+	Read is controlled by client availability. 
+	When client is available, read is called.
+	When read is called, we read from the fd and store the data in the request.
+	When we have read all the data, we disable read.
+
+*/
+void
+CgiGateway::read()
+{
+	Buffer buffer;
+
+	if (!m_readAvailable)
+		return ;
+	
+	buffer.read(m_readFd);
+
+	switch (m_state)
+	{
+		case NONE:
+		{
+			// parse headers
+			m_state = HEADERS;
+			break ;
+		}
+	}	
+
+	m_readAvailable = false;
+}
+
+Cgi::IO::BytesCount
+CgiGateway::write(Ws::fd writeFd)
+{
+	const std::string& msgBody = m_request.getMsgBody();
+
+	if (m_msgBodyOffset >= msgBody.size())
+		return (0); // nothing left to write to script.
+	
+	int bytesWritten = ::write(writeFd, msgBody.c_str() + m_msgBodyOffset, msgBody.size() - m_msgBodyOffset);
+
+	m_msgBodyOffset += bytesWritten;
+	
+	// if everything is written now, disable write
+	return (m_msgBodyOffset == msgBody.size() ? 0 : 1);
+}
 
 } // namespace Http
