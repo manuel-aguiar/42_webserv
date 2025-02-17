@@ -18,6 +18,8 @@ ready (less memory on requests, allow more tickets
 data, less dereferencing.
  - tickets heap array, circular queue of tickets
 - check concurrency of pages
-- IO SIGPIPE
+- IO SIGPIPE script pipe write is blocking, if i dont read a pipe
+gets filled, it doesnt sigpipe,
+simply blocks. Server waits for client write, reads script and writes to client
 
  
