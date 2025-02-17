@@ -7,6 +7,7 @@
 // Project headers
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
+# include "../../GenericUtils/Buffer/Buffer.hpp"
 
 // C++ headers
 # include <deque>
@@ -31,26 +32,25 @@ namespace Http
 
 			void 	ReadWrite();
 
-
-
 			void 	setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer);
 			void 	setMyTCP(Conn::Connection& tcpConn);
 
+			Buffer& accessReadBuffer();
+			Buffer& accessWriteBuffer();
 
 			// clean all stored state to be reused later
 			void	close();
 
 		private:
-
-        	char m_readBuffer[1024];
-        	char m_writeBuffer[1024];
+        	Buffer 												m_readBuffer;
+        	Buffer 												m_writeBuffer;
 
 			Http::Module& 										m_module;
 			Timer 												m_readTimer;
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
-			std::deque<HttpRequest> 							m_requests;
+			std::deque<Http::Request> 							m_requests;
 			std::deque<Http::Response> 							m_responses;
 	};
 };

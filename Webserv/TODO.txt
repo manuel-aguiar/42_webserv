@@ -1,0 +1,27 @@
+todo list:
+- http redirect (rafa)
+- http directory listing  (passed to rafa)
+- http error pages (rafa)
+
+- http buffer read/write coordination (manuel)
+- cgi module gateway to http (manuel)
+
+- mod cgi module:
+ - ticket system, minimal info
+ - function pointer to fill form
+ - ticket has user, fill pointer, timeout,
+options, state
+ - fill pointer tells module how to fill
+the request (strings, IO etc)
+ - request is part of worker, close in memory
+ - fill is only called when there is a worker
+ready (less memory on requests, allow more tickets
+(num connections), request data close to worker
+data, less dereferencing.
+ - tickets heap array, circular queue of tickets
+- check concurrency of pages
+- IO SIGPIPE script pipe write is blocking, if i dont read a pipe
+gets filled, it doesnt sigpipe,
+simply blocks. Server waits for client write, reads script and writes to client
+
+ 

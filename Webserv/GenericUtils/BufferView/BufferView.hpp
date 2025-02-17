@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <stdexcept>
 
-class StringView
+class BufferView
 {
 public:
     typedef std::size_t     size_type;
@@ -13,13 +13,11 @@ public:
     typedef const char*     const_iterator;
 
 private:
-    char*       m_data;
-    size_type   m_length;
+    const char*         m_data;
+    const size_type     m_length;
 
 public:
-    // Constructors
-    StringView();
-    StringView(char* str, size_type len);
+    BufferView(const char* str, const size_type len);
 
     // Iterators
     iterator		begin();
@@ -34,19 +32,20 @@ public:
     size_type 	length() const;
     bool 		empty() const;
 
-    char& 		operator[](size_type pos);
-    const char& operator[](size_type pos) const;
-    char& 		at(size_type pos);
-    const char& at(size_type pos) const;
+    char& 		operator[](size_type startPos);
+    const char& operator[](size_type startPos) const;
+    char& 		at(size_type startPos);
+    const char& at(size_type startPos) const;
 
     // Substring
-    StringView substr(size_type pos, size_type count);
+    BufferView substr(size_type startPos, size_type targetLength);
 
     // Find overloads
-    size_type find(char ch, size_type pos = 0) const;
-    size_type find(const char* s, size_type pos, size_type count) const;
-    size_type find(const char* s, size_type pos = 0) const;
-    size_type find(const StringView& sv, size_type pos = 0) const;
+    size_type find(char ch, size_type startPos = 0) const;
+    size_type find(const char* target, size_type targetLength, size_type startPos = 0) const;
+    size_type find(const BufferView& sv, size_type startPos = 0) const;
+    
+    void    to_string(std::string& placeResult) const;
 
     // Constants
     static const size_type npos;

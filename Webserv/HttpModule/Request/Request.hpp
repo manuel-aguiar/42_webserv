@@ -4,11 +4,30 @@
 
 # define HTTPREQUEST_HPP
 
+class Buffer;
+
+namespace Http { class Connection;}
+
+enum SSStatus
+{
+	COMPLETED,
+};
+
 namespace Http
 {
 	class Request
 	{
-		
+		public:
+			Request(Http::Connection& connection);
+			~Request();
+			Request(const Request& other);
+			Request& operator=(const Request& other);
+
+			SSStatus 	status() const;
+			void 		parse(const Buffer& buffer);
+
+		private:
+			Http::Connection& m_connection;
 	};
 }
 

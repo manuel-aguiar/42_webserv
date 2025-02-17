@@ -31,23 +31,56 @@ Connection::ReadWrite_Callback(Events::Subscription& subscription)
 
 
 /*
+	Error or Hangup:
+		- close the connection (we as a server have nothing left to do)
 
-	If the client closes the connection, there is nothing left to do:
-	close all interactions with other modules (eg stop cgi), remove timers
-	delete request/responses, close the Conn::Connection, return
-	the Http::Connection back to the Http::Module for future use
+	Read:
+		- read from the socket into the read buffer
+		- if there is no request or the last request is completed, create a new request
+		- parse the read buffer into the request
 
+	Write: if there is data left in the write buffer, write it to the socket (until all data is written)
+		- if there is no data left in the write buffer, check if there is a response to write
+		- if there is a response to write, fill the write buffer with the response and write it to the socket
+			- if not all can be written in one go, writeOffset != m_size, back to step 1
 */
 
 void
 Connection::ReadWrite()
 {
-	int triggeredEvents = m_tcpConn->events_getTriggeredEvents();
+	ASSERT_EQUAL(m_tcpConn != NULL, true, "Connection::ReadWrite(): m_tcpConn is NULL, event subscribed without owning a tcp connection");
 
+	int triggeredEvents = m_tcpConn->events_getTriggeredEvents();
+	int sockfd = m_tcpConn->info_getFd();
+
+	// error
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
 	{
 		close();
 		return ;
+	}
+
+	// read
+	if (triggeredEvents & Events::Monitor::READ)
+	{
+		m_readBuffer.read(sockfd);
+		if (m_requests.size() == 0 || m_requests.back().status() == COMPLETED)
+			m_requests.push_back(Http::Request(*this));
+		m_requests.back().parse(m_readBuffer);
+	}
+
+	// write
+	if (triggeredEvents & Events::Monitor::WRITE)
+	{
+		if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
+		{
+			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
+			return ;
+		}
+		if (m_responses.size() == 0 || m_responses.back().status() == COMPLETED)
+			return ;
+		m_responses.front().fillWriteBuffer(m_writeBuffer);
+		m_writeBuffer.write(sockfd);
 	}
 }
 
@@ -87,4 +120,18 @@ Connection::close()
 	m_module.returnConnection(*this);
 	m_tcpConn->close();
 }
+
+Buffer&
+Connection::accessReadBuffer()
+{
+	return (m_readBuffer);
+}
+
+Buffer&
+Connection::accessWriteBuffer()
+{
+	return (m_writeBuffer);
+}
+
+
 }	// end of http namespace

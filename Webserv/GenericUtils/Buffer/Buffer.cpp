@@ -10,7 +10,7 @@
 // C headers
 # include <unistd.h> // read/write
 
-Buffer::Buffer() : m_size(0), m_capacity(1024) {}
+Buffer::Buffer() : m_writeOffset(0), m_size(0), m_capacity(sizeof(m_buffer)) {}
 
 Buffer::~Buffer() {}
 
@@ -35,18 +35,24 @@ Buffer& Buffer::operator=(const Buffer& assign)
 
 int Buffer::read(Ws::fd fd, int startIndex)
 {
-    ASSERT_EQUAL(startIndex < m_capacity - 1, true, "Buffer::read(): starting index is beyond buffer capacity");
-    ASSERT_EQUAL(startIndex <= m_size, true, "Buffer::read(): starting index is beyond current buffer size, no fragmentation allowed");
+    ASSERT_EQUAL((size_t)startIndex < m_capacity - 1, true, "Buffer::read(): starting index is beyond buffer capacity");
+    ASSERT_EQUAL((size_t)startIndex <= m_size, true, "Buffer::read(): starting index is beyond current buffer size, no fragmentation allowed");
 
     m_size = startIndex + ::read(fd, m_buffer, m_capacity - startIndex - 1);
-    m_buffer[m_size] = '\0';
     return (m_size);
 }
 
 int Buffer::write(Ws::fd fd, int startIndex)
 {
-    ASSERT_EQUAL(startIndex < m_size, true, "Buffer::write(): starting index is beyond current buffer size");
-    return (::write(fd, m_buffer, m_size));
+    ASSERT_EQUAL((size_t)startIndex < m_size, true, "Buffer::write(): starting index is beyond current buffer size");
+
+    int bytesWritten = ::write(fd, m_buffer + startIndex, m_size - startIndex);
+    
+    m_writeOffset += bytesWritten;
+    if (m_writeOffset == m_size)
+        clear();
+
+    return (bytesWritten);
 }
 
 size_t Buffer::size() const
@@ -59,9 +65,9 @@ size_t Buffer::capacity() const
     return (m_capacity);
 }
 
-const char* Buffer::get() const
+size_t Buffer::writeOffset() const
 {
-    return (m_buffer);
+    return (m_writeOffset);
 }
 
 void Buffer::push(const char* data, size_t size)
@@ -70,7 +76,6 @@ void Buffer::push(const char* data, size_t size)
 
     std::memcpy(m_buffer + m_size, data, size);
     m_size += size;
-    m_buffer[m_size] = '\0';
 }
 
 void Buffer::push(const std::string& data)
@@ -81,5 +86,11 @@ void Buffer::push(const std::string& data)
 void Buffer::clear()
 {
     m_size = 0;
-    m_buffer[m_size] = '\0';
+    m_writeOffset = 0;
+}
+
+BufferView
+Buffer::view() const
+{
+    return (BufferView(m_buffer, m_size));
 }
