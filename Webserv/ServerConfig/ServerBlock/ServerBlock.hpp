@@ -48,12 +48,13 @@ class ServerBlock
 		void							setClientHeaderSize(const std::string &value);
 		void							addListener(const std::string &value);
 		void							addServerName(const std::string &value);
-		void							addErrorPage(const std::string &value);
+		void							addErrorPage(const std::string &value); // change
 		const std::set<Config::Listen>&	getListeners() const;
 		const std::set<std::string>&	getServerNames() const;
 		size_t							getClientBodySize() const;
 		size_t							getClientHeaderSize() const;
-		const std::set<std::string>&	getErrorPages() const;
+		const std::map<int, std::string>&
+										getErrorPages() const;					//change
 		const std::string&				getRoot() const;
 
 		void							setDefaults();
