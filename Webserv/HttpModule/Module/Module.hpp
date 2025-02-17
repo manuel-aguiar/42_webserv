@@ -55,7 +55,6 @@ namespace Http
 			TimerTracker<Timer, Http::Connection*>	m_timers;
 			StackArray<int, Http::Timeout::COUNT>	m_global_timeouts;
 
-
 	};
 };
 

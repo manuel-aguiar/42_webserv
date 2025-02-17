@@ -1,4 +1,5 @@
-#include "./Response.hpp"
+
+#include "HttpResponse.hpp"
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../ServerContext/ServerContext.hpp"
@@ -47,7 +48,7 @@ std::string getCurrentDate() {
 // #define METHOD_DELETE 2
 
 // Http::Response::Response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context):
-Http::Response::Response(HttpRequest &myRequest, ServerContext &context):
+Http::Response::Response(Http::Request &myRequest, ServerContext &context):
 	// m_myConnection(myConnection),
 	m_myRequest(myRequest),
 	m_context(context)
