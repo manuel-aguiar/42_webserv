@@ -17,7 +17,7 @@ Connection::Connection(Http::Module& module)
 	  m_writeTimer(),
 	  m_myTimer(),
 	  m_tcpConn(NULL),
-	  m_requests(),
+	  m_transactions(),
 	  m_responses() {}
 
 Connection::~Connection() {}
@@ -64,9 +64,9 @@ Connection::ReadWrite()
 	if (triggeredEvents & Events::Monitor::READ)
 	{
 		m_readBuffer.read(sockfd);
-		if (m_requests.size() == 0 || m_requests.back().status() == COMPLETED)
-			m_requests.push_back(Http::Request(*this));
-		m_requests.back().parse(m_readBuffer);
+		if (m_transactions.size() == 0 || m_transactions.back().status() == COMPLETED)
+			m_transactions.push_back(Http::Request(*this));
+		m_transactions.back().parse(m_readBuffer);
 	}
 
 	// write
@@ -114,7 +114,7 @@ Connection::close()
 	m_readTimer = Timer();
 	m_writeTimer = Timer();
 
-	m_requests.clear();
+	m_transactions.clear();
 	m_responses.clear();
 
 	m_module.returnHttpConnection(*this);

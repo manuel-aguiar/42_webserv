@@ -86,4 +86,6 @@ namespace Http
     // }
 }
 
+# define ERROR_404_MESSAGE "Not Found"
+
 #endif

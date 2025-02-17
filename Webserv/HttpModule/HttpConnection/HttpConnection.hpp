@@ -19,6 +19,20 @@ namespace	Http { class Module; class Request; class Response;}
 
 namespace Http
 {
+	struct Transaction
+	{
+		// moved to a cpp file
+		Transaction(Http::Connection& connection, ServerContext& context) : 
+			request(connection), 
+			response(request, context) {}
+
+		Http::Request	request;
+		Http::Response	response;
+	};
+}
+
+namespace Http
+{
 	class Connection
 	{
 		public:
@@ -53,8 +67,7 @@ namespace Http
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
-			std::deque<Http::Request> 							m_requests;
-			std::deque<Http::Response> 							m_responses;
+			std::deque<Http::Transaction> 							m_transactions;
 	};
 };
 

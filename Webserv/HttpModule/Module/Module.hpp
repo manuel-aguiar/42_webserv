@@ -45,11 +45,6 @@ namespace Http
 			void
 			removeTimer(TimerTracker<Timer, Http::Connection*>::iterator position);
 
-			// config getters
-			int				getClientMaxHeaderSize() const;
-			int				getClientMaxBodySize() const;
-			int				getTimeoutValue(const Http::Timeout::Type type) const;
-
 		private:
 
 			// infrastructure

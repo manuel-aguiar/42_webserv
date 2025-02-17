@@ -18,7 +18,7 @@
 
 // Forward declarations
 class Buffer;
-namespace Http { class HttpConnection;} // servercontext (blockfinder), sockaddr,
+namespace Http { class Connection;} // servercontext (blockfinder), sockaddr,
 class ServerBlock;
 class ServerLocation;
 
@@ -47,7 +47,7 @@ namespace Http
                 COMPLETED
             };
 
-            Request(Http::HttpConnection& conn); //blockfinder, Conn::HttpConnection (Http::HttpConnection->Conn::HttpConnection->ServerContext->BLockfinder)
+            Request(Http::Connection& conn); //blockfinder, Conn::Connection (Http::Connection->Conn::Connection->ServerContext->BLockfinder)
             ~Request();
 
             // Main parsing interface
@@ -66,6 +66,8 @@ namespace Http
 
             ServerBlock*    getServerBlock() const; //Http::connection needs, http timeouts
             ServerLocation* getServerLocation() const;
+
+            void            done(); // inform Http::Connection this request and response can be removed from queue
 
             // http status for this request
             int                                         getStatus() const;
@@ -93,21 +95,18 @@ namespace Http
             };
 
         private:
+
+            Http::Response    m_response;
+
             // main parsers
             int mf_parseRequestLine(const std::string& line);
             int mf_parseHeaders(const std::string& line);
             int mf_parseBody(const std::string& data);
 
-            // Validations
-            bool mf_validateMethod() const;
-            bool mf_validateUri() const;
-            bool mf_validateHttpVersion() const;
-            bool mf_validateHeaders() const;
-
             // internal variables
             int m_status;
             size_t m_timeout;
-            Http::HttpConnection& m_httpConn;
+            Http::Connection& m_httpConn;
             ParsingState m_parsingState;
 
             // Components
@@ -143,6 +142,9 @@ namespace Http
             int mf_parseChunkedBody(const std::string& data);
             bool mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
             int mf_parseRegularBody(const std::string& data);
+
+            //
+            bool mf_findBlock(); //internally checks Blockfinder for the block true:ok false:error,
     };
 
 }; // namespace Http
