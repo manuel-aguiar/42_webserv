@@ -8,14 +8,14 @@
 #include <cstring> //memcmp
 
 const
-BufferView::size_type BufferView::npos = static_cast<size_type>(-1);
+size_t BufferView::npos = static_cast<size_t>(-1);
 
 // Constructors
-BufferView::BufferView(const char* str, const size_type len) : m_data(str), m_length(len) {}
+BufferView::BufferView(const char* str, const size_t len) : m_data(str), m_size(len) {}
 
 BufferView::~BufferView() {}
 
-BufferView::BufferView(const BufferView& other) : m_data(other.m_data), m_length(other.m_length) {}
+BufferView::BufferView(const BufferView& other) : m_data(other.m_data), m_size(other.m_size) {}
 
 BufferView& BufferView::operator=(const BufferView& other)
 {
@@ -24,53 +24,43 @@ BufferView& BufferView::operator=(const BufferView& other)
 	return (*this);
 }
 
-// Iterators
-BufferView::const_iterator
-BufferView::begin() const        { return (m_data); }
-
-BufferView::const_iterator
-BufferView::end() const          { return (m_data + m_length); }
-
 // Accessors
 const char*
-BufferView::data() const         { return (m_data); }
+BufferView::data() const
+{ return (m_data); }
 
-BufferView::size_type
-BufferView::size() const              { return (m_length); }
-
-BufferView::size_type
-BufferView::length() const            { return (m_length); }
-
-bool
-BufferView::empty() const                              { return (m_length == 0); }
+size_t
+BufferView::size() const
+{ return (m_size); }
 
 const char&
-BufferView::operator[](size_type startPos) const 	{ return m_data[startPos]; }
+BufferView::operator[](size_t startPos) const
+{ return m_data[startPos]; }
 
 
 const char&
-BufferView::at(size_type startPos) const
+BufferView::at(size_t startPos) const
 {
-	ASSERT_EQUAL(startPos < m_length, true, "StringView::at, accessing beyond the length");
+	ASSERT_EQUAL(startPos < m_size, true, "StringView::at, accessing beyond the length");
 	return (m_data[startPos]);
 }
 
 BufferView
-BufferView::substr(size_type startPos, size_type targetLength)
+BufferView::substr(size_t startPos, size_t targetLength)
 {
-	ASSERT_EQUAL(startPos < m_length, true, "BufferView::substr, accessing beyond the length");
+	ASSERT_EQUAL(startPos < m_size, true, "BufferView::substr, accessing beyond the length");
 
-	if (targetLength > m_length - startPos)
-		targetLength = m_length - startPos;
+	if (targetLength > m_size - startPos)
+		targetLength = m_size - startPos;
 	return (BufferView(const_cast<char*>(m_data) + startPos, targetLength));
 }
 
-BufferView::size_type
-BufferView::find(char ch, size_type startPos) const
+size_t
+BufferView::find(char ch, size_t startPos) const
 {
-	if (startPos >= m_length)
+	if (startPos >= m_size)
 		return npos;
-	for (size_type i = startPos; i < m_length; ++i)
+	for (size_t i = startPos; i < m_size; ++i)
 	{
 		if (m_data[i] == ch)
 			return i;
@@ -81,12 +71,12 @@ BufferView::find(char ch, size_type startPos) const
 /*
 	Naive implementation, character by character comparison
 */
-BufferView::size_type
-BufferView::find(const char* s, size_type targetLength, size_type startPos) const
+size_t
+BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 {
-	if (startPos >= m_length || targetLength == 0)
+	if (startPos >= m_size || targetLength == 0)
 		return npos;
-	for (size_type i = startPos; i <= m_length - targetLength; ++i)
+	for (size_t i = startPos; i <= m_size - targetLength; ++i)
 	{
 		if (std::memcmp(m_data + i, s, targetLength) == 0)
 			return i;
@@ -94,8 +84,8 @@ BufferView::find(const char* s, size_type targetLength, size_type startPos) cons
 	return (npos);
 }
 
-BufferView::size_type
-BufferView::find(const BufferView& sv, size_type startPos) const
+size_t
+BufferView::find(const BufferView& sv, size_t startPos) const
 {
 	return (find(sv.data(), startPos, sv.size()));
 }
@@ -103,5 +93,5 @@ BufferView::find(const BufferView& sv, size_type startPos) const
 void
 BufferView::to_string(std::string& placeResult) const
 {
-	placeResult.assign(m_data, m_length);
+	placeResult.assign(m_data, m_size);
 }
