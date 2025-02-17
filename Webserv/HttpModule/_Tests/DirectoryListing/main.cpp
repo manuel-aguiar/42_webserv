@@ -52,7 +52,7 @@ int main(void)
 	{
 		TEST_INTRO(testNumber++);
 
-		std::string path = "/workspaces/42_webserv/Webserv/HttpModule/_Tests/DirectoryListing/main.cpp";
+		std::string path = "main.cpp";
 		std::string output;
 
 		EXPECT_EQUAL(DirectoryListing(path, output), false, "directory listing should not be successfull");
