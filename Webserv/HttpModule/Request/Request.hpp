@@ -26,6 +26,9 @@ namespace Http
 			SSStatus 	status() const;
 			void 		parse(const Buffer& buffer);
 
+			Http::Connection&
+						getConnection();
+
 		private:
 			Http::Connection& m_connection;
 	};

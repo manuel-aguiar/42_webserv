@@ -1,0 +1,22 @@
+
+
+Parse Cgi script output.
+At least on header + CRLF is mandatory for the SCRIPT, to separate the message body
+Status: not mandatory, assume HTTP 200 if ommited.
+
+If received Content-Size, stream directly
+otherwise, must use chunk encoding.
+
+CRLF marks end of headers.
+
+CgiModule depends on bytes read/written to know when to kill the script but it is the
+connection that governs actual reading and writing.
+
+So on the IO callbacks, CgiGateway will mark read/write as available, and return for instance "1",
+to keep the script marked as alive.
+
+when http::connection tells to read, CgiGateway checks if there was a read available. If so:
+	read into a small stack buffer.
+	parse headers. check if there is content-length. check status.
+	prepare what you can from there, using chuncked encoding with all the data left.
+	When read is finally zero (EOF), send 0 to client to signal end of chunks.

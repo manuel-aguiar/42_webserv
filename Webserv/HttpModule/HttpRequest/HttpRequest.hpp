@@ -18,15 +18,39 @@
 
 // Forward declarations
 class HttpConnection;
-class HttpSession;
+
+struct ChunkInfo {
+    size_t size;
+    size_t headerEnd;
+};
 
 class HttpRequest {
     public:
+        enum ParsingState
+        {
+            IDLE,
+            STARTED,
+            ERROR,
+            INCOMPLETE,
+            COMPLETED
+        };
+
         HttpRequest();
         ~HttpRequest();
 
         // Main parsing interface
         int parse(const std::string& rawData);
+
+        // parsing states, as a state machine
+        bool isStarted() const;
+        bool isError() const;
+        bool isIncomplete() const;
+        bool isCompleted() const;
+
+        const ParsingState& getParsingState() const;
+
+        // http status for this request
+        int getStatus() const;
 
         // Getters for components
         const std::string& 							getMethod() const;
@@ -47,11 +71,10 @@ class HttpRequest {
 		};
 
     private:
-        // Parsers
+        // main parsers
         int mf_parseRequestLine(const std::string& line);
         int mf_parseHeaders(const std::string& line);
         int mf_parseBody(const std::string& data);
-        int mf_parseChunkedBody(const std::string& data);
 
         // Validations
         bool mf_validateMethod() const;
@@ -59,13 +82,11 @@ class HttpRequest {
         bool mf_validateHttpVersion() const;
         bool mf_validateHeaders() const;
 
-        // States
+        // internal variables
         int m_status;
         size_t m_timeout;
-
-        // Connections
         HttpConnection* m_httpConn;
-        HttpSession* m_session;
+        ParsingState m_parsingState;
 
         // Components
         std::string m_method;
@@ -73,6 +94,8 @@ class HttpRequest {
         std::string m_httpVersion;
         std::map<std::string, std::string> m_headers;
         std::map<std::string, std::string> m_uriComponents;
+
+        // data sent by client, also used as internal buffer
         std::string m_body;
 
         // Prevent copying
@@ -80,8 +103,17 @@ class HttpRequest {
         HttpRequest& operator=(const HttpRequest&);
 
         // Helper functions for parsing
+        int mf_parseFirstIncomming(const std::string& rawData);
+        int mf_handleStreamedBody(const std::string& rawData);
+        int mf_handlePostBody(const std::string& rawData, size_t bodyStart);
+
         int mf_parseUriComponents(const std::string& uri);
         std::string mf_decodeUri(const std::string& encoded, bool strict = true) const;
+
+        ChunkInfo mf_parseChunkHeader(const std::string& data, size_t pos);
+        int mf_parseChunkedBody(const std::string& data);
+        bool mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
+        int mf_parseRegularBody(const std::string& data);
 };
 
 #endif

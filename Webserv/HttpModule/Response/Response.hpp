@@ -25,6 +25,8 @@ namespace Http
 
 			SSStatus 	status() const;
 			void 		fillWriteBuffer(Buffer& writeBuffer);
+
+			Http::Request&		getRequest();
 	};
 };
 

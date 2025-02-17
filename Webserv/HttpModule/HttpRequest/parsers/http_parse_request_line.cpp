@@ -121,10 +121,12 @@ int HttpRequest::mf_parseRequestLine(const std::string& line)
         m_httpVersion = line.substr(lastSpace + 1);
 
         // Check if method is allowed using HttpDefinitions
+        // TODO: later get this from server config
         const std::set<std::string>& allowedMethods = Http::AllowedRequestMethods::getAllowedMethods();
         if (allowedMethods.find(m_method) == allowedMethods.end())
             return Http::Status::METHOD_NOT_ALLOWED;
 
+        // TODO: later get this from server config
         if (m_uri.length() > Http::HttpStandard::MAX_URI_LENGTH)
             return Http::Status::URI_TOO_LONG;
 
