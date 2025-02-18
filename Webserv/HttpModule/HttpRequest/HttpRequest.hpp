@@ -96,9 +96,11 @@ namespace Http
 					virtual const char* what() const throw() { return m_message.c_str(); }
 				private:
 					std::string m_message;
-			};
-
+				};
+				
 		private:
+		
+					
 
 			// main parsers
 			Http::Status::Number	mf_parseRequestLine(const std::string& line);
@@ -106,15 +108,18 @@ namespace Http
 			Http::Status::Number	mf_parseBody(const std::string& data);
 
 			// internal variables
-			Http::Status::Number    m_status;
-			size_t                  m_timeout;
-			Http::Connection&		m_httpConn;
-			ParsingState			m_parsingState;
+			Http::Connection&						m_httpConn;
+			ServerBlock*							m_serverBlock;      // ServerBlock specific http specs
+			ServerLocation*							m_serverLocation;
+
+			Http::Status::Number    				m_status;
+			size_t                  				m_timeout;
+			ParsingState							m_parsingState;
 
 			// Components
-			std::string				m_method;
-			std::string				m_uri;
-			std::string				m_httpVersion;
+			std::string								m_method;
+			std::string								m_uri;
+			std::string								m_httpVersion;
 			std::map<HeaderKey, HeaderValue>		m_headers;
 			std::map<std::string, std::string>		m_uriComponents;  // delete replace by \/
 
@@ -124,13 +129,6 @@ namespace Http
 
 			// data sent by client, also used as internal buffer
 			std::string								m_body;
-
-			ServerBlock*							m_serverBlock;      // ServerBlock specific http specs
-			ServerLocation*							m_serverLocation;
-
-			// Prevent copying
-			Request(const  Request& copy);
-			Request& operator=(const Request& assign);
 
 			// Helper functions for parsing
 			Http::Status::Number		mf_parseFirstIncomming(const std::string& rawData);

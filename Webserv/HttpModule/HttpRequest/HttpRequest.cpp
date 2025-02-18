@@ -1,40 +1,79 @@
 /* *********************************/
 /*                                 */
-/*   Http::Request.cpp               */
-/*   - implements the Http::Request  */
+/*   Http::Request.cpp             */
+/*   - implements the Http::Request*/
 /*    class.                       */
 /*                                 */
 /* *********************************/
 
 #include "HttpRequest.hpp"
+#include "../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../GenericUtils/BufferView/BufferView.hpp"
 
 namespace Http
 {
 
 ///////////// RETAINED FOR TESTING, DELETE WHEN DONE /////////////
 Request::Request()
-    : m_status(Http::Status::OK)
-    , m_timeout(30) // 30 seconds default timeout
-    , m_httpConn(*reinterpret_cast<Http::Connection*>(0))
-    , m_parsingState(IDLE)
+    : m_httpConn(*reinterpret_cast<Http::Connection*>(0))
     , m_serverBlock(NULL)
     , m_serverLocation(NULL)
+    , m_status(Http::Status::OK)
+    , m_timeout(30) // 30 seconds default timeout
+    , m_parsingState(IDLE)
+
      {}
 /////////////////////////////////////////////////////////////////
 
 
 Request::Request(Http::Connection& conn)
-    : m_status(Http::Status::OK)
-    , m_timeout(30) // 30 seconds default timeout
-    , m_httpConn(conn)
-    , m_parsingState(IDLE)
+    : m_httpConn(conn)
     , m_serverBlock(NULL)
     , m_serverLocation(NULL)
+    , m_status(Http::Status::OK)
+    , m_timeout(30) // 30 seconds default timeout
+    , m_parsingState(IDLE)
 {}
 
 Request::~Request()
 {}
 
+Request::Request(const Request& copy)
+    : m_httpConn(copy.m_httpConn)
+    , m_serverBlock(copy.m_serverBlock)
+    , m_serverLocation(copy.m_serverLocation)
+    , m_status(copy.m_status)
+    , m_timeout(copy.m_timeout)
+    , m_parsingState(copy.m_parsingState)
+    , m_method(copy.m_method)
+    , m_uri(copy.m_uri)
+    , m_httpVersion(copy.m_httpVersion)
+    , m_headers(copy.m_headers)
+    , m_uriComponents(copy.m_uriComponents)
+    , m_body(copy.m_body)
+    {}
+
+Request&
+Request::operator=(const Request& copy)
+{
+    if (this == &copy)
+        return (*this);
+
+    m_serverBlock = copy.m_serverBlock;
+    m_serverLocation = copy.m_serverLocation;
+    m_status = copy.m_status;
+    m_timeout = copy.m_timeout;
+    m_parsingState = copy.m_parsingState;
+    m_method = copy.m_method;
+    m_uri = copy.m_uri;
+    m_httpVersion = copy.m_httpVersion;
+    m_headers = copy.m_headers;
+    m_uriComponents = copy.m_uriComponents;
+    m_body = copy.m_body;
+
+
+    return (*this);
+}
 
 Http::Status::Number
 Request::mf_handleStreamedBody(const std::string& rawData)
@@ -101,6 +140,14 @@ Request::mf_parseFirstIncomming(const std::string& rawData)
 
     m_parsingState = COMPLETED;
     return m_status;
+}
+
+// NOT IMPLEMENTED YET
+int Request::parse(const Buffer& buffer)
+{
+    std::string stringBuffer;
+    BufferView(buffer.data(), buffer.size()).to_string(stringBuffer);
+    return (this->parse(stringBuffer));
 }
 
 int Request::parse(const std::string& rawData)

@@ -40,6 +40,8 @@ namespace Http
 			File*					m_file;
 			ServerBlock*			m_serverBlock;
 			ServerLocation*			m_location;
+
+			std::string				m_pendingWrite;		// cache data that you generated but couldn't write
 	};
 };
 

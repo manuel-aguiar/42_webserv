@@ -1,8 +1,7 @@
 
 # Makefile
 
-# TARGET_DEBUG 			=		debug_httpRequest.out
-TARGET_TEST 			=		test_httpRequest.out
+TARGET_TEST 			=		test.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
@@ -38,8 +37,38 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp
+								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp											\
+								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
+										\
+								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
+								\
+								$(SRC_PATH)/Webserv/Globals/Globals.cpp														\
+								$(SRC_PATH)/Webserv/Globals/Clock/Clock.cpp													\
+								$(SRC_PATH)/Webserv/Globals/LogFile/LogFile.cpp												\
+								\
+								$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp								\
+								$(SRC_PATH)/Webserv/Connections/ConnInfo/ConnInfo.cpp										\
+								$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp											\
+								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp				\
+								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp							\
+								$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp						\
+								$(SRC_PATH)/Webserv/Connections/Connection/ConnectionEvents.cpp								\
+								$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp									\
+								$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp											\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListener.cpp						\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerAccept.cpp					\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerOpenClose.cpp				\
+								$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp										\
+								\
+								$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp										\
+								$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp											\
+								$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp												\
+								$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp						\
+								$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp									\
+
 								
 
 								

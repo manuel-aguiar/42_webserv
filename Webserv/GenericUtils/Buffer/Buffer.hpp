@@ -24,6 +24,10 @@ class Buffer
 		int			read(Ws::fd fd, int startIndex = 0);
 		int			write(Ws::fd fd, int startIndex = 0);
 
+		const unsigned char*
+					data() const;
+		
+		size_t		available() const;
 		size_t		size() const;
 		size_t		capacity() const;
 		BufferView 	view() const;
@@ -34,7 +38,7 @@ class Buffer
 		void		push(const std::string& data);
 
 	private:
-		char			m_buffer[1024];
+		unsigned char	m_buffer[1024];
 		size_t			m_writeOffset;
 		size_t			m_size;
 		const size_t	m_capacity;

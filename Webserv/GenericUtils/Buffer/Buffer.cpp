@@ -36,6 +36,16 @@ int Buffer::write(Ws::fd fd, int startIndex)
     return (bytesWritten);
 }
 
+const unsigned char* Buffer::data() const
+{
+    return (m_buffer);
+}
+
+size_t Buffer::available() const
+{
+    return (m_capacity - m_size);
+}
+
 size_t Buffer::size() const
 {
     return (m_size);

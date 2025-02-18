@@ -6,7 +6,7 @@
 #include "../../ServerContext/ServerContext.hpp"
 #include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
-
+#include "../../GenericUtils/Buffer/Buffer.hpp"
 
 /* GET CURRENT DATE **********************/
 // move to relevant place
@@ -166,8 +166,57 @@ void	Http::Response::generateResponse(int statusCode)
 }
 
 
+//NOT IMPLEMENTED YET
+namespace Http
+{
+	Response::Response(const Response& other) :
+		m_myRequest(other.m_myRequest),
+		m_context(other.m_context),
+		m_file(other.m_file),
+		m_serverBlock(other.m_serverBlock),
+		m_location(other.m_location) {}
 
+	Response::~Response() {}
 
+	Response&
+	Response::operator=(const Response& other)
+	{
+		if (this == &other)
+			return (*this);
+		
+		m_file = other.m_file;
+		m_serverBlock = other.m_serverBlock;
+		m_location = other.m_location;
+
+		return (*this);
+	}
+
+	void
+	Response::fillWriteBuffer(Buffer& writeBuffer)
+	{
+		int pushed = 0;
+
+		// push pending data to buffer
+		if (!m_pendingWrite.empty())
+		{
+			pushed = (writeBuffer.available() < m_pendingWrite.size()) ? writeBuffer.available() : m_pendingWrite.size();
+			writeBuffer.push(m_pendingWrite.c_str(), pushed);
+			m_pendingWrite.erase(0, pushed);
+			if (m_pendingWrite.empty())
+			{
+				// ?? m_request.done(); ??
+				
+				// could be the end of the response, depends on cgi as well
+				// sent everything i had...
+				return ;
+			}
+		}
+		
+		// tell the buffer to read from file directly buffer.read(file.fd())
+		// or push directory listing to buffer
+		// or push error page to buffer
+	}
+}
 
 
 

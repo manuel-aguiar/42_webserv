@@ -1,22 +1,26 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 10:33:07 by mmaria-d          #+#    #+#             */
-/*   Updated: 2024/11/18 10:40:29 by mmaria-d         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
+// Project headers
+# include "ServerConfig/ServerConfig/ServerConfig.hpp"
+# include "ServerConfig/DefaultConfig/DefaultConfig.hpp"
+# include "Run/WebservRun.h"
 
-int main(int ac, char** av, char** env)
+// C++ headers
+# include <cstdlib> //exit macros
+
+int main(int ac, char** av)
 {
-    (void)ac;
-    (void)av;
-    (void)env;
+    if (ac != 2)
+	{
+		std::cerr << av[0] << ": Usage: " << av[0] << " <config_file>" << std::endl;
+		return (EXIT_FAILURE);
+	}
+	
+	DefaultConfig	defaultConfig;
+	ServerConfig	config(av[1], defaultConfig);
 
-    return (0);
+	if (!config.parseConfigFile())
+		return (EXIT_FAILURE);
+
+	return (WebservRun(av[0], config));
 }
