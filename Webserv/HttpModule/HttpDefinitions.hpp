@@ -17,7 +17,7 @@ namespace Http
     // All http status codes
     namespace Status
     {
-        enum
+        typedef enum
         {
             _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
@@ -64,7 +64,7 @@ namespace Http
             LOOP_DETECTED = 508,
             NOT_EXTENDED = 510,
             NETWORK_AUTHENTICATION_REQUIRED = 511,
-        };
+        }   num;
     }
 
     // standard values for http 1.1
