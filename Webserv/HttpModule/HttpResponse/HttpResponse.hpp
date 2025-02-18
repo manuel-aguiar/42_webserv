@@ -25,7 +25,7 @@ namespace Http
 		public:
 			Response(Http::Request& myRequest, ServerContext &context);
 			
-			std::string	&getMessage(size_t statusCode);
+			const char* getMessage(size_t statusCode);
 
 			void	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 

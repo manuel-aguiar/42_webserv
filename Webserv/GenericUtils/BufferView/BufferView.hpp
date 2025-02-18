@@ -8,7 +8,12 @@
 class BufferView
 {
     public:
+        // various constructors
+        BufferView(const std::string& str);
+        BufferView(const char* str);  
+        BufferView(const void* data, const size_t len);
         BufferView(const char* str, const size_t len);
+
         ~BufferView();
         BufferView(const BufferView& other);
 
@@ -28,6 +33,15 @@ class BufferView
 
         static const size_t npos;
         
+        int compare(const BufferView& other) const;
+
+        bool operator==(const BufferView& other) const;
+        bool operator!=(const BufferView& other) const;
+        bool operator<(const BufferView& other) const;
+        bool operator<=(const BufferView& other) const;
+        bool operator>(const BufferView& other) const;
+        bool operator>=(const BufferView& other) const;
+
     private:
         const char*         m_data;
         const size_t        m_size;
@@ -35,6 +49,8 @@ class BufferView
         BufferView& operator=(const BufferView& other);
 
 };
+
+std::ostream& operator<<(std::ostream& os, const BufferView& sv);
 
 #endif // MUTABLE_STRING_VIEW_HPP
 

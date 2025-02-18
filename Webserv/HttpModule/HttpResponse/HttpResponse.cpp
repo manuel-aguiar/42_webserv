@@ -1,10 +1,12 @@
 
+
 #include "HttpResponse.hpp"
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../ServerContext/ServerContext.hpp"
 #include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
 
 /* GET CURRENT DATE **********************/
 // move to relevant place
@@ -14,6 +16,8 @@
 #include <iomanip>  // For std::setw and std::setfill
 #include <ctime>    // For std::time_t, std::tm, and std::gmtime
 #include <string>
+
+extern const char* getStatusMessage(int statusCode);
 
 std::string getCurrentDate() {
 	// Get current time
@@ -159,55 +163,14 @@ void	Http::Response::generateResponse(int statusCode)
 	std::cerr << "DEBUG: " << "FULL RESPONSE:" << "\n" << fullResponse << "\n*** END OF RESPONSE ***\n";
 }
 
-std::string	&Http::Response::getMessage(size_t statusCode)
+
+
+
+const char* Http::Response::getMessage(size_t statusCode)
 {
-	static std::map<size_t, std::string>	messages;
-
-	if (messages.empty())
-	{
-		// 2xx Success
-		messages[Http::Status::OK] = "OK";
-		messages[201] = "Created";
-		messages[202] = "Accepted";
-		messages[204] = "No Content";
-		messages[205] = "Reset Content";
-		messages[206] = "Partial Content";
-		// 3xx Redirection
-		messages[300] = "Multiple Choices";
-		messages[301] = "Moved Permanently";
-		messages[302] = "Found"; 
-		messages[303] = "See Other";
-		messages[304] = "Not Modified";
-		messages[307] = "Temporary Redirect";
-		messages[308] = "Permanent Redirect";
-		// 4xx Client Errors
-		messages[400] = "Bad Request";
-		messages[403] = "Forbidden";
-		messages[404] = "Not Found";
-		messages[405] = "Method Not Allowed";
-		messages[412] = "Precondition Failed";
-		messages[413] = "Payload Too Large";
-		messages[414] = "URI Too Long";
-		messages[415] = "Unsupported Media Type";
-		messages[429] = "Too Many Requests";
-		messages[431] = "Request Header Fields Too Large";
-		messages[451] = "Unavailable For Legal Reasons";
-		// 5xx Server Errors
-		messages[500] = "Internal Server Error";
-		messages[501] = "Not Implemented";
-		messages[502] = "Bad Gateway";
-		messages[503] = "Service Unavailable";
-		messages[504] = "Gateway Timeout";
-		messages[505] = "HTTP Version Not Supported";
-		messages[506] = "Variant Also Negotiates";
-		messages[507] = "Insufficient Storage";
-		messages[508] = "Loop Detected";
-		messages[510] = "Not Extended";
-		messages[511] = "Network Authentication Required";
-	}
-
-	return messages[statusCode];
+	return (getStatusMessage(statusCode));
 }
+
 
 //    MEETING
 // Status message map
@@ -219,54 +182,54 @@ std::string	&Http::Response::getMessage(size_t statusCode)
 // identify extension
 
 
-void generateMessage(Http::Status number)
+void generateMessage(int StatusCode)
 {
-	std::stringstream ss;
-
-	ss << "<!DOCTYPE html>
-		<html>
-
-		<head>
-			<title>{{STATUS_CODE}} {{STATUS_TEXT}}</title> //here
-			<style>
-				body {
-					font-family: system-ui, sans-serif;
-					margin: 40px auto;
-					max-width: 1750px;
-					padding: 0 10px;
-					color: #444;
-					text-align: center;
-				}
-				.server {
-					font-size: 20px;
-					font-weight: bold;
-				}
-				.status-code {
-					font-size: 48px;
-					font-weight: bold;
-					color: #e74c3c;
-					margin: 30px 0 10px 0;
-				}
-				h1 {
-					margin: 10px 0;
-				}
-				hr {
-					width: 100%;
-					margin: 10px auto;
-					border: none;
-					border-top: 1px solid #ddd;
-				}
-			</style>
-		</head>
-
-		<body>
-			<div class="server">{{SERVER_NAME}}/{{SERVER_VERSION}}</div> //change valeus
-			<hr>
-			<div class="status-code">{{STATUS_CODE}}</div>
-			<h1>{{STATUS_TEXT}}</h1>
-			<p>{{ERROR_MESSAGE}}</p>
-		</body>
-
-		</html>"
+//	std::stringstream ss;
+//
+//	ss << "<!DOCTYPE html>
+//		<html>
+//
+//		<head>
+//			<title>{{STATUS_CODE}} {{STATUS_TEXT}}</title> //here
+//			<style>
+//				body {
+//					font-family: system-ui, sans-serif;
+//					margin: 40px auto;
+//					max-width: 1750px;
+//					padding: 0 10px;
+//					color: #444;
+//					text-align: center;
+//				}
+//				.server {
+//					font-size: 20px;
+//					font-weight: bold;
+//				}
+//				.status-code {
+//					font-size: 48px;
+//					font-weight: bold;
+//					color: #e74c3c;
+//					margin: 30px 0 10px 0;
+//				}
+//				h1 {
+//					margin: 10px 0;
+//				}
+//				hr {
+//					width: 100%;
+//					margin: 10px auto;
+//					border: none;
+//					border-top: 1px solid #ddd;
+//				}
+//			</style>
+//		</head>
+//
+//		<body>
+//			<div class="server">{{SERVER_NAME}}/{{SERVER_VERSION}}</div> //change valeus
+//			<hr>
+//			<div class="status-code">{{STATUS_CODE}}</div>
+//			<h1>{{STATUS_TEXT}}</h1>
+//			<p>{{ERROR_MESSAGE}}</p>
+//		</body>
+//
+//		</html>"
 
 }

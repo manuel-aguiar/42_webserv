@@ -11,6 +11,9 @@ const
 size_t BufferView::npos = static_cast<size_t>(-1);
 
 // Constructors
+BufferView::BufferView(const std::string& str) : m_data(str.c_str()), m_size(str.size()) {}
+BufferView::BufferView(const char* str) : m_data(str), m_size(strlen(str)) {}
+BufferView::BufferView(const void* data, const size_t len) : m_data(static_cast<const char*>(data)), m_size(len) {}
 BufferView::BufferView(const char* str, const size_t len) : m_data(str), m_size(len) {}
 
 BufferView::~BufferView() {}
@@ -94,4 +97,45 @@ void
 BufferView::to_string(std::string& placeResult) const
 {
 	placeResult.assign(m_data, m_size);
+}
+
+int BufferView::compare(const BufferView& other) const
+{
+	return (std::memcmp(m_data, other.m_data, m_size < other.m_size ? m_size : other.m_size));
+}
+
+bool BufferView::operator==(const BufferView& other) const
+{
+	return (compare(other) == 0);
+}
+
+bool BufferView::operator!=(const BufferView& other) const
+{
+	return (compare(other) != 0);
+}
+
+bool BufferView::operator<(const BufferView& other) const
+{
+	return (compare(other) < 0);
+}
+
+bool BufferView::operator<=(const BufferView& other) const
+{
+	return (compare(other) <= 0);
+}
+
+bool BufferView::operator>(const BufferView& other) const
+{
+	return (compare(other) > 0);
+}
+
+bool BufferView::operator>=(const BufferView& other) const
+{
+	return (compare(other) >= 0);
+}
+
+std::ostream& operator<<(std::ostream& os, const BufferView& sv)
+{
+	os.write(sv.data(), sv.size());
+	return (os);
 }
