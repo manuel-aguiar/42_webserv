@@ -60,6 +60,7 @@ class ServerBlock
 		int								getTimeoutFullHeader() const;
 		int								getTimeoutInterSend() const;
 		int								getTimeoutInterReceive() const;
+		int								getTimeoutKeepAlive() const;
 		const std::map<int, std::string>&
 										getErrorPages() const;
 		const std::string&				getRoot() const;
@@ -73,6 +74,7 @@ class ServerBlock
 		void							setTimeoutFullHeader(const std::string &value);
 		void							setTimeoutInterSend(const std::string &value);
 		void							setTimeoutInterReceive(const std::string &value);
+		void							setTimeoutKeepAlive(const std::string &value);
 		void							setDefaults(const DefaultConfig& defaultConfig);
 		void							addListener(const std::string &value);
 		void							addServerName(const std::string &value);
@@ -115,6 +117,7 @@ class ServerBlock
 		int												m_http_timeoutFullHeader;
 		int												m_http_timeoutInterSend;
 		int												m_http_timeoutInterReceive;
+		int												m_http_timeoutKeepAlive;
 		std::string										m_root;
 		std::map<int, std::string>						m_error_pages;
 		std::vector<ServerLocation>						m_locations;						

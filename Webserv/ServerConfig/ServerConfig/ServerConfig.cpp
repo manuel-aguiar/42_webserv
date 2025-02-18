@@ -15,7 +15,7 @@
 ServerConfig::DirectiveToSetter ServerConfig::m_directiveToSetter;
 
 ServerConfig::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(10))	// 10 magic: number of keys
+	map(std::less<std::string>(), mapPool(11))	// 10 magic: number of keys
 {
 	map["max_connections"]			= &ServerConfig::setMaxConnections;
 	map["max_concurrent_cgi"]		= &ServerConfig::setMaxConcurrentCgi;
@@ -27,6 +27,7 @@ ServerConfig::DirectiveToSetter::DirectiveToSetter() :
 	map["timeout_full_header"]		= &ServerConfig::setTimeoutFullHeader;
 	map["timeout_inter_send"]		= &ServerConfig::setTimeoutInterSend;
 	map["timeout_inter_receive"]	= &ServerConfig::setTimeoutInterReceive;
+	map["timeout_keep_alive"]		= &ServerConfig::setTimeoutKeepAlive;
 }
 
 ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig) :
@@ -39,9 +40,10 @@ ServerConfig::ServerConfig(const char* configFilePath, const DefaultConfig& defa
 	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),	
 	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),	
 	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE),	
+	m_http_timeoutKeepAlive		(DefaultConfig::UINT_NONE),
 	m_configDefault				(defaultConfig),
-	m_configFilePath			(configFilePath),
-	m_serverCount				(0) {}
+	m_configFilePath			(configFilePath)
+	{}
 
 ServerConfig::~ServerConfig()
 {
@@ -62,15 +64,27 @@ ServerConfig &ServerConfig::operator=(const ServerConfig &other)
 	m_http_timeoutFullHeader = other.m_http_timeoutFullHeader;
 	m_http_timeoutInterSend = other.m_http_timeoutInterSend;
 	m_http_timeoutInterReceive = other.m_http_timeoutInterReceive;
+	m_http_timeoutKeepAlive = other.m_http_timeoutKeepAlive;
 	m_configFilePath = other.m_configFilePath;
 	m_serverBlocks = other.m_serverBlocks;
-	m_serverCount = other.m_serverCount;
 
 	return (*this);
 }
 
 ServerConfig::ServerConfig(const ServerConfig &other) :
-	m_configDefault(other.m_configDefault)
+	m_max_connections			(other.m_max_connections),
+	m_max_concurrent_cgi		(other.m_max_concurrent_cgi),
+	m_max_cgi_backlog			(other.m_max_cgi_backlog),
+	m_max_workers				(other.m_max_workers),
+	m_http_maxClientBodySize	(other.m_http_maxClientBodySize),
+	m_http_maxClientHeaderSize	(other.m_http_maxClientHeaderSize),
+	m_http_timeoutFullHeader	(other.m_http_timeoutFullHeader),
+	m_http_timeoutInterSend		(other.m_http_timeoutInterSend),
+	m_http_timeoutInterReceive	(other.m_http_timeoutInterReceive),
+	m_http_timeoutKeepAlive		(other.m_http_timeoutKeepAlive),
+	m_configDefault				(other.m_configDefault),
+	m_configFilePath			(other.m_configFilePath),
+	m_serverBlocks				(other.m_serverBlocks)
 {
 	*this = other;
 }
@@ -200,7 +214,7 @@ int		ServerConfig::parseConfigFile()
 
 	if (!m_updateFile())
 		return (0);
-	if (m_serverCount)
+	if (m_serverBlocks.size() > 0)
 	{
 		std::cerr << "Error: parsing after startup not implemented" << std::endl;
 		return (0);
@@ -220,7 +234,6 @@ int		ServerConfig::parseConfigFile()
 				return (0);
 			}
 			m_serverBlocks.push_back(ServerBlock());
-			m_serverCount++;
 			currentLevel = SERVER_LEVEL;
 		}
 		else if (line == "location {")
@@ -249,7 +262,7 @@ int		ServerConfig::parseConfigFile()
 			}
 		}
 	}
-	if (m_serverCount == 0)
+	if (m_serverBlocks.size() == 0)
 	{
 		std::cerr << "Error: no server configurations on config file" << std::endl;
 		return (0);
@@ -326,6 +339,11 @@ int		ServerConfig::getTimeoutInterReceive() const
 	return (m_http_timeoutInterReceive);
 }
 
+int		ServerConfig::getTimeoutKeepAlive() const
+{
+	return (m_http_timeoutKeepAlive);
+}
+
 const DefaultConfig&	ServerConfig::getDefaultConfig() const
 {
 	return (m_configDefault);
@@ -337,78 +355,47 @@ ServerConfig::getCgiInterpreters() const
 	return (m_cgiInterpreters);
 }
 
-void		ServerConfig::setMaxConnections(const std::string &value)
+static	void _throw_ifInvalidNumber(const std::string& value, const size_t max)
 {
 	size_t	number;
 	
 	try {
 		number = StringUtils::stoull(value);
-		if (number > 1048576)
-			throw (std::invalid_argument("max_connections value too high"));
+		if (number > max)
+			throw (std::invalid_argument("value too high"));
 		if (value[0] == '-')
-			throw (std::invalid_argument("max_connections must be a positive number,"));
+			throw (std::invalid_argument("must be a positive number,"));
 	}
 	catch (std::exception &e){
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
+}
+
+void		ServerConfig::setMaxConnections(const std::string &value)
+{
+	_throw_ifInvalidNumber(value, 1048576);
 	m_max_connections = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setMaxConcurrentCgi(const std::string &value)
 {
 	const size_t 	max = StringUtils::parse_size("10M");
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, max);
 	m_max_concurrent_cgi = std::atoi(value.c_str());
 }
 
 void	ServerConfig::setMaxCgiBacklog(const std::string &value)
 {
 	const size_t 	max = StringUtils::parse_size("10M");
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_cgi_backlog value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_cgi_backlog must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, max);
 	m_max_cgi_backlog = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setMaxWorkers(const std::string &value)
 {
 	const size_t 	max = StringUtils::parse_size("10M");
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, max);
 	m_max_workers = std::atoi(value.c_str());
 }
 
@@ -434,60 +421,28 @@ void	ServerConfig::setClientHeaderSize(const std::string &value)
 
 void		ServerConfig::setTimeoutFullHeader(const std::string &value)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutFullHeader = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setTimeoutInterSend(const std::string &value)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutInterSend = std::atoi(value.c_str());
 }
 
 void		ServerConfig::setTimeoutInterReceive(const std::string &value)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutInterReceive = std::atoi(value.c_str());
 }
+
+void		ServerConfig::setTimeoutKeepAlive(const std::string &value)
+{
+	_throw_ifInvalidNumber(value, 100000000);
+	m_http_timeoutKeepAlive = std::atoi(value.c_str());
+}
+
 
 
 void		ServerConfig::addCgiInterpreter(const std::string &value)
@@ -530,6 +485,7 @@ void	ServerConfig::m_setDefaults()
 	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutFullHeader 	: m_http_timeoutFullHeader;
 	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterSend 	: m_http_timeoutInterSend;
 	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutInterReceive : m_http_timeoutInterReceive;
+	m_http_timeoutKeepAlive 	= (m_http_timeoutKeepAlive 		== DefaultConfig::UINT_NONE) ? m_configDefault.http_timeoutKeepAlive 	: m_http_timeoutKeepAlive;
 }
 
 bool	ServerConfig::mf_applyInheritedSettings()

@@ -15,7 +15,7 @@
 ServerBlock::DirectiveToSetter ServerBlock::m_directiveToSetter;
 
 ServerBlock::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(9))	// 9 magic: number of keys
+	map(std::less<std::string>(), mapPool(10))	// 9 magic: number of keys
 {
 	map["listen"]				= &ServerBlock::addListener;
 	map["server_name"]			= &ServerBlock::addServerName;
@@ -24,6 +24,7 @@ ServerBlock::DirectiveToSetter::DirectiveToSetter() :
 	map["timeout_full_header"]	= &ServerBlock::setTimeoutFullHeader;
 	map["timeout_inter_send"]	= &ServerBlock::setTimeoutInterSend;
 	map["timeout_inter_receive"]= &ServerBlock::setTimeoutInterReceive;
+	map["timeout_keep_alive"]	= &ServerBlock::setTimeoutKeepAlive;
 	map["root"]					= &ServerBlock::setRootPath;
 	map["error_pages"]			= &ServerBlock::addErrorPage;
 }
@@ -33,7 +34,8 @@ ServerBlock::ServerBlock() :
 	m_http_maxClientHeaderSize	(DefaultConfig::UINT_NONE),
 	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),
 	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),
-	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE)  {}
+	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE),
+	m_http_timeoutKeepAlive		(DefaultConfig::UINT_NONE)  {}
 
 ServerBlock::~ServerBlock()
 {
@@ -52,6 +54,7 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 	m_http_timeoutFullHeader = other.m_http_timeoutFullHeader;
 	m_http_timeoutInterSend = other.m_http_timeoutInterSend;
 	m_http_timeoutInterReceive = other.m_http_timeoutInterReceive;
+	m_http_timeoutKeepAlive = other.m_http_timeoutKeepAlive;
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
 	m_locations = other.m_locations;
@@ -68,6 +71,7 @@ ServerBlock::ServerBlock(const ServerBlock &other) :
 	m_http_timeoutFullHeader 	(other.m_http_timeoutFullHeader),
 	m_http_timeoutInterSend 	(other.m_http_timeoutInterSend),
 	m_http_timeoutInterReceive 	(other.m_http_timeoutInterReceive),
+	m_http_timeoutKeepAlive 	(other.m_http_timeoutKeepAlive),
 	m_root						(other.m_root),
 	m_error_pages				(other.m_error_pages),
 	m_locations					(other.m_locations),
@@ -180,61 +184,45 @@ void	ServerBlock::addConfigValue(const std::string &key, const std::string &valu
 	(this->*m_directiveToSetter.map[key])(value);
 }
 
-void		ServerBlock::setTimeoutFullHeader(const std::string &value)
+static	void _throw_ifInvalidNumber(const std::string& value, const size_t max)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
+	size_t	number;
 	
 	try {
 		number = StringUtils::stoull(value);
 		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+			throw (std::invalid_argument("value too high"));
 		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+			throw (std::invalid_argument("must be a positive number,"));
 	}
 	catch (std::exception &e){
 		std::string msg = e.what();
 		throw (std::invalid_argument(msg));
 	}
+}
+
+void		ServerBlock::setTimeoutFullHeader(const std::string &value)
+{
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutFullHeader = std::atoi(value.c_str());
 }
 
 void		ServerBlock::setTimeoutInterSend(const std::string &value)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutInterSend = std::atoi(value.c_str());
 }
 
 void		ServerBlock::setTimeoutInterReceive(const std::string &value)
 {
-	const size_t 	max = 100000000;
-	size_t			number;
-	
-	try {
-		number = StringUtils::stoull(value);
-		if (number > max)
-			throw (std::invalid_argument("max_concurrent_cgi value too high"));
-		if (value[0] == '-')
-			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
-	}
-	catch (std::exception &e){
-		std::string msg = e.what();
-		throw (std::invalid_argument(msg));
-	}
+	_throw_ifInvalidNumber(value, 100000000);
 	m_http_timeoutInterReceive = std::atoi(value.c_str());
+}
+
+void		ServerBlock::setTimeoutKeepAlive(const std::string &value)
+{
+	_throw_ifInvalidNumber(value, 100000000);
+	m_http_timeoutKeepAlive = std::atoi(value.c_str());
 }
 
 const std::vector<ServerLocation>&		ServerBlock::getLocations() const
@@ -284,6 +272,11 @@ int		ServerBlock::getTimeoutInterReceive() const
 	return (m_http_timeoutInterReceive);
 }
 
+int		ServerBlock::getTimeoutKeepAlive() const
+{
+	return (m_http_timeoutKeepAlive);
+}
+
 const std::map<int, std::string>&	ServerBlock::getErrorPages() const
 {
 	return (m_error_pages);
@@ -318,6 +311,7 @@ bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)
 	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? config.getTimeoutFullHeader() 	: m_http_timeoutFullHeader;
 	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? config.getTimeoutInterSend() 	: m_http_timeoutInterSend;
 	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? config.getTimeoutInterReceive() 	: m_http_timeoutInterReceive;
+	m_http_timeoutKeepAlive 	= (m_http_timeoutKeepAlive 		== DefaultConfig::UINT_NONE) ? config.getTimeoutKeepAlive() 	: m_http_timeoutKeepAlive;
 	return (true);
 }
 

@@ -12,6 +12,7 @@ DefaultConfig::DefaultConfig() :
 	http_timeoutFullHeader		(DEFAULTCONF_HTTP_TIMEOUT_MS_FULL_HEADER),
 	http_timeoutInterSend		(DEFAULTCONF_HTTP_TIMEOUT_MS_INTER_SEND),
 	http_timeoutInterReceive	(DEFAULTCONF_HTTP_TIMEOUT_MS_INTER_RECEIVE),
+	http_timeoutKeepAlive		(DEFAULTCONF_HTTP_TIMEOUT_MS_KEEP_ALIVE),
 	http_error400Path			(DEFAULTCONF_BLOCK_ERROR_400_PAGE),
 	http_error404Path			(DEFAULTCONF_BLOCK_ERROR_404_PAGE),
 	loc_autoIndex				(DEFAULTCONF_LOCATION_AUTOINDEX),

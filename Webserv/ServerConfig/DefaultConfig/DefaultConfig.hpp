@@ -33,6 +33,7 @@ struct DefaultConfig
 	const int	http_timeoutFullHeader;
 	const int	http_timeoutInterSend;
 	const int	http_timeoutInterReceive;
+	const int	http_timeoutKeepAlive;
 	const char*	http_error400Path;
 	const char*	http_error404Path; // add the remaining error pages
 

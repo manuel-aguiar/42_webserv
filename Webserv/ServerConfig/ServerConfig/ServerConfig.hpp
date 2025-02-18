@@ -54,6 +54,7 @@ class ServerConfig
 		int											getTimeoutFullHeader() const;
 		int											getTimeoutInterSend() const;
 		int											getTimeoutInterReceive() const;
+		int											getTimeoutKeepAlive() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
 		const DefaultConfig&						getDefaultConfig() const;
 		const Config::CgiInterpreterMap&	
@@ -67,7 +68,8 @@ class ServerConfig
 		void										setClientHeaderSize(const std::string &value);
 		void										setTimeoutFullHeader(const std::string &value);
 		void										setTimeoutInterSend(const std::string &value);
-		void										setTimeoutInterReceive(const std::string &value);		
+		void										setTimeoutInterReceive(const std::string &value);
+		void										setTimeoutKeepAlive(const std::string &value);	
 		void										addCgiInterpreter(const std::string &value);
 
 		int											parseConfigFile();
@@ -108,10 +110,10 @@ class ServerConfig
 		int									m_http_timeoutFullHeader;
 		int									m_http_timeoutInterSend;
 		int									m_http_timeoutInterReceive;
+		int									m_http_timeoutKeepAlive;
 		const DefaultConfig&				m_configDefault;
 		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;
-		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
 		std::vector<Ws::BindInfo>			m_bindAddresses;
 		Config::CgiInterpreterMap	

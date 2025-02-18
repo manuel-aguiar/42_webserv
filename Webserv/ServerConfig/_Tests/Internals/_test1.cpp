@@ -207,6 +207,7 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(config.getTimeoutFullHeader(), defaultConfig.http_timeoutFullHeader, "Wrong full header timeout");
         EXPECT_EQUAL(config.getTimeoutInterSend(), defaultConfig.http_timeoutInterSend, "Wrong inter send timeout");
         EXPECT_EQUAL(config.getTimeoutInterReceive(), defaultConfig.http_timeoutInterReceive, "Wrong inter receive timeout");
+        EXPECT_EQUAL(config.getTimeoutKeepAlive(), 2000, "Wrong keep alive timeout");
 
         // blocks
         const std::vector<ServerBlock>& serverBlocks = config.getServerBlocks();
@@ -240,6 +241,7 @@ void testPart1(int& testNumber)
         EXPECT_EQUAL(serverBlock.getClientBodySize(), StringUtils::parse_size("1M"), "Wrong client body size");
         EXPECT_EQUAL(serverBlock.getClientHeaderSize(), defaultConfig.http_maxClientHeaderSize, "Wrong client header size");
         EXPECT_EQUAL(serverBlock.getTimeoutInterSend(), 1000, "Wrong timeout inter send");
+        EXPECT_EQUAL(serverBlock.getTimeoutKeepAlive(), 3000, "Wrong timeout inter receive"); // overriden
         EXPECT_EQUAL(serverBlock.getRoot(), defaultConfig.server_Root, "Wrong root path");
 
         // default bind addresses
@@ -305,6 +307,7 @@ void testPart1(int& testNumber)
         //defaults
         EXPECT_EQUAL(serverBlock.getClientBodySize(), 69420, "Wrong client header size");
         EXPECT_EQUAL(serverBlock.getClientHeaderSize(), StringUtils::parse_size("1K"), "Wrong client body size");
+        EXPECT_EQUAL(serverBlock.getTimeoutKeepAlive(), 2000, "Wrong keep alive timeout"); // inherited
         EXPECT_EQUAL(serverBlock.getRoot(), defaultConfig.server_Root, "Wrong root path");
 
         // default bind addresses
