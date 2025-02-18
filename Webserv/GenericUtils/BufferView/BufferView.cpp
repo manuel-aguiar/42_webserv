@@ -5,6 +5,7 @@
 #include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
+#include <iostream> //ostream
 #include <cstring> //memcmp
 
 const

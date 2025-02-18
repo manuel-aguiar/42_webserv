@@ -13,6 +13,7 @@
 // C++ Headers
 # include <cstring>
 # include <cerrno>
+# include <stdexcept>
 
 LogFile::LogFile(const char* filename, Globals* globals) : m_globals(globals)
 {
@@ -40,15 +41,19 @@ void	LogFile::record(const std::string& entry)
 
 void	LogFile::record(const char* entry)
 {
+	int bytesWritten = 0;
+	
 	ASSERT_EQUAL(m_globals != NULL, true, "LogFile: Globals cannot be NULL");
 	m_globals->getClock()->update();
 
 	const char* clockBuf = m_globals->getClock()->get_FormatedTime();
 
-	write(m_fd, clockBuf, std::strlen(clockBuf));
-	write(m_fd, ": ", 2);
-	write(m_fd, entry, std::strlen(entry));
-	write(m_fd, "\n", 1);
+	bytesWritten += write(m_fd, clockBuf, std::strlen(clockBuf));
+	bytesWritten += write(m_fd, ": ", 2);
+	bytesWritten += write(m_fd, entry, std::strlen(entry));
+	bytesWritten += write(m_fd, "\n", 1);
+
+	(void)bytesWritten; // -O3 to avoid warnings
 }
 
 LogFile::LogFile() {}

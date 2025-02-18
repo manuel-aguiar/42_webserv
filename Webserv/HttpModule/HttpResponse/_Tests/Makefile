@@ -32,7 +32,9 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp
+								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
 								
 
 								

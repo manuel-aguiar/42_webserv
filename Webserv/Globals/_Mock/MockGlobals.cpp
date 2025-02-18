@@ -37,7 +37,8 @@ void	Globals::logDebug(const std::string& message)
 
 void	Globals::logError(const std::string& message)
 {
-	g_mockGlobals_ErrorMsgs.push_back(message);
+	std::cerr << message << std::endl;
+	//g_mockGlobals_ErrorMsgs.push_back(message);
 }
 
 void	Globals::logStatus(const char* message)

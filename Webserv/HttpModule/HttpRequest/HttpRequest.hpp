@@ -57,7 +57,6 @@ namespace Http
 			// Main parsing interface
 
 			int parse(const Buffer& buffer);
-
 			int parse(const std::string& rawData);
 
 			// parsing states, as a state machine

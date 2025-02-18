@@ -25,11 +25,15 @@ SRCS_TEST			= 	$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/main.cpp
 SRCS_COMMON			=	$(SUBJECT_PATH)/BlockFinder.cpp \
 						\
 						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/common.cpp \
-						$(SUBJECT_PATH)/$(TEST_FOLDERNAME)/MockServerBlock.cpp \
-						$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-						$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+						\
+						$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
+						$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
+						$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
+						$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 						$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
-						$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp
+						$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+						$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
+
 						
 
 # Object files
