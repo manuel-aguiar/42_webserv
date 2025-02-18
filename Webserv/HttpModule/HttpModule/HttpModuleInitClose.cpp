@@ -1,7 +1,7 @@
 
 
-# include "Module.hpp"
-# include "../Connection/Connection.hpp"
+# include "HttpModule.hpp"
+# include "../HttpConnection/HttpConnection.hpp"
 # include "../../Connections/Connection/Connection.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../Events/Subscription/Subscription.hpp"

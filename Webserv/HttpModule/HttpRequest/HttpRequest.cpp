@@ -10,7 +10,7 @@
 
 namespace Http
 {
-Request::Request(Http::HttpConnection& conn)
+Request::Request(Http::Connection& conn)
     : m_status(Http::Status::OK)
     , m_timeout(30) // 30 seconds default timeout
     , m_httpConn(conn)

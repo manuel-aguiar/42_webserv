@@ -1,10 +1,12 @@
-#include "../../Http::Request.hpp"
+
+
+#include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void bodyTests(int &testNumber)
 {
-	Http::Request	Http::Request;
-	std::string	requestData;
+	Http::Request	Request;
+	std::string		requestData;
 
 	TEST_HEADER("Http Request - Body");
 

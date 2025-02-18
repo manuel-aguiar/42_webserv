@@ -6,8 +6,11 @@
 /*                                 */
 /* *********************************/
 
-#include "../HttpRequest.hpp"
-#include "../../../GenericUtils/StringUtils/StringUtils.hpp"
+// Project headers
+#include "HttpRequest.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
+// C++ headers
 #include <sstream>
 
 int Http::Request::mf_parseHeaders(const std::string& data)

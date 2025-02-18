@@ -96,8 +96,6 @@ namespace Http
 
         private:
 
-            Http::Response    m_response;
-
             // main parsers
             int mf_parseRequestLine(const std::string& line);
             int mf_parseHeaders(const std::string& line);

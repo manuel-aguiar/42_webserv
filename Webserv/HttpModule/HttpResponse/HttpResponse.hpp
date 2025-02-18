@@ -11,12 +11,12 @@
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
+// forward declarations
+class ServerBlock;
+class ServerLocation;
 class ServerContext;
 class Buffer;
-namespace Http {class Request; class Connection;}
-
-// move to relevant place
-#define DEFAULT_ERROR_PAGES_PATH "Webserv/StaticAssets/ErrorPages/error_"
+namespace Http {class Request;}
 
 namespace Http
 {
@@ -25,7 +25,7 @@ namespace Http
 		public:
 			Response(Http::Request& myRequest, ServerContext &context);
 			
-			const char* getMessage(size_t statusCode);
+			const char* getMessage(int statusCode);
 
 			void	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
@@ -33,12 +33,12 @@ namespace Http
 			void	generateResponse(int statusCode);
 
 			Http::Request			&m_myRequest;
-			File					*m_file;
+			File					m_file;
 
 			ServerContext&			m_context;
-			const ServerBlock		*m_serverBlock;
-			const ServerLocation	*m_location;
+			ServerBlock				*m_serverBlock;
+			ServerLocation			*m_location;
 	};
-}
+};
 
 #endif

@@ -6,7 +6,10 @@
 /*                                 */
 /* *********************************/
 
-#include "../HttpRequest.hpp"
+// Project headers
+#include "HttpRequest.hpp"
+
+// C++ headers
 #include <sstream>
 #include <cstdlib>
 #include <climits>

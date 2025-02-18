@@ -12,7 +12,7 @@ SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/HttpErrorCodes/main.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/httpErrorCodes.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
 

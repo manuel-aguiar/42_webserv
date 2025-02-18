@@ -1,6 +1,18 @@
 
-# include "../HttpDefinitions.hpp"
+
+# include "HttpResponse.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+
+const char* getStatusMessage(int statusCode);
+
+namespace Http
+{
+	const char* Response::getMessage(int statusCode)
+	{
+		return (getStatusMessage(statusCode));
+	}
+}
+
 
 /*
 	Data oriented design, separate codes (needed in binary search) from messages.

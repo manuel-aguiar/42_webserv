@@ -15,10 +15,10 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Request/test
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/Http::Request.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 

@@ -166,10 +166,7 @@ void	Http::Response::generateResponse(int statusCode)
 
 
 
-const char* Http::Response::getMessage(size_t statusCode)
-{
-	return (getStatusMessage(statusCode));
-}
+
 
 
 //    MEETING

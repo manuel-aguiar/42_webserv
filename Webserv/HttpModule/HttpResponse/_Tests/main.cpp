@@ -1,5 +1,5 @@
 #include "../../HttpRequest/HttpRequest.hpp"
-#include "../Response.hpp"
+#include "../HttpResponse.hpp"
 #include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void responseTests(int &testNumber);

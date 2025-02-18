@@ -53,8 +53,6 @@ namespace Http
 			HeapArray<Http::Connection>				m_connections;
 			HeapCircularQueue<Http::Connection*>	m_availableConnections;
 			TimerTracker<Timer, Http::Connection*>	m_timers;
-			StackArray<int, Http::Timeout::COUNT>	m_global_timeouts;
-
 	};
 };
 

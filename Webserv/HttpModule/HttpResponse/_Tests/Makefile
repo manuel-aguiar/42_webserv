@@ -16,10 +16,11 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Response/_Tests/main.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Response/Response.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp \

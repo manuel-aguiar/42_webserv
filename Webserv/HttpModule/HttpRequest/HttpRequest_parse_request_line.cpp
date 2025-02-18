@@ -6,7 +6,8 @@
 /*                                 */
 /* *********************************/
 
-#include "../HttpRequest.hpp"
+// Project headers
+#include "HttpRequest.hpp"
 
 
 // URL decoding utilities

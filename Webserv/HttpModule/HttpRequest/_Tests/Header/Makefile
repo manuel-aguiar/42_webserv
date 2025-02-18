@@ -10,20 +10,20 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/main.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/headerTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/bodyTests.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/_Tests/Header/lineTests.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/main.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/headerTests.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/bodyTests.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/lineTests.cpp
 
 
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/Http::Request.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/Http::Request/parsers/http_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 
