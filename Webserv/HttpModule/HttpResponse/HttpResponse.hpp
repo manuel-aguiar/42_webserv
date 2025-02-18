@@ -24,6 +24,9 @@ namespace Http
 	{
 		public:
 			Response(Http::Request& myRequest, ServerContext &context);
+			Response(const Response& other);
+			~Response();
+			Response& operator=(const Response& other);
 			
 			const char* getMessage(int statusCode);
 

@@ -1,15 +1,15 @@
 
 
 # include "HttpConnection.hpp"
-# include "../Module/Module.hpp"
-# include "../Request/Request.hpp"
-# include "../Response/Response.hpp"
+# include "../HttpModule/HttpModule.hpp"
+# include "../HttpTransaction/HttpTransaction.hpp"
+# include "../HttpRequest/HttpRequest.hpp"
+# include "../HttpResponse/HttpResponse.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
-# include "../../HttpConnections/HttpConnection/HttpConnection.hpp"
+# include "../../Connections/Connection/Connection.hpp"
 
 namespace Http
 {
-
 
 Connection::Connection(Http::Module& module)
 	: m_module(module),
@@ -17,8 +17,7 @@ Connection::Connection(Http::Module& module)
 	  m_writeTimer(),
 	  m_myTimer(),
 	  m_tcpConn(NULL),
-	  m_transactions(),
-	  m_responses() {}
+	  m_transactions() {}
 
 Connection::~Connection() {}
 
@@ -64,9 +63,9 @@ Connection::ReadWrite()
 	if (triggeredEvents & Events::Monitor::READ)
 	{
 		m_readBuffer.read(sockfd);
-		if (m_transactions.size() == 0 || m_transactions.back().status() == COMPLETED)
-			m_transactions.push_back(Http::Request(*this));
-		m_transactions.back().parse(m_readBuffer);
+		if (m_transactions.size() == 0 || m_transactions.back().request.getParsingState() == Http::Request::COMPLETED)
+			m_transactions.push_back(Transaction(*this, m_tcpConn->accessServerContext()));
+		m_transactions.back().request.parse(m_readBuffer);
 	}
 
 	// write
@@ -77,9 +76,9 @@ Connection::ReadWrite()
 			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
 			return ;
 		}
-		if (m_responses.size() == 0 || m_responses.back().status() == COMPLETED)
+		if (m_transactions.size() == 0)
 			return ;
-		m_responses.front().fillWriteBuffer(m_writeBuffer);
+		m_transactions.front().response.fillWriteBuffer(m_writeBuffer);
 		m_writeBuffer.write(sockfd);
 	}
 }
@@ -96,7 +95,7 @@ Connection::ReadWrite()
 */
 
 void
-Connection::setMyTCP(Conn::HttpConnection& tcpConn)
+Connection::setMyTCP(Conn::Connection& tcpConn)
 {
 	m_tcpConn = &tcpConn;
 }
@@ -115,9 +114,8 @@ Connection::close()
 	m_writeTimer = Timer();
 
 	m_transactions.clear();
-	m_responses.clear();
 
-	m_module.returnHttpConnection(*this);
+	m_module.returnConnection(*this);
 	m_tcpConn->close();
 }
 

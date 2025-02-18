@@ -5,6 +5,7 @@
 # define HTTPCONNECTION_HPP
 
 // Project headers
+
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
@@ -15,21 +16,7 @@
 // forward declarations
 namespace	Events { class Subscription; }
 namespace	Conn { class Connection; }
-namespace	Http { class Module; class Request; class Response;}
-
-namespace Http
-{
-	struct Transaction
-	{
-		// moved to a cpp file
-		Transaction(Http::Connection& connection, ServerContext& context) : 
-			request(connection), 
-			response(request, context) {}
-
-		Http::Request	request;
-		Http::Response	response;
-	};
-}
+namespace	Http { class Module; struct Transaction;}
 
 namespace Http
 {
@@ -50,7 +37,8 @@ namespace Http
 			ServerContext& 				accessServerContext(); //Conn::Connection
 
 			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer);
-			void 						setMyTCP(Conn::HttpConnection& tcpConn);
+
+			void 						setMyTCP(Conn::Connection& tcpConn);
 
 			Buffer&						accessReadBuffer();
 			Buffer&						accessWriteBuffer();
@@ -67,7 +55,7 @@ namespace Http
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
-			std::deque<Http::Transaction> 							m_transactions;
+			std::deque<Http::Transaction> 						m_transactions;
 	};
 };
 

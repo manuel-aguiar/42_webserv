@@ -48,9 +48,11 @@ namespace Http
 			};
 			
 			Request();
-
 			Request(Http::Connection& conn); //blockfinder, Conn::Connection (Http::Connection->Conn::Connection->ServerContext->BLockfinder)
 			~Request();
+
+			Request(const Request& copy);
+			Request& operator=(const Request& assign);
 
 			// Main parsing interface
 

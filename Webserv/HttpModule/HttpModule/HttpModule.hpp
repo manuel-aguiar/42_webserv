@@ -24,7 +24,7 @@ namespace Http
 	class Module
 	{
 		public:
-			Module(const size_t maxConnections, const DefaultConfig& config, Globals& globals);
+			Module(const size_t maxConnections, Globals& globals);
 			~Module();
 
 			//starter pack
@@ -46,7 +46,6 @@ namespace Http
 			removeTimer(TimerTracker<Timer, Http::Connection*>::iterator position);
 
 		private:
-
 			// infrastructure
 			Globals&								m_globals;
 			int										m_global_maxHeaderSize;

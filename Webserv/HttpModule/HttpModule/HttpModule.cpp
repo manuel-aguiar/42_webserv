@@ -2,9 +2,11 @@
 
 
 // project headers
-# include "Module.hpp"
-# include "../Connection/Connection.hpp"
+# include "HttpModule.hpp"
+# include "../HttpConnection/HttpConnection.hpp"
 # include "../../ServerConfig/DefaultConfig/DefaultConfig.hpp"
+# include "../../TimerTracker/TimerTracker.hpp"
+# include "../../TimerTracker/Timer/Timer.hpp"
 
 // C++ headers
 # include <cstdlib>
@@ -12,19 +14,12 @@
 namespace Http
 {
 
-Module::Module(const size_t maxConnections, const DefaultConfig& config, Globals& globals)
+Module::Module(const size_t maxConnections, Globals& globals)
     : m_globals(globals),
-      m_global_maxHeaderSize(config.http_maxClientHeaderSize),
       m_connections(maxConnections),
       m_availableConnections(maxConnections),
-      m_timers(maxConnections),
-      m_global_timeouts(0)
+      m_timers(maxConnections)
 {
-    // setup global timeouts
-    m_global_timeouts[Http::Timeout::FULL_REQUEST] = config.http_timeoutFullHeader;
-    m_global_timeouts[Http::Timeout::INTER_SEND] = config.http_timeoutInterSend;
-    m_global_timeouts[Http::Timeout::INTER_RECEIV] = config.http_timeoutInterReceive;
-
     // create and load connections
     for (size_t i = 0; i < maxConnections; ++i)
     {
