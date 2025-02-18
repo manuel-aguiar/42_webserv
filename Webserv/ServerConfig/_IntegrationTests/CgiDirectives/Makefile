@@ -10,7 +10,7 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build
 
-SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/DNSLookup/_main.cpp \
+SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/CgiDirectives/_main.cpp \
 								\
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
@@ -18,7 +18,8 @@ SRCS					=		$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/DNSLookup/_main.c
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp
 								
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

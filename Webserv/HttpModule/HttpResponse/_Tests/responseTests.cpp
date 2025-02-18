@@ -1,12 +1,12 @@
 #include "../../HttpRequest/HttpRequest.hpp"
-#include "../Response.hpp"
+#include "../HttpResponse.hpp"
 #include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 #define PATH "/42webserv"
 
 void responseTests(int &testNumber)
 {
-	HttpRequest	httpRequest[30];
+	Http::Request	httpRequest[30];
 	std::string	requestData;
 
 	TEST_HEADER("Http Response");

@@ -64,7 +64,7 @@ namespace Http
             LOOP_DETECTED = 508,
             NOT_EXTENDED = 510,
             NETWORK_AUTHENTICATION_REQUIRED = 511,
-        }   num;
+        }   Number;
     }
 
     // standard values for http 1.1

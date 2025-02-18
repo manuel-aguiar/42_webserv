@@ -53,9 +53,11 @@ std::string getCurrentDate() {
 
 // Http::Response::Response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context):
 Http::Response::Response(Http::Request &myRequest, ServerContext &context):
-	// m_myConnection(myConnection),
-	m_myRequest(myRequest),
-	m_context(context)
+	m_myRequest		(myRequest),
+	m_context		(context),
+	m_file			(NULL),
+	m_serverBlock	(NULL),
+	m_location		(NULL)
 {
 	// If there were errors during parsing, respond with error page
 	if (myRequest.getStatus() != Http::Status::OK)
@@ -179,8 +181,12 @@ void	Http::Response::generateResponse(int statusCode)
 // identify extension
 
 
+
+
 void generateMessage(int StatusCode)
 {
+	// use the template below to generate the error message
+	(void)StatusCode;
 //	std::stringstream ss;
 //
 //	ss << "<!DOCTYPE html>

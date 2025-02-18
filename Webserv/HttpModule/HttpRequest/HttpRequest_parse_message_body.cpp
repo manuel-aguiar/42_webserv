@@ -112,7 +112,9 @@ bool Http::Request::mf_validateAndExtractChunk(const std::string& data, const Ch
 // next raw body = "3\r\n!!!\r\n" -> total: 10 bytes
 // m_body = "Hello World!!!"
 // status = COMPLETED
-int Http::Request::mf_parseChunkedBody(const std::string& data)
+
+Http::Status::Number
+Http::Request::mf_parseChunkedBody(const std::string& data)
 {
     try {
         std::string assembled_body;
@@ -191,7 +193,9 @@ int Http::Request::mf_parseChunkedBody(const std::string& data)
 // status = COMPLETED
 // next raw body = "!!!" -> total: 3 bytes
 // #ignored, we already have the full body for this request
-int Http::Request::mf_parseRegularBody(const std::string& data)
+
+Http::Status::Number
+Http::Request::mf_parseRegularBody(const std::string& data)
 {
     int contentLengthInt;
     try {
@@ -228,7 +232,8 @@ int Http::Request::mf_parseRegularBody(const std::string& data)
     return Http::Status::OK;
 }
 
-int Http::Request::mf_parseBody(const std::string& data)
+Http::Status::Number
+Http::Request::mf_parseBody(const std::string& data)
 {
     try {
         // check which type of body we are parsing

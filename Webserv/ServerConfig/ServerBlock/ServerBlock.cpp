@@ -1,22 +1,39 @@
 
 
+// Project headers
 #include "ServerBlock.hpp"
+#include "../ServerConfig/ServerConfig.hpp"
+#include "../ServerLocation/ServerLocation.hpp"
+#include "../DefaultConfig/DefaultConfig.hpp"
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
-#include "../ServerLocation/ServerLocation.hpp"
-#include "../DefaultConfig/DefaultConfig.hpp"
 
+// C++ headers
+# include <cstdlib> // for atoi
 
-ServerBlock::ServerBlock()
+ServerBlock::DirectiveToSetter ServerBlock::m_directiveToSetter;
+
+ServerBlock::DirectiveToSetter::DirectiveToSetter() :
+	map(std::less<std::string>(), mapPool(9))	// 9 magic: number of keys
 {
-	m_keys["listen"]				= &ServerBlock::addListener;
-	m_keys["server_name"]			= &ServerBlock::addServerName;
-	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
-	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
-	m_keys["root"]					= &ServerBlock::setRootPath;
-	m_keys["error_pages"]			= &ServerBlock::addErrorPage;
+	map["listen"]				= &ServerBlock::addListener;
+	map["server_name"]			= &ServerBlock::addServerName;
+	map["client_body_size"]		= &ServerBlock::setClientBodySize;
+	map["client_header_size"]	= &ServerBlock::setClientHeaderSize;
+	map["timeout_full_header"]	= &ServerBlock::setTimeoutFullHeader;
+	map["timeout_inter_send"]	= &ServerBlock::setTimeoutInterSend;
+	map["timeout_inter_receive"]= &ServerBlock::setTimeoutInterReceive;
+	map["root"]					= &ServerBlock::setRootPath;
+	map["error_pages"]			= &ServerBlock::addErrorPage;
 }
+
+ServerBlock::ServerBlock() :
+	m_http_maxClientBodySize	(DefaultConfig::UINT_NONE),
+	m_http_maxClientHeaderSize	(DefaultConfig::UINT_NONE),
+	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),
+	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),
+	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE)  {}
 
 ServerBlock::~ServerBlock()
 {
@@ -27,21 +44,34 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 {
 	if (this == &other)
 		return (*this);
+
 	m_listen = other.m_listen;
 	m_server_name = other.m_server_name;
-	m_client_body_size = other.m_client_body_size;
-	m_client_header_size = other.m_client_header_size;
+	m_http_maxClientBodySize = other.m_http_maxClientBodySize;
+	m_http_maxClientHeaderSize = other.m_http_maxClientHeaderSize;
+	m_http_timeoutFullHeader = other.m_http_timeoutFullHeader;
+	m_http_timeoutInterSend = other.m_http_timeoutInterSend;
+	m_http_timeoutInterReceive = other.m_http_timeoutInterReceive;
 	m_root = other.m_root;
 	m_error_pages = other.m_error_pages;
-	m_keys = other.m_keys;
 	m_locations = other.m_locations;
+	m_mapLocations = other.m_mapLocations;
+
 	return (*this);
 }
 
-ServerBlock::ServerBlock(const ServerBlock &other)
-{
-	*this = other;
-}
+ServerBlock::ServerBlock(const ServerBlock &other) :
+	m_listen					(other.m_listen),
+	m_server_name				(other.m_server_name),
+	m_http_maxClientBodySize	(other.m_http_maxClientBodySize),
+	m_http_maxClientHeaderSize	(other.m_http_maxClientHeaderSize),
+	m_http_timeoutFullHeader 	(other.m_http_timeoutFullHeader),
+	m_http_timeoutInterSend 	(other.m_http_timeoutInterSend),
+	m_http_timeoutInterReceive 	(other.m_http_timeoutInterReceive),
+	m_root						(other.m_root),
+	m_error_pages				(other.m_error_pages),
+	m_locations					(other.m_locations),
+	m_mapLocations				(other.m_mapLocations) {}
 
 void	ServerBlock::setRootPath(const std::string &value)
 {
@@ -51,23 +81,21 @@ void	ServerBlock::setRootPath(const std::string &value)
 void	ServerBlock::setClientBodySize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_http_maxClientBodySize = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_body_size = value;
 }
 
 void	ServerBlock::setClientHeaderSize(const std::string &value)
 {
 	try {
-		StringUtils::parse_size(value);
+		m_http_maxClientHeaderSize = StringUtils::parse_size(value);
 	}
 	catch (std::exception &e) {
 		throw (std::invalid_argument(e.what()));
 	}
-	m_client_header_size = value;
 }
 
 bool	Config::Listen::operator<(const Config::Listen &rhs) const
@@ -104,7 +132,16 @@ void	ServerBlock::addListener(const std::string &value)
 	portValue = StringUtils::stoull(port); // fix throw
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
-	m_listen.insert((Config::Listen){.appLayer = Ws::AppLayer::HTTP, .hostname = hostname, .port = port});
+		
+	m_listen.insert((Config::Listen) {
+		.appLayer = Ws::AppLayer::HTTP,
+		.backlog = Ws::Listen::DEFAULT_BACKLOG,
+		.hostname = hostname, 
+		.port = port,
+		.family = AF_INET,
+		.socktype = SOCK_STREAM,
+		.proto = IPPROTO_TCP,
+	});
 }
 
 void	ServerBlock::addServerName(const std::string &value)
@@ -117,37 +154,100 @@ void	ServerBlock::addServerName(const std::string &value)
 
 void	ServerBlock::addErrorPage(const std::string &value)
 {
-	std::string			error_code;
+	std::string			errorCode;
 	std::string			path;
 	size_t				separator;
+	bool				conversionError;
 
 	separator = value.find_first_of(':', 0);
 	if (separator == std::string::npos)
 		throw (std::invalid_argument("no separator \":\" found while adding error page (errorNumber:path)"));
-	error_code = value.substr(0, separator);
+	errorCode = value.substr(0, separator);
 	path = value.substr(separator + 1);
-	if (error_code.empty() || path.empty())
+	if (errorCode.empty() || path.empty())
 		throw (std::invalid_argument("error code or path is empty"));
-	if (!Validation::isNumber(error_code) || StringUtils::stoull(error_code) < 100 || StringUtils::stoull(error_code) > 599)
-		throw (std::invalid_argument("error code is not a valid number: " + error_code + ". It must be a value between 100 and 599"));
-	if (m_error_pages.find(value) != m_error_pages.end())
+	if (!Validation::isNumber(errorCode) || StringUtils::stoull(errorCode) < 100 || StringUtils::stoull(errorCode) > 599)
+		throw (std::invalid_argument("error code is not a valid number: " + errorCode + ". It must be a value between 100 and 599"));
+	if (m_error_pages.find(StringUtils::strToInt(errorCode, conversionError)) != m_error_pages.end())
 		throw (std::invalid_argument("error page already set: " + value));
-	m_error_pages.insert(value);
-
-	
+	m_error_pages[StringUtils::strToInt(errorCode, conversionError)] = path;
 }
 
 void	ServerBlock::addConfigValue(const std::string &key, const std::string &value)
 {
-	if (m_keys.find(key) == m_keys.end())
+	if (m_directiveToSetter.map.find(key) == m_directiveToSetter.map.end())
 		throw (std::invalid_argument("invalid key " + key));
-	(this->*m_keys[key])(value);
+	(this->*m_directiveToSetter.map[key])(value);
 }
 
-const std::map<std::string, ServerLocation>&		ServerBlock::getLocations() const
+void		ServerBlock::setTimeoutFullHeader(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutFullHeader = std::atoi(value.c_str());
+}
+
+void		ServerBlock::setTimeoutInterSend(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterSend = std::atoi(value.c_str());
+}
+
+void		ServerBlock::setTimeoutInterReceive(const std::string &value)
+{
+	const size_t 	max = 100000000;
+	size_t			number;
+	
+	try {
+		number = StringUtils::stoull(value);
+		if (number > max)
+			throw (std::invalid_argument("max_concurrent_cgi value too high"));
+		if (value[0] == '-')
+			throw (std::invalid_argument("max_concurrent_cgi must be a positive number,"));
+	}
+	catch (std::exception &e){
+		std::string msg = e.what();
+		throw (std::invalid_argument(msg));
+	}
+	m_http_timeoutInterReceive = std::atoi(value.c_str());
+}
+
+const std::vector<ServerLocation>&		ServerBlock::getLocations() const
 {
 	return (m_locations);
 }
+
+const std::map<std::string, const ServerLocation*>&		ServerBlock::getMappedLocations() const
+{
+	return (m_mapLocations);
+}
+
+
 
 const std::set<Config::Listen>&	ServerBlock::getListeners() const
 {
@@ -161,15 +261,30 @@ const std::set<std::string>&	ServerBlock::getServerNames() const
 
 size_t	ServerBlock::getClientBodySize() const
 {
-	return (StringUtils::parse_size(m_client_body_size));
+	return (m_http_maxClientBodySize);
 }
 
 size_t	ServerBlock::getClientHeaderSize() const
 {
-	return (StringUtils::parse_size(m_client_header_size));
+	return (m_http_maxClientHeaderSize);
 }
 
-const std::set<std::string>&	ServerBlock::getErrorPages() const
+int		ServerBlock::getTimeoutFullHeader() const
+{
+	return (m_http_timeoutFullHeader);
+}
+
+int		ServerBlock::getTimeoutInterSend() const
+{
+	return (m_http_timeoutInterSend);
+}
+
+int		ServerBlock::getTimeoutInterReceive() const
+{
+	return (m_http_timeoutInterReceive);
+}
+
+const std::map<int, std::string>&	ServerBlock::getErrorPages() const
 {
 	return (m_error_pages);
 }
@@ -179,16 +294,31 @@ const std::string&	ServerBlock::getRoot() const
 	return (m_root);
 }
 
-void	ServerBlock::setDefaults()
-{
-	DefaultConfig	defaults;
 
+std::vector<ServerLocation>&	ServerBlock::accessLocations()
+{
+	return (m_locations);
+}
+
+std::map<std::string, const ServerLocation*>&	ServerBlock::accessMappedLocations()
+{
+	return (m_mapLocations);
+}
+
+void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
+{
 	if (m_root.empty())
-		setRootPath(defaults.serverRoot);
-	if (m_client_body_size.empty())
-		setClientBodySize(defaults.maxClientBodySize);
-	if (m_client_header_size.empty())
-		setClientHeaderSize(defaults.maxClientHeaderSize);
+		setRootPath(defaultConfig.server_Root);
+}
+
+bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)
+{
+	m_http_maxClientBodySize 	= ((int)m_http_maxClientBodySize 	== DefaultConfig::UINT_NONE) ? config.getClientBodySize() 	: m_http_maxClientBodySize; 
+	m_http_maxClientHeaderSize 	= ((int)m_http_maxClientHeaderSize 	== DefaultConfig::UINT_NONE) ? config.getClientHeaderSize()	: m_http_maxClientHeaderSize; 
+	m_http_timeoutFullHeader 	= (m_http_timeoutFullHeader 	== DefaultConfig::UINT_NONE) ? config.getTimeoutFullHeader() 	: m_http_timeoutFullHeader;
+	m_http_timeoutInterSend 	= (m_http_timeoutInterSend 		== DefaultConfig::UINT_NONE) ? config.getTimeoutInterSend() 	: m_http_timeoutInterSend;
+	m_http_timeoutInterReceive 	= (m_http_timeoutInterReceive 	== DefaultConfig::UINT_NONE) ? config.getTimeoutInterReceive() 	: m_http_timeoutInterReceive;
+	return (true);
 }
 
 bool	ServerBlock::validate() const
@@ -207,16 +337,16 @@ bool	ServerBlock::validate() const
 	return (1);
 }
 
-void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
+void	ServerBlock::mapLocations()
 {
-	if (locations.empty())
+	if (m_locations.empty())
 		return ;
 	
-	std::vector<ServerLocation>::const_iterator it = locations.begin();
+	std::vector<ServerLocation>::const_iterator it = m_locations.begin();
 
-	for (; it != locations.end(); it++)
+	for (; it != m_locations.end(); it++)
 	{
-		m_locations[it->getPath()] = *it;
+		m_mapLocations[it->getPath()] = &(*it);
 	}
 }
 
@@ -224,8 +354,8 @@ void	ServerBlock::setLocations(const std::vector<ServerLocation> &locations)
 
 void	ServerBlock::printServerConfig() const
 {
-	std::set<std::string>	server_name = getServerNames();
-	std::set<std::string>	error_pages = getErrorPages();
+	std::set<std::string>		server_name = getServerNames();
+	std::map<int, std::string>	error_pages = getErrorPages();
 	
 	std::cout << "║ ┌─ Server ─────────o\n";
 	std::cout << "║ │ \n";
@@ -250,8 +380,8 @@ void	ServerBlock::printServerConfig() const
 	if (!error_pages.size())
 		std::cout << "(empty)";
 	else
-		for (std::set<std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
-			std::cout << *it << " ";
+		for (std::map<int, std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); it++)
+			std::cout << it->first << ":" << it->second << " ";
 	std::cout << "\n";
 	std::cout << "║ │ " <<  std::endl ;
 

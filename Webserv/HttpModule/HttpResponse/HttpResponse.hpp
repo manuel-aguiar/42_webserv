@@ -32,12 +32,11 @@ namespace Http
 		private:
 			void	generateResponse(int statusCode);
 
-			Http::Request			&m_myRequest;
-			File					m_file;
-
+			Http::Request&			m_myRequest;
 			ServerContext&			m_context;
-			ServerBlock				*m_serverBlock;
-			ServerLocation			*m_location;
+			File*					m_file;
+			ServerBlock*			m_serverBlock;
+			ServerLocation*			m_location;
 	};
 };
 

@@ -17,6 +17,8 @@ Request::Request()
     , m_timeout(30) // 30 seconds default timeout
     , m_httpConn(*reinterpret_cast<Http::Connection*>(0))
     , m_parsingState(IDLE)
+    , m_serverBlock(NULL)
+    , m_serverLocation(NULL)
      {}
 /////////////////////////////////////////////////////////////////
 
@@ -26,13 +28,16 @@ Request::Request(Http::Connection& conn)
     , m_timeout(30) // 30 seconds default timeout
     , m_httpConn(conn)
     , m_parsingState(IDLE)
+    , m_serverBlock(NULL)
+    , m_serverLocation(NULL)
 {}
 
 Request::~Request()
 {}
 
 
-int Request::mf_handleStreamedBody(const std::string& rawData)
+Http::Status::Number
+Request::mf_handleStreamedBody(const std::string& rawData)
 {
     m_status = mf_parseBody(rawData);
     if (m_status != Http::Status::OK) {
@@ -42,7 +47,8 @@ int Request::mf_handleStreamedBody(const std::string& rawData)
     return m_status;
 }
 
-int Request::mf_handlePostBody(const std::string& rawData, size_t bodyStart)
+Http::Status::Number
+Request::mf_handlePostBody(const std::string& rawData, size_t bodyStart)
 {
     m_status = mf_parseBody(rawData.substr(bodyStart));
     if (m_status != Http::Status::OK) {
@@ -53,7 +59,8 @@ int Request::mf_handlePostBody(const std::string& rawData, size_t bodyStart)
     return m_status;
 }
 
-int Request::mf_parseFirstIncomming(const std::string& rawData)
+Http::Status::Number
+Request::mf_parseFirstIncomming(const std::string& rawData)
 {
     m_parsingState = STARTED;
 
@@ -153,6 +160,11 @@ const std::string& Request::getBody() const
 const std::map<std::string, std::string>& Request::getUriComponents() const
 {
     return (m_uriComponents);
+}
+
+Http::Status::Number Request::getStatus() const
+{
+    return (m_status);
 }
 
 // Parsing states

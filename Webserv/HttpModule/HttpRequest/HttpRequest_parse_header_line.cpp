@@ -13,7 +13,8 @@
 // C++ headers
 #include <sstream>
 
-int Http::Request::mf_parseHeaders(const std::string& data)
+Http::Status::Number
+Http::Request::mf_parseHeaders(const std::string& data)
 {
 	std::istringstream	stringStream(data);
 	std::string			line;

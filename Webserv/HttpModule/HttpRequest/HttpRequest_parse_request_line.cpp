@@ -54,7 +54,8 @@ std::string Http::Request::mf_decodeUri(const std::string& encoded, bool strict)
 }
 
 // URI parsing utilities
-int Http::Request::mf_parseUriComponents(const std::string& uri)
+Http::Status::Number
+Http::Request::mf_parseUriComponents(const std::string& uri)
 {
     size_t pathLength = uri.find('?');
 
@@ -100,7 +101,8 @@ int Http::Request::mf_parseUriComponents(const std::string& uri)
     return Http::Status::OK;
 }
 
-int Http::Request::mf_parseRequestLine(const std::string& line)
+Http::Status::Number
+Http::Request::mf_parseRequestLine(const std::string& line)
 {
     try {
         size_t firstSpace = line.find(' ');
