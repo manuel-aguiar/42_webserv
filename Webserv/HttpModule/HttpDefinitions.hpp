@@ -19,6 +19,9 @@ namespace Http
     {
         enum
         {
+            _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+
+
             // 2xx
             OK = 200,
             CREATED = 201,
@@ -42,7 +45,6 @@ namespace Http
             NOT_FOUND = 404,
             METHOD_NOT_ALLOWED = 405,
             URI_TOO_LONG = 414,
-            HEADERS_TOO_LARGE = 431,
             PRECONDITION_FAILED = 412,
             PAYLOAD_TOO_LARGE = 413,
             UNSUPPORTED_MEDIA_TYPE = 415,
@@ -61,7 +63,7 @@ namespace Http
             INSUFFICIENT_STORAGE = 507,
             LOOP_DETECTED = 508,
             NOT_EXTENDED = 510,
-            NETWORK_AUTHENTICATION_REQUIRED = 511
+            NETWORK_AUTHENTICATION_REQUIRED = 511,
         };
     }
 
