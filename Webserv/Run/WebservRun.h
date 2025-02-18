@@ -6,6 +6,6 @@
 // forward declarations
 class ServerConfig;
 
-int	WebservRun(const char* programName, const ServerConfig& config);
+int	WebservRun(const char* programName, ServerConfig& config);
 
 #endif
