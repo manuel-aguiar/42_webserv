@@ -1,4 +1,4 @@
-#include "../../Http::Request.hpp"
+#include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void headerTests(int &testNumber)
@@ -9,7 +9,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -21,7 +21,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
 			TEST_PASSED_MSG("Common request");
 		}
 		catch(const std::exception& e)
@@ -34,13 +34,13 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("No headers");
 		}
 		catch(const std::exception& e)
@@ -51,7 +51,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -59,7 +59,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no key nor value");
 		}
 		catch(const std::exception& e)
@@ -70,7 +70,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -78,7 +78,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no key");
 		}
 		catch(const std::exception& e)
@@ -89,7 +89,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -97,7 +97,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with space as key");
 		}
 		catch(const std::exception& e)
@@ -108,7 +108,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -116,7 +116,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no value");
 		}
 		catch(const std::exception& e)
@@ -127,7 +127,7 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n" +
@@ -135,7 +135,7 @@ void headerTests(int &testNumber)
 			"\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with space as value");
 		}
 		catch(const std::exception& e)
@@ -146,13 +146,13 @@ void headerTests(int &testNumber)
 
 	{
 		TEST_INTRO(testNumber++);
-		Http::Request Http::Request;
+		Http::Request Request;
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
 			"Host: www.example.com\r\n";
 		try
 		{
-			EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
+			EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("no CRLF at the end");
 		}
 		catch(const std::exception& e)

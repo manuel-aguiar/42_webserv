@@ -1,9 +1,9 @@
-#include "../../Http::Request.hpp"
+#include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void lineTests(int &testNumber)
 {
-	Http::Request	Http::Request;
+	Http::Request Request;
 	std::string	requestData;
 
 	TEST_HEADER("Http Request - Line");
@@ -25,7 +25,7 @@ void lineTests(int &testNumber)
 		"\r\n";
 	try
 	{
-		EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+		EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
 		TEST_PASSED_MSG("Common GET request");
 	}
 	catch(const std::exception& e)

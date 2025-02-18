@@ -1,7 +1,7 @@
 # Makefile
 
-# TARGET_DEBUG 			=		debug_Http::Request.out
-TARGET_TEST 			=		test_Http::Request.out
+# TARGET_DEBUG 			=		debug_Request.out
+TARGET_TEST 			=		test_Request.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 

@@ -46,6 +46,8 @@ namespace Http
                 INCOMPLETE,
                 COMPLETED
             };
+            
+            Request();
 
             Request(Http::Connection& conn); //blockfinder, Conn::Connection (Http::Connection->Conn::Connection->ServerContext->BLockfinder)
             ~Request();

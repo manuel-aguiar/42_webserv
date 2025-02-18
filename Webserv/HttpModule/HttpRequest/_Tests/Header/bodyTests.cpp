@@ -28,7 +28,7 @@ void bodyTests(int &testNumber)
 
 	try
 	{
-		EXPECT_EQUAL(Http::Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+		EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
 		TEST_PASSED_MSG("Common request");
 	}
 	catch(const std::exception& e)

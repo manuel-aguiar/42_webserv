@@ -10,6 +10,17 @@
 
 namespace Http
 {
+
+///////////// RETAINED FOR TESTING, DELETE WHEN DONE /////////////
+Request::Request()
+    : m_status(Http::Status::OK)
+    , m_timeout(30) // 30 seconds default timeout
+    , m_httpConn(*reinterpret_cast<Http::Connection*>(0))
+    , m_parsingState(IDLE)
+     {}
+/////////////////////////////////////////////////////////////////
+
+
 Request::Request(Http::Connection& conn)
     : m_status(Http::Status::OK)
     , m_timeout(30) // 30 seconds default timeout

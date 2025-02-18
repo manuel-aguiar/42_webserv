@@ -1,4 +1,4 @@
-#include "../../Http::Request.hpp"
+#include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void lineTests(int &testNumber);

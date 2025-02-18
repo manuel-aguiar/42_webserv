@@ -1,9 +1,9 @@
-#include "../../Http::Request.hpp"
+#include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void stateTransitionTests(int &testNumber)
 {
-	Http::Request Http::Request;
+	Http::Request Request;
 	std::string requestData;
 
 	TEST_HEADER("Http Request - State Machine Tests");
@@ -13,10 +13,10 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	try
 	{
-		EXPECT_EQUAL(Http::Request.isStarted(), false, "Should be in IDLE state initially");
-		EXPECT_EQUAL(Http::Request.isError(), false, "Should not be in ERROR state initially");
-		EXPECT_EQUAL(Http::Request.isIncomplete(), false, "Should not be in INCOMPLETE state initially");
-		EXPECT_EQUAL(Http::Request.isCompleted(), false, "Should not be in COMPLETED state initially");
+		EXPECT_EQUAL(Request.isStarted(), false, "Should be in IDLE state initially");
+		EXPECT_EQUAL(Request.isError(), false, "Should not be in ERROR state initially");
+		EXPECT_EQUAL(Request.isIncomplete(), false, "Should not be in INCOMPLETE state initially");
+		EXPECT_EQUAL(Request.isCompleted(), false, "Should not be in COMPLETED state initially");
 		TEST_PASSED_MSG("Initial state checks");
 	}
 	catch(const std::exception& e)
