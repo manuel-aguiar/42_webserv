@@ -8,7 +8,7 @@ NAME					=		test.out
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug/Toolkit
 
 # Sources
 SRCS					=		$(SRC_PATH)/MemoryPool/SlabAllocator/_Tests/main.cpp	\

@@ -8,7 +8,7 @@ CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SRCS_TEST				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/Internals/_main.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/_Tests/Internals/_test1.cpp

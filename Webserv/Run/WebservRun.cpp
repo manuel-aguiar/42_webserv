@@ -24,9 +24,9 @@
 # include <signal.h>
 
 
-int	WebservRun(const char* programName, const ServerConfig& config);
-int SingleServerRun(const char* programName, const ServerConfig& config);
-int MultiServerRun(const char* programName, const ServerConfig& config);
+int	WebservRun(const char* programName, ServerConfig& config);
+int SingleServerRun(const char* programName, ServerConfig& config);
+int MultiServerRun(const char* programName, ServerConfig& config);
 
 int maxEventsEstimate(const ServerConfig& config)
 {

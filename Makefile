@@ -62,6 +62,8 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
+		\
+		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 																									\
 																									\
 		$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp								\
@@ -95,6 +97,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp							\
 		$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp								\
 		$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp									\
+		$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp												\
 		$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp										\
 		$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp											\
 		$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
