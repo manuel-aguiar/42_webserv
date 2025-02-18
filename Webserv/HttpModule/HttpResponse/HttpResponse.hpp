@@ -23,7 +23,7 @@ namespace Http
 	class Response
 	{
 		public:
-			Response(Http::Request& myRequest, ServerContext &context);
+			Response(Http::Connection& conn, Http::Request& myRequest);
 			Response(const Response& other);
 			~Response();
 			Response& operator=(const Response& other);
@@ -32,11 +32,13 @@ namespace Http
 
 			void	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
+			void    reset(); // reset the response to its initial state
+
 		private:
 			void	generateResponse(int statusCode);
 
 			Http::Request&			m_myRequest;
-			ServerContext&			m_context;
+			Http::Connection&		m_connection;
 			File*					m_file;
 			ServerBlock*			m_serverBlock;
 			ServerLocation*			m_location;

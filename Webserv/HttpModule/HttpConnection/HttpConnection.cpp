@@ -17,7 +17,7 @@ Connection::Connection(Http::Module& module)
 	  m_writeTimer(),
 	  m_myTimer(),
 	  m_tcpConn(NULL),
-	  m_transactions() {}
+	  m_transaction(*this) {}
 
 Connection::~Connection() {}
 
@@ -63,22 +63,22 @@ Connection::ReadWrite()
 	if (triggeredEvents & Events::Monitor::READ)
 	{
 		m_readBuffer.read(sockfd);
-		if (m_transactions.size() == 0 || m_transactions.back().request.getParsingState() == Http::Request::COMPLETED)
-			m_transactions.push_back(Transaction(*this, m_tcpConn->accessServerContext()));
-		m_transactions.back().request.parse(m_readBuffer);
+		//if (m_transactions.size() == 0 || m_transactions.back().request.getParsingState() == Http::Request::COMPLETED)
+		//	m_transactions.push_back(Transaction(*this, m_tcpConn->accessServerContext()));
+		m_transaction.request.parse(m_readBuffer);
 	}
 
 	// write
 	if (triggeredEvents & Events::Monitor::WRITE)
 	{
-		if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
-		{
-			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
-			return ;
-		}
-		if (m_transactions.size() == 0)
-			return ;
-		m_transactions.front().response.fillWriteBuffer(m_writeBuffer);
+		//if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
+		//{
+		//	m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
+		//	return ;
+		//}
+		//if (m_transactions.size() == 0)
+		//	return ;
+		m_transaction.response.fillWriteBuffer(m_writeBuffer);
 		m_writeBuffer.write(sockfd);
 	}
 }
@@ -113,7 +113,8 @@ Connection::close()
 	m_readTimer = Timer();
 	m_writeTimer = Timer();
 
-	m_transactions.clear();
+	m_transaction.request.reset();
+	m_transaction.response.reset();
 
 	m_module.returnConnection(*this);
 	m_tcpConn->close();

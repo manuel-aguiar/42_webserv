@@ -58,6 +58,8 @@ namespace Http
 
 			int parse(const Buffer& buffer);
 			int parse(const std::string& rawData);
+			
+			void reset(); // reset the request to its initial state
 
 			// parsing states, as a state machine
 			bool isStarted() const;

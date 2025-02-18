@@ -11,7 +11,7 @@ namespace Http
 {
 	struct Transaction
 	{
-		Transaction(Http::Connection& connection, ServerContext& context);
+		Transaction(Http::Connection& connection);
 		Transaction(const Transaction& other);
 		~Transaction();
 		Transaction& operator=(const Transaction& other);
