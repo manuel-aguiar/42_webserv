@@ -71,6 +71,9 @@ const char* getStatusMessage(int statusCode)
 		codes[i] = Http::Status::NETWORK_AUTHENTICATION_REQUIRED; 	messages[i] = "Network Authentication Required"; 	i++;
 
 		initialized = true;
+		
+		// size test
+		ASSERT_EQUAL(i, Http::Status::_TOTAL_CODES, "Status code array size mismatch");
 
 		// making sure the array is written as sorted, no duplicates and strictly ascending status code order
 		#ifndef NDEBUG
