@@ -11,11 +11,11 @@ namespace Http { class Connection; class Request; class Response;}
 
 namespace Http
 {
-	class CgiGateway
+	class HttpCgiGateway
 	{
 		public:
-			CgiGateway(Cgi::Module& module, Http::Response& request);
-			~CgiGateway();
+			HttpCgiGateway(Cgi::Module& module, Http::Response& request);
+			~HttpCgiGateway();
 
 			// to be called with interactions from client
 			void	read();
@@ -31,7 +31,7 @@ namespace Http
 			Cgi::IO::BytesCount	write(Ws::fd writeFd);
 
 			// Cgi Callbacks
-			static void onPrepareRequest  			(Http::CgiGateway& gateway);
+			static void onPrepareRequest  			(Http::HttpCgiGateway& gateway);
 			static void onSuccess					(Cgi::User user);
 			static void onErrorStartup				(Cgi::User user);
 			static void onErrorRuntime				(Cgi::User user);

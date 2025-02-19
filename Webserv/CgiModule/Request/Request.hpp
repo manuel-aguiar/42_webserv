@@ -70,7 +70,7 @@ namespace Cgi
 			Cgi::RequestState::Type					m_state;
 			Cgi::Options::Mask						m_options;
 
-			void								mf_reset();
+			void									mf_reset();
 	};
 };
 

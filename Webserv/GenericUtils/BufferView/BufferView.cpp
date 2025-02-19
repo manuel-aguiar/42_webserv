@@ -12,6 +12,7 @@ const
 size_t BufferView::npos = static_cast<size_t>(-1);
 
 // Constructors
+BufferView::BufferView() : m_data(NULL), m_size(0) {}
 BufferView::BufferView(const std::string& str) : m_data(str.c_str()), m_size(str.size()) {}
 BufferView::BufferView(const char* str) : m_data(str), m_size(strlen(str)) {}
 BufferView::BufferView(const void* data, const size_t len) : m_data(static_cast<const char*>(data)), m_size(len) {}
@@ -25,6 +26,8 @@ BufferView& BufferView::operator=(const BufferView& other)
 {
 	if (this == &other)
 		return (*this);
+	m_data = other.m_data;
+	m_size = other.m_size;
 	return (*this);
 }
 

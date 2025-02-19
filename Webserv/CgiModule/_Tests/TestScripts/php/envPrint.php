@@ -10,22 +10,25 @@ $env_vars = [
     "SERVER_SOFTWARE", "CUSTOM_ENTRY1", "CUSTOM_ENTRY2", "CUSTOM_ENTRY3"
 ];
 
+header("Connection: close");  // Invalid header
+header("Transfer-Encoding: chunkedasfasfasfasf");  // Invalid header
+echo "Content-Type: text/html; charset=UTF-8";  // Valid header
+
+echo " wtf : ";
+header("asgasgasgasgasgasgasgasg: close");  // Invalid header
+header("Status: 404 Not Found");  // Invalid header
+header("Status: 404 Not Found");  // Invalid header
+header("Status: 404 Not Found");  // Invalid header
+header("Status: 404 Not Found");  // Invalid header
+echo " wtf : ";
+echo " wtf : ";
+
 // Fetch and print each environment variable using getenv()
 foreach ($env_vars as $var) {
     $value = getenv($var);
     echo "$var: " . ($value !== false ? $value : "<not set>") . "\n";
 }
 
-// Read from stdin and print the contents
-$stdin = fopen('php://stdin', 'r');
-
-if ($stdin) {
-    while ($line = fgets($stdin)) {
-        echo $line;
-    }
-    fclose($stdin);
-} else {
-    echo "Error opening stdin.\n";
-}
+echo " wtf : ";
 
 ?>

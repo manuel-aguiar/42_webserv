@@ -10,6 +10,7 @@
 // Toolkit headers
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
 
+# include "../../GenericUtils/Buffer/Buffer.hpp"
 // C++ headers
 # include <string>
 
@@ -84,7 +85,8 @@ class Worker
 		
 		// External sources
 		ImplModule&		m_CgiModule;
-
+		
+		Buffer			m_ScriptBuffer;
 		// execute
 
 

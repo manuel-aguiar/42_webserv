@@ -1,8 +1,8 @@
 
 
-# include "CgiGateway.hpp"
-# include "../Request/Request.hpp"
-# include "../Response/Response.hpp"
+# include "HttpCgiGateway.hpp"
+# include "../HttpRequest/HttpRequest.hpp"
+# include "../HttpResponse/HttpResponse.hpp"
 
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 
@@ -10,7 +10,7 @@
 
 namespace Http
 {
-CgiGateway::CgiGateway(Cgi::Module& cgi, Http::Response& response) : 
+HttpCgiGateway::HttpCgiGateway(Cgi::Module& cgi, Http::Response& response) : 
 	m_module(cgi),
 	m_cgiRequest(NULL),
 	m_response(response),
@@ -23,11 +23,11 @@ CgiGateway::CgiGateway(Cgi::Module& cgi, Http::Response& response) :
 {
 }
 
-CgiGateway::~CgiGateway()
+HttpCgiGateway::~HttpCgiGateway()
 {
 }
 
-void	CgiGateway::close()
+void	HttpCgiGateway::close()
 {
 	if (m_cgiRequest)
 	{
@@ -36,7 +36,7 @@ void	CgiGateway::close()
 	}
 }
 
-void	CgiGateway::prepareRequest()
+void	HttpCgiGateway::prepareRequest()
 {
 	m_cgiRequest = m_module.acquireRequest();
 	if (!m_cgiRequest)
@@ -50,47 +50,47 @@ void	CgiGateway::prepareRequest()
 }
 
 void
-CgiGateway::onSuccess					(Cgi::User user)
+HttpCgiGateway::onSuccess					(Cgi::User user)
 {
 	// inform response, all done
 }
 
 void
-CgiGateway::onErrorStartup				(Cgi::User user)
+HttpCgiGateway::onErrorStartup				(Cgi::User user)
 {
 	// inform response, no can do
 }
 
 void
-CgiGateway::onErrorRuntime				(Cgi::User user)
+HttpCgiGateway::onErrorRuntime				(Cgi::User user)
 {
 	// inform response, no can do
 }
 
 void
-CgiGateway::onErrorTimeOut				(Cgi::User user)
+HttpCgiGateway::onErrorTimeOut				(Cgi::User user)
 {
 	// inform response, no can do
 }
 
 Cgi::IO::BytesCount
-CgiGateway::onRead	(Cgi::User user, Ws::fd readFd)
+HttpCgiGateway::onRead	(Cgi::User user, Ws::fd readFd)
 {
-	Http::CgiGateway* gateway = reinterpret_cast<Http::CgiGateway*>(user);
+	Http::HttpCgiGateway* gateway = reinterpret_cast<Http::HttpCgiGateway*>(user);
 	gateway->storeReadAvailable(readFd);
 	return (1);
 }
 
 Cgi::IO::BytesCount
-CgiGateway::onWrite	(Cgi::User user, Ws::fd writeFd)
+HttpCgiGateway::onWrite	(Cgi::User user, Ws::fd writeFd)
 {
-	Http::CgiGateway* gateway = reinterpret_cast<Http::CgiGateway*>(user);
+	Http::HttpCgiGateway* gateway = reinterpret_cast<Http::HttpCgiGateway*>(user);
 	return (gateway->write(writeFd));
 }
 
 
 void
-CgiGateway::storeReadAvailable(const Ws::fd& readFd)
+HttpCgiGateway::storeReadAvailable(const Ws::fd& readFd)
 {
 	m_readFd = readFd;
 	m_readAvailable = true;
@@ -105,7 +105,7 @@ CgiGateway::storeReadAvailable(const Ws::fd& readFd)
 
 */
 void
-CgiGateway::read()
+HttpCgiGateway::read()
 {
 	Buffer buffer;
 
@@ -128,7 +128,7 @@ CgiGateway::read()
 }
 
 Cgi::IO::BytesCount
-CgiGateway::write(Ws::fd writeFd)
+HttpCgiGateway::write(Ws::fd writeFd)
 {
 	const std::string& msgBody = m_request.getMsgBody();
 
