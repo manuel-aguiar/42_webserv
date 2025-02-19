@@ -53,10 +53,9 @@ void stateTransitionTests(int &testNumber)
 			EXPECT_EQUAL(request.isStarted(), true, "Should be started after partial request");
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::REQLINE, "Should stay in REQLINE state with partial data");
 
-			// Complete request line
-			Buffer<1024> completeBuffer;
-			completeBuffer.push("GET /index.html HTTP/1.1\r\n");
-			request.parse(completeBuffer);
+			// Complete request line by sending only the missing part
+			buffer.push(" HTTP/1.1\r\n");  // Only send the missing part
+			request.parse(buffer);
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::HEADERS, "Should transition to HEADERS state");
 			TEST_PASSED_MSG("Request line parsing state transitions passed");
 		}
