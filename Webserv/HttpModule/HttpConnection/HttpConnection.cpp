@@ -76,6 +76,12 @@ Connection::ReadWrite()
 		if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
 		{
 			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
+			
+			// if wrote everything and response is finished, close connection
+			if (m_writeBuffer.size() == 0 
+			&& m_transaction.response.getStatus() == Http::Response::FINISHED)
+				close(); // transaction finished
+
 			return ;
 		}
 		
@@ -83,8 +89,12 @@ Connection::ReadWrite()
 		switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
 		{
 			case Http::Response::FINISHED:
-			{
-				close(); // transaction finished
+			{	
+				m_writeBuffer.write(sockfd);
+
+				// if wrote everything, close connection
+				if (m_writeBuffer.size() == 0)
+					close(); // transaction finished
 				return ;
 			}
 
@@ -94,7 +104,7 @@ Connection::ReadWrite()
 				return ;
 			}
 
-			case Http::Response::WAITING:
+			case Http::Response::WAITING: // nothing
 				break ;
 		}
 	}

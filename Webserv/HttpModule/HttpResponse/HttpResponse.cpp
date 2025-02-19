@@ -57,7 +57,8 @@ Http::Response::Response(Http::Connection& conn, Http::Request& myRequest):
 	m_connection	(conn),
 	m_file			(NULL),
 	m_serverBlock	(NULL),
-	m_location		(NULL)
+	m_location		(NULL),
+	m_status		(Response::WAITING)
 {
 	// If there were errors during parsing, respond with error page
 	if (myRequest.getStatus() != Http::Status::OK)
@@ -187,7 +188,8 @@ namespace Http
 		m_connection(other.m_connection),
 		m_file(other.m_file),
 		m_serverBlock(other.m_serverBlock),
-		m_location(other.m_location) {}
+		m_location(other.m_location),
+		m_status(other.m_status) {}
 
 	Response::~Response() {}
 
@@ -228,6 +230,12 @@ namespace Http
 		// tell the buffer to read from file directly buffer.read(file.fd())
 		// or push directory listing to buffer
 		// or push error page to buffer
+	}
+
+	Response::Status 
+	Response::getStatus() const
+	{
+		return (m_status);
 	}
 }
 

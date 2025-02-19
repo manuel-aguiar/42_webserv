@@ -39,18 +39,21 @@ namespace Http
 
 			const char* getMessage(int statusCode);
 
-			Status	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Status  	getStatus() const;
+			
+			Status		fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
-			void    reset(); // reset the response to its initial state
+			void    	reset(); // reset the response to its initial state
 
 		private:
-			void	generateResponse(int statusCode);
+			void		generateResponse(int statusCode);
 
 			Http::Request&			m_myRequest;
 			Http::Connection&		m_connection;
 			File*					m_file;
 			ServerBlock*			m_serverBlock;
 			ServerLocation*			m_location;
+			Status					m_status;
 
 			std::string				m_pendingWrite;		// cache data that you generated but couldn't write
 	};
