@@ -1,0 +1,200 @@
+# Adding CgiModule
+
+The only folder you need to look at is Webserv/CgiModule
+Toolkit changes are the same as from feature/Connections (PR #96). As they are dependencies here, i need them here for this unit to make sense.
+
+The CgiModule folder exposes 2 objects for the user to interact with, from the Cgi namespace:
+Cgi::Module
+Cgi::Request
+
+## Cgi::Module
+
+This is what coordinates the workers and requests, tracks execution stage, timeouts, callbacks, forks and pipes.
+Externally there are three important groups of methods exposed:
+
+```
+            // client facing functions to acquire and enqueue a request
+            Cgi::Request*	acquireRequest();
+            void			enqueueRequest(Cgi::Request& data, bool isCalledFromEventLoop);
+            void			modifyRequest(Cgi::Request& data, bool isCalledFromEventLoop, Options::Mask newOptions);
+            void			finishRequest(Cgi::Request& data, bool isCalledFromEventLoop);
+            
+            // Controller functions to add to their event loop
+            int			processRequests();
+            void			stopAndReset();
+
+            // configuration of the Module
+            void			addInterpreter(const InterpExtension& extension, const InterpPath& path);
+            void			removeInterpreter(const InterpExtension& extension);
+```
+
+### Managing Requests
+As a user, the HttpModule will have to contact the CgiModule (access via ServerContext), and acquire a Cgi::Request (like a ticket for a concert). After acquiring, the user will pass certain variables (check later below) to guide the execution.
+Then, the user will call Cgi::Module::enqueueRequest(), to place the request in the executionQueue (the second parameter is the infamous "is this being callled from an event loop?" It is important for fd tracking. Since The HttpModule will basically react to events on sockets, the HttpModule MUST call this function as Cgi::Module::enqueueRequest(request, true).
+
+modifyRequest allows for some runtime control over execution (like disabling read and re-enabling it, same for write). Usually, the User (HttpModule) doesn't need it -> you want to subscribe and be ready to read and write at any moment. (same parameter for isCalledFromEventLoop, usually should be TRUE given how the program is built).
+
+Optionally, the user may want to finish a request early. Say for instance:
+  Conn::Manager -> forceClose -> calls HttpModule ForceClose "oh-oh, i have asked for a CgiRequest, let me cancel that right now, i am leaving and i have some extra cleanp to do". Or maybe you had a timeout for the httpRequest to be answered and it expired while you requested for a Cgi execution -> finishrequest()
+That is where Cgi::Module::finishRequest() comes in (with the friendly, usually true boolean for being called from an event loop).
+The user doesn't have to call finishRequest under normal circumstances, as the CgiModule tracks such state and will reclaim the request as soon as it detects success or failure. For completion, the user can call finishRequest after receiving a success/fail notification but it is not required.
+
+### Setting up Tnterpreters
+For the CgiModule to work, it needs interpreters: that's where addInterppreter removeInterpreter come in. They take an extension (as a key) and a path to an interpreter. These are expected to be setup BEFORE the server starts running full speed.
+Detection of interpreters must be inferred from ServerConfig. In the odd change, you also have a removeInterpreter method but it is most likely not needed in the context of our project.
+
+
+####Controller (server) methods.
+
+These are methods that the User of the module (protocol Modules like the HttpModule) don't need to worry about but is up to the server to coordinate:
+```
+            // Controller functions to add to their event loop
+
+            int			processRequests();  // cleanup timedout requests and enqueue those that may be waiting
+                                                                       // called in the server main loop while(1) loop
+            void			stopAndReset();      // close all running requests, stop all workers, empty execution queue
+                                                                       // fire alaram run for the exit. The server will call this when it must shutdown.
+                                                                       // notifies all running request's users with ON_ERROR_RUNTIME
+```
+
+## Cgi::Request
+
+This is the object the user will interact with after calling Cgi::Module::acquireRequest().
+It provides a lot of setters to have the user fill, such that the CgiModule can use inputs and call the user back. Here we go, step by step isanybodygoingtoreadthisanyway:
+
+// object that will be called back in case of IO or Notify events
+			```
+void						setUser				(const Cgi::User user);
+
+			// user sets callbacks for sucess, timeout...
+			// not mandatory, if user doesn't set, it doesn't get called
+			void						setNotify_Callback	(const Cgi::Notify::Type type, 
+															const Cgi::Notify::Callback handler);
+
+			// MANDATORY, the CgiModule will call this such that the user controls its own reading/Writing
+			void						setIO_Callback		(const Cgi::IO::Type type, 
+															const Cgi::IO::Callback handler);
+			// user setter for cgi environment variables
+			void						setEnvBase			(const Cgi::Env::Enum::Type env, 
+															const Cgi::EnvValue& value);
+			// extra variables (http specific variables, for example)												
+			void						setEnvExtra			(const Cgi::EnvKey& key, 
+															const Cgi::EnvValue& value);
+			// interpreter extension, script path, timeout to execute the script												
+			void						setExtension		(const Cgi::InterpExtension& extension);
+			void						setScriptPath		(const Cgi::ScriptPath& path);
+			void						setTimeoutMs		(const unsigned int timeoutMs);
+
+			// runtime options to delay reading writing, not mandatory to use
+			void						setRuntimeOptions	(const Cgi::Options::Mask options);		
+
+			const Cgi::EnvVariables&	getEnvVars() const;
+			const Cgi::InterpExtension&	getExtension() const;
+			const Cgi::ScriptPath&		getScriptPath() const;
+			unsigned int				getTimeoutMs() const;
+
+```
+
+### Callbacks
+
+The CgiModule requires two types of callbacks: notify and IO.
+
+#### Notify Callbacks
+When a request executes correct/or times out/ or runtime fails/or fails on startup, the CgiModule will let the user know such that they can proceed as they wish with that information. Let's say a request times out (not executed within the timeframe that the user indicated), the CgiModule will call the ON_ERROR_TIMEOUT callback passed to it by the user. The user may have, on that callback, pre-.prepared a response to the client "sorry, internal server error". Or, the request executes sucessfullly, Cgi::Module informs the user of success, the user on_success callback may be "ok i have the full script output, let's start sending to client!") Hope you get the point.
+None of these are mandatory -> if you don't subscribe one, you don't "get called". Plenty of tests (Webserv/CgiModule/_Tests) don't provide callbacks for all notifications.
+
+#### IO Callbacks
+
+These callbacks are used when the Cgi::Module gets a read or write notification from the script. It will call these calllbacks to pass control to the user to read and write as they seem fit, to manage their own buffers, etc. That way, the CgiModule get's decoupled from the actual reading and writing and doesn't need to know about buffers and internals, let the user be responsible for that.
+#####Note: unfortunatelly, when setting these callbacks, the USER MUST RETURN THE NUMBER OF BYTES READ AND WRITTEN. The CgiModule needs this information to be sure that fds are closed or not. Some of these events can only be found by reading the fd....... so please give that information in the return value of your IO Callbacks....
+
+## Example (from Webserv/CgiModule/_Tests/Main/test1.cpp ~~ line 89
+```
+
+	try
+	{
+		TEST_INTRO(testNumber++);
+
+		Globals globals(NULL, NULL, NULL, NULL);
+		Events::Manager eventManager(30, globals);
+		Cgi::Module cgi(10, 100, 5000, eventManager, globals);
+		TestProtoRequest protoRequest(globals, cgi, 0);
+
+		// configuration of the CgiModule
+		cgi.addInterpreter("py", "/usr/bin/python3");
+
+		// acquiring a request
+		protoRequest.m_CgiRequestData = cgi.acquireRequest();
+		
+		Cgi::Request& request = *protoRequest.m_CgiRequestData;
+
+		// tell the request who the user of the callbacks is
+		request.setUser(&protoRequest);
+
+		// notification callbacks
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		request.setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
+
+		// IO callbacks
+		request.setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);
+		request.setIO_Callback(Cgi::IO::WRITE, &TestProtoRequest_CgiGateway::onWrite);
+
+		// options, you can ignore this
+		request.setRuntimeOptions(Cgi::Options::HOLD_WRITE); // "if write events gets triggered, don't write just yet"
+		
+		// if the request cannot be completed in 5ms, time out
+		request.setTimeoutMs(5000); // 5ms
+
+		// setting extension
+		request.setExtension("py");
+
+		// where the script is
+		request.setScriptPath("TestScripts/py/envPrint.py");
+
+		// set an environment variable that is part of the Cgi specification
+		request.setEnvBase(Cgi::Env::Enum::AUTH_TYPE, "Basic");
+
+		// set an environment variable that is not part of the Cgi specification, maybe HTTP_SOME_STUFF
+		request.setEnvExtra("CUSTOM_ENTRY1", "a random value");
+
+		CgiStressTest::prepareExpectedOutput(true, protoRequest);
+
+		// place the request for execution. if the user attempts to change execution parameters, the program will ABORT
+		cgi.enqueueRequest(request, false);
+
+		// options, don't worry about it, but if you want to change the request, you "can" do it here
+		cgi.modifyRequest(request, false, Cgi::Options::RESTART_WRITE);
+
+		//event loop
+		while (1)
+		{
+			// Controller incorporating the CgiModule in its event loop
+			unsigned int nextWait = cgi.processRequests();
+			
+			if (eventManager.getMonitoringCount() != 0)
+				// event handler, used by the cgimodule as well as the Conn::Manager, etc
+				eventManager.ProcessEvents(nextWait);
+			else
+				break ;
+		}
+
+		// no need to call finish request, the CgiModule takes the request as finished.
+
+		// tests
+		EXPECT_EQUAL(std::string(protoRequest.m_buffer), protoRequest.m_ExpectedOutput, "Script output doesn't match expected");
+		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
+		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
+		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_SUCCESS, "ProtoRequest didn't receive success notice");
+		EXPECT_EQUAL(protoRequest.m_TotalBytesRead, protoRequest.m_ExpectedOutput.length(), "Script output doesn't match expected");
+		
+		TEST_PASSED_MSG("executing a script");
+	}
+	catch (const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
+```
+
+### added Toolkit and Events from feature/Connections, important dependency
