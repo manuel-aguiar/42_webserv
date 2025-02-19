@@ -1,0 +1,62 @@
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp: In function 'void regularBodyTests(int&)':
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:117:28: error: no matching function for call to 'Buffer<1024>::Buffer(const char [44])'
+  117 |                      "\r\n");
+      |                            ^
+In file included from /usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../HttpRequest.hpp:18,
+                 from /usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:1:
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note: candidate: 'Buffer<Size>::Buffer() [with long unsigned int Size = 1024]'
+   13 |                 Buffer() : BaseBuffer(m_data, m_data + Size) {}
+      |                 ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note:   candidate expects 0 arguments, 1 provided
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note: candidate: 'Buffer<1024>::Buffer(const Buffer<1024>&)'
+   10 | class Buffer : public BaseBuffer
+      |       ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note:   no known conversion for argument 1 from 'const char [44]' to 'const Buffer<1024>&'
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:122:33: error: missing template arguments before '(' token
+  122 |             Request.parse(Buffer("Hello"));
+      |                                 ^
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:125:33: error: missing template arguments before '(' token
+  125 |             Request.parse(Buffer("WorldExtra"));
+      |                                 ^
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:140:48: error: 'to_string' is not a member of 'std'
+  140 |                      "Content-Length: " + std::to_string(Http::HttpStandard::MAX_BODY_LENGTH + 1) + "\r\n"
+      |                                                ^~~~~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:140:48: note: 'std::to_string' is only available from C++17 onwards
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:161:28: error: no matching function for call to 'Buffer<1024>::Buffer(const char [44])'
+  161 |                      "\r\n");
+      |                            ^
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note: candidate: 'Buffer<Size>::Buffer() [with long unsigned int Size = 1024]'
+   13 |                 Buffer() : BaseBuffer(m_data, m_data + Size) {}
+      |                 ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note:   candidate expects 0 arguments, 1 provided
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note: candidate: 'Buffer<1024>::Buffer(const Buffer<1024>&)'
+   10 | class Buffer : public BaseBuffer
+      |       ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note:   no known conversion for argument 1 from 'const char [44]' to 'const Buffer<1024>&'
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:166:33: error: missing template arguments before '(' token
+  166 |             Request.parse(Buffer(""));
+      |                                 ^
+In file included from /usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:2:
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:169:46: error: missing template arguments before '(' token
+  169 |             EXPECT_EQUAL(Request.parse(Buffer("HelloWorld")), (int)Http::Status::OK, "Complete data should pass");
+      |                                              ^
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../../Toolkit/TestHelpers/TestHelpers.h:187:55: note: in definition of macro 'EXPECT_EQUAL'
+  187 |                         TestHelpers::expectEqualImpl((actual), (expected), #actual, #expected, (message), __FILE__, __LINE__, __FUNCTION__);
+      |                                                       ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:196:48: error: no matching function for call to 'Buffer<1024>::Buffer(std::__cxx11::basic_string<char>)'
+  196 |                      "--" + boundary + "--\r\n");
+      |                                                ^
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note: candidate: 'Buffer<Size>::Buffer() [with long unsigned int Size = 1024]'
+   13 |                 Buffer() : BaseBuffer(m_data, m_data + Size) {}
+      |                 ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:13:17: note:   candidate expects 0 arguments, 1 provided
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note: candidate: 'Buffer<1024>::Buffer(const Buffer<1024>&)'
+   10 | class Buffer : public BaseBuffer
+      |       ^~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/../../../../GenericUtils/Buffer/Buffer.hpp:10:7: note:   no known conversion for argument 1 from 'std::__cxx11::basic_string<char>' to 'const Buffer<1024>&'
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp: In function 'void chunkedBodyTests(int&)':
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:365:28: error: 'to_string' is not a member of 'std'
+  365 |                       std::to_string(part1.length()) + "\r\n" +
+      |                            ^~~~~~~~~
+/usr/src/myapp/./Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp:365:28: note: 'std::to_string' is only available from C++17 onwards
+make: *** [Makefile:60: /usr/src/myapp/_build/debug/Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.o] Error 1

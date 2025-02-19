@@ -26,6 +26,13 @@ namespace Http { class Connection; } // servercontext (blockfinder), sockaddr,
 class ServerBlock;
 class ServerLocation;
 
+// TODOs:
+// Correct handling for the buffer
+// Chunk transfer parsing
+// Streaming to disk
+// Finding block/location based on host (needs expansion)
+// Validating request components against the configs
+
 struct ChunkInfo
 {
 	size_t size;
@@ -125,8 +132,22 @@ namespace Http
 			std::string								m_queryString;
 			std::string								m_fragment;
 
+			enum BodyType {
+				NONE,
+				REGULAR,
+				CHUNKED
+			};
+
+			enum ContentType {
+				RAW,
+				MULTIPART
+			};
+
 			// data sent by client, also used as internal buffer
 			std::string								m_body;
+			BodyType								m_bodyType;
+			ContentType								m_contentType;
+			size_t									m_expectedLength;
 
 			// Helper functions for parsing
 			void		mf_handleRequestLine(const BufferView& buffer);
@@ -139,7 +160,10 @@ namespace Http
 			ChunkInfo					mf_parseChunkHeader(const std::string& data, size_t pos);
 			Http::Status::Number		mf_parseChunkedBody(const std::string& data);
 			bool						mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
+			Http::Status::Number		mf_parseMultipartData(const std::string& data);
 			Http::Status::Number		mf_parseRegularBody(const std::string& data);
+			Http::Request::BodyType		mf_bodyType();
+			Http::Request::ContentType	mf_contentType();
 
 			Http::Status::Number		mf_findBlock(); //internally checks Blockfinder for the block true:ok false:error,
 	};

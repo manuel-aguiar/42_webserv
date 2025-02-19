@@ -19,6 +19,9 @@ Request::Request()
     , m_status(Http::Status::OK)
     , m_timeout(30) // 30 seconds default timeout
     , m_parsingState(IDLE)
+    , m_bodyType(NONE)
+    , m_contentType(RAW)
+    , m_expectedLength(0)
 
      {}
 /////////////////////////////////////////////////////////////////
@@ -31,6 +34,9 @@ Request::Request(Http::Connection& conn)
     , m_status(Http::Status::OK)
     , m_timeout(30) // 30 seconds default timeout
     , m_parsingState(IDLE)
+    , m_bodyType(NONE)
+    , m_contentType(RAW)
+    , m_expectedLength(0)
 {}
 
 Request::~Request()
@@ -51,6 +57,9 @@ Request::Request(const Request& copy)
     , m_queryString(copy.m_queryString)
     , m_fragment(copy.m_fragment)
     , m_body(copy.m_body)
+    , m_bodyType(copy.m_bodyType)
+    , m_contentType(copy.m_contentType)
+    , m_expectedLength(copy.m_expectedLength)
     {}
 
 Request&
@@ -71,7 +80,9 @@ Request::operator=(const Request& copy)
     m_queryString = copy.m_queryString;
     m_fragment = copy.m_fragment;
     m_body = copy.m_body;
-
+    m_bodyType = copy.m_bodyType;
+    m_contentType = copy.m_contentType;
+    m_expectedLength = copy.m_expectedLength;
     return (*this);
 }
 

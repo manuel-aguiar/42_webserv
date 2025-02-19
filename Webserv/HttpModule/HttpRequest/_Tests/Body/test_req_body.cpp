@@ -1,5 +1,8 @@
 #include "../../HttpRequest.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
+#include "../../../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../../../GenericUtils/BufferView/BufferView.hpp"
+#include <sstream>
 
 void regularBodyTests(int &testNumber)
 {
@@ -8,14 +11,15 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Content-Length: 13\r\n" +
-            "\r\n" +
-            "Hello, World!";
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: 13\r\n"
+                   "\r\n"
+                   "Hello, World!");
+
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
             EXPECT_EQUAL(Request.getBody(), "Hello, World!", "Body content should match");
             TEST_PASSED_MSG("Valid body with Content-Length");
@@ -29,15 +33,15 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\nContent-Length: abc\r\n\r\n");
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: abc\r\n"
+                   "\r\n");
 
         try
         {
-            // Test invalid Content-Length value
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Invalid Content-Length should fail");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
-
             TEST_PASSED_MSG("Handled invalid Content-Length value");
         }
         catch(const std::exception& e)
@@ -49,63 +53,31 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Content-Length: -1\r\n" +
-            "\r\n";
-        try
-        {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Should fail");
-            EXPECT_EQUAL(Request.getBody(), "", "Body content should match");
-            TEST_PASSED_MSG("Invalid Content-Length");
-        }
-        catch(const std::exception& e)
-        {
-            TEST_FAILED_MSG(e.what());
-        }
-    }
-
-    {
-        TEST_INTRO(testNumber++);
-        Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\nContent-Length: 13\r\n\r\n");
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: 20\r\n"
+                   "\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
-            EXPECT_EQUAL(Request.parse(std::string("Hello, World!")), (int)Http::Status::OK, "Should pass");
-            EXPECT_EQUAL(Request.getBody(), "Hello, World!", "Body content should match");
-            TEST_PASSED_MSG("Valid body with Content-Length");
-        }
-        catch(const std::exception& e)
-        {
-            TEST_FAILED_MSG(e.what());
-        }
-    }
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be in body state");
 
-    {
-        TEST_INTRO(testNumber++);
-        Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\nContent-Length: 20\r\n\r\n");
+            buffer.push("Hello");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be in body state");
 
-        try
-        {
-            // Send data in multiple chunks
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Initial parse should pass");
-            EXPECT_EQUAL(Request.parse("Hello"), (int)Http::Status::OK, "First chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should be incomplete");
+            buffer.push(", ");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be in body state");
 
-            EXPECT_EQUAL(Request.parse(", "), (int)Http::Status::OK, "Second chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should still be incomplete");
+            buffer.push("World");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be in body state");
 
-            EXPECT_EQUAL(Request.parse("World"), (int)Http::Status::OK, "Third chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should still be incomplete");
-
-            EXPECT_EQUAL(Request.parse("!!!!!!!!"), (int)Http::Status::OK, "Final chunk should pass");
+            buffer.push("!!!!!!!!");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
-
             EXPECT_EQUAL(Request.getBody(), "Hello, World!!!!!!!!", "Final body should match");
             TEST_PASSED_MSG("Streamed body with multiple chunks");
         }
@@ -118,17 +90,39 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\nContent-Length: 10\r\n\r\n");
+        Buffer<1024> buffer;
+        std::stringstream ss;
+        ss << "POST /test HTTP/1.1\r\n"
+           << "Content-Length: " << Http::HttpStandard::MAX_BODY_LENGTH + 1 << "\r\n"
+           << "\r\n";
+        buffer.push(ss.str());
 
         try
         {
-            // Test sending more data than Content-Length
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Initial parse should pass");
-            EXPECT_EQUAL(Request.parse("Hello"), (int)Http::Status::OK, "First chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should be incomplete");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
+            TEST_PASSED_MSG("Handled too large Content-Length");
+        }
+        catch(const std::exception& e)
+        {
+            TEST_FAILED_MSG(e.what());
+        }
+    }
 
-            EXPECT_EQUAL(Request.parse("WorldExtra"), (int)Http::Status::BAD_REQUEST, "Exceeding Content-Length should fail");
+    {
+        TEST_INTRO(testNumber++);
+        Http::Request Request;
+        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
+                     "Content-Length: 10\r\n"
+                     "\r\n");
+
+        try
+        {
+            Request.parse(buffer);
+            Request.parse(Buffer("Hello"));
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be incomplete");
+
+            Request.parse(Buffer("WorldExtra"));
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
 
             TEST_PASSED_MSG("Handled overflow data correctly");
@@ -142,13 +136,13 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        // Test with max body length + 1
-        std::stringstream ss;
-        ss << "POST /test HTTP/1.1\r\nContent-Length: " << (Http::HttpStandard::MAX_BODY_LENGTH + 1) << "\r\n\r\n";
+        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
+                     "Content-Length: " + std::to_string(Http::HttpStandard::MAX_BODY_LENGTH + 1) + "\r\n"
+                     "\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(ss.str()), (int)Http::Status::PAYLOAD_TOO_LARGE, "Should reject too large Content-Length");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
 
             TEST_PASSED_MSG("Handled too large Content-Length");
@@ -162,20 +156,52 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\nContent-Length: 10\r\n\r\n");
+        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
+                     "Content-Length: 10\r\n"
+                     "\r\n");
 
         try
         {
-            // Test empty chunks
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Initial parse should pass");
-            EXPECT_EQUAL(Request.parse(""), (int)Http::Status::OK, "Empty chunk should be accepted");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should still be incomplete");
+            Request.parse(buffer);
+            Request.parse(Buffer(""));
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be incomplete");
 
-            EXPECT_EQUAL(Request.parse("HelloWorld"), (int)Http::Status::OK, "Complete data should pass");
+            EXPECT_EQUAL(Request.parse(Buffer("HelloWorld")), (int)Http::Status::OK, "Complete data should pass");
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
 
             TEST_PASSED_MSG("Handled empty chunks correctly");
+        }
+        catch(const std::exception& e)
+        {
+            TEST_FAILED_MSG(e.what());
+        }
+    }
+
+    {
+        TEST_INTRO(testNumber++);
+        Http::Request Request;
+        std::string boundary = "------------------------12345";
+        Buffer<1024> buffer("POST /upload HTTP/1.1\r\n"
+                     "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+                     "Content-Length: 213\r\n"
+                     "\r\n"
+                     "--" + boundary + "\r\n"
+                     "Content-Disposition: form-data; name=\"field1\"\r\n"
+                     "\r\n"
+                     "value1\r\n"
+                     "--" + boundary + "\r\n"
+                     "Content-Disposition: form-data; name=\"field2\"\r\n"
+                     "\r\n"
+                     "value2\r\n"
+                     "--" + boundary + "--\r\n");
+
+        try
+        {
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
+            EXPECT_EQUAL(Request.getBody().find("value1") != std::string::npos, true, "Should contain first field");
+            EXPECT_EQUAL(Request.getBody().find("value2") != std::string::npos, true, "Should contain second field");
+            TEST_PASSED_MSG("Valid multipart form-data request");
         }
         catch(const std::exception& e)
         {
@@ -191,20 +217,20 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n" +
-            "5\r\n"
-            "Hello\r\n"
-            "5\r\n"
-            "World\r\n"
-            "0\r\n"
-            "\r\n";
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n"
+                   "5\r\n"
+                   "Hello\r\n"
+                   "5\r\n"
+                   "World\r\n"
+                   "0\r\n"
+                   "\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Valid chunked request should pass");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
             EXPECT_EQUAL(Request.getBody(), "HelloWorld", "Body should be correctly assembled");
             TEST_PASSED_MSG("Valid chunked request");
@@ -218,26 +244,27 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n";
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n");
 
         try
         {
-            // Test streaming chunks
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Initial headers should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should be incomplete");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be incomplete");
 
-            EXPECT_EQUAL(Request.parse("5\r\nHello\r\n"), (int)Http::Status::OK, "First chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should still be incomplete");
+            buffer.push("5\r\nHello\r\n");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be incomplete");
 
-            EXPECT_EQUAL(Request.parse("5\r\nWorld\r\n"), (int)Http::Status::OK, "Second chunk should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::INCOMPLETE, "Should still be incomplete");
+            buffer.push("5\r\nWorld\r\n");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be incomplete");
 
-            EXPECT_EQUAL(Request.parse("0\r\n\r\n"), (int)Http::Status::OK, "Final chunk should pass");
+            buffer.push("0\r\n\r\n");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
-
             EXPECT_EQUAL(Request.getBody(), "HelloWorld", "Final body should match");
             TEST_PASSED_MSG("Streamed chunked request");
         }
@@ -250,16 +277,16 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n" +
-            "invalid\r\n"
-            "World\r\n";
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n"
+                   "invalid\r\n"
+                   "World\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Invalid chunk size should fail");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
             TEST_PASSED_MSG("Invalid chunk size handled");
         }
@@ -272,18 +299,18 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n" +
-            "5\r\n"
-            "Hello\r" // Missing \n in chunk data delimiter
-            "5\r\n"
-            "World\r\n";
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n"
+                   "5\r\n"
+                   "Hello\r"
+                   "5\r\n"
+                   "World\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::BAD_REQUEST, "Invalid chunk format should fail");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
             TEST_PASSED_MSG("Invalid chunk format handled");
         }
@@ -296,20 +323,22 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        // Test with chunk size exceeding max allowed
-        std::stringstream ss;
-        ss << std::hex << (Http::HttpStandard::MAX_CHUNK_SIZE + 1) << "\r\n";
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n" +
-            ss.str();
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n"
+                   "5\r\n"
+                   "Hello\r\n"
+                   "0\r\n"
+                   "Trailer: value\r\n"
+                   "\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::PAYLOAD_TOO_LARGE, "Too large chunk should fail");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
-            TEST_PASSED_MSG("Too large chunk size handled");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
+            EXPECT_EQUAL(Request.getBody(), "Hello", "Body should be correctly assembled");
+            TEST_PASSED_MSG("Chunked request with trailers");
         }
         catch(const std::exception& e)
         {
@@ -320,22 +349,62 @@ void chunkedBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        std::string requestData =
-            std::string("POST /test HTTP/1.1\r\n") +
-            "Transfer-Encoding: chunked\r\n" +
-            "\r\n" +
-            "5\r\n"
-            "Hello\r\n"
-            "0\r\n"
-            "Trailer: value\r\n" // trailing headers
-            "\r\n";
+        std::string boundary = "------------------------12345";
+        Buffer<1024> buffer;
+        buffer.push("POST /upload HTTP/1.1\r\n"
+                   "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+                   "Transfer-Encoding: chunked\r\n"
+                   "\r\n");
+
+        std::string part1 = "--" + boundary + "\r\n"
+                           "Content-Disposition: form-data; name=\"field1\"\r\n"
+                           "\r\n"
+                           "value1\r\n";
+
+        Buffer<1024> buffer2(std::string() +
+                      std::to_string(part1.length()) + "\r\n" +
+                      part1 + "\r\n");
 
         try
         {
-            EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Chunked request with trailers should pass");
-            EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
-            EXPECT_EQUAL(Request.getBody(), "Hello", "Body should be correctly assembled");
-            TEST_PASSED_MSG("Chunked request with trailers");
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be in body state");
+
+            Request.parse(buffer2);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be in body state");
+
+            TEST_PASSED_MSG("Valid chunked multipart form-data request");
+        }
+        catch(const std::exception& e)
+        {
+            TEST_FAILED_MSG(e.what());
+        }
+    }
+}
+
+void multipartBodyTests(int &testNumber)
+{
+    TEST_HEADER("Http Request - Multipart Body");
+
+    {
+        TEST_INTRO(testNumber++);
+        Http::Request Request;
+        std::string boundary = "------------------------12345";
+        Buffer<1024> buffer;
+        buffer.push("POST /upload HTTP/1.1\r\n"
+                   "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+                   "Content-Length: 100\r\n"
+                   "\r\n"
+                   "--" + boundary + "\r\n"
+                   "Content-Disposition: form-data; name=\"field1\"\r\n"
+                   "\r\n"
+                   "incomplete");
+
+        try
+        {
+            Request.parse(buffer);
+            EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should stay in body state");
+            TEST_PASSED_MSG("Partial multipart form-data handling");
         }
         catch(const std::exception& e)
         {
@@ -349,5 +418,6 @@ int main()
     int testNumber = 1;
     regularBodyTests(testNumber);
     chunkedBodyTests(testNumber);
+    multipartBodyTests(testNumber);
     return 0;
 }

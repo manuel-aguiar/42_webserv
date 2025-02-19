@@ -174,6 +174,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 
         // Update body and state
         m_body = assembled_body;
+        m_expectedLength = m_body.length();
         m_parsingState = BODY;
         return Http::Status::OK;
     }
@@ -211,6 +212,7 @@ Http::Request::mf_parseRegularBody(const std::string& data)
     }
 
     size_t contentLength = static_cast<size_t>(contentLengthInt);
+    m_expectedLength = contentLength;
     // TODO: later get this from server config
     if (contentLength > Http::HttpStandard::MAX_BODY_LENGTH) {
         return Http::Status::PAYLOAD_TOO_LARGE;
@@ -233,27 +235,68 @@ Http::Request::mf_parseRegularBody(const std::string& data)
 }
 
 Http::Status::Number
-Http::Request::mf_parseBody(const BufferView& body)
+Http::Request::mf_parseMultipartData(const std::string& data)
+{
+    static_cast<void>(data);
+    return Http::Status::OK;
+}
+
+Http::Request::BodyType
+Http::Request::mf_bodyType()
+{
+    if (m_headers.find("Transfer-Encoding") != m_headers.end() &&
+        m_headers["Transfer-Encoding"] == "chunked") {
+        return CHUNKED;
+    }
+
+    return REGULAR;
+}
+
+Http::Request::ContentType
+Http::Request::mf_contentType()
+{
+    if (m_headers.find("Content-Type") != m_headers.end() &&
+        m_headers["Content-Type"] == "multipart/form-data") {
+        return MULTIPART;
+    }
+
+    return RAW;
+}
+
+Http::Status::Number
+Http::Request::mf_parseBody(const BufferView& buffer)
 {
     // TODO: do a better handling of the body with a buffer view
     std::string data;
-    body.to_string(data);
+    buffer.to_string(data);
 
     try {
-        // check which type of body we are parsing
-        if (m_headers.find("Transfer-Encoding") != m_headers.end() &&
-            m_headers["Transfer-Encoding"] == "chunked") {
-            m_status = mf_parseChunkedBody(data);
+        if (m_bodyType == NONE) {
+            m_bodyType = mf_bodyType();
+            m_contentType = mf_contentType();
         }
 
-        else if (m_headers.find("Content-Length") != m_headers.end()) {
+        // Get raw bytes according to transfer type
+        std::string extractedData;
+        if (m_bodyType == CHUNKED) {
+            m_status = mf_parseChunkedBody(data);
+        } else {
             m_status = mf_parseRegularBody(data);
         }
 
-        else {
-            // no header match means something is wrong
+        if (m_status != Http::Status::OK) {
             m_parsingState = ERROR;
-            m_status = Http::Status::BAD_REQUEST;
+            return m_status;
+        }
+
+        // Interpreter for the received body
+        if (m_contentType == MULTIPART) {
+            m_status = mf_parseMultipartData(extractedData);
+        } else {
+            m_body += extractedData;
+            if (m_body.length() == m_expectedLength) {
+                m_parsingState = COMPLETED;
+            }
         }
     }
     catch (const std::exception& e) {
