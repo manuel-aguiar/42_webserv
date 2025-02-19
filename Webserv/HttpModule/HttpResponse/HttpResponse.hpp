@@ -22,15 +22,24 @@ namespace Http
 {
 	class Response
 	{
+
+
 		public:
 			Response(Http::Connection& conn, Http::Request& myRequest);
 			Response(const Response& other);
 			~Response();
 			Response& operator=(const Response& other);
-			
+
+			typedef enum
+			{
+				WAITING, // have nothing to push, no sign transaction is finished
+				WRITING, // pushed data to buffer
+				FINISHED // transaction is finished
+			}	Status;
+
 			const char* getMessage(int statusCode);
 
-			void	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Status	fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
 			void    reset(); // reset the response to its initial state
 

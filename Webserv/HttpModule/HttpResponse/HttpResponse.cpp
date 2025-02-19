@@ -204,7 +204,7 @@ namespace Http
 		return (*this);
 	}
 
-	void
+	Response::Status
 	Response::fillWriteBuffer(Buffer& writeBuffer)
 	{
 		int pushed = 0;
