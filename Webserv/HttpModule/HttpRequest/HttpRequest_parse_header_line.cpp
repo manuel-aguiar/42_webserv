@@ -14,9 +14,12 @@
 #include <sstream>
 
 Http::Status::Number
-Http::Request::mf_parseHeaders(const std::string& data)
+Http::Request::mf_parseHeaders(const BufferView &headers)
 {
-	std::istringstream	stringStream(data);
+	// TODO: do a better handling of the headers with a buffer view
+	std::string headersString;
+	headers.to_string(headersString);
+	std::istringstream	stringStream(headersString);
 	std::string			line;
 
 	while (std::getline(stringStream, line) && !line.empty())

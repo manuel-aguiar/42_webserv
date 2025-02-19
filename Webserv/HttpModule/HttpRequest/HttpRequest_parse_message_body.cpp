@@ -105,10 +105,10 @@ bool Http::Request::mf_validateAndExtractChunk(const std::string& data, const Ch
 // transfer-encoding: chunked
 // last raw body = "5\r\nHello\r\n" -> total: 10 bytes
 // m_body = "Hello"
-// status = INCOMPLETE
+// status = BODY
 // next raw body = "5\r\nWorld\r\n" -> total: 10 bytes
 // m_body = "Hello World"
-// status = INCOMPLETE
+// status = BODY
 // next raw body = "3\r\n!!!\r\n" -> total: 10 bytes
 // m_body = "Hello World!!!"
 // status = COMPLETED
@@ -137,7 +137,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
                     return Http::Status::OK;
                 }
 
-                m_parsingState = INCOMPLETE;
+                m_parsingState = BODY;
                 return Http::Status::OK;
             }
 
@@ -150,7 +150,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
             // Ensure we have the full chunk data
             if (chunk.headerEnd + chunk.size + 2 > data.length()) {
                 m_body = assembled_body;
-                m_parsingState = INCOMPLETE;
+                m_parsingState = BODY;
                 return Http::Status::OK;
             }
 
@@ -174,7 +174,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 
         // Update body and state
         m_body = assembled_body;
-        m_parsingState = INCOMPLETE;
+        m_parsingState = BODY;
         return Http::Status::OK;
     }
     catch (const std::exception& e) {
@@ -187,7 +187,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 // content-length: 10
 // last raw body = "Hello" -> total: 5 bytes
 // m_body = "Hello"
-// status = INCOMPLETE
+// status = BODY
 // next raw body = "World" -> total: 5 bytes
 // m_body = "Hello World"
 // status = COMPLETED
@@ -228,13 +228,17 @@ Http::Request::mf_parseRegularBody(const std::string& data)
     }
 
     // we don't have the full body yet
-    m_parsingState = INCOMPLETE;
+    m_parsingState = BODY;
     return Http::Status::OK;
 }
 
 Http::Status::Number
-Http::Request::mf_parseBody(const std::string& data)
+Http::Request::mf_parseBody(const BufferView& body)
 {
+    // TODO: do a better handling of the body with a buffer view
+    std::string data;
+    body.to_string(data);
+
     try {
         // check which type of body we are parsing
         if (m_headers.find("Transfer-Encoding") != m_headers.end() &&

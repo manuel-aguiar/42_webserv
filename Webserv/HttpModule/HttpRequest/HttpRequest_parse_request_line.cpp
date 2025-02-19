@@ -74,11 +74,14 @@ Http::Request::mf_parseUriComponents(const std::string& uri)
 }
 
 Http::Status::Number
-Http::Request::mf_parseRequestLine(const std::string& line)
+Http::Request::mf_parseRequestLine(const BufferView& line)
 {
+    std::string lineString;
+    line.to_string(lineString);
+
     try {
-        size_t firstSpace = line.find(' ');
-        size_t lastSpace = line.rfind(' ');
+        size_t firstSpace = lineString.find(' ');
+        size_t lastSpace = lineString.rfind(' ');
 
         // this check is important because it ensures that the request line is valid
         // and that it has at least three components
@@ -88,12 +91,16 @@ Http::Request::mf_parseRequestLine(const std::string& line)
             return Http::Status::BAD_REQUEST;
 
         // also only one space between components
-        if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
+        if (lineString[firstSpace + 1] == ' ' || lineString[lastSpace - 1] == ' ')
             return Http::Status::BAD_REQUEST;
 
-        m_method = line.substr(0, firstSpace);
-        m_uri = line.substr(firstSpace + 1, lastSpace - firstSpace - 1);
-        m_httpVersion = line.substr(lastSpace + 1);
+        m_method = lineString.substr(0, firstSpace);
+        m_uri = lineString.substr(firstSpace + 1, lastSpace - firstSpace - 1);
+        m_httpVersion = lineString.substr(lastSpace + 1);
+
+        // line.substr(0, firstSpace).to_string(m_method);
+        // line.substr(firstSpace + 1, lastSpace - firstSpace - 1).to_string(m_uri);
+        // line.substr(lastSpace + 1).to_string(m_httpVersion);
 
         // Check if method is allowed using HttpDefinitions
         // TODO: later get this from server config

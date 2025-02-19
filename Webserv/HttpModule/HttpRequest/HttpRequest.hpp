@@ -15,11 +15,14 @@
 # include <set>
 # include <iostream>
 # include "../HttpDefinitions.hpp"
+#include "../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../GenericUtils/BufferView/BufferView.hpp"
 
 // Forward declarations
 class BaseBuffer;
+class BufferView;
 
-namespace Http { class Connection;} // servercontext (blockfinder), sockaddr,
+namespace Http { class Connection; } // servercontext (blockfinder), sockaddr,
 class ServerBlock;
 class ServerLocation;
 
@@ -43,11 +46,9 @@ namespace Http
 			enum ParsingState
 			{
 				IDLE,
-				STARTED,
-				ONHEADER,
-				ONREQLINE,
-				ONBODY,
-				INCOMPLETE,
+				REQLINE,
+				HEADERS,
+				BODY,
 				COMPLETED,
 				ERROR
 			};
@@ -59,24 +60,22 @@ namespace Http
 			Request(const Request& copy);
 			Request& operator=(const Request& assign);
 
+			void	reset(); // reset the request to its initial state
+			void	done(); // inform Http::Connection this request and response can be removed from queue
+
 			// Main parsing interface
-			int parse(const BaseBuffer& buffer);
-			int parse(const std::string& rawData);
+			void parse(const BaseBuffer& buffer);
 
-			void reset(); // reset the request to its initial state
-
-			// parsing states, as a state machine
+			// parsing states (computed)
 			bool isStarted() const;
-			bool isError() const;
-			bool isIncomplete() const;
+			bool isIncompleted() const;
 			bool isCompleted() const;
+			bool isError() const;
 
 			const ParsingState& getParsingState() const;
 
 			ServerBlock*    getServerBlock() const; //Http::connection needs, http timeouts
 			ServerLocation* getServerLocation() const;
-
-			void            done(); // inform Http::Connection this request and response can be removed from queue
 
 			// http status for this request
 			Http::Status::Number                        getStatus() const;
@@ -103,17 +102,14 @@ namespace Http
 				};
 
 		private:
-
-
-
 			// main parsers
-			Http::Status::Number	mf_parseRequestLine(const std::string& line);
-			Http::Status::Number	mf_parseHeaders(const std::string& line);
-			Http::Status::Number	mf_parseBody(const std::string& data);
+			Http::Status::Number	mf_parseRequestLine(const BufferView& buffer);
+			Http::Status::Number	mf_parseHeaders(const BufferView& buffer);
+			Http::Status::Number	mf_parseBody(const BufferView& buffer);
 
 			// internal variables
 			Http::Connection&						m_httpConn;
-			ServerBlock*							m_serverBlock;      // ServerBlock specific http specs
+			ServerBlock*							m_serverBlock;
 			ServerLocation*							m_serverLocation;
 
 			Http::Status::Number    				m_status;
@@ -133,9 +129,9 @@ namespace Http
 			std::string								m_body;
 
 			// Helper functions for parsing
-			Http::Status::Number		mf_parseFirstIncomming(const std::string& rawData);
-			Http::Status::Number		mf_handleStreamedBody(const std::string& rawData);
-			Http::Status::Number		mf_handlePostBody(const std::string& rawData, size_t bodyStart);
+			void		mf_handleRequestLine(const BufferView& buffer);
+			void		mf_handleHeaders(const BufferView& buffer);
+			void		mf_handleBody(const BufferView& buffer);
 
 			Http::Status::Number		mf_parseUriComponents(const std::string& uri);
 			std::string					mf_decodeUriComp(const std::string& encoded) const;
@@ -145,7 +141,6 @@ namespace Http
 			bool						mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
 			Http::Status::Number		mf_parseRegularBody(const std::string& data);
 
-			//
 			Http::Status::Number		mf_findBlock(); //internally checks Blockfinder for the block true:ok false:error,
 	};
 
