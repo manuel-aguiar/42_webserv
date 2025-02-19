@@ -71,15 +71,42 @@ Connection::ReadWrite()
 	// write
 	if (triggeredEvents & Events::Monitor::WRITE)
 	{
-		//if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
-		//{
-		//	m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
-		//	return ;
-		//}
-		//if (m_transactions.size() == 0)
-		//	return ;
-		m_transaction.response.fillWriteBuffer(m_writeBuffer);
-		m_writeBuffer.write(sockfd);
+
+		// still have data on buffer, write that first
+		if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
+		{
+			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
+			
+			// if wrote everything and response is finished, close connection
+			if (m_writeBuffer.size() == 0 
+			&& m_transaction.response.getStatus() == Http::Response::FINISHED)
+				close(); // transaction finished
+
+			return ;
+		}
+		
+		// ask response for data
+		switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
+		{
+			case Http::Response::FINISHED:
+			{	
+				m_writeBuffer.write(sockfd);
+
+				// if wrote everything, close connection
+				if (m_writeBuffer.size() == 0)
+					close(); // transaction finished
+				return ;
+			}
+
+			case Http::Response::WRITING:
+			{
+				m_writeBuffer.write(sockfd); // got data, write
+				return ;
+			}
+
+			case Http::Response::WAITING: // nothing
+				break ;
+		}
 	}
 }
 
