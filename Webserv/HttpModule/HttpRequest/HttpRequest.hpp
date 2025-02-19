@@ -1,7 +1,7 @@
 /* *********************************/
 /*                                 */
-/*   Http::Request.hpp               */
-/*   - defines the Http::Request      */
+/*   Http::Request.hpp             */
+/*   - defines the Http::Request    */
 /*    class.                       */
 /*                                 */
 /* *********************************/
@@ -23,7 +23,8 @@ namespace Http { class Connection;} // servercontext (blockfinder), sockaddr,
 class ServerBlock;
 class ServerLocation;
 
-struct ChunkInfo {
+struct ChunkInfo
+{
 	size_t size;
 	size_t headerEnd;
 };
@@ -43,11 +44,14 @@ namespace Http
 			{
 				IDLE,
 				STARTED,
-				ERROR,
+				ONHEADER,
+				ONREQLINE,
+				ONBODY,
 				INCOMPLETE,
-				COMPLETED
+				COMPLETED,
+				ERROR
 			};
-			
+
 			Request();
 			Request(Http::Connection& conn); //blockfinder, Conn::Connection (Http::Connection->Conn::Connection->ServerContext->BLockfinder)
 			~Request();
@@ -56,10 +60,9 @@ namespace Http
 			Request& operator=(const Request& assign);
 
 			// Main parsing interface
-
 			int parse(const BaseBuffer& buffer);
 			int parse(const std::string& rawData);
-			
+
 			void reset(); // reset the request to its initial state
 
 			// parsing states, as a state machine
@@ -76,7 +79,7 @@ namespace Http
 			void            done(); // inform Http::Connection this request and response can be removed from queue
 
 			// http status for this request
-			Http::Status::Number                           getStatus() const;
+			Http::Status::Number                        getStatus() const;
 
 			// Getters for components
 			const std::string& 							getMethod() const;
@@ -84,7 +87,6 @@ namespace Http
 			const std::string& 							getHttpVersion() const;
 			const std::map<HeaderKey, HeaderValue>&	    getHeaders() const;
 			const std::string& 							getBody() const;
-			const std::map<std::string, std::string>&   getUriComponents() const;
 
 			const std::string&                          getPath() const;
 			const std::string&                          getQueryString() const;
@@ -99,10 +101,10 @@ namespace Http
 				private:
 					std::string m_message;
 				};
-				
+
 		private:
-		
-					
+
+
 
 			// main parsers
 			Http::Status::Number	mf_parseRequestLine(const std::string& line);
@@ -123,10 +125,8 @@ namespace Http
 			std::string								m_uri;
 			std::string								m_httpVersion;
 			std::map<HeaderKey, HeaderValue>		m_headers;
-			std::map<std::string, std::string>		m_uriComponents;  // delete replace by \/
-
 			std::string								m_path;
-			std::string								m_queryString; //no decoding/breaking down -> cgi module (responbility of the script)
+			std::string								m_queryString;
 			std::string								m_fragment;
 
 			// data sent by client, also used as internal buffer
@@ -138,7 +138,7 @@ namespace Http
 			Http::Status::Number		mf_handlePostBody(const std::string& rawData, size_t bodyStart);
 
 			Http::Status::Number		mf_parseUriComponents(const std::string& uri);
-			std::string					mf_decodeUri(const std::string& encoded, bool strict = true) const;
+			std::string					mf_decodeUriComp(const std::string& encoded) const;
 
 			ChunkInfo					mf_parseChunkHeader(const std::string& data, size_t pos);
 			Http::Status::Number		mf_parseChunkedBody(const std::string& data);

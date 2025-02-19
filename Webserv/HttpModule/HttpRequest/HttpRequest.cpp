@@ -49,7 +49,9 @@ Request::Request(const Request& copy)
     , m_uri(copy.m_uri)
     , m_httpVersion(copy.m_httpVersion)
     , m_headers(copy.m_headers)
-    , m_uriComponents(copy.m_uriComponents)
+    , m_path(copy.m_path)
+    , m_queryString(copy.m_queryString)
+    , m_fragment(copy.m_fragment)
     , m_body(copy.m_body)
     {}
 
@@ -68,9 +70,10 @@ Request::operator=(const Request& copy)
     m_uri = copy.m_uri;
     m_httpVersion = copy.m_httpVersion;
     m_headers = copy.m_headers;
-    m_uriComponents = copy.m_uriComponents;
+    m_path = copy.m_path;
+    m_queryString = copy.m_queryString;
+    m_fragment = copy.m_fragment;
     m_body = copy.m_body;
-
 
     return (*this);
 }
@@ -220,9 +223,19 @@ const std::string& Request::getBody() const
     return (m_body);
 }
 
-const std::map<std::string, std::string>& Request::getUriComponents() const
+const std::string& Request::getPath() const
 {
-    return (m_uriComponents);
+    return (m_path);
+}
+
+const std::string& Request::getQueryString() const
+{
+    return (m_queryString);
+}
+
+const std::string& Request::getFragment() const
+{
+    return (m_fragment);
 }
 
 Http::Status::Number Request::getStatus() const
