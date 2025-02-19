@@ -119,6 +119,14 @@ namespace Cgi
 				INSUFFICIENT,
 			};
 
+			enum State
+			{
+				HEADERS,
+				TEMP_BODY,
+				BODY,
+				FINISH
+			};
+
 			Status parse(BufferView& view);
 			
 			const std::vector<CgiHeader>& getHeaders() const { return (m_headers); }
@@ -127,13 +135,7 @@ namespace Cgi
 			
 
 		private:
-			enum State
-			{
-				HEADERS,
-				TEMP_BODY,
-				BODY,
-				FINISH
-			};
+
 			
 			State						m_state;
 			int							m_totalHeaderBytes;
@@ -247,9 +249,15 @@ Cgi::Response::Status	Cgi::Response::parse(BufferView& view)
 
 	if (view.size() == 0)
 	{
-		m_state = Response::FINISH;
-		//eof received, inform the client there is no more info comming up
-	};
+
+		if (m_state == Response::BODY)
+		{
+			m_state = Response::FINISH;
+			return (Response::PASS);
+		}
+		else
+			return (Response::INSUFFICIENT);
+	}
 
 	while (view.size() > 0)
 	{
@@ -294,8 +302,14 @@ int main(void)
 	readBuffer.push("us: 200\n\n", std::strlen("us: 200\n\n"));
 	readView = (BufferView){readView.data(), readView.size() + std::strlen("us: 200\n\n")};
 	response.parse(readView);
+
 	std::cout << readView.size() << "  '" << readView << "'" << std::endl;
-	response.parse(readView);
+
+	if (response.parse(readView) != Cgi::Response::PASS)
+	{
+		std::cout << "failed to parse" << std::endl;
+		return (0);
+	}
 
 	return (0);
 }
