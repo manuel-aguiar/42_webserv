@@ -325,11 +325,18 @@ int main(void)
 {
 	Buffer client;
 	Buffer readBuffer;
+	BufferView readView;
 	Cgi::Response response(client);
 
-	readBuffer.push(good, std::strlen(good));
+	readBuffer.push("Stat", 4);
+	readView = readBuffer.view();
 
-	response.parse(view);
+	response.parse(readView);
+
+	readBuffer.push("us: 200\n", 8);
+	readView = (BufferView){readView.data(), readView.size() + 8};
+
+	response.parse(readView);
 
 	return (0);
 }
