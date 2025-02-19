@@ -15,7 +15,7 @@
 class ServerBlock;
 class ServerLocation;
 class ServerContext;
-class Buffer;
+class BaseBuffer;
 namespace Http {class Request;}
 
 namespace Http
@@ -41,7 +41,7 @@ namespace Http
 
 			Status  	getStatus() const;
 			
-			Status		fillWriteBuffer(Buffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Status		fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
 			void    	reset(); // reset the response to its initial state
 

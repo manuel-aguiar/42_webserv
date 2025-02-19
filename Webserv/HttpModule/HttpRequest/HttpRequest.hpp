@@ -17,7 +17,8 @@
 # include "../HttpDefinitions.hpp"
 
 // Forward declarations
-class Buffer;
+class BaseBuffer;
+
 namespace Http { class Connection;} // servercontext (blockfinder), sockaddr,
 class ServerBlock;
 class ServerLocation;
@@ -56,7 +57,7 @@ namespace Http
 
 			// Main parsing interface
 
-			int parse(const Buffer& buffer);
+			int parse(const BaseBuffer& buffer);
 			int parse(const std::string& rawData);
 			
 			void reset(); // reset the request to its initial state

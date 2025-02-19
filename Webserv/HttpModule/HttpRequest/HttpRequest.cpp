@@ -159,7 +159,7 @@ void    Request::reset()
 }
 
 // NOT IMPLEMENTED YET
-int Request::parse(const Buffer& buffer)
+int Request::parse(const BaseBuffer& buffer)
 {
     std::string stringBuffer;
     BufferView(buffer.data(), buffer.size()).to_string(stringBuffer);

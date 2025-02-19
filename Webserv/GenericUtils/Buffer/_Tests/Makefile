@@ -18,7 +18,7 @@ OBJ_PATH	=	$(ROOT_PATH)/_build/debug
 
 SRCS		 =  $(SRC_PATH)/Webserv/GenericUtils/Buffer/_Tests/main.cpp	\
 													\
-				$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
 				\
 				$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
 

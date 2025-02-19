@@ -40,7 +40,7 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
-								$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp											\
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
 										\
 								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\

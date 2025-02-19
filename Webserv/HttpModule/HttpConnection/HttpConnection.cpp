@@ -147,13 +147,13 @@ Connection::close()
 	m_tcpConn->close();
 }
 
-Buffer&
+BaseBuffer&
 Connection::accessReadBuffer()
 {
 	return (m_readBuffer);
 }
 
-Buffer&
+BaseBuffer&
 Connection::accessWriteBuffer()
 {
 	return (m_writeBuffer);

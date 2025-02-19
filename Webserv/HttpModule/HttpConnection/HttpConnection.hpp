@@ -42,15 +42,15 @@ namespace Http
 
 			void 						setMyTCP(Conn::Connection& tcpConn);
 
-			Buffer&						accessReadBuffer();
-			Buffer&						accessWriteBuffer();
+			BaseBuffer&					accessReadBuffer();
+			BaseBuffer&					accessWriteBuffer();
 
 			// clean all stored state to be reused later
 			void						close();
 
 		private:
-        	Buffer 												m_readBuffer;
-        	Buffer 												m_writeBuffer;
+        	Buffer<1024> 										m_readBuffer;
+        	Buffer<1024> 										m_writeBuffer;
 
 			Http::Module& 										m_module;
 			Timer 												m_readTimer;
