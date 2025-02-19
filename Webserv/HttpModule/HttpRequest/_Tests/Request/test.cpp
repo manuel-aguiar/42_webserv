@@ -149,7 +149,7 @@ void stateTransitionTests(int &testNumber)
 	// 			"0\r\n\r\n"
 	// 		);
 	// 		request.parse(completeBuffer);
-			EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be COMPLETED with final chunk");
+	// 		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be COMPLETED with final chunk");
 	// 		TEST_PASSED_MSG("Chunked body parsing state transitions passed");
 	// 	}
 	// 	catch(const std::exception& e) {

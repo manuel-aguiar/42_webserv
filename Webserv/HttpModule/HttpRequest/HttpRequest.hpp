@@ -15,9 +15,9 @@
 # include <set>
 # include <iostream>
 # include "../HttpDefinitions.hpp"
-#include "../../GenericUtils/Buffer/Buffer.hpp"
-#include "../../GenericUtils/BufferView/BufferView.hpp"
-#include "../../ServerContext/ServerContext.hpp"
+# include "../../GenericUtils/Buffer/Buffer.hpp"
+# include "../../GenericUtils/BufferView/BufferView.hpp"
+# include "../../ServerContext/ServerContext.hpp"
 
 // Forward declarations
 class BaseBuffer;
@@ -37,7 +37,7 @@ namespace Http
 	class Request
 	{
 		public:
-			Request::Request(ServerContext &serverContext);
+			Request(ServerContext &serverContext);
 			~Request();
 
 			Request(const Request& copy);

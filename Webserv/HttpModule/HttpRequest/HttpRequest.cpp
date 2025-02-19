@@ -11,7 +11,8 @@
 namespace Http
 {
 
-Request::Request(ServerContext &serverContext): m_serverContext(serverContext)
+Request::Request(ServerContext &serverContext):
+     m_serverContext(serverContext)
 {
     reset();
 }

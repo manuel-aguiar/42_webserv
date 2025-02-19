@@ -9,8 +9,9 @@
 #ifndef HTTP_DEFINITIONS_HPP
 #define HTTP_DEFINITIONS_HPP
 
-#include <string>
-#include <set>
+# include <string>
+# include <set>
+# include <map>
 
 namespace Http
 {
