@@ -20,7 +20,7 @@ const char* good= "Content-Type: text/html\n"
 
 # define CGI_SUCCESS 200
 
-# define CGI_MAX_HEADER_SIZE 8192
+# define CGI_MAX_HEADER_SIZE 1024
 
 struct CgiHeader
 {
@@ -103,94 +103,143 @@ static const char* forbiddenHeaders[] =
 	"Upgrade"
 };
 
-namespace Parsing
-{
-	enum State
-	{
-		START,
-		HEADERS,
-		BODY,
-		FINISH
-	};
-}
-
 namespace Cgi
 {
 	class Response
 	{
 		public:
 
-			Response(Buffer& client) : m_state(State::START), m_totalHeaderBytes(0), m_client(client) {}
+			Response(Buffer& client) : m_state(Response::HEADERS), m_totalHeaderBytes(0), m_client(client), m_hasBody(false) {}
 			~Response() {}
 
 			enum Status
 			{
 				PASS,
-				FAIL
+				FAIL,
+				INSUFFICIENT,
 			};
 
 			Status parse(BufferView& view);
+			
+			const std::vector<CgiHeader>& getHeaders() const { return (m_headers); }
+			bool hasBody() const { return (m_hasBody); }
+
+			
 
 		private:
 			enum State
 			{
-				START,
 				HEADERS,
+				TEMP_BODY,
 				BODY,
 				FINISH
 			};
 			
-
-
 			State						m_state;
 			int							m_totalHeaderBytes;
 			std::vector<CgiHeader> 		m_headers;
 			Buffer&						m_client;
-			std::vector<unsigned char>	m_tempBody;
+			bool						m_hasBody;
+			BufferView					m_tempBody;
 
-
+			Status	mf_validateHeaders();
 			Status	mf_parseHeaders(BufferView& view);
 			Status	mf_parseBody(BufferView& view);
 	};
 };
+
+Cgi::Response::Status Cgi::Response::mf_parseBody(BufferView& view)
+{
+	(void)view;
+	return (Response::PASS);
+}
+
+Cgi::Response::Status Cgi::Response::mf_validateHeaders()
+{
+	std::sort(m_headers.begin(), m_headers.end(), CompareHeaders());
+	
+	int status = binSearch(m_headers, (CgiHeader){BufferView("Status"), BufferView()});
+	int contentType = binSearch(m_headers, (CgiHeader){BufferView("Content-Type"), BufferView()});
+	int location = binSearch(m_headers, (CgiHeader){BufferView("Location"), BufferView()});
+
+	if (status == -1 && contentType == -1 && location == -1)
+	{
+		std::cout << "lacking at least one mandatory header" << std::endl;
+		return (Response::FAIL);
+	}
+	
+	if (status == -1)
+		status = CGI_SUCCESS;
+	else
+		status = std::atoi(m_headers[status].value.data());
+
+	if (location != -1)
+		m_hasBody = true;
+
+	for (size_t i = 0; i < sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]); ++i)
+	{
+		if (binSearch(m_headers, (CgiHeader){BufferView(forbiddenHeaders[0]), BufferView()}) != -1)
+		{
+			std::cout << "forbidden header included: " << forbiddenHeaders[0] << std::endl;
+			return (Cgi::Response::FAIL);
+		}
+	}
+	std::cout << "headers validated" << std::endl;
+	return (Response::PASS);
+}
 
 Cgi::Response::Status Cgi::Response::mf_parseHeaders(BufferView& view)
 {
 	size_t pos = view.find(CGI_LINE_SEPARATOR);
 	if (pos == BufferView::npos)
 	{
-		std::cout << "no newline found" << std::endl;
-		//return (1);
+		return (Response::INSUFFICIENT);
 	}
-	size_t end = view.find(CGI_LINE_SEPARATOR, pos);
 
-	if (end == 0)
-	{
-		view = view.substr(pos + 1, view.size() - pos - 1);
-		m_state = State::BODY;
-	}
 
 	BufferView line = view.substr(0, pos);
 	size_t next = line.find(CGI_HEADER_SEPARATOR, 2, 0);
 	if (next == BufferView::npos)
 	{
-		return (Status::FAIL);
-		std::cout << "no coma separator found " << std::endl;
-		//return (2);
+		std::cout << "no coma separator found in header" << std::endl;
+		return (Response::FAIL);
 	}
 	BufferView key = line.substr(0, next);
 	BufferView value = line.substr(next + 2, line.size() - next - 2);
-
 	if (binSearch(m_headers, (CgiHeader){key, value}) != -1)
 	{
-		return (Status::FAIL);
 		std::cout << "duplicate header found: " << key << std::endl;
-		//return (3);
+		return (Response::FAIL);
 	}
 
 	m_headers.push_back((CgiHeader){key, value});	// save header
+	std::cout << "key: '" <<  m_headers[0].key << "', value: '" << m_headers[0].value << "'" << std::endl;
+
+	size_t end = view.find(CGI_LINE_SEPARATOR, pos + 1);
+	std::cout << "first newline found at: " << pos << std::endl;
+	std::cout << "second newline found at: " << end << std::endl;
+	if (end == pos + 1)
+	{
+		std::cout << "found second newline, " << std::endl;
+		view = view.substr(pos + 2, view.size() - pos - 2);
+		if (mf_validateHeaders() == Response::FAIL)
+			return (Response::FAIL);
+		std::cout << "m_hasbody" << m_hasBody << std::endl;
+		if (view.size() > 0)
+		{
+			if (m_hasBody == true)
+				m_tempBody = view;
+			else
+				return (Response::FAIL);
+		}
+		std::cout << "should reach here" << std::endl;
+		m_state = Response::BODY;
+		return (Response::PASS);
+	}
 
 	view = view.substr(line.size() + 1, view.size() - line.size() - 1); // move view to one past end of line
+	
+	return (Response::PASS);
 }
 
 Cgi::Response::Status	Cgi::Response::parse(BufferView& view)
@@ -198,127 +247,37 @@ Cgi::Response::Status	Cgi::Response::parse(BufferView& view)
 
 	if (view.size() == 0)
 	{
-		m_state = State::FINISH;
+		m_state = Response::FINISH;
 		//eof received, inform the client there is no more info comming up
 	};
 
 	while (view.size() > 0)
 	{
-		switch (m_state)
+		switch ((int)m_state)
 		{
-			case State::HEADERS:
+			case Response::HEADERS:
 			{
-				if (mf_parseHeaders(view) == Status::FAIL)
-					return (Status::FAIL);
+				int retStatus = mf_parseHeaders(view);
+				if (retStatus == Response::FAIL)
+					return (Response::FAIL);
+				else if (retStatus == Response::INSUFFICIENT)
+				{
+					std::cout << "insufficient data for headers" << std::endl;
+					return (Response::INSUFFICIENT);
+				}
 				break ;
 			}
-			case State::BODY:
+			case Response::BODY:
 			{
-				if (mf_parseBody(view) == Status::FAIL)
-					return (Status::FAIL);
+				if (mf_parseBody(view) == Response::FAIL)
+					return (Response::FAIL);
 				break ;
 			}
-			case State::FINISH:
+			case Response::FINISH:
 				break ;
 		}
 	}
-	
-}
-
-
-int main(void)
-{
-	std::vector<CgiHeader> headers;
-	BufferView view(good);
-
-	Parsing::State state = Parsing::HEADERS;
-
-	while (1)
-	{
-		size_t pos = view.find(CGI_LINE_SEPARATOR);
-		if (pos == BufferView::npos)
-		{
-			std::cout << "no newline found" << std::endl;
-			return (1);
-		}
-		size_t end = view.find(CGI_LINE_SEPARATOR, pos);
-
-		if (end == 0)
-		{
-			view = view.substr(pos + 1, view.size() - pos - 1);
-			state = Parsing::BODY;
-			break ; // end of headers
-		}
-
-		BufferView line = view.substr(0, pos);
-		size_t next = line.find(CGI_HEADER_SEPARATOR, 2, 0);
-		if (next == BufferView::npos)
-		{
-			std::cout << "no coma separator found " << std::endl;
-			return (2);
-		}
-		BufferView key = line.substr(0, next);
-		BufferView value = line.substr(next + 2, line.size() - next - 2);
-
-		if (binSearch(headers, (CgiHeader){key, value}) != -1)
-		{
-			std::cout << "duplicate header found: " << key << std::endl;
-			return (3);
-		}
-
-		headers.push_back((CgiHeader){key, value});	// save header
-
-		view = view.substr(line.size() + 1, view.size() - line.size() - 1); // move view to one past end of line
-	}
-	
-	std::sort(headers.begin(), headers.end(), CompareHeaders());
-	
-	int status = binSearch(headers, (CgiHeader){BufferView("Status"), BufferView()});
-	int contentType = binSearch(headers, (CgiHeader){BufferView("Content-Type"), BufferView()});
-	int location = binSearch(headers, (CgiHeader){BufferView("Location"), BufferView()});
-
-	if (status == -1 && contentType == -1 && location == -1)
-	{
-		std::cout << "lacking at least one mandatory header" << std::endl;
-		return (3);
-	}
-	
-	if (status == -1)
-		status = CGI_SUCCESS;
-	else
-		status = std::atoi(headers[status].value.data());
-
-	for (size_t i = 0; i < sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]); ++i)
-	{
-		if (binSearch(headers, (CgiHeader){BufferView(forbiddenHeaders[0]), BufferView()}) != -1)
-		{
-			std::cout << "forbidden header included: " << forbiddenHeaders[0] << std::endl;
-			return (3);
-		}
-	}
-	
-	if (contentType == -1 && view.size() != 0)
-	{
-		std::cout << "no content type header but content found" << std::endl;
-		return (4);
-	}
-	/////////////////////////////////
-
-	// SUCCESS
-
-	std::cout << "status: " << status << std::endl;
-	std::cout << "headers: " << std::endl;
-	for (size_t i = 0; i < headers.size(); ++i)
-	{
-		std::cout << "\t" << headers[i].key << ": " << headers[i].value << std::endl;
-	}
-
-	if (contentType != -1)
-	{
-		std::cout << "body: \t" << view << std::endl;
-	}
-
-	return (0);
+	return (Response::PASS);
 }
 
 int main(void)
@@ -328,14 +287,14 @@ int main(void)
 	BufferView readView;
 	Cgi::Response response(client);
 
-	readBuffer.push("Stat", 4);
+	readBuffer.push("Stat", std::strlen("Stat"));
 	readView = readBuffer.view();
-
 	response.parse(readView);
 
-	readBuffer.push("us: 200\n", 8);
-	readView = (BufferView){readView.data(), readView.size() + 8};
-
+	readBuffer.push("us: 200\n\n", std::strlen("us: 200\n\n"));
+	readView = (BufferView){readView.data(), readView.size() + std::strlen("us: 200\n\n")};
+	response.parse(readView);
+	std::cout << readView.size() << "  '" << readView << "'" << std::endl;
 	response.parse(readView);
 
 	return (0);

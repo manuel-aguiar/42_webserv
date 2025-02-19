@@ -55,7 +55,7 @@ BufferView::at(size_t startPos) const
 BufferView
 BufferView::substr(size_t startPos, size_t targetLength)
 {
-	ASSERT_EQUAL(startPos < m_size, true, "BufferView::substr, accessing beyond the length");
+	ASSERT_EQUAL(startPos <= m_size, true, "BufferView::substr, accessing beyond the length");
 
 	if (targetLength > m_size - startPos)
 		targetLength = m_size - startPos;
