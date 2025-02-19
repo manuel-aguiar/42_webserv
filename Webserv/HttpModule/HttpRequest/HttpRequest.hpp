@@ -15,6 +15,7 @@
 # include <set>
 # include <iostream>
 # include "../HttpDefinitions.hpp"
+# include "../HttpResponse/HttpResponse.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../GenericUtils/BufferView/BufferView.hpp"
 # include "../../ServerContext/ServerContext.hpp"
@@ -23,6 +24,7 @@
 class BaseBuffer;
 class BufferView;
 class ServerContext;
+// namespace Http {class Response;}
 
 typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
 
@@ -43,10 +45,14 @@ namespace Http
 			Request(const Request& copy);
 			Request& operator=(const Request& assign);
 
-			void	reset(); // reset the request to its initial state
+			void										reset(); // reset the request to its initial state
 
 			// Main parsing interface
-			void parse(const BaseBuffer& buffer);
+			void 										parse(const BaseBuffer& buffer);
+
+			// my response
+			Http::Response&								getResponse();
+			void										setResponse(Http::Response& response);
 
 			enum ParsingState
 			{
@@ -59,12 +65,12 @@ namespace Http
 			};
 
 			// parsing states (computed)
-			bool isStarted() const;
-			bool isIncompleted() const;
-			bool isCompleted() const;
-			bool isError() const;
+			bool 										isStarted() const;
+			bool 										isIncompleted() const;
+			bool 										isCompleted() const;
+			bool 										isError() const;
 
-			const ParsingState &getParsingState() const;
+			const ParsingState&							getParsingState() const;
 
 			// http status for this request
 			Http::Status::Number                        getStatus() const;
@@ -94,34 +100,37 @@ namespace Http
 			Request();
 
 			// all global module's context
-			ServerContext&					m_serverContext;
+			ServerContext&								m_serverContext;
+
+			// my response
+			Http::Response								*m_response;
 
 			// internal parsing state
-			ParsingState					m_parsingState;
+			ParsingState								m_parsingState;
 
 			// Components
 			Http::RequestData 				m_data;	// holds request data
 
 			// main parsers
-			Http::Status::Number			mf_parseRequestLine(const BufferView& buffer);
-			Http::Status::Number			mf_parseHeaders(const BufferView& buffer);
-			Http::Status::Number			mf_parseBody(const BufferView& buffer);
+			Http::Status::Number						mf_parseRequestLine(const BufferView& buffer);
+			Http::Status::Number						mf_parseHeaders(const BufferView& buffer);
+			Http::Status::Number						mf_parseBody(const BufferView& buffer);
 
 			// Helper functions for parsing
-			void							mf_handleRequestLine(const BufferView& buffer);
-			void							mf_handleHeaders(const BufferView& buffer);
-			void							mf_handleBody(const BufferView& buffer);
+			void										mf_handleRequestLine(const BufferView& buffer);
+			void										mf_handleHeaders(const BufferView& buffer);
+			void										mf_handleBody(const BufferView& buffer);
 
-			Http::Status::Number			mf_parseUriComponents(const std::string& uri);
-			std::string						mf_decodeUriComp(const std::string& encoded) const;
+			Http::Status::Number						mf_parseUriComponents(const std::string& uri);
+			std::string									mf_decodeUriComp(const std::string& encoded) const;
 
-			ChunkInfo						mf_parseChunkHeader(const std::string& data, size_t pos);
-			Http::Status::Number			mf_parseChunkedBody(const std::string& data);
-			bool							mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
-			Http::Status::Number			mf_parseMultipartData(const std::string& data);
-			Http::Status::Number			mf_parseRegularBody(const std::string& data);
-			Http::RequestData::BodyType		mf_bodyType();
-			Http::RequestData::ContentType	mf_contentType();
+			ChunkInfo									mf_parseChunkHeader(const std::string& data, size_t pos);
+			Http::Status::Number						mf_parseChunkedBody(const std::string& data);
+			bool										mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
+			Http::Status::Number						mf_parseMultipartData(const std::string& data);
+			Http::Status::Number						mf_parseRegularBody(const std::string& data);
+			Http::RequestData::BodyType					mf_bodyType();
+			Http::RequestData::ContentType				mf_contentType();
 	};
 
 }; // namespace Http

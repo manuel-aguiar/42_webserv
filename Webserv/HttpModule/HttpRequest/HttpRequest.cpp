@@ -12,7 +12,8 @@ namespace Http
 {
 
 Request::Request(ServerContext &serverContext):
-     m_serverContext(serverContext)
+     m_serverContext(serverContext),
+     m_response(NULL)
 {
     reset();
 }
@@ -32,6 +33,7 @@ Request::operator=(const Request& copy)
     if (this == &copy) return (*this);
 
     m_serverContext = copy.m_serverContext;
+    m_response = copy.m_response;
     m_parsingState = copy.m_parsingState;
     m_data.method = copy.m_data.method;
     m_data.uri = copy.m_data.uri;
@@ -68,7 +70,7 @@ void  Request::reset()
 void Request::mf_handleRequestLine(const BufferView& buffer)
 {
     size_t reqLineEnd = buffer.find("\r\n", 2, 0);
-    if (reqLineEnd == std::string::npos) return; // not enough to go through yets
+    if (reqLineEnd == std::string::npos) return; // not enough to go through yet
 
     BufferView requestLine(buffer.substr(0, reqLineEnd));
     m_data.status = mf_parseRequestLine(requestLine);
@@ -83,11 +85,11 @@ void Request::mf_handleRequestLine(const BufferView& buffer)
 
 void Request::mf_handleHeaders(const BufferView& buffer)
 {
-    size_t headerEnd = buffer.find("\r\n\r\n", 4, 0);
-    if (headerEnd == BufferView::npos) return; // not enough to go through yet
-
     size_t headerStart = buffer.find("\r\n", 2, 0);
     if (headerStart == BufferView::npos) return; // not enough to go through yet
+
+    size_t headerEnd = buffer.find("\r\n\r\n", 4, 0);
+    if (headerEnd == BufferView::npos) return; // not enough to go through yet
 
     headerStart += 2;
 
@@ -97,6 +99,11 @@ void Request::mf_handleHeaders(const BufferView& buffer)
         m_parsingState = ERROR;
         return;
     }
+
+    ASSERT_EQUAL(m_response != NULL, true, "Request::mf_handleHeaders(), m_response is NULL");
+
+    // before state transition, call response to check
+    m_response->receiveRequestData(m_data);
 
     // transition to body
     m_parsingState = BODY;
@@ -160,11 +167,23 @@ void Request::parse(const BaseBuffer& buffer)
     }
 }
 
+// setters
+void Request::setResponse(Http::Response& response)
+{
+    m_response = &response;
+}
+
 // Getters
 const Request::ParsingState& Request::getParsingState() const
 {
     return (m_parsingState);
 }
+
+Http::Response& Request::getResponse()
+{
+    return (*m_response);
+}
+
 const std::string& Request::getMethod() const
 {
     return (m_data.method);
