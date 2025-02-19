@@ -3,6 +3,7 @@
 #include "../../../../GenericUtils/Buffer/Buffer.hpp"
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
 #include <sstream>
+#include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 
 void regularBodyTests(int &testNumber)
 {
@@ -112,17 +113,20 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
-                     "Content-Length: 10\r\n"
-                     "\r\n");
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: 10\r\n"
+                   "\r\n");
 
         try
         {
             Request.parse(buffer);
-            Request.parse(Buffer("Hello"));
+            buffer.push("Hello");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be incomplete");
 
-            Request.parse(Buffer("WorldExtra"));
+            buffer.push("WorldExtra");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::ERROR, "Should be in error state");
 
             TEST_PASSED_MSG("Handled overflow data correctly");
@@ -136,9 +140,10 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
-                     "Content-Length: " + std::to_string(Http::HttpStandard::MAX_BODY_LENGTH + 1) + "\r\n"
-                     "\r\n");
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: " + StringUtils::intToStr(Http::HttpStandard::MAX_BODY_LENGTH + 1) + "\r\n"
+                   "\r\n");
 
         try
         {
@@ -156,17 +161,20 @@ void regularBodyTests(int &testNumber)
     {
         TEST_INTRO(testNumber++);
         Http::Request Request;
-        Buffer<1024> buffer("POST /test HTTP/1.1\r\n"
-                     "Content-Length: 10\r\n"
-                     "\r\n");
+        Buffer<1024> buffer;
+        buffer.push("POST /test HTTP/1.1\r\n"
+                   "Content-Length: 10\r\n"
+                   "\r\n");
 
         try
         {
             Request.parse(buffer);
-            Request.parse(Buffer(""));
+            buffer.push("");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be incomplete");
 
-            EXPECT_EQUAL(Request.parse(Buffer("HelloWorld")), (int)Http::Status::OK, "Complete data should pass");
+            buffer.push("HelloWorld");
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
 
             TEST_PASSED_MSG("Handled empty chunks correctly");
@@ -181,12 +189,13 @@ void regularBodyTests(int &testNumber)
         TEST_INTRO(testNumber++);
         Http::Request Request;
         std::string boundary = "------------------------12345";
-        Buffer<1024> buffer("POST /upload HTTP/1.1\r\n"
-                     "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
-                     "Content-Length: 213\r\n"
-                     "\r\n"
-                     "--" + boundary + "\r\n"
-                     "Content-Disposition: form-data; name=\"field1\"\r\n"
+        Buffer<1024> buffer;
+        buffer.push("POST /upload HTTP/1.1\r\n"
+                   "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+                   "Content-Length: 213\r\n"
+                   "\r\n"
+                   "--" + boundary + "\r\n"
+                   "Content-Disposition: form-data; name=\"field1\"\r\n"
                      "\r\n"
                      "value1\r\n"
                      "--" + boundary + "\r\n"
@@ -361,8 +370,8 @@ void chunkedBodyTests(int &testNumber)
                            "\r\n"
                            "value1\r\n";
 
-        Buffer<1024> buffer2(std::string() +
-                      std::to_string(part1.length()) + "\r\n" +
+        buffer.push(std::string() +
+                      StringUtils::intToStr(part1.length()) + "\r\n" +
                       part1 + "\r\n");
 
         try
@@ -370,7 +379,7 @@ void chunkedBodyTests(int &testNumber)
             Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should be in body state");
 
-            Request.parse(buffer2);
+            Request.parse(buffer);
             EXPECT_EQUAL(Request.getParsingState(), Http::Request::BODY, "Should still be in body state");
 
             TEST_PASSED_MSG("Valid chunked multipart form-data request");
