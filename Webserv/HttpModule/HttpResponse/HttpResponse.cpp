@@ -207,7 +207,7 @@ namespace Http
 	}
 
 	Response::Status
-	Response::fillWriteBuffer(Buffer& writeBuffer)
+	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		int pushed = 0;
 
@@ -223,13 +223,14 @@ namespace Http
 				
 				// could be the end of the response, depends on cgi as well
 				// sent everything i had...
-				return ;
+				return (m_status);
 			}
 		}
 		
 		// tell the buffer to read from file directly buffer.read(file.fd())
 		// or push directory listing to buffer
 		// or push error page to buffer
+		return (m_status);
 	}
 
 	Response::Status 

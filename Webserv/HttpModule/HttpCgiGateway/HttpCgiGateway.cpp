@@ -107,7 +107,7 @@ HttpCgiGateway::storeReadAvailable(const Ws::fd& readFd)
 void
 HttpCgiGateway::read()
 {
-	Buffer buffer;
+	BaseBuffer buffer;
 
 	if (!m_readAvailable)
 		return ;

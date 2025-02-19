@@ -1,55 +1,20 @@
 
 
-#ifndef WEBSERV_BUFFER_HPP
+#ifndef WEBSERV_BUFFERSTACK_HPP
 
-# define WEBSERV_BUFFER_HPP
+# define WEBSERV_BUFFERSTACK_HPP
 
-// Project Headers
-# include "../BufferView/BufferView.hpp"
+# include "BaseBuffer.hpp"
 
-// C++ headers
-# include <cstddef> // size_t
-# include <string> // std::string
-
-// forward declarations
-namespace Ws {typedef int fd;}
-
-class Buffer
+template<size_t Size>
+class Buffer : public BaseBuffer
 {
 	public:
-		Buffer();
-		~Buffer();
-
-
-		int			read(Ws::fd fd, int startIndex = 0);
-		int			write(Ws::fd fd, int startIndex = 0);
-
-		const unsigned char*
-					data() const;
-		
-		size_t		available() const;
-		size_t		size() const;
-		size_t		capacity() const;
-		BufferView 	view() const;
-		size_t		writeOffset() const;
-
-		void		clear();
-		void		push(const char* data, size_t size);
-		void		push(const std::string& data);
+		Buffer() : BaseBuffer(m_data, m_data + Size) {}
+		~Buffer() {}
 
 	private:
-		unsigned char	m_buffer[1024];
-		size_t			m_writeOffset;
-		size_t			m_size;
-		const size_t	m_capacity;
-
-
-		// private
-		Buffer(const Buffer& copy);
-		Buffer& operator=(const Buffer& assign);
-
+		unsigned char m_data[Size];
 };
-
-
 
 #endif

@@ -109,7 +109,7 @@ namespace Cgi
 	{
 		public:
 
-			Response(Buffer& client) : m_state(Response::HEADERS), m_totalHeaderBytes(0), m_client(client), m_hasBody(false) {}
+			Response(BaseBuffer& client) : m_state(Response::HEADERS), m_totalHeaderBytes(0), m_client(client), m_hasBody(false) {}
 			~Response() {}
 
 			enum Status
@@ -140,7 +140,7 @@ namespace Cgi
 			State						m_state;
 			int							m_totalHeaderBytes;
 			std::vector<CgiHeader> 		m_headers;
-			Buffer&						m_client;
+			BaseBuffer&						m_client;
 			bool						m_hasBody;
 			BufferView					m_tempBody;
 
@@ -290,8 +290,8 @@ Cgi::Response::Status	Cgi::Response::parse(BufferView& view)
 
 int main(void)
 {
-	Buffer client;
-	Buffer readBuffer;
+	Buffer<1024> client;
+	Buffer<1024> readBuffer;
 	BufferView readView;
 	Cgi::Response response(client);
 

@@ -26,7 +26,7 @@ int main(void)
 		int fd = ::open("main.cpp", O_RDONLY, 777);
 		if (fd == -1)
 			throw std::runtime_error("failed to open file");
-		Buffer buffer;
+		Buffer<1024> buffer;
 		buffer.read(fd);
 		::close(fd);
 
@@ -53,7 +53,7 @@ try
 	int fd = ::open("testInput.txt", O_RDONLY, 777);
 	if (fd == -1)
 		throw std::runtime_error("failed to open file");
-	Buffer buffer;
+	Buffer<1024> buffer;
 	buffer.read(fd);
 	::close(fd);
 
@@ -83,7 +83,7 @@ catch(const std::exception& e)
 		if (fd == -1)
 			throw std::runtime_error("failed to open file");
 
-		Buffer buffer;
+		Buffer<1024> buffer;
 		
 		// pushing, both const char* and a std::string
 		buffer.push(str.c_str(), str.size());
@@ -125,7 +125,7 @@ catch(const std::exception& e)
 		std::string str = "Hello World!";
 		// open file to write
 		int fd = ::open("testOutput.txt", O_RDWR | O_TRUNC | O_CREAT, 777);
-		Buffer buffer;
+		Buffer<1024> buffer;
 		
 		// push and write to fd, using PUSH OF A CONST CHAR*
 		buffer.push(str.c_str(), str.size());
