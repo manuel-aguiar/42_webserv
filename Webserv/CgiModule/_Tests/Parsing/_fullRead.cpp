@@ -4,7 +4,7 @@
 # include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../../GenericUtils/BufferView/BufferView.hpp"
-# include "../../Response/Response.hpp"
+# include "../../HeaderParser/HeaderParser.hpp"
 
 
 void    testFullRead(int& testNumber)
@@ -13,14 +13,14 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \n\n";
+        const char* good = "Location: tretas \n\n";
 
         Buffer<1024>    readBuffer;
-        Response        response;
+        HeaderParser        response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::PASS, "should be correctly parsed without errors");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         EXPECT_EQUAL(response.getStatusCode(), 200, "status code must be 200");
@@ -33,6 +33,31 @@ void    testFullRead(int& testNumber)
         TEST_FAILED_MSG(e.what());
     }
 //////////////////////////////////////////////////////
+
+    try
+    {
+        TEST_INTRO(testNumber++);
+        
+        const char* good = "Content-Type: tretas \n\n";
+
+        Buffer<1024>    readBuffer;
+        HeaderParser        response;
+        
+        readBuffer.push(good);
+        
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::PASS, "needs more data, expects body");
+        EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
+        EXPECT_EQUAL(response.hasBody(), true, "no body");
+        EXPECT_EQUAL(response.getStatusCode(), 200, "status code must be 200");
+        
+        TEST_PASSED_MSG("Content-Type without message body");
+    }
+    catch(const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+//////////////////////////////////////////////////////
+
     try
     {
         TEST_INTRO(testNumber++);
@@ -40,17 +65,17 @@ void    testFullRead(int& testNumber)
         const char* good = "SomeHeader: 200 \n";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::NEED_MORE_DATA, "should be insufficient info");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::NEED_MORE_DATA, "should be insufficient info");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         EXPECT_EQUAL(response.getStatusCode(), -1, "status code must be -1");
 
         // buffer read again
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "no \n\n found, should fail");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "no \n\n found, should fail");
         EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
 
         TEST_PASSED_MSG("Incomplete Request, should fail");
@@ -69,11 +94,11 @@ void    testFullRead(int& testNumber)
         const char* good = "SomeHeader: 200 \nSomeHeader: 200 \n\n";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "should have found doubled headers");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "should have found doubled headers");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "two headers received, even though it failed");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
@@ -93,11 +118,11 @@ void    testFullRead(int& testNumber)
         const char* good = "SomeHeader: 200 \nwtf: yes \n\nsomebody";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "found body without content type header");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "found body without content type header");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "must be 2 headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
@@ -120,11 +145,11 @@ void    testFullRead(int& testNumber)
         const char* good = "SomeHeader: 200 \nContent-Type: text/html\n\nsomebody";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::PASS, "found body without content type header");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::PASS, "found body without content type header");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "2 headers expected");
         EXPECT_EQUAL(response.hasBody(), true, "must be a body");
         EXPECT_EQUAL(response.getStatusCode(), CGI_SUCCESS, "status code must be 200");
@@ -149,11 +174,11 @@ void    testFullRead(int& testNumber)
         const char* good = "\n";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "empty string, should fail");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "empty string, should fail");
         EXPECT_EQUAL(response.getHeaders().size(), 0, "no headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         
@@ -172,11 +197,11 @@ void    testFullRead(int& testNumber)
         const char* good = " \n";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "empty string, should fail");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "empty string, should fail");
         EXPECT_EQUAL(response.getHeaders().size(), 0, "no headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         
@@ -195,11 +220,11 @@ void    testFullRead(int& testNumber)
         const char* good = "\n\n";
 
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(good);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "empty string, should fail");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::FAIL, "empty string, should fail");
         EXPECT_EQUAL(response.getHeaders().size(), 0, "no headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
         

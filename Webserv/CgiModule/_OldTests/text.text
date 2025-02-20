@@ -132,9 +132,9 @@ These callbacks are used when the Cgi::Module gets a read or write notification 
 		request.setUser(&protoRequest);
 
 		// notification callbacks
-		request.setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-		request.setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-		request.setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR, &TestProtoRequest_CgiGateway::onErrorRuntime);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR, &TestProtoRequest_CgiGateway::onErrorStartup);
+		request.setNotify_Callback(Cgi::Notify::ON_ERROR, &TestProtoRequest_CgiGateway::onErrorTimeOut);
 		request.setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 
 		// IO callbacks

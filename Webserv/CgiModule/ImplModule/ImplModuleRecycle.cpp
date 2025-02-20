@@ -16,13 +16,13 @@ void
 ImplModule::_WorkerRecycleRuntimeFailure(Worker& worker)
 {
 	worker.stop();
-	mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(worker, true, Cgi::Notify::ON_ERROR);
 }
 
 void
 ImplModule::_WorkerRecycleStartupFailure(Worker& worker, bool markFdsAsStale)
 {
-	mf_recycleExecutionUnit(worker, markFdsAsStale, Cgi::Notify::ON_ERROR_STARTUP);
+	mf_recycleExecutionUnit(worker, markFdsAsStale, Cgi::Notify::ON_ERROR);
 }
 
 void
@@ -67,7 +67,7 @@ void
 ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 {
 	worker.stop();
-	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR_TIMEOUT);
+	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR);
 }
 
 void
@@ -76,7 +76,7 @@ ImplModule::mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale)
 	Worker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR_RUNTIME);
+	mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR);
 }
 
 void

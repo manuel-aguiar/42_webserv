@@ -17,25 +17,25 @@ OBJ_PATH	=	$(ROOT_PATH)/_build/debug
 
 # Sources
 
-FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_FunctionalTest.cpp
+FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/main_FunctionalTest.cpp
 
-STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressTest.cpp
+STRESS_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/main_StressTest.cpp
 
-STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressValgrind.cpp
+STRESSVALG_SRCS = $(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/main_StressValgrind.cpp
 
-STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main_StressChildren.cpp
+STRESSCHILDREN = $(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/main_StressChildren.cpp
 
-COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test2.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/CgiStressTest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/CgiStressTest_ExpectedOutput.cpp \
+COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/test1.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/test2.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/CgiStressTest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Main/CgiStressTest_ExpectedOutput.cpp \
 				\
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestCgiGateway.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockLogFile.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockGlobals.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockClock.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/TestProtoRequest/TestProtoRequest.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/TestProtoRequest/TestProtoRequestHttpCgiGateway.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/TestProtoRequest/TestProtoRequestHandlers.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Mocks/MockLogFile.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Mocks/MockGlobals.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_OldTests/Mocks/MockClock.cpp \
 									\
 				$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
@@ -53,7 +53,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/Response/Response.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/HeaderParser/HeaderParser.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \

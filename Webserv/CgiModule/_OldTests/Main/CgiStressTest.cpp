@@ -263,9 +263,7 @@ void CgiStressTest::StressTest(int& testNumber,
 			// setup callbacks
 			current->setUser(&requests.back());
 			
-			current->setNotify_Callback(Cgi::Notify::ON_ERROR_RUNTIME, &TestProtoRequest_CgiGateway::onErrorRuntime);
-			current->setNotify_Callback(Cgi::Notify::ON_ERROR_STARTUP, &TestProtoRequest_CgiGateway::onErrorStartup);
-			current->setNotify_Callback(Cgi::Notify::ON_ERROR_TIMEOUT, &TestProtoRequest_CgiGateway::onErrorTimeOut);
+			current->setNotify_Callback(Cgi::Notify::ON_ERROR, &TestProtoRequest_CgiGateway::onError);
 			current->setNotify_Callback(Cgi::Notify::ON_SUCCESS, &TestProtoRequest_CgiGateway::onSuccess);
 		
 			current->setIO_Callback(Cgi::IO::READ, &TestProtoRequest_CgiGateway::onRead);

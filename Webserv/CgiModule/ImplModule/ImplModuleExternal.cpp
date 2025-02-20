@@ -195,7 +195,7 @@ void	ImplModule::stopAndReset()
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
-		data->Runtime_CallTheUser(Cgi::Notify::ON_ERROR_RUNTIME);
+		data->Runtime_CallTheUser(Cgi::Notify::ON_ERROR);
 		mf_returnRequestData(*data);
 	}
 		

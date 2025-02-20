@@ -24,7 +24,7 @@ ImplModule::mf_cancelAndReturn(InternalReq& data)
 	Worker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	mf_returnExecutionUnit(*worker, false, Cgi::Notify::ON_ERROR_RUNTIME);
+	mf_returnExecutionUnit(*worker, false, Cgi::Notify::ON_ERROR);
 }
 
 void

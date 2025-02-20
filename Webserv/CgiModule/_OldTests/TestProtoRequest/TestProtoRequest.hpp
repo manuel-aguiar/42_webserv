@@ -63,14 +63,10 @@ class TestProtoRequest_CgiGateway
 	public:
 		// Generic handlers to provide to CgiRequestData
 		static void onSuccess(Cgi::User user);
-		static void onErrorStartup(Cgi::User user);
-		static void onErrorRuntime(Cgi::User user);
-		static void onErrorTimeOut(Cgi::User user);
+		static void onError(Cgi::User user);
 
 		static Cgi::IO::BytesCount 		onRead(Cgi::User user, int readFd);
 		static Cgi::IO::BytesCount 		onWrite(Cgi::User user, int writeFd);
-
-		static void (*Callbacks[Cgi::Notify::COUNT])(Cgi::User user);
 };
 
 

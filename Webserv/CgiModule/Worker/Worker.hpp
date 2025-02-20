@@ -6,7 +6,9 @@
 
 //Project Headers
 # include "../../Ws_Namespace.h"
-# include "../Response/Response.hpp"
+# include "../HeaderParser/HeaderParser.hpp"
+# include "../InternalReq/InternalReq.hpp"
+
 
 // Toolkit headers
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
@@ -58,7 +60,7 @@ class Worker
 
 	private:
 
-		InternalReq*			m_curRequestData;
+		InternalReq*				m_curRequestData;
 
 		// script arguments
 		DynArray<std::string>		m_envStr;
@@ -87,7 +89,7 @@ class Worker
 		// External sources
 		ImplModule&			m_CgiModule;
 		
-		Response			m_response;
+		HeaderParser			m_response;
 		Buffer<1024>		m_ScriptBuffer;
 		// execute
 

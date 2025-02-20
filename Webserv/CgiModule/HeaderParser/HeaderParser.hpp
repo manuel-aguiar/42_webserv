@@ -56,12 +56,12 @@ struct CompareHeaders
 	}
 };
 
-class Response
+class HeaderParser
 {
 	public:
 
-		Response();
-		~Response();
+		HeaderParser();
+		~HeaderParser();
 
 		enum Status
 		{
@@ -75,8 +75,6 @@ class Response
 		{
 			START,
 			HEADERS,
-			TEMP_BODY,
-			BODY,
 			FINISH
 		};
 		

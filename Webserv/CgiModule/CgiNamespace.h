@@ -94,9 +94,7 @@ namespace Cgi
 		typedef enum
 		{
 			ON_SUCCESS,
-			ON_ERROR_STARTUP,
-			ON_ERROR_RUNTIME,
-			ON_ERROR_TIMEOUT,
+			ON_ERROR,
 			COUNT
 		} 	Type;
 		typedef void	(*Callback)	(User user);
@@ -113,6 +111,7 @@ namespace Cgi
 		typedef int     	BytesCount;
 		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
 	};
+
 
 	namespace RequestState
 	{

@@ -3,7 +3,7 @@
 # include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../../GenericUtils/BufferView/BufferView.hpp"
-# include "../../Response/Response.hpp"
+# include "../../HeaderParser/HeaderParser.hpp"
 
 # include <cstring> //strlen
 
@@ -14,15 +14,15 @@ void testPartialBreakPoint(int& testNumber, const char* message, int breakpoint)
         TEST_INTRO(testNumber++);
         
         Buffer<1024> readBuffer;
-        Response response;
+        HeaderParser response;
         
         readBuffer.push(message, breakpoint);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::NEED_MORE_DATA, "should be correctly parsed without errors");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::NEED_MORE_DATA, "should be correctly parsed without errors");
 
         readBuffer.push(&message[breakpoint]);
         
-        EXPECT_EQUAL(response.parse(readBuffer), Response::PASS, "should be correctly parsed without errors");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
@@ -36,7 +36,7 @@ void testPartialBreakPoint(int& testNumber, const char* message, int breakpoint)
 
 void testPartialRead(int& testNumber)
 {
-    const char* good = "Someheader: 200 \n\n";
+    const char* good = "Status: 200 \nSomeHeader: yoyo\n\n";
     testPartialBreakPoint(testNumber, good, 4);
     testPartialBreakPoint(testNumber, good, std::strlen(good) - 1);
 }

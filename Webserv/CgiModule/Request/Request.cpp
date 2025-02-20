@@ -28,8 +28,6 @@ namespace Cgi
 
 	}
 
-
-
 	void	Cgi::Request::mf_reset()
 	{
 		m_interpreterPath.clear();
