@@ -75,7 +75,7 @@ void    Worker::reset()
 	m_curRequestData = NULL;
 
 	m_headerParser.reset();
-	m_ScriptBuffer.clear();
+	m_headerBuffer.clear();
 	
 	enableAllHandlers();
 }

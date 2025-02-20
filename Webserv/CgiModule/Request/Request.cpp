@@ -13,7 +13,6 @@ namespace Cgi
 		m_receiveScriptBody(NULL),
 		m_receiveStatusHeaders(NULL),
 		m_timeoutMs		(0),
-		m_extension		(""),
 		m_scriptPath	(""),
 		m_state			(Cgi::RequestState::IDLE),
 		m_options		(0)
@@ -29,7 +28,6 @@ namespace Cgi
 	void	Cgi::Request::mf_reset()
 	{
 		m_interpreterPath.clear();
-		m_extension.clear();
 		m_scriptPath.clear();
 		m_env.envBase.clear();
 		m_env.envExtra.clear();
@@ -54,7 +52,6 @@ namespace Cgi
 		m_receiveScriptBody(copy.m_receiveScriptBody),
 		m_receiveStatusHeaders(copy.m_receiveStatusHeaders),
 		m_timeoutMs(copy.m_timeoutMs),
-		m_extension(copy.m_extension),
 		m_scriptPath(copy.m_scriptPath)
 	{
 		*this = copy;
@@ -74,7 +71,6 @@ namespace Cgi
 		m_receiveStatusHeaders = assign.m_receiveStatusHeaders;		
 
 		m_timeoutMs = assign.m_timeoutMs;
-		m_extension = assign.m_extension;
 		m_scriptPath = assign.m_scriptPath;
 		m_env.envBase = assign.m_env.envBase;
 		m_env.envExtra = assign.m_env.envExtra;

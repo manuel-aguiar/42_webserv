@@ -7,6 +7,8 @@
 # include <string>
 # include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
 
+class BaseBuffer;
+
 namespace Cgi
 {
 
@@ -121,6 +123,8 @@ namespace Cgi
 		typedef void	(*Callback)	(User user);
 	};
 
+	class HeaderData;
+
 	namespace IO
 	{
 		typedef enum
@@ -131,10 +135,18 @@ namespace Cgi
 			COUNT
 		} 	Type;
 		
+		typedef enum
+		{
+			SEND,
+			WAIT,
+			CLOSE,
+		}	WriteState;
+
 		typedef int     	BytesCount;
 		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
 
-		typedef void (*ReceiveStatusHeaders)(Cgi::User user, int status, const std::vector<Cgi::Header>& headers);
+		typedef Cgi::IO::WriteState 		(*FillCgiWriteBuffer)(Cgi::User user, BaseBuffer& buffer);
+		typedef void 						(*ReceiveStatusHeaders)(Cgi::User user, const int status, const std::vector<Cgi::Header>& headers);
 	};
 
 

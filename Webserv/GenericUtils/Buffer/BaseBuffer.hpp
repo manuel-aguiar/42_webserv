@@ -44,6 +44,7 @@ class BaseBuffer
 		unsigned char*	m_begin;
 		unsigned char*	m_end;
 
+		size_t 			m_readOffset;
 		size_t			m_writeOffset;
 		size_t			m_size;
 

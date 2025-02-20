@@ -30,7 +30,7 @@ ImplModule::mf_cancelAndReturn(InternalReq& data)
 void
 ImplModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
-	InternalReq* 		data = worker.accessRequestData();
+	InternalReq* 			data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 

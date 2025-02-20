@@ -19,16 +19,18 @@ class InternalReq : public Cgi::Request
 		~InternalReq();
 
 		void						reset();
-		void						Runtime_CallTheUser(const Cgi::Notify::Type type);
-		Cgi::IO::BytesCount			IO_CallTheUser(const Cgi::IO::Type, Ws::fd readFd);
-
 		Cgi::User					getUser() const;
-		Cgi::Notify::Callback
-									getRuntime_Handler(const Cgi::Notify::Type type) const;
-		Cgi::RequestState::Type
-									getState() const;
+		Cgi::RequestState::Type		getState() const;
 		
-		Cgi::IO::ReceiveStatusHeaders	getDelieverHeadersCallback();
+		Cgi::Notify::Callback		getNotifyOnError_Callback() const;
+		Cgi::Notify::Callback		getNotifyOnSuccess_Callback() const;
+
+		Cgi::Notify::Callback		getRuntime_Handler(const Cgi::Notify::Type callUser) const;
+
+		Cgi::IO::FillCgiWriteBuffer	getWriteToScript_Callback() const;
+		Cgi::IO::Callback			getReceiveScriptBody_Callback() const;
+
+		Cgi::IO::ReceiveStatusHeaders	getReceiveHeaders_Callback() const;
 
 		const Cgi::EnvVariables& 	getEnvVars() const;
 		const Cgi::InterpExtension&	getExtension() const;

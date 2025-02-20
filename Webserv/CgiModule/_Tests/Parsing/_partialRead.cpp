@@ -14,15 +14,15 @@ void testPartialBreakPoint(int& testNumber, const char* message, int breakpoint)
         TEST_INTRO(testNumber++);
         
         Buffer<1024> readBuffer;
-        HeaderParser response;
+        HeaderData response;
         
         readBuffer.push(message, breakpoint);
         
-        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::NEED_MORE_DATA, "should be correctly parsed without errors");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderData::NEED_MORE_DATA, "should be correctly parsed without errors");
 
         readBuffer.push(&message[breakpoint]);
         
-        EXPECT_EQUAL(response.parse(readBuffer), HeaderParser::PASS, "should be correctly parsed without errors");
+        EXPECT_EQUAL(response.parse(readBuffer), HeaderData::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 

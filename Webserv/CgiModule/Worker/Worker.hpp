@@ -6,7 +6,7 @@
 
 //Project Headers
 # include "../../Ws_Namespace.h"
-# include "../HeaderParser/HeaderParser.hpp"
+# include "../HeaderData/HeaderData.hpp"
 # include "../InternalReq/InternalReq.hpp"
 
 
@@ -89,8 +89,10 @@ class Worker
 		// External sources
 		ImplModule&			m_CgiModule;
 		
-		HeaderParser		m_headerParser;
-		Buffer<1024>		m_ScriptBuffer;
+		HeaderData			m_headerParser;
+		Buffer<1024>		m_writeBuffer;
+		Buffer<1024>		m_headerBuffer;
+		Buffer<1024>		m_bodyBuffer;
 		// execute
 
 

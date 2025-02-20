@@ -49,7 +49,7 @@ namespace Http
 			void						close();
 
 		private:
-        	Buffer<1024> 										m_readBuffer;
+        	Buffer<1024> 										m_bodyBuffer;
         	Buffer<1024> 										m_writeBuffer;
 
 			Http::Module& 										m_module;

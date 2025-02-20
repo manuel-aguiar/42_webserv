@@ -26,26 +26,7 @@ class BaseBuffer;
 
 namespace Cgi
 {
-    struct Header
-    {
-        BufferView key;
-        BufferView value;
-    
-        bool operator<(const Header& other) const
-        {
-            return (key < other.key);
-        }
-    
-        bool operator==(const Header& other) const
-        {
-            return (key == other.key);
-        }
-    
-        bool operator!=(const Header& other) const
-        {
-            return (key != other.key);
-        }
-    };
+
 };
 
 
@@ -57,12 +38,12 @@ struct CompareHeaders
 	}
 };
 
-class HeaderParser
+class HeaderData
 {
 	public:
 
-		HeaderParser();
-		~HeaderParser();
+		HeaderData();
+		~HeaderData();
 
 		enum Status
 		{
@@ -105,6 +86,5 @@ class HeaderParser
 		Status	mf_parseBody(BufferView& view);
 		Status	mf_setStatus(const Status status, const int statusCode);
 };
-
 
 #endif

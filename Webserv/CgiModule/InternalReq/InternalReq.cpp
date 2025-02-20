@@ -18,20 +18,45 @@ InternalReq::reset()
 	m_myTimer = TimerTracker<Timer, InternalReq*>::iterator();
 }
 
-void
-InternalReq::Runtime_CallTheUser(const Cgi::Notify::Type event)
+Cgi::Notify::Callback	
+InternalReq::getNotifyOnError_Callback() const
 {
-	Cgi::Notify::Callback	 handler = m_runtime_Handlers[event];
-	if (handler)
-		(handler)(m_user);
+	return (m_notifyOnError);
 }
 
-Cgi::IO::BytesCount
-InternalReq::IO_CallTheUser(const Cgi::IO::Type type, Ws::fd targetFd)
+Cgi::Notify::Callback	
+InternalReq::getNotifyOnSuccess_Callback() const
 {
-	if (!(m_IO_Handlers[type] && m_user))
-		return (0);
-	return ((m_IO_Handlers[type])(m_user, targetFd));
+	return (m_notifyOnSuccess);
+}
+
+Cgi::IO::Callback		
+InternalReq::getWriteToScript_Callback() const
+{
+	return(m_writeToScript);
+}
+
+Cgi::IO::Callback		
+InternalReq::getReceiveScriptBody_Callback() const
+{
+	return (m_receiveScriptBody);
+}
+
+Cgi::IO::ReceiveStatusHeaders
+InternalReq::getReceiveHeaders_Callback() const
+{
+	return (m_receiveStatusHeaders);
+}
+
+Cgi::Notify::Callback
+InternalReq::getRuntime_Handler(const Cgi::Notify::Type type) const
+{
+	switch (type)
+	{
+		case Cgi::Notify::ON_ERROR: return (m_notifyOnError);
+		case Cgi::Notify::ON_SUCCESS: return (m_notifyOnSuccess);
+		default: return (NULL);
+	}
 }
 
 InternalReq::InternalReq(const InternalReq &copy) :
@@ -48,10 +73,4 @@ InternalReq &InternalReq::operator=(const InternalReq &assign)
 	m_executor = assign.m_executor;
 	m_myTimer = assign.m_myTimer;
 	return (*this);
-}
-
-Cgi::IO::ReceiveStatusHeaders
-InternalReq::getDelieverHeadersCallback()
-{
-	return (m_receiveStatusHeaders);
 }

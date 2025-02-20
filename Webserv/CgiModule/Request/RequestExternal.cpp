@@ -28,7 +28,7 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Request::setWriteToScript_Callback	(const Cgi::IO::Callback handler)
+	Cgi::Request::setWriteToScript_Callback	(const Cgi::IO::FillCgiWriteBuffer handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_writeToScript = handler;
@@ -103,12 +103,6 @@ namespace Cgi
 	Cgi::Request::getInterpreterPath() const
 	{
 		return (m_interpreterPath);
-	}
-
-	const Cgi::InterpExtension&
-	Cgi::Request::getExtension() const
-	{
-		return (m_extension);
 	}
 
 	const Cgi::ScriptPath&

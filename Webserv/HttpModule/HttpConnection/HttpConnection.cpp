@@ -62,10 +62,10 @@ Connection::ReadWrite()
 	// read
 	if (triggeredEvents & Events::Monitor::READ)
 	{
-		m_readBuffer.read(sockfd);
+		m_bodyBuffer.read(sockfd);
 		//if (m_transactions.size() == 0 || m_transactions.back().request.getParsingState() == Http::Request::COMPLETED)
 		//	m_transactions.push_back(Transaction(*this, m_tcpConn->accessServerContext()));
-		m_transaction.request.parse(m_readBuffer);
+		m_transaction.request.parse(m_bodyBuffer);
 	}
 
 	// write
@@ -150,7 +150,7 @@ Connection::close()
 BaseBuffer&
 Connection::accessReadBuffer()
 {
-	return (m_readBuffer);
+	return (m_bodyBuffer);
 }
 
 BaseBuffer&

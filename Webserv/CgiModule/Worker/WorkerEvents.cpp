@@ -2,9 +2,11 @@
 
 // Project Headers
 # include "Worker.hpp"
-# include "../HeaderParser/HeaderParser.hpp"
 # include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
+
+// C++ headers
+# include <vector>
 
 // C headers
 # include <unistd.h>
@@ -29,89 +31,127 @@ void	Worker::mf_EventCallback_OnEmergency(Events::Subscription& event)
 
 void	Worker::mf_readScript()
 {
-	int 					bytesRead;
+	int 					bytesRead = 0;
 	Events::Monitor::Mask 	triggeredEvents;
 
 	triggeredEvents = m_readEvent->getTriggeredEvents();
 	//std::cout << "\t\t\tread called" << std::endl;
-	
-	if (triggeredEvents & Events::Monitor::READ)
-	{
-		if (m_headerParser.getState() != HeaderParser::FINISH)
-		{
-			int bytesRead = m_ScriptBuffer.read(m_readEvent->getFd(), m_ScriptBuffer.size());
 
-			switch (m_headerParser.parse(m_ScriptBuffer))
-			{
-				case HeaderParser::FAIL:
-					mf_recycleRuntimeFailure();
-					return ;
-				case HeaderParser::PASS:
-				{
-					(m_curRequestData->getDelieverHeadersCallback())(m_curRequestData->getUser(), 
-																	m_headerParser.getStatusCode(), 
-																	m_headerParser.getHeaders());
-					break ;
-				}
-				default:
-					break ;
-			}
+	// if closed and there is no data
+	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
+		goto disableReadEvent;
+
+	// nothing to read, return
+	if (!triggeredEvents & Events::Monitor::READ)
+		return ;
+
+	if (m_headerParser.getState() != HeaderData::FINISH)
+	{
+		// headers didn't fit the buffer, abort
+		if (m_headerBuffer.size() == m_headerBuffer.capacity())
+		{
+			mf_recycleRuntimeFailure();
+			return ;
 		}
 
-
-
-
-
-		bytesRead = m_curRequestData->IO_CallTheUser(Cgi::IO::READ, m_readEvent->getFd());
-
+		bytesRead = m_headerBuffer.read(m_readEvent->getFd(), m_headerBuffer.size());
+		
 		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readScript(): bytesread should never be -1");
 
 		if (bytesRead == 0)
+			goto disableReadEvent;
+
+		switch (m_headerParser.parse(m_headerBuffer))
 		{
-			mf_disableCloseMyEvent(*m_readEvent, true);
-			if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-				mf_waitChild();
+			case HeaderData::FAIL:
+				mf_recycleRuntimeFailure();
+				return ;
+			case HeaderData::PASS:
+			{
+				// push extra message body to the body buffer for sending later
+				if (m_headerParser.getTempBody().size() > 0)
+					m_bodyBuffer.push(m_headerParser.getTempBody().data(), m_headerParser.getTempBody().size());
+				
+				// send status code and headers to the user
+				(m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), 
+																m_headerParser.getStatusCode(), 
+																m_headerParser.getHeaders());
+				break ;
+			}
+			default:
+				break ;
 		}
 	}
-	
-	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
+	else
 	{
+
+	}
+	// notify user that body is ready
+	
+
+
+	return ;
+
+	disableReadEvent:
+
 		mf_disableCloseMyEvent(*m_readEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();
-	}
+			mf_waitChild();	
 }
 
 void	Worker::mf_writeScript()
 {
-	int 					bytesWritten;
+	int 					bytesWritten = 0;
 	Events::Monitor::Mask 	triggeredEvents;
-	
+	Cgi::IO::WriteState 	state;
 	
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
 	
+	// error, disable straight away
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
+		goto disableWriteEvent;
+	
+	// no write, return
+	if (!triggeredEvents & Events::Monitor::WRITE)
+		return ;
+	
+	// there are leftovers in buffer, send those
+	if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
 	{
+		ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
+
+		bytesWritten = m_writeBuffer.write(m_writeEvent->getFd(), m_writeBuffer.writeOffset());
+		if (bytesWritten == 0)
+			goto disableWriteEvent;
+		return ;
+	}
+
+	// ask user to give us more data to send
+	state = (m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), m_writeBuffer);
+	
+	switch (state)
+	{
+		case Cgi::IO::SEND:
+		{
+			bytesWritten = m_writeBuffer.write(m_writeEvent->getFd());
+			ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
+			if (bytesWritten == 0)
+				goto disableWriteEvent;
+			return ;
+		}
+		case Cgi::IO::WAIT:
+			return ;
+		case Cgi::IO::CLOSE:
+			goto disableWriteEvent;
+	}
+
+	return ;
+
+	disableWriteEvent:
+
 		mf_disableCloseMyEvent(*m_writeEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 			mf_waitChild();
-	}
-	//std::cout << "write triggered" << std::endl;
-	
-	if (triggeredEvents & Events::Monitor::WRITE)
-	{
-		bytesWritten = m_curRequestData->IO_CallTheUser(Cgi::IO::WRITE, m_writeEvent->getFd());
-
-		ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
-
-		if (bytesWritten == 0)
-		{
-			mf_disableCloseMyEvent(*m_writeEvent, true);
-			if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-				mf_waitChild();
-		}
-	}
-
 }
 
 

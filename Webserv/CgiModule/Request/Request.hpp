@@ -27,7 +27,7 @@ namespace Cgi
 			void						setNotify_onError	(const Cgi::Notify::Callback handler);
 			void						setNotify_onSuccess	(const Cgi::Notify::Callback handler);
 			void						setWriteToScript_Callback
-															(const Cgi::IO::Callback handler);
+															(const Cgi::IO::FillCgiWriteBuffer	 handler);
 			void						setReceiveStatusHeaders_Callback
 															(const Cgi::IO::ReceiveStatusHeaders handler);
 			void						setReceiveScriptBody_Callback
@@ -53,8 +53,8 @@ namespace Cgi
 
 			const Cgi::EnvVariables&	getEnvVars() const;
 			const Cgi::InterpPath&		getInterpreterPath() const;
-			const Cgi::InterpExtension&	getExtension() const;
 			const Cgi::ScriptPath&		getScriptPath() const;
+			
 			unsigned int				getTimeoutMs() const;
 
 		protected:
@@ -64,9 +64,9 @@ namespace Cgi
 			Cgi::Notify::Callback					m_notifyOnError;
 			Cgi::Notify::Callback					m_notifyOnSuccess;
 
-			Cgi::IO::Callback						m_writeToScript;
-			Cgi::IO::Callback						m_receiveScriptBody;
+			Cgi::IO::FillCgiWriteBuffer				m_writeToScript;
 			Cgi::IO::ReceiveStatusHeaders			m_receiveStatusHeaders;
+			Cgi::IO::Callback						m_receiveScriptBody;
 			
 			// actual state of the request
 			unsigned int							m_timeoutMs;
