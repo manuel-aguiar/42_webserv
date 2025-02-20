@@ -7,35 +7,37 @@
 
 # include <cstring> //strlen
 
-void testPartialRead(int& testNumber)
+void testPartialBreakPoint(int& testNumber, const char* message, int breakpoint)
 {
     try
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "Status: 200 \n\n";
-
         Buffer<1024> client;
         Buffer<1024> readBuffer;
         Cgi::Response response(client);
         
-        readBuffer.push(good, std::strlen(good) - 1);
+        readBuffer.push(message, breakpoint);
         
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::NEED_MORE_DATA, "should be correctly parsed without errors");
-        EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
-        EXPECT_EQUAL(response.hasBody(), false, "no body");
 
-        readBuffer.push(&good[std::strlen(good) - 1]);
+        readBuffer.push(&message[breakpoint]);
         
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
-        TEST_PASSED_MSG("Partial reads, Basic request, no body, should pass");
+        TEST_PASSED_MSG("Breakpoint, Partial reads, Basic request, no body, should pass");
     }
     catch(const std::exception& e)
     {
         TEST_FAILED_MSG(e.what());
     }
-//////////////////////////////////////////////////////
+}
+
+void testPartialRead(int& testNumber)
+{
+    const char* good = "Status: 200 \n\n";
+    testPartialBreakPoint(testNumber, good, 4);
+    testPartialBreakPoint(testNumber, good, std::strlen(good) - 1);
 }
