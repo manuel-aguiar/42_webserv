@@ -1,7 +1,7 @@
 /* *********************************/
 /*                                 */
-/*   HttpRequest.hpp               */
-/*   - defines the HttpRequest      */
+/*   Http::Request.hpp               */
+/*   - defines the Http::Request      */
 /*    class.                       */
 /*                                 */
 /* *********************************/
@@ -17,71 +17,138 @@
 # include "../HttpDefinitions.hpp"
 
 // Forward declarations
-class HttpConnection;
-class HttpSession;
+class BaseBuffer;
 
-class HttpRequest {
-    public:
-        HttpRequest();
-        ~HttpRequest();
+namespace Http { class Connection;} // servercontext (blockfinder), sockaddr,
+class ServerBlock;
+class ServerLocation;
 
-        // Main parsing interface
-        int parse(const std::string& rawData);
-
-        // Getters for components
-        const std::string& 							getMethod() const;
-        const std::string& 							getUri() const;
-        const std::string& 							getHttpVersion() const;
-        const std::map<std::string, std::string>&	getHeaders() const;
-        const std::string& 							getBody() const;
-        const std::map<std::string, std::string>&   getUriComponents() const;
-
-		// Encoding exception
-		class EncodingException : public std::exception {
-			public:
-				EncodingException(const std::string& message) : m_message(message) {}
-				virtual ~EncodingException() throw() {}
-				virtual const char* what() const throw() { return m_message.c_str(); }
-			private:
-				std::string m_message;
-		};
-
-    private:
-        // Parsers
-        int mf_parseRequestLine(const std::string& line);
-        int mf_parseHeaders(const std::string& line);
-        int mf_parseBody(const std::string& data);
-        int mf_parseChunkedBody(const std::string& data);
-
-        // Validations
-        bool mf_validateMethod() const;
-        bool mf_validateUri() const;
-        bool mf_validateHttpVersion() const;
-        bool mf_validateHeaders() const;
-
-        // States
-        int m_status;
-        size_t m_timeout;
-
-        // Connections
-        HttpConnection* m_httpConn;
-        HttpSession* m_session;
-
-        // Components
-        std::string m_method;
-        std::string m_uri;
-        std::string m_httpVersion;
-        std::map<std::string, std::string> m_headers;
-        std::map<std::string, std::string> m_uriComponents;
-        std::string m_body;
-
-        // Prevent copying
-        HttpRequest(const HttpRequest&);
-        HttpRequest& operator=(const HttpRequest&);
-
-        // Helper functions for parsing
-        int mf_parseUriComponents(const std::string& uri);
-        std::string mf_decodeUri(const std::string& encoded, bool strict = true) const;
+struct ChunkInfo {
+	size_t size;
+	size_t headerEnd;
 };
+
+namespace Http
+{
+	typedef std::string HeaderKey;
+	typedef std::string HeaderValue;
+}
+
+namespace Http
+{
+	class Request
+	{
+		public:
+			enum ParsingState
+			{
+				IDLE,
+				STARTED,
+				ERROR,
+				INCOMPLETE,
+				COMPLETED
+			};
+			
+			Request();
+			Request(Http::Connection& conn); //blockfinder, Conn::Connection (Http::Connection->Conn::Connection->ServerContext->BLockfinder)
+			~Request();
+
+			Request(const Request& copy);
+			Request& operator=(const Request& assign);
+
+			// Main parsing interface
+
+			int parse(const BaseBuffer& buffer);
+			int parse(const std::string& rawData);
+			
+			void reset(); // reset the request to its initial state
+
+			// parsing states, as a state machine
+			bool isStarted() const;
+			bool isError() const;
+			bool isIncomplete() const;
+			bool isCompleted() const;
+
+			const ParsingState& getParsingState() const;
+
+			ServerBlock*    getServerBlock() const; //Http::connection needs, http timeouts
+			ServerLocation* getServerLocation() const;
+
+			void            done(); // inform Http::Connection this request and response can be removed from queue
+
+			// http status for this request
+			Http::Status::Number                           getStatus() const;
+
+			// Getters for components
+			const std::string& 							getMethod() const;
+			const std::string& 							getUri() const;
+			const std::string& 							getHttpVersion() const;
+			const std::map<HeaderKey, HeaderValue>&	    getHeaders() const;
+			const std::string& 							getBody() const;
+			const std::map<std::string, std::string>&   getUriComponents() const;
+
+			const std::string&                          getPath() const;
+			const std::string&                          getQueryString() const;
+			const std::string&                          getFragment() const;
+
+			// Encoding exception
+			class EncodingException : public std::exception {
+				public:
+					EncodingException(const std::string& message) : m_message(message) {}
+					virtual ~EncodingException() throw() {}
+					virtual const char* what() const throw() { return m_message.c_str(); }
+				private:
+					std::string m_message;
+				};
+				
+		private:
+		
+					
+
+			// main parsers
+			Http::Status::Number	mf_parseRequestLine(const std::string& line);
+			Http::Status::Number	mf_parseHeaders(const std::string& line);
+			Http::Status::Number	mf_parseBody(const std::string& data);
+
+			// internal variables
+			Http::Connection&						m_httpConn;
+			ServerBlock*							m_serverBlock;      // ServerBlock specific http specs
+			ServerLocation*							m_serverLocation;
+
+			Http::Status::Number    				m_status;
+			size_t                  				m_timeout;
+			ParsingState							m_parsingState;
+
+			// Components
+			std::string								m_method;
+			std::string								m_uri;
+			std::string								m_httpVersion;
+			std::map<HeaderKey, HeaderValue>		m_headers;
+			std::map<std::string, std::string>		m_uriComponents;  // delete replace by \/
+
+			std::string								m_path;
+			std::string								m_queryString; //no decoding/breaking down -> cgi module (responbility of the script)
+			std::string								m_fragment;
+
+			// data sent by client, also used as internal buffer
+			std::string								m_body;
+
+			// Helper functions for parsing
+			Http::Status::Number		mf_parseFirstIncomming(const std::string& rawData);
+			Http::Status::Number		mf_handleStreamedBody(const std::string& rawData);
+			Http::Status::Number		mf_handlePostBody(const std::string& rawData, size_t bodyStart);
+
+			Http::Status::Number		mf_parseUriComponents(const std::string& uri);
+			std::string					mf_decodeUri(const std::string& encoded, bool strict = true) const;
+
+			ChunkInfo					mf_parseChunkHeader(const std::string& data, size_t pos);
+			Http::Status::Number		mf_parseChunkedBody(const std::string& data);
+			bool						mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
+			Http::Status::Number		mf_parseRegularBody(const std::string& data);
+
+			//
+			Http::Status::Number		mf_findBlock(); //internally checks Blockfinder for the block true:ok false:error,
+	};
+
+}; // namespace Http
 
 #endif

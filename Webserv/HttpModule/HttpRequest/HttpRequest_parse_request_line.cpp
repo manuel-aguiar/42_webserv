@@ -6,7 +6,8 @@
 /*                                 */
 /* *********************************/
 
-#include "../HttpRequest.hpp"
+// Project headers
+#include "HttpRequest.hpp"
 
 
 // URL decoding utilities
@@ -22,7 +23,7 @@ static int hexToInt(char c)
 }
 
 // not confident
-std::string HttpRequest::mf_decodeUri(const std::string& encoded, bool strict) const
+std::string Http::Request::mf_decodeUri(const std::string& encoded, bool strict) const
 {
     std::string decodedString;
 
@@ -53,7 +54,8 @@ std::string HttpRequest::mf_decodeUri(const std::string& encoded, bool strict) c
 }
 
 // URI parsing utilities
-int HttpRequest::mf_parseUriComponents(const std::string& uri)
+Http::Status::Number
+Http::Request::mf_parseUriComponents(const std::string& uri)
 {
     size_t pathLength = uri.find('?');
 
@@ -99,7 +101,8 @@ int HttpRequest::mf_parseUriComponents(const std::string& uri)
     return Http::Status::OK;
 }
 
-int HttpRequest::mf_parseRequestLine(const std::string& line)
+Http::Status::Number
+Http::Request::mf_parseRequestLine(const std::string& line)
 {
     try {
         size_t firstSpace = line.find(' ');
@@ -121,10 +124,12 @@ int HttpRequest::mf_parseRequestLine(const std::string& line)
         m_httpVersion = line.substr(lastSpace + 1);
 
         // Check if method is allowed using HttpDefinitions
+        // TODO: later get this from server config
         const std::set<std::string>& allowedMethods = Http::AllowedRequestMethods::getAllowedMethods();
         if (allowedMethods.find(m_method) == allowedMethods.end())
             return Http::Status::METHOD_NOT_ALLOWED;
 
+        // TODO: later get this from server config
         if (m_uri.length() > Http::HttpStandard::MAX_URI_LENGTH)
             return Http::Status::URI_TOO_LONG;
 

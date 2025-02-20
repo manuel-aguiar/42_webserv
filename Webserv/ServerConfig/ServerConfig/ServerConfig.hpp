@@ -16,30 +16,61 @@
 
 //Own headers
 # include "../../Ws_Namespace.h"
-# include "../DefaultConfig/DefaultConfig.hpp"
+
+// for the KeySetters
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
 
 // forward declarations
 class Globals;
 class ServerBlock;
 class ServerLocation;
+struct DefaultConfig;
+
+namespace Config
+{
+	typedef std::string CgiExtension;
+	typedef std::string CgiInterpreter;
+	typedef std::map<CgiExtension, CgiInterpreter> CgiInterpreterMap;
+}
+
+
 
 class ServerConfig
 {
 	public:
-		ServerConfig(const char* configFilePath, Globals* globals);
+		ServerConfig(const char* configFilePath, const DefaultConfig& defaultConfig);
 		~ServerConfig();
 		ServerConfig &operator=(const ServerConfig &other);
 
 		// Getters & Setters
 		const char*									getConfigPath() const;
 		const std::vector<ServerBlock>&				getServerBlocks() const;
-		const std::string&							getMaxConnections() const;
-		const std::string&							getMaxConcurrentCgi() const;
-		const std::string&							getMaxCgiBacklog() const;
+		int											getMaxConnections() const;
+		int											getMaxConcurrentCgi() const;
+		int											getMaxCgiBacklog() const;
+		int											getMaxWorkers() const;
+		size_t										getClientBodySize() const;
+		size_t										getClientHeaderSize() const;
+		int											getTimeoutFullHeader() const;
+		int											getTimeoutInterSend() const;
+		int											getTimeoutInterReceive() const;
+		int											getTimeoutKeepAlive() const;
 		const std::vector<Ws::BindInfo>&			getAllBindAddresses() const;
+		const DefaultConfig&						getDefaultConfig() const;
+		const Config::CgiInterpreterMap&	
+													getCgiInterpreters() const;
+
 		void										setMaxConnections(const std::string &value);
 		void										setMaxConcurrentCgi(const std::string &value);
 		void										setMaxCgiBacklog(const std::string &value);
+		void										setMaxWorkers(const std::string &value);
+		void										setClientBodySize(const std::string &value);
+		void										setClientHeaderSize(const std::string &value);
+		void										setTimeoutFullHeader(const std::string &value);
+		void										setTimeoutInterSend(const std::string &value);
+		void										setTimeoutInterReceive(const std::string &value);
+		void										setTimeoutKeepAlive(const std::string &value);	
+		void										addCgiInterpreter(const std::string &value);
 
 		int											parseConfigFile();
 		// Debug
@@ -47,7 +78,6 @@ class ServerConfig
 		void										printConfigs() const;
 
 	private:
-		ServerConfig();
 		ServerConfig(const ServerConfig &other);
 
 		enum config_levels
@@ -57,38 +87,50 @@ class ServerConfig
 			LOCATION_LEVEL
 		};
 
-		// Key/value storing for config settings
-		typedef void (ServerConfig::*f_addConfigValue)(const std::string &);
-		std::map<std::string, f_addConfigValue>				m_keys;
+		struct DirectiveToSetter
+		{
+			DirectiveToSetter();
+			typedef void 															(ServerConfig::*Setter)(const std::string &);
+			typedef std::pair<const std::string, Setter> 							DirectiveSetterPair;
+			typedef Heap_ObjectPool<DirectiveSetterPair>							mapPool;
+			typedef std::map<std::string, Setter, std::less<std::string>, mapPool> 	DirectiveSetterMap;
 
+			DirectiveSetterMap	map;
+		};
 
-		std::string							m_max_connections;
-		std::string							m_max_concurrent_cgi;
-		std::string							m_max_cgi_backlog;
-		DefaultConfig						m_configDefault;
+		// common to all instances
+		static DirectiveToSetter			m_directiveToSetter;
+
+		int									m_max_connections;
+		int									m_max_concurrent_cgi;
+		int									m_max_cgi_backlog;
+		int									m_max_workers;
+		size_t								m_http_maxClientBodySize;
+		size_t								m_http_maxClientHeaderSize;
+		int									m_http_timeoutFullHeader;
+		int									m_http_timeoutInterSend;
+		int									m_http_timeoutInterReceive;
+		int									m_http_timeoutKeepAlive;
+		const DefaultConfig&				m_configDefault;
 		const char*							m_configFilePath;
 		std::ifstream						m_configFileStream;
-		size_t								m_serverCount;
 		std::vector<ServerBlock>			m_serverBlocks; // m_serverBlocks is the end result of the parsing process
-		Globals*							m_globals; // mostly for logs and debuging, see Globals class
-		
-
 		std::vector<Ws::BindInfo>			m_bindAddresses;
+		Config::CgiInterpreterMap	
+											m_cgiInterpreters;
 
 		// One function for parsing lines seems easier to maintain than 3 (program, server, location)
 		// due to most of the parsing process being the same for all levels
 		int									m_parseConfigLine(const std::string &line, const size_t &currentLine,
 															std::vector<ServerBlock> &servers,
-															std::vector<ServerLocation> &locations,
 															const int &currentLevel);
 		void								m_setConfigValue(const std::string &key, const std::string &value);
 		bool								m_updateFile();
 		void								m_setDefaults();
 		bool								m_handleClosingBracket(int &currentLevel, size_t currentLine,  
-															std::vector<ServerBlock> &servers, 
-															std::vector<ServerLocation> &locations);
+															std::vector<ServerBlock> &servers);
 
-
+		bool								mf_applyInheritedSettings();
 		bool								mf_listenDNSlookup();
 };
 

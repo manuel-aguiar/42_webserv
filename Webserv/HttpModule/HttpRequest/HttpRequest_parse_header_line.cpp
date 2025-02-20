@@ -6,11 +6,15 @@
 /*                                 */
 /* *********************************/
 
-#include "../HttpRequest.hpp"
-#include "../../../GenericUtils/StringUtils/StringUtils.hpp"
+// Project headers
+#include "HttpRequest.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
+// C++ headers
 #include <sstream>
 
-int HttpRequest::mf_parseHeaders(const std::string& data)
+Http::Status::Number
+Http::Request::mf_parseHeaders(const std::string& data)
 {
 	std::istringstream	stringStream(data);
 	std::string			line;
@@ -30,6 +34,6 @@ int HttpRequest::mf_parseHeaders(const std::string& data)
 			return (Http::Status::BAD_REQUEST);
 		m_headers[key] = value;
 	}
-	
+
 	return (Http::Status::OK);
 }

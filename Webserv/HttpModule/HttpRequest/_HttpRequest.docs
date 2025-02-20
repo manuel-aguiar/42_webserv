@@ -15,6 +15,6 @@ So, each request will have a pointer to its own session (can only be determined 
 to decide whether there is already a session associated or not)
 
 
-HttpRequest should also have a parsing timeout:
+Http::Request should also have a parsing timeout:
 	if we don't receive enough information to consider the request as fully received after X amount of time
 	we should close the request and POTENTIALLY, close the connection as well (rajh: NOT sure about this)

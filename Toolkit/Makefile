@@ -4,7 +4,7 @@
 SUBDIRS = $(shell find . -type f -name "Makefile" -path "*/_Tests/*" -exec dirname {} \;)
 
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
-OBJ_PATH				=		$(ROOT_PATH)/_build 
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug 
 
 # Default target
 all:

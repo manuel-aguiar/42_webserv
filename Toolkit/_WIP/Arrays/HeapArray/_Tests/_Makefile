@@ -6,7 +6,7 @@
 #    By: mmaria-d <mmaria-d@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/21 12:36:48 by mmaria-d          #+#    #+#              #
-#    Updated: 2024/12/23 11:42:35 by mmaria-d         ###   ########.fr        #
+#    Updated: 2025/02/18 13:36:34 by mmaria-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME					=		test.out
 # Paths
 ROOT_PATH				=		../../../../Toolkit
 SRC_PATH				=		$(ROOT_PATH)/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 MEMORYPOOL_PATH			=	 	$(ROOT_PATH)/MemoryPool
 MEMORYPOOL_LIB			=	 	libmemorypool.a

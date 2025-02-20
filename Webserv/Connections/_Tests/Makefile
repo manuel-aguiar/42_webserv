@@ -10,7 +10,7 @@ CXXFLAGS				=		-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SUBJECT_PATH			=		$(SRC_PATH)/Toolkit/TestHelpers/_Demo
 # Sources
@@ -80,13 +80,13 @@ DEPS_STRESS_TEST		=		$(OBJS_STRESS_TEST:.o=.d)
 all: $(TARGET_TEST) $(TARGET_STRESS_TEST) $(TARGET_MULTI_SERVER)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)
-	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_TEST) -o $(TARGET_TEST)
+	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_TEST) -o $(TARGET_TEST) -lpthread
 
 $(TARGET_STRESS_TEST): $(OBJS_COMMON) $(OBJS_STRESS_TEST)
-	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_STRESS_TEST) -o $(TARGET_STRESS_TEST)
+	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_STRESS_TEST) -o $(TARGET_STRESS_TEST) -lpthread
 
 $(TARGET_MULTI_SERVER): $(OBJS_COMMON) $(OBJS_MULTI_SERVER)
-	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_MULTI_SERVER) -o $(TARGET_MULTI_SERVER)
+	$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_MULTI_SERVER) -o $(TARGET_MULTI_SERVER) -lpthread
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
@@ -98,7 +98,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 
 all: $(NAME)
 
-test: $(TARGET_TEST)
+test: all
 	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(TARGET_TEST)
 	@./$(TARGET_STRESS_TEST)
 	@./$(TARGET_MULTI_SERVER)

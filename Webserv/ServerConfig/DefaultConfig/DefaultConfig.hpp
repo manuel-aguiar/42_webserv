@@ -11,31 +11,38 @@
 # include <stddef.h>
 # include <string>
 
-class DefaultConfig
+struct DefaultConfig
 {
-	public:
-		DefaultConfig();
+	DefaultConfig();
 
-		//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
+	//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
 
-		// Program
-		std::string	maxConnections;
-		std::string	maxCGI;
-		std::string cgi_maxBacklog;
+	// Program
+	const int	server_maxConnections;
+	const int	server_cgiWorkers;
+	const int 	server_cgiBacklog;
+	const int	server_Workers;
 
-		// Server
-		std::string serverRoot;
-		std::string	maxClientBodySize;
-		std::string	maxClientHeaderSize;
-		std::string	IPListen;
-		std::string	http400Path;
-		std::string	http404Path; // add the remaining error pages
+	// Server
+	const char* server_Root;
+	const char*	server_IPListen;
 
-		// Location
-		std::string autoIndex;
-		std::string	methods;
-		std::string	type;
+	//Http
+	const int	http_maxClientBodySize;
+	const int	http_maxClientHeaderSize;
+	const int	http_timeoutFullHeader;
+	const int	http_timeoutInterSend;
+	const int	http_timeoutInterReceive;
+	const int	http_timeoutKeepAlive;
+	const char*	http_error400Path;
+	const char*	http_error404Path; // add the remaining error pages
 
+	// Location
+	int			loc_autoIndex;
+	const char*	loc_http_methods;
+	const char*	loc_type;
+
+	enum {UINT_NONE = -1};
 };
 
 #endif

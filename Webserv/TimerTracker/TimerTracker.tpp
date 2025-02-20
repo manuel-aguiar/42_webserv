@@ -91,14 +91,6 @@ class TimerTracker
 		const_iterator begin() const 	{ return (m_timers.begin()); }
 		const_iterator end() const 		{ return (m_timers.end()); }
 
-		void print()
-		{
-			for (typename timerMap::iterator it = m_timers.begin(); it != m_timers.end(); ++it)
-			{
-				std::cout << it->first << ": " << it->second << std::endl;
-			}
-		}
-
 	private:
 		timerMap 							m_timers;
 		size_t								m_capacity;

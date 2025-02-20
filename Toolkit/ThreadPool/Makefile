@@ -20,7 +20,7 @@ BUILD_FLAGS 		= 	-DNDEBUG
 
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/Toolkit
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug/Toolkit
 
 SRCS				=	$(SRC_PATH)/ThreadPool/ThreadPool/ThreadPool.cpp					\
 						$(SRC_PATH)/ThreadPool/ThreadWorker/ThreadWorker.cpp				\

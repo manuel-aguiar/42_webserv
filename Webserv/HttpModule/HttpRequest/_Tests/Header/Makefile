@@ -1,14 +1,14 @@
 # Makefile
 
-# TARGET_DEBUG 			=		debug_httpRequest.out
-TARGET_TEST 			=		test_httpRequest.out
+# TARGET_DEBUG 			=		debug_Request.out
+TARGET_TEST 			=		test_Request.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
-OBJ_PATH				=		$(ROOT_PATH)/_build
+OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/main.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/headerTests.cpp \
@@ -21,11 +21,13 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Header/main.cp
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_message_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/parsers/http_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/Buffer.cpp											\
+								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
@@ -71,7 +73,7 @@ clean:
 
 fclean: clean
 	@echo "$(TAG) Full clean."
-	@rm -f $(NAME)
+	@rm -f $(TARGET_TEST)
 
 test: $(TARGET_TEST)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)

@@ -67,8 +67,7 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
     for (std::vector<const Ws::Sock::addr*>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
     {
         // Port directive is mandatory and cannot be wildcard
-        std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(*lit);
-        ASSERT_EQUAL(ipPort.second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
+        ASSERT_EQUAL(mf_extractIpPort(*lit).second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
 
         // For each server name
         for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)

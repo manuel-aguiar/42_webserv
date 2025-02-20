@@ -10,6 +10,7 @@
 
 // C++ headers
 # include <cerrno>
+# include <stdexcept> // std::runtime_error
 
 // C headers
 # include <unistd.h>
