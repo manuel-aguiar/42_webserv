@@ -38,53 +38,56 @@ struct CompareHeaders
 	}
 };
 
-class HeaderData
+namespace Cgi
 {
-	public:
+	class HeaderData
+	{
+		public:
 
-		HeaderData();
-		~HeaderData();
+			HeaderData();
+			~HeaderData();
 
-		enum Status
-		{
-			PASS,
-			FAIL,
-			KEEP_PARSING,
-			NEED_MORE_DATA
-		};
+			enum Status
+			{
+				PASS,
+				FAIL,
+				KEEP_PARSING,
+				NEED_MORE_DATA
+			};
 
-		enum State
-		{
-			START,
-			HEADERS,
-			FINISH
-		};
-		
-		void                            reset();
+			enum ParsingState
+			{
+				START,
+				HEADERS,
+				FINISH
+			};
+			
+			void                            reset();
 
-		Status                          parse(BaseBuffer& buffer);
-		
-		State						   	getState() const;	
-		const std::vector<Cgi::Header>& getHeaders() const;
-		const BufferView&               getTempBody() const;
-		int							  	getStatusCode() const;
-		bool                            hasBody() const;
+			Status                          parse(BaseBuffer& buffer);
+			
+			ParsingState					getParsingState() const;	
+			const std::vector<Cgi::Header>& getHeaders() const;
+			const BufferView&               getTempBody() const;
+			int							  	getStatusCode() const;
+			bool                            hasBody() const;
 
-		
+			
 
-	private:
-		
-		State						m_state;
-		int                         m_statusCode;
-		int							m_totalParsedBytes;
-		std::vector<Cgi::Header> 	m_headers;
-		bool						m_hasBody;
-		BufferView					m_tempBody;
+		private:
+			
+			ParsingState						m_state;
+			int                         m_statusCode;
+			int							m_totalParsedBytes;
+			std::vector<Cgi::Header> 	m_headers;
+			bool						m_hasBody;
+			BufferView					m_tempBody;
 
-		Status	mf_validateHeaders();
-		Status	mf_parseHeaders(BufferView& view);
-		Status	mf_parseBody(BufferView& view);
-		Status	mf_setStatus(const Status status, const int statusCode);
+			Status	mf_validateHeaders();
+			Status	mf_parseHeaders(BufferView& view);
+			Status	mf_parseBody(BufferView& view);
+			Status	mf_setStatus(const Status status, const int statusCode);
+	};
 };
 
 #endif

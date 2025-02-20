@@ -1,0 +1,25 @@
+{
+    bash
+    Memcheck:Leak
+    fun:* 
+    obj:/usr/bin/bash
+}
+{
+   bash2
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:getcwd
+   fun:get_working_directory
+   fun:set_pwd
+   fun:initialize_shell_variables
+   obj:/usr/bin/bash
+   fun:main
+}
+
+{
+    bash_dup2
+    Memcheck:Leak
+    fun:dup2
+    obj:/usr/bin/bash
+}

@@ -30,19 +30,19 @@ InternalReq::getNotifyOnSuccess_Callback() const
 	return (m_notifyOnSuccess);
 }
 
-Cgi::IO::Callback		
+Cgi::IO::OnReadWrite		
 InternalReq::getWriteToScript_Callback() const
 {
 	return(m_writeToScript);
 }
 
-Cgi::IO::Callback		
-InternalReq::getReceiveScriptBody_Callback() const
+Cgi::IO::OnReadWrite		
+InternalReq::getReadBodyFromScript_Callback() const
 {
-	return (m_receiveScriptBody);
+	return (m_readBodyFromScript);
 }
 
-Cgi::IO::ReceiveStatusHeaders
+Cgi::IO::ReceiveHeaderData
 InternalReq::getReceiveHeaders_Callback() const
 {
 	return (m_receiveStatusHeaders);

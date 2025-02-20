@@ -28,27 +28,25 @@ namespace Cgi
 	}
 
 	void
-	Cgi::Request::setWriteToScript_Callback	(const Cgi::IO::FillCgiWriteBuffer handler)
+	Cgi::Request::setWriteToScript_Callback	(const Cgi::IO::OnReadWrite handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_writeToScript = handler;
 	}
 
 	void
-	Cgi::Request::setReceiveStatusHeaders_Callback	(const Cgi::IO::ReceiveStatusHeaders handler)
+	Cgi::Request::setReceiveStatusHeaders_Callback	(const Cgi::IO::ReceiveHeaderData handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_receiveStatusHeaders = handler;
 	}
 
-	void
-	Cgi::Request::setReceiveScriptBody_Callback	(const Cgi::IO::Callback handler)
+	void						
+	Cgi::Request::setReadBodyFromScript_Callback(const Cgi::IO::OnReadWrite handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
-		m_receiveScriptBody = handler;
+		m_readBodyFromScript = handler;
 	}
-
-
 
 	void
 	Cgi::Request::setEnvBase(const CgiEnvEnum::Type env, const Cgi::EnvValue& value)

@@ -27,10 +27,10 @@ class InternalReq : public Cgi::Request
 
 		Cgi::Notify::Callback		getRuntime_Handler(const Cgi::Notify::Type callUser) const;
 
-		Cgi::IO::FillCgiWriteBuffer	getWriteToScript_Callback() const;
-		Cgi::IO::Callback			getReceiveScriptBody_Callback() const;
+		Cgi::IO::OnReadWrite		getWriteToScript_Callback() const;
+		Cgi::IO::ReceiveHeaderData	getReceiveHeaders_Callback() const;
+		Cgi::IO::OnReadWrite		getReadBodyFromScript_Callback() const;
 
-		Cgi::IO::ReceiveStatusHeaders	getReceiveHeaders_Callback() const;
 
 		const Cgi::EnvVariables& 	getEnvVars() const;
 		const Cgi::InterpExtension&	getExtension() const;

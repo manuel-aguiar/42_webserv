@@ -88,11 +88,8 @@ class Worker
 		
 		// External sources
 		ImplModule&			m_CgiModule;
-		
-		HeaderData			m_headerParser;
-		Buffer<1024>		m_writeBuffer;
+		Cgi::HeaderData		m_headerParser;
 		Buffer<1024>		m_headerBuffer;
-		Buffer<1024>		m_bodyBuffer;
 		// execute
 
 

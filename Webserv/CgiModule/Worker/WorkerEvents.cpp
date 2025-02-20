@@ -33,6 +33,7 @@ void	Worker::mf_readScript()
 {
 	int 					bytesRead = 0;
 	Events::Monitor::Mask 	triggeredEvents;
+	Cgi::IO::State 	state;
 
 	triggeredEvents = m_readEvent->getTriggeredEvents();
 	//std::cout << "\t\t\tread called" << std::endl;
@@ -42,10 +43,10 @@ void	Worker::mf_readScript()
 		goto disableReadEvent;
 
 	// nothing to read, return
-	if (!triggeredEvents & Events::Monitor::READ)
+	if (!(triggeredEvents & Events::Monitor::READ))
 		return ;
 
-	if (m_headerParser.getState() != HeaderData::FINISH)
+	if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 	{
 		// headers didn't fit the buffer, abort
 		if (m_headerBuffer.size() == m_headerBuffer.capacity())
@@ -63,19 +64,20 @@ void	Worker::mf_readScript()
 
 		switch (m_headerParser.parse(m_headerBuffer))
 		{
-			case HeaderData::FAIL:
+			case Cgi::HeaderData::FAIL:
 				mf_recycleRuntimeFailure();
 				return ;
-			case HeaderData::PASS:
+			case Cgi::HeaderData::PASS:
 			{
-				// push extra message body to the body buffer for sending later
-				if (m_headerParser.getTempBody().size() > 0)
-					m_bodyBuffer.push(m_headerParser.getTempBody().data(), m_headerParser.getTempBody().size());
-				
 				// send status code and headers to the user
-				(m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), 
-																m_headerParser.getStatusCode(), 
-																m_headerParser.getHeaders());
+				state = (m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), m_headerParser);
+				switch (state)
+				{
+					case Cgi::IO::CONTINUE:
+						break ;
+					case Cgi::IO::CLOSE:
+						goto disableReadEvent;
+				}
 				break ;
 			}
 			default:
@@ -84,10 +86,19 @@ void	Worker::mf_readScript()
 	}
 	else
 	{
+		// notify user that body is ready
+		// more body data to be read
 
+		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
+		
+		switch (state)
+		{
+			case Cgi::IO::CONTINUE:
+				return ;
+			case Cgi::IO::CLOSE:
+				goto disableReadEvent;
+		}
 	}
-	// notify user that body is ready
-	
 
 
 	return ;
@@ -101,9 +112,8 @@ void	Worker::mf_readScript()
 
 void	Worker::mf_writeScript()
 {
-	int 					bytesWritten = 0;
 	Events::Monitor::Mask 	triggeredEvents;
-	Cgi::IO::WriteState 	state;
+	Cgi::IO::State 			state;
 	
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
 	
@@ -112,34 +122,15 @@ void	Worker::mf_writeScript()
 		goto disableWriteEvent;
 	
 	// no write, return
-	if (!triggeredEvents & Events::Monitor::WRITE)
+	if (!(triggeredEvents & Events::Monitor::WRITE))
 		return ;
-	
-	// there are leftovers in buffer, send those
-	if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
-	{
-		ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
 
-		bytesWritten = m_writeBuffer.write(m_writeEvent->getFd(), m_writeBuffer.writeOffset());
-		if (bytesWritten == 0)
-			goto disableWriteEvent;
-		return ;
-	}
-
-	// ask user to give us more data to send
-	state = (m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), m_writeBuffer);
+	// ask the user to write and report on what it needs
+	state = (m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), m_writeEvent->getFd());
 	
 	switch (state)
 	{
-		case Cgi::IO::SEND:
-		{
-			bytesWritten = m_writeBuffer.write(m_writeEvent->getFd());
-			ASSERT_EQUAL(bytesWritten != -1, true, "InternalCgiWorker::mf_writeScript(): ::write shouuld not return -1");
-			if (bytesWritten == 0)
-				goto disableWriteEvent;
-			return ;
-		}
-		case Cgi::IO::WAIT:
+		case Cgi::IO::CONTINUE:
 			return ;
 		case Cgi::IO::CLOSE:
 			goto disableWriteEvent;

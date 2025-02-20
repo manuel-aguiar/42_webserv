@@ -10,23 +10,10 @@ InternalReq::getUser() const
 	return (m_user);
 }
 
-Cgi::Notify::Callback
-InternalReq::getRuntime_Handler(const Cgi::Notify::Type type) const
-{
-	return (m_runtime_Handlers[type]);
-}
-
-
 const Cgi::EnvVariables& 
 InternalReq::getEnvVars() const
 {
 	return (m_env);
-}
-
-const Cgi::InterpExtension&
-InternalReq::getExtension() const
-{
-	return (m_extension);
 }
 
 const std::string&

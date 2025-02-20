@@ -10,8 +10,8 @@ namespace Cgi
 		m_notifyOnError	(NULL),
 		m_notifyOnSuccess(NULL),
 		m_writeToScript	(NULL),
-		m_receiveScriptBody(NULL),
 		m_receiveStatusHeaders(NULL),
+		m_readBodyFromScript(NULL),
 		m_timeoutMs		(0),
 		m_scriptPath	(""),
 		m_state			(Cgi::RequestState::IDLE),
@@ -35,7 +35,7 @@ namespace Cgi
 		m_notifyOnError = NULL;
 		m_notifyOnSuccess = NULL;
 		m_writeToScript = NULL;
-		m_receiveScriptBody = NULL;
+		m_readBodyFromScript = NULL;
 		m_receiveStatusHeaders = NULL;
 
 		m_timeoutMs = 0;
@@ -49,8 +49,8 @@ namespace Cgi
 		m_notifyOnError(copy.m_notifyOnError),
 		m_notifyOnSuccess(copy.m_notifyOnSuccess),
 		m_writeToScript(copy.m_writeToScript),
-		m_receiveScriptBody(copy.m_receiveScriptBody),
 		m_receiveStatusHeaders(copy.m_receiveStatusHeaders),
+		m_readBodyFromScript(copy.m_readBodyFromScript),
 		m_timeoutMs(copy.m_timeoutMs),
 		m_scriptPath(copy.m_scriptPath)
 	{
@@ -67,7 +67,7 @@ namespace Cgi
 		m_notifyOnSuccess = assign.m_notifyOnSuccess;
 
 		m_writeToScript = assign.m_writeToScript;
-		m_receiveScriptBody = assign.m_receiveScriptBody ;
+		m_readBodyFromScript = assign.m_readBodyFromScript ;
 		m_receiveStatusHeaders = assign.m_receiveStatusHeaders;		
 
 		m_timeoutMs = assign.m_timeoutMs;

@@ -6,8 +6,11 @@
 
 # include <string>
 # include "../../Toolkit/Arrays/DynArray/DynArray.hpp"
+# include "../GenericUtils/BufferView/BufferView.hpp"
 
 class BaseBuffer;
+
+namespace Ws {typedef int fd;}
 
 namespace Cgi
 {
@@ -137,16 +140,14 @@ namespace Cgi
 		
 		typedef enum
 		{
-			SEND,
-			WAIT,
+			CONTINUE,
 			CLOSE,
-		}	WriteState;
+		}	State;
 
 		typedef int     	BytesCount;
-		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
 
-		typedef Cgi::IO::WriteState 		(*FillCgiWriteBuffer)(Cgi::User user, BaseBuffer& buffer);
-		typedef void 						(*ReceiveStatusHeaders)(Cgi::User user, const int status, const std::vector<Cgi::Header>& headers);
+		typedef Cgi::IO::State 				(*OnReadWrite)(Cgi::User user, const Ws::fd fd);
+		typedef Cgi::IO::State  			(*ReceiveHeaderData)(Cgi::User user, const Cgi::HeaderData& headers);
 	};
 
 

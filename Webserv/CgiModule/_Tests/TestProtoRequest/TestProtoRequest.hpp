@@ -4,9 +4,10 @@
 
 # define TESTPROTOREQUEST_HPP
 
+#include "../../CgiNamespace.h"
 #include "../../../CgiModule/Request/Request.hpp"
 #include "../../../CgiModule/Module/Module.hpp"
-
+#include "../../../GenericUtils/Buffer/Buffer.hpp"
 class Globals;
 
 class TestProtoRequest
@@ -20,11 +21,12 @@ class TestProtoRequest
 		// Callbacks for the CGI Module
 		void   	SuccessCgi();		//On execute
 		void	falseStartCgi();	// on error startup
-		void	cancelCgi();		// on error runtime
+		void	FailureCgi();		// on error runtime
 		void	timeoutCgi();
 
-		Cgi::IO::BytesCount		CgiRead(int readFd);
-		Cgi::IO::BytesCount		CgiWrite(int writeFd);
+		Cgi::IO::State		CgiRead(int readFd);
+		Cgi::IO::State		CgiWrite(int writeFd);
+		Cgi::IO::State		CgiReceiveHeaders(const Cgi::HeaderData& headers);
 
 		void	debugPrint() const;
 
@@ -48,10 +50,12 @@ class TestProtoRequest
 
 		std::string			m_msgBody;
 		
-		char 				m_buffer[1024];
+		Buffer<1024>		m_buffer;
 		size_t				m_TotalBytesRead;
 
 		int					m_id;
+
+		int					m_headerStatus;
 
 		std::string			m_ExpectedOutput;
 
@@ -65,8 +69,9 @@ class TestProtoRequest_CgiGateway
 		static void onSuccess(Cgi::User user);
 		static void onError(Cgi::User user);
 
-		static Cgi::IO::BytesCount 		onRead(Cgi::User user, int readFd);
-		static Cgi::IO::BytesCount 		onWrite(Cgi::User user, int writeFd);
+		static Cgi::IO::State 		onRead(Cgi::User user, int readFd);
+		static Cgi::IO::State 		onWrite(Cgi::User user, int writeFd);
+		static Cgi::IO::State		onReceiveHeaders(Cgi::User user, const Cgi::HeaderData& headers);
 };
 
 

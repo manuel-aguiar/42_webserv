@@ -43,7 +43,7 @@ TestProtoRequest::SuccessCgi()
 	The oposite of execute Cgi, delete events and finish request
 */
 void
-TestProtoRequest::cancelCgi()
+TestProtoRequest::FailureCgi()
 {	
 	m_CgiResultStatus = E_CGI_STATUS_ERROR_RUNTIME;
 }

@@ -11,7 +11,7 @@ TestProtoRequest_CgiGateway::onSuccess(Cgi::User user)
 void
 TestProtoRequest_CgiGateway::onError(Cgi::User user)
 {
-	reinterpret_cast<TestProtoRequest*>(user)->cancelCgi();
+	reinterpret_cast<TestProtoRequest*>(user)->FailureCgi();
 }
 
 Cgi::IO::BytesCount

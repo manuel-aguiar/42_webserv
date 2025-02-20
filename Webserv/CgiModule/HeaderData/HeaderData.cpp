@@ -45,7 +45,8 @@ int binSearch(const std::vector<T>& target, const T& value)
 	return (low);
 }
 
-
+namespace Cgi
+{
 HeaderData::HeaderData() 
 : m_state               (HeaderData::START)
 , m_statusCode          (-1)
@@ -166,6 +167,7 @@ HeaderData::mf_parseHeaders(BufferView& view)
 
 	BufferView key = line.substr(0, pos_Separator);
 	BufferView value = line.substr(pos_Separator + 2, line.size() - pos_Separator - 2);
+	//std::cout << "key: '" <<  key << "', value: '" << value << "'" << std::endl;
 
 	if (key == BufferView("Status"))
 	{
@@ -178,7 +180,6 @@ HeaderData::mf_parseHeaders(BufferView& view)
 	else	
 		m_headers.push_back((Cgi::Header){key, value});	// save header
 
-	//std::cout << "key: '" <<  m_headers.back().key << "', value: '" << m_headers.back().value << "'" << std::endl;
 	
 	
 
@@ -197,7 +198,6 @@ HeaderData::mf_parseHeaders(BufferView& view)
 HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 {
 	// pickup where you left off
-
 	BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
 
 	//std::cout << "total parsed bytes: " << m_totalParsedBytes << ", view size: " << view.size() << std::endl;
@@ -247,5 +247,8 @@ HeaderData::hasBody() const { return (m_hasBody); }
 const BufferView&
 HeaderData::getTempBody() const { return (m_tempBody); }
 
-HeaderData::State
-HeaderData::getState() const { return (m_state); }
+HeaderData::ParsingState
+HeaderData::getParsingState() const { return (m_state); }
+
+
+}

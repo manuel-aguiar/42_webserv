@@ -20,7 +20,7 @@ class TestProtoRequest
 		// Callbacks for the CGI Module
 		void   	SuccessCgi();		//On execute
 		void	falseStartCgi();	// on error startup
-		void	cancelCgi();		// on error runtime
+		void	FailureCgi();		// on error runtime
 		void	timeoutCgi();
 
 		Cgi::IO::BytesCount		CgiRead(int readFd);
@@ -65,8 +65,8 @@ class TestProtoRequest_CgiGateway
 		static void onSuccess(Cgi::User user);
 		static void onError(Cgi::User user);
 
-		static Cgi::IO::BytesCount 		onRead(Cgi::User user, int readFd);
-		static Cgi::IO::BytesCount 		onWrite(Cgi::User user, int writeFd);
+		static Cgi::IO::BytesCount 		onRead(Cgi::User user, const Ws::fd readFd);
+		static Cgi::IO::BytesCount 		onWrite(Cgi::User user, const Ws::fd writeFd);
 };
 
 
