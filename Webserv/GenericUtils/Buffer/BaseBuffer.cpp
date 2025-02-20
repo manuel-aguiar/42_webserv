@@ -21,8 +21,10 @@ int BaseBuffer::read(Ws::fd fd, int startIndex)
     ASSERT_EQUAL((size_t)startIndex < capacity() - 1, true, "BaseBuffer::read(): starting index is beyond buffer capacity");
     ASSERT_EQUAL((size_t)startIndex <= m_size, true, "BaseBuffer::read(): starting index is beyond current buffer size, no fragmentation allowed");
 
-    m_size = startIndex + ::read(fd, m_begin, capacity() - startIndex - 1);
-    return (m_size);
+    int bytesRead = ::read(fd, m_begin, capacity() - startIndex - 1);
+    m_size = startIndex + bytesRead;
+
+    return (bytesRead);
 }
 
 int BaseBuffer::write(Ws::fd fd, int startIndex)

@@ -75,6 +75,27 @@ namespace Cgi
 		DynArray<std::pair<EnvKey, 					EnvValue> >	envExtra;
 	};
 
+    struct Header
+    {
+        BufferView key;
+        BufferView value;
+    
+        bool operator<(const Header& other) const
+        {
+            return (key < other.key);
+        }
+    
+        bool operator==(const Header& other) const
+        {
+            return (key == other.key);
+        }
+    
+        bool operator!=(const Header& other) const
+        {
+            return (key != other.key);
+        }
+    };
+
 	namespace Options
 	{
 		enum
@@ -104,12 +125,16 @@ namespace Cgi
 	{
 		typedef enum
 		{
-			READ,
+			READ_HEADERS,
+			READ_BODY,
 			WRITE,
 			COUNT
 		} 	Type;
+		
 		typedef int     	BytesCount;
 		typedef BytesCount	(*Callback)	(Cgi::User user, int targetFd);
+
+		typedef void (*ReceiveStatusHeaders)(Cgi::User user, int status, const std::vector<Cgi::Header>& headers);
 	};
 
 

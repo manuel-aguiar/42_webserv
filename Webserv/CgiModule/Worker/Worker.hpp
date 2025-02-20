@@ -89,7 +89,7 @@ class Worker
 		// External sources
 		ImplModule&			m_CgiModule;
 		
-		HeaderParser			m_response;
+		HeaderParser		m_headerParser;
 		Buffer<1024>		m_ScriptBuffer;
 		// execute
 

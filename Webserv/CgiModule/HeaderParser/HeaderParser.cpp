@@ -200,7 +200,7 @@ HeaderParser::Status	HeaderParser::parse(BaseBuffer& buffer)
 	BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
 
 	//std::cout << "total parsed bytes: " << m_totalParsedBytes << ", view size: " << view.size() << std::endl;
-	
+
 	if (view.size() == 0)
 	{
 		if (m_state != HeaderParser::FINISH)
@@ -245,3 +245,6 @@ HeaderParser::hasBody() const { return (m_hasBody); }
 
 const BufferView&
 HeaderParser::getTempBody() const { return (m_tempBody); }
+
+HeaderParser::State
+HeaderParser::getState() const { return (m_state); }

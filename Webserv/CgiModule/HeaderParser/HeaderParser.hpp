@@ -6,6 +6,7 @@
 
 // Project headers
 # include "../../GenericUtils/BufferView/BufferView.hpp"
+# include "../CgiNamespace.h"
 
 // C++ headers
 # include <vector>
@@ -82,6 +83,7 @@ class HeaderParser
 
 		Status                          parse(BaseBuffer& buffer);
 		
+		State						   	getState() const;	
 		const std::vector<Cgi::Header>& getHeaders() const;
 		const BufferView&               getTempBody() const;
 		int							  	getStatusCode() const;

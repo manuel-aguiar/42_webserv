@@ -27,6 +27,9 @@ class InternalReq : public Cgi::Request
 									getRuntime_Handler(const Cgi::Notify::Type type) const;
 		Cgi::RequestState::Type
 									getState() const;
+		
+		Cgi::IO::ReceiveStatusHeaders	getDelieverHeadersCallback();
+
 		const Cgi::EnvVariables& 	getEnvVars() const;
 		const Cgi::InterpExtension&	getExtension() const;
 		const std::string&			getScriptPath() const;

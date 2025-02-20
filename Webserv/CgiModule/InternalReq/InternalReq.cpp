@@ -49,3 +49,9 @@ InternalReq &InternalReq::operator=(const InternalReq &assign)
 	m_myTimer = assign.m_myTimer;
 	return (*this);
 }
+
+Cgi::IO::ReceiveStatusHeaders
+InternalReq::getDelieverHeadersCallback()
+{
+	return (m_receiveStatusHeaders);
+}

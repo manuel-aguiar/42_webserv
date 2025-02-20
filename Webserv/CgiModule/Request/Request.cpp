@@ -7,6 +7,11 @@ namespace Cgi
 
 	Cgi::Request::Request() :
 		m_user			(NULL),
+		m_notifyOnError	(NULL),
+		m_notifyOnSuccess(NULL),
+		m_writeToScript	(NULL),
+		m_receiveScriptBody(NULL),
+		m_receiveStatusHeaders(NULL),
 		m_timeoutMs		(0),
 		m_extension		(""),
 		m_scriptPath	(""),
@@ -14,13 +19,6 @@ namespace Cgi
 		m_options		(0)
 	{
 		m_env.envBase.reserve(Cgi::Env::Enum::COUNT);
-
-		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
-			m_runtime_Handlers[i] = NULL;
-
-		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
-			m_IO_Handlers[i] = NULL;
-
 	}
 
 	Cgi::Request::~Request()
@@ -36,11 +34,12 @@ namespace Cgi
 		m_env.envBase.clear();
 		m_env.envExtra.clear();
 
-		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
-			m_runtime_Handlers[i] = NULL;
-		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
-			m_IO_Handlers[i] = NULL;
-		
+		m_notifyOnError = NULL;
+		m_notifyOnSuccess = NULL;
+		m_writeToScript = NULL;
+		m_receiveScriptBody = NULL;
+		m_receiveStatusHeaders = NULL;
+
 		m_timeoutMs = 0;
 		m_user = NULL;
 		m_state = Cgi::RequestState::IDLE;
@@ -49,6 +48,11 @@ namespace Cgi
 
 	Cgi::Request::Request(const Request &copy) :
 		m_user(copy.m_user),
+		m_notifyOnError(copy.m_notifyOnError),
+		m_notifyOnSuccess(copy.m_notifyOnSuccess),
+		m_writeToScript(copy.m_writeToScript),
+		m_receiveScriptBody(copy.m_receiveScriptBody),
+		m_receiveStatusHeaders(copy.m_receiveStatusHeaders),
 		m_timeoutMs(copy.m_timeoutMs),
 		m_extension(copy.m_extension),
 		m_scriptPath(copy.m_scriptPath)
@@ -62,11 +66,12 @@ namespace Cgi
 			return (*this);
 
 		m_user = assign.m_user;
+		m_notifyOnError = assign.m_notifyOnError;
+		m_notifyOnSuccess = assign.m_notifyOnSuccess;
 
-		for (size_t i = 0; i < Cgi::Notify::COUNT; i++)
-			m_runtime_Handlers[i] = assign.m_runtime_Handlers[i];
-		for (size_t i = 0; i < Cgi::IO::COUNT; i++)
-			m_IO_Handlers[i] = assign.m_IO_Handlers[i];
+		m_writeToScript = assign.m_writeToScript;
+		m_receiveScriptBody = assign.m_receiveScriptBody ;
+		m_receiveStatusHeaders = assign.m_receiveStatusHeaders;		
 
 		m_timeoutMs = assign.m_timeoutMs;
 		m_extension = assign.m_extension;

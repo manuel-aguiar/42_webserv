@@ -51,25 +51,10 @@ bool	Worker::mf_prepareExecve()
 		m_argPtr.reserve(3);
 
 		// interpreter lookup: if given, use it. If not, use extension to find interpreter. If not, there is no interpreter
-		if (!m_curRequestData->getInterpreterPath().empty())
-			m_argPtr.push_back(const_cast<char*>(m_curRequestData->getInterpreterPath().c_str()));
-		else
-		{
-			if (m_curRequestData->getExtension().empty())
-				throw std::runtime_error("interpreter not found");
-
-			std::map<Cgi::InterpExtension, Cgi::InterpPath>::const_iterator interpreterLookup 
-			= m_CgiModule.getInterpreters().find(m_curRequestData->getExtension());
-
-			if (interpreterLookup == m_CgiModule.getInterpreters().end())
-				throw std::runtime_error("interpreter not found");
-			
-			m_argPtr.push_back(const_cast<char*>(interpreterLookup->second.c_str()));
-		}
-
-		if (m_curRequestData->getScriptPath().empty())
-			throw std::runtime_error("script path not found");
+		ASSERT_EQUAL(m_curRequestData->getInterpreterPath().empty(), false, "no interpreter was provided");
+		ASSERT_EQUAL(m_curRequestData->getScriptPath().empty(), false, "no script path was provided");
 		
+		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getInterpreterPath().c_str()));
 		m_argPtr.push_back(const_cast<char*>(m_curRequestData->getScriptPath().c_str()));
 		m_argPtr.push_back(NULL);
 

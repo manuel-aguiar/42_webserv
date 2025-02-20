@@ -12,19 +12,42 @@ namespace Cgi
 		m_user = user;
 	}
 
+
 	void
-	Cgi::Request::setNotify_Callback(const Cgi::Notify::Type type, const Cgi::Notify::Callback handler)
+	Cgi::Request::setNotify_onError	(const Cgi::Notify::Callback handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
-		m_runtime_Handlers[type] = handler;
+		m_notifyOnError = handler;
 	}
 
 	void
-	Cgi::Request::setIO_Callback(const Cgi::IO::Type type, Cgi::IO::Callback handler)
+	Cgi::Request::setNotify_onSuccess	(const Cgi::Notify::Callback handler)
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
-		m_IO_Handlers[type] = handler;
+		m_notifyOnSuccess = handler;
 	}
+
+	void
+	Cgi::Request::setWriteToScript_Callback	(const Cgi::IO::Callback handler)
+	{
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
+		m_writeToScript = handler;
+	}
+
+	void
+	Cgi::Request::setReceiveStatusHeaders_Callback	(const Cgi::IO::ReceiveStatusHeaders handler)
+	{
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
+		m_receiveStatusHeaders = handler;
+	}
+
+	void
+	Cgi::Request::setReceiveScriptBody_Callback	(const Cgi::IO::Callback handler)
+	{
+		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
+		m_receiveScriptBody = handler;
+	}
+
 
 
 	void
@@ -46,13 +69,6 @@ namespace Cgi
 	{
 		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
 		m_interpreterPath = path;
-	}
-
-	void
-	Cgi::Request::setExtension(const Cgi::InterpExtension& extension)
-	{
-		ASSERT_EQUAL(m_state, RequestState::ACQUIRED, "Cgi::Request, setters can only be called when Request is in 'Acquired' state");
-		m_extension = extension;
 	}
 
 	void

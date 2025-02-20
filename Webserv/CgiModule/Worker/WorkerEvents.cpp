@@ -2,6 +2,7 @@
 
 // Project Headers
 # include "Worker.hpp"
+# include "../HeaderParser/HeaderParser.hpp"
 # include "../InternalReq/InternalReq.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 
@@ -36,6 +37,31 @@ void	Worker::mf_readScript()
 	
 	if (triggeredEvents & Events::Monitor::READ)
 	{
+		if (m_headerParser.getState() != HeaderParser::FINISH)
+		{
+			int bytesRead = m_ScriptBuffer.read(m_readEvent->getFd(), m_ScriptBuffer.size());
+
+			switch (m_headerParser.parse(m_ScriptBuffer))
+			{
+				case HeaderParser::FAIL:
+					mf_recycleRuntimeFailure();
+					return ;
+				case HeaderParser::PASS:
+				{
+					(m_curRequestData->getDelieverHeadersCallback())(m_curRequestData->getUser(), 
+																	m_headerParser.getStatusCode(), 
+																	m_headerParser.getHeaders());
+					break ;
+				}
+				default:
+					break ;
+			}
+		}
+
+
+
+
+
 		bytesRead = m_curRequestData->IO_CallTheUser(Cgi::IO::READ, m_readEvent->getFd());
 
 		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readScript(): bytesread should never be -1");

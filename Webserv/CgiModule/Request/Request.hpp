@@ -23,14 +23,16 @@ namespace Cgi
 			// object that will be called back in case of IO or Notify events
 			void						setUser				(const Cgi::User user);
 
-			// user sets callbacks for sucess, timeout...
 			// not mandatory, if user doesn't set, it doesn't get called
-			void						setNotify_Callback	(const Cgi::Notify::Type type, 
-															const Cgi::Notify::Callback handler);
+			void						setNotify_onError	(const Cgi::Notify::Callback handler);
+			void						setNotify_onSuccess	(const Cgi::Notify::Callback handler);
+			void						setWriteToScript_Callback
+															(const Cgi::IO::Callback handler);
+			void						setReceiveStatusHeaders_Callback
+															(const Cgi::IO::ReceiveStatusHeaders handler);
+			void						setReceiveScriptBody_Callback
+															(const Cgi::IO::Callback handler);
 
-			// MANDATORY, the CgiModule will call this such that the user controls its own reading/Writing
-			void						setIO_Callback		(const Cgi::IO::Type type, 
-															const Cgi::IO::Callback handler);
 			// user setter for cgi environment variables
 			void						setEnvBase			(const Cgi::Env::Enum::Type env, 
 															const Cgi::EnvValue& value);
@@ -56,14 +58,19 @@ namespace Cgi
 			unsigned int				getTimeoutMs() const;
 
 		protected:
-
+			
+			// callbacks
 			Cgi::User								m_user;
-			Cgi::IO::Callback						m_IO_Handlers[Cgi::IO::COUNT];
-			Cgi::Notify::Callback					m_runtime_Handlers[Cgi::Notify::COUNT];
+			Cgi::Notify::Callback					m_notifyOnError;
+			Cgi::Notify::Callback					m_notifyOnSuccess;
 
+			Cgi::IO::Callback						m_writeToScript;
+			Cgi::IO::Callback						m_receiveScriptBody;
+			Cgi::IO::ReceiveStatusHeaders			m_receiveStatusHeaders;
+			
+			// actual state of the request
 			unsigned int							m_timeoutMs;
 			Cgi::InterpPath							m_interpreterPath;
-			Cgi::InterpExtension					m_extension;
 			std::string								m_scriptPath;
 			Cgi::EnvVariables						m_env;
 
@@ -71,6 +78,7 @@ namespace Cgi
 			Cgi::Options::Mask						m_options;
 
 			void									mf_reset();
+
 	};
 };
 
