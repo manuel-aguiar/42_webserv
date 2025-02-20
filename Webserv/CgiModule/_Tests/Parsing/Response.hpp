@@ -68,7 +68,7 @@ namespace Cgi
 			{
 				PASS,
 				FAIL,
-				INSUFFICIENT,
+				KEEP_READING,
 			};
 
 			enum State
@@ -79,18 +79,19 @@ namespace Cgi
 				FINISH
 			};
 
-			Status parse(BufferView& view);
+			Status                          parse(BaseBuffer& buffer);
 			
-			const std::vector<Cgi::Header>& getHeaders() const { return (m_headers); }
-			bool hasBody() const { return (m_hasBody); }
+			const std::vector<Cgi::Header>& getHeaders() const;
+			bool                            hasBody() const;
 
 			
 
 		private:
 			
 			State						m_state;
-			int							m_totalHeaderBytes;
-			std::vector<Cgi::Header> 		m_headers;
+            int                         m_statusCode;
+			int							m_totalParsedBytes;
+			std::vector<Cgi::Header> 	m_headers;
 			BaseBuffer&					m_client;
 			bool						m_hasBody;
 			BufferView					m_tempBody;
