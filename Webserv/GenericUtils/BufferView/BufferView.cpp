@@ -81,7 +81,7 @@ BufferView::find(char ch, size_t startPos) const
 size_t
 BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 {
-	if (startPos >= m_size || targetLength == 0)
+	if (startPos >= m_size || targetLength == 0 || targetLength > m_size - startPos)
 		return npos;
 	for (size_t i = startPos; i <= m_size - targetLength; ++i)
 	{
@@ -94,7 +94,7 @@ BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 size_t
 BufferView::find(const BufferView& sv, size_t startPos) const
 {
-	return (find(sv.data(), startPos, sv.size()));
+	return (find(sv.data(), sv.size(), startPos));
 }
 
 void

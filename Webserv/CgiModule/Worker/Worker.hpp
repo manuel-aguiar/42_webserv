@@ -6,6 +6,7 @@
 
 //Project Headers
 # include "../../Ws_Namespace.h"
+# include "../Response/Response.hpp"
 
 // Toolkit headers
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
@@ -84,9 +85,10 @@ class Worker
 
 		
 		// External sources
-		ImplModule&		m_CgiModule;
+		ImplModule&			m_CgiModule;
 		
-		Buffer			m_ScriptBuffer;
+		Response			m_response;
+		Buffer<1024>		m_ScriptBuffer;
 		// execute
 
 

@@ -53,6 +53,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/Response/Response.cpp \
 				\
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
@@ -62,7 +63,9 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
+				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
 
 #################################################################
 OBJS_COMMON = $(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(COMMON_SRCS))

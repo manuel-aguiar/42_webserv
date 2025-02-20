@@ -36,7 +36,7 @@ void testPartialBreakPoint(int& testNumber, const char* message, int breakpoint)
 
 void testPartialRead(int& testNumber)
 {
-    const char* good = "Someheader: 200 \n\n";
+    const char* good = "Status: 200 \n\n";
     testPartialBreakPoint(testNumber, good, 4);
     testPartialBreakPoint(testNumber, good, std::strlen(good) - 1);
 }

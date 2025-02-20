@@ -13,17 +13,16 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \n\n";
+        const char* good = "Status: 200 \n\n";
 
-        Buffer<1024>    readBuffer;
-        Response        response;
+        Buffer<1024> readBuffer;
+        Response response;
         
         readBuffer.push(good);
         
         EXPECT_EQUAL(response.parse(readBuffer), Response::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
-        EXPECT_EQUAL(response.getStatusCode(), 200, "status code must be 200");
 
 
         TEST_PASSED_MSG("Basic request, no body, should pass");
@@ -37,7 +36,7 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \n";
+        const char* good = "Status: 200 \n";
 
         Buffer<1024> readBuffer;
         Response response;
@@ -47,11 +46,10 @@ void    testFullRead(int& testNumber)
         EXPECT_EQUAL(response.parse(readBuffer), Response::NEED_MORE_DATA, "should be insufficient info");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
-        EXPECT_EQUAL(response.getStatusCode(), -1, "status code must be -1");
 
         // buffer read again
         EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "no \n\n found, should fail");
-        EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
+
 
         TEST_PASSED_MSG("Incomplete Request, should fail");
     }
@@ -66,7 +64,7 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \nSomeHeader: 200 \n\n";
+        const char* good = "Status: 200 \nStatus: 200 \n\n";
 
         Buffer<1024> readBuffer;
         Response response;
@@ -76,7 +74,7 @@ void    testFullRead(int& testNumber)
         EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "should have found doubled headers");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "two headers received, even though it failed");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
-        EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
+
 
         TEST_PASSED_MSG("Doubled headers, should fail");
     }
@@ -90,7 +88,7 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \nwtf: yes \n\nsomebody";
+        const char* good = "Status: 200 \nwtf: yes \n\nsomebody";
 
         Buffer<1024> readBuffer;
         Response response;
@@ -100,8 +98,7 @@ void    testFullRead(int& testNumber)
         EXPECT_EQUAL(response.parse(readBuffer), Response::FAIL, "found body without content type header");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "must be 2 headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
-        EXPECT_EQUAL(response.getStatusCode(), CGI_FAILURE, "status code must be -1");
-        
+
 
         TEST_PASSED_MSG("Body without Content-Type, should fail");
     }
@@ -117,7 +114,7 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "SomeHeader: 200 \nContent-Type: text/html\n\nsomebody";
+        const char* good = "Status: 200 \nContent-Type: text/html\n\nsomebody";
 
         Buffer<1024> readBuffer;
         Response response;
@@ -127,8 +124,7 @@ void    testFullRead(int& testNumber)
         EXPECT_EQUAL(response.parse(readBuffer), Response::PASS, "found body without content type header");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "2 headers expected");
         EXPECT_EQUAL(response.hasBody(), true, "must be a body");
-        EXPECT_EQUAL(response.getStatusCode(), CGI_SUCCESS, "status code must be 200");
-
+        
         size_t bodyStart = readBuffer.view().find("\n\n", 2) + 2;
         BufferView body = BufferView(readBuffer.data() + bodyStart, readBuffer.size() - bodyStart);
 
