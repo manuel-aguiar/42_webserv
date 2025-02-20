@@ -11,6 +11,8 @@ SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SRCS					=		$(SRC_PATH)/Webserv/CgiModule/_Tests/Parsing/main.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/_Tests/Parsing/fullRead.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/_Tests/Parsing/Response.cpp \
 								\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp
