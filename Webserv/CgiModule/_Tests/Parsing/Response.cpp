@@ -78,7 +78,7 @@ namespace Cgi
 
         if (m_statusCode == -1 && contentType == -1 && location == -1)
         {
-            //std::cout << "lacking at least one mandatory header" << std::endl;
+            std::cout << "lacking at least one mandatory header" << std::endl;
             return (Response::FAIL);
         }
         
@@ -91,27 +91,30 @@ namespace Cgi
                 return (Response::FAIL);
         }
 
-        if (location != -1)
+        if (contentType != -1)
             m_hasBody = true;
 
         for (size_t i = 0; i < sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]); ++i)
         {
             if (binSearch(m_headers, (Cgi::Header){BufferView(forbiddenHeaders[0]), BufferView()}) != -1)
             {
-                //std::cout << "forbidden header included: " << forbiddenHeaders[0] << std::endl;
+                std::cout << "forbidden header included: " << forbiddenHeaders[0] << std::endl;
                 return (Response::FAIL);
             }
         }
-        //std::cout << "headers validated" << std::endl;
+        std::cout << "headers validated" << std::endl;
         return (Response::PASS);
     }
 
-    Response::Status Response::mf_parseHeaders(BufferView& view)
+    Response::Status
+    Response::mf_parseHeaders(BufferView& view)
     {
+        std::cout << "\tBufferView begin: " << view << std::endl;
+
         size_t pos = view.find(CGI_LINE_SEPARATOR);
         if (pos == BufferView::npos)
         {
-            return (Response::KEEP_READING);
+            return (Response::NEED_MORE_DATA);
         }
 
 
@@ -119,7 +122,7 @@ namespace Cgi
         size_t next = line.find(CGI_HEADER_SEPARATOR, 2, 0);
         if (next == BufferView::npos)
         {
-            //std::cout << "no coma separator found in header" << std::endl;
+            std::cout << "no coma separator found in header" << std::endl;
             return (Response::FAIL);
         }
         BufferView key = line.substr(0, next);
@@ -127,25 +130,25 @@ namespace Cgi
 
         if (binSearch(m_headers, (Cgi::Header){key, value}) != -1)
         {
-            //std::cout << "duplicate header found: " << key << std::endl;
+            std::cout << "duplicate header found: " << key << std::endl;
             return (Response::FAIL);
         }
 
         m_headers.push_back((Cgi::Header){key, value});	// save header
-        //std::cout << "key: '" <<  m_headers[0].key << "', value: '" << m_headers[0].value << "'" << std::endl;
+        std::cout << "key: '" <<  m_headers.back().key << "', value: '" << m_headers.back().value << "'" << std::endl;
         
         m_totalParsedBytes += line.size() + 1;
 
         size_t end = view.find(CGI_LINE_SEPARATOR, pos + 1);
-        //std::cout << "first newline found at: " << pos << std::endl;
-        //std::cout << "second newline found at: " << end << std::endl;
+        std::cout << "first newline found at: " << pos << std::endl;
+        std::cout << "second newline found at: " << end << std::endl;
         if (end == pos + 1)
         {
-            //std::cout << "found second newline, " << std::endl;
+            std::cout << "found second newline, " << std::endl;
             view = view.substr(pos + 2, view.size() - pos - 2);
             if (mf_validateHeaders() == Response::FAIL)
                 return (Response::FAIL);
-            //std::cout << "m_hasbody" << m_hasBody << std::endl;
+            std::cout << "m_hasbody" << m_hasBody << std::endl;
             if (view.size() > 0)
             {
                 if (m_hasBody == true)
@@ -153,21 +156,24 @@ namespace Cgi
                 else
                     return (Response::FAIL);
             }
-            //std::cout << "should reach here" << std::endl;
+            std::cout << "should reach here" << std::endl;
             m_state = Response::BODY;
             return (Response::PASS);
         }
 
         view = view.substr(line.size() + 1, view.size() - line.size() - 1); // move view to one past end of line
         
-        return (Response::KEEP_READING);
+        std::cout << "\tBufferView end: " << view << std::endl;
+        if (view.size() == 0)
+            return (Response::NEED_MORE_DATA);
+        return (Response::KEEP_PARSING);
     }
 
     Response::Status	Response::parse(BaseBuffer& buffer)
     {
         // pickup where you left off
         BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
-        //std::cout << "total parsed bytes: " << m_totalParsedBytes << ", view size: " << view.size() << std::endl;
+        std::cout << "total parsed bytes: " << m_totalParsedBytes << ", view size: " << view.size() << std::endl;
         if (view.size() == 0)
         {
             if (m_state == Response::BODY)
@@ -186,7 +192,7 @@ namespace Cgi
                 case Response::HEADERS:
                 {
                     Response::Status retStatus = mf_parseHeaders(view);
-                    if (retStatus != Response::KEEP_READING)
+                    if (retStatus != Response::KEEP_PARSING)
                         return (retStatus);
                     break ;
                 }
@@ -200,7 +206,7 @@ namespace Cgi
                     return (Response::PASS);
             }
         }
-        return (Response::KEEP_READING);
+        return (Response::NEED_MORE_DATA);
     }
 
     const std::vector<Cgi::Header>&
@@ -209,4 +215,6 @@ namespace Cgi
     bool
     Response::hasBody() const { return (m_hasBody); }
 
+    const BufferView&
+    Response::getTempBody() const { return (m_tempBody); }
 }

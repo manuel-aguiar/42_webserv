@@ -68,7 +68,8 @@ namespace Cgi
 			{
 				PASS,
 				FAIL,
-				KEEP_READING,
+				KEEP_PARSING,
+                NEED_MORE_DATA
 			};
 
 			enum State
@@ -82,6 +83,7 @@ namespace Cgi
 			Status                          parse(BaseBuffer& buffer);
 			
 			const std::vector<Cgi::Header>& getHeaders() const;
+            const BufferView&               getTempBody() const;
 			bool                            hasBody() const;
 
 			

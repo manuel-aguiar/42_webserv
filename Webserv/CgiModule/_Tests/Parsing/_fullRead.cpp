@@ -21,14 +21,12 @@ void    testFullRead(int& testNumber)
         
         readBuffer.push(good);
         
-        //std::cout << readView.size() << "  '" << readView << "'" << std::endl;
-        
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::PASS, "should be correctly parsed without errors");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
 
-        TEST_PASSED_MSG("Basic request, no body");
+        TEST_PASSED_MSG("Basic request, no body, should pass");
     }
     catch(const std::exception& e)
     {
@@ -47,9 +45,7 @@ void    testFullRead(int& testNumber)
         
         readBuffer.push(good);
         
-        //std::cout << readView.size() << "  '" << readView << "'" << std::endl;
-        
-        EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::KEEP_READING, "should be insufficient info");
+        EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::NEED_MORE_DATA, "should be insufficient info");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
@@ -57,7 +53,7 @@ void    testFullRead(int& testNumber)
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::FAIL, "no \n\n found, should fail");
 
 
-        TEST_PASSED_MSG("Incomplete Request");
+        TEST_PASSED_MSG("Incomplete Request, should fail");
     }
     catch(const std::exception& e)
     {
@@ -78,14 +74,12 @@ void    testFullRead(int& testNumber)
         
         readBuffer.push(good);
         
-        //std::cout << readView.size() << "  '" << readView << "'" << std::endl;
-        
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::FAIL, "should have found doubled headers");
         EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
 
-        TEST_PASSED_MSG("Doubled headers");
+        TEST_PASSED_MSG("Doubled headers, should fail");
     }
     catch(const std::exception& e)
     {
@@ -105,14 +99,12 @@ void    testFullRead(int& testNumber)
         
         readBuffer.push(good);
         
-        //std::cout << readView.size() << "  '" << readView << "'" << std::endl;
-        
         EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::FAIL, "found body without content type header");
         EXPECT_EQUAL(response.getHeaders().size(), 2, "must be 2 headers");
         EXPECT_EQUAL(response.hasBody(), false, "no body");
 
 
-        TEST_PASSED_MSG("Body without Content-Type");
+        TEST_PASSED_MSG("Body without Content-Type, should fail");
     }
     catch(const std::exception& e)
     {
@@ -124,7 +116,7 @@ void    testFullRead(int& testNumber)
     {
         TEST_INTRO(testNumber++);
         
-        const char* good = "Status: 200 \nStatus: 200 \n\nsomebody";
+        const char* good = "Status: 200 \nContent-Type: text/html\n\nsomebody";
 
         Buffer<1024> client;
         Buffer<1024> readBuffer;
@@ -132,14 +124,16 @@ void    testFullRead(int& testNumber)
         
         readBuffer.push(good);
         
-        //std::cout << readView.size() << "  '" << readView << "'" << std::endl;
+        EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::PASS, "found body without content type header");
+        EXPECT_EQUAL(response.getHeaders().size(), 2, "2 headers expected");
+        EXPECT_EQUAL(response.hasBody(), true, "must be a body");
         
-        EXPECT_EQUAL(response.parse(readBuffer), Cgi::Response::FAIL, "found body without content type header");
-        EXPECT_EQUAL(response.getHeaders().size(), 1, "single header received");
-        EXPECT_EQUAL(response.hasBody(), false, "no body");
+        size_t bodyStart = readBuffer.view().find("\n\n", 2) + 2;
+        BufferView body = BufferView(readBuffer.data() + bodyStart, readBuffer.size() - bodyStart);
 
+        EXPECT_EQUAL(body, response.getTempBody(), "body must be 'somebody'");
 
-        TEST_PASSED_MSG("Body with Content-Type");
+        TEST_PASSED_MSG("Body with Content-Type, should pass");
     }
     catch(const std::exception& e)
     {
