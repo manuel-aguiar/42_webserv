@@ -63,7 +63,7 @@ namespace Http
 
 			Http::Request&		m_myRequest;
 			Http::Connection&	m_connection;
-			File*				m_file;
+			File				m_file;
 			ServerBlock*		m_serverBlock;
 			ServerLocation*		m_location;
 			Status				m_status;
