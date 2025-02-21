@@ -1,7 +1,0 @@
-{
-    python3
-    Memcheck:Leak
-    ...
-    fun:* 
-    obj:/usr/bin/python3.12
-}

@@ -15,7 +15,7 @@ int main(void)
 	//CgiStressTest::StressTest(testNumber, 5, 5, 5, 5000, &CgiStressTest::ValidPHP, "validPhP", true);
 	//CgiStressTest::StressTest(testNumber, 1, 500, 1000, 5000, &CgiStressTest::ValidPHP, "ValidPHP", true);
 	CgiStressTest::StressTest(testNumber, 2, 500, 1000, 5000, &CgiStressTest::ValidPHP,"ValidPHP", true);
-	//CgiStressTest::StressTest(testNumber, 5, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
+	CgiStressTest::StressTest(testNumber, 5, 500, 1000, 5000, &CgiStressTest::AllInvalidCriteria, "AllValidCriteria");
 	//CgiStressTest::StressTest(testNumber, 10, 500, 1000, 5000, &CgiStressTest::AllValidCriteria, "AllValidCriteria");
 	//CgiStressTest::StressTest(testNumber, 20, 500, 1000, 5000, &CgiStressTest::ValidPHP, "validPhP", true);
 	
