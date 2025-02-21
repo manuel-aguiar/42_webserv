@@ -113,7 +113,6 @@ void	Http::Response::reset()
 // Generates Status Line and Headers and body, exept if body is a file or CGI
 void	Http::Response::generateResponse(int statusCode)
 {
-	// response is only generated when there is nothing to be sent
 	if (m_status != WAITING)
 		return ;
 
@@ -121,7 +120,7 @@ void	Http::Response::generateResponse(int statusCode)
 	std::string	headers;
 	std::string	body;
 
-	statusLine = generateStatusLine(Http::Status::OK);
+	statusLine = generateStatusLine(statusCode);
 
 	// could be a switch
 	if (m_myRequest.getMethod() == "GET")
@@ -132,8 +131,7 @@ void	Http::Response::generateResponse(int statusCode)
 			case Http::Status::OK:
 				if (FilesUtils::isDirectory(m_myRequest.getUri().c_str()))
 				{
-					std::cerr << "DEBUG: " << "Requested URI is Directory\n";
-					// TODO: check auto_index on serverConfig
+					// TODO on REQUEST: check auto_index on serverConfig
 					DirectoryListing(m_myRequest.getUri().c_str(), body);
 				}
 				else
@@ -153,8 +151,6 @@ void	Http::Response::generateResponse(int statusCode)
 				m_headers["Content-Type"] = "text/html";
 				break ;
 		}
-
-		return ;
 	}
 	else if (m_myRequest.getMethod() == "POST")
 	{
@@ -200,21 +196,21 @@ void	Http::Response::generateResponse(int statusCode)
 	}
 
 	// Common headers
-	if (!body.empty())
-		m_headers["Content-Lenght"] = StringUtils::intToStr(body.size());
-	else
+	if (body.empty() && !m_file) // CGI
 		m_headers["Transfer-Encoding"] = "chunked";
+	else 
+		m_headers["Content-Lenght"] = StringUtils::intToStr(body.size());
 	m_headers["Date"]			= getCurrentDate();
 	m_headers["Server"] 		= "42_webserv/1.0";
 	std::map<std::string, std::string>::const_iterator it = m_myRequest.getHeaders().find("Connection");
 	if (it != m_myRequest.getHeaders().end() && it->second == "close")
 		m_headers["Connection"]	= "close";
-
 	headers = generateHeaderString();
-	if (!body.empty())
-		m_pendingWrite = statusLine + headers + body + "\r\n\r\n";
+
+	if (body.empty())
+		m_pendingWrite = statusLine + headers; // CRLF included in headers 
 	else 
-		m_pendingWrite = statusLine + headers;
+		m_pendingWrite = statusLine + headers + body + "\r\n\r\n";
 
 	m_status = WRITING;
 }
@@ -365,6 +361,8 @@ namespace Http
 				return (m_status);
 			}
 		}
+		// Read file to buffer
+		// assuming read will not read if buffer is already full
 		if (m_file)
 			writeBuffer.read(m_file->fd(), m_file->offset());
 		
@@ -378,7 +376,7 @@ namespace Http
 	}
 }
 
-
+// Big swich case with possible content-types for GET requests
 void	Http::Response::setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension)
 {
 	(void)fileExtension;
