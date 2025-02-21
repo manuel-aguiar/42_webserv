@@ -16,7 +16,7 @@ namespace Http
 
 		static Cgi::IO::State 		onRead(Cgi::User user, const Ws::fd readFd);
 		static Cgi::IO::State 		onWrite(Cgi::User user, const Ws::fd writeFd);
-		static Cgi::IO::State		onReceiveHeaders(Cgi::User user, const Cgi::HeaderData& headers);		
+		static Cgi::IO::State		onReceiveHeaders(Cgi::User user, Cgi::HeaderData& headers);		
 	};
 };
 

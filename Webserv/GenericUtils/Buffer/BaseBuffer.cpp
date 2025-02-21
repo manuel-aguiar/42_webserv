@@ -95,6 +95,18 @@ BaseBuffer::view() const
     return (BufferView(m_begin, m_size));
 }
 
+unsigned char&		BaseBuffer::operator[](size_t index)
+{
+    ASSERT_EQUAL(index < m_size, true, "BaseBuffer::operator[]: index is beyond buffer size");
+    return (m_begin[index]);
+}
+
+unsigned const char& BaseBuffer::operator[](size_t index) const
+{
+    ASSERT_EQUAL(index < m_size, true, "BaseBuffer::operator[]: index is beyond buffer size");
+    return (m_begin[index]);
+}
+
 
 
 // private

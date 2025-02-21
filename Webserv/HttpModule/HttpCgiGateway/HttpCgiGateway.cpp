@@ -5,7 +5,7 @@
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
-
+extern bool isHeaderIgnored(const Cgi::Header& header);
 extern const char* getStatusMessage(int statusCode);
 
 namespace Http
@@ -21,7 +21,8 @@ namespace Http
 		, m_writeFd(Ws::FD_NONE) 
 		, m_statusCode(-1)
 		, m_headers(NULL)
-		, m_responseState(IDLE) {}
+		, m_currentHeader(-1)
+		, m_fillFunction(&CgiGateway::mf_fillNothingToSend) {}
 
 
 		void
@@ -34,7 +35,7 @@ namespace Http
 		CgiGateway::onError()
 		{
 			m_statusCode = Http::Status::INTERNAL_ERROR;
-			m_responseState = ERROR;
+			m_fillFunction = &CgiGateway::mf_fillErrorResponse;
 		}
 
 		Cgi::IO::State
@@ -58,14 +59,18 @@ namespace Http
 		{
 			m_statusCode = headers.getStatusCode();
 			m_headers = &headers;
+
 			if (!checkForbiddenHeaders(headers.getHeaders()))
 			{
 				m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
 				m_module.finishRequest(*m_cgiRequest, true);
 				m_statusCode = Http::Status::BAD_GATEWAY;
-				m_responseState = ERROR;
+				m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+				return (Cgi::IO::State::CLOSE);
 			}
-			return (Cgi::IO::State::CLOSE);
+			m_fillFunction = &CgiGateway::mf_fillResponseLine;
+
+			return (Cgi::IO::State::CONTINUE);
 		}
 
 	void
@@ -79,71 +84,18 @@ namespace Http
 
 		m_statusCode = -1;
 		m_headers = NULL;
-		m_responseState = IDLE;
+		m_currentHeader = -1;
+		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 	}
-
-
-
 
 	Response::Status
 	CgiGateway::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-		switch (m_responseState)
-		{
-			case IDLE:
-				return (Response::Status::WAITING);
-			case PROCESSING:
-				return (Response::Status::WAITING);
-			case RESPONSE_LINE:
-				return (Response::Status::WAITING);
-			case HEADERS:
-				return (Response::Status::WAITING);
-			case BODY_TEMP:
-				return (Response::Status::WAITING);
-			case BODY_STREAM:
-				return (Response::Status::WAITING);
-			case COMPLETE:
-				return (Response::Status::WAITING);
-			case ERROR:
-				return (mf_fillErrorResponse(writeBuffer));
-		}
+		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
-	Response::Status
-	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
-	{
-		writeBuffer.push("HTTP/1.1 ", 9);
-		writeBuffer.push(std::to_string(m_statusCode).c_str(), std::to_string(m_statusCode).size());
-		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(m_statusCode));
-		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Content-Length: 37\r\n", 19);
-		writeBuffer.push("Connection: close\r\n", 19);
-		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Cgi script failed to execute correctly", 37);
-
-		return (Response::Status::FINISHED);
-	}
-
-	Response::Status
-	CgiGateway::mf_bodyStream(BaseBuffer& writeBuffer)
-	{
-		return (Response::Status::WAITING);
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+		
 	CgiGateway::~CgiGateway() {}
 	CgiGateway::CgiGateway(const CgiGateway& other)
 		: m_module(other.m_module)
@@ -154,8 +106,7 @@ namespace Http
 		, m_readFd(other.m_readFd)
 		, m_writeFd(other.m_writeFd)
 		, m_statusCode(other.m_statusCode)
-		, m_headers(other.m_headers)
-		, m_responseState(other.m_responseState) {}
+		, m_headers(other.m_headers) {}
 
 	CgiGateway&
 	CgiGateway::operator=(const CgiGateway& other)

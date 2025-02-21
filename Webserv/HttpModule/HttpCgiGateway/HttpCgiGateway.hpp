@@ -34,18 +34,15 @@ namespace Http
 			Cgi::IO::State 	onReceiveHeaders(Cgi::HeaderData& headers);
 
 		private:
+			
+			typedef Response::Status (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
 
-			typedef enum
-			{
-				IDLE,
-				PROCESSING,
-				RESPONSE_LINE,
-				HEADERS,
-				BODY_TEMP,
-				BODY_STREAM,
-				COMPLETE,
-				ERROR,
-			}	ResponseState;
+			Response::Status	mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Response::Status	mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Response::Status	mf_fillHeaders(BaseBuffer& writeBuffer);
+			Response::Status	mf_fillBodyTemp(BaseBuffer& writeBuffer);
+			Response::Status	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Response::Status 	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
 			Cgi::Module& 		m_module;
 			Cgi::Request* 		m_cgiRequest;
@@ -60,13 +57,9 @@ namespace Http
 
 			int					m_statusCode;
 			Cgi::HeaderData* 	m_headers;
-			ResponseState		m_responseState;
+			int					m_currentHeader;
+			FillFunction		m_fillFunction;
 
-			Response::Status	mf_bodyStream(BaseBuffer& writeBuffer);
-			
-			
-			Response::Status 	mf_fillErrorResponse(BaseBuffer& writeBuffer);
-			// disallow copy
 
 			CgiGateway(const CgiGateway& other);
 			CgiGateway& operator=(const CgiGateway& other);

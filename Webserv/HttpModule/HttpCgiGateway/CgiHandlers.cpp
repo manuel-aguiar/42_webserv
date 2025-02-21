@@ -31,7 +31,7 @@ namespace Http
     }
 
     Cgi::IO::State		
-    CgiHandlers::onReceiveHeaders(Cgi::User user, const Cgi::HeaderData& headers)
+    CgiHandlers::onReceiveHeaders(Cgi::User user, Cgi::HeaderData& headers)
     {
         return (reinterpret_cast<Http::CgiGateway*>(user)->onReceiveHeaders(headers));
     }

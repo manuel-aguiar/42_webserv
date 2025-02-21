@@ -27,8 +27,9 @@ class BaseBuffer
 		int			read(Ws::fd fd, int startIndex = 0);
 		int			write(Ws::fd fd, int startIndex = 0);
 
-		const unsigned char*
-					data() const;
+		const unsigned char*	data() const;
+		unsigned char&			operator[](size_t index);
+		unsigned const char& 	operator[](size_t index) const;
 		
 		size_t		available() const;
 		size_t		size() const;
