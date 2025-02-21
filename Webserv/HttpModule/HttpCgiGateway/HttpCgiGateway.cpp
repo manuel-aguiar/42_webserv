@@ -25,53 +25,62 @@ namespace Http
 		, m_fillFunction(&CgiGateway::mf_fillNothingToSend) {}
 
 
-		void
-		CgiGateway::onSuccess()
-		{
-			// dunno yet
-		}
+	void
+	CgiGateway::onSuccess()
+	{
+		// dunno yet
+	}
 
-		void
-		CgiGateway::onError()
+	void
+	CgiGateway::onError()
+	{
+		m_statusCode = Http::Status::INTERNAL_ERROR;
+		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+	}
+
+	Cgi::IO::State
+	CgiGateway::onRead(const Ws::fd readFd)
+	{
+		m_readFd = readFd;
+		m_canRead = true;
+		return (Cgi::IO::CONTINUE);
+	}
+
+	Cgi::IO::State
+	CgiGateway::onWrite(const Ws::fd writeFd)
+	{
+		m_writeFd = writeFd;
+		m_canWrite = true;
+		return (Cgi::IO::CONTINUE);
+	}
+
+	Cgi::IO::State
+	CgiGateway::onReceiveHeaders(Cgi::HeaderData& headers)
+	{
+		m_statusCode = headers.getStatusCode();
+		m_headers = &headers;
+
+		if (!checkForbiddenHeaders(headers.getHeaders()))
 		{
-			m_statusCode = Http::Status::INTERNAL_ERROR;
+			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
+			m_module.finishRequest(*m_cgiRequest, true);
+			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+			return (Cgi::IO::CLOSE);
 		}
+		m_fillFunction = &CgiGateway::mf_fillResponseLine;
 
-		Cgi::IO::State
-		CgiGateway::onRead(const Ws::fd readFd)
-		{
-			m_readFd = readFd;
-			m_canRead = true;
-			return (Cgi::IO::CONTINUE);
-		}
+		return (Cgi::IO::CONTINUE);
+	}
 
-		Cgi::IO::State
-		CgiGateway::onWrite(const Ws::fd writeFd)
-		{
-			m_writeFd = writeFd;
-			m_canWrite = true;
-			return (Cgi::IO::CONTINUE);
-		}
-
-		Cgi::IO::State
-		CgiGateway::onReceiveHeaders(Cgi::HeaderData& headers)
-		{
-			m_statusCode = headers.getStatusCode();
-			m_headers = &headers;
-
-			if (!checkForbiddenHeaders(headers.getHeaders()))
-			{
-				m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
-				m_module.finishRequest(*m_cgiRequest, true);
-				m_statusCode = Http::Status::BAD_GATEWAY;
-				m_fillFunction = &CgiGateway::mf_fillErrorResponse;
-				return (Cgi::IO::CLOSE);
-			}
-			m_fillFunction = &CgiGateway::mf_fillResponseLine;
-
-			return (Cgi::IO::CONTINUE);
-		}
+	void
+	CgiGateway::close()
+	{
+		if (!m_cgiRequest)
+			return ;
+		m_module.finishRequest(*m_cgiRequest, true);
+		reset();
+	}
 
 	void
 	CgiGateway::reset()

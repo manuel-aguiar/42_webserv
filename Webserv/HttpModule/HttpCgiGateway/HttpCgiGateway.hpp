@@ -21,6 +21,7 @@ namespace Http
 
 
 			void			reset();
+			void			close();
 
 			Response::Status 	fillWriteBuffer(BaseBuffer& writeBuffer);
 
