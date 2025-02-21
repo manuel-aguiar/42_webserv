@@ -7,6 +7,8 @@
 
 void	ImplModule::mf_execute(Worker& worker, InternalReq& data, bool markFdsAsStale)
 {
+	m_timerTracker.erase(data.getMyTimer());		//timeout is only until execution starts
+	
 	data.setState(Cgi::RequestState::EXECUTING);
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);

@@ -42,8 +42,8 @@ namespace Http
 
 			void 						setMyTCP(Conn::Connection& tcpConn);
 
-			BaseBuffer&						accessReadBuffer();
-			BaseBuffer&						accessWriteBuffer();
+			BaseBuffer&					accessReadBuffer();
+			BaseBuffer&					accessWriteBuffer();
 
 			// clean all stored state to be reused later
 			void						close();
