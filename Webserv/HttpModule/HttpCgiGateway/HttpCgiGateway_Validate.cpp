@@ -41,7 +41,7 @@ int binSearch(const char** lookup, size_t size, const BufferView& target)
 	return (low);
 }
 
-bool validateHeaders(std::vector<Cgi::Header>& headers)
+bool checkForbiddenHeaders(const std::vector<Cgi::Header>& headers)
 {
 	// confirm lookups are sorted for binary search
 	#ifndef NDEBUG
@@ -55,14 +55,13 @@ bool validateHeaders(std::vector<Cgi::Header>& headers)
 	{
 		if (binSearch(forbiddenHeaders, sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]), headers[i].key) != -1)
 			return (false);
-		if (binSearch(ignoredHeaders, sizeof(ignoredHeaders) / sizeof(ignoredHeaders[0]), headers[i].key) != -1)
-		{
-			// "remove" the key/value
-			headers[i].key = BufferView();
-			headers[i].value = BufferView();
-		}
 	}
 	return (true);
+}
+
+bool isHeaderIgnored(const Cgi::Header& header)
+{
+	return (binSearch(ignoredHeaders, sizeof(ignoredHeaders) / sizeof(ignoredHeaders[0]), header.key) != -1);
 }
 
 

@@ -5,7 +5,8 @@
 
 # include <vector>
 
-extern bool validateHeaders(std::vector<Cgi::Header>& headers);
+extern bool checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
+extern bool isHeaderIgnored(const Cgi::Header& header);
 
 int main(void)
 {
@@ -20,7 +21,7 @@ int main(void)
         
         headers.push_back((Cgi::Header){"Connection", "close"});
         
-        EXPECT_EQUAL(validateHeaders(headers), false, "Connection header is forbidden");
+        EXPECT_EQUAL(checkForbiddenHeaders(headers), false, "Connection header is forbidden");
 
         TEST_PASSED_MSG("invalid connection header");
     }
@@ -38,12 +39,12 @@ int main(void)
         headers.push_back((Cgi::Header){"Content-Length", "cenas"});
         headers.push_back((Cgi::Header){"something", "alright"});
 
-        EXPECT_EQUAL(validateHeaders(headers), true, "ignored header but valid");
+        EXPECT_EQUAL(checkForbiddenHeaders(headers), true, "ignored header but valid");
 
         int count = 0;
         for (size_t i = 0; i < headers.size(); ++i)
         {
-            if (headers[i].key.size() != 0)
+            if (!isHeaderIgnored(headers[i]))
                 count++;
         }
 

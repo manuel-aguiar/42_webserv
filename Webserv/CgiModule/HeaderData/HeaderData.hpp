@@ -70,9 +70,7 @@ namespace Cgi
 			const std::vector<Cgi::Header>& getHeaders() const;
 			const BufferView&               getTempBody() const;
 			int							  	getStatusCode() const;
-			bool                            hasBody() const;
-
-			
+			bool                            hasBody() const;		
 
 		private:
 			

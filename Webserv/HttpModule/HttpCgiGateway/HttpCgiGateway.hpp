@@ -43,12 +43,14 @@ namespace Http
 				HEADERS,
 				BODY_TEMP,
 				BODY_STREAM,
-				COMPLETE
+				COMPLETE,
+				ERROR,
 			}	ResponseState;
 
-			Cgi::Module& 	m_module;
-			Http::Request& 	m_request;
-			Http::Response& m_response;
+			Cgi::Module& 		m_module;
+			Cgi::Request* 		m_cgiRequest;
+			Http::Request& 		m_httpRequest;
+			Http::Response& 	m_httpResponse;
 
 			// Cgi IO
 			bool 				m_canRead;
@@ -61,7 +63,9 @@ namespace Http
 			ResponseState		m_responseState;
 
 			Response::Status	mf_bodyStream(BaseBuffer& writeBuffer);
-
+			
+			
+			Response::Status 	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 			// disallow copy
 
 			CgiGateway(const CgiGateway& other);

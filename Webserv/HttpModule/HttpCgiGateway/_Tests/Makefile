@@ -13,7 +13,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 SRCS					=		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/_Tests/main.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGatewayValidate.cpp
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp
 
 
 								
