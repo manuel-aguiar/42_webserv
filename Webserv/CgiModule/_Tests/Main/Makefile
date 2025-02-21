@@ -44,6 +44,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/HeaderData/HeaderData.cpp \
 				\
+				$(SRC_PATH)/Webserv/SignalHandler/SignalHandler.cpp \
 				$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp \
 				$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp \
 				$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp \

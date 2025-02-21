@@ -185,7 +185,7 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Cgi script failed to execute correctly", 37);
 
-		return (Response::FINISHED);
+		return (Response::MARK_TO_CLOSE);
 	}
 
 }

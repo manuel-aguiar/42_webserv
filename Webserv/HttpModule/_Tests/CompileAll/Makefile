@@ -13,6 +13,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \

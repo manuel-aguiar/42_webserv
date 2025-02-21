@@ -74,7 +74,8 @@ TestProtoRequest::CgiReceiveHeaders(const Cgi::HeaderData& headers)
 	}
 	
 	m_buffer.push("\n", 1); // end of headers
-	m_buffer.push(headers.getTempBody().data(), headers.getTempBody().size() - 1);
+	if (headers.getTempBody().size() != 0)
+		m_buffer.push(headers.getTempBody().data(), headers.getTempBody().size() - 1);
 
 	//std::cout << "buffer size: " << m_buffer.size() << "\n\n" << m_buffer.view() << std::endl;
 

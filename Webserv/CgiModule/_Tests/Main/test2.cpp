@@ -20,6 +20,8 @@
 
 extern std::vector<std::string> g_mockGlobals_ErrorMsgs;
 
+
+
 void scriptTest(int& testNumber, const std::string& scriptPath, const std::string& interpreterPath, TestProtoRequest::e_CgiResultStatus expected)
 {
 	// script should run without issue
@@ -107,6 +109,6 @@ void TestPart2(int& testNumber)
 {
 	scriptTest(testNumber, "../TestScripts/php/ValidPhP.php", "/usr/bin/php", TestProtoRequest::E_CGI_STATUS_SUCCESS);
 	scriptTest(testNumber, "../TestScripts/php/ValidLongBody.php", "/usr/bin/php", TestProtoRequest::E_CGI_STATUS_SUCCESS);
-	scriptTest(testNumber, "../TestScripts/php/ValidLongHeaders.php", "/usr/bin/php", TestProtoRequest::E_CGI_STATUS_ERROR);
+	scriptTest(testNumber, "../TestScripts/php/InvalidLongHeaders.php", "/usr/bin/php", TestProtoRequest::E_CGI_STATUS_ERROR);
 	scriptTest(testNumber, "../TestScripts/php/InvalidHeaders.php", "/usr/bin/php", TestProtoRequest::E_CGI_STATUS_ERROR);
 }

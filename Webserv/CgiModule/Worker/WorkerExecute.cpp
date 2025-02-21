@@ -6,7 +6,7 @@
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Events/Manager/Manager.hpp"
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
-
+# include "../../SignalHandler/SignalHandler.hpp"
 # include "../../Globals/Globals.hpp"
 
 // C++ headers
@@ -149,11 +149,23 @@ static void childCloseFd(Ws::fd fd)
 }
 
 
-
+static void unregisterSignals()
+{
+	if (g_SignalHandler.isSignalRegistered(SIGINT))
+		g_SignalHandler.unregisterSignal(SIGINT, NULL);
+	if (g_SignalHandler.isSignalRegistered(SIGQUIT))
+		g_SignalHandler.unregisterSignal(SIGQUIT, NULL);
+	if (g_SignalHandler.isSignalRegistered(SIGTERM))
+		g_SignalHandler.unregisterSignal(SIGTERM, NULL);
+	if (g_SignalHandler.isSignalRegistered(SIGPIPE))
+		g_SignalHandler.unregisterSignal(SIGPIPE, NULL);
+}
 
 void	Worker::mf_executeChild()
 {
 	char EmergencyCode[2];
+
+	unregisterSignals();
 
 	childCloseFd(m_EmergencyPhone[0]);
 	childCloseFd(m_ParentToChild[1]);

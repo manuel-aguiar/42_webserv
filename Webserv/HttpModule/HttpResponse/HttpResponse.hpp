@@ -34,7 +34,8 @@ namespace Http
 			{
 				WAITING, // have nothing to push, no sign transaction is finished
 				WRITING, // pushed data to buffer
-				FINISHED // transaction is finished
+				FINISHED, // transaction is finished
+				MARK_TO_CLOSE // tell the Http::Connection to close the connection after writing
 			}	Status;
 
 			const char* getMessage(int statusCode);

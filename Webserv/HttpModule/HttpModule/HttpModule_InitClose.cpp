@@ -21,23 +21,22 @@ namespace Http
         ASSERT_EQUAL(httpConnection != NULL, true, 
         "Http::Module::InitConnection - failed to acquire connection, there should be connections available for everyone");
 
-        // giving httpConn access to Conn::Connection (fd, ip, port, sockaddr)
         httpConnection->setMyTCP(connection);
 
-        // informing server connection who we are
         connection.appLayer_setCloseCallback(Http::Module::ForcedClose);
         connection.appLayer_setConn(httpConnection);
 
-        // preping events
         connection.events_setUser(httpConnection);
         connection.events_setCallback(Http::Connection::ReadWrite_Callback);
         connection.events_setMonitoredEvents(Events::Monitor::READ | 
                                             Events::Monitor::WRITE | 
                                             Events::Monitor::ERROR | 
                                             Events::Monitor::HANGUP);
-                                            
-        // no need to setup fd, listening socket preps this before hand, it's ready to go
-        // called with true, this is all from the event loop
+        
+        ServerConfig& serverConfig = *connection.accessServerContext().getServerConfig();                                    
+        int timeout = serverConfig.getTimeoutFullHeader();
+        httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection));
+
         connection.events_startMonitoring(true);
     }
 
@@ -46,7 +45,7 @@ namespace Http
     {
         Http::Connection*   httpConnection = reinterpret_cast<Http::Connection*>(connection.appLayer_accessConn());
 
-        httpConnection->close();
+        httpConnection->closeConnection();
     }
 
 }	// end of http namespace

@@ -44,71 +44,7 @@ Connection::ReadWrite_Callback(Events::Subscription& subscription)
 			- if not all can be written in one go, writeOffset != m_size, back to step 1
 */
 
-void
-Connection::ReadWrite()
-{
-	ASSERT_EQUAL(m_tcpConn != NULL, true, "HttpConnection::ReadWrite(): m_tcpConn is NULL, event subscribed without owning a tcp connection");
 
-	int triggeredEvents = m_tcpConn->events_getTriggeredEvents();
-	int sockfd = m_tcpConn->info_getFd();
-
-	// error
-	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
-	{
-		close();
-		return ;
-	}
-
-	// read
-	if (triggeredEvents & Events::Monitor::READ)
-	{
-		m_bodyBuffer.read(sockfd);
-		//if (m_transactions.size() == 0 || m_transactions.back().request.getParsingState() == Http::Request::COMPLETED)
-		//	m_transactions.push_back(Transaction(*this, m_tcpConn->accessServerContext()));
-		m_transaction.request.parse(m_bodyBuffer);
-	}
-
-	// write
-	if (triggeredEvents & Events::Monitor::WRITE)
-	{
-
-		// still have data on buffer, write that first
-		if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
-		{
-			m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
-			
-			// if wrote everything and response is finished, close connection
-			if (m_writeBuffer.size() == 0 
-			&& m_transaction.response.getStatus() == Http::Response::FINISHED)
-				close(); // transaction finished
-
-			return ;
-		}
-		
-		// ask response for data
-		switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
-		{
-			case Http::Response::FINISHED:
-			{	
-				m_writeBuffer.write(sockfd);
-
-				// if wrote everything, close connection
-				if (m_writeBuffer.size() == 0)
-					close(); // transaction finished
-				return ;
-			}
-
-			case Http::Response::WRITING:
-			{
-				m_writeBuffer.write(sockfd); // got data, write
-				return ;
-			}
-
-			case Http::Response::WAITING: // nothing
-				break ;
-		}
-	}
-}
 
 
 
@@ -128,7 +64,7 @@ Connection::setMyTCP(Conn::Connection& tcpConn)
 }
 
 void
-Connection::close()
+Connection::closeConnection()
 {
 	m_tcpConn->events_stopMonitoring(true);
 
@@ -140,17 +76,31 @@ Connection::close()
 	m_readTimer = Timer();
 	m_writeTimer = Timer();
 
-	m_transaction.request.reset();
-	m_transaction.response.reset();
+	resetTransaction();
 
 	m_module.returnConnection(*this);
+
+	if (m_tcpConn == NULL)
+		return ;
+
 	m_tcpConn->close();
+	m_tcpConn = NULL;
+
+}
+
+void
+Connection::resetTransaction()
+{
+	m_transaction.request.reset();
+	m_transaction.response.reset();
+	m_readBuffer.clear();
+	m_writeBuffer.clear();
 }
 
 BaseBuffer&
 Connection::accessReadBuffer()
 {
-	return (m_bodyBuffer);
+	return (m_readBuffer);
 }
 
 BaseBuffer&

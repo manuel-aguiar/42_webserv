@@ -42,7 +42,6 @@ namespace Cgi
 			
 			// user must pass interpreter OR extension. Module will use Path if available, and fallback to extension + internal config
 			void						setInterpreterPath	(const Cgi::InterpPath& path);
-			void						setExtension		(const Cgi::InterpExtension& extension);
 
 			// script path and timeout
 			void						setScriptPath		(const Cgi::ScriptPath& path);

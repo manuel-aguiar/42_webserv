@@ -16,7 +16,7 @@
 
 //the user of the class must declare this global
 //user may want to derive from this class, let it declare the global
-extern 			SignalHandler 	g_SignalHandler;
+SignalHandler 	g_SignalHandler;
 
 bool 			SignalHandler::m_isInstantiated = false;
 
@@ -97,7 +97,7 @@ SignalHandler::notifySignalReception(const int sigNum)
 }
 
 void
-SignalHandler::openSignalListeners(const size_t numServers, Globals& globals)
+SignalHandler::openSignalListeners(const size_t numServers, Globals* globals)
 {
 	Ws::fd pipefd[2];
 
@@ -108,13 +108,15 @@ SignalHandler::openSignalListeners(const size_t numServers, Globals& globals)
 	{
 		if (pipe(pipefd) == -1)
 		{
-			globals.logError("pipe(): " + std::string(std::strerror(errno)));
+			if (globals)
+				globals->logError("pipe(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, pipe() failed");
 		}
 		if (!FileDescriptor::setCloseOnExec_NonBlocking(pipefd[0])
 		|| !FileDescriptor::setCloseOnExec_NonBlocking(pipefd[1]))
 		{
-			globals.logError("fcntl(): " + std::string(std::strerror(errno)));
+			if (globals)
+				globals->logError("fcntl(): " + std::string(std::strerror(errno)));
 			throw std::runtime_error("SignalHandler::prepare_signal, fcntl() failed");
 		}
 
@@ -123,7 +125,7 @@ SignalHandler::openSignalListeners(const size_t numServers, Globals& globals)
 }
 
 void
-SignalHandler::registerSignal(const int sigNum, Globals& globals)
+SignalHandler::registerSignal(const int sigNum, Globals* globals)
 {
 	struct sigaction sigact;
 
@@ -135,7 +137,8 @@ SignalHandler::registerSignal(const int sigNum, Globals& globals)
 
 	if (::sigaction(sigNum, &sigact, NULL) == -1)
 	{
-		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
+		if (globals)
+			globals->logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::registerSignal: m_sigact() failed");
 	}
 
@@ -143,7 +146,7 @@ SignalHandler::registerSignal(const int sigNum, Globals& globals)
 }
 
 void
-SignalHandler::unregisterSignal(const int sigNum, Globals& globals)
+SignalHandler::unregisterSignal(const int sigNum, Globals* globals)
 {
 	struct sigaction sigact;	
 
@@ -156,7 +159,8 @@ SignalHandler::unregisterSignal(const int sigNum, Globals& globals)
 
 	if (::sigaction(sigNum, &sigact, NULL) == -1)
 	{
-		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
+		if (globals)
+			globals->logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::unregisterSignal: m_sigact() failed");
 	}
 
@@ -164,7 +168,7 @@ SignalHandler::unregisterSignal(const int sigNum, Globals& globals)
 }
 
 void
-SignalHandler::ignoreSignal(const int sigNum, Globals& globals)
+SignalHandler::ignoreSignal(const int sigNum, Globals* globals)
 {
 	struct sigaction sigact;	
 
@@ -176,11 +180,18 @@ SignalHandler::ignoreSignal(const int sigNum, Globals& globals)
 
 	if (::sigaction(sigNum, &sigact, NULL) == -1)
 	{
-		globals.logError("m_sigact(): " + std::string(std::strerror(errno)));
+		if (globals)
+			globals->logError("m_sigact(): " + std::string(std::strerror(errno)));
 		throw std::runtime_error("SignalHandler::ignoreSignal: m_sigact() failed");
 	}
 
 	m_modifiedSignals |= (1 << sigNum);
+}
+
+bool
+SignalHandler::isSignalRegistered(const int sigNum)
+{
+	return(m_modifiedSignals & (1 << sigNum));
 }
 
 /*
@@ -220,7 +231,7 @@ static int findFirstSetBitPosition(size_t value)
 }
 
 void
-SignalHandler::reset(Globals& globals)
+SignalHandler::reset(Globals* globals)
 {
 	m_signal = SIG_NONE;
 	mf_clearOpenPipes();

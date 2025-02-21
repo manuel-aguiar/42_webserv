@@ -31,11 +31,12 @@ class SignalHandler
 		SignalHandler();
 		~SignalHandler();
 
-		void			openSignalListeners(const size_t numServers, Globals& globals);
+		void			openSignalListeners(const size_t numServers, Globals* globals);
 
-		void			registerSignal(const int sigNum, Globals& globals);
-		void			ignoreSignal(const int sigNum, Globals& globals);
-		void			unregisterSignal(const int sigNum, Globals& globals);
+		void			registerSignal(const int sigNum, Globals* globals);
+		void			ignoreSignal(const int sigNum, Globals* globals);
+		void			unregisterSignal(const int sigNum, Globals* globals);
+		bool			isSignalRegistered(const int sigNum);
 
 		void			notifySignalReception(const int sigNum);
 
@@ -44,7 +45,7 @@ class SignalHandler
 
 		Ws::fd			getSignalListener(const int serverID);
 		
-		void			reset(Globals& globals);
+		void			reset(Globals* globals);
 
 	private:
 

@@ -33,7 +33,7 @@ void	Worker::mf_readScript()
 {
 	int 					bytesRead = 0;
 	Events::Monitor::Mask 	triggeredEvents;
-	Cgi::IO::State 	state;
+	Cgi::IO::State 			state;
 
 	triggeredEvents = m_readEvent->getTriggeredEvents();
 	//std::cout << "\t\t\tread called" << std::endl;
