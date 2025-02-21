@@ -78,25 +78,6 @@ namespace Http
         return (Response::Status::FINISHED);
     }
 
-    Response::Status
-    CgiGateway::mf_fillBodyTemp(BaseBuffer& writeBuffer)
-    {
-        BufferView tempBody = m_headers->getTempBody();
-
-        if (tempBody.size() == 0)
-            goto startBodyStream;
-        if (writeBuffer.available() < tempBody.size())
-            return (Response::Status::WAITING); // no room
-    
-        writeBuffer.push(tempBody.data(), tempBody.size());
-
-    startBodyStream:
-
-        // go to next stage
-        m_fillFunction = &CgiGateway::mf_fillBodyStream;
-        return ((this->*m_fillFunction)(writeBuffer));
-    }
-
     static void fillHexHeader(char* hexHeader, int hexheaderSize, int chunkSize)
     {
         const char* hex = "0123456789abcdef";
@@ -119,29 +100,67 @@ namespace Http
     }
 
     Response::Status
+    CgiGateway::mf_fillBodyTemp(BaseBuffer& writeBuffer)
+    {
+        BufferView tempBody = m_headers->getTempBody();
+
+        char        hexHeader[10] = {0};
+        const int   hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
+        int         currentPosition;
+
+        if (tempBody.size() == 0)
+            goto startBodyStream;
+        if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
+            return (Response::Status::WAITING); // no room
+        
+        currentPosition = writeBuffer.size();
+
+        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
+        fillHexHeader(hexHeader, hexHeaderSize, tempBody.size());
+        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+        writeBuffer.push(tempBody.data(), tempBody.size());
+
+    startBodyStream:
+
+        // go to next stage
+        m_fillFunction = &CgiGateway::mf_fillBodyStream;
+        return ((this->*m_fillFunction)(writeBuffer));
+    }
+
+
+
+    Response::Status
     CgiGateway::mf_fillBodyStream(BaseBuffer& writeBuffer)
     {
         int scriptBytesRead = 0;
         char hexHeader[10] = {0};
+        const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
 
         if (!m_canRead)
             return (Response::Status::WAITING);
 
             
-        if (writeBuffer.available() < 11)
+        if (writeBuffer.available() < hexHeaderSize + 1)
             return (Response::Status::WAITING);
         
-        size_t currentPositon = writeBuffer.size();
-        writeBuffer.push(hexHeader, 10);
+        size_t currentPosition = writeBuffer.size();
+        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
 
         scriptBytesRead = writeBuffer.read(m_readFd);
         if (scriptBytesRead == 0)
         {
-            std::memcpy(&writeBuffer[currentPositon], "000000\r\n\r\n", 10);
+            fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
+
+            hexHeader[hexHeaderSize - 1] = '\n';
+            hexHeader[hexHeaderSize - 2] = '\r';
+
+            std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
             return (Response::Status::FINISHED);
         }
-        fillHexHeader(hexHeader, 10, scriptBytesRead);
-        std::memcpy(&writeBuffer[currentPositon], hexHeader, 10);
+
+        fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
+        std::memcpy(&writeBuffer[currentPosition], hexHeader, 10);
+
         m_canRead = false;
 
         return (Response::Status::WRITING);
@@ -152,10 +171,10 @@ namespace Http
 	{
 
 		// probably ask response to send response based on the error status code
-
+        std::string codeStr = TestHelpers::to_string(m_statusCode);
 
 		writeBuffer.push("HTTP/1.1 ", 9);
-		writeBuffer.push(std::to_string(m_statusCode).c_str(), std::to_string(m_statusCode).size());
+		writeBuffer.push(codeStr.c_str(), codeStr.size());
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_statusCode));
 		writeBuffer.push("\r\n", 2);
