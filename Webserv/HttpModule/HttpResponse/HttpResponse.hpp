@@ -1,7 +1,6 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "./HttpResponse_DirectoryListing.hpp"
 # include "../HttpDefinitions.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 

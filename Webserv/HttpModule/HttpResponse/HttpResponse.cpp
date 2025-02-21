@@ -9,6 +9,7 @@
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 
 extern const char* getStatusMessage(int statusCode);
+extern int	DirectoryListing(const std::string& path, std::string& placeOutput);
 
 std::string getCurrentDate() {
 	// Get current time
