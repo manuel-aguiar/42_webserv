@@ -3,7 +3,7 @@
 # Compiler and flags
 CXX 					= 	c++
 CXXFLAGS 				= 	-Wall -Wextra -Werror -g -std=c++98 -MMD -MP
-TARGET_BASE 			= 	functional_test.out
+TARGET_BASE 			= 	test.out
 
 VALGRIND_OUTPUT 		= 	valgrind_output.log
 
@@ -17,6 +17,7 @@ OBJ_PATH	=	$(ROOT_PATH)/_build/debug
 FUNC_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/main.cpp
 
 COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test2.cpp \
 				\
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequest.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHttpCgiGateway.cpp \

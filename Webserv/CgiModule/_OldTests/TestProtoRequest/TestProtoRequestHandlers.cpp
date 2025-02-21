@@ -45,7 +45,7 @@ TestProtoRequest::SuccessCgi()
 void
 TestProtoRequest::FailureCgi()
 {	
-	m_CgiResultStatus = E_CGI_STATUS_ERROR_RUNTIME;
+	m_CgiResultStatus = E_CGI_STATUS_ERROR;
 }
 
 void

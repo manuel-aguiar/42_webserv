@@ -60,6 +60,7 @@ bool	Worker::mf_prepareExecve()
 
 		for (size_t i = 0; i < envRequest.envBase.size(); i++)
 		{
+			temp.reserve(envBase[envRequest.envBase[i].first].size() + 1 + envRequest.envBase[i].second.size() + 1);
 			temp = (envBase[envRequest.envBase[i].first] + "=" + envRequest.envBase[i].second);
 			m_envStr.emplace_back();
 			StringUtils::move(m_envStr.back(), temp);
@@ -67,6 +68,7 @@ bool	Worker::mf_prepareExecve()
 		
 		for (t_EnvExtraIter it = envRequest.envExtra.begin(); it != envRequest.envExtra.end(); it++)
 		{
+			temp.reserve(it->first.size() + 1 + it->second.size() + 1);
 			temp = (it->first + "=" + it->second);
 			m_envStr.emplace_back();
 			StringUtils::move(m_envStr.back(), temp);

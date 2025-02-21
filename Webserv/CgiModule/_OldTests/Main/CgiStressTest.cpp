@@ -349,7 +349,7 @@ void CgiStressTest::StressTest(int& testNumber,
 			<< "\t| failed acquire:    " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_FAILED_ACQUIRE] << " |\n"
 			<< "\t| timedout:          " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_TIMEOUT] << " |\n"
 			<< "\t| error startup:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_STARTUP] << " |\n"
-			<< "\t| error runtime:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME] << " |\n"
+			<< "\t| error runtime:     " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_ERROR] << " |\n"
 			<< "\t| working:           " << std::setw(10) << statusCounter[TestProtoRequest::E_CGI_STATUS_WORKING] << " |\n"
 			<< "\t---------------------------------" << '\n'
 			<< "\t| Total Connections: " << std::setw(10) << connectionCount << " |\n"

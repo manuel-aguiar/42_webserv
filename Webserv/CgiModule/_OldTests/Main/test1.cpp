@@ -379,8 +379,8 @@ void TestPart1(int& testNumber)
 		if (cgi.getBusyWorkerCount() != 0)
 			testFailure = testFailure + '\n' + TEST_ERROR_MSG(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
 		
-		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME)
-			testFailure = testFailure + '\n' + TEST_ERROR_MSG(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_ERROR_RUNTIME, "ProtoRequest didn't receive error runtime notice");
+		if (protoRequest.m_CgiResultStatus != TestProtoRequest::E_CGI_STATUS_ERROR)
+			testFailure = testFailure + '\n' + TEST_ERROR_MSG(protoRequest.m_CgiResultStatus, TestProtoRequest::E_CGI_STATUS_ERROR, "ProtoRequest didn't receive error runtime notice");
 		
 
 		// restoring the original stdcerr not to mess the remaining tests

@@ -35,9 +35,7 @@ class TestProtoRequest
 			E_CGI_STATUS_WORKING,
 			E_CGI_STATUS_FAILED_ACQUIRE,
 			E_CGI_STATUS_SUCCESS,
-			E_CGI_STATUS_ERROR_STARTUP,
-			E_CGI_STATUS_ERROR_RUNTIME,
-			E_CGI_STATUS_TIMEOUT,
+			E_CGI_STATUS_ERROR,
 			E_CGI_STATUS_COUNT,
 		};
 
@@ -50,7 +48,7 @@ class TestProtoRequest
 
 		std::string			m_msgBody;
 		
-		Buffer<1024>		m_buffer;
+		Buffer<40960>		m_buffer;
 		size_t				m_TotalBytesRead;
 
 		int					m_id;
