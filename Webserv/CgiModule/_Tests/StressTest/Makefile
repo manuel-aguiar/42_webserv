@@ -98,6 +98,7 @@ test: $(TARGET_BASE)
 	--leak-check=full \
 	--errors-for-leak-kinds=all \
 	--show-leak-kinds=all \
+	--trace-children=yes \
 	./$(TARGET_BASE)
 
 debug: test
