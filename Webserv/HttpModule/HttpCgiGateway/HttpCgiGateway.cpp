@@ -43,7 +43,7 @@ namespace Http
 		{
 			m_readFd = readFd;
 			m_canRead = true;
-			return (Cgi::IO::State::CONTINUE);
+			return (Cgi::IO::CONTINUE);
 		}
 
 		Cgi::IO::State
@@ -51,7 +51,7 @@ namespace Http
 		{
 			m_writeFd = writeFd;
 			m_canWrite = true;
-			return (Cgi::IO::State::CONTINUE);
+			return (Cgi::IO::CONTINUE);
 		}
 
 		Cgi::IO::State
@@ -66,11 +66,11 @@ namespace Http
 				m_module.finishRequest(*m_cgiRequest, true);
 				m_statusCode = Http::Status::BAD_GATEWAY;
 				m_fillFunction = &CgiGateway::mf_fillErrorResponse;
-				return (Cgi::IO::State::CLOSE);
+				return (Cgi::IO::CLOSE);
 			}
 			m_fillFunction = &CgiGateway::mf_fillResponseLine;
 
-			return (Cgi::IO::State::CONTINUE);
+			return (Cgi::IO::CONTINUE);
 		}
 
 	void

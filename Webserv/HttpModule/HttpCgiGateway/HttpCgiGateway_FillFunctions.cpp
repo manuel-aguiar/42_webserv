@@ -14,14 +14,15 @@ namespace Http
     Response::Status
     CgiGateway::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
-        return (Response::Status::WAITING);
+        (void)writeBuffer;
+        return (Response::WAITING);
     }
 
     Response::Status
     CgiGateway::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
         writeBuffer.push("HTTP/1.1 ", 9);
-        writeBuffer.push(std::to_string(m_statusCode).c_str(), std::to_string(m_statusCode).size());
+        writeBuffer.push(TestHelpers::to_string(m_statusCode).c_str(), TestHelpers::to_string(m_statusCode).size());
         writeBuffer.push(" ", 1);
         writeBuffer.push(getStatusMessage(m_statusCode));
         writeBuffer.push("\r\n", 2);
@@ -43,11 +44,12 @@ namespace Http
 				writeBuffer.push("Transfer-Encoding: chunked\r\n", 26);
 			else
 				writeBuffer.push("Content-Length: 0\r\n", 19);
+            m_currentHeader = 0;
 		}
 
 		current = m_currentHeader;
 
-		for (; current < headers.size(); current++)
+		for (; (size_t)current < headers.size(); current++)
 		{
 			// ignored header, skip
 			if (isHeaderIgnored(headers[current]))
@@ -57,7 +59,7 @@ namespace Http
 			if (writeBuffer.available() < headers[current].key.size() + headers[current].value.size() + 4) // ": " + "\r\n"
 			{
 				m_currentHeader = current;
-				return (Response::Status::WRITING);
+				return (Response::WRITING);
 			}
 			// push header
 			writeBuffer.push(headers[current].key.data(), headers[current].key.size());
@@ -67,15 +69,15 @@ namespace Http
 		}
 
 		m_currentHeader = current;
-		if (m_currentHeader != headers.size())
-            return (Response::Status::WRITING); // unfinished, still have headers to go
+		if ((size_t)m_currentHeader != headers.size())
+            return (Response::WRITING); // unfinished, still have headers to go
         if (m_headers->hasBody())
         {
             // go to next stage
             m_fillFunction = &CgiGateway::mf_fillBodyTemp;
             return ((this->*m_fillFunction)(writeBuffer));
         }
-        return (Response::Status::FINISHED);
+        return (Response::FINISHED);
     }
 
     static void fillHexHeader(char* hexHeader, int hexheaderSize, int chunkSize)
@@ -111,7 +113,7 @@ namespace Http
         if (tempBody.size() == 0)
             goto startBodyStream;
         if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
-            return (Response::Status::WAITING); // no room
+            return (Response::WAITING); // no room
         
         currentPosition = writeBuffer.size();
 
@@ -137,11 +139,11 @@ namespace Http
         const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
 
         if (!m_canRead)
-            return (Response::Status::WAITING);
+            return (Response::WAITING);
 
             
         if (writeBuffer.available() < hexHeaderSize + 1)
-            return (Response::Status::WAITING);
+            return (Response::WAITING);
         
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
@@ -155,7 +157,7 @@ namespace Http
             hexHeader[hexHeaderSize - 2] = '\r';
 
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
-            return (Response::Status::FINISHED);
+            return (Response::FINISHED);
         }
 
         fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
@@ -163,7 +165,7 @@ namespace Http
 
         m_canRead = false;
 
-        return (Response::Status::WRITING);
+        return (Response::WRITING);
     }
 
     Response::Status
@@ -183,14 +185,7 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Cgi script failed to execute correctly", 37);
 
-		return (Response::Status::FINISHED);
+		return (Response::FINISHED);
 	}
-
-	Response::Status
-	CgiGateway::mf_fillBodyStream(BaseBuffer& writeBuffer)
-	{
-		return (Response::Status::WAITING);
-	}
-
 
 }
