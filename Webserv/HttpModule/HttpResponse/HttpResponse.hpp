@@ -1,15 +1,23 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
+# include "./HttpResponse_DirectoryListing.hpp"
 # include "../HttpDefinitions.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 
-// DELETE THIS
+# include <iostream>
+# include <sstream>
+# include <iomanip>
+# include <ctime>
+# include <string>
+
+// TESTING
 # include "../HttpRequest/HttpRequest.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
+
 
 // forward declarations
 class ServerBlock;
@@ -37,25 +45,32 @@ namespace Http
 				FINISHED // transaction is finished
 			}	Status;
 
-			const char* getMessage(int statusCode);
+			const char*			getMessage(int statusCode);
+			Status  			getStatus() const;
 
-			Status  	getStatus() const;
-			
-			Status		fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Response::Status	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
-			void    	reset(); // reset the response to its initial state
+			void    			reset(); // reset the response to its initial state
 
 		private:
-			void		generateResponse(int statusCode);
+			void				generateResponse(int statusCode);
+			std::string			generateStatusLine(int statusCode);
+			std::string			generateHeaderString();
+			std::string 		generateDefaultErrorPage(int StatusCode);
 
-			Http::Request&			m_myRequest;
-			Http::Connection&		m_connection;
-			File*					m_file;
-			ServerBlock*			m_serverBlock;
-			ServerLocation*			m_location;
-			Status					m_status;
+			// Debatable
+			void				setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
-			std::string				m_pendingWrite;		// cache data that you generated but couldn't write
+
+			Http::Request&		m_myRequest;
+			Http::Connection&	m_connection;
+			File*				m_file;
+			ServerBlock*		m_serverBlock;
+			ServerLocation*		m_location;
+			Status				m_status;
+			std::map<std::string, std::string>	m_headers;
+
+			std::string			m_pendingWrite;		// cache data that you generated but couldn't write
 	};
 };
 
