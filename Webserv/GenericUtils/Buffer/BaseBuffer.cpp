@@ -18,11 +18,15 @@ BaseBuffer::~BaseBuffer() {}
 
 int BaseBuffer::read(Ws::fd fd, int startIndex)
 {
-    ASSERT_EQUAL((size_t)startIndex < capacity() - 1, true, "BaseBuffer::read(): starting index is beyond buffer capacity");
+    int bytesRead;
+
+    ASSERT_EQUAL((size_t)startIndex < capacity(), true, "BaseBuffer::read(): starting index is beyond buffer capacity");
     ASSERT_EQUAL((size_t)startIndex <= m_size, true, "BaseBuffer::read(): starting index is beyond current buffer size, no fragmentation allowed");
 
-    m_size = startIndex + ::read(fd, m_begin, capacity() - startIndex - 1);
-    return (m_size);
+    bytesRead = ::read(fd, m_begin + startIndex, capacity() - startIndex);
+
+    m_size = startIndex + bytesRead;
+    return (bytesRead);
 }
 
 int BaseBuffer::write(Ws::fd fd, int startIndex)
@@ -65,7 +69,10 @@ size_t BaseBuffer::writeOffset() const
 
 void BaseBuffer::push(const char* data, size_t size)
 {
-    ASSERT_EQUAL(m_size + size < capacity() - 1, true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+    ASSERT_EQUAL(m_size + size < capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+
+    if (!size)
+        return ;
 
     std::memcpy(m_begin + m_size, data, size);
     m_size += size;

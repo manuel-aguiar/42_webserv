@@ -42,7 +42,10 @@ BufferView::size() const
 
 const char&
 BufferView::operator[](size_t startPos) const
-{ return m_data[startPos]; }
+{ 
+	ASSERT_EQUAL(startPos < m_size, true, "StringView::at, accessing beyond the length");
+	return m_data[startPos]; 
+}
 
 
 const char&
@@ -81,7 +84,7 @@ BufferView::find(char ch, size_t startPos) const
 size_t
 BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 {
-	if (startPos >= m_size || targetLength == 0)
+	if (startPos >= m_size || targetLength == 0 || targetLength > m_size - startPos)
 		return npos;
 	for (size_t i = startPos; i <= m_size - targetLength; ++i)
 	{
@@ -94,13 +97,22 @@ BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 size_t
 BufferView::find(const BufferView& sv, size_t startPos) const
 {
-	return (find(sv.data(), startPos, sv.size()));
+	return (find(sv.data(), sv.size(), startPos));
 }
 
 void
 BufferView::to_string(std::string& placeResult) const
 {
 	placeResult.assign(m_data, m_size);
+}
+
+std::string
+BufferView::to_string() const
+{
+	std::string result;
+
+	result.assign(m_data, m_size);
+	return (result);
 }
 
 int BufferView::compare(const BufferView& other) const
