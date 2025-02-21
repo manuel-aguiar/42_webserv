@@ -67,9 +67,9 @@ class TestProtoRequest_CgiGateway
 		static void onSuccess(Cgi::User user);
 		static void onError(Cgi::User user);
 
-		static Cgi::IO::State 		onRead(Cgi::User user, int readFd);
-		static Cgi::IO::State 		onWrite(Cgi::User user, int writeFd);
-		static Cgi::IO::State		onReceiveHeaders(Cgi::User user, const Cgi::HeaderData& headers);
+		static Cgi::IO::State 		onRead(Cgi::User user, const Ws::fd readFd);
+		static Cgi::IO::State 		onWrite(Cgi::User user, const Ws::fd writeFd);
+		static Cgi::IO::State		onReceiveHeaders(Cgi::User user, Cgi::HeaderData& headers);
 };
 
 

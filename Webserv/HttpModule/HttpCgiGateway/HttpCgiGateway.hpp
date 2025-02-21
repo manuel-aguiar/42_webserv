@@ -31,25 +31,36 @@ namespace Http
 			void 			onError();
 			Cgi::IO::State 	onRead(const Ws::fd readFd);
 			Cgi::IO::State 	onWrite(const Ws::fd writeFd);
-			Cgi::IO::State 	onReceiveHeaders(const Cgi::HeaderData& headers);
+			Cgi::IO::State 	onReceiveHeaders(Cgi::HeaderData& headers);
 
 		private:
 
-		
+			typedef enum
+			{
+				IDLE,
+				PROCESSING,
+				RESPONSE_LINE,
+				HEADERS,
+				BODY_TEMP,
+				BODY_STREAM,
+				COMPLETE
+			}	ResponseState;
+
 			Cgi::Module& 	m_module;
 			Http::Request& 	m_request;
 			Http::Response& m_response;
 
 			// Cgi IO
-			bool 			m_canRead;
-			bool 			m_canWrite;
-			Ws::fd 			m_readFd;
-			Ws::fd 			m_writeFd;
+			bool 				m_canRead;
+			bool 				m_canWrite;
+			Ws::fd 				m_readFd;
+			Ws::fd 				m_writeFd;
 
 			int					m_statusCode;
 			Cgi::HeaderData* 	m_headers;
+			ResponseState		m_responseState;
 
-
+			Response::Status	mf_bodyStream(BaseBuffer& writeBuffer);
 
 			// disallow copy
 

@@ -10,14 +10,6 @@
 
 # include <iostream>            //DEBUG, erase afterwards
 
-static const char* forbiddenHeaders[] =
-{
-	"Connection",
-	"Content-Length",
-	"Transfer-Encoding",
-	"Upgrade"
-};
-
 template<typename T>
 int binSearch(const std::vector<T>& target, const T& value)
 {
@@ -106,14 +98,6 @@ HeaderData::mf_validateHeaders()
 	if (contentType != -1)
 		m_hasBody = true;
 
-	for (size_t i = 0; i < sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]); ++i)
-	{
-		if (binSearch(m_headers, (Cgi::Header){BufferView(forbiddenHeaders[0]), BufferView()}) != -1)
-		{
-			//std::cout << "forbidden header included: " << forbiddenHeaders[0] << std::endl;
-			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
-		}
-	}
 	//std::cout << "headers validated" << std::endl;
 	return (HeaderData::PASS);
 }
