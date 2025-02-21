@@ -42,7 +42,10 @@ BufferView::size() const
 
 const char&
 BufferView::operator[](size_t startPos) const
-{ return m_data[startPos]; }
+{ 
+	ASSERT_EQUAL(startPos < m_size, true, "StringView::at, accessing beyond the length");
+	return m_data[startPos]; 
+}
 
 
 const char&
@@ -101,6 +104,15 @@ void
 BufferView::to_string(std::string& placeResult) const
 {
 	placeResult.assign(m_data, m_size);
+}
+
+std::string
+BufferView::to_string() const
+{
+	std::string result;
+
+	result.assign(m_data, m_size);
+	return (result);
 }
 
 int BufferView::compare(const BufferView& other) const
