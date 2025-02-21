@@ -56,7 +56,7 @@ namespace Http
 				continue ;
 			
 			// no room, exit
-			if (writeBuffer.available() < headers[current].key.size() + headers[current].value.size() + 4) // ": " + "\r\n"
+			if (writeBuffer.available() < headers[current].key.size() + headers[current].value.size() + 6) // ": " + "\r\n" * 2 to be safe at the final header
 			{
 				m_currentHeader = current;
 				return (Response::WRITING);
@@ -69,8 +69,12 @@ namespace Http
 		}
 
 		m_currentHeader = current;
+
 		if ((size_t)m_currentHeader != headers.size())
             return (Response::WRITING); // unfinished, still have headers to go
+        else
+            writeBuffer.push("\r\n", 2); // end of headers, potentially message
+
         if (m_headers->hasBody())
         {
             // go to next stage
