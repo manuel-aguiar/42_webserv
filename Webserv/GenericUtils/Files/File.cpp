@@ -2,7 +2,8 @@
 
 File::File(const char *path):
 	m_size(0),
-	m_offset(0)
+	m_offset(0),
+	m_path(std::string(path))
 {
 	m_fd = open(path, O_RDWR);
 	if (m_fd == -1) {
@@ -24,48 +25,53 @@ File::~File()
 	}
 }
 
-// File::File(const File &copy)
-// {
-
-// }
-
-// File &File::operator=(const File &copy)
-// {
-// 	(void)copy;
-// 	return (*this);
-// }
-
 bool	File::read(void* buffer, size_t size)
 {
 	if (m_fd == -1) {
-		return false;
+		return (false);
 	}
 
 	ssize_t bytesRead = ::read(m_fd, buffer, size);
 	if (bytesRead <= 0) {
-		return false;
+		return (false);
 	}
 
 	m_offset += bytesRead;
-	return true;
+	return (true);
 }
 
 bool	File::write(const void* buffer, size_t size)
 {
 	if (m_fd == -1) {
-		return false;
+		return (false);
 	}
 
 	ssize_t bytesWritten = ::write(m_fd, buffer, size);
 	if (bytesWritten < 0) {
-		return false;
+		return (false);
 	}
 
 	m_offset += bytesWritten;
 	m_size = std::max(m_size, m_offset);
-	return true;
+	return (true);
 }
 
-// size_t		size() const;
-// const char* path() const;
+const size_t &File::size() const
+{
+    return (m_size);
+}
 
+const std::string &File::path() const
+{
+    return (m_path);
+}
+
+const Ws::fd &File::fd() const
+{
+	return (m_fd);
+}
+
+const size_t &File::offset() const
+{
+	return (m_offset);
+}
