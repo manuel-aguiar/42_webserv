@@ -251,4 +251,9 @@ bool Request::isCompleted() const
     return (m_parsingState == COMPLETED);
 }
 
+// just for testing
+void            Request::done()
+{
+}
 } // namespace Http
+

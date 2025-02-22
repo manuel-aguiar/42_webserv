@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <sys/stat.h>
+#include <string>
 
 class File
 {
@@ -16,15 +17,19 @@ class File
 		File(const char *path);
 		~File();
 
-		bool		read(void* buffer, size_t size);
-		bool		write(const void* buffer, size_t size);
-		size_t		size() const;
-		std::string path() const;
+		bool				read(void* buffer, size_t size);
+		bool				write(const void* buffer, size_t size);
+		size_t				size() const;
+		const std::string	&path() const;
+		Ws::fd				fd() const;
+		size_t				offset() const;
 
 	private:
 		Ws::fd		m_fd;
-		size_t 		m_size;
+		size_t		m_size;
 		size_t		m_offset;
+		std::string	m_path;
+
 
 		File(const File& copy);
 		File& operator=(const File& copy);
