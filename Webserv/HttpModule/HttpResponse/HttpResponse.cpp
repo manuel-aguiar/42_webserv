@@ -243,10 +243,6 @@ std::string Http::Response::generateHeaderString()
 
 std::string Http::Response::generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage)
 {
-	// Replace these with a Macro 
-    const std::string serverName = "MyServer";
-    const std::string serverVersion = "1.0.0";
-
     std::stringstream ss;
 
     ss << "<!DOCTYPE html>\n"
