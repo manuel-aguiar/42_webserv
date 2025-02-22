@@ -23,7 +23,7 @@ static int hexToInt(char c)
 }
 
 // not confident
-std::string Http::Request::mf_decodeUri(const std::string& encoded, bool strict) const
+std::string Http::Request::mf_decodeUriComp(const std::string& encoded) const
 {
     std::string decodedString;
 
@@ -43,11 +43,6 @@ std::string Http::Request::mf_decodeUri(const std::string& encoded, bool strict)
             continue;
         }
 
-        if (strict && encoded[i] == '+') {
-            decodedString += ' ';
-            continue;
-        }
-
         decodedString += encoded[i];
     }
     return decodedString;
@@ -57,56 +52,36 @@ std::string Http::Request::mf_decodeUri(const std::string& encoded, bool strict)
 Http::Status::Number
 Http::Request::mf_parseUriComponents(const std::string& uri)
 {
-    size_t pathLength = uri.find('?');
+    size_t queryStart = uri.find('?');
+    size_t fragmentStart = uri.find('#');
 
-    // Parse path component
-    m_uriComponents["path"] = mf_decodeUri(uri.substr(0, pathLength), false);
+    // get path
+    size_t pathStart = queryStart != std::string::npos ? queryStart : fragmentStart;
+    m_path = mf_decodeUriComp(uri.substr(0, pathStart));
 
-    if (pathLength == std::string::npos)
-        return Http::Status::OK;
-
-    size_t equalPos;
-    size_t ampPos;
-    size_t fragPos;
-    size_t valueLength;
-    std::string key;
-    std::string value;
-
-    size_t start = 0;
-    std::string query = uri.substr(pathLength + 1);
-
-    while (start < query.length()) {
-        equalPos = query.find('=', start);
-        ampPos = query.find('&', start);
-        fragPos = query.find('#', start);
-
-        // query keys can be encoded
-        key = mf_decodeUri(query.substr(start, equalPos - start));
-        valueLength = (ampPos < fragPos ? ampPos : fragPos) - equalPos - 1; // until & or #
-        value = mf_decodeUri(query.substr(equalPos + 1, valueLength));
-
-        m_uriComponents[key] = value;
-
-        if (ampPos == std::string::npos)
-            break;
-
-        start = ampPos + 1;
+    // get query string
+    if (queryStart != std::string::npos) {
+        size_t queryEnd = (fragmentStart != std::string::npos) ? fragmentStart : uri.length();
+        m_queryString = uri.substr(queryStart + 1, queryEnd - (queryStart + 1));
     }
 
-    // get rid of the fragment, if any. server does not need it
-    size_t fragment_start = uri.find('#');
-    if (fragment_start != std::string::npos)
-        m_uriComponents["path"] = m_uriComponents["path"].substr(0, fragment_start);
+    // get fragment
+    if (fragmentStart != std::string::npos) {
+        m_fragment = uri.substr(fragmentStart + 1);
+    }
 
     return Http::Status::OK;
 }
 
 Http::Status::Number
-Http::Request::mf_parseRequestLine(const std::string& line)
+Http::Request::mf_parseRequestLine(const BufferView& line)
 {
+    std::string lineString;
+    line.to_string(lineString);
+
     try {
-        size_t firstSpace = line.find(' ');
-        size_t lastSpace = line.rfind(' ');
+        size_t firstSpace = lineString.find(' ');
+        size_t lastSpace = lineString.rfind(' ');
 
         // this check is important because it ensures that the request line is valid
         // and that it has at least three components
@@ -116,12 +91,16 @@ Http::Request::mf_parseRequestLine(const std::string& line)
             return Http::Status::BAD_REQUEST;
 
         // also only one space between components
-        if (line[firstSpace + 1] == ' ' || line[lastSpace - 1] == ' ')
+        if (lineString[firstSpace + 1] == ' ' || lineString[lastSpace - 1] == ' ')
             return Http::Status::BAD_REQUEST;
 
-        m_method = line.substr(0, firstSpace);
-        m_uri = mf_decodeUri(line.substr(firstSpace + 1, lastSpace - firstSpace - 1), false);
-        m_httpVersion = line.substr(lastSpace + 1);
+        m_method = lineString.substr(0, firstSpace);
+        m_uri = lineString.substr(firstSpace + 1, lastSpace - firstSpace - 1);
+        m_httpVersion = lineString.substr(lastSpace + 1);
+
+        // line.substr(0, firstSpace).to_string(m_method);
+        // line.substr(firstSpace + 1, lastSpace - firstSpace - 1).to_string(m_uri);
+        // line.substr(lastSpace + 1).to_string(m_httpVersion);
 
         // Check if method is allowed using HttpDefinitions
         // TODO: later get this from server config

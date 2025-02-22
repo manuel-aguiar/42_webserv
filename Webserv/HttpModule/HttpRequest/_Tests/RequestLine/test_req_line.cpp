@@ -21,6 +21,9 @@ void validRequestLineTests(int &testNumber)
             EXPECT_EQUAL(Request.getMethod(), "GET", "Method should be GET");
             EXPECT_EQUAL(Request.getUri(), "/index.html", "URI should match");
             EXPECT_EQUAL(Request.getHttpVersion(), "HTTP/1.1", "Version should match");
+            EXPECT_EQUAL(Request.getPath(), "/index.html", "Path should match");
+            EXPECT_EQUAL(Request.getQueryString(), "", "Query string should be empty");
+            EXPECT_EQUAL(Request.getFragment(), "", "Fragment should be empty");
             TEST_PASSED_MSG("Valid simple GET request");
         }
         catch(const std::exception& e)
@@ -29,7 +32,7 @@ void validRequestLineTests(int &testNumber)
         }
     }
 
-    // Test 2: GET request with query parameters
+    // Test 2: GET request with query parameters and fragment
     TEST_INTRO(testNumber++);
     {
         Http::Request Request;
@@ -39,11 +42,10 @@ void validRequestLineTests(int &testNumber)
         try
         {
             EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
-            const std::map<std::string, std::string>& components = Request.getUriComponents();
-            EXPECT_EQUAL(components.at("path"), "/search", "Path component should match");
-            EXPECT_EQUAL(components.at("q"), "test", "Query parameter 'q' should match");
-            EXPECT_EQUAL(components.at("page"), "1", "Query parameter 'page' should match");
-            TEST_PASSED_MSG("Valid GET request with query parameters");
+            EXPECT_EQUAL(Request.getPath(), "/search", "Path should match");
+            EXPECT_EQUAL(Request.getQueryString(), "q=test&page=1", "Query string should match");
+            EXPECT_EQUAL(Request.getFragment(), "section1", "Fragment should match");
+            TEST_PASSED_MSG("Valid GET request with query parameters and fragment");
         }
         catch(const std::exception& e)
         {
@@ -111,10 +113,8 @@ void encodedUriTests(int &testNumber)
         try
         {
             EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
-            const std::map<std::string, std::string>& components = Request.getUriComponents();
-            EXPECT_EQUAL(components.at("path"), "/search path/file+1.html", "Decoded path should match");
-            EXPECT_EQUAL(components.at("name"), "John", "Decoded name parameter should match");
-            EXPECT_EQUAL(components.at("title"), "Hello World!", "Decoded title parameter should match");
+            EXPECT_EQUAL(Request.getPath(), "/search path/file+1.html", "Decoded path should match");
+            EXPECT_EQUAL(Request.getQueryString(), "name=%4A%6F%68%6E&title=Hello%20World%21", "Raw query string should match");
             TEST_PASSED_MSG("Valid encoded URI parsing");
         }
         catch(const std::exception& e)

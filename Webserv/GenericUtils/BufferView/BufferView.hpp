@@ -11,7 +11,7 @@ class BufferView
         // various constructors
         BufferView();
         BufferView(const std::string& str);
-        BufferView(const char* str);  
+        BufferView(const char* str);
         BufferView(const void* data, const size_t len);
         BufferView(const char* str, const size_t len);
 
@@ -26,16 +26,16 @@ class BufferView
         const char& operator[](size_t startPos) const;
         const char& at(size_t startPos) const;
 
-        BufferView substr(size_t startPos, size_t targetLength);
+        BufferView substr(size_t startPos, size_t targetLength) const;
 
         size_t find(char ch, size_t startPos = 0) const;
         size_t find(const char* target, size_t targetLength, size_t startPos = 0) const;
         size_t find(const BufferView& sv, size_t startPos) const;
-        
+
         void    to_string(std::string& placeResult) const;
 
         static const size_t npos;
-        
+
         int compare(const BufferView& other) const;
 
         bool operator==(const BufferView& other) const;
