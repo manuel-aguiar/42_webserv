@@ -8,8 +8,12 @@
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 
-extern const char* getStatusMessage(int statusCode);
-extern int	DirectoryListing(const std::string& path, std::string& placeOutput);
+// Move to adequate scope
+#define SERVER_NAME_VERSION "42_webserv/1.0"
+
+
+extern const char*	getStatusMessage(int statusCode);
+extern int			DirectoryListing(const std::string& path, std::string& placeOutput);
 
 std::string getCurrentDate() {
 	// Get current time
@@ -97,12 +101,7 @@ Http::Response::Response(Http::Connection& conn, Http::Request& myRequest):
 // NOT IMPLEMENTED YET
 void	Http::Response::reset()
 {
-
-	if (m_file)
-	{
-		delete m_file;
-		m_file = NULL;
-	}
+	m_file.close();
 	m_serverBlock = NULL;
 	m_location = NULL;
 	m_pendingWrite.clear();
@@ -136,18 +135,26 @@ void	Http::Response::generateResponse(int statusCode)
 				}
 				else
 				{
-					m_file = new File(m_myRequest.getUri().c_str());
-					// If cant open file?
-					m_headers["Content-Lenght"] = StringUtils::intToStr(m_file->size());
+					m_file.open(m_myRequest.getUri().c_str());
+					if (m_file.fd() == Ws::FD_NONE)
+					{
+						this->generateResponse(Http::Status::NOT_FOUND);
+						return ;
+					}
+					m_headers["Content-Lenght"] = StringUtils::intToStr(m_file.size());
 				}
 				setGetRqContentType(m_headers, 0);
 				break ;
 			default:
 				// User defined error page or default error page
 				if (1 == 2 /*m_serverBlock->getErrorPages().find(statusCode) != m_serverBlock->getErrorPages().end()*/)
-					body = generateDefaultErrorPage(statusCode); //readFile(m_serverBlock->getErrorPages().find(statusCode)->second);
+				{
+					// m_file = File(m_serverBlock->getErrorPages().find(statusCode)->second);
+					// m_headers["Content-Lenght"] = StringUtils::intToStr(m_file.size());
+					body = generateDefaultErrorPage(statusCode, getStatusMessage(statusCode), "Get some user defined message in here");
+				}
 				else
-					body = generateDefaultErrorPage(statusCode);
+					body = generateDefaultErrorPage(statusCode, getStatusMessage(statusCode), "Error");
 				m_headers["Content-Type"] = "text/html";
 				break ;
 		}
@@ -196,12 +203,12 @@ void	Http::Response::generateResponse(int statusCode)
 	}
 
 	// Common headers
-	if (body.empty() && !m_file) // CGI
+	if (body.empty() && m_file.fd() == Ws::FD_NONE) // CGI
 		m_headers["Transfer-Encoding"] = "chunked";
 	else 
 		m_headers["Content-Lenght"] = StringUtils::intToStr(body.size());
 	m_headers["Date"]			= getCurrentDate();
-	m_headers["Server"] 		= "42_webserv/1.0";
+	m_headers["Server"] 		= SERVER_NAME_VERSION;
 	std::map<std::string, std::string>::const_iterator it = m_myRequest.getHeaders().find("Connection");
 	if (it != m_myRequest.getHeaders().end() && it->second == "close")
 		m_headers["Connection"]	= "close";
@@ -234,79 +241,59 @@ std::string Http::Response::generateHeaderString()
 	return headerStream.str();
 }
 
-std::string Http::Response::generateDefaultErrorPage(int StatusCode)
+std::string Http::Response::generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage)
 {
-	/*** TEMP */
-	std::string simpleErrorpage = 
-        "<!DOCTYPE html>\n"
-        "<html lang=\"en\">\n"
-        "<head>\n"
-        "    <meta charset=\"UTF-8\">\n"
-        "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-        "    <title>Simple Debug Page</title>\n"
-        "</head>\n"
-        "<body>\n"
-        "    <h1>Error!</h1>\n"
-        "</body>\n"
-        "</html>";
+	// Replace these with a Macro 
+    const std::string serverName = "MyServer";
+    const std::string serverVersion = "1.0.0";
 
-	return simpleErrorpage;
+    std::stringstream ss;
 
-	/*** TEMP */
+    ss << "<!DOCTYPE html>\n"
+       << "<html>\n"
+       << "<head>\n"
+       << "<title>" << statusCode << " " << statusText << "</title>\n"
+       << "<style>\n"
+       << "body {\n"
+       << "    font-family: system-ui, sans-serif;\n"
+       << "    margin: 40px auto;\n"
+       << "    max-width: 1750px;\n"
+       << "    padding: 0 10px;\n"
+       << "    color: #444;\n"
+       << "    text-align: center;\n"
+       << "}\n"
+       << ".server {\n"
+       << "    font-size: 20px;\n"
+       << "    font-weight: bold;\n"
+       << "}\n"
+       << ".status-code {\n"
+       << "    font-size: 48px;\n"
+       << "    font-weight: bold;\n"
+       << "    color: #e74c3c;\n"
+       << "    margin: 30px 0 10px 0;\n"
+       << "}\n"
+       << "h1 {\n"
+       << "    margin: 10px 0;\n"
+       << "}\n"
+       << "hr {\n"
+       << "    width: 100%;\n"
+       << "    margin: 10px auto;\n"
+       << "    border: none;\n"
+       << "    border-top: 1px solid #ddd;\n"
+       << "}\n"
+       << "</style>\n"
+       << "</head>\n"
+       << "<body>\n"
+       << "    <div class=\"server\">" << SERVER_NAME_VERSION << "</div>\n"
+       << "    <hr>\n"
+       << "    <div class=\"status-code\">" << statusCode << "</div>\n"
+       << "    <h1>" << statusText << "</h1>\n"
+       << "    <p>" << errorMessage << "</p>\n"
+       << "</body>\n"
+       << "</html>\n";
 
-	// use the template below to generate the error message
-	(void)StatusCode;
-
-//	std::stringstream ss;
-//
-//	ss << "<!DOCTYPE html>
-//		<html>
-//
-//		<head>
-//			<title>{{STATUS_CODE}} {{STATUS_TEXT}}</title> //here
-//			<style>
-//				body {
-//					font-family: system-ui, sans-serif;
-//					margin: 40px auto;
-//					max-width: 1750px;
-//					padding: 0 10px;
-//					color: #444;
-//					text-align: center;
-//				}
-//				.server {
-//					font-size: 20px;
-//					font-weight: bold;
-//				}
-//				.status-code {
-//					font-size: 48px;
-//					font-weight: bold;
-//					color: #e74c3c;
-//					margin: 30px 0 10px 0;
-//				}
-//				h1 {
-//					margin: 10px 0;
-//				}
-//				hr {
-//					width: 100%;
-//					margin: 10px auto;
-//					border: none;
-//					border-top: 1px solid #ddd;
-//				}
-//			</style>
-//		</head>
-//
-//		<body>
-//			<div class="server">{{SERVER_NAME}}/{{SERVER_VERSION}}</div> //change valeus
-//			<hr>
-//			<div class="status-code">{{STATUS_CODE}}</div>
-//			<h1>{{STATUS_TEXT}}</h1>
-//			<p>{{ERROR_MESSAGE}}</p>
-//		</body>
-//
-//		</html>"
-
+    return ss.str();
 }
-
 
 //NOT IMPLEMENTED YET
 namespace Http
@@ -321,8 +308,7 @@ namespace Http
 
 	Response::~Response()
 	{
-		if (m_file)
-			delete m_file;
+		m_file.close();
 	}
 
 	Response&
@@ -331,7 +317,7 @@ namespace Http
 		if (this == &other)
 			return (*this);
 		
-		//m_file = other.m_file;
+		// m_file = other.m_file;
 		m_serverBlock = other.m_serverBlock;
 		m_location = other.m_location;
 
@@ -363,8 +349,8 @@ namespace Http
 		}
 		// Read file to buffer
 		// assuming read will not read if buffer is already full
-		if (m_file)
-			writeBuffer.read(m_file->fd(), m_file->offset());
+		if (m_file.fd() != Ws::FD_NONE)
+			writeBuffer.read(m_file.fd());
 		
 		return (m_status);
 	}

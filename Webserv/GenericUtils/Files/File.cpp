@@ -1,11 +1,14 @@
 #include "File.hpp"
 
+// Needs Testing
+
 File::File(const char *path):
+	m_fd(Ws::FD_NONE),
 	m_size(0),
 	m_offset(0),
 	m_path(std::string(path))
 {
-	m_fd = open(path, O_RDWR);
+	m_fd = ::open(path, O_RDWR);
 	if (m_fd == Ws::FD_NONE) 
 		std::cerr << "Error opening file: " << path << std::endl;
 	else
@@ -16,12 +19,37 @@ File::File(const char *path):
 	}
 }
 
+File::File(const File& copy):
+	m_fd(Ws::FD_NONE),
+	m_size(copy.m_size),
+	m_offset(copy.m_offset),
+	m_path(std::string(""))
+{
+	open(copy.m_path.c_str());
+}
+
 File::~File()
 {
-	if (m_fd != Ws::FD_NONE) {
-		close(m_fd);
-	}
+	if (m_fd != Ws::FD_NONE)
+		::close(m_fd);
 }
+
+void	File::close()
+{
+	if (m_fd != Ws::FD_NONE)
+		::close(m_fd);
+	m_fd = Ws::FD_NONE;
+}
+
+void	File::open(const char *path)
+{
+	if (m_fd != Ws::FD_NONE)
+		::close(m_fd);
+	m_fd = ::open(path, O_RDWR);
+	if (m_fd == Ws::FD_NONE) 
+		std::cerr << "Error opening file: " << path << std::endl;
+}
+
 
 bool	File::read(void* buffer, size_t size)
 {

@@ -11,11 +11,17 @@
 #include <sys/stat.h>
 #include <string>
 
+// Needs Testing
+
 class File
 {
 	public:
 		File(const char *path);
+		File(const File& copy);
 		~File();
+
+		void				open(const char *path);
+		void				close();
 
 		bool				read(void* buffer, size_t size);
 		bool				write(const void* buffer, size_t size);
@@ -31,7 +37,6 @@ class File
 		std::string	m_path;
 
 
-		File(const File& copy);
 		File& operator=(const File& copy);
 
 };

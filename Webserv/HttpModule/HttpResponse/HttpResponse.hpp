@@ -55,7 +55,7 @@ namespace Http
 			void				generateResponse(int statusCode);
 			std::string			generateStatusLine(int statusCode);
 			std::string			generateHeaderString();
-			std::string 		generateDefaultErrorPage(int StatusCode);
+			std::string 		generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
 
 			// Debatable
 			void				setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
