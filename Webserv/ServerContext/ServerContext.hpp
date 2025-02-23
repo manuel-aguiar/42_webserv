@@ -27,7 +27,7 @@ class ServerContext
 		void					setAppLayer(Ws::AppLayer::Type type, Ws::AppLayer::Module state, Ws::AppLayer::Init init);
 		void					setAddonLayer(Ws::AddonLayer::Type type, Ws::AddonLayer::State state);
 
-		ServerConfig*			getServerConfig() const;
+		ServerConfig*			 getServerConfig() const;
 		Globals*				getGlobals() const;
 		BlockFinder*			getBlockFinder() const;
 		Ws::AppLayer::Module	getAppLayerModule(Ws::AppLayer::Type type) const;

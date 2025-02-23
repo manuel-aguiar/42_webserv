@@ -104,7 +104,7 @@ bool Http::Request::mf_validateAndExtractChunk(const std::string& data, const Ch
 
 // transfer-encoding: chunked
 // last raw body = "5\r\nHello\r\n" -> total: 10 bytes
-// m_body = "Hello"
+// m_data.body = "Hello"
 // status = BODY
 // next raw body = "5\r\nWorld\r\n" -> total: 10 bytes
 // m_body = "Hello World"
@@ -132,7 +132,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
             if (chunk.size == 0) {
                 size_t endPos = data.find("\r\n\r\n", chunk.headerEnd);
                 if (endPos != std::string::npos) {
-                    m_body = assembled_body;
+                    m_data.body = assembled_body;
                     m_parsingState = COMPLETED;
                     return Http::Status::OK;
                 }
@@ -149,7 +149,7 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 
             // Ensure we have the full chunk data
             if (chunk.headerEnd + chunk.size + 2 > data.length()) {
-                m_body = assembled_body;
+                m_data.body = assembled_body;
                 m_parsingState = BODY;
                 return Http::Status::OK;
             }
@@ -166,15 +166,19 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
             // Look for end chunk after processing current chunk
             size_t endChunk = data.find("\r\n\r\n", pos);
             if (endChunk != std::string::npos) {
-                m_body = assembled_body;
+                m_data.body = assembled_body;
                 m_parsingState = COMPLETED;
                 return Http::Status::OK;
             }
         }
 
         // Update body and state
-        m_body = assembled_body;
-        m_expectedLength = m_body.length();
+        m_data.body = assembled_body;
+        ASSERT_EQUAL(m_response != NULL, true, "Request::mf_parseChunkedBody(), m_response is NULL");
+
+        // before state transition, call response to check
+        m_response->receiveRequestBody(m_data.body);
+        m_data.expectedLength = m_data.body.length();
         m_parsingState = BODY;
         return Http::Status::OK;
     }
@@ -187,10 +191,10 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 
 // content-length: 10
 // last raw body = "Hello" -> total: 5 bytes
-// m_body = "Hello"
+// m_data.body = "Hello"
 // status = BODY
 // next raw body = "World" -> total: 5 bytes
-// m_body = "Hello World"
+// m_data.body = "Hello World"
 // status = COMPLETED
 // next raw body = "!!!" -> total: 3 bytes
 // #ignored, we already have the full body for this request
@@ -200,7 +204,7 @@ Http::Request::mf_parseRegularBody(const std::string& data)
 {
     int contentLengthInt;
     try {
-        contentLengthInt = strToInteger(m_headers["Content-Length"]);
+        contentLengthInt = strToInteger(m_data.headers["Content-Length"]);
     } catch (const std::exception& e) {
         return Http::Status::BAD_REQUEST; // since the value was not a valid number
     }
@@ -212,19 +216,24 @@ Http::Request::mf_parseRegularBody(const std::string& data)
     }
 
     size_t contentLength = static_cast<size_t>(contentLengthInt);
-    m_expectedLength = contentLength;
+    m_data.expectedLength = contentLength;
     // TODO: later get this from server config
     if (contentLength > Http::HttpStandard::MAX_BODY_LENGTH) {
         return Http::Status::PAYLOAD_TOO_LARGE;
     }
 
     // append to existing body
-    m_body += data;
+    m_data.body += data;
 
-    if (m_body.length() == contentLength) {
+    ASSERT_EQUAL(m_response != NULL, true, "Request::mf_parseRegularBody(), m_response is NULL");
+
+    // before state transition, call response to check
+    m_response->receiveRequestBody(BufferView(m_data.body));
+
+    if (m_data.body.length() == contentLength) {
         m_parsingState = COMPLETED;
         return Http::Status::OK;
-    } else if (m_body.length() > contentLength) {
+    } else if (m_data.body.length() > contentLength) {
         m_parsingState = ERROR;
         return Http::Status::BAD_REQUEST;
     }
@@ -241,26 +250,26 @@ Http::Request::mf_parseMultipartData(const std::string& data)
     return Http::Status::OK;
 }
 
-Http::Request::BodyType
+Http::RequestData::BodyType
 Http::Request::mf_bodyType()
 {
-    if (m_headers.find("Transfer-Encoding") != m_headers.end() &&
-        m_headers["Transfer-Encoding"] == "chunked") {
-        return CHUNKED;
+    if (m_data.headers.find("Transfer-Encoding") != m_data.headers.end() &&
+        m_data.headers["Transfer-Encoding"] == "chunked") {
+        return Http::RequestData::CHUNKED;
     }
 
-    return REGULAR;
+    return Http::RequestData::REGULAR;
 }
 
-Http::Request::ContentType
+Http::RequestData::ContentType
 Http::Request::mf_contentType()
 {
-    if (m_headers.find("Content-Type") != m_headers.end() &&
-        m_headers["Content-Type"] == "multipart/form-data") {
-        return MULTIPART;
+    if (m_data.headers.find("Content-Type") != m_data.headers.end() &&
+        m_data.headers["Content-Type"] == "multipart/form-data") {
+        return Http::RequestData::MULTIPART;
     }
 
-    return RAW;
+    return Http::RequestData::RAW;
 }
 
 Http::Status::Number
@@ -271,38 +280,38 @@ Http::Request::mf_parseBody(const BufferView& buffer)
     buffer.to_string(data);
 
     try {
-        if (m_bodyType == NONE) {
-            m_bodyType = mf_bodyType();
-            m_contentType = mf_contentType();
+        if (m_data.bodyType == Http::RequestData::NONE) {
+            m_data.bodyType = mf_bodyType();
+            m_data.contentType = mf_contentType();
         }
 
         // Get raw bytes according to transfer type
         std::string extractedData;
-        if (m_bodyType == CHUNKED) {
-            m_status = mf_parseChunkedBody(data);
+        if (m_data.bodyType == Http::RequestData::CHUNKED) {
+            m_data.status = mf_parseChunkedBody(data);
         } else {
-            m_status = mf_parseRegularBody(data);
+            m_data.status = mf_parseRegularBody(data);
         }
 
-        if (m_status != Http::Status::OK) {
+        if (m_data.status != Http::Status::OK) {
             m_parsingState = ERROR;
-            return m_status;
+            return m_data.status;
         }
 
         // Interpreter for the received body
-        if (m_contentType == MULTIPART) {
-            m_status = mf_parseMultipartData(extractedData);
+        if (m_data.contentType == Http::RequestData::MULTIPART) {
+            m_data.status = mf_parseMultipartData(extractedData);
         } else {
-            m_body += extractedData;
-            if (m_body.length() == m_expectedLength) {
+            m_data.body += extractedData;
+            if (m_data.body.length() == m_data.expectedLength) {
                 m_parsingState = COMPLETED;
             }
         }
     }
     catch (const std::exception& e) {
         m_parsingState = ERROR;
-        m_status = Http::Status::INTERNAL_ERROR;
+        m_data.status = Http::Status::INTERNAL_ERROR;
     }
 
-    return m_status;
+    return m_data.status;
 }

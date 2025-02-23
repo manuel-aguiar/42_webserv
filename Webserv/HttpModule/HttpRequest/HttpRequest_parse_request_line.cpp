@@ -57,17 +57,17 @@ Http::Request::mf_parseUriComponents(const std::string& uri)
 
     // get path
     size_t pathStart = queryStart != std::string::npos ? queryStart : fragmentStart;
-    m_path = mf_decodeUriComp(uri.substr(0, pathStart));
+    m_data.path = mf_decodeUriComp(uri.substr(0, pathStart));
 
     // get query string
     if (queryStart != std::string::npos) {
         size_t queryEnd = (fragmentStart != std::string::npos) ? fragmentStart : uri.length();
-        m_queryString = uri.substr(queryStart + 1, queryEnd - (queryStart + 1));
+        m_data.queryString = uri.substr(queryStart + 1, queryEnd - (queryStart + 1));
     }
 
     // get fragment
     if (fragmentStart != std::string::npos) {
-        m_fragment = uri.substr(fragmentStart + 1);
+        m_data.fragment = uri.substr(fragmentStart + 1);
     }
 
     return Http::Status::OK;
@@ -94,9 +94,9 @@ Http::Request::mf_parseRequestLine(const BufferView& line)
         if (lineString[firstSpace + 1] == ' ' || lineString[lastSpace - 1] == ' ')
             return Http::Status::BAD_REQUEST;
 
-        m_method = lineString.substr(0, firstSpace);
-        m_uri = lineString.substr(firstSpace + 1, lastSpace - firstSpace - 1);
-        m_httpVersion = lineString.substr(lastSpace + 1);
+        m_data.method = lineString.substr(0, firstSpace);
+        m_data.uri = lineString.substr(firstSpace + 1, lastSpace - firstSpace - 1);
+        m_data.httpVersion = lineString.substr(lastSpace + 1);
 
         // line.substr(0, firstSpace).to_string(m_method);
         // line.substr(firstSpace + 1, lastSpace - firstSpace - 1).to_string(m_uri);
@@ -105,17 +105,17 @@ Http::Request::mf_parseRequestLine(const BufferView& line)
         // Check if method is allowed using HttpDefinitions
         // TODO: later get this from server config
         const std::set<std::string>& allowedMethods = Http::AllowedRequestMethods::getAllowedMethods();
-        if (allowedMethods.find(m_method) == allowedMethods.end())
+        if (allowedMethods.find(m_data.method) == allowedMethods.end())
             return Http::Status::METHOD_NOT_ALLOWED;
 
         // TODO: later get this from server config
-        if (m_uri.length() > Http::HttpStandard::MAX_URI_LENGTH)
+        if (m_data.uri.length() > Http::HttpStandard::MAX_URI_LENGTH)
             return Http::Status::URI_TOO_LONG;
 
-        if (m_httpVersion != Http::HttpStandard::HTTP_VERSION)
+        if (m_data.httpVersion != Http::HttpStandard::HTTP_VERSION)
             return Http::Status::BAD_REQUEST;
 
-        return mf_parseUriComponents(m_uri);
+        return mf_parseUriComponents(m_data.uri);
     }
     catch (const EncodingException& e) {
         return Http::Status::BAD_REQUEST;

@@ -23,8 +23,8 @@ namespace Http
 	m_requestData	(NULL),
 	m_serverBlock	(NULL),
 	m_location		(NULL),
-	m_type			(Response::Type::NONE),
-	m_status		(Http::ResponseStatus::WAITING),
+	m_type			(Response::NONE),
+	m_status		(Http::WAITING),
 	m_fillFunction	(&Response::mf_fillNothingToSend),
 	m_file			(),
 	m_cgiGateway	(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI)))

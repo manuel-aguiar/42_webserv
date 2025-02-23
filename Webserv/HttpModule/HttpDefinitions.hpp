@@ -9,10 +9,9 @@
 #ifndef HTTP_DEFINITIONS_HPP
 #define HTTP_DEFINITIONS_HPP
 
-#include <string>
-#include <set>
-#include <map>
-#include <map>
+# include <string>
+# include <set>
+# include <map>
 
 namespace Http
 {
@@ -126,6 +125,8 @@ namespace Http
         BodyType bodyType;
         ContentType contentType;
         size_t expectedLength;
+
+        void    reset();
     };
 }
 

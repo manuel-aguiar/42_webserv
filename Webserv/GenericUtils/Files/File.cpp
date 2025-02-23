@@ -86,5 +86,5 @@ size_t File::offset() const
 }
 
 // private
-File::File(const File& copy) {}
-File& File::operator=(const File& copy) {return (*this);}
+File::File(const File& copy) { static_cast<void>(copy);}
+File& File::operator=(const File& copy) { static_cast<void>(copy); return (*this);}
