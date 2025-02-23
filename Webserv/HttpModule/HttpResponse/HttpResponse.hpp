@@ -5,9 +5,7 @@
 # include "../../GenericUtils/Files/File.hpp"
 
 # include <iostream>
-# include <sstream>
-# include <iomanip>
-# include <ctime>
+
 # include <string>
 
 // TESTING
@@ -41,15 +39,16 @@ namespace Http
 			{
 				WAITING, // have nothing to push, no sign transaction is finished
 				WRITING, // pushed data to buffer
-				FINISHED // transaction is finished
+				FINISHED, // transaction is finished
+				MARK_TO_CLOSE // tell the Http::Connection to close the connection after writing
 			}	Status;
 
-			const char*			getMessage(int statusCode);
-			Status  			getStatus() const;
-
+			const char* getMessage(int statusCode);
 			Response::Status	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
-
 			void    			reset(); // reset the response to its initial state
+
+			void				receiveRequestData(const Http::RequestData& data); 	// request sends headers
+			void				receiveRequestBody(const BufferView& view);			// request send body
 
 		private:
 			void				generateResponse(int statusCode);
