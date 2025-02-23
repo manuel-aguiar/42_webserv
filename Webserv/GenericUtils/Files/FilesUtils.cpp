@@ -23,3 +23,16 @@ bool FilesUtils::isFile(const char* path)
 		return (S_ISREG(buffer.st_mode));
 	return (false);
 }
+
+FilesUtils::FileType FilesUtils::getFileType(const char* path)
+{
+	struct stat buffer;
+	
+	if (stat(path, &buffer) != 0)
+		return (NOT_EXIST);
+	if (S_ISDIR(buffer.st_mode))
+		return (DIRECTORY);
+	if (S_ISREG(buffer.st_mode))
+		return (REGULAR_FILE);
+	return (UNDEFINED);
+}

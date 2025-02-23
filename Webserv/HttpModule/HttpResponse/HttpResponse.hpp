@@ -76,17 +76,10 @@ namespace Http
 
 			ServerContext&       		m_context;
 			const Ws::Sock::addr*		m_connAddress;
-			const Http::RequestData*	m_requestData;
-			Http::Status::Number		m_requestStatus;
-			const ServerBlock*			m_serverBlock;
-			const ServerLocation*		m_location;
-			std::map<std::string, std::string>
-										m_headers;
+			ResponseData				m_responseData;
 
-			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
-
-			Response::Type				m_type;
 			Http::ResponseStatus		m_status;
+			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			FillFunction				m_fillFunction;
 			File						m_file;
 			Http::CgiGateway			m_cgiGateway;

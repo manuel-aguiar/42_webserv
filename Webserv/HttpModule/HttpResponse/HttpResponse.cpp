@@ -18,26 +18,22 @@ extern std::string 	getCurrentDate();
 namespace Http
 {
 	Response::Response(ServerContext& context):
-	m_context		(context),
-	m_connAddress	(NULL),
-	m_requestData	(NULL),
-	m_serverBlock	(NULL),
-	m_location		(NULL),
-	m_type			(Response::Type::NONE),
-	m_status		(Http::ResponseStatus::WAITING),
-	m_fillFunction	(&Response::mf_fillNothingToSend),
-	m_file			(),
-	m_cgiGateway	(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI)))
-	{}
+	m_context			(context),
+	m_connAddress		(NULL),
+	m_type				(Response::Type::NONE),
+	m_status			(Http::ResponseStatus::WAITING),
+	m_fillFunction		(&Response::mf_fillNothingToSend),
+	m_file				(),
+	m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
 
 	Response::~Response() { reset();}
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		m_requestData = &data;
-		m_requestStatus = m_requestData->status;
+		m_responseData.requestData = &data;
+		m_responseData.requestStatus = data.status;
 
-		if (m_requestData->status != Http::Status::OK || !mf_validateHeaders())
+		if (data.status != Http::Status::OK || !mf_validateHeaders())
 		{
 			m_fillFunction = &Response::mf_fillErrorResponse;
 			return ;
@@ -56,6 +52,7 @@ namespace Http
 	Http::ResponseStatus
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
+
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
 
@@ -98,12 +95,9 @@ namespace Http
 	void	Http::Response::reset()
 	{
 		m_file.reset();
-		m_serverBlock = NULL;
-		m_location = NULL;
-		m_requestData = NULL;
+		m_resp
 		m_fillFunction = &Response::mf_fillNothingToSend;
 		m_pendingWrite.clear();
-		m_headers.clear();
 		m_status = WAITING;
 
 		m_cgiGateway.reset();

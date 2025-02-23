@@ -14,6 +14,11 @@
 #include <map>
 #include <map>
 
+# include "../GenericUtils/Files/FilesUtils.hpp"
+
+class ServerBlock;
+class ServerLocation;
+
 namespace Http
 {
     // All http status codes
@@ -99,7 +104,8 @@ namespace Http
         MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
     }	ResponseStatus;
 
-    struct RequestData {
+    struct RequestData
+    {
         enum BodyType {
             NONE,
             REGULAR,
@@ -122,10 +128,44 @@ namespace Http
         std::string httpVersion;
         std::map<HeaderKey, HeaderValue> headers;
         std::string body;
+        std::string boundary;
+        std::string uploaded_filename;
+        std::string uploaded_filetype;
         Status::Number status;
         BodyType bodyType;
         ContentType contentType;
         size_t expectedLength;
+    };
+
+
+    struct ResponseData
+    {
+        ResponseData();
+        ~ResponseData();
+        ResponseData(const ResponseData& copy);
+        ResponseData& operator=(const ResponseData& assign);
+
+        void reset();
+        
+        typedef enum
+        {
+            UNDEFINED,
+            STATIC,
+            CGI,
+            REDIRECT
+        }	ResponseType;
+
+        const Http::RequestData*	        requestData;
+        Http::Status::Number		        requestStatus;
+        const ServerBlock*			        serverBlock;
+        const ServerLocation*		        serverLocation;
+        std::map<std::string, std::string>  headers;
+        ResponseType				        responseType;
+        std::string                         targetPath;
+        FilesUtils::FileType                targetType;
+
+        bool                                closeAfterSending;
+
     };
 }
 

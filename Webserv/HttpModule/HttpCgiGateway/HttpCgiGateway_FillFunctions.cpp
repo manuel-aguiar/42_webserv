@@ -157,8 +157,8 @@ namespace Http
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
 
-            hexHeader[hexHeaderSize - 1] = '\n';
             hexHeader[hexHeaderSize - 2] = '\r';
+            hexHeader[hexHeaderSize - 1] = '\n';
 
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
 
