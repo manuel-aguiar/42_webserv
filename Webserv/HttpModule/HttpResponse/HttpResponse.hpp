@@ -44,10 +44,11 @@ namespace Http
 			}	Status;
 
 			const char* getMessage(int statusCode);
-
 			Response::Status	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
-
 			void    			reset(); // reset the response to its initial state
+
+			void				receiveRequestData(const Http::RequestData& data); 	// request sends headers
+			void				receiveRequestBody(const BufferView& view);			// request send body
 
 		private:
 			void				generateResponse(int statusCode);

@@ -74,6 +74,21 @@ Http::Response::Response(Http::Connection& conn, Http::Request& myRequest):
 	generateResponse(myRequest.getStatus());
 }
 
+void	Http::Response::receiveRequestData(const Http::RequestData& data)
+{
+	if (data.status != Http::Status::OK)
+	{
+		// PREPARE ERROR MESAGE
+		//PREPARE CLOSE CONNECTION
+		return ;
+	}
+	// NOT IMPLEMENTED YET
+}
+
+void	Http::Response::receiveRequestBody(const BufferView& view)
+{
+	// NOT IMPLEMENTED YET
+}
 
 // NOT IMPLEMENTED YET
 void	Http::Response::reset()
