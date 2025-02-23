@@ -19,6 +19,9 @@ Connection::mf_read(const Ws::fd fd)
         m_readBuffer.read(fd);
         m_transaction.request.parse(m_readBuffer);
     }
+
+    //BufferView view(m_readBuffer.data(), m_readBuffer.size());
+    //std::cout << "Read: " << view << std::endl;
 }
 
 

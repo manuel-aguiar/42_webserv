@@ -6,7 +6,7 @@ namespace Http
 {
 	Transaction::Transaction(ServerContext& context)
 		: request(context),
-		  response(context) {}
+		  response(context) {request.setResponse(response);}
 
 	Transaction::Transaction(const Transaction& other)
 		: request(other.request),

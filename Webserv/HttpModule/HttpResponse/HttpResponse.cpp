@@ -38,7 +38,15 @@ namespace Http
 			return ;
 		}
 
-		m_fillFunction = &Response::mf_fillResponseLine;
+
+		m_responseData.requestStatus = Http::Status::BAD_GATEWAY;
+		m_fillFunction = &Response::mf_fillErrorResponse;
+
+
+
+
+
+		//m_fillFunction = &Response::mf_fillResponseLine;
 	}
 
 	void	Response::receiveRequestBody(const BufferView& view)

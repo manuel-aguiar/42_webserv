@@ -85,15 +85,16 @@ void Request::mf_handleHeaders(const BufferView& buffer)
 
     BufferView headers(buffer.substr(headerStart, headerEnd - headerStart));
     m_data.status = mf_parseHeaders(headers);
-    if (m_data.status != Http::Status::OK) {
-        m_parsingState = ERROR;
-        return;
-    }
 
-    ASSERT_EQUAL(m_response != NULL, true, "Request::mf_handleHeaders(), m_response is NULL");
-
-    // before state transition, call response to check
+    // send right away
     m_response->receiveRequestData(m_data);
+
+    // mark as completed, response will take it from here
+    if (m_data.status != Http::Status::OK)
+    {
+        m_parsingState = COMPLETED;
+        return ;
+    }
 
     // transition to body
     m_parsingState = BODY;

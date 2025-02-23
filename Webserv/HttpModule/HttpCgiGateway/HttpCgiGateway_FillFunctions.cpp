@@ -2,6 +2,7 @@
 
 # include "HttpCgiGateway.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
@@ -22,7 +23,7 @@ namespace Http
     CgiGateway::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
         writeBuffer.push("HTTP/1.1 ", 9);
-        writeBuffer.push(TestHelpers::to_string(m_statusCode).c_str(), TestHelpers::to_string(m_statusCode).size());
+        writeBuffer.push(StringUtils::to_string(m_statusCode).c_str(), StringUtils::to_string(m_statusCode).size());
         writeBuffer.push(" ", 1);
         writeBuffer.push(getStatusMessage(m_statusCode));
         writeBuffer.push("\r\n", 2);
@@ -94,7 +95,6 @@ namespace Http
         
         while (i >= 0)
         {
-            std::cout << i << std::endl;
             if (chunkSize)
             {
                 hexHeader[i--] = hex[chunkSize % 16];
@@ -179,7 +179,7 @@ namespace Http
 	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
 		// probably ask response to send response based on the error status code
-        std::string codeStr = TestHelpers::to_string(m_statusCode);
+        std::string codeStr = StringUtils::to_string(m_statusCode);
 
 		writeBuffer.push("HTTP/1.1 ", 9);
 		writeBuffer.push(codeStr.c_str(), codeStr.size());
