@@ -13,7 +13,9 @@
 
 
 // forward declarations
-struct DefaultConfig;
+
+class ServerContext;
+
 class Timer;
 class Globals;
 namespace Conn {class Connection;}
@@ -24,7 +26,7 @@ namespace Http
 	class Module
 	{
 		public:
-			Module(const size_t maxConnections, Globals& globals);
+			Module(const size_t maxConnections, ServerContext& context);
 			~Module();
 
 			//starter pack
@@ -38,6 +40,8 @@ namespace Http
 			Http::Connection*	acquireConnection();
 			void                returnConnection(Http::Connection& connection);
 
+			ServerContext&		accessServerContext();
+
 			// timer management
 			TimerTracker<Timer, Http::Connection*>::iterator 
 			insertTimer(const Timer& timer, Http::Connection& connection);
@@ -47,8 +51,7 @@ namespace Http
 
 		private:
 			// infrastructure
-			Globals&								m_globals;
-			int										m_global_maxHeaderSize;
+			ServerContext&							m_context;
 			HeapArray<Http::Connection>				m_connections;
 			HeapCircularQueue<Http::Connection*>	m_availableConnections;
 			TimerTracker<Timer, Http::Connection*>	m_timers;
