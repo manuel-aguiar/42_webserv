@@ -44,6 +44,8 @@ namespace Http
 
 			BaseBuffer&					accessReadBuffer();
 			BaseBuffer&					accessWriteBuffer();
+			BaseBuffer&					accessReadBuffer();
+			BaseBuffer&					accessWriteBuffer();
 
 			// clean all stored state to be reused later
 			void						closeConnection();
