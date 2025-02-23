@@ -88,6 +88,36 @@ namespace Http
     // {
     //     const std::set<std::string>& getAllowedHeaders();
     // }
+
+
+    struct RequestData {
+        enum BodyType {
+            NONE,
+            REGULAR,
+            CHUNKED
+        };
+
+        enum ContentType {
+            RAW,
+            MULTIPART
+        };
+
+        typedef std::string HeaderKey;
+	    typedef std::string HeaderValue;
+
+        std::string method;
+        std::string uri;
+        std::string path;
+        std::string queryString;
+        std::string fragment;
+        std::string httpVersion;
+        std::map<HeaderKey, HeaderValue> headers;
+        std::string body;
+        Status::Number status;
+        BodyType bodyType;
+        ContentType contentType;
+        size_t expectedLength;
+    };
 }
 
 #endif
