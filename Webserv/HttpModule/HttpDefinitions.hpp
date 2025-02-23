@@ -12,6 +12,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <map>
 
 namespace Http
 {
