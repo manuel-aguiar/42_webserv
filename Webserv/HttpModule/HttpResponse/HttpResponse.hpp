@@ -55,7 +55,7 @@ namespace Http
 			void						mf_generateResponse(int statusCode);
 			std::string					mf_generateStatusLine(int statusCode);
 			std::string					mf_generateHeaderString();
-			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
+			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
