@@ -10,9 +10,10 @@ void stateTransitionTests(int &testNumber)
 	// Initial state tests
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		try {
-			EXPECT_EQUAL(request.getParsingState(), Http::Request::IDLE, "Initial state should be IDLE");
+			EXPECT_EQUAL(request.getParsingState(), Http::Request::IDLE, "Should be in IDLE state initially");
 			EXPECT_EQUAL(request.isStarted(), false, "Should not be started initially");
 			EXPECT_EQUAL(request.isError(), false, "Should not be in error initially");
 			EXPECT_EQUAL(request.isIncompleted(), false, "Should not be incomplete initially");
@@ -27,7 +28,8 @@ void stateTransitionTests(int &testNumber)
 	// complete get request
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		Buffer<1024> buffer;
 		buffer.push("GET /index.html HTTP/1.1\r\nHost: localhost;\r\n\r\n");
 		request.parse(buffer);
@@ -44,7 +46,8 @@ void stateTransitionTests(int &testNumber)
 	// Request line parsing tests
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		try {
 			// Partial request line
 			Buffer<1024> buffer;
@@ -67,7 +70,8 @@ void stateTransitionTests(int &testNumber)
 	// Headers parsing tests
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		try {
 			// Valid request with partial headers
 			Buffer<1024> partialBuffer;
@@ -98,7 +102,8 @@ void stateTransitionTests(int &testNumber)
 	// Body parsing tests (Content-Length)
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		try {
 			Buffer<1024> buffer;
 			buffer.push(
@@ -120,7 +125,8 @@ void stateTransitionTests(int &testNumber)
 	// Chunked body parsing tests
 	// TEST_INTRO(testNumber++);
 	// {
-	// 	Http::Request request;
+	// 	ServerContext serverContext;
+	//	Http::Request request(serverContext);
 	// 	try {
 	// 		// Chunked request with partial chunk
 	// 		Buffer<1024> partialBuffer;
@@ -143,7 +149,7 @@ void stateTransitionTests(int &testNumber)
 	// 			"0\r\n\r\n"
 	// 		);
 	// 		request.parse(completeBuffer);
-	// 		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be COMPLETED with final chunk");
+			EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be COMPLETED with final chunk");
 	// 		TEST_PASSED_MSG("Chunked body parsing state transitions passed");
 	// 	}
 	// 	catch(const std::exception& e) {
@@ -154,7 +160,8 @@ void stateTransitionTests(int &testNumber)
 	// Error state tests
 	TEST_INTRO(testNumber++);
 	{
-		Http::Request request;
+		ServerContext serverContext;
+		Http::Request request(serverContext);
 		try {
 			// Invalid request line
 			Buffer<1024> buffer;

@@ -11,79 +11,57 @@
 namespace Http
 {
 
-///////////// RETAINED FOR TESTING, DELETE WHEN DONE /////////////
-Request::Request()
-    : m_httpConn(*reinterpret_cast<Http::Connection*>(0))
-    , m_serverBlock(NULL)
-    , m_serverLocation(NULL)
-    , m_status(Http::Status::OK)
-    , m_timeout(30) // 30 seconds default timeout
-    , m_parsingState(IDLE)
-    , m_bodyType(NONE)
-    , m_contentType(RAW)
-    , m_expectedLength(0)
-
-     {}
-/////////////////////////////////////////////////////////////////
-
-
-Request::Request(Http::Connection& conn)
-    : m_httpConn(conn)
-    , m_serverBlock(NULL)
-    , m_serverLocation(NULL)
-    , m_status(Http::Status::OK)
-    , m_timeout(30) // 30 seconds default timeout
-    , m_parsingState(IDLE)
-    , m_bodyType(NONE)
-    , m_contentType(RAW)
-    , m_expectedLength(0)
-{}
+Request::Request(ServerContext &serverContext): m_serverContext(serverContext)
+{
+    reset();
+}
 
 Request::~Request()
 {}
 
-Request::Request(const Request& copy)
-    : m_httpConn(copy.m_httpConn)
-    , m_serverBlock(copy.m_serverBlock)
-    , m_serverLocation(copy.m_serverLocation)
-    , m_status(copy.m_status)
-    , m_timeout(copy.m_timeout)
-    , m_parsingState(copy.m_parsingState)
-    , m_method(copy.m_method)
-    , m_uri(copy.m_uri)
-    , m_httpVersion(copy.m_httpVersion)
-    , m_headers(copy.m_headers)
-    , m_path(copy.m_path)
-    , m_queryString(copy.m_queryString)
-    , m_fragment(copy.m_fragment)
-    , m_body(copy.m_body)
-    , m_bodyType(copy.m_bodyType)
-    , m_contentType(copy.m_contentType)
-    , m_expectedLength(copy.m_expectedLength)
-    {}
+Request::Request(const Request& copy):
+    m_serverContext(copy.m_serverContext)
+{
+    *this = copy;
+}
 
 Request&
 Request::operator=(const Request& copy)
 {
     if (this == &copy) return (*this);
 
-    m_serverBlock = copy.m_serverBlock;
-    m_serverLocation = copy.m_serverLocation;
-    m_status = copy.m_status;
-    m_timeout = copy.m_timeout;
+    m_serverContext = copy.m_serverContext;
     m_parsingState = copy.m_parsingState;
-    m_method = copy.m_method;
-    m_uri = copy.m_uri;
-    m_httpVersion = copy.m_httpVersion;
-    m_headers = copy.m_headers;
-    m_path = copy.m_path;
-    m_queryString = copy.m_queryString;
-    m_fragment = copy.m_fragment;
-    m_body = copy.m_body;
-    m_bodyType = copy.m_bodyType;
-    m_contentType = copy.m_contentType;
-    m_expectedLength = copy.m_expectedLength;
+    m_data.method = copy.m_data.method;
+    m_data.uri = copy.m_data.uri;
+    m_data.path = copy.m_data.path;
+    m_data.queryString = copy.m_data.queryString;
+    m_data.fragment = copy.m_data.fragment;
+    m_data.httpVersion = copy.m_data.httpVersion;
+    m_data.headers = copy.m_data.headers;
+    m_data.body = copy.m_data.body;
+    m_data.status = copy.m_data.status;
+    m_data.bodyType = copy.m_data.bodyType;
+    m_data.contentType = copy.m_data.contentType;
+    m_data.expectedLength = copy.m_data.expectedLength;
     return (*this);
+}
+
+void  Request::reset()
+{
+    m_parsingState = IDLE;
+    m_data.method.clear();
+    m_data.uri.clear();
+    m_data.path.clear();
+    m_data.queryString.clear();
+    m_data.fragment.clear();
+    m_data.httpVersion.clear();
+    m_data.headers.clear();
+    m_data.body.clear();
+    m_data.status = Http::Status::OK;
+    m_data.bodyType = Http::RequestData::NONE;
+    m_data.contentType = Http::RequestData::RAW;
+    m_data.expectedLength = 0;
 }
 
 void Request::mf_handleRequestLine(const BufferView& buffer)
@@ -92,8 +70,8 @@ void Request::mf_handleRequestLine(const BufferView& buffer)
     if (reqLineEnd == std::string::npos) return; // not enough to go through yets
 
     BufferView requestLine(buffer.substr(0, reqLineEnd));
-    m_status = mf_parseRequestLine(requestLine);
-    if (m_status != Http::Status::OK) {
+    m_data.status = mf_parseRequestLine(requestLine);
+    if (m_data.status != Http::Status::OK) {
         m_parsingState = ERROR;
         return;
     }
@@ -113,8 +91,8 @@ void Request::mf_handleHeaders(const BufferView& buffer)
     headerStart += 2;
 
     BufferView headers(buffer.substr(headerStart, headerEnd - headerStart));
-    m_status = mf_parseHeaders(headers);
-    if (m_status != Http::Status::OK) {
+    m_data.status = mf_parseHeaders(headers);
+    if (m_data.status != Http::Status::OK) {
         m_parsingState = ERROR;
         return;
     }
@@ -125,7 +103,7 @@ void Request::mf_handleHeaders(const BufferView& buffer)
 
 void Request::mf_handleBody(const BufferView& buffer)
 {
-    if (m_method != "POST") {
+    if (m_data.method != "POST") {
         m_parsingState = COMPLETED; // no body needed for non POST requests
         return;
     }
@@ -136,8 +114,8 @@ void Request::mf_handleBody(const BufferView& buffer)
     bodyStart += 4;
 
     BufferView body(buffer.data() + bodyStart, buffer.size() - bodyStart);
-    m_status = mf_parseBody(body);
-    if (m_status != Http::Status::OK) {
+    m_data.status = mf_parseBody(body);
+    if (m_data.status != Http::Status::OK) {
         m_parsingState = ERROR;
         return;
     }
@@ -177,74 +155,58 @@ void Request::parse(const BaseBuffer& buffer)
     }
     catch (const std::exception& e) {
         m_parsingState = ERROR;
-        m_status = Http::Status::INTERNAL_ERROR;
+        m_data.status = Http::Status::INTERNAL_ERROR;
     }
-}
-
-
-void    Request::reset()
-{
-    m_method.clear();
-    m_uri.clear();
-    m_httpVersion.clear();
-    m_headers.clear();
-    m_path.clear();
-    m_queryString.clear();
-    m_fragment.clear();
-    m_body.clear();
-    m_status = Http::Status::OK;
-    m_parsingState = IDLE;
 }
 
 // Getters
 const Request::ParsingState& Request::getParsingState() const
 {
-    return m_parsingState;
+    return (m_parsingState);
 }
-
 const std::string& Request::getMethod() const
 {
-    return (m_method);
+    return (m_data.method);
 }
 
 const std::string& Request::getUri() const
 {
-    return (m_uri);
+    return (m_data.uri);
 }
 
 const std::string& Request::getHttpVersion() const
 {
-    return (m_httpVersion);
+    return (m_data.httpVersion);
 }
 
 const std::map<std::string, std::string>& Request::getHeaders() const
 {
-    return (m_headers);
+    return (m_data.headers);
 }
 
 const std::string& Request::getBody() const
 {
-    return (m_body);
+    return (m_data.body);
 }
 
 const std::string& Request::getPath() const
 {
-    return (m_path);
+    return (m_data.path);
 }
 
 const std::string& Request::getQueryString() const
 {
-    return (m_queryString);
+    return (m_data.queryString);
 }
 
 const std::string& Request::getFragment() const
 {
-    return (m_fragment);
+    return (m_data.fragment);
 }
 
 Http::Status::Number Request::getStatus() const
 {
-    return (m_status);
+    return (m_data.status);
 }
 
 // Parsing states
