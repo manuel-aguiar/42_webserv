@@ -1,31 +1,15 @@
-#include "File.hpp"
 
+
+
+#include "File.hpp"
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 // Needs Testing
 
-File::File(const char *path):
+File::File():
 	m_fd(Ws::FD_NONE),
 	m_size(0),
-	m_offset(0),
-	m_path(std::string(path))
+	m_offset(0)
 {
-	m_fd = ::open(path, O_RDWR);
-	if (m_fd == Ws::FD_NONE) 
-		std::cerr << "Error opening file: " << path << std::endl;
-	else
-	{
-		struct stat statBuf;
-		if (fstat(m_fd, &statBuf) == 0)
-			m_size = statBuf.st_size;
-	}
-}
-
-File::File(const File& copy):
-	m_fd(Ws::FD_NONE),
-	m_size(copy.m_size),
-	m_offset(copy.m_offset),
-	m_path(std::string(""))
-{
-	open(copy.m_path.c_str());
 }
 
 File::~File()
@@ -41,10 +25,16 @@ void	File::close()
 	m_fd = Ws::FD_NONE;
 }
 
+void	File::reset()
+{
+	this->close();
+	m_size = 0;
+	m_offset = 0;
+}
+
 void	File::open(const char *path)
 {
-	if (m_fd != Ws::FD_NONE)
-		::close(m_fd);
+	ASSERT_EQUAL(m_fd == Ws::FD_NONE, true, "File: File already open");
 	m_fd = ::open(path, O_RDWR);
 	if (m_fd == Ws::FD_NONE) 
 		std::cerr << "Error opening file: " << path << std::endl;
@@ -53,8 +43,7 @@ void	File::open(const char *path)
 
 bool	File::read(void* buffer, size_t size)
 {
-	if (m_fd == Ws::FD_NONE) 
-		return (false);
+	ASSERT_EQUAL(m_fd != Ws::FD_NONE, true, "File: no file is open for reading");
 
 	ssize_t bytesRead = ::read(m_fd, buffer, size);
 	if (bytesRead <= 0) 
@@ -66,8 +55,7 @@ bool	File::read(void* buffer, size_t size)
 
 bool	File::write(const void* buffer, size_t size)
 {
-	if (m_fd == Ws::FD_NONE)
-		return (false);
+	ASSERT_EQUAL(m_fd != Ws::FD_NONE, true, "File: no file is open for writing");
 
 	ssize_t bytesWritten = ::write(m_fd, buffer, size);
 	if (bytesWritten < 0)
@@ -96,3 +84,7 @@ size_t File::offset() const
 {
 	return (m_offset);
 }
+
+// private
+File::File(const File& copy) {}
+File& File::operator=(const File& copy) {return (*this);}

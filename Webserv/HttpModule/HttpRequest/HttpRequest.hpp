@@ -39,11 +39,6 @@ struct ChunkInfo
 	size_t headerEnd;
 };
 
-namespace Http
-{
-	typedef std::string HeaderKey;
-	typedef std::string HeaderValue;
-}
 
 namespace Http
 {
