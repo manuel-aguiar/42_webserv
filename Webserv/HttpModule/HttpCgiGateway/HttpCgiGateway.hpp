@@ -66,6 +66,4 @@ namespace Http
 
 }
 
-
-
 #endif

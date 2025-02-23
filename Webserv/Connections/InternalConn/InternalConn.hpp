@@ -28,5 +28,4 @@ class InternalConn : public Conn::Connection
 
 };
 
-
 #endif

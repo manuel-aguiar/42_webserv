@@ -66,6 +66,3 @@ bool isHeaderIgnored(const Cgi::Header& header)
 {
 	return (binSearch(ignoredHeaders, sizeof(ignoredHeaders) / sizeof(ignoredHeaders[0]), header.key) != -1);
 }
-
-
-

@@ -45,5 +45,4 @@ class Timer
         struct timeval m_time;
 };
 
-
 #endif

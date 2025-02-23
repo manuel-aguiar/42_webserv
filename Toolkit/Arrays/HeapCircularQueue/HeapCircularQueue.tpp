@@ -107,7 +107,4 @@ class HeapCircularQueue : public FixedCircularQueueImpl<T>
 		}
 };
 
-
-
-
 #endif

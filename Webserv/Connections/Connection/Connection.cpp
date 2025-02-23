@@ -110,6 +110,4 @@ namespace Conn
 	{
 		m_appForceClose = callback;
 	}
-
-
 }

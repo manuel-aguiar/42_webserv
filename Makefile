@@ -4,7 +4,7 @@
 
 NAME 					= 		webserv
 CXX						=		c++
-CXXFLAGS				=		-Wall -Wextra -Werror -std=c++98 -MMD -MP
+CXXFLAGS				=		-Wall -Wextra -Werror -Wpedantic -std=c++98 -MMD -MP
 
 DEBUG_FLAGS				=		-g -DDEBUG
 PROD_FLAGS				=		-O3 -DNDEBUG

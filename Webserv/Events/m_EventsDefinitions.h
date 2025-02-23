@@ -32,5 +32,4 @@ namespace Events
 	typedef struct epoll_event EpollEvent;
 }
 
-
 #endif

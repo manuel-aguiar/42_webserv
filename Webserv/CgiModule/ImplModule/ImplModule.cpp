@@ -66,7 +66,3 @@ ImplModule::ImplModule(const ImplModule &copy) :
 	m_globals				(copy.m_globals) {}
 
 ImplModule& ImplModule::operator=(const ImplModule &assign) {(void)assign; return (*this);}
-
-
-
-

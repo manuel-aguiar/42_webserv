@@ -88,4 +88,3 @@ bool	Worker::mf_prepareExecve()
 	}
 	return (false);
 }
-

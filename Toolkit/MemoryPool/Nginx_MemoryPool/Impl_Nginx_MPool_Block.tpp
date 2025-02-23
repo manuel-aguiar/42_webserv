@@ -70,5 +70,4 @@ typename Impl_Nginx_MemoryPool<T, Allocator>::Nginx_MPool_Block&
 Impl_Nginx_MemoryPool<T, Allocator>::Nginx_MPool_Block::operator=(const Nginx_MPool_Block& block) 
 {(void)block; return (*this);}
 
-
 #endif

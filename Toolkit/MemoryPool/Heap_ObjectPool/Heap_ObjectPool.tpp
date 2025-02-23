@@ -78,6 +78,4 @@ class Heap_ObjectPool : public ObjectPoolImpl<T>
 		{ return (m_elements.getAllocator() != other.m_elements.getAllocator()); }
 };
 
-
-
 #endif

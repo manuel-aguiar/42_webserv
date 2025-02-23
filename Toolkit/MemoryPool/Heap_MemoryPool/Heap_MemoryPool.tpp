@@ -53,5 +53,4 @@ class Heap_MemoryPoolGeneric : public FixedMemoryPoolImpl<T>
 
 };
 
-
 #endif

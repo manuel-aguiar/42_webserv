@@ -48,7 +48,4 @@ class StackArray : public ArrayFixedSizeImpl<T>
 		t_byte  					m_array[sizeof(T) * ElemCount];
 };
 
-
-
-
 #endif

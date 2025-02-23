@@ -137,4 +137,3 @@ std::string	DirectoryListing(const std::string& path)
 
 	return (output);
 }
-

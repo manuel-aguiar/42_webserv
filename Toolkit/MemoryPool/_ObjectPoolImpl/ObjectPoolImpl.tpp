@@ -180,5 +180,4 @@ class ObjectPoolImpl
 		{ return (m_begin != other.m_begin); }
 };
 
-
 #endif

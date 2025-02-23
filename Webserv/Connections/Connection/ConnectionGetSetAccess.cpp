@@ -17,4 +17,3 @@ namespace Conn
 		return (m_info.bind);
 	}
 }
-

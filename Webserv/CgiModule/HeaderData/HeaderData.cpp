@@ -234,5 +234,4 @@ HeaderData::getTempBody() const { return (m_tempBody); }
 HeaderData::ParsingState
 HeaderData::getParsingState() const { return (m_state); }
 
-
 }

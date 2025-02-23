@@ -19,5 +19,4 @@ struct ConnInfo
 		Ws::BindInfo		bind;
 };
 
-
 #endif

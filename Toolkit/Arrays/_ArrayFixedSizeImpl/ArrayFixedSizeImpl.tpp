@@ -262,6 +262,4 @@ class ArrayFixedSizeImpl
         };
 };
 
-
-
 #endif

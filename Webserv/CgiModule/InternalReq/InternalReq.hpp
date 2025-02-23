@@ -56,5 +56,4 @@ class InternalReq : public Cgi::Request
 		InternalReq &operator=(const InternalReq &assign);
 };
 
-
 #endif

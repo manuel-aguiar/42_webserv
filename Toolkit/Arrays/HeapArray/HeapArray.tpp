@@ -106,5 +106,4 @@ class HeapArray : public ArrayFixedSizeImpl<T>
 		}
 };
 
-
 #endif

@@ -105,15 +105,6 @@ namespace Http
 }
 
 
-
-
-
-
-
-
-
-
-
 	/****** These checks go to request ********************************** */
 	// Get server block
 	//m_serverBlock = context.getBlockFinder()->findServerBlock(myConnection.getAddr(), m_myRequest.getHost());

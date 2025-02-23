@@ -207,9 +207,7 @@ void	Worker::mf_executeChild()
 		::usleep(1000);
 }
 
-
 /*
 	Putting env variables in place for execution.
 	Try-catch because the DynArray may throw if it fails to allocate memory
 */
-
