@@ -53,18 +53,7 @@ Request::operator=(const Request& copy)
 void  Request::reset()
 {
     m_parsingState = IDLE;
-    m_data.method.clear();
-    m_data.uri.clear();
-    m_data.path.clear();
-    m_data.queryString.clear();
-    m_data.fragment.clear();
-    m_data.httpVersion.clear();
-    m_data.headers.clear();
-    m_data.body.clear();
-    m_data.status = Http::Status::OK;
-    m_data.bodyType = Http::RequestData::NONE;
-    m_data.contentType = Http::RequestData::RAW;
-    m_data.expectedLength = 0;
+    m_data.reset();
 }
 
 void Request::mf_handleRequestLine(const BufferView& buffer)

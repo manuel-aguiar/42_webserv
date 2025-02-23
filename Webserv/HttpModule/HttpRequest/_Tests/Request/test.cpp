@@ -11,7 +11,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		try {
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::IDLE, "Should be in IDLE state initially");
 			EXPECT_EQUAL(request.isStarted(), false, "Should not be started initially");
@@ -29,7 +31,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		Buffer<1024> buffer;
 		buffer.push("GET /index.html HTTP/1.1\r\nHost: localhost;\r\n\r\n");
 		request.parse(buffer);
@@ -47,7 +51,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		try {
 			// Partial request line
 			Buffer<1024> buffer;
@@ -71,7 +77,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		try {
 			// Valid request with partial headers
 			Buffer<1024> partialBuffer;
@@ -103,7 +111,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		try {
 			Buffer<1024> buffer;
 			buffer.push(
@@ -126,7 +136,9 @@ void stateTransitionTests(int &testNumber)
 	// TEST_INTRO(testNumber++);
 	// {
 	// 	ServerContext serverContext;
-	//	Http::Request request(serverContext);
+	// Http::Response response;
+	//	Http::Request request(s
+	// request.setResponse(response);erverContext);
 	// 	try {
 	// 		// Chunked request with partial chunk
 	// 		Buffer<1024> partialBuffer;
@@ -161,7 +173,9 @@ void stateTransitionTests(int &testNumber)
 	TEST_INTRO(testNumber++);
 	{
 		ServerContext serverContext;
+		Http::Response response;
 		Http::Request request(serverContext);
+		request.setResponse(response);
 		try {
 			// Invalid request line
 			Buffer<1024> buffer;

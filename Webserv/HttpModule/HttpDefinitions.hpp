@@ -125,6 +125,8 @@ namespace Http
         BodyType bodyType;
         ContentType contentType;
         size_t expectedLength;
+
+        void    reset();
     };
 }
 

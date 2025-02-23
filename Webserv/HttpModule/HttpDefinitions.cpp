@@ -55,4 +55,20 @@ namespace Http
             return ALLOWED_HEADERS;
         }
     }*/
+
+    void RequestData::reset()
+    {
+        method.clear();
+        uri.clear();
+        path.clear();
+        queryString.clear();
+        fragment.clear();
+        httpVersion.clear();
+        headers.clear();
+        body.clear();
+        status = Http::Status::OK;
+        bodyType = Http::RequestData::NONE;
+        contentType = Http::RequestData::RAW;
+        expectedLength = 0;
+    }
 }

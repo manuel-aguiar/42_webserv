@@ -15,7 +15,7 @@
 # include <set>
 # include <iostream>
 # include "../HttpDefinitions.hpp"
-# include "../HttpResponse/HttpResponse.hpp"
+// # include "../HttpResponse/HttpResponse.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../GenericUtils/BufferView/BufferView.hpp"
 # include "../../ServerContext/ServerContext.hpp"
@@ -24,7 +24,23 @@
 class BaseBuffer;
 class BufferView;
 class ServerContext;
-// namespace Http {class Response;}
+
+namespace Http { 
+	class Response {
+		public:
+		Response() {};
+		~Response() {};
+
+		void receiveRequestData(const RequestData& data) {
+			// nothing yet
+			static_cast<void>(data);
+		}
+		void receiveRequestBody(const BufferView& view) {
+			// nothing yet
+			static_cast<void>(view);
+		}
+	};
+};
 
 typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
 
