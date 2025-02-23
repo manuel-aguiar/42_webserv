@@ -19,11 +19,48 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
-								$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp
+							 	$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp \
+							 	$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
+							 	$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
+							 	$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
+								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
+								\
+								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
+								\
+								$(SRC_PATH)/Webserv/Globals/Globals.cpp														\
+								$(SRC_PATH)/Webserv/Globals/Clock/Clock.cpp													\
+								$(SRC_PATH)/Webserv/Globals/LogFile/LogFile.cpp												\
+								\
+								$(SRC_PATH)/Webserv/Connections/InternalConn/InternalConn.cpp								\
+								$(SRC_PATH)/Webserv/Connections/ConnInfo/ConnInfo.cpp										\
+								$(SRC_PATH)/Webserv/Connections/Monitor/Monitor.cpp											\
+								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManagerInitShutdown.cpp				\
+								$(SRC_PATH)/Webserv/Connections/InternalManager/InternalManager.cpp							\
+								$(SRC_PATH)/Webserv/Connections/Connection/ConnectionGetSetAccess.cpp						\
+								$(SRC_PATH)/Webserv/Connections/Connection/ConnectionEvents.cpp								\
+								$(SRC_PATH)/Webserv/Connections/Connection/Connection.cpp									\
+								$(SRC_PATH)/Webserv/Connections/Manager/Manager.cpp											\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListener.cpp						\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerAccept.cpp					\
+								$(SRC_PATH)/Webserv/Connections/InternalListener/InternalListenerOpenClose.cpp				\
+								$(SRC_PATH)/Webserv/Connections/Listener/Listener.cpp										\
+								\
+								$(SRC_PATH)/Webserv/Events/InternalSub/InternalSub.cpp										\
+								$(SRC_PATH)/Webserv/Events/FdTracker/FdTracker.cpp											\
+								$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp												\
+								$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp						\
+								$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp									\
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))

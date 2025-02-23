@@ -44,9 +44,6 @@ namespace Http
 
 			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
-			void				receiveRequestData(const Http::RequestData& data); 	// request sends headers
-			void				receiveRequestBody(const BufferView& view);			// request send body
-
 		private:
 
 			typedef enum
