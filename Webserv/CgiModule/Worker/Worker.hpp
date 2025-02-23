@@ -82,7 +82,7 @@ class Worker
 		typedef enum
 		{
 			E_EMER_DUP2 = 1,
-			E_EMER_EXECVE,
+			E_EMER_EXECVE
 		} 	e_EmergencyCode;
 
 		

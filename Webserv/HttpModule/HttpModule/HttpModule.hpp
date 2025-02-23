@@ -56,6 +56,6 @@ namespace Http
 			HeapCircularQueue<Http::Connection*>	m_availableConnections;
 			TimerTracker<Timer, Http::Connection*>	m_timers;
 	};
-};
+}
 
 #endif

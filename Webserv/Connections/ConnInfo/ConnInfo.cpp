@@ -1,6 +1,7 @@
 
 
 #include "ConnInfo.hpp"
+#include <cstring> // memset
 
 ConnInfo::ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) : 
 	sockfd(sockfd),
@@ -8,7 +9,10 @@ ConnInfo::ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) :
 
 ConnInfo::ConnInfo() : 
 	sockfd(Ws::FD_NONE),
-	bind((Ws::BindInfo){}) {}
+	bind()
+{
+	std::memset(&bind, 0, sizeof(bind));
+}
 
 ConnInfo::~ConnInfo() {}
 
@@ -31,5 +35,5 @@ void
 ConnInfo::reset()
 {
 	sockfd = Ws::FD_NONE;
-	bind = (Ws::BindInfo){};
+	std::memset(&bind, 0, sizeof(bind));
 }

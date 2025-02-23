@@ -79,6 +79,6 @@ namespace Cgi
 			void									mf_reset();
 
 	};
-};
+}
 
 #endif

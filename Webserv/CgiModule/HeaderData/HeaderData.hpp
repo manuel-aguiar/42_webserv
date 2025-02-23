@@ -24,12 +24,6 @@
 // forward declarations
 class BaseBuffer;
 
-namespace Cgi
-{
-
-};
-
-
 struct CompareHeaders
 {
 	bool operator()(const Cgi::Header& a, const Cgi::Header& b) const
@@ -86,6 +80,6 @@ namespace Cgi
 			Status	mf_parseBody(BufferView& view);
 			Status	mf_setStatus(const Status status, const int statusCode);
 	};
-};
+}
 
 #endif

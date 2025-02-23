@@ -23,7 +23,7 @@ InternalSub::operator=(const InternalSub& assign)
 	m_subscribedFd = assign.m_subscribedFd;
 	m_subscribedEvents = assign.m_subscribedEvents;
 	return (*this);
-};
+}
 
 void
 InternalSub::reset()

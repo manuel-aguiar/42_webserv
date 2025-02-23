@@ -53,6 +53,7 @@ class SignalHandler
 
 		struct PipeFds
 		{
+			PipeFds(const Ws::fd read, const Ws::fd write) : read(read), write(write) {}
 			Ws::fd	read;
 			Ws::fd	write;
 		}; // helper struct

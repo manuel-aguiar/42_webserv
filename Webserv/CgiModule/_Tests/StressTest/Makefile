@@ -25,7 +25,8 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/StressTest/CgiStressTest_Exp
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockGlobals.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockClock.cpp \
-									\
+				\
+				$(SRC_PATH)/Webserv/CgiModule/CgiNamespace.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \

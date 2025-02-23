@@ -11,6 +11,7 @@
 // C++ headers
 # include <cerrno>
 # include <stdexcept> // std::runtime_error
+# include <cstring> //memset
 
 // C headers
 # include <unistd.h>
@@ -92,10 +93,11 @@ namespace Events
 	int
 	Manager::startMonitoring(Subscription& event, bool markAsStale)
 	{
-		Ws::fd			fd;
-		InternalSub*	internal;
-		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
+		Ws::fd				fd;
+		InternalSub*		internal;
+		Events::EpollEvent	epollEvent;
 		
+		std::memset(&epollEvent, 0, sizeof(epollEvent));
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
 
@@ -129,8 +131,9 @@ namespace Events
 	{
 		Ws::fd			fd;
 		InternalSub*	internal;
-		Events::EpollEvent	epollEvent = (Events::EpollEvent){};
+		Events::EpollEvent	epollEvent;
 
+		std::memset(&epollEvent, 0, sizeof(epollEvent));
 		internal = static_cast<InternalSub*>(&event);
 		fd = internal->getFd();
 

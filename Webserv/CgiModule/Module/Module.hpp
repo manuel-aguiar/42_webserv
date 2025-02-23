@@ -42,7 +42,7 @@ namespace Cgi
 
     };
 
-};
+}
 
 
 #endif
