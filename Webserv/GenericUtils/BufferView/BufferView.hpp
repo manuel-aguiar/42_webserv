@@ -30,9 +30,10 @@ class BufferView
 
         size_t find(char ch, size_t startPos = 0) const;
         size_t find(const char* target, size_t targetLength, size_t startPos = 0) const;
-        size_t find(const BufferView& sv, size_t startPos) const;
-
-        void    to_string(std::string& placeResult) const;
+        size_t find(const BufferView& sv, size_t startPos = 0) const;
+        
+        void        to_string(std::string& placeResult) const;
+        std::string to_string() const;
 
         static const size_t npos;
 

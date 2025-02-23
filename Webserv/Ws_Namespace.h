@@ -66,8 +66,8 @@ namespace Ws
 		}	Type;
 		typedef void* Module;
 		typedef void* Conn;
-		typedef void (*Init)(Conn::Connection&);
-		typedef void (*CloseCallback)(Conn::Connection&);
+		typedef void (*Init)(::Conn::Connection&);
+		typedef void (*CloseCallback)(::Conn::Connection&);
 	}
 
 	namespace AddonLayer

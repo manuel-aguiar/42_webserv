@@ -74,13 +74,13 @@ int TestPart3(int testNumber)
 		manager.ProcessEvents(-1); 
 
 		// data should be 0, triggered but not handled because event fd was market as stale
-		EXPECT_EQUAL(user.getData(), Calculator::NOT_CALCULATED, "Events should not be handled, marked as stale");
+		EXPECT_EQUAL(user.getData(), (int)Calculator::NOT_CALCULATED, "Events should not be handled, marked as stale");
 		
 		// after processing events, all fds are marked as good again, until proven otherwise
 		manager.ProcessEvents(-1);
 
 		// handler should be called now, and user data should be 42
-		EXPECT_EQUAL(user.getData(), Calculator::RESULT, "Events should now be handled, not stale anymore");
+		EXPECT_EQUAL(user.getData(), (int)Calculator::RESULT, "Events should now be handled, not stale anymore");
 
 		 //stopMonitoring event, (indifferent to mark as stale here)
 		manager.stopMonitoring(*subscription, true);
