@@ -110,4 +110,4 @@ namespace Cgi
 		return (m_timeoutMs);
 	}
 
-}; // namespace Cgi
+} // namespace Cgi

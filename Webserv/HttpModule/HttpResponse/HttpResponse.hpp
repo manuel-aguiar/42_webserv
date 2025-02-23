@@ -78,6 +78,6 @@ namespace Http
 			File						m_file;
 			Http::CgiGateway			m_cgiGateway;
 	};
-};
+}
 
 #endif

@@ -6,6 +6,9 @@
 # include "../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
+// C++ headers
+# include <cstring> // memset
+
 // C headers
 # include <unistd.h>
 
@@ -78,7 +81,7 @@ int		Listener::accept(ConnInfo& accept)
 	if (!FileDescriptor::setCloseOnExec_NonBlocking(sockfd))
 	{
 		::close(sockfd);
-		acceptInfo = (Ws::BindInfo){};
+		std::memset(&acceptInfo, 0, sizeof(acceptInfo));
 		return (-1);
 	}
 

@@ -82,6 +82,9 @@ namespace Cgi
 
     struct Header
     {
+		Header(const char* key, const char* value);
+		Header(const BufferView& key, const BufferView& value);
+
         BufferView key;
         BufferView value;
     
@@ -110,7 +113,7 @@ namespace Cgi
 			CANCEL_READ 	= (1 << 3),
 			HOLD_WRITE 		= (1 << 4),
 			RESTART_WRITE 	= (1 << 5),
-			CANCEL_WRITE 	= (1 << 6),
+			CANCEL_WRITE 	= (1 << 6)
 		};
 		typedef int 	Mask;
 	}
@@ -124,7 +127,7 @@ namespace Cgi
 			COUNT
 		} 	Type;
 		typedef void	(*Callback)	(User user);
-	};
+	}
 
 	class HeaderData;
 
@@ -141,14 +144,14 @@ namespace Cgi
 		typedef enum
 		{
 			CONTINUE,
-			CLOSE,
+			CLOSE
 		}	State;
 
 		typedef int     	BytesCount;
 
 		typedef Cgi::IO::State 				(*OnReadWrite)(Cgi::User user, const Ws::fd fd);
 		typedef Cgi::IO::State  			(*ReceiveHeaderData)(Cgi::User user, const Cgi::HeaderData& headers);
-	};
+	}
 
 
 	namespace RequestState
@@ -159,9 +162,9 @@ namespace Cgi
 			ACQUIRED,
 			QUEUED,
 			EXECUTING,
-			CANCELLED,
+			CANCELLED
 		} 	Type;
-	};
+	}
 }
 
 #endif

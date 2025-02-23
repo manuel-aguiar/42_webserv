@@ -13,6 +13,6 @@ namespace FileDescriptor
 	int  setCloseOnExec                  (Ws::fd fd);
 	int  setFdFlags                      (Ws::fd fd, const int flags);
 	int  setCloseOnExec_NonBlocking      (Ws::fd fd);
-};
+}
 
 #endif

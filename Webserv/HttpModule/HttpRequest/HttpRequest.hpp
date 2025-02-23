@@ -134,6 +134,6 @@ namespace Http
 			Http::RequestData::ContentType				mf_contentType();
 	};
 
-}; // namespace Http
+} // namespace Http
 
 #endif

@@ -68,7 +68,7 @@ int
 SignalHandler::getSignal()
 {
 	return (SignalHandler::m_signal);
-};
+}
 
 void
 SignalHandler::setSignal(int sig)
@@ -120,7 +120,7 @@ SignalHandler::openSignalListeners(const size_t numServers, Globals* globals)
 			throw std::runtime_error("SignalHandler::prepare_signal, fcntl() failed");
 		}
 
-		m_pipes.emplace_back((PipeFds){.read = pipefd[0], .write = pipefd[1]});
+		m_pipes.emplace_back(PipeFds(pipefd[0], pipefd[1]));
 	}
 }
 

@@ -5,7 +5,7 @@
 # include "../ServerBlock/ServerBlock.hpp"
 
 # include <cstddef>
-# include <cstring>
+# include <cstring> //memset
 # include <arpa/inet.h>
 /*
 	Bunch of helper structs and typedefs, purposefully placed here to avoid bloating the global namespace.
@@ -156,7 +156,7 @@ static bool Map_Listener_and_Addrinfo(const Config::Listen& listener, DNSLookupH
 	Ws::Sock::Info		*cur;
 	Ws::Sock::Info		hints;
 
-	hints = (Ws::Sock::Info){};
+	std::memset(&hints, 0, sizeof(hints));
 	hints.ai_family = listener.family;    		//listener would tell me if it is ipv4 or ipv6
 	hints.ai_socktype = listener.socktype;		//listener would tell me if it is tcp or udp or something else
 
@@ -213,7 +213,8 @@ static void Map_Addrinfo_To_BindAddress(DNSLookupHelper&	helper)
 	for (; it != helper.uniqueAddr.end(); ++it)
 	{
 		const Config::Listen* thisListener = helper.uniqueAddrToUniqueListen.find(*it)->second;
-		Ws::BindInfo info = (Ws::BindInfo){};
+
+		Ws::BindInfo info;
 
 		std::memcpy(&info.addr, (*it)->ai_addr, (*it)->ai_addrlen);
 		info.appLayer = thisListener->appLayer;				

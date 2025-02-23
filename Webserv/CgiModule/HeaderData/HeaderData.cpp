@@ -83,8 +83,8 @@ HeaderData::mf_validateHeaders()
 		}
 	}
 
-	int contentType = binSearch(m_headers, (Cgi::Header){BufferView("Content-Type"), BufferView()});
-	int location    = binSearch(m_headers, (Cgi::Header){BufferView("Location"), BufferView()});
+	int contentType = binSearch(m_headers, Cgi::Header("Content-Type", ""));
+	int location    = binSearch(m_headers, Cgi::Header("Location", ""));
 
 	if (m_statusCode == -1 && contentType == -1 && location == -1)
 	{
@@ -162,7 +162,7 @@ HeaderData::mf_parseHeaders(BufferView& view)
 			return (mf_setStatus(HeaderData::FAIL, m_statusCode));
 	}
 	else	
-		m_headers.push_back((Cgi::Header){key, value});	// save header
+		m_headers.push_back(Cgi::Header(key, value));	// save header
 
 	
 	

@@ -23,7 +23,6 @@ namespace StringUtils
 	size_t						parse_size(const std::string &size_str);
 	std::vector<std::string>	split(const std::string &str, char delimiter);
 	void 						move(std::string& dest, std::string& src);
-
-};
+}
 
 #endif

@@ -12,7 +12,7 @@ namespace FilesUtils
 		REGULAR_FILE,
 		DIRECTORY,
 		UNDEFINED,
-		NOT_EXIST,
+		NOT_EXIST
 	}	FileType;
 
 	bool fileExists(const char* path);
@@ -20,6 +20,6 @@ namespace FilesUtils
 	bool isFile(const char* path);
 
 	FileType getFileType(const char* path);
-};
+}
 
 #endif

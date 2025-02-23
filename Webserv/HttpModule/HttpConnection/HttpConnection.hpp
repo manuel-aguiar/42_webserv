@@ -64,6 +64,6 @@ namespace Http
 			void												mf_read(const Ws::fd fd);
 			void												mf_write(const Ws::fd fd);
 	};
-};
+}
 
 #endif

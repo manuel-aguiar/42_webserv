@@ -3,7 +3,7 @@
 #include "Timer.hpp"
 
 Timer::Timer() :
-    m_time((struct timeval){})
+    m_time()
 
 {
     m_time.tv_sec = 0;

@@ -128,7 +128,7 @@ std::string	DirectoryListing(const std::string& path)
 		if (listDirectory(path, entries))
 			output = generateDirectoryListing(path, entries);
 		else
-			output == "";
+			output = "";
 	}
 	catch(const std::exception& e)
 	{

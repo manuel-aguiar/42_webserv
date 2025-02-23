@@ -78,4 +78,4 @@ namespace Cgi
 		return (*this);
 	}
 
-}; // namespace Cgi
+} // namespace Cgi

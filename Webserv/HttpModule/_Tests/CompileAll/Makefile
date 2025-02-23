@@ -81,6 +81,7 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp						\
 								$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp									\
 								\
+								$(SRC_PATH)/Webserv/CgiModule/CgiNamespace.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \
