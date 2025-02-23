@@ -35,6 +35,7 @@ namespace Http
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
 		m_requestData = &data;
+		m_requestStatus = m_requestData->status;
 
 		if (m_requestData->status != Http::Status::OK || !mf_validateHeaders())
 		{

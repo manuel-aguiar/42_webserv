@@ -51,7 +51,7 @@ int main()
             finder.addServerBlock(serverBlock);
 
             // Test finding the block with exact match
-            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
+            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr, "example.com");
 
             EXPECT_EQUAL(found != NULL, true, "Block not found with exact match");
             EXPECT_EQUAL(found->getRoot(), "/var/www/html", "Root path mismatch");
@@ -60,7 +60,7 @@ int main()
 
             // Test finding with non-existent configuration
             struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "8080");
-            const ServerBlock* notFound = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
+            const ServerBlock* notFound = finder.findServerBlock(*(struct sockaddr*)&addr2, "example.com");
 
             EXPECT_EQUAL(notFound == NULL, true, "Block found that shouldn't exist");
 
@@ -95,12 +95,12 @@ int main()
 
             // searching for the block with no configuration set
             struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
+            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr, "example.com");
 
             EXPECT_EQUAL(found == NULL, true, "Found block that shouldn't exist");
 
             // now searching for the block with configuration set
-            found = finder.findServerBlock((struct sockaddr*)&addr2, "example-domain.com");
+            found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
 
             EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
 
@@ -133,8 +133,8 @@ int main()
             finder.addServerBlock(block2);
 
             // Test finding each block
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr1, "example.com");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
+            const ServerBlock* found1 = finder.findServerBlock(*(struct sockaddr*)&addr1, "example.com");
+            const ServerBlock* found2 = finder.findServerBlock(*(struct sockaddr*)&addr2, "example.com");
 
             EXPECT_EQUAL(found1 != NULL, true, "First block not found");
             EXPECT_EQUAL(found1->getRoot(), "/var/www/html1", "First block found but, incorrect match");
@@ -164,9 +164,9 @@ int main()
 
             // Test finding with different IPs
             struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr1, "example.com");
+            const ServerBlock* found1 = finder.findServerBlock(*(struct sockaddr*)&addr1, "example.com");
             struct sockaddr_in addr2 = createSockAddr("192.168.1.1", "8080");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr2, "example.com");
+            const ServerBlock* found2 = finder.findServerBlock(*(struct sockaddr*)&addr2, "example.com");
 
             EXPECT_EQUAL(found1 != NULL, true, "Block 1 not found with wildcard IP");
             EXPECT_EQUAL(found2 != NULL, true, "Block 2 not found with wildcard IP");
@@ -195,9 +195,9 @@ int main()
             finder.addServerBlock(block);
 
             // Test finding with different server names
-            const ServerBlock* found1 = finder.findServerBlock((struct sockaddr*)&addr, "example.com");
-            const ServerBlock* found2 = finder.findServerBlock((struct sockaddr*)&addr, "www.example.com");
-            const ServerBlock* found3 = finder.findServerBlock((struct sockaddr*)&addr, "api.example.com");
+            const ServerBlock* found1 = finder.findServerBlock(*(struct sockaddr*)&addr, "example.com");
+            const ServerBlock* found2 = finder.findServerBlock(*(struct sockaddr*)&addr, "www.example.com");
+            const ServerBlock* found3 = finder.findServerBlock(*(struct sockaddr*)&addr, "api.example.com");
 
             if (!found1 || !found2 || !found3) {
                 throw std::runtime_error("Block not found for one of the server names");

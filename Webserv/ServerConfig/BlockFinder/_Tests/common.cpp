@@ -87,7 +87,7 @@ void reviewTests()
             block2.addServerName("example.com");
             finder.addServerBlock(block2);
 
-            EXPECT_EQUAL(finder.findServerBlock((Ws::Sock::addr*)&addr1, "example.com"), &block1, 
+            EXPECT_EQUAL(finder.findServerBlock(*(const Ws::Sock::addr*)&addr1, "example.com"), &block1, 
                         "Expected block1 to be found, no specific match available");
 
             TEST_PASSED_MSG("no Specific match available (expected result: deliever wildcard)");
@@ -118,7 +118,7 @@ void reviewTests()
         finder.addServerBlock(block1);
 
         // test
-        EXPECT_EQUAL(finder.findServerBlock((Ws::Sock::addr*)&addr2, "example.com"), &block2, 
+        EXPECT_EQUAL(finder.findServerBlock(*(const Ws::Sock::addr*)&addr2, "example.com"), &block2, 
                         "Expected block2 to be found, most speciific match");
 
         TEST_PASSED_MSG("Specific match available (expected result: deliever specific)");
@@ -141,7 +141,7 @@ void reviewTests()
         finder.addServerBlock(block1);
 
         //test
-        EXPECT_EQUAL(finder.findServerBlock((Ws::Sock::addr*)&addr1, "yoyoyo.com"), (ServerBlock*)NULL,
+        EXPECT_EQUAL(finder.findServerBlock(*(const Ws::Sock::addr*)&addr1, "yoyoyo.com"), (ServerBlock*)NULL,
                     "Expected no block to be found, no match available");
         
         TEST_PASSED_MSG("no match available (expected result: NULL)");
@@ -176,7 +176,7 @@ void reviewTests()
         finder.addServerBlock(block3);
 
         //test
-        EXPECT_EQUAL(finder.findServerBlock((Ws::Sock::addr*)&addr3, "somedomain.com"), &block3, 
+        EXPECT_EQUAL(finder.findServerBlock(*(const Ws::Sock::addr*)&addr3, "somedomain.com"), &block3, 
                         "Expected block3 to be found, most specific match");
 
         TEST_PASSED_MSG("specific match test");
@@ -200,7 +200,7 @@ void reviewTests()
 
         //test
 
-        EXPECT_EQUAL(bfinder.findServerBlock((Ws::Sock::addr*)&addr1, "somedomain.com"), &block1, 
+        EXPECT_EQUAL(bfinder.findServerBlock(*(const Ws::Sock::addr*)&addr1, "somedomain.com"), &block1, 
                         "Expected block1 to be found, no specific match available");
 
         TEST_PASSED_MSG("quick wildcard test");
@@ -224,7 +224,7 @@ void reviewTests()
 
         Ws::Sock::addr_in addr2 = createSockAddr("127.0.0.2", "444");
 
-        EXPECT_EQUAL(bfinder.findServerBlock((Ws::Sock::addr*)&addr2, "somedomain.com"), (ServerBlock*)NULL, 
+        EXPECT_EQUAL(bfinder.findServerBlock(*(const Ws::Sock::addr*)&addr2, "somedomain.com"), (ServerBlock*)NULL, 
                         "Expected no block to be found, ports don't match");
         
         TEST_PASSED_MSG("quick wildcard test, different port");
