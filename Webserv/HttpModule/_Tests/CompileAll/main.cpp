@@ -27,7 +27,6 @@ int main(void)
 
 		Http::Module module(10, context);
 
-
 		TEST_PASSED_MSG("HttpModule constructor");
 	}
 	catch(const std::exception& e)
