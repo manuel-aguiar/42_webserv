@@ -96,13 +96,16 @@ namespace Http
     //     const std::set<std::string>& getAllowedHeaders();
     // }
 
-    typedef enum
+    namespace ResponseStatus
     {
-        WAITING, 				// have nothing to push, no sign transaction is finished
-        WRITING, 				// pushed data to buffer
-        FINISHED,				// transaction is finished
-        MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
-    }	ResponseStatus;
+        typedef enum
+        {
+            WAITING, 				// have nothing to push, no sign transaction is finished
+            WRITING, 				// pushed data to buffer
+            FINISHED,				// transaction is finished
+            MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
+        }	Type;
+    }
 
     struct RequestData
     {

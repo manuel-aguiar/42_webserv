@@ -98,17 +98,4 @@ Connection::resetTransaction()
 	m_writeBuffer.clear();
 }
 
-BaseBuffer&
-Connection::accessReadBuffer()
-{
-	return (m_readBuffer);
-}
-
-BaseBuffer&
-Connection::accessWriteBuffer()
-{
-	return (m_writeBuffer);
-}
-
-
 }	// end of http namespace

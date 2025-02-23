@@ -12,7 +12,7 @@ namespace Http
 {
 
 void
-Connection::mf_read(const Ws::fd fd, const Events::Monitor::Mask flags)
+Connection::mf_read(const Ws::fd fd)
 {
     if (m_readBuffer.available() == m_readBuffer.capacity())
     {
@@ -37,7 +37,7 @@ Connection::ReadWrite()
     }
 
     if (triggeredEvents & Events::Monitor::READ)
-        mf_read(sockfd, triggeredEvents);
+        mf_read(sockfd);
 
     // write
     if (!(triggeredEvents & Events::Monitor::WRITE))
@@ -51,9 +51,9 @@ Connection::ReadWrite()
         if (m_writeBuffer.size() != 0)
             return ;
 
-        if (m_transaction.response.getStatus() == Http::Response::FINISHED)
+        if (m_transaction.response.getStatus() == Http::ResponseStatus::FINISHED)
             resetTransaction();
-        else if (m_transaction.response.getStatus() == Http::Response::MARK_TO_CLOSE)
+        else if (m_transaction.response.getStatus() == Http::ResponseStatus::MARK_TO_CLOSE)
             closeConnection(); // transaction finished
         
         return ;
@@ -62,7 +62,7 @@ Connection::ReadWrite()
     // ask response for data
     switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
     {
-        case Http::Response::FINISHED:
+        case Http::ResponseStatus::FINISHED:
         {	
             m_writeBuffer.write(sockfd);
 
@@ -70,20 +70,20 @@ Connection::ReadWrite()
                 resetTransaction();
             return ;
         }
-        case Http::Response::MARK_TO_CLOSE:
+        case Http::ResponseStatus::MARK_TO_CLOSE:
         {
             m_writeBuffer.write(sockfd);
             if (m_writeBuffer.size() == 0)
                 closeConnection();
             return ;
         }
-        case Http::Response::WRITING:
+        case Http::ResponseStatus::WRITING:
         {
             m_writeBuffer.write(sockfd); // got data, write
             return ;
         }
 
-        case Http::Response::WAITING: // nothing
+        case Http::ResponseStatus::WAITING: // nothing
             break ;
     }
 }

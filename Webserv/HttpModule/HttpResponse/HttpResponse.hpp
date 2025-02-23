@@ -33,11 +33,11 @@ namespace Http
 			~Response();
 			Response& operator=(const Response& other);
 
-			Http::ResponseStatus		fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Http::ResponseStatus::Type	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 			
 			void    					reset(); // reset the response to its initial state
 
-			Http::ResponseStatus		getStatus() const;
+			Http::ResponseStatus::Type	getStatus() const;
 
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
 			void						receiveRequestBody(const BufferView& view);			// request send body
@@ -63,13 +63,13 @@ namespace Http
 			std::string					mf_generateHeaderString();
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
 
-			typedef Http::ResponseStatus (Response::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
 
-			Http::ResponseStatus		mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
 			// Debatable
 			void						setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
@@ -78,7 +78,7 @@ namespace Http
 			const Ws::Sock::addr*		m_connAddress;
 			ResponseData				m_responseData;
 
-			Http::ResponseStatus		m_status;
+			Http::ResponseStatus::Type	m_status;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			FillFunction				m_fillFunction;
 			File						m_file;
