@@ -14,31 +14,8 @@
 
 extern const char*	getStatusMessage(int statusCode);
 extern int			DirectoryListing(const std::string& path, std::string& placeOutput);
+extern std::string getCurrentDate();
 
-std::string getCurrentDate() {
-	// Get current time
-	time_t rawTime;
-	std::time(&rawTime);
-
-	// Convert time to UTC (GMT)
-	std::tm* gmtTime = std::gmtime(&rawTime);
-
-	// Days of the week and months as required by HTTP format
-	const char* days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-	const char* months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-	// Format the date string in the desired HTTP format
-	std::stringstream dateStream;
-	dateStream << days[gmtTime->tm_wday] << ", "
-			<< std::setw(2) << std::setfill('0') << gmtTime->tm_mday << " "
-			<< months[gmtTime->tm_mon] << " "
-			<< (1900 + gmtTime->tm_year) << " "
-			<< std::setw(2) << std::setfill('0') << gmtTime->tm_hour << ":"
-			<< std::setw(2) << std::setfill('0') << gmtTime->tm_min << ":"
-			<< std::setw(2) << std::setfill('0') << gmtTime->tm_sec << " GMT";
-
-	return dateStream.str();
-}
 
 // Http::Response::Response(Http::Connection& myConnection, Http::Request& myRequest, ServerContext& context):
 Http::Response::Response(Http::Connection& conn, Http::Request& myRequest):
@@ -206,7 +183,7 @@ void	Http::Response::generateResponse(int statusCode)
 	if (body.empty() && m_file.fd() == Ws::FD_NONE) // CGI
 		m_headers["Transfer-Encoding"] = "chunked";
 	else 
-		m_headers["Content-Lenght"] = StringUtils::intToStr(body.size());
+		m_headers["Content-Length"] = StringUtils::intToStr(body.size());
 	m_headers["Date"]			= getCurrentDate();
 	m_headers["Server"] 		= SERVER_NAME_VERSION;
 	std::map<std::string, std::string>::const_iterator it = m_myRequest.getHeaders().find("Connection");
