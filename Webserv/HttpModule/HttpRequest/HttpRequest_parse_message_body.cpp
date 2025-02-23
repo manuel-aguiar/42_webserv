@@ -228,7 +228,7 @@ Http::Request::mf_parseRegularBody(const std::string& data)
     ASSERT_EQUAL(m_response != NULL, true, "Request::mf_parseRegularBody(), m_response is NULL");
 
     // before state transition, call response to check
-    m_response->receiveRequestBody(m_data.body);
+    m_response->receiveRequestBody(BufferView(m_data.body));
 
     if (m_data.body.length() == contentLength) {
         m_parsingState = COMPLETED;
