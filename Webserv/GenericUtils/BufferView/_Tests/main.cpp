@@ -40,7 +40,7 @@ int main(void)
 		std::string assigned;
 		
 		// generating a null terminated string out of BufferView
-		sub.to_string(assigned);
+		assigned = sub.to_string();
 
 		EXPECT_EQUAL(assigned, "World", "should be equal to World");
 

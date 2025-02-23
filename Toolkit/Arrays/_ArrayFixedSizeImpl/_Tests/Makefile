@@ -11,12 +11,12 @@ SRC_PATH				=		$(ROOT_PATH)
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 # Sources
-SRCS					=		$(SRC_PATH)/Arrays/_ArrayFixedSizeImpl/_Tests/main.cpp	\
-								$(SRC_PATH)/Arrays/_ArrayFixedSizeImpl/_Tests/test1.cpp	\
+SRCS					=		$(SRC_PATH)/Toolkit/Arrays/_ArrayFixedSizeImpl/_Tests/main.cpp	\
+								$(SRC_PATH)/Toolkit/Arrays/_ArrayFixedSizeImpl/_Tests/test1.cpp	\
 								\
-								$(SRC_PATH)/_Tests/ToolkitDummy.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitBase.cpp			\
-								$(SRC_PATH)/_Tests/ToolkitDerived.cpp
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDummy.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitBase.cpp			\
+								$(SRC_PATH)/Toolkit/_Tests/ToolkitDerived.cpp
 
 OBJS					=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS					=		$(OBJS:.o=.d)

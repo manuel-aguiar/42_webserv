@@ -73,7 +73,7 @@ Module::closeTimedOutConnections()
         if (it->first < timer)
         {
             curRequest = it->second;
-            curRequest->close();
+            curRequest->closeConnection();
         }
         else
             break ;

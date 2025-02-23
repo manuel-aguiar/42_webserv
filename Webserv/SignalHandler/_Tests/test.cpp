@@ -13,20 +13,17 @@
 # include <unistd.h>
 
 
-SignalHandler 	g_SignalHandler;
-
 int main(void)
 {
 	int testNumber = 1;
 
 	TEST_HEADER("SignalHandler");
 
-	// common process and common Globals
+	// common process and common NULL
 	int ourPid = ::getpid();
-	Globals globals(NULL, NULL, NULL, NULL);
 
 	// reset the signal handler after every test
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 	try
 	{
 		TEST_INTRO(testNumber++);
@@ -34,7 +31,7 @@ int main(void)
 		//SignalHandler handler; <- correctly asserts, SignalHandler is a global and cannot be instantiated outside global scope
 		//SignalHandler copy(g_SignalHandler); <- private
 
-		//g_SignalHandler.unregisterSignal(SIGINT, globals); <- correctly asserts, signal was not registered/ignored
+		//g_SignalHandler.unregisterSignal(SIGINT, NULL); <- correctly asserts, signal was not registered/ignored
 
 		TEST_PASSED_MSG("SignalHandler instantiation and assert tests");
 	}
@@ -44,7 +41,7 @@ int main(void)
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 	// reset the signal handler after every test
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 	try
 	{
 		TEST_INTRO(testNumber++);
@@ -52,10 +49,10 @@ int main(void)
 		//SignalHandler handler; <- correctly asserts, SignalHandler is a global and cannot be instantiated outside global scope
 		//SignalHandler copy(g_SignalHandler); <- private
 
-		g_SignalHandler.registerSignal(5, globals);
-		g_SignalHandler.registerSignal(10, globals);
-		g_SignalHandler.registerSignal(15, globals);
-		g_SignalHandler.registerSignal(16, globals);
+		g_SignalHandler.registerSignal(5, NULL);
+		g_SignalHandler.registerSignal(10, NULL);
+		g_SignalHandler.registerSignal(15, NULL);
+		g_SignalHandler.registerSignal(16, NULL);
 
 
 		TEST_PASSED_MSG("registering random but legal signals");
@@ -66,18 +63,18 @@ int main(void)
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 	// reset the signal handler after every test
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 
 	try
 	{
 		TEST_INTRO(testNumber++);
 
 		
-		g_SignalHandler.openSignalListeners(1, globals);
+		g_SignalHandler.openSignalListeners(1, NULL);
 
 		Ws::fd listener = g_SignalHandler.getSignalListener(0);
 
-		g_SignalHandler.registerSignal(SIGINT, globals);
+		g_SignalHandler.registerSignal(SIGINT, NULL);
 
 		// send sigint to ourselves
 		::kill(ourPid, SIGINT);
@@ -107,21 +104,21 @@ int main(void)
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 	// reset the signal handler after every test
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 	try
 	{
 		TEST_INTRO(testNumber++);
 
 		const int numServers = 100;
 
-		g_SignalHandler.openSignalListeners(numServers, globals);
+		g_SignalHandler.openSignalListeners(numServers, NULL);
 		DynArray<Ws::fd> listeners(numServers);
 
 		for (size_t i = 0; i < listeners.size(); ++i)
 			listeners[i] = g_SignalHandler.getSignalListener(i);
 
-		g_SignalHandler.registerSignal(SIGINT, globals);
-		g_SignalHandler.registerSignal(SIGQUIT, globals);
+		g_SignalHandler.registerSignal(SIGINT, NULL);
+		g_SignalHandler.registerSignal(SIGQUIT, NULL);
 
 		// send sigint to ourselves
 		::kill(ourPid, SIGINT);
@@ -151,7 +148,7 @@ int main(void)
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 	// reset the signal handler after every test
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 
 	try
 	{
@@ -159,11 +156,11 @@ int main(void)
 
 		const int numServers = 1;
 
-		g_SignalHandler.openSignalListeners(numServers, globals);
+		g_SignalHandler.openSignalListeners(numServers, NULL);
 
 		// ignoring
-		g_SignalHandler.ignoreSignal(SIGINT, globals);
-		g_SignalHandler.ignoreSignal(SIGQUIT, globals);
+		g_SignalHandler.ignoreSignal(SIGINT, NULL);
+		g_SignalHandler.ignoreSignal(SIGQUIT, NULL);
 
 		// sending
 		::kill(ourPid, SIGINT);
@@ -171,8 +168,8 @@ int main(void)
 		::kill(ourPid, SIGINT);
 		::kill(ourPid, SIGQUIT);
 
-		g_SignalHandler.registerSignal(SIGINT, globals);
-		g_SignalHandler.registerSignal(SIGQUIT, globals);
+		g_SignalHandler.registerSignal(SIGINT, NULL);
+		g_SignalHandler.registerSignal(SIGQUIT, NULL);
 
 		// send again
 		::kill(ourPid, SIGINT);
@@ -198,7 +195,7 @@ int main(void)
 	}
 ///////////////////////////////////////////////////////////////////////////////////////
 
-	g_SignalHandler.reset(globals);
+	g_SignalHandler.reset(NULL);
 
 	TEST_FOOTER;
 	return (0);

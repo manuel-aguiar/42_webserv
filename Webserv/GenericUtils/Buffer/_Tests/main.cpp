@@ -23,12 +23,17 @@ int main(void)
 		TEST_INTRO(testNumber++);
 		
 		// open file, read into buffer, close file
-		int fd = ::open("main.cpp", O_RDONLY, 777);
+		int fd = ::open("testInput.txt", O_RDONLY, 777);
 		if (fd == -1)
 			throw std::runtime_error("failed to open file");
 		Buffer<1024> buffer;
-		buffer.read(fd);
+
+		buffer.push("hello");
+
+		int bytesRead = buffer.read(fd, buffer.size());
 		::close(fd);
+
+		EXPECT_EQUAL(buffer.size(), bytesRead + std::strlen("hello"), "should be file size plus pre-push");
 
 		// get a view of the buffer, to do searches and substrings
 		BufferView view = buffer.view();

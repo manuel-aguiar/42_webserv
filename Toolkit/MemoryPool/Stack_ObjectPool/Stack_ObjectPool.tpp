@@ -24,7 +24,7 @@ class Stack_ObjectPool : public ObjectPoolImpl<T>
 {
 	public:
 		Stack_ObjectPool() : 
-			ObjectPoolImpl<T>(m_storage.getArray(), Size) {}
+			ObjectPoolImpl<T>(NULL, Size) { this->assignArray(m_storage.getArray());}
 
 		Stack_ObjectPool(const Stack_ObjectPool &other) :
 			ObjectPoolImpl<T>(other)

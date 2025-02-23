@@ -13,6 +13,7 @@ OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
@@ -29,6 +30,12 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
+								\
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
+								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp \

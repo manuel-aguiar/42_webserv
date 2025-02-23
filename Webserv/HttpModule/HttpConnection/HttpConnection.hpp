@@ -44,20 +44,30 @@ namespace Http
 
 			BaseBuffer&					accessReadBuffer();
 			BaseBuffer&					accessWriteBuffer();
+			BaseBuffer&					accessReadBuffer();
+			BaseBuffer&					accessWriteBuffer();
 
 			// clean all stored state to be reused later
-			void						close();
+			void						closeConnection();
+
+			void						resetTransaction();
 
 		private:
-        	Buffer<1024> 										m_readBuffer;
-        	Buffer<1024> 										m_writeBuffer;
-
+		
 			Http::Module& 										m_module;
 			Timer 												m_readTimer;
 			Timer 												m_writeTimer;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
 			Http::Transaction 									m_transaction;
+
+			// buffers
+			Buffer<1024> 										m_readBuffer;
+			Buffer<1024> 										m_writeBuffer;
+
+
+			void												mf_read(const Ws::fd fd, const Events::Monitor::Mask flags);
+			void												mf_write(const Ws::fd fd, const Events::Monitor::Mask flags);
 	};
 };
 

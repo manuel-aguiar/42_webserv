@@ -41,11 +41,11 @@ namespace Http
 			{
 				WAITING, // have nothing to push, no sign transaction is finished
 				WRITING, // pushed data to buffer
-				FINISHED // transaction is finished
+				FINISHED, // transaction is finished
+				MARK_TO_CLOSE // tell the Http::Connection to close the connection after writing
 			}	Status;
 
-			const char*			getMessage(int statusCode);
-			Status  			getStatus() const;
+			const char* getMessage(int statusCode);
 
 			Response::Status	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
