@@ -174,6 +174,10 @@ Http::Request::mf_parseChunkedBody(const std::string& data)
 
         // Update body and state
         m_data.body = assembled_body;
+        ASSERT_EQUAL(m_response != NULL, true, "Request::mf_parseChunkedBody(), m_response is NULL");
+
+        // before state transition, call response to check
+        m_response->receiveRequestBody(m_data.body);
         m_data.expectedLength = m_data.body.length();
         m_parsingState = BODY;
         return Http::Status::OK;
@@ -220,6 +224,11 @@ Http::Request::mf_parseRegularBody(const std::string& data)
 
     // append to existing body
     m_data.body += data;
+
+    ASSERT_EQUAL(m_response != NULL, true, "Request::mf_parseRegularBody(), m_response is NULL");
+
+    // before state transition, call response to check
+    m_response->receiveRequestBody(m_data.body);
 
     if (m_data.body.length() == contentLength) {
         m_parsingState = COMPLETED;
