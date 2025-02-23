@@ -5,15 +5,6 @@
 
 const char* getStatusMessage(int statusCode);
 
-namespace Http
-{
-	const char* Response::getMessage(int statusCode)
-	{
-		return (getStatusMessage(statusCode));
-	}
-}
-
-
 /*
 	Data oriented design, separate codes (needed in binary search) from messages.
 	No need to load message pointers into cache when doing binary search.

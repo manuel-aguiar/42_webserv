@@ -13,6 +13,11 @@
 # include <set>
 # include <map>
 
+# include "../GenericUtils/Files/FilesUtils.hpp"
+
+class ServerBlock;
+class ServerLocation;
+
 namespace Http
 {
     // All http status codes
@@ -90,15 +95,19 @@ namespace Http
     //     const std::set<std::string>& getAllowedHeaders();
     // }
 
-    typedef enum
+    namespace ResponseStatus
     {
-        WAITING, 				// have nothing to push, no sign transaction is finished
-        WRITING, 				// pushed data to buffer
-        FINISHED,				// transaction is finished
-        MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
-    }	ResponseStatus;
+        typedef enum
+        {
+            WAITING, 				// have nothing to push, no sign transaction is finished
+            WRITING, 				// pushed data to buffer
+            FINISHED,				// transaction is finished
+            MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
+        }	Type;
+    }
 
-    struct RequestData {
+    struct RequestData
+    {
         enum BodyType {
             NONE,
             REGULAR,
@@ -121,6 +130,9 @@ namespace Http
         std::string httpVersion;
         std::map<HeaderKey, HeaderValue> headers;
         std::string body;
+        std::string boundary;
+        std::string uploaded_filename;
+        std::string uploaded_filetype;
         Status::Number status;
         BodyType bodyType;
         ContentType contentType;
@@ -128,6 +140,38 @@ namespace Http
 
         void    reset();
     };
+
+
+    struct ResponseData
+    {
+        ResponseData();
+        ~ResponseData();
+        ResponseData(const ResponseData& copy);
+        ResponseData& operator=(const ResponseData& assign);
+
+        void reset();
+        
+        typedef enum
+        {
+            UNDEFINED,
+            STATIC,
+            CGI,
+            REDIRECT
+        }	ResponseType;
+
+        const Http::RequestData*	        requestData;
+        Http::Status::Number		        requestStatus;
+        const ServerBlock*			        serverBlock;
+        const ServerLocation*		        serverLocation;
+        std::map<std::string, std::string>  headers;
+        ResponseType				        responseType;
+        std::string                         targetPath;
+        FilesUtils::FileType                targetType;
+
+        bool                                closeAfterSending;
+
+    };
+
 }
 
 #endif

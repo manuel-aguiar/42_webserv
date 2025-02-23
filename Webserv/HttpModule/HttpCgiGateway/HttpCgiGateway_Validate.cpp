@@ -2,6 +2,9 @@
 
 # include "HttpCgiGateway.hpp"
 
+// C++ headers
+# include <vector>
+
 static const char* forbiddenHeaders[] =
 {
 	"Connection"

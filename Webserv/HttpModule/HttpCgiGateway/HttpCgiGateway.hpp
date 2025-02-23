@@ -7,6 +7,7 @@
 # include "../../CgiModule/CgiModule.h"
 # include "../../Ws_Namespace.h"
 # include "../HttpDefinitions.hpp"
+# include "../HttpDefinitions.hpp"
 
 namespace Http { class Response; }
 
@@ -21,10 +22,8 @@ namespace Http
 			void					reset();
 			void					close();
 
-			Http::ResponseStatus 		fillWriteBuffer(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type 		fillWriteBuffer(BaseBuffer& writeBuffer);
 
-
-			
 			// execution after callbacks
 			void 					onSuccess();
 			void 					onError();
@@ -34,14 +33,14 @@ namespace Http
 
 		private:
 			
-			typedef Http::ResponseStatus (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::ResponseStatus::Type (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
 
-			Http::ResponseStatus		mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillBodyTemp(BaseBuffer& writeBuffer);
-			Http::ResponseStatus		mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::ResponseStatus 		mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillBodyTemp(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
 			Cgi::Module& 			m_module;
 			Cgi::Request* 			m_cgiRequest;

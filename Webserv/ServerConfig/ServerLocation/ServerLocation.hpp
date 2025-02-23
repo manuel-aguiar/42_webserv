@@ -20,6 +20,7 @@
 class ServerConfig;
 class ServerBlock;
 struct DefaultConfig;
+
 namespace Config
 {
 	typedef std::string CgiExtension;

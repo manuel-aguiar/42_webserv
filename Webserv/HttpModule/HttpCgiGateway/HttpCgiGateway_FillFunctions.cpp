@@ -11,14 +11,14 @@ extern const char* getStatusMessage(int statusCode);
 namespace Http
 {
 
-    Http::ResponseStatus
+    Http::ResponseStatus::Type
     CgiGateway::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
         return (Http::ResponseStatus::WAITING);
     }
 
-    Http::ResponseStatus
+    Http::ResponseStatus::Type
     CgiGateway::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
         writeBuffer.push("HTTP/1.1 ", 9);
@@ -32,7 +32,7 @@ namespace Http
         return (mf_fillHeaders(writeBuffer));
     }
 
-	Http::ResponseStatus
+	Http::ResponseStatus::Type
 	CgiGateway::mf_fillHeaders(BaseBuffer& writeBuffer)
 	{
 		int current;
@@ -105,7 +105,7 @@ namespace Http
         }
     }
 
-    Http::ResponseStatus
+    Http::ResponseStatus::Type
     CgiGateway::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
         BufferView tempBody = m_headers->getTempBody();
@@ -135,7 +135,7 @@ namespace Http
 
 
 
-    Http::ResponseStatus
+    Http::ResponseStatus::Type
     CgiGateway::mf_fillBodyStream(BaseBuffer& writeBuffer)
     {
         int scriptBytesRead = 0;
@@ -157,8 +157,8 @@ namespace Http
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
 
-            hexHeader[hexHeaderSize - 1] = '\n';
             hexHeader[hexHeaderSize - 2] = '\r';
+            hexHeader[hexHeaderSize - 1] = '\n';
 
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
 
@@ -175,7 +175,7 @@ namespace Http
         return (Http::ResponseStatus::WRITING);
     }
 
-    Http::ResponseStatus
+    Http::ResponseStatus::Type
 	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
 		// probably ask response to send response based on the error status code

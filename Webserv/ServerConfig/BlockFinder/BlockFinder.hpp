@@ -21,9 +21,9 @@ class BlockFinder {
 
 		void				loadServerBlocks(const std::vector<ServerBlock>& blocks);
 		void				addServerBlock(const ServerBlock& block);
-		const ServerBlock*	findServerBlock(Ws::Sock::addr* address, const std::string& serverName);
-		bool				hasServerBlock(Ws::Sock::addr* address, const std::string& serverName);
-		void				removeServerBlock(Ws::Sock::addr* address, const std::string& serverName);
+		const ServerBlock*	findServerBlock(const Ws::Sock::addr& address, const std::string& serverName);
+		bool				hasServerBlock(const Ws::Sock::addr& address, const std::string& serverName);
+		void				removeServerBlock(const Ws::Sock::addr& address, const std::string& serverName);
 
 	private:
 		struct BlockIdentifier

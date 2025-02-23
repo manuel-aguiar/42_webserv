@@ -46,7 +46,7 @@ BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const Ws::Sock::ad
 **	checks if a server block with the given ip, port and server name exists
 **	uses normalized directives
 */
-bool	BlockFinder::hasServerBlock(Ws::Sock::addr* address, const std::string& serverName)
+bool	BlockFinder::hasServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
     return (findServerBlock(address, serverName) != NULL);
 }
@@ -98,9 +98,9 @@ void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
 **	- IP wildcard (0.0.0.0), but exact port and server name.
 **	- IP:port match, but server name is a wildcard (*).
 */
-const ServerBlock*	BlockFinder::findServerBlock(Ws::Sock::addr* address, const std::string& serverName)
+const ServerBlock*	BlockFinder::findServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
-    BlockIdentifier key = mf_createIdentifier(address, serverName);
+    BlockIdentifier key = mf_createIdentifier(&address, serverName);
 
     if (m_serverBlocks.empty())
         return (NULL);
@@ -117,7 +117,7 @@ const ServerBlock*	BlockFinder::findServerBlock(Ws::Sock::addr* address, const s
         return (it->second);
 
     // Try wildcard IP with exact server name
-    key = mf_createIdentifier(address, serverName);
+    key = mf_createIdentifier(&address, serverName);
     key.ip = m_wildcardKey.ip;
     it = m_serverBlocks.find(key);
     if (it != m_serverBlocks.end())
@@ -130,9 +130,9 @@ const ServerBlock*	BlockFinder::findServerBlock(Ws::Sock::addr* address, const s
 **	removeServerBlock
 **	removes a server block from the server_blocks map
 */
-void	BlockFinder::removeServerBlock(Ws::Sock::addr* address, const std::string& serverName)
+void	BlockFinder::removeServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
-    BlockIdentifier key = mf_createIdentifier(address, serverName);
+    BlockIdentifier key = mf_createIdentifier(&address, serverName);
     std::map<BlockIdentifier, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
 
     if (it != m_serverBlocks.end())

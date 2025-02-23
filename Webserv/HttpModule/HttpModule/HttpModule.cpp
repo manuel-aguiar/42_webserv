@@ -14,8 +14,8 @@
 namespace Http
 {
 
-Module::Module(const size_t maxConnections, Globals& globals)
-    : m_globals(globals),
+Module::Module(const size_t maxConnections, ServerContext& context)
+    : m_context(context),
       m_connections(maxConnections),
       m_availableConnections(maxConnections),
       m_timers(maxConnections)
@@ -58,6 +58,12 @@ void
 Module::removeTimer(const TimerTracker<Timer, Http::Connection*>::iterator position)
 {
     m_timers.erase(position);
+}
+
+ServerContext&
+Module::accessServerContext()
+{
+    return (m_context);
 }
 
 int 

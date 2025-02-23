@@ -109,6 +109,7 @@ std::string generateDirectoryListing(const std::string &path, DynArray<DirEntry>
 
     // HTML Footer
     output 	+= "</table>\n</body>\n</html>\n";
+	return (output);
 }
 
 /*

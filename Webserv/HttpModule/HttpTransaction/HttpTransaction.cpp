@@ -4,9 +4,9 @@
 
 namespace Http
 {
-	Transaction::Transaction(Http::Connection& connection)
-		: request(connection),
-		  response(connection, request) {}
+	Transaction::Transaction(ServerContext& context)
+		: request(context),
+		  response(context) {}
 
 	Transaction::Transaction(const Transaction& other)
 		: request(other.request),

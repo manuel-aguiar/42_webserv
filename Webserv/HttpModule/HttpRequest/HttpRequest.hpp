@@ -25,22 +25,7 @@ class BaseBuffer;
 class BufferView;
 class ServerContext;
 
-namespace Http { 
-	class Response {
-		public:
-		Response() {};
-		~Response() {};
-
-		void receiveRequestData(const RequestData& data) {
-			// nothing yet
-			static_cast<void>(data);
-		}
-		void receiveRequestBody(const BufferView& view) {
-			// nothing yet
-			static_cast<void>(view);
-		}
-	};
-};
+namespace Http { class Response;}
 
 typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
 

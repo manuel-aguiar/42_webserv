@@ -5,7 +5,7 @@
 
 
 // dependencies
-# include "../../../Globals/Globals.hpp"
+# include "../../../ServerContext/ServerContext.hpp"
 
 // helpers
 # include "../../../../Toolkit/TestHelpers/TestHelpers.h"
@@ -19,14 +19,13 @@ int main(void)
 {
 	int testNumber = 1;
 	TEST_HEADER("HttpModule Compile Everything");
-	Globals globals(NULL, NULL, NULL, NULL);
+	ServerContext context;
 
 	try
 	{
 		TEST_INTRO(testNumber++);
 
-		Http::Module module(10, globals);
-
+		Http::Module module(10, context);
 
 		TEST_PASSED_MSG("HttpModule constructor");
 	}

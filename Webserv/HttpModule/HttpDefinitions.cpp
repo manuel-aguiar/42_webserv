@@ -28,6 +28,62 @@ namespace Http
         }
     }
 
+    ResponseData::ResponseData() 
+    : requestData(NULL)
+    , requestStatus(Http::Status::OK)
+    , serverBlock(NULL)
+    , serverLocation(NULL)
+    , headers()
+    , responseType(UNDEFINED)
+    , targetPath()
+    , targetType(FilesUtils::UNDEFINED)
+    , closeAfterSending(false) {}
+
+    ResponseData::~ResponseData() {}
+    ResponseData::ResponseData(const ResponseData& copy)
+    : requestData(copy.requestData)
+    , requestStatus(copy.requestStatus)
+    , serverBlock(copy.serverBlock)
+    , serverLocation(copy.serverLocation)
+    , headers(copy.headers)
+    , responseType(copy.responseType)
+    , targetPath(copy.targetPath)
+    , targetType(copy.targetType)
+    , closeAfterSending(copy.closeAfterSending)
+     {}
+
+    ResponseData& ResponseData::operator=(const ResponseData& assign)
+    {
+        if (this == &assign)
+            return (*this);
+
+        requestData = assign.requestData;
+        requestStatus = assign.requestStatus;
+        serverBlock = assign.serverBlock;
+        serverLocation = assign.serverLocation;
+        headers = assign.headers;
+        responseType = assign.responseType;
+        targetPath = assign.targetPath;
+        targetType = assign.targetType;
+        closeAfterSending = assign.closeAfterSending;
+
+        return (*this);
+    }
+
+    void
+    ResponseData::reset()
+    {
+        requestData = NULL;
+        requestStatus = Http::Status::OK;
+        serverBlock = NULL;
+        serverLocation = NULL;
+        headers.clear();
+        responseType = UNDEFINED;
+        targetPath.clear();
+        targetType = FilesUtils::UNDEFINED;
+        closeAfterSending = false;
+    }
+
     // Uncomment when needed
     /*namespace AllowedHeaders
     {

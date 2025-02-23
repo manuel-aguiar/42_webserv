@@ -8,6 +8,7 @@
 
 // Project headers
 #include "HttpRequest.hpp"
+#include "../HttpResponse/HttpResponse.hpp"
 
 // C++ headers
 #include <sstream>

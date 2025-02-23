@@ -16,8 +16,8 @@
 
 // forward declarations
 class 		ServerContext;
-namespace	Events { class Subscription; }
 namespace	Conn { class Connection; }
+namespace	Events { class Subscription; }
 namespace	Http { class Module;}
 
 namespace Http
@@ -42,11 +42,6 @@ namespace Http
 
 			void 						setMyTCP(Conn::Connection& tcpConn);
 
-			BaseBuffer&					accessReadBuffer();
-			BaseBuffer&					accessWriteBuffer();
-			BaseBuffer&					accessReadBuffer();
-			BaseBuffer&					accessWriteBuffer();
-
 			// clean all stored state to be reused later
 			void						closeConnection();
 
@@ -66,8 +61,8 @@ namespace Http
 			Buffer<1024> 										m_writeBuffer;
 
 
-			void												mf_read(const Ws::fd fd, const Events::Monitor::Mask flags);
-			void												mf_write(const Ws::fd fd, const Events::Monitor::Mask flags);
+			void												mf_read(const Ws::fd fd);
+			void												mf_write(const Ws::fd fd);
 	};
 };
 

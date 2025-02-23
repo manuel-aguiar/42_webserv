@@ -7,6 +7,7 @@
 /* *********************************/
 
 #include "HttpRequest.hpp"
+#include "../HttpResponse/HttpResponse.hpp"
 
 namespace Http
 {
