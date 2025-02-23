@@ -19,6 +19,7 @@ namespace Http
 {
 	Response::Response(ServerContext& context):
 	m_context		(context),
+	m_connAddress	(NULL),
 	m_requestData	(NULL),
 	m_serverBlock	(NULL),
 	m_location		(NULL),
@@ -35,14 +36,13 @@ namespace Http
 	{
 		m_requestData = &data;
 
-		if (m_requestData->status != Http::Status::OK)
+		if (m_requestData->status != Http::Status::OK || !mf_validateHeaders())
 		{
 			m_fillFunction = &Response::mf_fillErrorResponse;
 			return ;
 		}
 
-
-		// NOT IMPLEMENTED YET
+		m_fillFunction = &Response::mf_fillResponseLine;
 	}
 
 	void	Response::receiveRequestBody(const BufferView& view)

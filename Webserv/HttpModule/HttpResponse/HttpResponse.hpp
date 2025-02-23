@@ -1,12 +1,16 @@
-#ifndef RESPONSE_HPP
-# define RESPONSE_HPP
 
+
+
+#ifndef HTTPRESPONSE_HPP
+# define HTTPRESPONSE_HPP
+
+// Project headers
 # include "../HttpDefinitions.hpp"
+# include "../HttpCgiGateway/HttpCgiGateway.hpp"
+# include "../../Ws_Namespace.h"
+# include "../../ServerContext/ServerContext.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 
-// TESTING
-# include "../../ServerContext/ServerContext.hpp"
-# include "../HttpCgiGateway/HttpCgiGateway.hpp"
 
 // C++ headers
 # include <string>
@@ -38,6 +42,8 @@ namespace Http
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
 			void						receiveRequestBody(const BufferView& view);			// request send body
 
+			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
+
 		private:
 
 			typedef enum
@@ -49,7 +55,9 @@ namespace Http
 			}	Type;
 
 
-			void						mf_validateHeaders();
+			bool						mf_validateHeaders();
+
+
 			void						mf_generateResponse(int statusCode);
 			std::string					mf_generateStatusLine(int statusCode);
 			std::string					mf_generateHeaderString();
@@ -67,6 +75,7 @@ namespace Http
 			void						setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			ServerContext&       		m_context;
+			const Ws::Sock::addr*		m_connAddress;
 			const Http::RequestData*	m_requestData;
 			const ServerBlock*			m_serverBlock;
 			const ServerLocation*		m_location;

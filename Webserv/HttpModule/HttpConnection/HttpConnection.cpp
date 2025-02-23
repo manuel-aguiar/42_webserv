@@ -61,6 +61,7 @@ void
 Connection::setMyTCP(Conn::Connection& tcpConn)
 {
 	m_tcpConn = &tcpConn;
+	m_transaction.response.setConnectionAddress(tcpConn.info_getBindInfo().addr.sockaddr);
 }
 
 void

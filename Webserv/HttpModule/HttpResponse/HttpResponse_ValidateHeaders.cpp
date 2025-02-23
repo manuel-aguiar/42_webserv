@@ -2,7 +2,24 @@
 
 # include "HttpResponse.hpp"
 
+# include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 
+
+namespace Http
+{
+    bool
+    Response::mf_validateHeaders()
+    {
+        ASSERT_EQUAL(m_requestData != NULL, true, "Response: Request data not set");
+        ASSERT_EQUAL(m_serverBlock, NULL, "Response: Server block alreadyset");
+        ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
+        m_serverBlock = m_context.getBlockFinder()->findServerBlock();
+
+        // not implemented
+        return (true);
+    }
+
+}
 
 
 
