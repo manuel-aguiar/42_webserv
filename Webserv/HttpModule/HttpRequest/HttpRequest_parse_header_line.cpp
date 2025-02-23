@@ -16,6 +16,9 @@
 Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &headers)
 {
+	if (headers.size() > HttpStandard::MAX_HEADERS_LENGTH)
+		return (Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE);
+
 	// TODO: do a better handling of the headers with a buffer view
 	std::string headersString;
 	headers.to_string(headersString);
@@ -35,7 +38,7 @@ Http::Request::mf_parseHeaders(const BufferView &headers)
 		std::string value = StringUtils::strtrim(line.substr(colonPos + 1));
 		if (key.empty() || value.empty())
 			return (Http::Status::BAD_REQUEST);
-		m_headers[key] = value;
+		m_data.headers[key] = value;
 	}
 
 	return (Http::Status::OK);

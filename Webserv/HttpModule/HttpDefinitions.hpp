@@ -9,10 +9,9 @@
 #ifndef HTTP_DEFINITIONS_HPP
 #define HTTP_DEFINITIONS_HPP
 
-#include <string>
-#include <set>
-#include <map>
-#include <map>
+# include <string>
+# include <set>
+# include <map>
 
 # include "../GenericUtils/Files/FilesUtils.hpp"
 
@@ -138,6 +137,39 @@ namespace Http
         BodyType bodyType;
         ContentType contentType;
         size_t expectedLength;
+
+        void    reset();
+    };
+
+
+    struct ResponseData
+    {
+        ResponseData();
+        ~ResponseData();
+        ResponseData(const ResponseData& copy);
+        ResponseData& operator=(const ResponseData& assign);
+
+        void reset();
+        
+        typedef enum
+        {
+            UNDEFINED,
+            STATIC,
+            CGI,
+            REDIRECT
+        }	ResponseType;
+
+        const Http::RequestData*	        requestData;
+        Http::Status::Number		        requestStatus;
+        const ServerBlock*			        serverBlock;
+        const ServerLocation*		        serverLocation;
+        std::map<std::string, std::string>  headers;
+        ResponseType				        responseType;
+        std::string                         targetPath;
+        FilesUtils::FileType                targetType;
+
+        bool                                closeAfterSending;
+
     };
 
 
