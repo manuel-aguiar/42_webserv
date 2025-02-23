@@ -30,6 +30,10 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 								\
@@ -48,6 +52,7 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
