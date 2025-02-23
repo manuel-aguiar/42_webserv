@@ -70,7 +70,7 @@ class List
 			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4) : BaseNode(), m_data(arg1, arg2, arg3, arg4) {}
 
 			template<typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5>
-			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4, Arg5& arg5) : BaseNode(), m_data(arg1, arg2, arg3. arg, arg5) {}
+			DataNode(Arg1& arg1, Arg2& arg2, Arg3& arg3, Arg4& arg4, Arg5& arg5) : BaseNode(), m_data(arg1, arg2, arg3, arg4, arg5) {}
 
 			DataNode(const DataNode& other) : BaseNode(other), m_data(other.m_data) {}
 			DataNode& operator=(const DataNode& other)

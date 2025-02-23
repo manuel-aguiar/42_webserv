@@ -25,7 +25,7 @@ class InternalReq;
 class Globals;
 namespace Events { class Subscription; }
 namespace Events { class Manager; }
-namespace Cgi { class EnvVariables; }
+namespace Cgi { struct EnvVariables; }
 
 class Worker
 {

@@ -13,8 +13,6 @@
 # include <unistd.h>
 
 
-SignalHandler 	g_SignalHandler;
-
 int main(void)
 {
 	int testNumber = 1;

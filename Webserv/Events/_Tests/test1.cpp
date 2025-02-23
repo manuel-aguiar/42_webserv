@@ -136,7 +136,7 @@ int TestPart1(int testNumber)
 		
 		subscription.notify();
 
-		EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
+		EXPECT_EQUAL(calculator.getData(), (int)Calculator::RESULT, "Failed to call the user function");
 		
 		TEST_PASSED_MSG("using a Subscription");
 	}
@@ -181,12 +181,12 @@ int TestPart1(int testNumber)
 
 		manager.ProcessEvents(10);
 
-				EXPECT_EQUAL(calculator.getData(), Calculator::NOT_CALCULATED, "Should not have triggered any event, STDOUT is not available for reading");
+				EXPECT_EQUAL(calculator.getData(), (int)Calculator::NOT_CALCULATED, "Should not have triggered any event, STDOUT is not available for reading");
 
 		subscription->setMonitoredEvents(Events::Monitor::WRITE | Events::Monitor::HANGUP | Events::Monitor::ERROR);
 	
 		manager.ProcessEvents(10);
-				EXPECT_EQUAL(calculator.getData(), Calculator::NOT_CALCULATED, "Should not have triggered any event, \
+				EXPECT_EQUAL(calculator.getData(), (int)Calculator::NOT_CALCULATED, "Should not have triggered any event, \
 			Subscription now tracks writing but the event manager was not informed");
 
 		manager.updateEvents(*subscription, false);
@@ -198,7 +198,7 @@ int TestPart1(int testNumber)
 
 		// should only trigger the write event
 				EXPECT_EQUAL(subscription->getTriggeredEvents(), (Events::Monitor::Mask)Events::Monitor::WRITE, "Failed to trigger the event");
-				EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
+				EXPECT_EQUAL(calculator.getData(), (int)Calculator::RESULT, "Failed to call the user function");
 		
 		//manager.startMonitoring(*subscription, false);  <- correctly asserts, subscription is already being monitored
 

@@ -19,8 +19,6 @@ class BufferView
         BufferView(const BufferView& other);
         BufferView& operator=(const BufferView& other);
 
-        BufferView& operator=(const BufferView& other);
-
 
         const char* data() const;
         size_t 	size() const;
@@ -50,7 +48,6 @@ class BufferView
 
     private:
         const char*         m_data;
-        size_t              m_size;
         size_t              m_size;
 
 };

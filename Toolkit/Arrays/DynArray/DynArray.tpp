@@ -33,7 +33,9 @@ class DynArray
                 m_allocator.construct(m_array + i, T());
         }
 
-        DynArray(size_t size, T& value, const Allocator& allocator = Allocator())
+        DynArray(size_t size, T& value, const Allocator& allocator = Allocator()) :
+            m_size(size),
+            m_allocator(allocator)
         {
             m_array = m_allocator.allocate(size, NULL);
             for (size_t i = 0; i < size; i++)
