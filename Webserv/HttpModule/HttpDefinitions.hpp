@@ -12,6 +12,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <map>
 
 namespace Http
 {
@@ -90,6 +91,13 @@ namespace Http
     //     const std::set<std::string>& getAllowedHeaders();
     // }
 
+    typedef enum
+    {
+        WAITING, 				// have nothing to push, no sign transaction is finished
+        WRITING, 				// pushed data to buffer
+        FINISHED,				// transaction is finished
+        MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
+    }	ResponseStatus;
 
     struct RequestData {
         enum BodyType {

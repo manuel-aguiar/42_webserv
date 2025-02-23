@@ -1,19 +1,19 @@
-#ifndef RESPONSE_HPP
-# define RESPONSE_HPP
 
+
+
+#ifndef HTTPRESPONSE_HPP
+# define HTTPRESPONSE_HPP
+
+// Project headers
 # include "../HttpDefinitions.hpp"
+# include "../HttpCgiGateway/HttpCgiGateway.hpp"
+# include "../../Ws_Namespace.h"
+# include "../../ServerContext/ServerContext.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 
-# include <iostream>
 
+// C++ headers
 # include <string>
-
-// TESTING
-# include "../HttpRequest/HttpRequest.hpp"
-# include "../../ServerContext/ServerContext.hpp"
-# include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
-# include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 
 // forward declarations
@@ -21,54 +21,74 @@ class ServerBlock;
 class ServerLocation;
 class ServerContext;
 class BaseBuffer;
-namespace Http {class Request;}
 
 namespace Http
 {
 	class Response
 	{
 
-
 		public:
-			Response(Http::Connection& conn, Http::Request& myRequest);
+			Response(ServerContext& context);
 			Response(const Response& other);
 			~Response();
 			Response& operator=(const Response& other);
 
-			typedef enum
-			{
-				WAITING, // have nothing to push, no sign transaction is finished
-				WRITING, // pushed data to buffer
-				FINISHED, // transaction is finished
-				MARK_TO_CLOSE // tell the Http::Connection to close the connection after writing
-			}	Status;
+			Http::ResponseStatus		fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			
+			void    					reset(); // reset the response to its initial state
 
-			const char* getMessage(int statusCode);
-			Response::Status	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
-			void    			reset(); // reset the response to its initial state
+			Http::ResponseStatus		getStatus() const;
 
-			void				receiveRequestData(const Http::RequestData& data); 	// request sends headers
-			void				receiveRequestBody(const BufferView& view);			// request send body
+			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
+			void						receiveRequestBody(const BufferView& view);			// request send body
+
+			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
 		private:
-			void				generateResponse(int statusCode);
-			std::string			generateStatusLine(int statusCode);
-			std::string			generateHeaderString();
-			std::string 		generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
+
+			typedef enum
+			{
+				NONE,
+				STATIC,
+				CGI,
+				REDIRECT
+			}	Type;
+
+
+			bool						mf_validateHeaders();
+
+
+			void						mf_generateResponse(int statusCode);
+			std::string					mf_generateStatusLine(int statusCode);
+			std::string					mf_generateHeaderString();
+			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
+
+			typedef Http::ResponseStatus (Response::*FillFunction)(BaseBuffer& writeBuffer);
+
+			Http::ResponseStatus		mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
 			// Debatable
-			void				setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
+			void						setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
+			ServerContext&       		m_context;
+			const Ws::Sock::addr*		m_connAddress;
+			const Http::RequestData*	m_requestData;
+			const ServerBlock*			m_serverBlock;
+			const ServerLocation*		m_location;
+			std::map<std::string, std::string>
+										m_headers;
 
-			Http::Request&		m_myRequest;
-			Http::Connection&	m_connection;
-			File				m_file;
-			ServerBlock*		m_serverBlock;
-			ServerLocation*		m_location;
-			Status				m_status;
-			std::map<std::string, std::string>	m_headers;
+			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 
-			std::string			m_pendingWrite;		// cache data that you generated but couldn't write
+			Response::Type				m_type;
+			Http::ResponseStatus		m_status;
+			FillFunction				m_fillFunction;
+			File						m_file;
+			Http::CgiGateway			m_cgiGateway;
 	};
 };
 

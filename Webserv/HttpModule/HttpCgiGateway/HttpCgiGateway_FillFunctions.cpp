@@ -11,14 +11,14 @@ extern const char* getStatusMessage(int statusCode);
 namespace Http
 {
 
-    Response::Status
+    Http::ResponseStatus
     CgiGateway::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
-        return (Response::WAITING);
+        return (Http::ResponseStatus::WAITING);
     }
 
-    Response::Status
+    Http::ResponseStatus
     CgiGateway::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
         writeBuffer.push("HTTP/1.1 ", 9);
@@ -29,10 +29,10 @@ namespace Http
 
         // go to next stage
         m_fillFunction = &CgiGateway::mf_fillHeaders;
-        return ((this->*m_fillFunction)(writeBuffer));
+        return (mf_fillHeaders(writeBuffer));
     }
 
-	Response::Status
+	Http::ResponseStatus
 	CgiGateway::mf_fillHeaders(BaseBuffer& writeBuffer)
 	{
 		int current;
@@ -59,7 +59,7 @@ namespace Http
 			if (writeBuffer.available() < headers[current].key.size() + headers[current].value.size() + 6) // ": " + "\r\n" * 2 to be safe at the final header
 			{
 				m_currentHeader = current;
-				return (Response::WRITING);
+				return (Http::ResponseStatus::WRITING);
 			}
 			// push header
 			writeBuffer.push(headers[current].key.data(), headers[current].key.size());
@@ -71,7 +71,7 @@ namespace Http
 		m_currentHeader = current;
 
 		if ((size_t)m_currentHeader != headers.size())
-            return (Response::WRITING); // unfinished, still have headers to go
+            return (Http::ResponseStatus::WRITING); // unfinished, still have headers to go
         else
             writeBuffer.push("\r\n", 2); // end of headers, potentially message
 
@@ -79,9 +79,9 @@ namespace Http
         {
             // go to next stage
             m_fillFunction = &CgiGateway::mf_fillBodyTemp;
-            return ((this->*m_fillFunction)(writeBuffer));
+            return (mf_fillBodyTemp(writeBuffer));
         }
-        return (Response::FINISHED);
+        return (Http::ResponseStatus::FINISHED);
     }
 
     static void fillHexHeader(char* hexHeader, int hexheaderSize, int chunkSize)
@@ -105,7 +105,7 @@ namespace Http
         }
     }
 
-    Response::Status
+    Http::ResponseStatus
     CgiGateway::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
         BufferView tempBody = m_headers->getTempBody();
@@ -117,7 +117,7 @@ namespace Http
         if (tempBody.size() == 0)
             goto startBodyStream;
         if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
-            return (Response::WAITING); // no room
+            return (Http::ResponseStatus::WAITING); // no room
         
         currentPosition = writeBuffer.size();
 
@@ -130,12 +130,12 @@ namespace Http
 
         // go to next stage
         m_fillFunction = &CgiGateway::mf_fillBodyStream;
-        return ((this->*m_fillFunction)(writeBuffer));
+        return (mf_fillBodyStream(writeBuffer));
     }
 
 
 
-    Response::Status
+    Http::ResponseStatus
     CgiGateway::mf_fillBodyStream(BaseBuffer& writeBuffer)
     {
         int scriptBytesRead = 0;
@@ -143,11 +143,11 @@ namespace Http
         const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
 
         if (!m_canRead)
-            return (Response::WAITING);
+            return (Http::ResponseStatus::WAITING);
 
             
         if (writeBuffer.available() < hexHeaderSize + 1)
-            return (Response::WAITING);
+            return (Http::ResponseStatus::WAITING);
         
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
@@ -161,7 +161,10 @@ namespace Http
             hexHeader[hexHeaderSize - 2] = '\r';
 
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
-            return (Response::FINISHED);
+
+            m_fillFunction = &CgiGateway::mf_fillNothingToSend;
+
+            return (Http::ResponseStatus::FINISHED);
         }
 
         fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
@@ -169,13 +172,12 @@ namespace Http
 
         m_canRead = false;
 
-        return (Response::WRITING);
+        return (Http::ResponseStatus::WRITING);
     }
 
-    Response::Status
+    Http::ResponseStatus
 	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
-
 		// probably ask response to send response based on the error status code
         std::string codeStr = TestHelpers::to_string(m_statusCode);
 
@@ -189,7 +191,7 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Cgi script failed to execute correctly", 37);
 
-		return (Response::MARK_TO_CLOSE);
+		return (Http::ResponseStatus::MARK_TO_CLOSE);
 	}
 
 }

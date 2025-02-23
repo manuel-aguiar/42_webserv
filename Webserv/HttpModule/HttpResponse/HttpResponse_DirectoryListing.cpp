@@ -69,11 +69,11 @@ bool listDirectory(const std::string& path, DynArray<DirEntry>& fillEntries)
     return (true);
 }
 
-void generateDirectoryListing(const std::string &path, DynArray<DirEntry> &entries, std::string& output)
+std::string generateDirectoryListing(const std::string &path, DynArray<DirEntry> &entries)
 {
-    std::ostringstream html;
-
     // HTML Header
+	std::string output;
+
 	output = "<!DOCTYPE html>\n";
 
     output 	+= "<html>\n<head>\n";
@@ -116,21 +116,24 @@ void generateDirectoryListing(const std::string &path, DynArray<DirEntry> &entri
 	@param path: the path to the target folder
 	@param placeOutput: the string to place the html output
 */
-int	DirectoryListing(const std::string& path, std::string& placeOutput)
+std::string	DirectoryListing(const std::string& path)
 {
+	std::string output;
+
 	try
 	{
 		DynArray<DirEntry> entries;
 
 		if (listDirectory(path, entries))
-			generateDirectoryListing(path, entries, placeOutput);
+			output = generateDirectoryListing(path, entries);
 		else
-			return (0);
+			output == "";
 	}
 	catch(const std::exception& e)
 	{
-		return (0);
+		output = "";
 	}
-	return (1);
+
+	return (output);
 }
 

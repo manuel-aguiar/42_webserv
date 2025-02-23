@@ -6,60 +6,56 @@
 
 # include "../../CgiModule/CgiModule.h"
 # include "../../Ws_Namespace.h"
-# include "../HttpResponse/HttpResponse.hpp"
-# include "../HttpRequest/HttpRequest.hpp"
+# include "../HttpDefinitions.hpp"
 
-namespace Http { class Connection; class Request; class Response;}
+namespace Http { class Response; }
 
 namespace Http
 {
 	class CgiGateway
 	{
 		public:
-			CgiGateway(Cgi::Module& module, Http::Request& request, Http::Response& response);
+			CgiGateway(Cgi::Module& module);
 			~CgiGateway();
 
+			void					reset();
+			void					close();
 
-			void			reset();
-			void			close();
-
-			Response::Status 	fillWriteBuffer(BaseBuffer& writeBuffer);
-
+			Http::ResponseStatus 		fillWriteBuffer(BaseBuffer& writeBuffer);
 
 
+			
 			// execution after callbacks
-			void 			onSuccess();
-			void 			onError();
-			Cgi::IO::State 	onRead(const Ws::fd readFd);
-			Cgi::IO::State 	onWrite(const Ws::fd writeFd);
-			Cgi::IO::State 	onReceiveHeaders(Cgi::HeaderData& headers);
+			void 					onSuccess();
+			void 					onError();
+			Cgi::IO::State 			onRead(const Ws::fd readFd);
+			Cgi::IO::State 			onWrite(const Ws::fd writeFd);
+			Cgi::IO::State 			onReceiveHeaders(const Cgi::HeaderData& headers);
 
 		private:
 			
-			typedef Response::Status (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::ResponseStatus (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
 
-			Response::Status	mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Response::Status	mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Response::Status	mf_fillHeaders(BaseBuffer& writeBuffer);
-			Response::Status	mf_fillBodyTemp(BaseBuffer& writeBuffer);
-			Response::Status	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Response::Status 	mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillBodyTemp(BaseBuffer& writeBuffer);
+			Http::ResponseStatus		mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::ResponseStatus 		mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
-			Cgi::Module& 		m_module;
-			Cgi::Request* 		m_cgiRequest;
-			Http::Request& 		m_httpRequest;
-			Http::Response& 	m_httpResponse;
+			Cgi::Module& 			m_module;
+			Cgi::Request* 			m_cgiRequest;
 
 			// Cgi IO
-			bool 				m_canRead;
-			bool 				m_canWrite;
-			Ws::fd 				m_readFd;
-			Ws::fd 				m_writeFd;
+			bool 					m_canRead;
+			bool 					m_canWrite;
+			Ws::fd 					m_readFd;
+			Ws::fd 					m_writeFd;
 
-			int					m_statusCode;
-			Cgi::HeaderData* 	m_headers;
-			int					m_currentHeader;
-			FillFunction		m_fillFunction;
+			int						m_statusCode;
+			const Cgi::HeaderData* 	m_headers;
+			int						m_currentHeader;
+			FillFunction			m_fillFunction;
 
 
 			CgiGateway(const CgiGateway& other);

@@ -3,6 +3,7 @@
 # include "HttpModule.hpp"
 # include "../HttpConnection/HttpConnection.hpp"
 # include "../../Connections/Connection/Connection.hpp"
+# include "../../ServerConfig/ServerConfig.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"

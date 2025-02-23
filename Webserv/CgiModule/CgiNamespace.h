@@ -147,7 +147,7 @@ namespace Cgi
 		typedef int     	BytesCount;
 
 		typedef Cgi::IO::State 				(*OnReadWrite)(Cgi::User user, const Ws::fd fd);
-		typedef Cgi::IO::State  			(*ReceiveHeaderData)(Cgi::User user, Cgi::HeaderData& headers);
+		typedef Cgi::IO::State  			(*ReceiveHeaderData)(Cgi::User user, const Cgi::HeaderData& headers);
 	};
 
 

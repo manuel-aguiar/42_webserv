@@ -10,11 +10,9 @@ extern const char* getStatusMessage(int statusCode);
 
 namespace Http
 {
-	CgiGateway::CgiGateway(Cgi::Module& module, Http::Request& request, Http::Response& response)
+	CgiGateway::CgiGateway(Cgi::Module& module)
 		: m_module(module)
 		, m_cgiRequest(NULL)
-		, m_httpRequest(request)
-		, m_httpResponse(response)
 		, m_canRead(false)
 		, m_canWrite(false)
 		, m_readFd(Ws::FD_NONE)
@@ -55,7 +53,7 @@ namespace Http
 	}
 
 	Cgi::IO::State
-	CgiGateway::onReceiveHeaders(Cgi::HeaderData& headers)
+	CgiGateway::onReceiveHeaders(const Cgi::HeaderData& headers)
 	{
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
@@ -97,7 +95,7 @@ namespace Http
 		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 	}
 
-	Response::Status
+	Http::ResponseStatus
 	CgiGateway::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		return ((this->*m_fillFunction)(writeBuffer));
@@ -108,8 +106,6 @@ namespace Http
 	CgiGateway::~CgiGateway() {}
 	CgiGateway::CgiGateway(const CgiGateway& other)
 		: m_module(other.m_module)
-		, m_httpRequest(other.m_httpRequest)
-		, m_httpResponse(other.m_httpResponse)
 		, m_canRead(other.m_canRead)
 		, m_canWrite(other.m_canWrite)
 		, m_readFd(other.m_readFd)
