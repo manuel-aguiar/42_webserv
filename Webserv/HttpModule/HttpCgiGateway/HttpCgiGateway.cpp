@@ -95,7 +95,7 @@ namespace Http
 		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 	}
 
-	Http::ResponseStatus
+	Http::ResponseStatus::Type
 	CgiGateway::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		return ((this->*m_fillFunction)(writeBuffer));

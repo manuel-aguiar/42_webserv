@@ -7,11 +7,13 @@
 # include "../HttpRequest/HttpRequest.hpp"
 # include "../HttpResponse/HttpResponse.hpp"
 
+class ServerContext;
+
 namespace Http
 {
 	struct Transaction
 	{
-		Transaction(Http::Connection& connection);
+		Transaction(ServerContext& context);
 		Transaction(const Transaction& other);
 		~Transaction();
 		Transaction& operator=(const Transaction& other);

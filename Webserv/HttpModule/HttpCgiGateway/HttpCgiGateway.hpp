@@ -17,25 +17,14 @@ namespace Http
 	{
 		public:
 			CgiGateway(Cgi::Module& module);
-			CgiGateway(Cgi::Module& module);
 			~CgiGateway();
 
-			void					reset();
-			void					close();
 			void					reset();
 			void					close();
 
 			Http::ResponseStatus::Type 		fillWriteBuffer(BaseBuffer& writeBuffer);
 
-
-			
-			
 			// execution after callbacks
-			void 					onSuccess();
-			void 					onError();
-			Cgi::IO::State 			onRead(const Ws::fd readFd);
-			Cgi::IO::State 			onWrite(const Ws::fd writeFd);
-			Cgi::IO::State 			onReceiveHeaders(const Cgi::HeaderData& headers);
 			void 					onSuccess();
 			void 					onError();
 			Cgi::IO::State 			onRead(const Ws::fd readFd);
@@ -55,23 +44,13 @@ namespace Http
 
 			Cgi::Module& 			m_module;
 			Cgi::Request* 			m_cgiRequest;
-			Cgi::Module& 			m_module;
-			Cgi::Request* 			m_cgiRequest;
 
 			// Cgi IO
 			bool 					m_canRead;
 			bool 					m_canWrite;
 			Ws::fd 					m_readFd;
 			Ws::fd 					m_writeFd;
-			bool 					m_canRead;
-			bool 					m_canWrite;
-			Ws::fd 					m_readFd;
-			Ws::fd 					m_writeFd;
 
-			int						m_statusCode;
-			const Cgi::HeaderData* 	m_headers;
-			int						m_currentHeader;
-			FillFunction			m_fillFunction;
 			int						m_statusCode;
 			const Cgi::HeaderData* 	m_headers;
 			int						m_currentHeader;

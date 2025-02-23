@@ -1,30 +1,15 @@
 
-
-
 #ifndef HTTPRESPONSE_HPP
 # define HTTPRESPONSE_HPP
 
-
-
-#ifndef HTTPRESPONSE_HPP
-# define HTTPRESPONSE_HPP
-
-// Project headers
 // Project headers
 # include "../HttpDefinitions.hpp"
 # include "../HttpCgiGateway/HttpCgiGateway.hpp"
 # include "../../Ws_Namespace.h"
-# include "../../ServerContext/ServerContext.hpp"
-# include "../HttpCgiGateway/HttpCgiGateway.hpp"
-# include "../../Ws_Namespace.h"
-# include "../../ServerContext/ServerContext.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 
-
-// C++ headers
 // C++ headers
 # include <string>
-
 
 // forward declarations
 class ServerBlock;
@@ -38,7 +23,6 @@ namespace Http
 	{
 
 		public:
-			Response(ServerContext& context);
 			Response(ServerContext& context);
 			Response(const Response& other);
 			~Response();
@@ -68,11 +52,11 @@ namespace Http
 
 			bool						mf_validateHeaders();
 
-
 			void						mf_generateResponse(int statusCode);
 			std::string					mf_generateStatusLine(int statusCode);
 			std::string					mf_generateHeaderString();
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& statusText, const std::string& errorMessage);
+			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
 
@@ -83,8 +67,6 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
 			// Debatable
-			void						setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
-			void						setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			ServerContext&       		m_context;
 			const Ws::Sock::addr*		m_connAddress;

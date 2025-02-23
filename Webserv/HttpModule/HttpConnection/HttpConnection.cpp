@@ -17,7 +17,7 @@ Connection::Connection(Http::Module& module)
 	  m_writeTimer(),
 	  m_myTimer(),
 	  m_tcpConn(NULL),
-	  m_transaction(*this) {}
+	  m_transaction(m_tcpConn->accessServerContext()) {}
 
 Connection::~Connection() {}
 
@@ -62,6 +62,12 @@ Connection::setMyTCP(Conn::Connection& tcpConn)
 {
 	m_tcpConn = &tcpConn;
 	m_transaction.response.setConnectionAddress(tcpConn.info_getBindInfo().addr.sockaddr);
+}
+
+void
+Connection::setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer)
+{
+	m_myTimer = timer;
 }
 
 void

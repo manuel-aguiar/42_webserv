@@ -172,36 +172,6 @@ namespace Http
 
     };
 
-
-    struct ResponseData
-    {
-        ResponseData();
-        ~ResponseData();
-        ResponseData(const ResponseData& copy);
-        ResponseData& operator=(const ResponseData& assign);
-
-        void reset();
-        
-        typedef enum
-        {
-            UNDEFINED,
-            STATIC,
-            CGI,
-            REDIRECT
-        }	ResponseType;
-
-        const Http::RequestData*	        requestData;
-        Http::Status::Number		        requestStatus;
-        const ServerBlock*			        serverBlock;
-        const ServerLocation*		        serverLocation;
-        std::map<std::string, std::string>  headers;
-        ResponseType				        responseType;
-        std::string                         targetPath;
-        FilesUtils::FileType                targetType;
-
-        bool                                closeAfterSending;
-
-    };
 }
 
 #endif

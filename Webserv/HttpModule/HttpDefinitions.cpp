@@ -36,7 +36,7 @@ namespace Http
     , headers()
     , responseType(UNDEFINED)
     , targetPath()
-    , targetType(FilesUtils::UNDEFINED),
+    , targetType(FilesUtils::UNDEFINED)
     , closeAfterSending(false) {}
 
     ResponseData::~ResponseData() {}

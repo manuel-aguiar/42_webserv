@@ -1,10 +1,9 @@
 
 
 #include "HttpResponse.hpp"
-#include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../ServerContext/ServerContext.hpp"
-#include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
+#include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 
@@ -91,8 +90,8 @@ namespace Http
 		return (m_status);
 	}
 
-	// NOT IMPLEMENTED YET
-	void	Http::Response::reset()
+	void
+	Response::reset()
 	{
 		m_responseData.reset();
 		m_fillFunction = &Response::mf_fillNothingToSend;
@@ -102,6 +101,11 @@ namespace Http
 		m_cgiGateway.reset();
 	}
 
+	void
+	Response::setConnectionAddress(const Ws::Sock::addr& addr)
+	{
+		m_connAddress = &addr;
+	}
 
 	// private copy/assignment
 	Response::Response(const Response& other) :

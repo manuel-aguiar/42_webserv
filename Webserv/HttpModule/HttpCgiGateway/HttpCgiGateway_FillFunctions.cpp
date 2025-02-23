@@ -30,7 +30,6 @@ namespace Http
         // go to next stage
         m_fillFunction = &CgiGateway::mf_fillHeaders;
         return (mf_fillHeaders(writeBuffer));
-        return (mf_fillHeaders(writeBuffer));
     }
 
 	Http::ResponseStatus::Type
@@ -61,7 +60,6 @@ namespace Http
 			{
 				m_currentHeader = current;
 				return (Http::ResponseStatus::WRITING);
-				return (Http::ResponseStatus::WRITING);
 			}
 			// push header
 			writeBuffer.push(headers[current].key.data(), headers[current].key.size());
@@ -74,7 +72,6 @@ namespace Http
 
 		if ((size_t)m_currentHeader != headers.size())
             return (Http::ResponseStatus::WRITING); // unfinished, still have headers to go
-            return (Http::ResponseStatus::WRITING); // unfinished, still have headers to go
         else
             writeBuffer.push("\r\n", 2); // end of headers, potentially message
 
@@ -83,9 +80,7 @@ namespace Http
             // go to next stage
             m_fillFunction = &CgiGateway::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
-            return (mf_fillBodyTemp(writeBuffer));
         }
-        return (Http::ResponseStatus::FINISHED);
         return (Http::ResponseStatus::FINISHED);
     }
 
@@ -123,7 +118,6 @@ namespace Http
             goto startBodyStream;
         if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
             return (Http::ResponseStatus::WAITING); // no room
-            return (Http::ResponseStatus::WAITING); // no room
         
         currentPosition = writeBuffer.size();
 
@@ -136,7 +130,6 @@ namespace Http
 
         // go to next stage
         m_fillFunction = &CgiGateway::mf_fillBodyStream;
-        return (mf_fillBodyStream(writeBuffer));
         return (mf_fillBodyStream(writeBuffer));
     }
 
@@ -151,11 +144,9 @@ namespace Http
 
         if (!m_canRead)
             return (Http::ResponseStatus::WAITING);
-            return (Http::ResponseStatus::WAITING);
 
             
         if (writeBuffer.available() < hexHeaderSize + 1)
-            return (Http::ResponseStatus::WAITING);
             return (Http::ResponseStatus::WAITING);
         
         size_t currentPosition = writeBuffer.size();
@@ -174,10 +165,6 @@ namespace Http
             m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 
             return (Http::ResponseStatus::FINISHED);
-
-            m_fillFunction = &CgiGateway::mf_fillNothingToSend;
-
-            return (Http::ResponseStatus::FINISHED);
         }
 
         fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
@@ -185,7 +172,6 @@ namespace Http
 
         m_canRead = false;
 
-        return (Http::ResponseStatus::WRITING);
         return (Http::ResponseStatus::WRITING);
     }
 
@@ -205,7 +191,6 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Cgi script failed to execute correctly", 37);
 
-		return (Http::ResponseStatus::MARK_TO_CLOSE);
 		return (Http::ResponseStatus::MARK_TO_CLOSE);
 	}
 

@@ -72,7 +72,7 @@ std::string 		Response::mf_generateDefaultErrorPage(int statusCode, const std::s
 						}
 						m_headers["Content-Lenght"] = StringUtils::intToStr(m_file.size());
 					}
-					setGetRqContentType(m_headers, 0);
+					mf_setGetRqContentType(m_headers, 0);
 					break ;
 				default:
 					// User defined error page or default error page
@@ -221,7 +221,7 @@ std::string 		Response::mf_generateDefaultErrorPage(int statusCode, const std::s
 	}
 
 	// Big swich case with possible content-types for GET requests
-	void	Http::Response::setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension)
+	void	Http::Response::mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension)
 	{
 		(void)fileExtension;
 		m_headers["Content-Type"] = "text/plain";

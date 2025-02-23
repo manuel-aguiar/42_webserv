@@ -48,6 +48,7 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
+								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
@@ -79,6 +80,26 @@ SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
 								$(SRC_PATH)/Webserv/Events/Manager/Manager.cpp												\
 								$(SRC_PATH)/Webserv/Events/Subscription/SubscriptionGetSetAccess.cpp						\
 								$(SRC_PATH)/Webserv/Events/Subscription/Subscription.cpp									\
+								\
+								$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Request/RequestExternal.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReq.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReqGetSetAccess.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Worker/Worker.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerEvents.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp \
+								$(SRC_PATH)/Webserv/CgiModule/HeaderData/HeaderData.cpp \
+								\
+								$(SRC_PATH)/Webserv/SignalHandler/SignalHandler.cpp \
 
 								
 
