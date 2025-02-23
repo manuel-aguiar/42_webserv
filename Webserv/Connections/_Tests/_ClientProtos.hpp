@@ -14,7 +14,7 @@
 Ws::Sock::addr_in createSockAddr_in(const std::string& ip, const std::string& port);
 void    			prepareBindAddresses(std::vector<Ws::BindInfo>& bindAddresses, const size_t countListeners, const int portStart);
 
-class ConnInfo;
+struct ConnInfo;
 class Globals;
 
 namespace Events
@@ -43,7 +43,7 @@ class ClientTask : public IThreadTask
 };
 
 template <typename Client>
-class ClientManager;
+struct ClientManager;
 
 /*
 
