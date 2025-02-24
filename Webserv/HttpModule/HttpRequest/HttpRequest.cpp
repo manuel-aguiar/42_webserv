@@ -113,7 +113,9 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 	BufferView requestLine(currentView.substr(0, reqLineEnd));
 	currentView = currentView.substr(reqLineEnd + 2, currentView.size() - reqLineEnd - 2); // move view forward
 
-	m_data.status = mf_parseRequestLine(requestLine);
+	m_data.status = mf_parseRequestLine(requestLine);							// call parser, error checking
+
+
 	if (m_data.status != Http::Status::OK)
 	{
 		m_parsingState = ERROR;
