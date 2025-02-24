@@ -56,6 +56,7 @@ namespace Http
 
 	void	Response::receiveRequestBody(const BufferView& view)
 	{
+		std::cout << "Response received body: '" << view << "'" << std::endl;
 		(void)view;
 		// NOT IMPLEMENTED YET
 	}

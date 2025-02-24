@@ -9,6 +9,8 @@
 #include "HttpRequest.hpp"
 #include "../HttpResponse/HttpResponse.hpp"
 
+#include <cstdlib> //atoi
+
 namespace Http
 {
 
@@ -16,8 +18,12 @@ Request::Request(ServerContext &serverContext):
 	m_serverContext(serverContext),
 	m_response(NULL),
 	m_parsingState(IDLE),
-	m_handlerFunction(&Request::mf_handleNothing),
-	m_data()
+	m_parsingFunction(&Request::mf_handleNothing),
+	m_data(),
+    m_curChunkSize(-1),
+    m_curChunkPos(-1),
+    m_curContentLength(-1),
+    m_curContentPos(-1)
 {
 
 }
@@ -28,8 +34,12 @@ Request::Request(const Request& copy):
 	m_serverContext(copy.m_serverContext),
 	m_response(copy.m_response),
 	m_parsingState(copy.m_parsingState),
-	m_handlerFunction(copy.m_handlerFunction),
-	m_data(copy.m_data)
+	m_parsingFunction(copy.m_parsingFunction),
+	m_data(copy.m_data),
+    m_curChunkSize(copy.m_curChunkSize),
+    m_curChunkPos(copy.m_curChunkPos),
+    m_curContentLength(copy.m_curContentLength),
+    m_curContentPos(copy.m_curContentPos)
 {
 	*this = copy;
 }
@@ -43,7 +53,11 @@ Request::operator=(const Request& copy)
 	m_response = copy.m_response;
 	m_data = copy.m_data;
 	m_parsingState = copy.m_parsingState;
-	m_handlerFunction = copy.m_handlerFunction;
+	m_parsingFunction = copy.m_parsingFunction;
+    m_curChunkSize = copy.m_curChunkSize;
+    m_curChunkPos = copy.m_curChunkPos;
+    m_curContentLength = copy.m_curContentLength;
+    m_curContentPos = copy.m_curContentPos;
 
 	return (*this);
 }
@@ -53,7 +67,11 @@ Request::reset()
 {
 	m_data.reset();
 	m_parsingState = IDLE;
-	m_handlerFunction = &Request::mf_handleNothing;
+	m_parsingFunction = &Request::mf_handleNothing;
+    m_curChunkSize = -1;
+    m_curChunkPos = -1;
+    m_curContentLength = -1;
+    m_curContentPos = -1;
 }
 
 /*
@@ -69,7 +87,7 @@ Request::parse(BaseBuffer& buffer)
 
 	try
 	{
-		(void)((this->*m_handlerFunction)(buffer, currentView));
+		(void)((this->*m_parsingFunction)(buffer, currentView));
 	}
 	catch (const std::exception& e) {
 		m_parsingState = ERROR;
@@ -84,7 +102,7 @@ BufferView Request::mf_handleNothing(BaseBuffer& buffer, const BufferView& curre
 		return (currentView); // already started, do nothing
 	
 	m_parsingState = REQLINE;
-	m_handlerFunction = &Request::mf_handleRequestLine;
+	m_parsingFunction = &Request::mf_handleRequestLine;
 	return (mf_handleRequestLine(buffer, currentView));
 }
 
@@ -127,7 +145,7 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 	// transition to headers
 	m_parsingState = HEADERS;
 
-	m_handlerFunction = &Request::mf_handleHeaders; // next handler is headers
+	m_parsingFunction = &Request::mf_handleHeaders; // next handler is headers
 	return (mf_handleHeaders(buffer, currentView));
 }
 
@@ -149,7 +167,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 			{
 				m_parsingState = ERROR;
 				m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
-				m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
+				m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
 				if (m_response)
 				{
 					m_response->receiveRequestData(m_data);
@@ -164,20 +182,9 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		{
 			// \r\n found at the beginning: end of headers, move to BODY
 			currentView = currentView.substr(2, currentView.size() - 2); // move to body
-			
-			
-			
-			
-			// NO BODY, MARKING COMPLETED DIRECTLY FOR TEST PURPOSES
-			
-			m_parsingState = COMPLETED;
-			m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
-			break ;
-			
-			//m_parsingState = BODY;
-			//m_handlerFunction = &Request::mf_handleBody; // next handler is body
-			//return (mf_handleBody(buffer, currentView));
-			
+			m_parsingState = BODY;
+			mf_prepareBodyParser(); // next handler is body
+            break ;
 		}
 		BufferView thisHeader = currentView.substr(0, headerEnd); // segregate this header
 		currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move to next header
@@ -187,7 +194,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		if (m_data.status != Http::Status::OK)
 		{
 			m_parsingState = ERROR;
-			m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
+			m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
 			break ;
 		}        
 	}
@@ -203,32 +210,68 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 
 
 	// either nothing or body
-	return ((this->*m_handlerFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
+	return ((this->*m_parsingFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
 }
 
+/*
+
+    File Upload: multipart, has a route and a file name
+    Content-Disposition: form-data; name="file"; filename="file.txt"
+
+
+    POST /upload, sends a message body to /upload, but that is not an actual upload to a file.
+    The response
+
+*/
 
 // UNDER REVIEW
-BufferView Request::mf_handleBody(BaseBuffer& buffer, const BufferView& receivedView)
+void Request::mf_prepareBodyParser()
 {
-	BufferView currentView(receivedView);
 
-	(void)buffer;
 	if (m_data.method != "POST")
 	{
 		m_parsingState = COMPLETED; // no body needed for non POST requests
-		return (BufferView());
+		m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
+        return ;
 	}
+    headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
+    headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
+    //headerContainer::iterator contentType = m_data.headers.find("Content-Type");
+    
+    if ((contentLength == m_data.headers.end() && transferEncoding == m_data.headers.end())
+    || (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()))
+    {
+        m_parsingState = ERROR;
+        m_data.status = Http::Status::BAD_REQUEST;
+        m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
+        if (m_response)
+            m_response->receiveRequestBody(BufferView()); // send empty body, signals end of body
+        return ;
+    }
+    if (contentLength != m_data.headers.end())
+    {
+        m_curContentLength = std::atoi(contentLength->second.c_str());
+        m_curContentPos = 0;
+        m_parsingFunction = &Request::mf_parseRegularBody;
+    }
+    else if (transferEncoding->second != "chunked")
+    {
+        m_parsingState = ERROR;
+        m_data.status = Http::Status::BAD_REQUEST;      // UNSUPPORTED TRANSFER ENCODING
+        m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
+        if (m_response)
+            m_response->receiveRequestBody(BufferView()); 
+    }
+    else
+    {
+        m_curChunkPos = 0;
+        m_curChunkSize = -1;
+        m_parsingFunction = &Request::mf_parseChunkedBody;
+    }
 
-	m_data.status = mf_parseBody(currentView);
-	if (m_data.status != Http::Status::OK)
-	{
-		m_parsingState = ERROR;
-		return (BufferView());
-	}
+    m_parsingFunction = &Request::mf_parseRegularBody;
+    return ;
 
-	m_parsingState = COMPLETED;
-
-	return (receivedView);
 }
 
 

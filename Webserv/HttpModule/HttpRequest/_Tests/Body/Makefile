@@ -10,7 +10,8 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Body/MockHttpResponse.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
@@ -25,7 +26,6 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
@@ -142,8 +142,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 -include $(DEPS_COMMON) $(DEPS_DEBUG) $(DEPS_TEST)
 
 clean:
-	@echo "$(TAG) Cleaning object files."
-	@rm -rf $(OBJ_PATH)
+	@rm -rf *vgcore*
 
 fclean: clean
 	@echo "$(TAG) Full clean."

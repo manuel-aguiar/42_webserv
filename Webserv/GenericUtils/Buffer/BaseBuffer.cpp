@@ -74,7 +74,7 @@ void BaseBuffer::push(const char* data)
 
 void BaseBuffer::push(const char* data, size_t size)
 {
-    ASSERT_EQUAL(m_size + size < capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+    ASSERT_EQUAL(m_size + size <= capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
     ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
 
     if (!size)
@@ -91,7 +91,7 @@ void BaseBuffer::push(const std::string& data)
 
 void BaseBuffer::push(const BufferView& data)
 {
-    ASSERT_EQUAL(m_size + data.size() < capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+    ASSERT_EQUAL(m_size + data.size() <= capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
 
     if (!data.size())
         return ;
@@ -108,7 +108,7 @@ void BaseBuffer::truncatePush(const char* data)
 
 void BaseBuffer::truncatePush(const BufferView& data)
 {
-    ASSERT_EQUAL(data.size() < capacity(), true, "BaseBuffer::truncatePush(): data to push is beyond buffer capacity");
+    ASSERT_EQUAL(data.size() <= capacity(), true, "BaseBuffer::truncatePush(): data to push is beyond buffer capacity");
 
     if (data.size() && (unsigned char*)data.data() != m_begin)
         std::memmove(m_begin, data.data(), data.size());

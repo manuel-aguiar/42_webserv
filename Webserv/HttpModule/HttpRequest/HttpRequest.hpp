@@ -102,7 +102,7 @@ namespace Http
 		private:
 			Request();
 
-			typedef BufferView (Request::*handlerFunction)(BaseBuffer& buffer, const BufferView& currentView);
+			typedef BufferView (Request::*ParsingFunction)(BaseBuffer& buffer, const BufferView& currentView);
 			// all global module's context
 			ServerContext&								m_serverContext;
 
@@ -113,22 +113,30 @@ namespace Http
 			ParsingState								m_parsingState;
 			
 			// parseHandler functions
-			handlerFunction								m_handlerFunction;
+			ParsingFunction								m_parsingFunction;
 
 			// Components
 			Http::RequestData 							m_data;	// holds request data
 			
+			// state helpers
+			int											m_curChunkSize;
+			int											m_curChunkPos;
+			int											m_curContentLength;
+			int											m_curContentPos;
+
 			// Helper functions for parsing
 			BufferView									mf_handleNothing	(BaseBuffer& buffer, const BufferView& currentView);
 			BufferView									mf_handleRequestLine(BaseBuffer& buffer, const BufferView& currentView);
 			BufferView									mf_handleHeaders	(BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleBody		(BaseBuffer& buffer, const BufferView& currentView);
-
+			BufferView									mf_parseRegularBody	(BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_parseMultipartData(BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_parseChunkedBody	(BaseBuffer& buffer, const BufferView& currentView);
+			
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);
 			Http::Status::Number						mf_parseBody		(const BufferView& currentView);
-
+			void										mf_prepareBodyParser();
 
 
 
