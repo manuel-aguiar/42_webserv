@@ -89,12 +89,6 @@ namespace Http
 		const std::set<std::string>& getAllowedMethods();
 	}
 
-	// Supported Headers, un comment when used
-	// namespace AllowedHeaders
-	// {
-	//     const std::set<std::string>& getAllowedHeaders();
-	// }
-
 	namespace ResponseStatus
 	{
 		typedef enum

@@ -26,6 +26,7 @@
 
 namespace Http
 {
+	// must be sorted or WILL ABORT
 	static const char* headersOfInterest[] = 
 	{
 		"Accept",
