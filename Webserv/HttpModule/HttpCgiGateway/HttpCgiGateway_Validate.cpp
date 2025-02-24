@@ -16,7 +16,7 @@ static const char* ignoredHeaders[] =
 	"Content-Length",
 };
 
-int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
 {
 	int        		low = 0;
 	int        		high = sizeOfLookup - 1;

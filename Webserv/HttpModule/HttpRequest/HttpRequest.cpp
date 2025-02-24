@@ -14,7 +14,8 @@ namespace Http
 
 Request::Request(ServerContext &serverContext):
      m_serverContext(serverContext),
-     m_response(NULL)
+     m_response(NULL),
+     m_handlerFunction(&Request::mf_handleNothing)
 {
     reset();
 }
@@ -69,42 +70,7 @@ void Request::parse(BaseBuffer& buffer)
 
     try
     {
-        switch (m_parsingState)
-        {
-            case IDLE:
-                m_parsingState = REQLINE;
-                // intentional fallthrough
-
-            case REQLINE:
-            {
-                currentView = mf_handleRequestLine(buffer, currentView);    // move the current view as you go
-                if (m_parsingState == ERROR || m_parsingState == REQLINE)
-                    return;
-                // intentional fallthrough
-            }
-
-            case HEADERS:
-            {
-                currentView = mf_handleHeaders(buffer, currentView);        // move the current view as you go
-                if (m_parsingState == ERROR || m_parsingState == HEADERS)
-                    return;
-                // intentional fallthrough
-            }
-
-            case BODY:
-            {
-
-                //NOT IMPLEMENTED
-
-                mf_handleBody(buffer, currentView);
-                if (m_parsingState == ERROR || m_parsingState == BODY)
-                    return;
-            }
-
-            case ERROR:
-            case COMPLETED:
-                return;
-        }
+        (void)((this->*m_handlerFunction)(buffer, currentView));
     }
     catch (const std::exception& e) {
         m_parsingState = ERROR;
@@ -113,9 +79,23 @@ void Request::parse(BaseBuffer& buffer)
     }
 }
 
+BufferView Request::mf_handleNothing(BaseBuffer& buffer, const BufferView& currentView)
+{
+    //std::cout << "Request::mf_handleNothing called" << std::endl;
+
+    if (m_parsingState != IDLE)
+        return (currentView); // already started, do nothing
+    
+    m_handlerFunction = &Request::mf_handleRequestLine;
+    return (mf_handleRequestLine(buffer, currentView));
+}
+
 BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& receivedView)
 {
     BufferView currentView = receivedView;
+
+    if (receivedView.size() == 0)
+        return (BufferView()); // not enough to go through yet
 
     size_t reqLineEnd = currentView.find("\r\n", 2, 0);
     if (reqLineEnd == std::string::npos)
@@ -146,16 +126,20 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
     // transition to headers
     m_parsingState = HEADERS;
 
-    // return current view to where headers start
-    return (currentView);
+    m_handlerFunction = &Request::mf_handleHeaders; // next handler is headers
+    return (mf_handleHeaders(buffer, currentView));
 }
 
 BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& receivedView)
 {
     BufferView currentView = receivedView;
 
+    if (receivedView.size() == 0)
+        return (BufferView()); // not enough to go through yet
+
     while (currentView.size() > 0 && m_parsingState == HEADERS)
     {
+        //std::cout << "\t\t current view: " << currentView << std::endl;
         size_t headerEnd = currentView.find("\r\n", 2, 0);
         if (headerEnd == BufferView::npos)
         {
@@ -164,6 +148,8 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
             {
                 m_parsingState = ERROR;
                 m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
+                m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
+                m_response->receiveRequestData(m_data);         // inform response right away
             }
             else
                 buffer.truncatePush(currentView); // push the remaining data back to the beginning
@@ -181,12 +167,13 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
             // NO BODY, MARKING COMPLETED DIRECTLY FOR TEST PURPOSES
             
             m_parsingState = COMPLETED;
-            
-            
-            
-            
-            
+            m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
             break ;
+            
+            //m_parsingState = BODY;
+            //m_handlerFunction = &Request::mf_handleBody; // next handler is body
+            //return (mf_handleBody(buffer, currentView));
+            
         }
         BufferView thisHeader = currentView.substr(0, headerEnd); // segregate this header
         currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move to next header
@@ -196,18 +183,18 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
         if (m_data.status != Http::Status::OK)
         {
             m_parsingState = ERROR;
+            m_handlerFunction = &Request::mf_handleNothing; // next handler is nothing
             break ;
         }        
     }
-
 
     // send right away
     if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
         m_response->receiveRequestData(m_data);
 
 
-
-    return (currentView); // return buffer view of our current position, for the next parser
+    // either nothing or body
+    return ((this->*m_handlerFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
 }
 
 

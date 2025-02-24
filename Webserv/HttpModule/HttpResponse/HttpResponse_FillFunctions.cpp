@@ -44,9 +44,6 @@ namespace Http
     Response::mf_fillErrorResponse(BaseBuffer& writeBuffer)
     {
 
-
-
-        
         // NOT IMPLEMENTED YET
 
 

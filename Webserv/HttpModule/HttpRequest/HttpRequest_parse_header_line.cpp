@@ -9,6 +9,7 @@
 // Project headers
 #include "HttpRequest.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 // C++ headers
 #include <sstream>
@@ -26,17 +27,18 @@
 static const char* headersOfInterest[] = 
 {
 	"Accept",
-	"Accept-Language",
 	"Accept-Encoding",
+	"Accept-Language",
 	"Connection",
 	"Content-Length",
 	"Content-Type",
 	"Host",
+	"Proxy-Connection",
 	"Transfer-Encoding",
 };
 
 // binary search into headersOfInterest to see if we find our target
-int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
 {
 	int        		low = 0;
 	int        		high = sizeOfLookup - 1;
@@ -46,13 +48,13 @@ int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target
 	if (sizeOfLookup <= 0)
 		return (-1);
 
-	while (low < high)
+	while (low <= high)
 	{
 		mid = low + ((high - low) / 2);
 		midView = BufferView(lookup[mid]);
 		if (midView == target)
 			return (mid);
-		else if (midView < lookup[mid])
+		else if (midView > target)
 			high = mid - 1;
 		else
 			low = mid + 1;
@@ -69,7 +71,7 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
 		for (size_t i = 1; i < sizeof(headersOfInterest) / sizeof(headersOfInterest[0]); ++i)
-			ASSERT_EQUAL(BufferView(headersOfInterest[i]) > BufferView(headersOfInterest[i - 1]), true "headersOfInterest are repeated/not sorted");
+			ASSERT_EQUAL(BufferView(headersOfInterest[i]) > BufferView(headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
 	#endif
 
 	size_t colonPos = thisHeader.find(": ");

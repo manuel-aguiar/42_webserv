@@ -67,9 +67,15 @@ size_t BaseBuffer::writeOffset() const
     return (m_writeOffset);
 }
 
+void BaseBuffer::push(const char* data)
+{
+    push(data, std::strlen(data));
+}
+
 void BaseBuffer::push(const char* data, size_t size)
 {
     ASSERT_EQUAL(m_size + size < capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+    ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
 
     if (!size)
         return ;
@@ -94,10 +100,16 @@ void BaseBuffer::push(const BufferView& data)
     m_size += data.size();
 }
 
+void BaseBuffer::truncatePush(const char* data)
+{
+    ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
+    truncatePush(BufferView(data));
+}
+
 void BaseBuffer::truncatePush(const BufferView& data)
 {
     ASSERT_EQUAL(data.size() < capacity(), true, "BaseBuffer::truncatePush(): data to push is beyond buffer capacity");
-    
+
     if (data.size() && (unsigned char*)data.data() != m_begin)
         std::memmove(m_begin, data.data(), data.size());
     m_size = data.size();
@@ -110,6 +122,7 @@ void BaseBuffer::truncatePush(const std::string& data)
 
 void BaseBuffer::truncatePush(const char* data, size_t size)
 {
+    ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
     truncatePush(BufferView(data, size));
 }
 
