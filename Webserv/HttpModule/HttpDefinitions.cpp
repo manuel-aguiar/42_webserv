@@ -83,34 +83,57 @@ namespace Http
         targetType = FilesUtils::UNDEFINED;
         closeAfterSending = false;
     }
+///////////////////////////////////////////////////////////
 
-    // Uncomment when needed
-    /*namespace AllowedHeaders
+    RequestData::RequestData()
+        : method()
+        , uri()
+        , path()
+        , queryString()
+        , fragment()
+        , httpVersion()
+        , headers()
+        , body()
+        , status(Http::Status::OK)
+        , bodyType(Http::RequestData::NONE)
+        , contentType(Http::RequestData::RAW)
+        , expectedLength(0) {}
+
+    RequestData::~RequestData() {}
+    RequestData::RequestData(const RequestData& copy)
+        : method(copy.method)
+        , uri(copy.uri)
+        , path(copy.path)
+        , queryString(copy.queryString)
+        , fragment(copy.fragment)
+        , httpVersion(copy.httpVersion)
+        , headers(copy.headers)
+        , body(copy.body)
+        , status(copy.status)
+        , bodyType(copy.bodyType)
+        , contentType(copy.contentType)
+        , expectedLength(copy.expectedLength) {}
+
+    RequestData& RequestData::operator=(const RequestData& assign)
     {
-        static std::set<std::string> initAllowedHeaders()
-        {
-            std::set<std::string> headers;
-            headers.insert("Content-Type");
-            headers.insert("Content-Length");
-            headers.insert("Host");
-            headers.insert("User-Agent");
-            headers.insert("Accept");
-            headers.insert("Accept-Encoding");
-            headers.insert("Accept-Language");
-            headers.insert("Accept-Charset");
-            headers.insert("Accept-Datetime");
-            headers.insert("Authorization");
-            headers.insert("Cookie");
-            headers.insert("Set-Cookie");
-            return headers;
-        }
+        if (this == &assign)
+            return (*this);
 
-        const std::set<std::string>& getAllowedHeaders()
-        {
-            static const std::set<std::string> ALLOWED_HEADERS = initAllowedHeaders();
-            return ALLOWED_HEADERS;
-        }
-    }*/
+        method = assign.method;
+        uri = assign.uri;
+        path = assign.path;
+        queryString = assign.queryString;
+        fragment = assign.fragment;
+        httpVersion = assign.httpVersion;
+        headers = assign.headers;
+        body = assign.body;
+        status = assign.status;
+        bodyType = assign.bodyType;
+        contentType = assign.contentType;
+        expectedLength = assign.expectedLength;
+
+        return (*this);
+    }
 
     void RequestData::reset()
     {

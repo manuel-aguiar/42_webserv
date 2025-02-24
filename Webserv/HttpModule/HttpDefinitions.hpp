@@ -20,157 +20,165 @@ class ServerLocation;
 
 namespace Http
 {
-    // All http status codes
-    namespace Status
-    {
-        typedef enum
-        {
-            _TOTAL_CODES = 35,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+	// All http status codes
+	namespace Status
+	{
+		typedef enum
+		{
+			_TOTAL_CODES = 35,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
 
-            // 2xx
-            OK = 200,
-            CREATED = 201,
-            ACCEPTED = 202,
-            NO_CONTENT = 204,
-            RESET_CONTENT = 205,
-            PARTIAL_CONTENT = 206,
+			// 2xx
+			OK = 200,
+			CREATED = 201,
+			ACCEPTED = 202,
+			NO_CONTENT = 204,
+			RESET_CONTENT = 205,
+			PARTIAL_CONTENT = 206,
 
-            // 3xx
-            MULTIPLE_CHOICES = 300,
-            MOVED_PERMANENTLY = 301,
-            FOUND = 302,
-            SEE_OTHER = 303,
-            NOT_MODIFIED = 304,
-            TEMPORARY_REDIRECT = 307,
-            PERMANENT_REDIRECT = 308,
+			// 3xx
+			MULTIPLE_CHOICES = 300,
+			MOVED_PERMANENTLY = 301,
+			FOUND = 302,
+			SEE_OTHER = 303,
+			NOT_MODIFIED = 304,
+			TEMPORARY_REDIRECT = 307,
+			PERMANENT_REDIRECT = 308,
 
-            // 4xx
-            BAD_REQUEST = 400,
-            FORBIDDEN = 403,
-            NOT_FOUND = 404,
-            METHOD_NOT_ALLOWED = 405,
-            URI_TOO_LONG = 414,
-            PRECONDITION_FAILED = 412,
-            PAYLOAD_TOO_LARGE = 413,
-            UNSUPPORTED_MEDIA_TYPE = 415,
-            TOO_MANY_REQUESTS = 429,
-            REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
-            UNAVAILABLE_FOR_LEGAL_REASONS = 451,
+			// 4xx
+			BAD_REQUEST = 400,
+			FORBIDDEN = 403,
+			NOT_FOUND = 404,
+			METHOD_NOT_ALLOWED = 405,
+			URI_TOO_LONG = 414,
+			PRECONDITION_FAILED = 412,
+			PAYLOAD_TOO_LARGE = 413,
+			UNSUPPORTED_MEDIA_TYPE = 415,
+			TOO_MANY_REQUESTS = 429,
+			REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
+			UNAVAILABLE_FOR_LEGAL_REASONS = 451,
 
-            // 5xx
-            INTERNAL_ERROR = 500,
-            NOT_IMPLEMENTED = 501,
-            BAD_GATEWAY = 502,
-            SERVICE_UNAVAILABLE = 503,
-            GATEWAY_TIMEOUT = 504,
-            HTTP_VERSION_NOT_SUPPORTED = 505,
-            VARIANT_ALSO_NEGOTIATES = 506,
-            INSUFFICIENT_STORAGE = 507,
-            LOOP_DETECTED = 508,
-            NOT_EXTENDED = 510,
-            NETWORK_AUTHENTICATION_REQUIRED = 511
-        }   Number;
-    }
+			// 5xx
+			INTERNAL_ERROR = 500,
+			NOT_IMPLEMENTED = 501,
+			BAD_GATEWAY = 502,
+			SERVICE_UNAVAILABLE = 503,
+			GATEWAY_TIMEOUT = 504,
+			HTTP_VERSION_NOT_SUPPORTED = 505,
+			VARIANT_ALSO_NEGOTIATES = 506,
+			INSUFFICIENT_STORAGE = 507,
+			LOOP_DETECTED = 508,
+			NOT_EXTENDED = 510,
+			NETWORK_AUTHENTICATION_REQUIRED = 511
+		}   Number;
+	}
 
-    // standard values for http 1.1
-    namespace HttpStandard
-    {
-        const size_t MAX_URI_LENGTH = 2048;
-        const size_t MAX_HEADERS_LENGTH = 8192;
-        const size_t MAX_BODY_LENGTH = 1024 * 1024; // 1MB
-        const size_t MAX_CHUNK_SIZE = 1024 * 1024; // 1MB
-        const std::string HTTP_VERSION = "HTTP/1.1"; // Supported http versions
-    }
+	// standard values for http 1.1
+	namespace HttpStandard
+	{
+		const size_t MAX_URI_LENGTH = 2048;
+		const size_t MAX_HEADERS_LENGTH = 8192;
+		const size_t MAX_BODY_LENGTH = 1024 * 1024; // 1MB
+		const size_t MAX_CHUNK_SIZE = 1024 * 1024; // 1MB
+		const std::string HTTP_VERSION = "HTTP/1.1"; // Supported http versions
+	}
 
-    // Supported request methods
-    namespace AllowedRequestMethods
-    {
-        const std::set<std::string>& getAllowedMethods();
-    }
+	// Supported request methods
+	namespace AllowedRequestMethods
+	{
+		const std::set<std::string>& getAllowedMethods();
+	}
 
-    // Supported Headers, un comment when used
-    // namespace AllowedHeaders
-    // {
-    //     const std::set<std::string>& getAllowedHeaders();
-    // }
+	// Supported Headers, un comment when used
+	// namespace AllowedHeaders
+	// {
+	//     const std::set<std::string>& getAllowedHeaders();
+	// }
 
-    namespace ResponseStatus
-    {
-        typedef enum
-        {
-            WAITING, 				// have nothing to push, no sign transaction is finished
-            WRITING, 				// pushed data to buffer
-            FINISHED,				// transaction is finished
-            MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
-        }	Type;
-    }
+	namespace ResponseStatus
+	{
+		typedef enum
+		{
+			WAITING, 				// have nothing to push, no sign transaction is finished
+			WRITING, 				// pushed data to buffer
+			FINISHED,				// transaction is finished
+			MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
+		}	Type;
+	}
 
-    struct RequestData
-    {
-        enum BodyType {
-            NONE,
-            REGULAR,
-            CHUNKED
-        };
+	struct RequestData
+	{
+		RequestData();
+		~RequestData();
+		RequestData(const RequestData& copy);
+		RequestData& operator=(const RequestData& assign);
 
-        enum ContentType {
-            RAW,
-            MULTIPART
-        };
+		void reset();
+		
+		enum BodyType {
+			NONE,
+			REGULAR,
+			CHUNKED
+		};
 
-        typedef std::string HeaderKey;
-	    typedef std::string HeaderValue;
+		enum ContentType {
+			RAW,
+			MULTIPART
+		};
 
-        std::string method;
-        std::string uri;
-        std::string path;
-        std::string queryString;
-        std::string fragment;
-        std::string httpVersion;
-        std::map<HeaderKey, HeaderValue> headers;
-        std::string body;
-        std::string boundary;
-        std::string uploaded_filename;
-        std::string uploaded_filetype;
-        Status::Number status;
-        BodyType bodyType;
-        ContentType contentType;
-        size_t expectedLength;
+		void    reset();
+		
+		typedef std::string HeaderKey;
+		typedef std::string HeaderValue;
 
-        void    reset();
-    };
+		std::string							method;
+		std::string							uri;
+		std::string							path;
+		std::string							queryString;
+		std::string							fragment;
+		std::string							httpVersion;
+		std::map<HeaderKey, HeaderValue>	headers;
+		std::string							body;
+		std::string							boundary;
+		std::string							uploaded_filename;
+		std::string							uploaded_filetype;
+		Status::Number						status;
+		BodyType							bodyType;
+		ContentType							contentType;
+		size_t								expectedLength;
+
+	};
 
 
-    struct ResponseData
-    {
-        ResponseData();
-        ~ResponseData();
-        ResponseData(const ResponseData& copy);
-        ResponseData& operator=(const ResponseData& assign);
+	struct ResponseData
+	{
+		ResponseData();
+		~ResponseData();
+		ResponseData(const ResponseData& copy);
+		ResponseData& operator=(const ResponseData& assign);
 
-        void reset();
-        
-        typedef enum
-        {
-            UNDEFINED,
-            STATIC,
-            CGI,
-            REDIRECT
-        }	ResponseType;
+		void reset();
+		
+		typedef enum
+		{
+			UNDEFINED,
+			STATIC,
+			CGI,
+			REDIRECT
+		}	ResponseType;
 
-        const Http::RequestData*	        requestData;
-        Http::Status::Number		        requestStatus;
-        const ServerBlock*			        serverBlock;
-        const ServerLocation*		        serverLocation;
-        std::map<std::string, std::string>  headers;
-        ResponseType				        responseType;
-        std::string                         targetPath;
-        FilesUtils::FileType                targetType;
+		const Http::RequestData*	        requestData;
+		Http::Status::Number		        requestStatus;
+		const ServerBlock*			        serverBlock;
+		const ServerLocation*		        serverLocation;
+		std::map<std::string, std::string>  headers;
+		ResponseType				        responseType;
+		std::string                         targetPath;
+		FilesUtils::FileType                targetType;
 
-        bool                                closeAfterSending;
+		bool                                closeAfterSending;
 
-    };
+	};
 
 }
 
