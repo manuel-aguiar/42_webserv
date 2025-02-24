@@ -57,94 +57,49 @@ void  Request::reset()
     m_data.reset();
 }
 
-void Request::mf_handleRequestLine(const BufferView& buffer)
+/*
+    Buffer is not const anymore,
+    if there is not enough data, Request will
+    buffer::truncatePush the extra data back to the beginning.
+    Buffer will be read again, and "complete" the request.
+*/
+void Request::parse(BaseBuffer& buffer)
 {
-    size_t reqLineEnd = buffer.find("\r\n", 2, 0);
-    if (reqLineEnd == std::string::npos) return; // not enough to go through yet
+    BufferView currentView(buffer.data(), buffer.size());
 
-    BufferView requestLine(buffer.substr(0, reqLineEnd));
-    m_data.status = mf_parseRequestLine(requestLine);
-    if (m_data.status != Http::Status::OK) {
-        m_parsingState = ERROR;
-        return;
-    }
-
-    // transition to headers
-    m_parsingState = HEADERS;
-}
-
-void Request::mf_handleHeaders(const BufferView& buffer)
-{
-    size_t headerStart = buffer.find("\r\n", 2, 0);
-    if (headerStart == BufferView::npos) return; // not enough to go through yet
-
-    size_t headerEnd = buffer.find("\r\n\r\n", 4, 0);
-    if (headerEnd == BufferView::npos) return; // not enough to go through yet
-
-    headerStart += 2;
-
-    BufferView headers(buffer.substr(headerStart, headerEnd - headerStart));
-    m_data.status = mf_parseHeaders(headers);
-    // send right away
-    m_response->receiveRequestData(m_data);
-
-    // mark as completed, response will take it from here
-    if (m_data.status != Http::Status::OK)
+    try
     {
-        m_parsingState = COMPLETED;
-        return ;
-    }
-
-    // transition to body
-    m_parsingState = BODY;
-}
-
-void Request::mf_handleBody(const BufferView& buffer)
-{
-    if (m_data.method != "POST") {
-        m_parsingState = COMPLETED; // no body needed for non POST requests
-        return;
-    }
-
-    size_t bodyStart = buffer.find("\r\n\r\n", 4, 0);
-    if (bodyStart == BufferView::npos) return; // not enough to go through yet
-
-    bodyStart += 4;
-
-    BufferView body(buffer.data() + bodyStart, buffer.size() - bodyStart);
-    m_data.status = mf_parseBody(body);
-    if (m_data.status != Http::Status::OK) {
-        m_parsingState = ERROR;
-        return;
-    }
-
-    // transition to completed
-    m_parsingState = COMPLETED;
-}
-
-void Request::parse(const BaseBuffer& buffer)
-{
-    BufferView internalBuffer(buffer.data(), buffer.size());
-
-    try {
-        switch (m_parsingState) {
+        switch (m_parsingState)
+        {
             case IDLE:
                 m_parsingState = REQLINE;
                 // intentional fallthrough
 
             case REQLINE:
-                mf_handleRequestLine(internalBuffer);
-                if (m_parsingState == ERROR || m_parsingState == REQLINE) return;
+            {
+                currentView = mf_handleRequestLine(buffer, currentView);    // move the current view as you go
+                if (m_parsingState == ERROR || m_parsingState == REQLINE)
+                    return;
                 // intentional fallthrough
+            }
 
             case HEADERS:
-                mf_handleHeaders(internalBuffer);
-                if (m_parsingState == ERROR || m_parsingState == HEADERS) return;
+            {
+                currentView = mf_handleHeaders(buffer, currentView);        // move the current view as you go
+                if (m_parsingState == ERROR || m_parsingState == HEADERS)
+                    return;
                 // intentional fallthrough
+            }
 
             case BODY:
-                mf_handleBody(internalBuffer);
-                if (m_parsingState == ERROR || m_parsingState == BODY) return;
+            {
+
+                //NOT IMPLEMENTED
+
+                mf_handleBody(buffer, currentView);
+                if (m_parsingState == ERROR || m_parsingState == BODY)
+                    return;
+            }
 
             case ERROR:
             case COMPLETED:
@@ -154,8 +109,139 @@ void Request::parse(const BaseBuffer& buffer)
     catch (const std::exception& e) {
         m_parsingState = ERROR;
         m_data.status = Http::Status::INTERNAL_ERROR;
+        m_response->receiveRequestData(m_data);             //blew up, tell response to inform
     }
 }
+
+BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& receivedView)
+{
+    BufferView currentView = receivedView;
+
+    size_t reqLineEnd = currentView.find("\r\n", 2, 0);
+    if (reqLineEnd == std::string::npos)
+    {
+        // HARD LIMIT, request line cannot be bigger than buffer size
+        if (currentView.size() >= buffer.capacity())
+        {
+            m_parsingState = ERROR;
+            m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
+            m_response->receiveRequestData(m_data);         // inform response right away
+        }
+        else
+            buffer.truncatePush(currentView);                   // push the remaining data back to the beginning
+        return (BufferView()); // not enough to go through yet
+    }
+
+    BufferView requestLine(currentView.substr(0, reqLineEnd));
+    currentView = currentView.substr(reqLineEnd + 2, currentView.size() - reqLineEnd - 2); // move view forward
+
+    m_data.status = mf_parseRequestLine(requestLine);
+    if (m_data.status != Http::Status::OK)
+    {
+        m_parsingState = ERROR;
+        m_response->receiveRequestData(m_data);                 // inform response right away
+        return (BufferView());
+    }
+
+    // transition to headers
+    m_parsingState = HEADERS;
+
+    // return current view to where headers start
+    return (currentView);
+}
+
+BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& receivedView)
+{
+    BufferView currentView = receivedView;
+
+    while (currentView.size() > 0 && m_parsingState == HEADERS)
+    {
+        size_t headerEnd = currentView.find("\r\n", 2, 0);
+        if (headerEnd == BufferView::npos)
+        {
+            // HARD LIMIT, single header size cannot be bigger than the buffer capacity
+            if (currentView.size() >= buffer.capacity())
+            {
+                m_parsingState = ERROR;
+                m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
+            }
+            else
+                buffer.truncatePush(currentView); // push the remaining data back to the beginning
+            
+            return (BufferView()); // not enough to go through yet
+        }
+        if (headerEnd == 0)
+        {
+            // \r\n found at the beginning: end of headers, move to BODY
+            currentView = currentView.substr(2, currentView.size() - 2); // move to body
+            
+            
+            
+            
+            // NO BODY, MARKING COMPLETED DIRECTLY FOR TEST PURPOSES
+            
+            m_parsingState = COMPLETED;
+            
+            
+            
+            
+            
+            break ;
+        }
+        BufferView thisHeader = currentView.substr(0, headerEnd); // segregate this header
+        currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move to next header
+
+        // parse this header
+        m_data.status = mf_parseHeaders(thisHeader);
+        if (m_data.status != Http::Status::OK)
+        {
+            m_parsingState = ERROR;
+            break ;
+        }        
+    }
+
+
+    // send right away
+    if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
+        m_response->receiveRequestData(m_data);
+
+
+
+    return (currentView); // return buffer view of our current position, for the next parser
+}
+
+
+// UNDER REVIEW
+BufferView Request::mf_handleBody(BaseBuffer& buffer, const BufferView& currentView)
+{
+    (void)buffer;
+    if (m_data.method != "POST")
+    {
+        m_parsingState = COMPLETED; // no body needed for non POST requests
+        return (BufferView());
+    }
+
+    size_t bodyStart = currentView.find("\r\n\r\n", 4, 0);
+    if (bodyStart == BufferView::npos)
+        return (BufferView()); // not enough to go through yet
+
+    bodyStart += 4;
+
+    BufferView body(currentView.data() + bodyStart, currentView.size() - bodyStart);
+    m_data.status = mf_parseBody(body);
+    if (m_data.status != Http::Status::OK) {
+        m_parsingState = ERROR;
+        return (BufferView());
+    }
+
+    // transition to completed
+    m_parsingState = COMPLETED;
+
+    // NOT IMPLEMENTED
+    return (currentView);
+}
+
+
 
 // setters
 void Request::setResponse(Http::Response& response)

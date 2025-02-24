@@ -20,33 +20,74 @@
 // probably add a byte buffer to cache intermediary leftover data
 // ideally, nginx way of having multiple buffers
 
-Http::Status::Number
-Http::Request::mf_parseHeaders(const BufferView &headers)
+
+// headers we care, all others are discarded
+
+static const char* headersOfInterest[] = 
 {
-	if (headers.size() > HttpStandard::MAX_HEADERS_LENGTH)
-		return (Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE);
+	"Accept",
+	"Accept-Language",
+	"Accept-Encoding",
+	"Connection",
+	"Content-Length",
+	"Content-Type",
+	"Host",
+	"Transfer-Encoding",
+};
 
-	// TODO: do a better handling of the headers with a buffer view
-	std::string headersString;
-	headers.to_string(headersString);
-	std::istringstream	stringStream(headersString);
-	std::string			line;
+// binary search into headersOfInterest to see if we find our target
+int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+{
+	int        		low = 0;
+	int        		high = sizeOfLookup - 1;
+	int        		mid;
+	BufferView 		midView;
 
-	while (std::getline(stringStream, line) && !line.empty())
+	if (sizeOfLookup <= 0)
+		return (-1);
+
+	while (low < high)
 	{
-		if (line[line.size() - 1] == '\r')
-			line.erase(line.size() - 1);
-		// Check for semicolons (there should only be one)
-		std::size_t colonPos = line.find(':');
-		if (colonPos == std::string::npos || line.find(':', colonPos + 1) != std::string::npos)  //Referer: https://cautious-lamp-rqvjp6p5q9vhw5r5.github.dev/, double ":"
-			return (Http::Status::BAD_REQUEST);
-		// Trim key and value into separate variables
-		std::string key = StringUtils::strtrim(line.substr(0, colonPos));
-		std::string value = StringUtils::strtrim(line.substr(colonPos + 1));
-		if (key.empty() || value.empty())
-			return (Http::Status::BAD_REQUEST);
-		m_data.headers[key] = value;
+		mid = low + ((high - low) / 2);
+		midView = BufferView(lookup[mid]);
+		if (midView == target)
+			return (mid);
+		else if (midView < lookup[mid])
+			high = mid - 1;
+		else
+			low = mid + 1;
 	}
+
+	if (target != BufferView(lookup[low]))
+		return (-1);
+
+	return (low);
+}
+
+Http::Status::Number
+Http::Request::mf_parseHeaders(const BufferView &thisHeader)
+{
+	#ifndef NDEBUG
+		for (size_t i = 1; i < sizeof(headersOfInterest) / sizeof(headersOfInterest[0]); ++i)
+			ASSERT_EQUAL(BufferView(headersOfInterest[i]) > BufferView(headersOfInterest[i - 1]), true "headersOfInterest are repeated/not sorted");
+	#endif
+
+	size_t colonPos = thisHeader.find(": ");
+
+	if (colonPos == BufferView::npos)
+		return (Http::Status::BAD_REQUEST);					// bad header format
+
+	BufferView key = thisHeader.substr(0, colonPos);
+	BufferView value = thisHeader.substr(colonPos + 2, thisHeader.size() - colonPos - 2);
+
+	if (!key.size() || !value.size())						
+		return (Http::Status::BAD_REQUEST);					// empty key or value
+
+	int index = binSearch(headersOfInterest, sizeof(headersOfInterest) / sizeof(headersOfInterest[0]), key);
+	if (index == -1)
+		return (Http::Status::OK);							// header not in the interest list, ignore and return
+
+	m_data.headers[key.to_string()] = value.to_string();			// dangerous, may include null bytes.........
 
 	return (Http::Status::OK);
 }

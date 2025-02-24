@@ -38,8 +38,16 @@ class BaseBuffer
 		size_t		writeOffset() const;
 
 		void		clear();
+
+
 		void		push(const char* data, size_t size);
 		void		push(const std::string& data);
+		void		push(const BufferView& data);
+
+		// push target to the beginning of the buffer, effectively "clearing it"
+		void		truncatePush(const char* data, size_t size);
+		void		truncatePush(const std::string& data);
+		void		truncatePush(const BufferView& data);
 
 	private:
 		unsigned char*	m_begin;

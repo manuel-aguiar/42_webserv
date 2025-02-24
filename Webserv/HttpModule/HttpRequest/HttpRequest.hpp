@@ -49,7 +49,7 @@ namespace Http
 			void										reset(); // reset the request to its initial state
 
 			// Main parsing interface
-			void 										parse(const BaseBuffer& buffer);
+			void 										parse(BaseBuffer& buffer);
 
 			// my response
 			Http::Response&								getResponse();
@@ -100,6 +100,7 @@ namespace Http
 		private:
 			Request();
 
+			typedef BufferView (Request::*handlerFunction)(BaseBuffer& buffer, const BufferView& currentView);
 			// all global module's context
 			ServerContext&								m_serverContext;
 
@@ -108,19 +109,26 @@ namespace Http
 
 			// internal parsing state
 			ParsingState								m_parsingState;
+			
+			// parseHandler functions
+			handlerFunction								m_handlerFunction;
 
 			// Components
-			Http::RequestData 				m_data;	// holds request data
+			Http::RequestData 							m_data;	// holds request data
+			
+			// Helper functions for parsing
+			BufferView									mf_handleNothing	(BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_handleRequestLine(BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_handleHeaders	(BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_handleBody		(BaseBuffer& buffer, const BufferView& currentView);
 
 			// main parsers
-			Http::Status::Number						mf_parseRequestLine(const BufferView& buffer);
-			Http::Status::Number						mf_parseHeaders(const BufferView& buffer);
-			Http::Status::Number						mf_parseBody(const BufferView& buffer);
+			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
+			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);
+			Http::Status::Number						mf_parseBody		(const BufferView& currentView);
 
-			// Helper functions for parsing
-			void										mf_handleRequestLine(const BufferView& buffer);
-			void										mf_handleHeaders(const BufferView& buffer);
-			void										mf_handleBody(const BufferView& buffer);
+
+
 
 			Http::Status::Number						mf_parseUriComponents(const std::string& uri);
 			std::string									mf_decodeUriComp(const std::string& encoded) const;

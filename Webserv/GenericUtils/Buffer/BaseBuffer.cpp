@@ -74,13 +74,43 @@ void BaseBuffer::push(const char* data, size_t size)
     if (!size)
         return ;
 
-    std::memcpy(m_begin + m_size, data, size);
+    std::memmove(m_begin + m_size, data, size);
     m_size += size;
 }
 
 void BaseBuffer::push(const std::string& data)
 {
     push(data.c_str(), data.size());
+}
+
+void BaseBuffer::push(const BufferView& data)
+{
+    ASSERT_EQUAL(m_size + data.size() < capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
+
+    if (!data.size())
+        return ;
+    
+    std::memmove(m_begin + m_size, data.data(), data.size());
+    m_size += data.size();
+}
+
+void BaseBuffer::truncatePush(const BufferView& data)
+{
+    ASSERT_EQUAL(data.size() < capacity(), true, "BaseBuffer::truncatePush(): data to push is beyond buffer capacity");
+    
+    if (data.size() && (unsigned char*)data.data() != m_begin)
+        std::memmove(m_begin, data.data(), data.size());
+    m_size = data.size();
+}
+
+void BaseBuffer::truncatePush(const std::string& data)
+{
+    truncatePush(BufferView(data));
+}
+
+void BaseBuffer::truncatePush(const char* data, size_t size)
+{
+    truncatePush(BufferView(data, size));
 }
 
 void BaseBuffer::clear()
