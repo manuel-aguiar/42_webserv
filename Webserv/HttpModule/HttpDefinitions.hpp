@@ -114,7 +114,7 @@ namespace Http
 		RequestData& operator=(const RequestData& assign);
 
 		void reset();
-		
+
 		enum BodyType {
 			NONE,
 			REGULAR,
@@ -126,8 +126,6 @@ namespace Http
 			MULTIPART
 		};
 
-		void    reset();
-		
 		typedef std::string HeaderKey;
 		typedef std::string HeaderValue;
 

@@ -3,7 +3,9 @@
 
 void lineTests(int &testNumber)
 {
-	Http::Request Request;
+	ServerContext context;
+
+	Http::Request Request(context);
 	std::string	requestData;
 
 	TEST_HEADER("Http Request - Line");
@@ -23,9 +25,14 @@ void lineTests(int &testNumber)
 		"Accept-Language: en-US,en;q=0.5\r\n" +
 		"HttpConnection: keep-alive\r\n" +
 		"\r\n";
+	Buffer<2048> buffer;
+	buffer.push(requestData.c_str(), requestData.size());
 	try
 	{
-		EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+		Request.parse(buffer);
+
+		const Http::RequestData& data = Request.getData();
+		EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
 		TEST_PASSED_MSG("Common GET request");
 	}
 	catch(const std::exception& e)

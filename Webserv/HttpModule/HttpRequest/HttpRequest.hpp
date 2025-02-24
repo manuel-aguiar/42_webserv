@@ -55,6 +55,8 @@ namespace Http
 			Http::Response&								getResponse();
 			void										setResponse(Http::Response& response);
 
+			const Http::RequestData&					getData() const;
+
 			enum ParsingState
 			{
 				IDLE,
