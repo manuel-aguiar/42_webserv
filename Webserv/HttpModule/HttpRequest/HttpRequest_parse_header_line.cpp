@@ -24,18 +24,22 @@
 
 // headers we care, all others are discarded
 
-static const char* headersOfInterest[] = 
+namespace Http
 {
-	"Accept",
-	"Accept-Encoding",
-	"Accept-Language",
-	"Connection",
-	"Content-Length",
-	"Content-Type",
-	"Host",
-	"Proxy-Connection",
-	"Transfer-Encoding",
-};
+	static const char* headersOfInterest[] = 
+	{
+		"Accept",
+		"Accept-Encoding",
+		"Accept-Language",
+		"Connection",
+		"Content-Length",
+		"Content-Type",
+		"Host",
+		"Proxy-Connection",
+		"Transfer-Encoding",
+	};
+}
+
 
 // binary search into headersOfInterest to see if we find our target
 static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
@@ -71,8 +75,8 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
 		// check if headersOfInterest is sorted and unique
-		for (size_t i = 1; i < sizeof(headersOfInterest) / sizeof(headersOfInterest[0]); ++i)
-			ASSERT_EQUAL(BufferView(headersOfInterest[i]) > BufferView(headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
+		for (size_t i = 1; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
+			ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
 	#endif
 
 	size_t colonPos = thisHeader.find(": ");
@@ -86,7 +90,7 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	if (!key.size() || !value.size())						// THIS DOESN'T CHECK FOR BLANK SPACES, JUST SIZES
 		return (Http::Status::BAD_REQUEST);					// empty key or value
 
-	int index = binSearch(headersOfInterest, sizeof(headersOfInterest) / sizeof(headersOfInterest[0]), key);
+	int index = binSearch(Http::headersOfInterest, sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]), key);
 	if (index == -1)
 		return (Http::Status::OK);							// header not in the interest list, ignore and return
 
