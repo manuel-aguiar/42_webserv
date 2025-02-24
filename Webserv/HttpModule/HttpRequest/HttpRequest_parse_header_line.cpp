@@ -13,6 +13,13 @@
 // C++ headers
 #include <sstream>
 
+// Edge cases:
+// split \r \n between two reads "http/1.1 \r" + "\n"
+// "http " + "1.1 \r\n"
+// add a filter for headers of interest here
+// probably add a byte buffer to cache intermediary leftover data
+// ideally, nginx way of having multiple buffers
+
 Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &headers)
 {
@@ -31,7 +38,7 @@ Http::Request::mf_parseHeaders(const BufferView &headers)
 			line.erase(line.size() - 1);
 		// Check for semicolons (there should only be one)
 		std::size_t colonPos = line.find(':');
-		if (colonPos == std::string::npos || line.find(':', colonPos + 1) != std::string::npos)
+		if (colonPos == std::string::npos || line.find(':', colonPos + 1) != std::string::npos)  //Referer: https://cautious-lamp-rqvjp6p5q9vhw5r5.github.dev/, double ":"
 			return (Http::Status::BAD_REQUEST);
 		// Trim key and value into separate variables
 		std::string key = StringUtils::strtrim(line.substr(0, colonPos));

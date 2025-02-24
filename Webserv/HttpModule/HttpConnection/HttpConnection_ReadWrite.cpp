@@ -20,8 +20,8 @@ Connection::mf_read(const Ws::fd fd)
         m_transaction.request.parse(m_readBuffer);
     }
 
-    //BufferView view(m_readBuffer.data(), m_readBuffer.size());
-    //std::cout << "Read: " << view << std::endl;
+    std::cout << "read: " << m_readBuffer.size() << '\n' << m_readBuffer.view() << std::endl;
+    _exit(1);
 }
 
 

@@ -85,7 +85,6 @@ void Request::mf_handleHeaders(const BufferView& buffer)
 
     BufferView headers(buffer.substr(headerStart, headerEnd - headerStart));
     m_data.status = mf_parseHeaders(headers);
-
     // send right away
     m_response->receiveRequestData(m_data);
 

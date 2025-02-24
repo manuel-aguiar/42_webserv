@@ -1,4 +1,7 @@
+
+
 #include "../../HttpRequest.hpp"
+#include "../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 #include <iostream>
 #include <iomanip>
@@ -7,7 +10,7 @@
 void validRequestLineTests(int &testNumber)
 {
     TEST_HEADER("Http Request - Valid Request Lines");
-
+    ServerContext context;
     // Test 1: Simple GET request
     TEST_INTRO(testNumber++);
     {
