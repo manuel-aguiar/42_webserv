@@ -41,6 +41,43 @@ namespace Http
 	};
 }
 
+static bool isOnlySpaces(const BufferView& view)
+{
+	for (size_t i = 0; i < view.size(); ++i)
+	{
+		if (view[i] != ' ' && view[i] != '\t')
+			return (false);
+	}
+
+	return (true);
+}
+
+static bool keyIsValid(const BufferView& key)
+{
+	if (key.size() == 0)
+		return (false);
+
+	if (isOnlySpaces(key))
+		return (false);
+
+	// more validation stuff here
+
+	return (true);
+}
+
+static bool valueIsValid(const BufferView& key)
+{
+	if (key.size() == 0)
+		return (false);
+
+	if (isOnlySpaces(key))
+		return (false);
+
+	// more validation stuff here
+
+	return (true);
+}
+
 
 // binary search into headersOfInterest to see if we find our target
 static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
@@ -83,13 +120,13 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	size_t colonPos = thisHeader.find(": ");
 
 	if (colonPos == BufferView::npos)
-		return (Http::Status::BAD_REQUEST);					// bad header format
+		return (Http::Status::BAD_REQUEST);					// bad header format, correct error code?
 
 	BufferView key = thisHeader.substr(0, colonPos);
 	BufferView value = thisHeader.substr(colonPos + 2, thisHeader.size() - colonPos - 2);
 
-	if (!key.size() || !value.size())						// THIS DOESN'T CHECK FOR BLANK SPACES, JUST SIZES
-		return (Http::Status::BAD_REQUEST);					// empty key or value
+	if (!keyIsValid(key) || !valueIsValid(value))			
+		return (Http::Status::BAD_REQUEST);					// bad key or value, replace with correct error code
 
 	int index = binSearch(Http::headersOfInterest, sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]), key);
 	if (index == -1)
