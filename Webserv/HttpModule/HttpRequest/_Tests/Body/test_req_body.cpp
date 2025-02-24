@@ -8,16 +8,19 @@
 void regularBodyTests(int &testNumber)
 {
     TEST_HEADER("Http Request - Regular Body");
+    ServerContext context;
+    Buffer<2048> buffer;
 
+    
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: 13\r\n"
                    "\r\n"
                    "Hello, World!");
-
+        
         try
         {
             Request.parse(buffer);
@@ -33,8 +36,8 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: abc\r\n"
                    "\r\n");
@@ -53,8 +56,8 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: 20\r\n"
                    "\r\n");
@@ -90,12 +93,13 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
         std::stringstream ss;
         ss << "POST /test HTTP/1.1\r\n"
            << "Content-Length: " << Http::HttpStandard::MAX_BODY_LENGTH + 1 << "\r\n"
            << "\r\n";
+
+        buffer.clear();
         buffer.push(ss.str());
 
         try
@@ -112,8 +116,9 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: 10\r\n"
                    "\r\n");
@@ -139,8 +144,9 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: " + StringUtils::intToStr(Http::HttpStandard::MAX_BODY_LENGTH + 1) + "\r\n"
                    "\r\n");
@@ -160,8 +166,9 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Content-Length: 10\r\n"
                    "\r\n");
@@ -187,9 +194,10 @@ void regularBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
+        Http::Request Request(context);
         std::string boundary = "------------------------12345";
-        Buffer<1024> buffer;
+
+        buffer.clear();
         buffer.push("POST /upload HTTP/1.1\r\n"
                    "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
                    "Content-Length: 213\r\n"
@@ -222,11 +230,13 @@ void regularBodyTests(int &testNumber)
 void chunkedBodyTests(int &testNumber)
 {
     TEST_HEADER("Http Request - Chunked Body");
-
+    ServerContext context;
+    Buffer<2048> buffer;
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Transfer-Encoding: chunked\r\n"
                    "\r\n"
@@ -252,8 +262,9 @@ void chunkedBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Transfer-Encoding: chunked\r\n"
                    "\r\n");
@@ -285,8 +296,9 @@ void chunkedBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Transfer-Encoding: chunked\r\n"
                    "\r\n"
@@ -307,8 +319,9 @@ void chunkedBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Transfer-Encoding: chunked\r\n"
                    "\r\n"
@@ -331,8 +344,8 @@ void chunkedBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
-        Buffer<1024> buffer;
+        Http::Request Request(context);
+        buffer.clear();
         buffer.push("POST /test HTTP/1.1\r\n"
                    "Transfer-Encoding: chunked\r\n"
                    "\r\n"
@@ -357,9 +370,9 @@ void chunkedBodyTests(int &testNumber)
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
+        Http::Request Request(context);
         std::string boundary = "------------------------12345";
-        Buffer<1024> buffer;
+        buffer.clear();
         buffer.push("POST /upload HTTP/1.1\r\n"
                    "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
                    "Transfer-Encoding: chunked\r\n"
@@ -394,12 +407,15 @@ void chunkedBodyTests(int &testNumber)
 void multipartBodyTests(int &testNumber)
 {
     TEST_HEADER("Http Request - Multipart Body");
+    ServerContext context;
+    Buffer<2048> buffer;
 
     {
         TEST_INTRO(testNumber++);
-        Http::Request Request;
+        Http::Request Request(context);
         std::string boundary = "------------------------12345";
-        Buffer<1024> buffer;
+        
+        buffer.clear();
         buffer.push("POST /upload HTTP/1.1\r\n"
                    "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
                    "Content-Length: 100\r\n"

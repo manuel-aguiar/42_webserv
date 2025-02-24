@@ -98,8 +98,7 @@ namespace Http
 	void
 	Connection::resetTransaction()
 	{
-		m_transaction.request.reset();
-		m_transaction.response.reset();
+		m_transaction.reset();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();
 	}

@@ -14,14 +14,16 @@ namespace Http
 void
 Connection::mf_read(const Ws::fd fd)
 {
-    if (m_readBuffer.available() == m_readBuffer.capacity())
-    {
-        m_readBuffer.read(fd);
-        m_transaction.request.parse(m_readBuffer);
-    }
+    //std::cout << "buffer before read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
 
-    //BufferView view(m_readBuffer.data(), m_readBuffer.size());
-    //std::cout << "Read: " << view << std::endl;
+    if (m_transaction.request.isCompleted() || m_transaction.request.isError())
+        return ;
+
+    m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
+
+    //std::cout << "buffer after read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
+
+    m_transaction.request.parse(m_readBuffer);
 }
 
 

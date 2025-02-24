@@ -16,14 +16,14 @@ static const char* ignoredHeaders[] =
 	"Content-Length",
 };
 
-int binSearch(const char** lookup, size_t size, const BufferView& target)
+static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
 {
 	int        		low = 0;
-	int        		high = size - 1;
+	int        		high = sizeOfLookup - 1;
 	int        		mid;
 	BufferView 		midView;
 
-	if (size <= 0)
+	if (sizeOfLookup <= 0)
 		return (-1);
 
 	while (low < high)

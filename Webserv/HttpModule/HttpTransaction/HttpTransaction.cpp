@@ -24,4 +24,11 @@ namespace Http
 	}
 
 	Transaction::~Transaction() {}
+
+	void
+	Transaction::reset()
+	{
+		request.reset();
+		response.reset();
+	}
 }

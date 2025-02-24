@@ -117,7 +117,13 @@ BufferView::to_string() const
 
 int BufferView::compare(const BufferView& other) const
 {
-	return (std::memcmp(m_data, other.m_data, m_size < other.m_size ? m_size : other.m_size));
+    size_t min_size = (m_size < other.m_size) ? m_size : other.m_size;
+    int result = std::memcmp(m_data, other.m_data, min_size);
+    
+    if (result == 0)
+        return (m_size < other.m_size) ? -1 : (m_size > other.m_size);
+    
+    return (result);
 }
 
 bool BufferView::operator==(const BufferView& other) const

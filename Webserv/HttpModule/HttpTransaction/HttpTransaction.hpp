@@ -18,6 +18,7 @@ namespace Http
 		~Transaction();
 		Transaction& operator=(const Transaction& other);
 
+		void			reset();
 
 		Http::Request	request;
 		Http::Response	response;

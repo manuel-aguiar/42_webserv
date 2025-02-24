@@ -5,7 +5,9 @@
 
 void bodyTests(int &testNumber)
 {
-	Http::Request	Request;
+	ServerContext	context;
+	Buffer<2048>	buffer;
+	
 	std::string		requestData;
 
 	TEST_HEADER("Http Request - Body");
@@ -25,10 +27,15 @@ void bodyTests(int &testNumber)
 		"Content-Length: 78\r\n" +
 		"User-Agent: MyApp/1.0\r\n\r\n"
 		"{\"name\":\"John Doe\",\"email\":\"johndoe@example.com\",\"password\":\"securepassword\"}";
-
+	buffer.clear();
+	buffer.push(requestData.c_str(), requestData.size());
 	try
 	{
-		EXPECT_EQUAL(Request.parse(requestData), (int)Http::Status::OK, "Should pass");
+		Http::Request	Request(context);
+		Request.parse(buffer);
+		const Http::RequestData& data = Request.getData();
+
+		EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
 		TEST_PASSED_MSG("Common request");
 	}
 	catch(const std::exception& e)
