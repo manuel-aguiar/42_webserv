@@ -70,6 +70,7 @@ Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
+		// check if headersOfInterest is sorted and unique
 		for (size_t i = 1; i < sizeof(headersOfInterest) / sizeof(headersOfInterest[0]); ++i)
 			ASSERT_EQUAL(BufferView(headersOfInterest[i]) > BufferView(headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
 	#endif
@@ -82,7 +83,7 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	BufferView key = thisHeader.substr(0, colonPos);
 	BufferView value = thisHeader.substr(colonPos + 2, thisHeader.size() - colonPos - 2);
 
-	if (!key.size() || !value.size())						
+	if (!key.size() || !value.size())						// THIS DOESN'T CHECK FOR BLANK SPACES, JUST SIZES
 		return (Http::Status::BAD_REQUEST);					// empty key or value
 
 	int index = binSearch(headersOfInterest, sizeof(headersOfInterest) / sizeof(headersOfInterest[0]), key);
