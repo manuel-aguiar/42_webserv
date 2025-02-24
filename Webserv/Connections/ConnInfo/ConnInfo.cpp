@@ -2,6 +2,7 @@
 
 #include "ConnInfo.hpp"
 #include <cstring> // memset
+#include <cstring> // memset
 
 ConnInfo::ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) : 
 	sockfd(sockfd),
