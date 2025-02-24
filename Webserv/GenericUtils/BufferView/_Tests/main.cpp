@@ -7,11 +7,69 @@
 // C++ headers
 # include <iostream>
 
+static const char* headersOfInterest[] = 
+{
+	"Accept",
+	"Accept-Encoding",
+	"Accept-Language",
+	"Connection",
+	"Content-Length",
+	"Content-Type",
+	"Host",
+	"Proxy-Connection",
+	"Transfer-Encoding",
+};
+
+// binary search into headersOfInterest to see if we find our target
+static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+{
+	int        		low = 0;
+	int        		high = sizeOfLookup - 1;
+	int        		mid;
+	BufferView 		midView;
+
+	if (sizeOfLookup <= 0)
+		return (-1);
+
+	while (low <= high)
+	{
+		mid = low + ((high - low) / 2);
+		midView = BufferView(lookup[mid]);
+		if (midView == target)
+			return (mid);
+		else if (midView > target)
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+
+	std::cout << "'" << target << "' vs '" << BufferView(lookup[low]) << "'" << std::endl;
+	std::cout << "size target " << target.size() << " size lookup " << BufferView(lookup[low]).size() << std::endl;
+	if (target != BufferView(lookup[low]))
+		return (-1);
+
+	return (low);
+}
+
 
 int main(void)
 {
 	int testNumber = 1;
 	TEST_HEADER("BufferView");
+
+	try
+	{
+		TEST_INTRO(testNumber++);
+
+		EXPECT_EQUAL(binSearch(headersOfInterest, sizeof(headersOfInterest) / sizeof(headersOfInterest[0]), BufferView("Accept-Encoding")) != -1, true, 
+		"should find Accept");
+
+		TEST_PASSED_MSG("simple test");
+	}
+	catch(const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
 
 	try
 	{
@@ -41,6 +99,13 @@ int main(void)
 		
 		// generating a null terminated string out of BufferView
 		assigned = sub.to_string();
+		
+		EXPECT_EQUAL(BufferView("Accept-Encoding") > BufferView("Accept"), true, "should be greater than");
+		EXPECT_EQUAL(BufferView("Accept-Encoding") >= BufferView("Accept"), true, "should be greater than");
+		EXPECT_EQUAL(BufferView("Accept") < BufferView("Accept-Encoding"), true, "should be greater than");
+		EXPECT_EQUAL(BufferView("Accept") <= BufferView("Accept-Encoding"), true, "should be greater than");
+		EXPECT_EQUAL(BufferView("Accept") == BufferView("Accept"), true, "should be greater than");
+		EXPECT_EQUAL(BufferView("Accept") != BufferView("Accept-Encoding"), true, "should be greater than");
 
 		EXPECT_EQUAL(assigned, "World", "should be equal to World");
 
@@ -50,7 +115,9 @@ int main(void)
 	{
 		TEST_FAILED_MSG(e.what());
 	}
+
 	
+
 
 
 

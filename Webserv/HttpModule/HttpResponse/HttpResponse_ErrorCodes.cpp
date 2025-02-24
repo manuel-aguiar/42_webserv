@@ -78,7 +78,7 @@ const char* getStatusMessage(int statusCode)
 	size_t high = (sizeof(codes)/ sizeof(codes[0])) - 1;
 	size_t mid;
 
-	while (low < high)
+	while (low <= high)
 	{
 		mid = low + ((high - low) / 2);
 		if (statusCode == codes[mid])

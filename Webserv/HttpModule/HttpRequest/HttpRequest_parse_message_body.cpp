@@ -274,11 +274,11 @@ Http::Request::mf_contentType()
 }
 
 Http::Status::Number
-Http::Request::mf_parseBody(const BufferView& buffer)
+Http::Request::mf_parseBody(const BufferView& receivedView)
 {
-    // TODO: do a better handling of the body with a buffer view
+    // TODO: do a better handling of the body with a receivedView view
     std::string data;
-    buffer.to_string(data);
+    receivedView.to_string(data);
 
     try {
         if (m_data.bodyType == Http::RequestData::NONE) {
