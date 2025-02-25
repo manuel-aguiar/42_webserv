@@ -129,28 +129,36 @@ BufferView Request::mf_handleRequestLine(const BaseBuffer& buffer, const BufferV
 
 	if (remaining.size() == 0)
 		return (BufferView());
-
-	size_t reqLineEnd = remaining.find('\r', m_findPivot);
-	if (reqLineEnd == BufferView::npos || reqLineEnd == remaining.size() - 1)
+	
+	size_t reqLineEnd;
+	
+	while (1)
 	{
-		m_findPivot = std::max((int)remaining.size() - 1, 0);
-		// HARD LIMIT, request line cannot be bigger than buffer size
-		if (remaining.size() >= buffer.capacity())
+		reqLineEnd = remaining.find('\r', m_findPivot);
+		if (reqLineEnd == BufferView::npos || reqLineEnd == remaining.size() - 1)
 		{
-			m_parsingState = ERROR;
-			m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
-			m_response->receiveRequestData(m_data);         // inform response right away
+			m_findPivot = std::max((int)remaining.size() - 1, 0);
+			// HARD LIMIT, request line cannot be bigger than buffer size
+			if (remaining.size() >= buffer.capacity())
+			{
+				m_parsingState = ERROR;
+				m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
+				m_response->receiveRequestData(m_data);         // inform response right away
+			}
+			return (remaining); // not enough to go through yet
 		}
-		return (remaining); // not enough to go through yet
+		else if (remaining[reqLineEnd + 1] != '\n')
+		{
+			//std::cout << "found in the middle of a header" << std::endl;
+			m_findPivot = reqLineEnd + 1;
+		}
+		else
+		{
+			m_findPivot = 0;
+			break ;
+		}
 	}
-	else if (remaining[reqLineEnd + 1] != '\n')
-	{
-		//std::cout << "found in the middle of a header" << std::endl;
-		m_findPivot = reqLineEnd + 1;
-	}
-	else
-		m_findPivot = 0;
-
+	
 	BufferView requestLine(remaining.substr(0, reqLineEnd));
 	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2); // move view forward
 
@@ -195,9 +203,7 @@ BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView&
 				m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
 				m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
 				if (m_response)
-				{
 					m_response->receiveRequestData(m_data);
-				}
 				//std::cout << "header size too big" << std::endl;
 			}
 			return (remaining); // push the remaining data back to the beginning
@@ -242,14 +248,15 @@ BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView&
 	if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
 	{
 		if (m_response)
-		{
 			m_response->receiveRequestData(m_data);
-		}
 	}
 
 	//std::cout << "ready to call body parser" << std::endl;
 	// either nothing or body
-	return ((this->*m_parsingFunction)(buffer, remaining)); // return buffer view of our current position, for the next parser
+
+
+
+	return ((this->*m_parsingFunction)(buffer, remaining)); // return buffer view of our remaining position to the next parser
 }
 
 /*
@@ -275,23 +282,25 @@ void Request::mf_prepareBodyParser()
 	}
     headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
     headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
-    //headerContainer::iterator contentType = m_data.headers.find("Content-Type");
+    headerContainer::iterator contentType = m_data.headers.find("Content-Type");
     
     if ((contentLength == m_data.headers.end() && transferEncoding == m_data.headers.end())
     || (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()))
-    {
-        m_parsingState = ERROR;
-        m_data.status = Http::Status::BAD_REQUEST;
-        m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
-        if (m_response)
-            m_response->receiveRequestBody(BufferView()); // send empty body, signals end of body
-        return ;
-    }
+        goto exitFailure;
     if (contentLength != m_data.headers.end())
     {
         m_curContentLength = std::atoi(contentLength->second.c_str());
         m_curContentPos = 0;
         m_parsingFunction = &Request::mf_parseRegularBody;
+		if (contentType != m_data.headers.end()
+		|| contentType->second.find("multipart/form-data") != std::string::npos)
+		{
+			size_t boundaryPos = contentType->second.find("boundary=");
+			if (boundaryPos == std::string::npos)
+				goto exitFailure;
+			m_data.boundary = contentType->second.substr(boundaryPos + 9);
+			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
+		}
     }
     else if (transferEncoding->second == "chunked")
     {
@@ -299,16 +308,19 @@ void Request::mf_prepareBodyParser()
     }
     else
     {
-        m_parsingState = ERROR;
-        m_data.status = Http::Status::BAD_REQUEST;      // UNSUPPORTED TRANSFER ENCODING
-        m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
-        if (m_response)
-            m_response->receiveRequestBody(BufferView()); 
+		goto exitFailure;
     }
 
 	//std::cout << "Body parser prepared" << std::endl;
+	return ;
 
-    return ;
+exitFailure:
+	m_parsingState = ERROR;
+	m_data.status = Http::Status::BAD_REQUEST;      // UNSUPPORTED TRANSFER ENCODING
+	m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
+	if (m_response)
+		m_response->receiveRequestBody(BufferView()); 
+
 }
 
 
