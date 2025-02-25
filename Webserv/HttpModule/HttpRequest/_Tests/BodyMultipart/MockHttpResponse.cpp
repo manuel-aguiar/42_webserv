@@ -38,13 +38,13 @@ namespace Http
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		std::cout << "\t\tResponse received header data" << std::endl;
+		//std::cout << "\t\tResponse received header data" << std::endl;
 		m_responseData.requestData = &data;
 	}
 
 	void	Response::receiveRequestBody(const BufferView& view)
 	{
-		std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
+		//std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
 
 		const std::string& targetFile = m_responseData.requestData->multipart_Filename;
 		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())

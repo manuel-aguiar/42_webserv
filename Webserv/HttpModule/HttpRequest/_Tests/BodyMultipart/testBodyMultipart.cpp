@@ -66,14 +66,16 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
             // parse, tell the buffer to put the unconsumed part at the beginning
             buffer.truncatePush(HttpRequest.parse(buffer));
 
-            std::cout << "loop requestData.status = " << requestData.status << std::endl;
+            //std::cout << "loop requestData.status = " << requestData.status << std::endl;
         }
-        std::cout << "requestData.status = " << requestData.status << std::endl;
+        //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file1.txt"]), BufferView("This is file 1."), "Body should match");
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file2.txt"]), BufferView("This is file 2."), "Body should match");
 
-        TEST_PASSED_MSG(std::string("Valid body, chuncked, weird test with carriage return in body, readBuf size: ") 
-        + TestHelpers::to_string(readBufSize)  + " '" + requestBodyTranslated + "'");
+        TEST_PASSED_MSG(std::string("Valid body, multipart, file1.txt [" 
+        + g_mockMsgBody["file1.txt"] + "], file2.txt [" 
+        + g_mockMsgBody["file2.txt"] + "], readBuf size: ") 
+        + TestHelpers::to_string(readBufSize));
     }
     catch(const std::exception& e)
     {
@@ -86,7 +88,7 @@ int main()
 {
     TEST_HEADER("Http Request - Chunked Body");
     int testNumber = 1;
-    chunkedReadBuffer(testNumber, 100);
+    chunkedReadBuffer(testNumber, 122);
     for (size_t i = 75; i < 123; ++i)
         chunkedReadBuffer(testNumber, i);
     chunkedReadBuffer(testNumber, 1024);
