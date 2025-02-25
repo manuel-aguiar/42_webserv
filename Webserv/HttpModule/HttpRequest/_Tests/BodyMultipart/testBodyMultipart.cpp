@@ -9,7 +9,7 @@
 #include <sstream>
 
 // Mock Http::Response will drop the message body here
-extern std::map<std::string, Buffer<1024> > g_mockMsgBody;
+extern std::map<std::string, std::string > g_mockMsgBody;
 
 void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 {
@@ -31,7 +31,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
     "POST /upload HTTP/1.1\r\n"
     "Host: example.com\r\n"
     "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary12345\r\n"
-    "Content-Length: 227\r\n"  // Placeholder, must be calculated
+    "Content-Length: 500\r\n"  // Placeholder, must be calculated
     "\r\n";
 
     std::string requestBodyMultipart = 
@@ -65,10 +65,12 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 
             // parse, tell the buffer to put the unconsumed part at the beginning
             buffer.truncatePush(HttpRequest.parse(buffer));
+
+            std::cout << "loop requestData.status = " << requestData.status << std::endl;
         }
         std::cout << "requestData.status = " << requestData.status << std::endl;
-        EXPECT_EQUAL(g_mockMsgBody["file1.txt"].view(), BufferView("This is file 1."), "Body should match");
-        EXPECT_EQUAL(g_mockMsgBody["file2.txt"].view(), BufferView("This is file 2."), "Body should match");
+        EXPECT_EQUAL(BufferView(g_mockMsgBody["file1.txt"]), BufferView("This is file 1."), "Body should match");
+        EXPECT_EQUAL(BufferView(g_mockMsgBody["file2.txt"]), BufferView("This is file 2."), "Body should match");
 
         TEST_PASSED_MSG(std::string("Valid body, chuncked, weird test with carriage return in body, readBuf size: ") 
         + TestHelpers::to_string(readBufSize)  + " '" + requestBodyTranslated + "'");
@@ -84,10 +86,10 @@ int main()
 {
     TEST_HEADER("Http Request - Chunked Body");
     int testNumber = 1;
-    chunkedReadBuffer(testNumber, 29);
-    //for (size_t i = 28; i < 101; ++i)
-    //    chunkedReadBuffer(testNumber, i);
-    //chunkedReadBuffer(testNumber, 1024);
+    chunkedReadBuffer(testNumber, 100);
+    for (size_t i = 75; i < 123; ++i)
+        chunkedReadBuffer(testNumber, i);
+    chunkedReadBuffer(testNumber, 1024);
     TEST_FOOTER;
     return 0;
 }

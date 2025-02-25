@@ -6,6 +6,7 @@
 #include "../../../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../../../GenericUtils/Buffer/HeapBuffer.hpp"
 
 
 
@@ -20,7 +21,7 @@ extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
 
-std::map<std::string, Buffer<1024> > g_mockMsgBody;
+std::map<std::string, std::string > g_mockMsgBody;
 
 namespace Http
 {
@@ -37,16 +38,18 @@ namespace Http
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
+		std::cout << "\t\tResponse received header data" << std::endl;
 		m_responseData.requestData = &data;
 	}
 
 	void	Response::receiveRequestBody(const BufferView& view)
 	{
+		std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
+
 		const std::string& targetFile = m_responseData.requestData->multipart_Filename;
 		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())
-			g_mockMsgBody[targetFile] = Buffer<1024>();
-		g_mockMsgBody[targetFile].push(view);
-		//std::cout << "\t\tResponse received body: '" << g_mockMsgBody.view() << "'" << std::endl;
+			g_mockMsgBody[targetFile] = "";
+		g_mockMsgBody[targetFile].append(view.data(), view.size());
 	}
 
 

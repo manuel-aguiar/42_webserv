@@ -82,6 +82,7 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	return (mf_parseMultipartBody_Headers(remaining));
 
 exitFailure:
+	m_data.status = Http::Status::BAD_REQUEST;      				// Something went wrong, size or something
 	m_parsingState = ERROR;
 	if (m_response)
 		m_response->receiveRequestBody(BufferView());                 // send empty body to response
@@ -98,7 +99,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 	while (remaining.size() > 0)
 	{
-		//std::cout << "\t\t current size " << remaining.size() << ", view: '" << remaining << "'" << std::endl;
+		std::cout << "\t\t multipar headers in loop " << remaining.size() << ", view: ->" << remaining << "<->" << std::endl;
 
 		//std::cout << "lookup pivot: " << m_findPivot << std::endl;
 		size_t headerEnd = remaining.find('\r', m_findPivot);
@@ -131,21 +132,26 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
             break ;
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd); // segregate this header
+		
+		std::cout << "\t\t\t\theader: ->" << thisHeader << "<-" << std::endl;
 
 		remaining = remaining.substr(headerEnd + 2, remaining.size() - headerEnd - 2); // move to next header
 		m_curContentPos += (thisHeader.size() + 2);
 
+		std::cout << "m_curContentPos: " << m_curContentPos << ", m_curContentLength: " << m_curContentLength << std::endl;
 		if (m_curContentPos > m_curContentLength)
 			goto exitFailure;
-
+		std::cout << "\t\t\t\t\tmax size okay" << std::endl;
 		size_t keyPos = thisHeader.find(": ");
 		if (keyPos == BufferView::npos)
 			goto exitFailure;
-		
+		std::cout << "\t\t\t\t\tcoma okay" << std::endl;
 		BufferView key = thisHeader.substr(0, keyPos);
 		if (key != BufferView("Content-Disposition"))
 			continue ;
 		
+		std::cout << "\t\t\t\t\tcontent-disposition found" << std::endl;
+
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
 			size_t nameStart = value.find("name=\"");
@@ -169,7 +175,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 				goto exitFailure;
 			m_data.multipart_Filename = value.substr(0, nameEnd).to_string();			
 		}
-
+		std::cout << "\t\t\t\t\t all good, name: " << m_data.multipart_Name << ", filename: " << m_data.multipart_Filename << std::endl;
 
 	}
 
@@ -177,7 +183,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 	return (mf_parseMultipartBody_Content(remaining));
 
 exitFailure:
-
+	m_data.status = Http::Status::BAD_REQUEST;      				// Something went wrong, size or something
 	m_parsingState = ERROR;
 	if (m_response)
 		m_response->receiveRequestBody(BufferView());                 // send empty body to response
@@ -187,17 +193,28 @@ exitFailure:
 
 BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& currentView)
 {
+	std::cout << "body content called,  name: " << m_data.multipart_Name << ", filename: " << m_data.multipart_Filename << std::endl;
+	std::cout << "current view: ->" << currentView << "<-" << std::endl;
 	BufferView remaining = currentView;
 	size_t chunkEnd;
-	if (remaining.size() == 0)
+
+	if (remaining.size() < m_data.multipart_Boundary.size() + 2) // can't checkout "--" + boundary, may save accidentally
 		return (remaining);
 	
 	size_t doubleHifenBoundary = mf_parseMultipart_FoundBoundary(remaining);
 
 	if (doubleHifenBoundary == BufferView::npos)
+	{
+		std::cout << "separator not found"  << std::endl;
 		chunkEnd = std::max(remaining.size() - m_data.multipart_Boundary.size() - 2, (size_t)0);
+	}
 	else
+	{
+		std::cout << "separator found"  << std::endl;
 		chunkEnd = doubleHifenBoundary;
+	}
+	
+	std::cout << "\t\t\tsending: ->" << remaining.substr(0, chunkEnd) << "<-" << std::endl;
 	
 	remaining = remaining.substr(chunkEnd, remaining.size() - chunkEnd);
 
@@ -210,18 +227,21 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 
 	if (chunkEnd == doubleHifenBoundary)
 	{
-		// move further "--" and boundary
-		size_t moveForward = 2 + m_data.multipart_Boundary.size();
+		std::cout << "reached boundary" << std::endl;
+		// move further "\r\n--" and boundary
+		size_t moveForward = 4 + m_data.multipart_Boundary.size();
 		remaining = remaining.substr(moveForward, remaining.size() - moveForward);
 		m_curContentPos += moveForward;
 		if (m_curContentPos > m_curContentLength)
 			goto exitFailure;
+		std::cout << "before end view: ->" << remaining << "<-" << std::endl;
 		m_parsingFunction = &Request::mf_parseMultipartBody_End;
 	}
 
 	return ((this->*m_parsingFunction)(remaining));
 
 exitFailure:
+	m_data.status = Http::Status::BAD_REQUEST;      				// Something went wrong, size or something
 	m_parsingState = ERROR;
 	if (m_response)
 		m_response->receiveRequestBody(BufferView());                 // send empty body to response
@@ -266,20 +286,26 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	requestLine = BufferView(remaining.substr(0, reqLineEnd));
 	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2);
 
+	std::cout << "after removing \"r\"n: ->" << remaining << "<-" << std::endl;
+
 	m_curContentPos += requestLine.size();
 	if (m_curContentPos > m_curContentLength)
 		goto exitFailure;
 	
 	if (requestLine.size() == 0)
 	{
+		std::cout << "empty line, back to the beginning" << std::endl;
 		// back to the beginning
 		m_data.multipart_Name.clear();
 		m_data.multipart_Filename.clear();
-		m_parsingFunction = &Request::mf_parseMultipartBody_Start;
+		m_parsingFunction = &Request::mf_parseMultipartBody_Headers;
 	}
 	else if (requestLine == BufferView("--"))
 	{
+		std::cout << "current content pos: " << m_curContentPos << ", current content length: " << m_curContentLength << std::endl;
 		// end of multipart
+		if (m_curContentPos != m_curContentLength)
+			goto exitFailure;
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
 	}
@@ -290,6 +316,7 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 
 exitFailure:
 	m_parsingState = ERROR;
+	m_data.status = Http::Status::BAD_REQUEST;      				// Something went wrong, size or something
 	if (m_response)
 		m_response->receiveRequestBody(BufferView());                 // send empty body to response
 	m_parsingFunction = &Request::mf_handleNothing;
@@ -300,12 +327,18 @@ exitFailure:
 size_t Http::Request::mf_parseMultipart_FoundBoundary		(const BufferView& currentView)
 {
 
-	size_t doubleHifen = currentView.find("--", 0);
+	size_t doubleHifen = currentView.find("\r\n--", 4);
 	if (doubleHifen == BufferView::npos)
+	{
+		std::cout << "no double hifen found" << std::endl;
 		return (BufferView::npos);
+	}
 	size_t boundary = currentView.find(BufferView(m_data.multipart_Boundary), doubleHifen);
 	if (boundary == BufferView::npos)
+	{
+		std::cout << "no boundary found" << std::endl;
 		return (BufferView::npos);
+	}
 
 	return (doubleHifen);
 }
