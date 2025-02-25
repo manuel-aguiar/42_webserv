@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <climits>
 
+/*
 
 // Helper function to convert string to integer, takes a base
 static int strToInteger(const std::string& str, int base = 10)
@@ -350,3 +351,4 @@ Http::Request::mf_parseBody(const BufferView& receivedView)
 
     return m_data.status;
 }
+*/
