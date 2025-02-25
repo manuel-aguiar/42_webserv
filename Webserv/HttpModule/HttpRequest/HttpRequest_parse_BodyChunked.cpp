@@ -52,7 +52,7 @@ size_t Http::Request::mf_findHeaderEnd(const BufferView& remaining)
 /*
     @returns: the remaining view that was not consumed
 */
-BufferView Http::Request::mf_parseChunkedBody(const BaseBuffer& buffer, const BufferView& receivedView)
+BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
 {
     BufferView remaining = receivedView;
 
@@ -70,7 +70,7 @@ BufferView Http::Request::mf_parseChunkedBody(const BaseBuffer& buffer, const Bu
                 m_findPivot = std::max((int)remaining.size() - 1, 0);
 
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                if (remaining.size() >= buffer.capacity())
+                if (remaining.size() >= m_bufferCapacity)
                     goto exitFailure;
 
                 return (remaining); // not enough to go through yet
@@ -101,7 +101,7 @@ BufferView Http::Request::mf_parseChunkedBody(const BaseBuffer& buffer, const Bu
             {
                 m_findPivot = std::max((int)remaining.size() - 1, 0);
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                if (remaining.size() >= buffer.capacity())
+                if (remaining.size() >= m_bufferCapacity)
                     goto exitFailure;
                 return (remaining); // not enough to go through yet
             }
@@ -135,7 +135,7 @@ BufferView Http::Request::mf_parseChunkedBody(const BaseBuffer& buffer, const Bu
                 {
                     m_findPivot = std::max((int)remaining.size() - 1, 0);
                     // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                    if (remaining.size() >= buffer.capacity())
+                    if (remaining.size() >= m_bufferCapacity)
                         goto exitFailure;
                     return (remaining); // not enough to go through yet
                 }
@@ -179,10 +179,11 @@ exitFailure:
 
     m_parsingState = ERROR;
     m_data.status = Http::Status::BAD_REQUEST;      // chunk header too long
-    m_parsingFunction = &Request::mf_handleNothing;
+    
     if (m_response)
-    {
         m_response->receiveRequestBody(BufferView()); // send "eof" to signal end of body
-    }
+    
+    m_parsingFunction = &Request::mf_handleNothing;
+    
     return (BufferView());
 }

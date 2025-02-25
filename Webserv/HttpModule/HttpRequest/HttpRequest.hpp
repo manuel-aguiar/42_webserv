@@ -102,7 +102,7 @@ namespace Http
 		private:
 			Request();
 
-			typedef BufferView (Request::*ParsingFunction)(const BaseBuffer& buffer, const BufferView& currentView);
+			typedef BufferView (Request::*ParsingFunction)(const BufferView& currentView);
 			// all global module's context
 			ServerContext&								m_serverContext;
 
@@ -119,6 +119,7 @@ namespace Http
 			Http::RequestData 							m_data;	// holds request data
 			
 			// state helpers
+			size_t										m_bufferCapacity;
 			int											m_findPivot;
 			int											m_curChunkSize;
 			int											m_curChunkPos;
@@ -126,19 +127,19 @@ namespace Http
 			int											m_curContentPos;
 
 			// Parsing functions, return  BufferView of the unconsumed part
-			BufferView									mf_handleNothing		(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleRequestLine	(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleHeaders		(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_parseRegularBody		(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_parseMultipartBody	(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_parseChunkedBody		(const BaseBuffer& buffer, const BufferView& currentView);
+			BufferView									mf_handleNothing		(const BufferView& currentView);
+			BufferView									mf_handleRequestLine	(const BufferView& currentView);
+			BufferView									mf_handleHeaders		(const BufferView& currentView);
+			BufferView									mf_parseRegularBody		(const BufferView& currentView);
+			BufferView									mf_parseMultipartBody	(const BufferView& currentView);
+			BufferView									mf_parseChunkedBody		(const BufferView& currentView);
 			
 			
 			// multi part intermediaries........
-			BufferView 									mf_parseMultipartBody_Start		(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView 									mf_parseMultipartBody_Headers	(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView 									mf_parseMultipartBody_Content	(const BaseBuffer& buffer, const BufferView& currentView);
-			BufferView 									mf_parseMultipartBody_End		(const BaseBuffer& buffer, const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_Start		(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_Headers	(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
 
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);

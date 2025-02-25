@@ -21,6 +21,7 @@ Request::Request(ServerContext &serverContext):
 	m_parsingState(IDLE),
 	m_parsingFunction(&Request::mf_handleNothing),
 	m_data(),
+	m_bufferCapacity(0),
 	m_findPivot(0),
     m_curChunkSize(-1),
     m_curChunkPos(-1),
@@ -38,6 +39,7 @@ Request::Request(const Request& copy):
 	m_parsingState(copy.m_parsingState),
 	m_parsingFunction(copy.m_parsingFunction),
 	m_data(copy.m_data),
+	m_bufferCapacity(copy.m_bufferCapacity),
 	m_findPivot(copy.m_findPivot),
     m_curChunkSize(copy.m_curChunkSize),
     m_curChunkPos(copy.m_curChunkPos),
@@ -57,6 +59,7 @@ Request::operator=(const Request& copy)
 	m_data = copy.m_data;
 	m_parsingState = copy.m_parsingState;
 	m_parsingFunction = copy.m_parsingFunction;
+	m_bufferCapacity = copy.m_bufferCapacity;
 	m_findPivot = copy.m_findPivot;
     m_curChunkSize = copy.m_curChunkSize;
     m_curChunkPos = copy.m_curChunkPos;
@@ -72,6 +75,7 @@ Request::reset()
 	m_data.reset();
 	m_parsingState = IDLE;
 	m_parsingFunction = &Request::mf_handleNothing;
+	m_bufferCapacity = 0;
 	m_findPivot = 0;
     m_curChunkSize = -1;
     m_curChunkPos = -1;
@@ -99,7 +103,8 @@ Request::parse(const BaseBuffer& buffer)
 
 	try
 	{
-		remaining = ((this->*m_parsingFunction)(buffer, bufferView));
+		m_bufferCapacity = buffer.capacity();
+		remaining = ((this->*m_parsingFunction)(bufferView));
 		//std::cout << "remaining, size " << remaining.size() << ", content: '" << remaining << "'" << std::endl;
 	}
 	catch (const std::exception& e) {
@@ -110,20 +115,20 @@ Request::parse(const BaseBuffer& buffer)
 	return (remaining);
 }
 
-BufferView Request::mf_handleNothing(const BaseBuffer& buffer, const BufferView& remaining)
+BufferView Request::mf_handleNothing(const BufferView& remaining)
 {
 	if (m_parsingState != IDLE)
 		return (remaining); // already started, do nothing
 	
 	m_parsingState = REQLINE;
 	m_parsingFunction = &Request::mf_handleRequestLine;
-	return (mf_handleRequestLine(buffer, remaining));
+	return (mf_handleRequestLine(remaining));
 }
 
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
-BufferView Request::mf_handleRequestLine(const BaseBuffer& buffer, const BufferView& receivedView)
+BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
 {
 	BufferView remaining = receivedView;
 
@@ -139,7 +144,7 @@ BufferView Request::mf_handleRequestLine(const BaseBuffer& buffer, const BufferV
 		{
 			m_findPivot = std::max((int)remaining.size() - 1, 0);
 			// HARD LIMIT, request line cannot be bigger than buffer size
-			if (remaining.size() >= buffer.capacity())
+			if (remaining.size() >= m_bufferCapacity)
 			{
 				m_parsingState = ERROR;
 				m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
@@ -177,10 +182,10 @@ BufferView Request::mf_handleRequestLine(const BaseBuffer& buffer, const BufferV
 	m_parsingState = HEADERS;
 
 	m_parsingFunction = &Request::mf_handleHeaders; // next handler is headers
-	return (mf_handleHeaders(buffer, remaining));
+	return (mf_handleHeaders(remaining));
 }
 
-BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView& receivedView)
+BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 {
 	BufferView remaining = receivedView;
 
@@ -197,7 +202,7 @@ BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView&
 		{
 			m_findPivot = std::max((int)remaining.size() - 1, 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
-			if (remaining.size() >= buffer.capacity())
+			if (remaining.size() >= m_bufferCapacity)
 			{
 				m_parsingState = ERROR;
 				m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
@@ -256,7 +261,7 @@ BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView&
 
 
 
-	return ((this->*m_parsingFunction)(buffer, remaining)); // return buffer view of our remaining position to the next parser
+	return ((this->*m_parsingFunction)(remaining)); // return buffer view of our remaining position to the next parser
 }
 
 /*

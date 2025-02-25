@@ -17,10 +17,8 @@
 #include <climits>
 
 
-BufferView Http::Request::mf_parseRegularBody(const BaseBuffer& buffer, const BufferView& currentView)
+BufferView Http::Request::mf_parseRegularBody(const BufferView& currentView)
 {
-    (void)buffer;
-
     size_t bytesLeft = m_curContentLength - m_curContentPos;
     size_t bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
 
