@@ -137,32 +137,22 @@ BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
 	
 	size_t reqLineEnd;
 	
-	while (1)
+	BufferView target("\r\n", 2);
+	reqLineEnd = remaining.find(target, m_findPivot);
+	if (reqLineEnd == BufferView::npos)
 	{
-		reqLineEnd = remaining.find('\r', m_findPivot);
-		if (reqLineEnd == BufferView::npos || reqLineEnd == remaining.size() - 1)
+		m_findPivot = std::max((int)remaining.size() - (int)target.size(), 0);
+		// HARD LIMIT, request line cannot be bigger than buffer size
+		if (remaining.size() >= m_bufferCapacity)
 		{
-			m_findPivot = std::max((int)remaining.size() - 1, 0);
-			// HARD LIMIT, request line cannot be bigger than buffer size
-			if (remaining.size() >= m_bufferCapacity)
-			{
-				m_parsingState = ERROR;
-				m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
-				m_response->receiveRequestData(m_data);         // inform response right away
-			}
-			return (remaining); // not enough to go through yet
+			m_parsingState = ERROR;
+			m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
+			m_response->receiveRequestData(m_data);         // inform response right away
 		}
-		else if (remaining[reqLineEnd + 1] != '\n')
-		{
-			//std::cout << "found in the middle of a header" << std::endl;
-			m_findPivot = reqLineEnd + 1;
-		}
-		else
-		{
-			m_findPivot = 0;
-			break ;
-		}
+		return (remaining); // not enough to go through yet
 	}
+	
+	m_findPivot = 0;
 	
 	BufferView requestLine(remaining.substr(0, reqLineEnd));
 	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2); // move view forward
@@ -188,50 +178,43 @@ BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
 BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 {
 	BufferView remaining = receivedView;
+	BufferView delimiter("\r\n", 2);
 
 	if (receivedView.size() == 0)
 		return (BufferView()); // not enough to go through yet
 
-	while (remaining.size() > 0 && m_parsingState == HEADERS)
+	while (remaining.size() > 0)
 	{
 		//std::cout << "\t\t current size " << remaining.size() << ", view: '" << remaining << "'" << std::endl;
 
 		//std::cout << "lookup pivot: " << m_findPivot << std::endl;
-		size_t headerEnd = remaining.find('\r', m_findPivot);
-		if (headerEnd == BufferView::npos || headerEnd == remaining.size() - 1)
+		
+		size_t headerEnd = remaining.find(delimiter, m_findPivot);
+		if (headerEnd == BufferView::npos)
 		{
-			m_findPivot = std::max((int)remaining.size() - 1, 0);
+			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
 			if (remaining.size() >= m_bufferCapacity)
 			{
-				m_parsingState = ERROR;
 				m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
-				m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
-				if (m_response)
-					m_response->receiveRequestData(m_data);
-				//std::cout << "header size too big" << std::endl;
+				goto exitFailure;
 			}
 			return (remaining); // push the remaining data back to the beginning
-			
 		}
-		else if (remaining[headerEnd + 1] != '\n')
-		{
-			//std::cout << "found in the middle of a header" << std::endl;
-			m_findPivot = headerEnd + 1;
-			continue ;
-		}
-		else
-			m_findPivot = 0;
+		
+		m_findPivot = 0;
 
 		//std::cout << "header end: " << headerEnd << std::endl;
 
 		if (headerEnd == 0)
 		{
 			// \r\n found at the beginning: end of headers, move to BODY
-			remaining = remaining.substr(2, remaining.size() - 2); // move to body
+			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
 			m_parsingState = BODY;
 			mf_prepareBodyParser(); // next handler is body
-            break ;
+			if (m_response)
+				m_response->receiveRequestData(m_data);
+            return ((this->*m_parsingFunction)(remaining));
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd); // segregate this header
 
@@ -242,26 +225,19 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 		// parse this header
 		m_data.status = mf_parseHeaders(thisHeader);
 		if (m_data.status != Http::Status::OK)
-		{
-			m_parsingState = ERROR;
-			m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
-			break ;
-		}        
+			goto exitFailure;
 	}
 
-	// send right away
-	if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
-	{
-		if (m_response)
-			m_response->receiveRequestData(m_data);
-	}
-
-	//std::cout << "ready to call body parser" << std::endl;
-	// either nothing or body
-
-
-
-	return ((this->*m_parsingFunction)(remaining)); // return buffer view of our remaining position to the next parser
+	return (remaining);
+	
+exitFailure:
+	m_parsingState = ERROR;
+	if (m_response)
+	m_response->receiveRequestData(m_data); // inform response right away
+	m_parsingFunction = &Request::mf_handleNothing; 
+	return (mf_handleNothing(remaining));
+	
+	// return buffer view of our remaining position to the next parser
 }
 
 /*

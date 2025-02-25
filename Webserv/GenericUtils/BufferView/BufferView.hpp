@@ -54,4 +54,4 @@ class BufferView
 
 std::ostream& operator<<(std::ostream& os, const BufferView& sv);
 
-#endif // MUTABLE_STRING_VIEW_HPP
+#endif

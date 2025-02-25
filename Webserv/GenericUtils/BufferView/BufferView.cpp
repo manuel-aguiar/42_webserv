@@ -7,6 +7,7 @@
 // C++ headers
 #include <iostream> //ostream
 #include <cstring> //memcmp
+#include <algorithm> //std::search std::find
 
 const
 size_t BufferView::npos = static_cast<size_t>(-1);
@@ -71,9 +72,9 @@ BufferView::find(char ch, size_t startPos) const
 	if (startPos >= m_size)
 		return npos;
 	
-	const char* result = (const char*)std::memchr(m_data + startPos, ch, m_size - startPos);
-	if (result == NULL)
-		return npos;
+	const char* result = std::find(m_data + startPos, m_data + m_size, ch);
+	if (result == m_data + m_size)
+		return (npos);
 	return (result - m_data);
 }
 
@@ -85,12 +86,11 @@ BufferView::find(const char* s, size_t targetLength, size_t startPos) const
 {
 	if (startPos >= m_size || targetLength == 0 || targetLength > m_size - startPos)
 		return npos;
-	for (size_t i = startPos; i <= m_size - targetLength; ++i)
-	{
-		if (std::memcmp(m_data + i, s, targetLength) == 0)
-			return i;
-	}
-	return (npos);
+	
+	const char* result = std::search(m_data + startPos, m_data + m_size, s, s + targetLength);
+	if (result == m_data + m_size)
+		return npos;
+	return (result - m_data);
 }
 
 size_t

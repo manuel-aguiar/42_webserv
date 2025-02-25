@@ -55,6 +55,7 @@ size_t Http::Request::mf_findHeaderEnd(const BufferView& remaining)
 BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
 {
     BufferView remaining = receivedView;
+    BufferView delimiter("\r\n", 2);
 
     //std::cout << "chunked body, current view: '" << remaining << "'" << std::endl;
 	while (remaining.size() > 0 && m_parsingState == BODY)
@@ -64,10 +65,11 @@ BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
         // no active chunk
         if (m_curChunkSize == -1)
         {
-            size_t headerEnd = remaining.find('\r', m_findPivot);
+            
+            size_t headerEnd = remaining.find(delimiter, m_findPivot);
             if (headerEnd == BufferView::npos || headerEnd == remaining.size() - 1)
             {
-                m_findPivot = std::max((int)remaining.size() - 1, 0);
+                m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                 if (remaining.size() >= m_bufferCapacity)
@@ -75,13 +77,8 @@ BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
 
                 return (remaining); // not enough to go through yet
             }
-            else if (remaining[headerEnd + 1] != '\n')
-            {
-                m_findPivot = headerEnd + 1;
-                continue ;
-            }
-            else
-                m_findPivot = 0;
+            
+            m_findPivot = 0;
 
             BufferView thisChunkSize = remaining.substr(0, headerEnd);
             remaining = remaining.substr(headerEnd + 2, remaining.size() - headerEnd - 2); // move view past the header
@@ -96,22 +93,17 @@ BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
         else if (m_curChunkSize == 0)
         {
 
-            size_t bodyEnd = remaining.find('\r', m_findPivot);
+            size_t bodyEnd = remaining.find(delimiter, m_findPivot);
             if (bodyEnd == BufferView::npos || bodyEnd == remaining.size() - 1)
             {
-                m_findPivot = std::max((int)remaining.size() - 1, 0);
+                m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                 if (remaining.size() >= m_bufferCapacity)
                     goto exitFailure;
                 return (remaining); // not enough to go through yet
             }
-            else if (remaining[bodyEnd + 1] != '\n')
-            {
-                m_findPivot = bodyEnd + 1;
-                continue ;
-            }
-            else
-                m_findPivot = 0;
+
+            m_findPivot = 0;
 
             remaining = remaining.substr(bodyEnd + 2, remaining.size() - bodyEnd - 2); // move view past the header
 
@@ -129,23 +121,18 @@ BufferView Http::Request::mf_parseChunkedBody(const BufferView& receivedView)
             // end of current chunk
             if (m_curChunkPos == m_curChunkSize)
             {
-                size_t bodyEnd = remaining.find('\r', m_findPivot);
+                size_t bodyEnd = remaining.find(delimiter, m_findPivot);
                 // not found, last character in view or not followed by \n
-                if (bodyEnd == BufferView::npos || bodyEnd == remaining.size() - 1)
+                if (bodyEnd == BufferView::npos)
                 {
-                    m_findPivot = std::max((int)remaining.size() - 1, 0);
+                    m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
                     // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                     if (remaining.size() >= m_bufferCapacity)
                         goto exitFailure;
                     return (remaining); // not enough to go through yet
                 }
-                else if (remaining[bodyEnd + 1] != '\n')
-                {
-                    m_findPivot = bodyEnd + 1;
-                    continue ;
-                }
-                else
-                    m_findPivot = 0;
+                
+                m_findPivot = 0;
                 
                 remaining = remaining.substr(bodyEnd + 2, remaining.size() - bodyEnd - 2); // move view past the header
     
