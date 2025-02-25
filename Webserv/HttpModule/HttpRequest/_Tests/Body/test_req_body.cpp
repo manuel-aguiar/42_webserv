@@ -8,7 +8,8 @@
 
 
 // Mock Http::Response will drop the message body here
-extern std::string g_mockMsgBody;
+extern Buffer<1024> g_mockMsgBody;
+
 
 void regularBodyTests(int &testNumber)
 {
@@ -51,9 +52,53 @@ void regularBodyTests(int &testNumber)
                 HttpRequest.parse(buffer);
             }
 
-            EXPECT_EQUAL(g_mockMsgBody, requestBody, "Body should match");
+            EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBody), "Body should match");
 
             TEST_PASSED_MSG("Valid body with Content-Length");
+        }
+        catch(const std::exception& e)
+        {
+            TEST_FAILED_MSG(e.what());
+        }
+    }
+    {
+        TEST_INTRO(testNumber++);
+        Http::Request   HttpRequest(context);
+        Http::Response  response(context);
+
+
+        HttpRequest.setResponse(response);
+        Buffer<33> buffer;
+
+        //using a buffer as well for the request, to allow all types of bytes
+        Buffer<1024> bufferRequest;
+
+
+        std::string requestHeader = "POST /test HTTP/1.1\r\n"
+            "Content-Length: 16\r\n"
+            "\r\n";
+
+        //random message body bytes to simulate binary (4 integers, 16 bytes );
+        int requestBody[] = {2123123123, 1231231231, -111111111, -222222222};
+        
+        bufferRequest.push(requestHeader.c_str(), requestHeader.size());
+        bufferRequest.push((char*)&requestBody, sizeof(requestBody));
+
+        g_mockMsgBody.clear();
+
+        try
+        {
+            while (bufferRequest.size())
+            {
+                int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
+                buffer.push(BufferView(bufferRequest.data(), thisPush));
+                bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
+                HttpRequest.parse(buffer);
+            }
+
+            EXPECT_EQUAL(g_mockMsgBody.view(), BufferView((char*)&requestBody, sizeof(requestBody)), "Body should match");
+            
+            TEST_PASSED_MSG(std::string("Valid body with weird bytes: ") + g_mockMsgBody.view().to_string());
         }
         catch(const std::exception& e)
         {

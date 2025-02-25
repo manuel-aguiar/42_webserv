@@ -20,7 +20,7 @@ extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
 
-std::string g_mockMsgBody;
+Buffer<1024> g_mockMsgBody;
 
 namespace Http
 {
@@ -42,7 +42,7 @@ namespace Http
 
 	void	Response::receiveRequestBody(const BufferView& view)
 	{
-		g_mockMsgBody.append(view.data(), view.size());
+		g_mockMsgBody.push(view);
 	}
 
 
