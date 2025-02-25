@@ -141,6 +141,8 @@ namespace Http
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
 
+			size_t										mf_parseMultipart_FoundBoundary	(const BufferView& currentView);
+
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);

@@ -131,9 +131,9 @@ namespace Http
 		std::string							httpVersion;
 		std::map<HeaderKey, HeaderValue>	headers;
 		std::string							body;
-		std::string							boundary;
-		std::string							uploaded_filename;
-		std::string							uploaded_filetype;
+		std::string							multipart_Boundary;
+		std::string							multipart_Name;
+		std::string							multipart_Filename;
 		Status::Number						status;
 		BodyType							bodyType;
 		ContentType							contentType;

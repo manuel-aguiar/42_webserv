@@ -303,7 +303,7 @@ void Request::mf_prepareBodyParser()
 			size_t boundaryPos = contentType->second.find("boundary=");
 			if (boundaryPos == std::string::npos)
 				goto exitFailure;
-			m_data.boundary = contentType->second.substr(boundaryPos + 9);
+			m_data.multipart_Boundary = contentType->second.substr(boundaryPos + 9);
 			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
 		}
     }
