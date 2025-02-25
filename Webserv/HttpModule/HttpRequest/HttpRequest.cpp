@@ -85,6 +85,9 @@ Request::parse(BaseBuffer& buffer)
 {
 	BufferView currentView(buffer.data(), buffer.size());
 
+	//std::cout << "parse: view size: " << currentView.size() << std::endl;
+	//std::cout << "parse: view content: '" << currentView << "'" << std::endl;
+
 	try
 	{
 		(void)((this->*m_parsingFunction)(buffer, currentView));
@@ -158,7 +161,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 
 	while (currentView.size() > 0 && m_parsingState == HEADERS)
 	{
-		//std::cout << "\t\t current view: " << currentView << std::endl;
+		//std::cout << "\t\t current size " << currentView.size() << ", view: '" << currentView << "'" << std::endl;
 		size_t headerEnd = currentView.find("\r\n", 2, 0);
 		if (headerEnd == BufferView::npos)
 		{
@@ -172,6 +175,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 				{
 					m_response->receiveRequestData(m_data);
 				}
+				//std::cout << "header size too big" << std::endl;
 			}
 			else
 				buffer.truncatePush(currentView); // push the remaining data back to the beginning
@@ -199,6 +203,9 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		}        
 	}
 
+	if (currentView.size() == 0)
+		buffer.clear();
+
 	// send right away
 	if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
 	{
@@ -208,7 +215,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		}
 	}
 
-	std::cout << "ready to call body parser" << std::endl;
+	//std::cout << "ready to call body parser" << std::endl;
 	// either nothing or body
 	return ((this->*m_parsingFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
 }
@@ -267,7 +274,7 @@ void Request::mf_prepareBodyParser()
             m_response->receiveRequestBody(BufferView()); 
     }
 
-	std::cout << "Body parser prepared" << std::endl;
+	//std::cout << "Body parser prepared" << std::endl;
 
     return ;
 }

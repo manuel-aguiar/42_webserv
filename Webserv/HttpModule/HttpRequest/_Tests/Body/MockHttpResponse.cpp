@@ -43,7 +43,7 @@ namespace Http
 	void	Response::receiveRequestBody(const BufferView& view)
 	{
 		g_mockMsgBody.push(view);
-		std::cout << "Response received body: '" << view << "'" << std::endl;
+		//std::cout << "Response received body: '" << g_mockMsgBody.view() << "'" << std::endl;
 	}
 
 

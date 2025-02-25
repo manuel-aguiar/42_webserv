@@ -11,10 +11,16 @@
 # include <unistd.h> // read/write
 
 BaseBuffer::BaseBuffer() : m_begin(NULL), m_end(NULL), m_writeOffset(0), m_size(0) {}
-
 BaseBuffer::BaseBuffer(unsigned char* begin, unsigned char* end) : m_begin(begin), m_end(end), m_writeOffset(0), m_size(0) {}
-
 BaseBuffer::~BaseBuffer() {}
+
+void    BaseBuffer::reset(unsigned char* begin, unsigned char* end)
+{
+    m_begin = begin;
+    m_end = end;
+    m_writeOffset = 0;
+    m_size = 0;
+}
 
 int BaseBuffer::read(Ws::fd fd, int startIndex)
 {
