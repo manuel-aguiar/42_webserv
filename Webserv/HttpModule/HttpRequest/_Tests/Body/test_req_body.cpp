@@ -61,6 +61,7 @@ void regularBodyTests(int &testNumber)
             TEST_FAILED_MSG(e.what());
         }
     }
+/////////////////////////////////////////////////////////////////////////////////////////
     {
         TEST_INTRO(testNumber++);
         Http::Request   HttpRequest(context);
@@ -105,6 +106,52 @@ void regularBodyTests(int &testNumber)
             TEST_FAILED_MSG(e.what());
         }
     }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+    {
+        TEST_INTRO(testNumber++);
+        Http::Request   HttpRequest(context);
+        Http::Response  response(context);
+
+
+        HttpRequest.setResponse(response);
+        Buffer<33> buffer;
+
+        //using a buffer as well for the request, to allow all types of bytes
+        Buffer<1024> bufferRequest;
+
+
+        std::string requestHeader = "POST /test HTTP/1.1\r\n"
+            "Content-Length: 16\r\n"
+            "\r\n";
+
+        //random message body bytes to simulate binary (4 integers, 16 bytes );
+        int requestBody[] = {2123123123, 0, 0, -222222222};
+        
+        bufferRequest.push(requestHeader.c_str(), requestHeader.size());
+        bufferRequest.push((char*)&requestBody, sizeof(requestBody));
+
+        g_mockMsgBody.clear();
+
+        try
+        {
+            while (bufferRequest.size())
+            {
+                int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
+                buffer.push(BufferView(bufferRequest.data(), thisPush));
+                bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
+                HttpRequest.parse(buffer);
+            }
+
+            EXPECT_EQUAL(g_mockMsgBody.view(), BufferView((char*)&requestBody, sizeof(requestBody)), "Body should match");
+            
+            TEST_PASSED_MSG(std::string("Valid body with nulls: ") + g_mockMsgBody.view().to_string());
+        }
+        catch(const std::exception& e)
+        {
+            TEST_FAILED_MSG(e.what());
+        }
+    }
+/////////////////////////////////////////////////////////////////////////////////////////
 /*
     {
         TEST_INTRO(testNumber++);
