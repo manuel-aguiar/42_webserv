@@ -9,7 +9,8 @@
 #include "HttpRequest.hpp"
 #include "../HttpResponse/HttpResponse.hpp"
 
-#include <cstdlib> //atoi
+# include <cstdlib> //atoi
+# include  <algorithm> //max/min
 
 namespace Http
 {
@@ -20,6 +21,7 @@ Request::Request(ServerContext &serverContext):
 	m_parsingState(IDLE),
 	m_parsingFunction(&Request::mf_handleNothing),
 	m_data(),
+	m_findPivot(0),
     m_curChunkSize(-1),
     m_curChunkPos(-1),
     m_curContentLength(-1),
@@ -36,6 +38,7 @@ Request::Request(const Request& copy):
 	m_parsingState(copy.m_parsingState),
 	m_parsingFunction(copy.m_parsingFunction),
 	m_data(copy.m_data),
+	m_findPivot(copy.m_findPivot),
     m_curChunkSize(copy.m_curChunkSize),
     m_curChunkPos(copy.m_curChunkPos),
     m_curContentLength(copy.m_curContentLength),
@@ -54,6 +57,7 @@ Request::operator=(const Request& copy)
 	m_data = copy.m_data;
 	m_parsingState = copy.m_parsingState;
 	m_parsingFunction = copy.m_parsingFunction;
+	m_findPivot = copy.m_findPivot;
     m_curChunkSize = copy.m_curChunkSize;
     m_curChunkPos = copy.m_curChunkPos;
     m_curContentLength = copy.m_curContentLength;
@@ -68,6 +72,7 @@ Request::reset()
 	m_data.reset();
 	m_parsingState = IDLE;
 	m_parsingFunction = &Request::mf_handleNothing;
+	m_findPivot = 0;
     m_curChunkSize = -1;
     m_curChunkPos = -1;
     m_curContentLength = -1;
@@ -116,9 +121,10 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 	if (receivedView.size() == 0)
 		return (BufferView()); // not enough to go through yet
 
-	size_t reqLineEnd = currentView.find("\r\n", 2, 0);
-	if (reqLineEnd == std::string::npos)
+	size_t reqLineEnd = currentView.find('\r', m_findPivot);
+	if (reqLineEnd == BufferView::npos || reqLineEnd == currentView.size() - 1)
 	{
+		m_findPivot = std::max((int)currentView.size() - 1, 0);
 		// HARD LIMIT, request line cannot be bigger than buffer size
 		if (currentView.size() >= buffer.capacity())
 		{
@@ -130,6 +136,13 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 			buffer.truncatePush(currentView);                   // push the remaining data back to the beginning
 		return (BufferView()); // not enough to go through yet
 	}
+	else if (currentView[reqLineEnd + 1] != '\n')
+	{
+		//std::cout << "found in the middle of a header" << std::endl;
+		m_findPivot = reqLineEnd + 1;
+	}
+	else
+		m_findPivot = 0;
 
 	BufferView requestLine(currentView.substr(0, reqLineEnd));
 	currentView = currentView.substr(reqLineEnd + 2, currentView.size() - reqLineEnd - 2); // move view forward
@@ -162,9 +175,12 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 	while (currentView.size() > 0 && m_parsingState == HEADERS)
 	{
 		//std::cout << "\t\t current size " << currentView.size() << ", view: '" << currentView << "'" << std::endl;
-		size_t headerEnd = currentView.find("\r\n", 2, 0);
-		if (headerEnd == BufferView::npos)
+
+		//std::cout << "lookup pivot: " << m_findPivot << std::endl;
+		size_t headerEnd = currentView.find('\r', m_findPivot);
+		if (headerEnd == BufferView::npos || headerEnd == currentView.size() - 1)
 		{
+			m_findPivot = std::max((int)currentView.size() - 1, 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
 			if (currentView.size() >= buffer.capacity())
 			{
@@ -182,6 +198,17 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 			
 			return (BufferView()); // not enough to go through yet
 		}
+		else if (currentView[headerEnd + 1] != '\n')
+		{
+			//std::cout << "found in the middle of a header" << std::endl;
+			m_findPivot = headerEnd + 1;
+			continue ;
+		}
+		else
+			m_findPivot = 0;
+
+		//std::cout << "header end: " << headerEnd << std::endl;
+
 		if (headerEnd == 0)
 		{
 			// \r\n found at the beginning: end of headers, move to BODY
@@ -191,6 +218,9 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
             break ;
 		}
 		BufferView thisHeader = currentView.substr(0, headerEnd); // segregate this header
+
+		//std::cout << "\t this header line: '" << thisHeader << "'" << std::endl;
+
 		currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move to next header
 
 		// parse this header

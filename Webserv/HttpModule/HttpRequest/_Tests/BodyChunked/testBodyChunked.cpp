@@ -29,18 +29,19 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 
     std::string requestheader = "POST /test HTTP/1.1\r\n"
         "Transfer-Encoding: chunked\r\n"
+        "Content-Type: pota\rto\r\n"
         "\r\n";
     std::string requestBodyChunked = 
         "4\r\n"
         "Wiki\r\n"
         "5\r\n"
         "pedia\r\n"
-        "B\r\n"
-        " in chunks.\r\n"
+        "D\r\n"
+        " in \rchunks.\r\r\n"
         "0\r\n"
         "\r\n";
     
-    std::string requestBodyTranslated = "Wikipedia in chunks.";
+    std::string requestBodyTranslated = "Wikipedia in \rchunks.\r";
 
     std::string request = requestheader + requestBodyChunked;
 
@@ -61,7 +62,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");
 
-        TEST_PASSED_MSG(std::string("Valid body, chuncked, readBuf size: ") 
+        TEST_PASSED_MSG(std::string("Valid body, chuncked, weird test with carriage return in body, readBuf size: ") 
         + TestHelpers::to_string(readBufSize)  + " '" + requestBodyTranslated + "'");
     }
     catch(const std::exception& e)
@@ -74,6 +75,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 int main()
 {
     int testNumber = 1;
+    chunkedReadBuffer(testNumber, 29);
     for (size_t i = 28; i < 101; ++i)
         chunkedReadBuffer(testNumber, i);
     chunkedReadBuffer(testNumber, 1024);

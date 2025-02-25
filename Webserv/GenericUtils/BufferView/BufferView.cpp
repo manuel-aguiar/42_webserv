@@ -70,12 +70,11 @@ BufferView::find(char ch, size_t startPos) const
 {
 	if (startPos >= m_size)
 		return npos;
-	for (size_t i = startPos; i < m_size; ++i)
-	{
-		if (m_data[i] == ch)
-			return i;
-	}
-	return (npos);
+	
+	const char* result = (const char*)std::memchr(m_data + startPos, ch, m_size - startPos);
+	if (result == NULL)
+		return npos;
+	return (result - m_data);
 }
 
 /*

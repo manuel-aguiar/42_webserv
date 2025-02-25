@@ -41,9 +41,10 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
         //std::cout << "entered body loop, view: '" << currentView <<  "'" << std::endl;
         if (m_curChunkSize == -1)
         {
-            size_t headerEnd = currentView.find("\r\n", 2, 0);
-            if (headerEnd == BufferView::npos)
+            size_t headerEnd = currentView.find('\r', m_findPivot);
+            if (headerEnd == BufferView::npos || headerEnd == currentView.size() - 1)
             {
+                m_findPivot = std::max((int)currentView.size() - 1, 0);
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                 if (currentView.size() >= buffer.capacity())
                     goto exitFailure;
@@ -52,6 +53,14 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
                 
                 return (BufferView()); // not enough to go through yet
             }
+            else if (currentView[headerEnd + 1] != '\n')
+            {
+                m_findPivot = headerEnd + 1;
+                continue ;
+            }
+            else
+                m_findPivot = 0;
+
             BufferView thisChunkSize = currentView.substr(0, headerEnd);
             currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move view past the header
 
@@ -68,9 +77,10 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
         else if (m_curChunkSize == 0)
         {
 
-            size_t bodyEnd = currentView.find("\r\n", 2, 0);
-            if (bodyEnd == BufferView::npos)
+            size_t bodyEnd = currentView.find('\r', m_findPivot);
+            if (bodyEnd == BufferView::npos || bodyEnd == currentView.size() - 1)
             {
+                m_findPivot = std::max((int)currentView.size() - 1, 0);
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                 if (currentView.size() >= buffer.capacity())
                     goto exitFailure;
@@ -79,6 +89,14 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
                 
                 return (BufferView()); // not enough to go through yet
             }
+            else if (currentView[bodyEnd + 1] != '\n')
+            {
+                m_findPivot = bodyEnd + 1;
+                continue ;
+            }
+            else
+                m_findPivot = 0;
+
             currentView = currentView.substr(bodyEnd + 2, currentView.size() - bodyEnd - 2); // move view past the header
 
             if (bodyEnd != 0)
@@ -97,9 +115,11 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
         {
             if (m_curChunkPos == m_curChunkSize)
             {
-                size_t bodyEnd = currentView.find("\r\n", 2, 0);
-                if (bodyEnd == BufferView::npos)
+                size_t bodyEnd = currentView.find('\r', m_findPivot);
+                // not found, last character in view or not followed by \n
+                if (bodyEnd == BufferView::npos || bodyEnd == currentView.size() - 1)
                 {
+                    m_findPivot = std::max((int)currentView.size() - 1, 0);
                     // HARD LIMIT, single header size cannot be bigger than the buffer capacity
                     if (currentView.size() >= buffer.capacity())
                         goto exitFailure;
@@ -108,6 +128,14 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
                     
                     return (BufferView()); // not enough to go through yet
                 }
+                else if (currentView[bodyEnd + 1] != '\n')
+                {
+                    m_findPivot = bodyEnd + 1;
+                    continue ;
+                }
+                else
+                    m_findPivot = 0;
+                
                 currentView = currentView.substr(bodyEnd + 2, currentView.size() - bodyEnd - 2); // move view past the header
     
                 if (bodyEnd != 0)

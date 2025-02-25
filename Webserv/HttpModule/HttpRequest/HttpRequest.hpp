@@ -119,6 +119,7 @@ namespace Http
 			Http::RequestData 							m_data;	// holds request data
 			
 			// state helpers
+			int											m_findPivot;
 			int											m_curChunkSize;
 			int											m_curChunkPos;
 			int											m_curContentLength;
