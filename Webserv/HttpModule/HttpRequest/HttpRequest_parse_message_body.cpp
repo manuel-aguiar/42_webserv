@@ -208,31 +208,7 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
     return (BufferView());
 }
 
-BufferView Http::Request::mf_parseRegularBody(BaseBuffer& buffer, const BufferView& currentView)
-{
-    size_t bytesLeft = m_curContentLength - m_curContentPos;
-    size_t bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
 
-    BufferView remaining = currentView.substr(bytesSending, currentView.size() - bytesSending);
-    m_curContentPos += bytesSending;
-
-    //std::cout << currentView << std::endl;
-
-    if (m_response)
-        m_response->receiveRequestBody(currentView.substr(0, bytesSending));
-
-    buffer.truncatePush(remaining);
-
-    if (m_curContentPos == m_curContentLength)
-    {
-        
-        m_parsingState = COMPLETED;
-        if (m_response)
-            m_response->receiveRequestBody(BufferView()); // send empty body, signals end of body
-    }
-
-    return (BufferView());
-}
 
 Http::Status::Number
 Http::Request::mf_parseRegularBody(const std::string& data)

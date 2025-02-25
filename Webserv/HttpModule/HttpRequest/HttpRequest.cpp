@@ -208,7 +208,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		}
 	}
 
-
+	std::cout << "ready to call body parser" << std::endl;
 	// either nothing or body
 	return ((this->*m_parsingFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
 }
@@ -254,7 +254,11 @@ void Request::mf_prepareBodyParser()
         m_curContentPos = 0;
         m_parsingFunction = &Request::mf_parseRegularBody;
     }
-    else if (transferEncoding->second != "chunked")
+    else if (transferEncoding->second == "chunked")
+    {
+        m_parsingFunction = &Request::mf_parseChunkedBody;
+    }
+    else
     {
         m_parsingState = ERROR;
         m_data.status = Http::Status::BAD_REQUEST;      // UNSUPPORTED TRANSFER ENCODING
@@ -262,16 +266,10 @@ void Request::mf_prepareBodyParser()
         if (m_response)
             m_response->receiveRequestBody(BufferView()); 
     }
-    else
-    {
-        m_curChunkPos = 0;
-        m_curChunkSize = -1;
-        m_parsingFunction = &Request::mf_parseChunkedBody;
-    }
 
-    m_parsingFunction = &Request::mf_parseRegularBody;
+	std::cout << "Body parser prepared" << std::endl;
+
     return ;
-
 }
 
 

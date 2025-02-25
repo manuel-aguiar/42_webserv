@@ -69,7 +69,7 @@ void regularBodyTests(int &testNumber)
 
 
         HttpRequest.setResponse(response);
-        Buffer<33> buffer;
+        Buffer<1024> buffer;
 
         //using a buffer as well for the request, to allow all types of bytes
         Buffer<1024> bufferRequest;
@@ -152,6 +152,60 @@ void regularBodyTests(int &testNumber)
         }
     }
 /////////////////////////////////////////////////////////////////////////////////////////
+{
+    TEST_INTRO(testNumber++);
+    Http::Request   HttpRequest(context);
+    Http::Response  response(context);
+
+    Buffer<1024> bufferRequest;
+
+    HttpRequest.setResponse(response);
+    Buffer<1024> buffer;
+    std::string requestheader = "POST /test HTTP/1.1\r\n"
+        "Transfer-Encoding: chunked\r\n"
+        "\r\n";
+    std::string requestBodyChunked = 
+        "4\r\n"
+        "Wiki\r\n"
+        "5\r\n"
+        "pedia\r\n"
+        "C\r\n"
+        " in chunks.\r\n"
+        "0\r\n"
+        "\r\n";
+    
+    std::string requestBodyTranslated = "Wikipedia in chunks.";
+
+    std::string request = requestheader + requestBodyChunked;
+
+    bufferRequest.push(request.c_str(), request.size());
+
+    g_mockMsgBody.clear();
+
+    try
+    {
+        while (bufferRequest.size())
+        {
+            int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
+            buffer.push(BufferView(bufferRequest.data(), thisPush));
+            bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
+            std::cout << "bufferRequest.size() = " << bufferRequest.size() << std::endl;
+            HttpRequest.parse(buffer);
+        }
+
+        EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");
+
+        TEST_PASSED_MSG(std::string("Valid body, chuncked: '") + requestBodyTranslated + "'");
+    }
+    catch(const std::exception& e)
+    {
+        TEST_FAILED_MSG(e.what());
+    }
+}
+
+
+
+
 /*
     {
         TEST_INTRO(testNumber++);
