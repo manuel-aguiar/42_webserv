@@ -138,7 +138,8 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
     }
 
     //std::cout << "exited body loop" << std::endl;
-
+    if (currentView.size() == 0)
+        buffer.clear();
     return (currentView);
 
 exitFailure:

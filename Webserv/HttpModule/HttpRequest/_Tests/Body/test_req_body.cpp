@@ -55,10 +55,10 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
             int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
             buffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-            ////std::cout << "bufferRequest.size() = " << bufferRequest.size() << std::endl;
+            //////std::cout << "bufferRequest.size() = " << bufferRequest.size() << std::endl;
             HttpRequest.parse(buffer);
         }
-        std::cout << "requestData.status = " << requestData.status << std::endl;
+        //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");
 
         TEST_PASSED_MSG(std::string("Valid body, chuncked, readBuf size: ") 
@@ -211,10 +211,10 @@ void regularBodyTests(int &testNumber)
             TEST_FAILED_MSG(e.what());
         }
     }
-    chunkedReadBuffer(testNumber, 1024);
-    for (size_t i = 31; i < 101; ++i)
+    // below 28, the Transfer encoding header doesn't fit the readBuffer, will result in header large
+    for (size_t i = 28; i < 101; ++i)
         chunkedReadBuffer(testNumber, i);
-    chunkedReadBuffer(testNumber, 29);
+    chunkedReadBuffer(testNumber, 1024);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 {
@@ -255,7 +255,7 @@ void regularBodyTests(int &testNumber)
             int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
             buffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-            //std::cout << "readBuffer.size() = " << buffer.size() << ", : '" << buffer.view() << "'" << std::endl;
+            ////std::cout << "readBuffer.size() = " << buffer.size() << ", : '" << buffer.view() << "'" << std::endl;
             HttpRequest.parse(buffer);
         }
 
