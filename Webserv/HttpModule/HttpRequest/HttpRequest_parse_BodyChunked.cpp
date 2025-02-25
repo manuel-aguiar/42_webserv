@@ -30,30 +30,52 @@ static int strToInteger(const BufferView& view, int base = 10)
     return (static_cast<int>(value));
 }
 
-
-BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferView& receivedView)
+size_t Http::Request::mf_findHeaderEnd(const BufferView& remaining)
 {
-    BufferView currentView = receivedView;
-
-    //std::cout << "chunked body, current view: '" << currentView << "'" << std::endl;
-	while (currentView.size() > 0 && m_parsingState == BODY)
+    size_t headerEnd = remaining.find('\r', m_findPivot);
+    if (headerEnd == BufferView::npos || headerEnd == remaining.size() - 1)
     {
-        //std::cout << "entered body loop, view: '" << currentView <<  "'" << std::endl;
+        m_findPivot = std::max((int)remaining.size() - 1, 0);
+        return (BufferView::npos);
+    }
+    else if (remaining[headerEnd + 1] != '\n')
+    {
+        m_findPivot = headerEnd + 1;
+        return (BufferView::npos);
+    }
+    else
+        m_findPivot = 0;
+
+    return (headerEnd);
+}
+
+/*
+    @returns: the remaining view that was not consumed
+*/
+BufferView Http::Request::mf_parseChunkedBody(const BaseBuffer& buffer, const BufferView& receivedView)
+{
+    BufferView remaining = receivedView;
+
+    //std::cout << "chunked body, current view: '" << remaining << "'" << std::endl;
+	while (remaining.size() > 0 && m_parsingState == BODY)
+    {
+        //std::cout << "entered body loop, view: '" << remaining <<  "'" << std::endl;
+
+        // no active chunk
         if (m_curChunkSize == -1)
         {
-            size_t headerEnd = currentView.find('\r', m_findPivot);
-            if (headerEnd == BufferView::npos || headerEnd == currentView.size() - 1)
+            size_t headerEnd = remaining.find('\r', m_findPivot);
+            if (headerEnd == BufferView::npos || headerEnd == remaining.size() - 1)
             {
-                m_findPivot = std::max((int)currentView.size() - 1, 0);
+                m_findPivot = std::max((int)remaining.size() - 1, 0);
+
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                if (currentView.size() >= buffer.capacity())
+                if (remaining.size() >= buffer.capacity())
                     goto exitFailure;
-                else
-                    buffer.truncatePush(currentView); // push the remaining data back to the beginning
-                
-                return (BufferView()); // not enough to go through yet
+
+                return (remaining); // not enough to go through yet
             }
-            else if (currentView[headerEnd + 1] != '\n')
+            else if (remaining[headerEnd + 1] != '\n')
             {
                 m_findPivot = headerEnd + 1;
                 continue ;
@@ -61,35 +83,29 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
             else
                 m_findPivot = 0;
 
-            BufferView thisChunkSize = currentView.substr(0, headerEnd);
-            currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move view past the header
-
-            if (currentView.size() == 0)
-                buffer.clear();
+            BufferView thisChunkSize = remaining.substr(0, headerEnd);
+            remaining = remaining.substr(headerEnd + 2, remaining.size() - headerEnd - 2); // move view past the header
 
             m_curChunkSize = strToInteger(thisChunkSize, 16);
-            //std::cout << "current chunk size: " << m_curChunkSize << std::endl;
-            //std::cout << "view size " << currentView.size() << " after chunk size: '" << currentView << "'" << std::endl;
             if (m_curChunkSize == -1)
                 goto exitFailure;
             m_curChunkPos = 0;
         }
+
+        // last chunk
         else if (m_curChunkSize == 0)
         {
 
-            size_t bodyEnd = currentView.find('\r', m_findPivot);
-            if (bodyEnd == BufferView::npos || bodyEnd == currentView.size() - 1)
+            size_t bodyEnd = remaining.find('\r', m_findPivot);
+            if (bodyEnd == BufferView::npos || bodyEnd == remaining.size() - 1)
             {
-                m_findPivot = std::max((int)currentView.size() - 1, 0);
+                m_findPivot = std::max((int)remaining.size() - 1, 0);
                 // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                if (currentView.size() >= buffer.capacity())
+                if (remaining.size() >= buffer.capacity())
                     goto exitFailure;
-                else
-                    buffer.truncatePush(currentView); // push the remaining data back to the beginning
-                
-                return (BufferView()); // not enough to go through yet
+                return (remaining); // not enough to go through yet
             }
-            else if (currentView[bodyEnd + 1] != '\n')
+            else if (remaining[bodyEnd + 1] != '\n')
             {
                 m_findPivot = bodyEnd + 1;
                 continue ;
@@ -97,38 +113,33 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
             else
                 m_findPivot = 0;
 
-            currentView = currentView.substr(bodyEnd + 2, currentView.size() - bodyEnd - 2); // move view past the header
+            remaining = remaining.substr(bodyEnd + 2, remaining.size() - bodyEnd - 2); // move view past the header
 
             if (bodyEnd != 0)
                 goto exitFailure;
-
-
-            buffer.truncatePush(currentView); // push the remaining data back to the beginning
 
             m_parsingState = COMPLETED;
             if (m_response)
                 m_response->receiveRequestBody(BufferView()); // send "eof" to signal end of body
 
-            return (BufferView());
+            return (remaining); //return left overs, may be a followup request
         }
         else
         {
+            // end of current chunk
             if (m_curChunkPos == m_curChunkSize)
             {
-                size_t bodyEnd = currentView.find('\r', m_findPivot);
+                size_t bodyEnd = remaining.find('\r', m_findPivot);
                 // not found, last character in view or not followed by \n
-                if (bodyEnd == BufferView::npos || bodyEnd == currentView.size() - 1)
+                if (bodyEnd == BufferView::npos || bodyEnd == remaining.size() - 1)
                 {
-                    m_findPivot = std::max((int)currentView.size() - 1, 0);
+                    m_findPivot = std::max((int)remaining.size() - 1, 0);
                     // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-                    if (currentView.size() >= buffer.capacity())
+                    if (remaining.size() >= buffer.capacity())
                         goto exitFailure;
-                    else
-                        buffer.truncatePush(currentView); // push the remaining data back to the beginning
-                    
-                    return (BufferView()); // not enough to go through yet
+                    return (remaining); // not enough to go through yet
                 }
-                else if (currentView[bodyEnd + 1] != '\n')
+                else if (remaining[bodyEnd + 1] != '\n')
                 {
                     m_findPivot = bodyEnd + 1;
                     continue ;
@@ -136,7 +147,7 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
                 else
                     m_findPivot = 0;
                 
-                currentView = currentView.substr(bodyEnd + 2, currentView.size() - bodyEnd - 2); // move view past the header
+                remaining = remaining.substr(bodyEnd + 2, remaining.size() - bodyEnd - 2); // move view past the header
     
                 if (bodyEnd != 0)
                     goto exitFailure;
@@ -144,35 +155,28 @@ BufferView Http::Request::mf_parseChunkedBody(BaseBuffer& buffer, const BufferVi
                 m_curChunkSize = -1;
                 m_curChunkPos = 0;
 
-	            if (currentView.size() == 0)
-                    buffer.clear();
-
             }
             else
             {
-                // stream
+                // stream, much like regular body here
                 size_t bytesLeft = m_curChunkSize - m_curChunkPos;
-                size_t bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
+                size_t bytesSending = (bytesLeft > remaining.size()) ? remaining.size() : bytesLeft;
             
-                BufferView remaining = currentView.substr(bytesSending, currentView.size() - bytesSending);
+                BufferView temp = remaining.substr(bytesSending, remaining.size() - bytesSending);
                 m_curChunkPos += bytesSending;
             
                 if (m_response)
-                    m_response->receiveRequestBody(currentView.substr(0, bytesSending));
+                    m_response->receiveRequestBody(remaining.substr(0, bytesSending));
                 
-                currentView = remaining;
+                remaining = temp;
             }
         }
     }
 
-    //std::cout << "exited body loop" << std::endl;
-    if (currentView.size() == 0)
-        buffer.clear();
-    return (currentView);
+    return (remaining);
 
 exitFailure:
 
-	buffer.clear();
     m_parsingState = ERROR;
     m_data.status = Http::Status::BAD_REQUEST;      // chunk header too long
     m_parsingFunction = &Request::mf_handleNothing;

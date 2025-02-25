@@ -56,8 +56,9 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
             int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
             buffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-            //////std::cout << "bufferRequest.size() = " << bufferRequest.size() << std::endl;
-            HttpRequest.parse(buffer);
+
+            // parse, tell the buffer to put the unconsumed part at the beginning
+            buffer.truncatePush(HttpRequest.parse(buffer));
         }
         //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");
@@ -74,10 +75,12 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 
 int main()
 {
+    TEST_HEADER("Http Request - Chunked Body");
     int testNumber = 1;
     chunkedReadBuffer(testNumber, 29);
     for (size_t i = 28; i < 101; ++i)
         chunkedReadBuffer(testNumber, i);
     chunkedReadBuffer(testNumber, 1024);
+    TEST_FOOTER;
     return 0;
 }

@@ -85,58 +85,65 @@ Request::reset()
 	buffer::truncatePush the extra data back to the beginning.
 	Buffer will be read again, and "complete" the request.
 */
-void
-Request::parse(BaseBuffer& buffer)
-{
-	BufferView currentView(buffer.data(), buffer.size());
 
-	//std::cout << "parse: view size: " << currentView.size() << std::endl;
-	//std::cout << "parse: view content: '" << currentView << "'" << std::endl;
+/*
+	@returns: BufferView of the remaining data that wasn't consumed
+*/
+BufferView
+Request::parse(const BaseBuffer& buffer)
+{
+	BufferView bufferView(buffer.data(), buffer.size());
+	BufferView remaining;
+	//std::cout << "parse: view size: " << remaining.size() << std::endl;
+	//std::cout << "parse: view content: '" << remaining << "'" << std::endl;
 
 	try
 	{
-		(void)((this->*m_parsingFunction)(buffer, currentView));
+		remaining = ((this->*m_parsingFunction)(buffer, bufferView));
+		//std::cout << "remaining, size " << remaining.size() << ", content: '" << remaining << "'" << std::endl;
 	}
 	catch (const std::exception& e) {
 		m_parsingState = ERROR;
 		m_data.status = Http::Status::INTERNAL_ERROR;
 		m_response->receiveRequestData(m_data);             //blew up, tell response to inform
 	}
+	return (remaining);
 }
 
-BufferView Request::mf_handleNothing(BaseBuffer& buffer, const BufferView& currentView)
+BufferView Request::mf_handleNothing(const BaseBuffer& buffer, const BufferView& remaining)
 {
 	if (m_parsingState != IDLE)
-		return (currentView); // already started, do nothing
+		return (remaining); // already started, do nothing
 	
 	m_parsingState = REQLINE;
 	m_parsingFunction = &Request::mf_handleRequestLine;
-	return (mf_handleRequestLine(buffer, currentView));
+	return (mf_handleRequestLine(buffer, remaining));
 }
 
-BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& receivedView)
+/*
+	@returns: BufferView of the remaining data that wasn't consumed
+*/
+BufferView Request::mf_handleRequestLine(const BaseBuffer& buffer, const BufferView& receivedView)
 {
-	BufferView currentView = receivedView;
+	BufferView remaining = receivedView;
 
-	if (receivedView.size() == 0)
-		return (BufferView()); // not enough to go through yet
+	if (remaining.size() == 0)
+		return (BufferView());
 
-	size_t reqLineEnd = currentView.find('\r', m_findPivot);
-	if (reqLineEnd == BufferView::npos || reqLineEnd == currentView.size() - 1)
+	size_t reqLineEnd = remaining.find('\r', m_findPivot);
+	if (reqLineEnd == BufferView::npos || reqLineEnd == remaining.size() - 1)
 	{
-		m_findPivot = std::max((int)currentView.size() - 1, 0);
+		m_findPivot = std::max((int)remaining.size() - 1, 0);
 		// HARD LIMIT, request line cannot be bigger than buffer size
-		if (currentView.size() >= buffer.capacity())
+		if (remaining.size() >= buffer.capacity())
 		{
 			m_parsingState = ERROR;
 			m_data.status = Http::Status::BAD_REQUEST;      // URI too long, AMMEND ERROR CODE
 			m_response->receiveRequestData(m_data);         // inform response right away
 		}
-		else
-			buffer.truncatePush(currentView);                   // push the remaining data back to the beginning
-		return (BufferView()); // not enough to go through yet
+		return (remaining); // not enough to go through yet
 	}
-	else if (currentView[reqLineEnd + 1] != '\n')
+	else if (remaining[reqLineEnd + 1] != '\n')
 	{
 		//std::cout << "found in the middle of a header" << std::endl;
 		m_findPivot = reqLineEnd + 1;
@@ -144,8 +151,8 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 	else
 		m_findPivot = 0;
 
-	BufferView requestLine(currentView.substr(0, reqLineEnd));
-	currentView = currentView.substr(reqLineEnd + 2, currentView.size() - reqLineEnd - 2); // move view forward
+	BufferView requestLine(remaining.substr(0, reqLineEnd));
+	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2); // move view forward
 
 	m_data.status = mf_parseRequestLine(requestLine);							// call parser, error checking
 
@@ -155,34 +162,34 @@ BufferView Request::mf_handleRequestLine(BaseBuffer& buffer, const BufferView& r
 		m_parsingState = ERROR;
 		if (m_response)
 			m_response->receiveRequestData(m_data);                 // inform response right away
-		return (BufferView());
+		return (remaining);
 	}
 
 	// transition to headers
 	m_parsingState = HEADERS;
 
 	m_parsingFunction = &Request::mf_handleHeaders; // next handler is headers
-	return (mf_handleHeaders(buffer, currentView));
+	return (mf_handleHeaders(buffer, remaining));
 }
 
-BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& receivedView)
+BufferView Request::mf_handleHeaders(const BaseBuffer& buffer, const BufferView& receivedView)
 {
-	BufferView currentView = receivedView;
+	BufferView remaining = receivedView;
 
 	if (receivedView.size() == 0)
 		return (BufferView()); // not enough to go through yet
 
-	while (currentView.size() > 0 && m_parsingState == HEADERS)
+	while (remaining.size() > 0 && m_parsingState == HEADERS)
 	{
-		//std::cout << "\t\t current size " << currentView.size() << ", view: '" << currentView << "'" << std::endl;
+		//std::cout << "\t\t current size " << remaining.size() << ", view: '" << remaining << "'" << std::endl;
 
 		//std::cout << "lookup pivot: " << m_findPivot << std::endl;
-		size_t headerEnd = currentView.find('\r', m_findPivot);
-		if (headerEnd == BufferView::npos || headerEnd == currentView.size() - 1)
+		size_t headerEnd = remaining.find('\r', m_findPivot);
+		if (headerEnd == BufferView::npos || headerEnd == remaining.size() - 1)
 		{
-			m_findPivot = std::max((int)currentView.size() - 1, 0);
+			m_findPivot = std::max((int)remaining.size() - 1, 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
-			if (currentView.size() >= buffer.capacity())
+			if (remaining.size() >= buffer.capacity())
 			{
 				m_parsingState = ERROR;
 				m_data.status = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE;      // HEADER too long, AMMEND ERROR CODE
@@ -193,12 +200,10 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 				}
 				//std::cout << "header size too big" << std::endl;
 			}
-			else
-				buffer.truncatePush(currentView); // push the remaining data back to the beginning
+			return (remaining); // push the remaining data back to the beginning
 			
-			return (BufferView()); // not enough to go through yet
 		}
-		else if (currentView[headerEnd + 1] != '\n')
+		else if (remaining[headerEnd + 1] != '\n')
 		{
 			//std::cout << "found in the middle of a header" << std::endl;
 			m_findPivot = headerEnd + 1;
@@ -212,16 +217,16 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 		if (headerEnd == 0)
 		{
 			// \r\n found at the beginning: end of headers, move to BODY
-			currentView = currentView.substr(2, currentView.size() - 2); // move to body
+			remaining = remaining.substr(2, remaining.size() - 2); // move to body
 			m_parsingState = BODY;
 			mf_prepareBodyParser(); // next handler is body
             break ;
 		}
-		BufferView thisHeader = currentView.substr(0, headerEnd); // segregate this header
+		BufferView thisHeader = remaining.substr(0, headerEnd); // segregate this header
 
 		//std::cout << "\t this header line: '" << thisHeader << "'" << std::endl;
 
-		currentView = currentView.substr(headerEnd + 2, currentView.size() - headerEnd - 2); // move to next header
+		remaining = remaining.substr(headerEnd + 2, remaining.size() - headerEnd - 2); // move to next header
 
 		// parse this header
 		m_data.status = mf_parseHeaders(thisHeader);
@@ -232,9 +237,6 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 			break ;
 		}        
 	}
-
-	if (currentView.size() == 0)
-		buffer.clear();
 
 	// send right away
 	if (m_parsingState != HEADERS) // if not parsing headers anymore (now body, error, etc), headers are complete, move on
@@ -247,7 +249,7 @@ BufferView Request::mf_handleHeaders(BaseBuffer& buffer, const BufferView& recei
 
 	//std::cout << "ready to call body parser" << std::endl;
 	// either nothing or body
-	return ((this->*m_parsingFunction)(buffer, currentView)); // return buffer view of our current position, for the next parser
+	return ((this->*m_parsingFunction)(buffer, remaining)); // return buffer view of our current position, for the next parser
 }
 
 /*

@@ -56,7 +56,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
             buffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
             //////std::cout << "bufferRequest.size() = " << bufferRequest.size() << std::endl;
-            HttpRequest.parse(buffer);
+            buffer.truncatePush(HttpRequest.parse(buffer));
         }
         //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");
@@ -109,7 +109,7 @@ void regularBodyTests(int &testNumber)
                 buffer.push(request.c_str(), thisPush);
                 request.erase(0, thisPush);
 
-                HttpRequest.parse(buffer);
+                buffer.truncatePush(HttpRequest.parse(buffer));
             }
 
             EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBody), "Body should match");
@@ -154,7 +154,7 @@ void regularBodyTests(int &testNumber)
                 int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
                 buffer.push(BufferView(bufferRequest.data(), thisPush));
                 bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-                HttpRequest.parse(buffer);
+                buffer.truncatePush(HttpRequest.parse(buffer));
             }
 
             EXPECT_EQUAL(g_mockMsgBody.view(), BufferView((char*)&requestBody, sizeof(requestBody)), "Body should match");
@@ -199,7 +199,7 @@ void regularBodyTests(int &testNumber)
                 int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
                 buffer.push(BufferView(bufferRequest.data(), thisPush));
                 bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-                HttpRequest.parse(buffer);
+                buffer.truncatePush(HttpRequest.parse(buffer));
             }
 
             EXPECT_EQUAL(g_mockMsgBody.view(), BufferView((char*)&requestBody, sizeof(requestBody)), "Body should match");
@@ -211,63 +211,8 @@ void regularBodyTests(int &testNumber)
             TEST_FAILED_MSG(e.what());
         }
     }
-    // below 28, the Transfer encoding header doesn't fit the readBuffer, will result in header large
-    for (size_t i = 28; i < 101; ++i)
-        chunkedReadBuffer(testNumber, i);
-    chunkedReadBuffer(testNumber, 1024);
 
 /////////////////////////////////////////////////////////////////////////////////////////
-{
-    TEST_INTRO(testNumber++);
-    Http::Request   HttpRequest(context);
-    Http::Response  response(context);
-    const Http::RequestData& requestData = HttpRequest.getData();
-
-    Buffer<1024> bufferRequest;
-
-    HttpRequest.setResponse(response);
-    Buffer<10> buffer;
-    std::string requestheader = "POST /test HTTP/1.1\r\n"
-        "Transfer-Encoding: chunked\r\n"
-        "\r\n";
-    std::string requestBodyChunked = 
-        "4\r\n"
-        "Wiki\r\n"
-        "5\r\n"
-        "pedia\r\n"
-        "B\r\n"
-        " in chunks.\r\n"
-        "0\r\n"
-        "\r\n";
-    
-    std::string requestBodyTranslated = "Wikipedia in chunks.";
-
-    std::string request = requestheader + requestBodyChunked;
-
-    bufferRequest.push(request.c_str(), request.size());
-
-    g_mockMsgBody.clear();
-
-    try
-    {
-        while (bufferRequest.size() && requestData.status == Http::Status::OK)
-        {
-            int thisPush = buffer.available() < bufferRequest.size() ? buffer.available() : bufferRequest.size();
-            buffer.push(BufferView(bufferRequest.data(), thisPush));
-            bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-            ////std::cout << "readBuffer.size() = " << buffer.size() << ", : '" << buffer.view() << "'" << std::endl;
-            HttpRequest.parse(buffer);
-        }
-
-        EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(), "should not receive any body");
-
-        TEST_PASSED_MSG(std::string("Valid body, chuncked, header failure: '") + requestBodyTranslated + "'");
-    }
-    catch(const std::exception& e)
-    {
-        TEST_FAILED_MSG(e.what());
-    }
-}
 
 /*
     {
