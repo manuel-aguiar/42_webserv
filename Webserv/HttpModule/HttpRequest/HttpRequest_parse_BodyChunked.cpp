@@ -90,7 +90,7 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
     BufferView temp = remaining.substr(bytesSending, remaining.size() - bytesSending);
     m_curChunkPos += bytesSending;
 
-    if (m_response)
+    if (m_response && bytesSending > 0)
         m_response->receiveRequestBody(remaining.substr(0, bytesSending));
     
     remaining = temp;

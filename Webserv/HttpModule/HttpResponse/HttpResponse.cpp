@@ -29,10 +29,10 @@ namespace Http
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		std::cout << "Response received data: " << data.status << std::endl;
-
-		for (std::map<std::string, std::string>::const_iterator it = data.headers.begin(); it != data.headers.end(); ++it)
-			std::cout << "\t\t" << it->first << ": " << it->second << std::endl;
+		//std::cout << "Response received data: " << data.status << std::endl;
+//
+		//for (std::map<std::string, std::string>::const_iterator it = data.headers.begin(); it != data.headers.end(); ++it)
+		//	std::cout << "\t\t" << it->first << ": " << it->second << std::endl;
 
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
@@ -48,17 +48,12 @@ namespace Http
 		m_fillFunction = &Response::mf_fillErrorResponse;
 
 
-
-
-
-		//m_fillFunction = &Response::mf_fillResponseLine;
 	}
 
-	void	Response::receiveRequestBody(const BufferView& view)
+	BufferView
+	Response::receiveRequestBody(const BufferView& view)
 	{
-		std::cout << "Response received body: '" << view << "'" << std::endl;
-		(void)view;
-		// NOT IMPLEMENTED YET
+		return ((this->*m_processFunction)(view));
 	}
 
 
@@ -69,32 +64,6 @@ namespace Http
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
 
-		// NOT IMPLEMENTED YET
-		if (m_status == ResponseStatus::WAITING)
-			return (m_status);
-
-		// amount of bytes to push
-		int	pushed = 0;
-
-		// push pending data to buffer
-
-		if (!m_pendingWrite.empty())
-		{
-			pushed = (writeBuffer.available() < m_pendingWrite.size()) ? writeBuffer.available() : m_pendingWrite.size();
-			writeBuffer.push(m_pendingWrite.c_str(), pushed);
-			m_pendingWrite.erase(0, pushed);
-			if (m_pendingWrite.empty())
-			{
-				m_status = ResponseStatus::FINISHED;
-				return (m_status);
-			}
-		}
-
-		// Read file to buffer
-		// assuming read will not read if buffer is already full
-		if (m_file.fd() != Ws::FD_NONE)
-			writeBuffer.read(m_file.fd());
-		
 		return (m_status);
 	}
 

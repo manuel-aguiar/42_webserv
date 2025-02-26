@@ -27,7 +27,8 @@ BufferView Http::Request::mf_parseRegularBody(const BufferView& currentView)
     BufferView remaining = currentView.substr(bytesSending, currentView.size() - bytesSending);
     m_curContentPos += bytesSending;
 
-    if (m_response)
+    // don't send empty body
+    if (m_response && bytesSending > 0)
         m_response->receiveRequestBody(currentView.substr(0, bytesSending));
 
     if (m_curContentPos == m_curContentLength)

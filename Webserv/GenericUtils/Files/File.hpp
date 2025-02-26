@@ -19,22 +19,20 @@ class File
 		File();
 		~File();
 
-		void				open(const char *path);
+		bool				open(const char *path);
 		void				close();
 
 		void				reset();
-		bool				read(void* buffer, size_t size);
-		bool				write(const void* buffer, size_t size);
+		int					read(void* buffer, size_t size);
+		int					write(const void* buffer, size_t size);
 		size_t				size() const;
 		const std::string&	path() const;
 		Ws::fd				fd() const;
-		size_t				offset() const;
 
 	private:
-		Ws::fd		m_fd;
-		size_t		m_size;
-		size_t		m_offset;
-		std::string	m_path;
+		Ws::fd				m_fd;
+		size_t				m_size;
+		std::string			m_path;
 
 
 		File(const File& copy);

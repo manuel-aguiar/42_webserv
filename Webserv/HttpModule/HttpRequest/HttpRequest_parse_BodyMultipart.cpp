@@ -205,7 +205,7 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 	if (m_curContentPos > m_curContentLength)
 		return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
 
-	if (m_response)
+	if (m_response && chunkEnd > 0)
         m_response->receiveRequestBody(currentView.substr(0, chunkEnd));
 
 	if (chunkEnd == doubleHifenBoundary)
