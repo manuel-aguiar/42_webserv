@@ -186,6 +186,10 @@ void fileUpload(int& testNumber, size_t readBufSize)
             readBuffer.truncatePush(request.parse(readBuffer));
         }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 		int fd1 = ::open(file1_Name, O_RDONLY);
 		testBuffer.read(fd1);
 		::close(fd1);
@@ -196,9 +200,14 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		::close(fd2);
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
+<<<<<<< HEAD
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
 
 		TEST_PASSED_MSG("FileUpload Request-Response integration test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
+=======
+
+		TEST_PASSED_MSG("FileUpload test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
+>>>>>>> main
 	}
 	catch(const std::exception& e)
 	{
@@ -221,7 +230,11 @@ int main(void)
 
 	int testNumber = 1;
 
+<<<<<<< HEAD
 	//fileUpload(testNumber, 400);
+=======
+
+>>>>>>> main
 	for (size_t i = 200; i < 500; i += 1)
 		fileUpload(testNumber, i);
 

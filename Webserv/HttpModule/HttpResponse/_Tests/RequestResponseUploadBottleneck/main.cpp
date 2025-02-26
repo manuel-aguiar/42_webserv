@@ -126,12 +126,20 @@ static const char* file2_Name = "test2.txt";
 static const char* file2_Content = orange_text;
 static const size_t file2_ContentSize = sizeof(orange_text) - 1;
 
+<<<<<<< HEAD
 void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWrite)
+=======
+void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileRead)
+>>>>>>> main
 {
 	TEST_INTRO(testNumber++);
 	ServerContext context;
 
+<<<<<<< HEAD
 	g_maxFileWrite = maxFileWrite;
+=======
+	g_maxFileWrite = maxFileRead;
+>>>>>>> main
 
 	::unlink(file1_Name);
 	::unlink(file2_Name);
@@ -150,7 +158,10 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		std::string contentDisp1 = "Content-Disposition: form-data; name=\"file1\"; filename=\"" + std::string(file1_Name) + "\"";
 		std::string contentDisp2 = "Content-Disposition: form-data; name=\"file2\"; filename=\"" + std::string(file2_Name) + "\"";
 
+<<<<<<< HEAD
 		// placing file2 twice intentionally, ensure it is truncating properly
+=======
+>>>>>>> main
 		std::string requestBodyMultipart = 
 			"--" + boundary + "\r\n"
 			+ contentDisp1 + "\r\n"
@@ -160,12 +171,16 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
+<<<<<<< HEAD
 			"--" + boundary + "\r\n"
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
 			"--" + boundary +
 			"--\r\n";
+=======
+			"--" + boundary + "--\r\n";
+>>>>>>> main
 
 
 		std::string requestHeader = 
@@ -206,11 +221,16 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		::close(fd2);
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
+<<<<<<< HEAD
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
 
 		TEST_PASSED_MSG("FileUpload Bottleneck Request-Response integration"
 			", read buffer size: " + TestHelpers::to_string(readBufSize) 
 			+ ", maxFileWrite: " + TestHelpers::to_string(maxFileWrite));
+=======
+
+		TEST_PASSED_MSG("FileUpload test passed, read buffer size: " + TestHelpers::to_string(readBufSize) + ", maxFileRead: " + TestHelpers::to_string(maxFileRead));
+>>>>>>> main
 	}
 	catch(const std::exception& e)
 	{
@@ -233,6 +253,10 @@ int main(void)
 
 	int testNumber = 1;
 
+<<<<<<< HEAD
+=======
+	//fileUploadBottleNeck(testNumber, 200, 100);
+>>>>>>> main
 	// force File class to read slow and probably lower than what it is passed
 	 for (size_t i = 200; i < 500; i += 1)
 	 	fileUploadBottleNeck(testNumber, i, i / 2);

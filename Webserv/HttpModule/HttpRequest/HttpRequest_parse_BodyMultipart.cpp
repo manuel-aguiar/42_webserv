@@ -107,6 +107,12 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			if (m_curContentPos > m_curContentLength ||
 				m_data.multipart_Name.empty() || 
 				m_data.multipart_Filename.empty())
+
+			m_curContentPos += delimiter.size();	//header delimiters in multi part count towards content length
+
+			if (m_curContentPos > m_curContentLength ||
+				m_data.multipart_Name.empty() || 
+				m_data.multipart_Filename.empty())
 				return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
 
 			m_parsingFunction = &Request::mf_parseMultipartBody_Content;
