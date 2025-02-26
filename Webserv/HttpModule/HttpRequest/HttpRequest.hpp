@@ -49,7 +49,7 @@ namespace Http
 			void										reset(); // reset the request to its initial state
 
 			// Main parsing interface
-			void 										parse(BaseBuffer& buffer);
+			BufferView 									parse(const BaseBuffer& buffer);
 
 			// my response
 			Http::Response&								getResponse();
@@ -102,7 +102,7 @@ namespace Http
 		private:
 			Request();
 
-			typedef BufferView (Request::*handlerFunction)(BaseBuffer& buffer, const BufferView& currentView);
+			typedef BufferView (Request::*ParsingFunction)(const BufferView& currentView);
 			// all global module's context
 			ServerContext&								m_serverContext;
 
@@ -113,22 +113,43 @@ namespace Http
 			ParsingState								m_parsingState;
 			
 			// parseHandler functions
-			handlerFunction								m_handlerFunction;
-
+			ParsingFunction								m_parsingFunction;
+			
 			// Components
 			Http::RequestData 							m_data;	// holds request data
 			
-			// Helper functions for parsing
-			BufferView									mf_handleNothing	(BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleRequestLine(BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleHeaders	(BaseBuffer& buffer, const BufferView& currentView);
-			BufferView									mf_handleBody		(BaseBuffer& buffer, const BufferView& currentView);
+			// state helpers
+			size_t										m_bufferCapacity;
+			int											m_findPivot;
+			int											m_curChunkSize;
+			int											m_curChunkPos;
+			int											m_curContentLength;
+			int											m_curContentPos;
+
+			// Parsing functions, return  BufferView of the unconsumed part
+			BufferView									mf_handleNothing		(const BufferView& currentView);
+			BufferView									mf_handleRequestLine	(const BufferView& currentView);
+			BufferView									mf_handleHeaders		(const BufferView& currentView);
+			BufferView									mf_parseRegularBody		(const BufferView& currentView);
+			
+			// chunked body intermediaries......
+			BufferView									mf_parseChunkedBody_GetChunk	(const BufferView& currentView);
+			BufferView									mf_parseChunkedBody_ParseChunk	(const BufferView& currentView);
+			BufferView									mf_parseChunkedBody_EndChunk	(const BufferView& currentView);
+			
+			// multi part intermediaries........
+			BufferView 									mf_parseMultipartBody_Start		(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_Headers	(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
+			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
+			
+			BufferView									mf_parseBodyExitError	(const Http::Status::Number status);
 
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);
 			Http::Status::Number						mf_parseBody		(const BufferView& currentView);
-
+			void										mf_prepareBodyParser();
 
 
 
@@ -142,6 +163,9 @@ namespace Http
 			Http::Status::Number						mf_parseRegularBody(const std::string& data);
 			Http::RequestData::BodyType					mf_bodyType();
 			Http::RequestData::ContentType				mf_contentType();
+
+
+			size_t										mf_findHeaderEnd(const BufferView& currentView);
 	};
 
 } // namespace Http

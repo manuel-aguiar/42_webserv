@@ -6,7 +6,7 @@
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 
-extern bool DirectoryListing(const std::string& path, std::string& output);
+extern std::string DirectoryListing(const std::string& path);
 
 int main(void)
 {
@@ -18,9 +18,9 @@ int main(void)
 		TEST_INTRO(testNumber++);
 
 		std::string path = "asgasgasg";
-		std::string output;
+		std::string output = DirectoryListing(path);
 
-		EXPECT_EQUAL(DirectoryListing(path, output), false, "directory listing should not be successfull");
+		EXPECT_EQUAL( output != "", false, "directory listing should not be successfull");
 
 		TEST_PASSED_MSG("bogus path");
 	}
@@ -35,9 +35,9 @@ int main(void)
 		TEST_INTRO(testNumber++);
 
 		std::string path = "/doesnt/exist/";
-		std::string output;
+		std::string output = DirectoryListing(path);
 
-		EXPECT_EQUAL(DirectoryListing(path, output), false, "directory listing should not be successfull");
+		EXPECT_EQUAL( output != "", false, "directory listing should not be successfull");
 
 		TEST_PASSED_MSG("path that doesnt exist");
 	}
@@ -53,9 +53,9 @@ int main(void)
 		TEST_INTRO(testNumber++);
 
 		std::string path = "main.cpp";
-		std::string output;
+		std::string output = DirectoryListing(path);
 
-		EXPECT_EQUAL(DirectoryListing(path, output), false, "directory listing should not be successfull");
+		EXPECT_EQUAL( output != "", false, "directory listing should not be successfull");
 
 		TEST_PASSED_MSG("path that exists but is not a folder");
 	}
@@ -71,9 +71,9 @@ int main(void)
 		TEST_INTRO(testNumber++);
 
 		std::string path = "../../";
-		std::string output;
+		std::string output = DirectoryListing(path);
 
-		EXPECT_EQUAL(DirectoryListing(path, output), true, "directory listing should be successfull");
+		EXPECT_EQUAL( output != "", true, "directory listing should not be successfull");
 		
 		std::ofstream file("directoryListing.html");
 		if (file.is_open())

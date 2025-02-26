@@ -27,7 +27,6 @@ namespace Http
         {
             _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
-
 			// 2xx
 			OK = 200,
 			CREATED = 201,
@@ -74,6 +73,7 @@ namespace Http
 		}   Number;
 	}
 
+
 	// standard values for http 1.1
 	namespace HttpStandard
 	{
@@ -89,6 +89,7 @@ namespace Http
 	{
 		const std::set<std::string>& getAllowedMethods();
 	}
+
 
 	namespace ResponseStatus
 	{
@@ -132,9 +133,9 @@ namespace Http
 		std::string							httpVersion;
 		std::map<HeaderKey, HeaderValue>	headers;
 		std::string							body;
-		std::string							boundary;
-		std::string							uploaded_filename;
-		std::string							uploaded_filetype;
+		std::string							multipart_Boundary;
+		std::string							multipart_Name;
+		std::string							multipart_Filename;
 		Status::Number						status;
 		BodyType							bodyType;
 		ContentType							contentType;

@@ -1,9 +1,13 @@
 
 
 
-#include "File.hpp"
-#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+#include "../../../../GenericUtils/Files/File.hpp"
+#include "../../../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 // Needs Testing
+
+# include <algorithm> // std::min
+
+extern size_t g_maxFileWrite;
 
 File::File():
 	m_fd(Ws::FD_NONE),
@@ -55,8 +59,7 @@ int	File::read(void* buffer, size_t size)
 int	File::write(const void* buffer, size_t size)
 {
 	ASSERT_EQUAL(m_fd != Ws::FD_NONE, true, "File: no file is open for writing");
-
-	return (::write(m_fd, buffer, size));
+	return (::write(m_fd, buffer, std::min(size, g_maxFileWrite)));
 }
 
 size_t File::size() const
