@@ -17,12 +17,6 @@ namespace Ws {typedef int fd;}
 class BaseBuffer
 {
 	public:
-		BaseBuffer();
-		BaseBuffer(unsigned char* begin, unsigned char* end);
-		~BaseBuffer();
-		BaseBuffer(const BaseBuffer& copy);
-		BaseBuffer& operator=(const BaseBuffer& assign);
-
 
 		int			read(Ws::fd fd, int startIndex = 0);
 		int			write(Ws::fd fd, int startIndex = 0);
@@ -49,6 +43,15 @@ class BaseBuffer
 		void		truncatePush(const char* data, size_t size);
 		void		truncatePush(const std::string& data);
 		void		truncatePush(const BufferView& data);
+
+	protected:
+		BaseBuffer();
+		BaseBuffer(unsigned char* begin, unsigned char* end);
+		~BaseBuffer();
+		BaseBuffer(const BaseBuffer& copy);
+		BaseBuffer& operator=(const BaseBuffer& assign);
+
+		void reset(unsigned char* begin, unsigned char* end);
 
 	private:
 		unsigned char*	m_begin;

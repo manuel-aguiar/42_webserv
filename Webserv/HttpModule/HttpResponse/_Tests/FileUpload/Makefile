@@ -1,17 +1,17 @@
 # Makefile
 
 # TARGET_DEBUG 			=		debug_Http::Request.out
-TARGET_TEST 			=		test_reqBody.out
+TARGET_TEST 			=		test.out
 CXX						=		c++
-CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
+CXXFLAGS 				=		-g -std=c++98 -Wpedantic -Wall -Wextra -Werror -MMD -MP
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Body/test_req_body.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/Body/MockHttpResponse.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileUpload/main.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileUpload/MockHttpResponse.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
@@ -28,11 +28,13 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp \
 								\
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ParseAcceptHeader.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
@@ -43,7 +45,6 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
-								\
 								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
