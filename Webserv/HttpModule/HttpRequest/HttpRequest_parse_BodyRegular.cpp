@@ -21,16 +21,19 @@
 */
 BufferView Http::Request::mf_parseRegularBody(const BufferView& currentView)
 {
-    size_t bytesLeft = m_curContentLength - m_curContentPos;
-    size_t bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
-
-    BufferView remaining = currentView.substr(bytesSending, currentView.size() - bytesSending);
-    m_curContentPos += bytesSending;
+    size_t      bytesLeft = m_curContentLength - m_curContentPos;
+    size_t      bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
+    BufferView  unconsumed;
 
     // don't send empty body
     if (m_response && bytesSending > 0)
-        m_response->receiveRequestBody(currentView.substr(0, bytesSending));
+        unconsumed = m_response->receiveRequestBody(currentView.substr(0, bytesSending));
 
+    size_t      bytesConsumed = bytesSending - unconsumed.size();
+
+    BufferView  remaining = currentView.substr(bytesConsumed, currentView.size() - bytesConsumed);
+    m_curContentPos += bytesConsumed;
+    
     if (m_curContentPos == m_curContentLength)
     {
         m_parsingState = COMPLETED;

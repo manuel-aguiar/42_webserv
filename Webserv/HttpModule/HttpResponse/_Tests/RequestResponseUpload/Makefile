@@ -10,8 +10,8 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileUpload/main.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileUpload/MockHttpResponse.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUpload/main.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUpload/MockHttpResponse.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 

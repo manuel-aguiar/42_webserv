@@ -101,7 +101,12 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			//std::cout << " found end of headers" << std::endl;
 			// \r\n found at the beginning: end of headers, move to BODY
 			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
-			if (m_data.multipart_Name.empty() || m_data.multipart_Filename.empty())
+
+			m_curContentPos += delimiter.size();	//header delimiters in multi part count towards content length
+
+			if (m_curContentPos > m_curContentLength ||
+				m_data.multipart_Name.empty() || 
+				m_data.multipart_Filename.empty())
 				return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
 
 			m_parsingFunction = &Request::mf_parseMultipartBody_Content;
@@ -178,6 +183,7 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 	//std::cout << "current view: ->" << currentView << "<-" << std::endl;
 	BufferView	remaining = currentView;
 	BufferView	delimiter("\r\n--", 4);
+	BufferView	unconsumed;
 	size_t 		moveForward = m_data.multipart_Boundary.size() + delimiter.size();
 	size_t 		chunkEnd;
 
@@ -196,19 +202,22 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 		//std::cout << "separator found"  << std::endl;
 		chunkEnd = doubleHifenBoundary;
 	}
-	
+
+	if (m_curContentPos + (int)chunkEnd > m_curContentLength)
+		return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
 	//std::cout << "\t\t\tsending: ->" << remaining.substr(0, chunkEnd) << "<-" << std::endl;
 	
-	remaining = remaining.substr(chunkEnd, remaining.size() - chunkEnd);
-
-	m_curContentPos += chunkEnd;
-	if (m_curContentPos > m_curContentLength)
-		return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
-
 	if (m_response && chunkEnd > 0)
-        m_response->receiveRequestBody(currentView.substr(0, chunkEnd));
+        unconsumed = m_response->receiveRequestBody(currentView.substr(0, chunkEnd));
+	
+	size_t bytesConsumed = chunkEnd - unconsumed.size();
 
-	if (chunkEnd == doubleHifenBoundary)
+	remaining = remaining.substr(bytesConsumed, remaining.size() - bytesConsumed);
+
+	m_curContentPos += bytesConsumed;
+
+	// implies ChunkEnd == doubleHifenBoundary and all bytes consumed
+	if (bytesConsumed == doubleHifenBoundary)
 	{
 		//std::cout << "reached boundary" << std::endl;
 		// move further "\r\n--" and boundary

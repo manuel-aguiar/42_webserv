@@ -40,10 +40,12 @@ namespace Http
 		(void)data;
 	}
 
-	void	Response::receiveRequestBody(const BufferView& view)
+	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
 		g_mockMsgBody.push(view);
 		//std::cout << "\t\tResponse received body: '" << g_mockMsgBody.view() << "'" << std::endl;
+
+		return (BufferView()); // consumes all
 	}
 
 
