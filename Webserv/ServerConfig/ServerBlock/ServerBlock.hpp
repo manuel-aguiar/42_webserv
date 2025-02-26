@@ -66,7 +66,7 @@ class ServerBlock
 		const std::string&				getRoot() const;
 		const std::vector<const struct sockaddr*>&	
 										getListenAddresses() const;
-
+		bool							isDefaultServer() const;
 
 		void							setRootPath(const std::string &value);
 		void							setClientBodySize(const std::string &value);
@@ -80,6 +80,7 @@ class ServerBlock
 		void							addServerName(const std::string &value);
 		void							addErrorPage(const std::string &value);
 		void							addListenAddress(const struct sockaddr* addr);
+		void							setDefaultServer(const std::string &value);
 
 		bool							fillInheritedSettings(const ServerConfig& config);
 
@@ -122,6 +123,7 @@ class ServerBlock
 		std::map<int, std::string>						m_error_pages;
 		std::vector<ServerLocation>						m_locations;						
 		std::map<Ws::path, const ServerLocation*>		m_mapLocations;
+		bool 											m_isDefaultServer;
 
 		std::vector<const Ws::Sock::addr*>				m_myListenAddresses;
 };

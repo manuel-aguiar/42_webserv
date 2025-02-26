@@ -27,10 +27,12 @@ namespace Http
 		}
 
 		// Find ServerBlock
-		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, host->second);
+		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(host->second);
 		
 		if (m_responseData.serverBlock == NULL)
 		{
+			// this will essentially not happen
+			std::cout << "this shouldnt happen\n";
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;  // change to the right error code
 			return (false);
 		}

@@ -15,7 +15,7 @@
 ServerBlock::DirectiveToSetter ServerBlock::m_directiveToSetter;
 
 ServerBlock::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(10))	// 9 magic: number of keys
+	map(std::less<std::string>(), mapPool(11))	// 10 magic: number of keys
 {
 	map["listen"]				= &ServerBlock::addListener;
 	map["server_name"]			= &ServerBlock::addServerName;
@@ -27,6 +27,7 @@ ServerBlock::DirectiveToSetter::DirectiveToSetter() :
 	map["timeout_keep_alive"]	= &ServerBlock::setTimeoutKeepAlive;
 	map["root"]					= &ServerBlock::setRootPath;
 	map["error_pages"]			= &ServerBlock::addErrorPage;
+	map["default_server"]		= &ServerBlock::setDefaultServer;
 }
 
 ServerBlock::ServerBlock() :
@@ -35,7 +36,8 @@ ServerBlock::ServerBlock() :
 	m_http_timeoutFullHeader	(DefaultConfig::UINT_NONE),
 	m_http_timeoutInterSend		(DefaultConfig::UINT_NONE),
 	m_http_timeoutInterReceive	(DefaultConfig::UINT_NONE),
-	m_http_timeoutKeepAlive		(DefaultConfig::UINT_NONE)  {}
+	m_http_timeoutKeepAlive		(DefaultConfig::UINT_NONE),
+	m_isDefaultServer			(false)	{}
 
 ServerBlock::~ServerBlock()
 {
@@ -59,6 +61,7 @@ ServerBlock &ServerBlock::operator=(const ServerBlock &other)
 	m_error_pages = other.m_error_pages;
 	m_locations = other.m_locations;
 	m_mapLocations = other.m_mapLocations;
+	m_isDefaultServer = other.m_isDefaultServer;
 
 	return (*this);
 }
@@ -75,7 +78,8 @@ ServerBlock::ServerBlock(const ServerBlock &other) :
 	m_root						(other.m_root),
 	m_error_pages				(other.m_error_pages),
 	m_locations					(other.m_locations),
-	m_mapLocations				(other.m_mapLocations) {}
+	m_mapLocations				(other.m_mapLocations),
+	m_isDefaultServer			(other.m_isDefaultServer) {}
 
 void	ServerBlock::setRootPath(const std::string &value)
 {
@@ -227,6 +231,13 @@ void		ServerBlock::setTimeoutKeepAlive(const std::string &value)
 	m_http_timeoutKeepAlive = std::atoi(value.c_str());
 }
 
+void		ServerBlock::setDefaultServer(const std::string &value)
+{
+	if (value.size() != 1 || (value[0] != '0' && value[0] != '1'))
+		throw (std::invalid_argument("invalid default_server value"));
+	m_isDefaultServer = (value[0] == '1');
+}
+
 const std::vector<ServerLocation>&		ServerBlock::getLocations() const
 {
 	return (m_locations);
@@ -287,6 +298,11 @@ const std::map<int, std::string>&	ServerBlock::getErrorPages() const
 const std::string&	ServerBlock::getRoot() const
 {
 	return (m_root);
+}
+
+bool				ServerBlock::isDefaultServer() const
+{
+	return (m_isDefaultServer);
 }
 
 

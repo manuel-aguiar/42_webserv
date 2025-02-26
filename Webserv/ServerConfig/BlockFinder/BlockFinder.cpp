@@ -5,12 +5,12 @@
 #include "../ServerBlock/ServerBlock.hpp"
 #include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
-BlockFinder::BlockFinder() {}
+BlockFinder::BlockFinder(): m_defaultServer(NULL) {}
 
 BlockFinder::~BlockFinder() {}
 
 // Checks if a server block with the given server name exists
-bool	BlockFinder::hasServerBlock(const std::string& serverName)
+bool	BlockFinder::hasServerBlock(const std::string& serverName) const
 {
     return (findServerBlock(serverName) != NULL);
 }
@@ -25,7 +25,11 @@ void	BlockFinder::addServerBlock(const ServerBlock& block)
 	{
 		// Add to map if not already present
 		if (m_serverBlocks.find(*it) == m_serverBlocks.end())
+		{
 			m_serverBlocks[*it] = &block;
+			if (m_serverBlocks[*it]->isDefaultServer())
+				m_defaultServer = m_serverBlocks[*it];
+		}
 	}
 }
 
@@ -36,14 +40,19 @@ void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
 }
 
 // findServerBlock Finds the server block that matches the given server name.
-const ServerBlock*	BlockFinder::findServerBlock(const std::string& serverName)
+const ServerBlock*	BlockFinder::findServerBlock(const std::string& serverName) const
 {
 	if (m_serverBlocks.empty())
 		return (NULL);
 
-	std::map<std::string, const ServerBlock*>::iterator it = m_serverBlocks.find(serverName);
+	// Find matching serverName
+	std::map<std::string, const ServerBlock*>::const_iterator it = m_serverBlocks.find(serverName);
 	if (it != m_serverBlocks.end())
 		return (it->second);
+
+	// Return default server
+	if (m_defaultServer != NULL)
+		return (m_defaultServer);
 
 	return (NULL);
 }

@@ -132,6 +132,8 @@ class ServerConfig
 
 		bool								mf_applyInheritedSettings();
 		bool								mf_listenDNSlookup();
+		bool								mf_defaultServerSetup();
+
 };
 
 #endif

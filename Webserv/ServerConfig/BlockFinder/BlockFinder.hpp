@@ -21,14 +21,15 @@ class BlockFinder {
 
 		void				loadServerBlocks(const std::vector<ServerBlock>& blocks);
 		void				addServerBlock(const ServerBlock& block);
-		const ServerBlock*	findServerBlock(const std::string& serverName);
-		bool				hasServerBlock(const std::string& serverName);
+		const ServerBlock*	findServerBlock(const std::string& serverName) const;
+		bool				hasServerBlock(const std::string& serverName) const;
 		void				removeServerBlock(const std::string& serverName);
 		void				removeServerName(const std::string& serverName);
 		
 	private:
 
 		std::map<std::string, const ServerBlock*>	m_serverBlocks;
+		const ServerBlock*							m_defaultServer;
 };
 
 #endif

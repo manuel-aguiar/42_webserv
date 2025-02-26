@@ -274,12 +274,12 @@ int		ServerConfig::parseConfigFile()
 	}
 
 	m_setDefaults();
-
 	if (!mf_listenDNSlookup()
-	|| 	!mf_applyInheritedSettings())
+	|| 	!mf_applyInheritedSettings()
+	||  !mf_defaultServerSetup())
 		return (0);
-		
-
+	
+	
 	return (1);
 }
 
@@ -507,6 +507,26 @@ bool	ServerConfig::mf_applyInheritedSettings()
 	}
 
 	return (true);
+}
+
+bool	ServerConfig::mf_defaultServerSetup()
+{
+	int	defaultServerCount = 0;
+
+	for (std::vector<ServerBlock>::iterator thisBlock = m_serverBlocks.begin(); thisBlock != m_serverBlocks.end(); thisBlock++)
+		if (thisBlock->isDefaultServer())
+			defaultServerCount++;
+
+	if (defaultServerCount == 0)
+		m_serverBlocks.front().setDefaultServer("1");
+	else if (defaultServerCount > 1)
+	{
+		std::cerr << "Error: multiple default servers set" << std::endl;
+		return (0);
+	}
+	// Here we could store the default server in a member variable, but probably not necessary
+
+	return (1);
 }
 
 const std::vector<Ws::BindInfo>&	ServerConfig::getAllBindAddresses() const
