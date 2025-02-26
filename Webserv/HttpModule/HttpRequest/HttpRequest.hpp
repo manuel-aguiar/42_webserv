@@ -131,17 +131,19 @@ namespace Http
 			BufferView									mf_handleRequestLine	(const BufferView& currentView);
 			BufferView									mf_handleHeaders		(const BufferView& currentView);
 			BufferView									mf_parseRegularBody		(const BufferView& currentView);
-			BufferView									mf_parseMultipartBody	(const BufferView& currentView);
-			BufferView									mf_parseChunkedBody		(const BufferView& currentView);
 			
+			// chunked body intermediaries......
+			BufferView									mf_parseChunkedBody_GetChunk	(const BufferView& currentView);
+			BufferView									mf_parseChunkedBody_ParseChunk	(const BufferView& currentView);
+			BufferView									mf_parseChunkedBody_EndChunk	(const BufferView& currentView);
 			
 			// multi part intermediaries........
 			BufferView 									mf_parseMultipartBody_Start		(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Headers	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
-
-			size_t										mf_parseMultipart_FoundBoundary	(const BufferView& currentView);
+			
+			BufferView									mf_parseBodyExitError	(const Http::Status::Number status);
 
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);

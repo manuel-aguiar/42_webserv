@@ -16,7 +16,9 @@
 #include <cstdlib>
 #include <climits>
 
-
+/*
+	@returns: BufferView of the remaining data that wasn't consumed
+*/
 BufferView Http::Request::mf_parseRegularBody(const BufferView& currentView)
 {
     size_t bytesLeft = m_curContentLength - m_curContentPos;

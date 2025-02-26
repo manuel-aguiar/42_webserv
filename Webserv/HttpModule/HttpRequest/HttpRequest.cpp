@@ -96,18 +96,15 @@ Request::reset()
 BufferView
 Request::parse(const BaseBuffer& buffer)
 {
-	BufferView bufferView(buffer.data(), buffer.size());
-	BufferView remaining;
-	//std::cout << "parse: view size: " << remaining.size() << std::endl;
-	//std::cout << "parse: view content: '" << remaining << "'" << std::endl;
+	BufferView remaining(buffer.data(), buffer.size());
 
 	try
 	{
 		m_bufferCapacity = buffer.capacity();
-		remaining = ((this->*m_parsingFunction)(bufferView));
-		//std::cout << "remaining, size " << remaining.size() << ", content: '" << remaining << "'" << std::endl;
+		remaining = ((this->*m_parsingFunction)(remaining));
 	}
-	catch (const std::exception& e) {
+	catch (const std::exception& e)
+	{
 		m_parsingState = ERROR;
 		m_data.status = Http::Status::INTERNAL_ERROR;
 		m_response->receiveRequestData(m_data);             //blew up, tell response to inform
@@ -115,6 +112,9 @@ Request::parse(const BaseBuffer& buffer)
 	return (remaining);
 }
 
+/*
+	@returns: BufferView of the remaining data that wasn't consumed
+*/
 BufferView Request::mf_handleNothing(const BufferView& remaining)
 {
 	if (m_parsingState != IDLE)
@@ -123,6 +123,21 @@ BufferView Request::mf_handleNothing(const BufferView& remaining)
 	m_parsingState = REQLINE;
 	m_parsingFunction = &Request::mf_handleRequestLine;
 	return (mf_handleRequestLine(remaining));
+}
+
+/*
+	@returns: BufferView of the remaining data that wasn't consumed
+*/
+BufferView Http::Request::mf_parseBodyExitError(const Http::Status::Number status)
+{
+    m_parsingState = ERROR;
+    m_data.status = status;
+    
+    if (m_response)
+        m_response->receiveRequestBody(BufferView()); // send "eof" to signal end of body
+    
+    m_parsingFunction = &Request::mf_handleNothing;
+    return (BufferView());
 }
 
 /*
@@ -274,7 +289,7 @@ void Request::mf_prepareBodyParser()
         m_curContentPos = 0;
         m_parsingFunction = &Request::mf_parseRegularBody;
 		if (contentType != m_data.headers.end()
-		|| contentType->second.find("multipart/form-data") != std::string::npos)
+		&& contentType->second.find("multipart/form-data") != std::string::npos)
 		{
 			size_t boundaryPos = contentType->second.find("boundary=");
 			if (boundaryPos == std::string::npos)
@@ -285,7 +300,7 @@ void Request::mf_prepareBodyParser()
     }
     else if (transferEncoding->second == "chunked")
     {
-        m_parsingFunction = &Request::mf_parseChunkedBody;
+        m_parsingFunction = &Request::mf_parseChunkedBody_GetChunk;
     }
     else
     {
