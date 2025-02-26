@@ -114,7 +114,7 @@ namespace Http
 			
 			// parseHandler functions
 			ParsingFunction								m_parsingFunction;
-
+			
 			// Components
 			Http::RequestData 							m_data;	// holds request data
 			

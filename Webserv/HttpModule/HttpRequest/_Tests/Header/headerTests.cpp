@@ -10,8 +10,12 @@ void headerTests(int &testNumber)
 	ServerContext context;
 	Buffer<2048> buffer;
 
+	ServerContext context;
+	Buffer<2048> buffer;
+
 	{
 		TEST_INTRO(testNumber++);
+		Http::Request Request(context);
 		Http::Request Request(context);
 		std::string requestData =
 			std::string("GET /index.html HTTP/1.1\r\n") +
@@ -24,8 +28,13 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		buffer.clear();
+		buffer.push(requestData.c_str(), requestData.size());
 		try
 		{
+			Request.parse(buffer);
+			const Http::RequestData& data = Request.getData();
+			EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
 			Request.parse(buffer);
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
@@ -100,6 +109,9 @@ void headerTests(int &testNumber)
 			Request.parse(buffer);
 				const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
+			Request.parse(buffer);
+				const Http::RequestData& data = Request.getData();
+			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no key");
 		}
 		catch(const std::exception& e)
@@ -143,6 +155,9 @@ void headerTests(int &testNumber)
 		buffer.push(requestData.c_str(), requestData.size());
 		try
 		{
+			Request.parse(buffer);
+			const Http::RequestData& data = Request.getData();
+			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			Request.parse(buffer);
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");

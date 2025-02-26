@@ -82,6 +82,7 @@ void BaseBuffer::push(const char* data, size_t size)
 {
     ASSERT_EQUAL(m_size + size <= capacity(), true, "BaseBuffer::push(): data to push is beyond buffer capacity");
     ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
+    ASSERT_EQUAL(data != NULL, true, "BaseBuffer::truncatePush(): data to push is NULL");
 
     if (!size)
         return ;

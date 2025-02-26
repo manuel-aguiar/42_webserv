@@ -75,6 +75,9 @@ void regularBodyTests(int &testNumber)
 {
     TEST_HEADER("Http Request - Regular Body");
     ServerContext context;
+        ServerContext context;
+    Buffer<2048> buffer;
+
     
     {
         TEST_INTRO(testNumber++);

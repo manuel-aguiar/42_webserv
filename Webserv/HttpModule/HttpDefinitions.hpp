@@ -20,13 +20,11 @@ class ServerLocation;
 
 namespace Http
 {
-	// All http status codes
 	namespace Status
 	{
 		typedef enum
 		{
 			_TOTAL_CODES = 35,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
-
 
 			// 2xx
 			OK = 200,
@@ -73,6 +71,7 @@ namespace Http
 		}   Number;
 	}
 
+
 	// standard values for http 1.1
 	namespace HttpStandard
 	{
@@ -88,6 +87,7 @@ namespace Http
 	{
 		const std::set<std::string>& getAllowedMethods();
 	}
+
 
 	namespace ResponseStatus
 	{

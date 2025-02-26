@@ -25,6 +25,12 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
 								\
+SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
+								\
+								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
+								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
