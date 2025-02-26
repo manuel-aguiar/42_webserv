@@ -19,6 +19,9 @@ namespace Http
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
+
+			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK FILE
+
 			return (view);
 		}
 
