@@ -26,7 +26,7 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	BufferView requestLine;
 	BufferView boundaryView;
 
-	if (remaining.size() == 0)
+	if (remaining.size() <= delimiter.size())
 		return (remaining);
 	
 	size_t reqLineEnd = remaining.find(delimiter, m_findPivot);
@@ -41,7 +41,7 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	m_findPivot = 0;
 	
 	requestLine = BufferView(remaining.substr(0, reqLineEnd));
-	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2); // move view forward
+	remaining = remaining.substr(reqLineEnd + delimiter.size(), remaining.size() - reqLineEnd - delimiter.size()); // move view forward
 	
 	boundaryView = BufferView(m_data.multipart_Boundary);
 	
@@ -73,7 +73,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 	BufferView remaining = currentView;
 	BufferView delimiter("\r\n", 2);
 
-	if (remaining.size() == 0)
+	if (remaining.size() <= delimiter.size())
 		return (remaining); // not enough to go through yet
 
 	while (remaining.size() > 0)
@@ -233,7 +233,7 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	BufferView requestLine;
 	BufferView delimiter("\r\n", 2);
 
-	if (remaining.size() == 0)
+	if (remaining.size() <= delimiter.size())
 		return (remaining);
 
 	size_t	reqLineEnd = remaining.find(delimiter, m_findPivot);
