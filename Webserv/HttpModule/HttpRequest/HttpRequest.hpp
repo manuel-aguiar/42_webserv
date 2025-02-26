@@ -27,8 +27,6 @@ class ServerContext;
 
 namespace Http { class Response;}
 
-typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
-
 struct ChunkInfo
 {
 	size_t size;
@@ -82,7 +80,7 @@ namespace Http
 			const std::string& 							getMethod() const;
 			const std::string& 							getUri() const;
 			const std::string& 							getHttpVersion() const;
-			const headerContainer&						getHeaders() const;
+			const RequestData::headerContainer&			getHeaders() const;
 			const std::string& 							getBody() const;
 
 			const std::string&                          getPath() const;

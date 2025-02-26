@@ -88,7 +88,7 @@ namespace Http
 		const std::set<std::string>& getAllowedMethods();
 	}
 
-
+	
 	namespace ResponseStatus
 	{
 		typedef enum
@@ -99,30 +99,31 @@ namespace Http
 			MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
 		}	Type;
 	}
-
+	
 	struct RequestData
 	{
 		RequestData();
 		~RequestData();
 		RequestData(const RequestData& copy);
 		RequestData& operator=(const RequestData& assign);
-
+		
 		void reset();
-
+		
 		enum BodyType {
 			NONE,
 			REGULAR,
 			CHUNKED
 		};
-
+		
 		enum ContentType {
 			RAW,
 			MULTIPART
 		};
-
+		
 		typedef std::string HeaderKey;
 		typedef std::string HeaderValue;
-
+		typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
+		
 		std::string							method;
 		std::string							uri;
 		std::string							path;
