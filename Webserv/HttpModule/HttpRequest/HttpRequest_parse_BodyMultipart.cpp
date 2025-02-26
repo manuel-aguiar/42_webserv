@@ -21,8 +21,8 @@
 */
 BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& currentView)
 {
+	const BufferView delimiter("\r\n", 2);
 	BufferView remaining = currentView;
-	BufferView delimiter("\r\n", 2);
 	BufferView requestLine;
 	BufferView boundaryView;
 
@@ -70,8 +70,8 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 */
 BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& currentView)
 {
+	const BufferView delimiter("\r\n", 2);
 	BufferView remaining = currentView;
-	BufferView delimiter("\r\n", 2);
 
 	if (remaining.size() <= delimiter.size())
 		return (remaining); // not enough to go through yet
@@ -181,8 +181,8 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 {
 	//std::cout << "body content called,  name: " << m_data.multipart_Name << ", filename: " << m_data.multipart_Filename << std::endl;
 	//std::cout << "current view: ->" << currentView << "<-" << std::endl;
+	const BufferView	delimiter("\r\n--", 4);
 	BufferView	remaining = currentView;
-	BufferView	delimiter("\r\n--", 4);
 	BufferView	unconsumed;
 	size_t 		moveForward = m_data.multipart_Boundary.size() + delimiter.size();
 	size_t 		chunkEnd;
@@ -240,7 +240,8 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 {
 	BufferView remaining = currentView;
 	BufferView requestLine;
-	BufferView delimiter("\r\n", 2);
+	const BufferView delimiter("\r\n", 2);
+	const BufferView theEnd("--", 2);
 
 	if (remaining.size() <= delimiter.size())
 		return (remaining);
@@ -262,24 +263,36 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 
 	//std::cout << "after removing \"r\"n: ->" << remaining << "<-" << std::endl;
 
-	m_curContentPos += requestLine.size();
+	m_curContentPos += requestLine.size() + delimiter.size();
+
 	if (m_curContentPos > m_curContentLength)
 		return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 	
 	if (requestLine.size() == 0)
 	{
+		// end of this file upload
 		//std::cout << "empty line, back to the beginning" << std::endl;
 		// back to the beginning
 		m_data.multipart_Name.clear();
 		m_data.multipart_Filename.clear();
 		m_parsingFunction = &Request::mf_parseMultipartBody_Headers;
+
+		// send EOF to signal end of file
+		//std::cout << "sending empty body" << std::endl;
+		if (m_response)
+			m_response->receiveRequestBody(BufferView());
 	}
-	else if (requestLine == BufferView("--"))
+	else if (requestLine == theEnd)
 	{
 		//std::cout << "current content pos: " << m_curContentPos << ", current content length: " << m_curContentLength << std::endl;
 		// end of multipart
+		size_t endJump = theEnd.size() + delimiter.size();
+		
+		m_curContentPos += endJump - delimiter.size();
+
 		if (m_curContentPos != m_curContentLength)
 			return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
+
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
 	}

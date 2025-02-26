@@ -21,18 +21,13 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
     Http::Response  response(context);
     const Http::RequestData& requestData = HttpRequest.getData();
 
-    Buffer<1024> bufferRequest;
+    Buffer<2048> bufferRequest;
 
     HttpRequest.setResponse(response);
 
     HeapBuffer buffer(readBufSize);
 
-    std::string requestHeader = 
-    "POST /upload HTTP/1.1\r\n"
-    "Host: example.com\r\n"
-    "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary12345\r\n"
-    "Content-Length: 500\r\n"  // Placeholder, must be calculated
-    "\r\n";
+
 
     std::string requestBodyMultipart = 
         "------WebKitFormBoundary12345\r\n"
@@ -45,7 +40,29 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         "Content-Type: text/plain\r\n"
         "\r\n"
         "This is file 2.\r\n"
+        "------WebKitFormBoundary12345\r\n"
+        "Content-Disposition: form-data; name=\"file3\"; filename=\"file3.txt\"\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "This is file 3.\r\n"
+        "------WebKitFormBoundary12345\r\n"
+        "Content-Disposition: form-data; name=\"file4\"; filename=\"file4.txt\"\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "This is file 4.\r\n"
+        "------WebKitFormBoundary12345\r\n"
+        "Content-Disposition: form-data; name=\"file5\"; filename=\"file5.txt\"\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "This is file 5.\r\n"        
         "------WebKitFormBoundary12345--\r\n";
+
+        std::string requestHeader = 
+        "POST /upload HTTP/1.1\r\n"
+        "Host: example.com\r\n"
+        "Content-Type: multipart/form-data; boundary=----WebKitFormBoundary12345\r\n"
+        "Content-Length: " + TestHelpers::to_string(requestBodyMultipart.size()) + "\r\n"  // Placeholder, must be calculated
+        "\r\n";
 
     std::string requestBodyTranslated = "Wikipedia in \rchunks.\r";
 
@@ -71,6 +88,10 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file1.txt"]), BufferView("This is file 1."), "Body should match");
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file2.txt"]), BufferView("This is file 2."), "Body should match");
+        EXPECT_EQUAL(BufferView(g_mockMsgBody["file3.txt"]), BufferView("This is file 3."), "Body should match");
+        EXPECT_EQUAL(BufferView(g_mockMsgBody["file4.txt"]), BufferView("This is file 4."), "Body should match");
+        EXPECT_EQUAL(BufferView(g_mockMsgBody["file5.txt"]), BufferView("This is file 5."), "Body should match");
+        EXPECT_EQUAL(requestData.status, Http::Status::OK, "Request should be OK");
 
         TEST_PASSED_MSG(std::string("Valid body, multipart, file1.txt [" 
         + g_mockMsgBody["file1.txt"] + "], file2.txt [" 

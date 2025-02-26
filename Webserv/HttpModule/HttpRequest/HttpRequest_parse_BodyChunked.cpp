@@ -36,8 +36,8 @@ static int strToInteger(const BufferView& view, int base = 10)
 BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receivedView)
 {
     //std::cout << "entered get chunk" << std::endl;
+    const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
-    BufferView delimiter("\r\n", 2);
     BufferView thisChunkSize;
     
     if (remaining.size() <= delimiter.size())
@@ -113,8 +113,8 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
 BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receivedView)
 {
     //std::cout << "entered end chunk" << std::endl;
+    const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
-    BufferView delimiter("\r\n", 2);
 
     if (remaining.size() <= delimiter.size())
         return (remaining); // not enough to go through yet
