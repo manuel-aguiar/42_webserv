@@ -35,7 +35,8 @@ namespace Http
 			Http::ResponseStatus::Type	getStatus() const;
 
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
-			void						receiveRequestBody(const BufferView& view);			// request send body
+
+			BufferView					receiveRequestBody(const BufferView& view);			// request send body
 
 			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
@@ -59,12 +60,18 @@ namespace Http
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
-
+				
 			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
+
+			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
+			
+			BufferView					mf_processBodyNone(const BufferView& receivedView);
+			BufferView					mf_processBodyUpload(const BufferView& receivedView);
+
 
 			// Debatable
 
@@ -75,6 +82,7 @@ namespace Http
 			Http::ResponseStatus::Type	m_status;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			FillFunction				m_fillFunction;
+			ProcessBodyFunction			m_processFunction;
 			File						m_file;
 			Http::CgiGateway			m_cgiGateway;
 	};

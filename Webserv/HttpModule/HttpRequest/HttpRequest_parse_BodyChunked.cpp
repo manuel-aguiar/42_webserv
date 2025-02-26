@@ -84,17 +84,22 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
         return (remaining); // not enough to go through yet
 
     // stream, much like regular body here
-    size_t bytesLeft = m_curChunkSize - m_curChunkPos;
-    size_t bytesSending = (bytesLeft > remaining.size()) ? remaining.size() : bytesLeft;
+    size_t      bytesLeft = m_curChunkSize - m_curChunkPos;
+    size_t      bytesSending = (bytesLeft > remaining.size()) ? remaining.size() : bytesLeft;
+    BufferView  unconsumed;
 
-    BufferView temp = remaining.substr(bytesSending, remaining.size() - bytesSending);
-    m_curChunkPos += bytesSending;
+    if (m_response && bytesSending > 0)
+        unconsumed = m_response->receiveRequestBody(remaining.substr(0, bytesSending));
 
-    if (m_response)
-        m_response->receiveRequestBody(remaining.substr(0, bytesSending));
-    
+    size_t bytesConsumed = bytesSending - unconsumed.size();
+
+    BufferView temp = remaining.substr(bytesConsumed, remaining.size() - bytesConsumed);
+
+    m_curChunkPos += bytesConsumed;
+
     remaining = temp;
 
+    // if consumed all bytes until border
     if (m_curChunkPos == m_curChunkSize)
         m_parsingFunction = &Request::mf_parseChunkedBody_EndChunk;
 

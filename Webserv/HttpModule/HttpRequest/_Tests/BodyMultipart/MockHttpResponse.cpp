@@ -42,7 +42,7 @@ namespace Http
 		m_responseData.requestData = &data;
 	}
 
-	void	Response::receiveRequestBody(const BufferView& view)
+	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
 		//std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
 
@@ -50,6 +50,8 @@ namespace Http
 		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())
 			g_mockMsgBody[targetFile] = "";
 		g_mockMsgBody[targetFile].append(view.data(), view.size());
+
+		return (BufferView()); // consumes all
 	}
 
 

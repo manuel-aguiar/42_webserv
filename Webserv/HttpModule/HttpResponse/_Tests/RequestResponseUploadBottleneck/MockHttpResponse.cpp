@@ -1,11 +1,18 @@
 
 
-#include "HttpResponse.hpp"
-#include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
-#include "../../ServerContext/ServerContext.hpp"
-#include "../../GenericUtils/Files/FilesUtils.hpp"
-#include "../../GenericUtils/StringUtils/StringUtils.hpp"
-#include "../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../../HttpResponse/HttpResponse.hpp"
+#include "../../../../ServerConfig/BlockFinder/BlockFinder.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
+#include "../../../../GenericUtils/Files/FilesUtils.hpp"
+#include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../../../GenericUtils/Buffer/Buffer.hpp"
+#include "../../../../GenericUtils/Buffer/HeapBuffer.hpp"
+
+
+
+// MOCK IMPLEMENTATION, HELPS IN TESTS
+// just to extract the message body via global, deactivate all the helper stuff, etc
+// allows Request to communicate with Response as if the latter was the real deal
 
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
@@ -13,6 +20,8 @@
 extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
+
+std::map<std::string, std::string > g_mockMsgBody;
 
 namespace Http
 {
@@ -29,29 +38,11 @@ namespace Http
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		//std::cout << "Response received data: " << data.status << std::endl;
-//
-		//for (std::map<std::string, std::string>::const_iterator it = data.headers.begin(); it != data.headers.end(); ++it)
-		//	std::cout << "\t\t" << it->first << ": " << it->second << std::endl;
-
 		m_responseData.requestData = &data;
-		m_responseData.requestStatus = data.status;
-
-		if (data.status != Http::Status::OK || !mf_validateHeaders())
-		{
-			m_fillFunction = &Response::mf_fillErrorResponse;
-			return ;
-		}
-
-
-		m_responseData.requestStatus = Http::Status::BAD_GATEWAY;
-		m_fillFunction = &Response::mf_fillErrorResponse;
-
-
+		m_processFunction = &Response::mf_processBodyUpload;
 	}
 
-	BufferView
-	Response::receiveRequestBody(const BufferView& view)
+	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
 		return ((this->*m_processFunction)(view));
 	}
@@ -60,10 +51,8 @@ namespace Http
 	Http::ResponseStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-
-		// call the current filling function
-		return ((this->*m_fillFunction)(writeBuffer));
-
+		(void)writeBuffer;
+		
 		return (m_status);
 	}
 
@@ -72,23 +61,12 @@ namespace Http
 	{
 		return (m_status);
 	}
-
 	void
 	Response::reset()
-	{
-		m_responseData.reset();
-		m_fillFunction = &Response::mf_fillNothingToSend;
-		m_pendingWrite.clear();
-		m_status = ResponseStatus::WAITING;
-		m_file.reset();
-		m_cgiGateway.reset();
-	}
-
+	{}
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)
-	{
-		m_connAddress = &addr;
-	}
+	{(void)addr;}
 
 	// private copy/assignment
 	Response::Response(const Response& other) :
