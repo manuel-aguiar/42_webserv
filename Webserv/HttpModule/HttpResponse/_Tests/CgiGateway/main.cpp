@@ -24,10 +24,10 @@ void test1(int& testNumber)
 	Cgi::Module 			cgi(10, 100, 5000, eventManager, globals);
 
 	context.setAddonLayer(Ws::AddonLayer::CGI, &cgi);
+	
 	try
 	{
-
-		Http::CgiGateway 		cgiGateway(cgi);
+		Http::Response 		response(context);
 
 
 		TEST_PASSED_MSG("Cgi  Tests");
