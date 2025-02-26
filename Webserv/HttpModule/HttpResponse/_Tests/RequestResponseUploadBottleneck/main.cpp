@@ -9,6 +9,7 @@
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
 #include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 
+size_t g_maxFileWrite = 10;
 
 static const char potato_text[] = "Potatoes: A Versatile and Nutritious Staple\n"
 "The potato (Solanum tuberosum) is one of the most widely consumed and cultivated crops in the world. "
@@ -125,10 +126,12 @@ static const char* file2_Name = "test2.txt";
 static const char* file2_Content = orange_text;
 static const size_t file2_ContentSize = sizeof(orange_text) - 1;
 
-void fileUpload(int& testNumber, size_t readBufSize)
+void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileRead)
 {
 	TEST_INTRO(testNumber++);
 	ServerContext context;
+
+	g_maxFileWrite = maxFileRead;
 
 	::unlink(file1_Name);
 	::unlink(file2_Name);
@@ -198,7 +201,7 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
 
-		TEST_PASSED_MSG("FileUpload test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
+		TEST_PASSED_MSG("FileUpload test passed, read buffer size: " + TestHelpers::to_string(readBufSize) + ", maxFileRead: " + TestHelpers::to_string(maxFileRead));
 	}
 	catch(const std::exception& e)
 	{
@@ -221,9 +224,10 @@ int main(void)
 
 	int testNumber = 1;
 
-
-	for (size_t i = 200; i < 500; i += 1)
-		fileUpload(testNumber, i);
+	//fileUploadBottleNeck(testNumber, 200, 100);
+	// force File class to read slow and probably lower than what it is passed
+	 for (size_t i = 200; i < 500; i += 1)
+	 	fileUploadBottleNeck(testNumber, i, i / 2);
 
 	TEST_FOOTER;
 
