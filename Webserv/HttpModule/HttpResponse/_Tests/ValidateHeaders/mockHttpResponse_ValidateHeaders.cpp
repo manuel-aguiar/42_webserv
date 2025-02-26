@@ -1,9 +1,12 @@
-# include "HttpResponse.hpp"
+# include "../../HttpResponse.hpp"
 
-# include "../../ServerContext/ServerContext.hpp"
-# include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
-# include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
-# include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
+# include "../../../../ServerContext/ServerContext.hpp"
+# include "../../../../ServerConfig/ServerBlock/ServerBlock.hpp"
+# include "../../../../ServerConfig/ServerLocation/ServerLocation.hpp"
+# include "../../../../ServerConfig/BlockFinder/BlockFinder.hpp"
+
+
+bool returnValue;
 
 
 namespace Http
@@ -11,6 +14,7 @@ namespace Http
 	bool
 	Response::mf_validateHeaders()
 	{
+		std::cerr << "ASDSAGAEGWERGASERGSDFGSDFSDFGD\n\n\n" << std::endl;
 		ASSERT_EQUAL(m_responseData.requestData != NULL, true, "Response: Request data not set");
 		ASSERT_EQUAL(m_responseData.serverBlock, (const ServerBlock*)NULL, "Response: Server block alreadyset");
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
@@ -29,6 +33,7 @@ namespace Http
 		if (m_responseData.serverBlock == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
+			returnValue = false;
 			return (false);
 		}
 		
@@ -52,6 +57,7 @@ namespace Http
 		if (m_responseData.serverLocation == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
+			returnValue = false;
 			return (false);
 		}
 
@@ -73,6 +79,7 @@ namespace Http
 					break ;
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
+				returnValue = false;
 				return (false);
 			}
 			case FilesUtils::REGULAR_FILE:
@@ -85,6 +92,7 @@ namespace Http
 					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("Accept")->second, m_responseData.targetPath))
 				{
 					m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
+					returnValue = false;
 					return (false);
 				}
 
@@ -93,6 +101,7 @@ namespace Http
 			}
 			default:
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;  // change to the right error code
+				returnValue = false;
 				return (false);
 		}
 
@@ -101,7 +110,7 @@ namespace Http
 
 		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
 			m_responseData.closeAfterSending = true;
-
+		returnValue = true;
 		return (true);
 	}
 }
