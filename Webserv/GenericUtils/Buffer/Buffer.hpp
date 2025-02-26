@@ -10,7 +10,7 @@ template<size_t Size>
 class Buffer : public BaseBuffer
 {
 	public:
-		Buffer() : BaseBuffer(m_data, m_data + Size) {}
+		Buffer() : BaseBuffer() { this->reset(m_data, m_data + Size);}
 		~Buffer() {}
 
 	private:
