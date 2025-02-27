@@ -66,9 +66,13 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			
+			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
 			
+			BufferView					mf_processBodyIgnore(const BufferView& receivedView);	
 			BufferView					mf_processBodyNone(const BufferView& receivedView);
 			BufferView					mf_processBodyUpload(const BufferView& receivedView);
 
@@ -83,6 +87,7 @@ namespace Http
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			FillFunction				m_fillFunction;
 			ProcessBodyFunction			m_processFunction;
+			size_t						m_staticReadCounter;
 			File						m_file;
 			Http::CgiGateway			m_cgiGateway;
 	};

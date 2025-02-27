@@ -18,8 +18,10 @@ class BaseBuffer
 {
 	public:
 
-		int			read(Ws::fd fd, int startIndex = 0);
-		int			write(Ws::fd fd, int startIndex = 0);
+		int			read(const Ws::fd fd, const int startIndex = 0);
+		int			write(const Ws::fd fd, const int startIndex = 0);
+
+		int			readAppend(const Ws::fd fd);
 
 		const unsigned char*	data() const;
 		unsigned char&			operator[](size_t index);

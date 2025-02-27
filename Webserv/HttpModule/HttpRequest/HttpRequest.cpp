@@ -269,13 +269,6 @@ exitFailure:
 // UNDER REVIEW
 void Request::mf_prepareBodyParser()
 {
-
-	if (m_data.method != "POST")
-	{
-		m_parsingState = COMPLETED; // no body needed for non POST requests
-		m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
-        return ;
-	}
     RequestData::headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
     RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
     RequestData::headerContainer::iterator contentType = m_data.headers.find("Content-Type");

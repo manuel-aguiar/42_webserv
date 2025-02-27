@@ -12,6 +12,15 @@ namespace Http
 	}
 
 	BufferView
+	Response::mf_processBodyIgnore(const BufferView& view)
+	{
+		//returns empty view, tells Request "all processed" but does nothing with it
+		(void)view;
+
+		return (BufferView());
+	}
+
+	BufferView
 	Response::mf_processBodyUpload(const BufferView& view)
 	{
 		BufferView		remaining;
@@ -24,14 +33,15 @@ namespace Http
 			m_file.close();
 
 			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK FILE
-
+			
 			return (view);
 		}
 
 		if (m_responseData.requestData->multipart_Filename != m_file.path())
 		{
 			m_file.close();
-			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str()))
+			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
+				O_CREAT | O_RDWR | O_TRUNC, 0666))
 				goto exitFailure;
 		}
 

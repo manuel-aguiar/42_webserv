@@ -1,7 +1,7 @@
 
 #include <cstddef> // size_t
 
-const char potato_text[] = "Potatoes: A Versatile and Nutritious Staple\n"
+const char potato_text[] = "Potatoes: A Versatile and Nutritious Staple\n\n"
 "The potato (Solanum tuberosum) is one of the most widely consumed and cultivated crops in the world. \n"
 "Originally domesticated in the Andean region of South America over 7,000 years ago, potatoes have since \n"
 "spread across the globe, becoming a dietary staple in many cultures. Their resilience, nutritional value, \n"
@@ -41,7 +41,7 @@ const char potato_text[] = "Potatoes: A Versatile and Nutritious Staple\n"
 "the most famous potato-based dishes include mashed potatoes, French fries, potato salad, gnocchi, latkes, \n"
 "and shepherd’s pie. In addition to savory dishes, potatoes can also be used in bread and even desserts, such as potato-based doughnuts.\n"
 "\n\n"
-"Conclusion"
+"Conclusion\n\n"
 "The humble potato is a vital food crop with a fascinating history and countless culinary applications. \n"
 "Whether boiled, baked, mashed, or fried, potatoes continue to be a beloved and indispensable ingredient \n"
 "in kitchens worldwide. Their nutritional benefits, affordability, and adaptability ensure that they will \n"

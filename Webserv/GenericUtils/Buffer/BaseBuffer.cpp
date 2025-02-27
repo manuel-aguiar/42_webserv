@@ -22,7 +22,7 @@ void    BaseBuffer::reset(unsigned char* begin, unsigned char* end)
     m_size = 0;
 }
 
-int BaseBuffer::read(Ws::fd fd, int startIndex)
+int BaseBuffer::read(const Ws::fd fd, const int startIndex)
 {
     int bytesRead;
 
@@ -32,6 +32,16 @@ int BaseBuffer::read(Ws::fd fd, int startIndex)
     bytesRead = ::read(fd, m_begin + startIndex, capacity() - startIndex);
 
     m_size = startIndex + bytesRead;
+    return (bytesRead);
+}
+
+int BaseBuffer::readAppend(const Ws::fd fd)
+{
+    int bytesRead;
+
+    bytesRead = ::read(fd, m_begin + m_size, capacity() - m_size);
+
+    m_size += bytesRead;
     return (bytesRead);
 }
 
