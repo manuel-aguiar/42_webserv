@@ -1,16 +1,18 @@
 # Makefile
 
 # TARGET_DEBUG 			=		debug_Http::Request.out
-TARGET_TEST 			=		test_reqLine.out
+TARGET_TEST 			=		test.out
 CXX						=		c++
-CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
+CXXFLAGS 				=		-g -std=c++98 -Wpedantic -Wall -Wextra -Werror -MMD -MP
 
 # Paths
 ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/_Tests/RequestLine/test_req_line.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileDownload/main.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUpload/texts.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/FileDownload/MockHttpResponse.cpp
 
 # SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
@@ -27,14 +29,14 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ParseAcceptHeader.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
@@ -59,6 +61,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
 								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/HeapBuffer.cpp										\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
 										\
 								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
@@ -146,8 +149,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 -include $(DEPS_COMMON) $(DEPS_DEBUG) $(DEPS_TEST)
 
 clean:
-	@echo "$(TAG) Cleaning object files."
-	@rm -rf $(OBJ_PATH)
+	@rm -rf *vgcore*
 
 fclean: clean
 	@echo "$(TAG) Full clean."

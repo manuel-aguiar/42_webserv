@@ -17,14 +17,15 @@ extern std::string 	getCurrentDate();
 namespace Http
 {
 	Response::Response(ServerContext& context):
-	m_context			(context),
-	m_connAddress		(NULL),
-	m_responseData		(),
-	m_status			(Http::ResponseStatus::WAITING),
-	m_fillFunction		(&Response::mf_fillNothingToSend),
-	m_processFunction	(&Response::mf_processBodyNone),
-	m_file				(),
-	m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
+		m_context			(context),
+		m_connAddress		(NULL),
+		m_responseData		(),
+		m_status			(Http::ResponseStatus::WAITING),
+		m_fillFunction		(&Response::mf_fillNothingToSend),
+		m_processFunction	(&Response::mf_processBodyNone),
+		m_staticReadCounter	(0),
+		m_file				(),
+		m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
 
 	Response::~Response() { reset();}
 
@@ -79,8 +80,10 @@ namespace Http
 	{
 		m_responseData.reset();
 		m_fillFunction = &Response::mf_fillNothingToSend;
+		m_processFunction = &Response::mf_processBodyNone;
 		m_pendingWrite.clear();
 		m_status = ResponseStatus::WAITING;
+		m_staticReadCounter = 0;
 		m_file.reset();
 		m_cgiGateway.reset();
 	}

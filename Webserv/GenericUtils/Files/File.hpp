@@ -19,7 +19,7 @@ class File
 		File();
 		~File();
 
-		bool				open(const char *path);
+		bool				open(const char *path, int flags, int permissions);
 		void				close();
 
 		void				reset();
