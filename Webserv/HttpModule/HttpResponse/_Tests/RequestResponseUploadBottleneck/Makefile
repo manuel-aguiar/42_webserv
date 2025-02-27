@@ -11,6 +11,7 @@ SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUploadBottleneck/main.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUpload/texts.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUploadBottleneck/MockHttpResponse.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/RequestResponseUploadBottleneck/MockFile.cpp
 								

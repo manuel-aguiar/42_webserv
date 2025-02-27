@@ -57,8 +57,8 @@ namespace Http
 			Http::Transaction 									m_transaction;
 
 			// buffers
-			Buffer<200> 											m_readBuffer;
-			Buffer<1024> 											m_writeBuffer;
+			Buffer<1024>										m_readBuffer;
+			Buffer<1024>										m_writeBuffer;
 
 
 			void												mf_read(const Ws::fd fd);
