@@ -33,7 +33,8 @@ namespace Conn
 
 			// socket info access
 			Ws::Sock::fd				info_getFd() const;
-			const Ws::BindInfo&			info_getBindInfo() const;
+			const Ws::BindInfo&			info_getPeerInfo() const;
+			const Ws::BindInfo&			info_getListenInfo() const;
 
 			// appLayer access
 			Ws::AppLayer::Conn			appLayer_accessConn();
@@ -56,7 +57,7 @@ namespace Conn
 
 		protected:
 			Monitor						m_monitor;
-			ConnInfo					m_info;
+			ConnInfo					m_peerInfo;
 
 			Ws::AppLayer::Conn			m_appConn;
 			Ws::AppLayer::CloseCallback	m_appForceClose;

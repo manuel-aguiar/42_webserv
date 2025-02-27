@@ -6,20 +6,23 @@
 
 ConnInfo::ConnInfo(const Ws::Sock::fd sockfd, const Ws::BindInfo& info) : 
 	sockfd(sockfd),
-	bind(info) {}
+	peerInfo(info),
+	listenInfo(NULL) {}
 
 ConnInfo::ConnInfo() : 
 	sockfd(Ws::FD_NONE),
-	bind()
+	peerInfo(),
+	listenInfo(NULL)
 {
-	std::memset(&bind, 0, sizeof(bind));
+	std::memset(&peerInfo, 0, sizeof(peerInfo));
 }
 
 ConnInfo::~ConnInfo() {}
 
 ConnInfo::ConnInfo(const ConnInfo& copy) : 
 	sockfd(copy.sockfd),
-	bind(copy.bind) {}
+	peerInfo(copy.peerInfo),
+	listenInfo(copy.listenInfo) {}
 
 ConnInfo& ConnInfo::operator=(const ConnInfo& assign)
 {
@@ -27,7 +30,8 @@ ConnInfo& ConnInfo::operator=(const ConnInfo& assign)
 		return (*this);
 
 	sockfd = assign.sockfd;
-	bind = assign.bind;
+	peerInfo = assign.peerInfo;
+	listenInfo = assign.listenInfo;
 	
 	return (*this);
 }
@@ -36,5 +40,6 @@ void
 ConnInfo::reset()
 {
 	sockfd = Ws::FD_NONE;
-	std::memset(&bind, 0, sizeof(bind));
+	std::memset(&peerInfo, 0, sizeof(peerInfo));
+	listenInfo = NULL;
 }

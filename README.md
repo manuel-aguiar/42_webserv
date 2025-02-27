@@ -1,20 +1,23 @@
-# 42_webserv
+# FINAL TODO
 
-Folders:
-    Notes: general notes about the concepts we are dealing with here
-    Sandbox: small programs to experiment with the above concepts
-    Testing: folder for all the tests to our project, to avoid mixing testing code with production code.
-        right now, we have mock websites there for testing
-    Toolkit: some containers reprogrammed, not finished and probably we should not use them
-    Webserv: production code for the webserver
+- File Download (manuel)                        -> ETA 28-02
+- Cgi message passing in (manuel)               -> ETA 28-02
+- Cgi message passing out (manuel)              -> ETA 28-02
+- HttpResponse output (manuel)                  -> ETA 01-03 maybe 
+- HttpConnection revision and Timers (manuel)   -> ETA 01-03 maybe 
+
+- BlockFinder, locate target resource (rafa)
+
+- HttpRequest recheck error messages and header parsing requirements (raj)
 
 
+Unnassigned:
 
+- Http Redirections
+- Prepare full tests
+- Adding the DELETE http method (unlink target file)
+- Integrate headers received from request, select the function pointers
+to take the execution forward
 
-
-Testing:
-    we should probably have tests centralized and outside of the main project code.
-    So, folder Testing is where all the tests will be placed.
-
-    To avoid confusion, if you are testing a particular class or function,
-    either create a folder named after it and place alll files inside (including mock representations of dependencies)
+- testing Multiple requests in the same buffer
+    - httprequest should stop parsing

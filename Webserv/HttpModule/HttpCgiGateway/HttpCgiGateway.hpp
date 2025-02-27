@@ -9,7 +9,12 @@
 # include "../HttpDefinitions.hpp"
 # include "../HttpDefinitions.hpp"
 
+# include "../../GenericUtils/Buffer/BaseBuffer.hpp"
+# include "../../GenericUtils/BufferView/BufferView.hpp"
+
 namespace Http { class Response; }
+
+namespace Conn { class Connection; }
 
 namespace Http
 {
@@ -22,7 +27,15 @@ namespace Http
 			void					reset();
 			void					close();
 
-			Http::ResponseStatus::Type 		fillWriteBuffer(BaseBuffer& writeBuffer);
+			bool					initiateRequest(const Http::RequestData& data, 
+													const Conn::Connection* connection,
+													const std::string& script,
+													const std::string& interpreterPath);
+
+			Http::ResponseStatus::Type
+									fillWriteBuffer(BaseBuffer& writeBuffer);
+
+			BufferView				receiveRequestBody(const BufferView& view);
 
 			// execution after callbacks
 			void 					onSuccess();
