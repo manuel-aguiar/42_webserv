@@ -22,6 +22,7 @@ namespace Conn
 
 	Connection::Connection(const Connection& copy) :
 		m_monitor(copy.m_monitor),
+		m_peerInfo(copy.m_peerInfo),
 		m_serverContext(copy.m_serverContext),
 		m_connManager(copy.m_connManager)
 	{
@@ -48,10 +49,10 @@ namespace Conn
 		ASSERT_EQUAL(m_connManager != NULL, true, "Connection::close(), connManager is NULL");
 		//std::cout << "Connection::close()" << std::endl;
 		m_monitor.unsubscribe(false);
-		if (m_info.sockfd != Ws::FD_NONE)
+		if (m_peerInfo.sockfd != Ws::FD_NONE)
 		{
-			::close(m_info.sockfd);
-			m_info.sockfd = Ws::FD_NONE;
+			::close(m_peerInfo.sockfd);
+			m_peerInfo.sockfd = Ws::FD_NONE;
 		}
 		m_connManager->_ReturnConnection(*this);
 	}

@@ -21,12 +21,12 @@
 
 int TestConnector::connect(ConnInfo& socket)
 {
-    m_socket = ::socket(socket.bind.family, socket.bind.socktype, socket.bind.proto);
+    m_socket = ::socket(socket.peerInfo.family, socket.peerInfo.socktype, socket.peerInfo.proto);
     if (m_socket == -1)
         return -1;
 
     // TestConnector will block until it is accepted
-    return (::connect(m_socket, (struct sockaddr*)&socket.bind.addr, socket.bind.addrlen));
+    return (::connect(m_socket, (struct sockaddr*)&socket.peerInfo.addr, socket.peerInfo.addrlen));
 }
 
 void TestConnector::disconnect()
@@ -51,7 +51,7 @@ Client_FastNeverClose::Client_FastNeverClose(int index, Events::Manager& eventMa
 
 int Client_FastNeverClose::open()
 {
-    int sockfd = ::socket(m_socket.bind.family, m_socket.bind.socktype, m_socket.bind.proto);
+    int sockfd = ::socket(m_socket.peerInfo.family, m_socket.peerInfo.socktype, m_socket.peerInfo.proto);
 
     if (sockfd == -1)
         return -1;
@@ -71,7 +71,7 @@ int Client_FastNeverClose::open()
 
 int Client_FastNeverClose::connect()
 {
-    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.bind.addr, m_socket.bind.addrlen);
+    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.peerInfo.addr, m_socket.peerInfo.addrlen);
 
     if (res == -1 && errno != EINPROGRESS)
     {
@@ -128,7 +128,7 @@ Client_Math::Client_Math(int index, Events::Manager& eventManager, ClientManager
 
 int Client_Math::open()
 {
-    int sockfd = ::socket(m_socket.bind.family, m_socket.bind.socktype, m_socket.bind.proto);
+    int sockfd = ::socket(m_socket.peerInfo.family, m_socket.peerInfo.socktype, m_socket.peerInfo.proto);
 
     if (sockfd == -1)
         return -1;
@@ -148,7 +148,7 @@ int Client_Math::open()
 
 int Client_Math::connect()
 {
-    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.bind.addr, m_socket.bind.addrlen);
+    int res = ::connect(m_socket.sockfd, (struct sockaddr*)&m_socket.peerInfo.addr, m_socket.peerInfo.addrlen);
 
     if (res == -1 && errno != EINPROGRESS)
     {

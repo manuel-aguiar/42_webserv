@@ -28,7 +28,7 @@ InternalConn::operator=(const InternalConn& assign)
 void
 InternalConn::forcedClose()
 {
-	if (m_info.sockfd == Ws::FD_NONE)
+	if (m_peerInfo.sockfd == Ws::FD_NONE)
 		return ;
 	mf_callAppLayerForceClose();
 	Conn::Connection::close();
@@ -38,7 +38,7 @@ void
 InternalConn::reset()
 {
 	//std::cout << "socket fd: " << m_socket.getSockFd() << ", event fd: " << m_monitor.accessEvent().getFd() << std::endl;
-	m_info.reset();
+	m_peerInfo.reset();
 	m_monitor.reset(false);
 	m_appConn = NULL;
 	m_appForceClose = NULL;
@@ -53,11 +53,11 @@ InternalConn::mf_callAppLayerForceClose()
 
 void InternalConn::prepareDispatch()
 {
-	m_monitor.accessEvent().setFd(m_info.sockfd);
+	m_monitor.accessEvent().setFd(m_peerInfo.sockfd);
 }
 
 ConnInfo&
 InternalConn::accessConnInfo()
 {
-	return (m_info);
+	return (m_peerInfo);
 }

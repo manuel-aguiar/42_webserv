@@ -9,7 +9,7 @@
 void
 ModifyConnection::setConnInfo(const ConnInfo& info)
 {
-	m_info = info;
+	m_peerInfo = info;
 }
 
 ModifyConnection::ModifyConnection(Events::Manager& eventManager, ServerContext& context) :

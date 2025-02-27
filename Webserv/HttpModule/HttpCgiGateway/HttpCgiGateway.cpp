@@ -114,7 +114,7 @@ namespace Http
 		if (connection)
 		{
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
-				StringUtils::to_string(::ntohl(connection->info_getBindInfo().addr.sockaddr_in.sin_addr.s_addr)));
+				StringUtils::to_string(::ntohl(connection->info_getPeerInfo().addr.sockaddr_in.sin_addr.s_addr)));
 		}
 
 		// PATH_INFO
@@ -139,7 +139,7 @@ namespace Http
 		if (connection)
 		{
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
-				StringUtils::to_string(::ntohs(connection->info_getBindInfo().addr.sockaddr_in.sin_port)));
+				StringUtils::to_string(::ntohs(connection->info_getPeerInfo().addr.sockaddr_in.sin_port)));
 		}
 
 		// SERVER_PROTOCOL HTTP/1.1

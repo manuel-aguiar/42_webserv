@@ -18,7 +18,7 @@ struct ClientManager
 		for (size_t i = 0; i < countConnectors; ++i)
 		{
 			m_connectors.emplace_back(i, eventManager, *this);
-			m_connectors[i].m_socket.bind = (Ws::BindInfo)
+			m_connectors[i].m_socket.peerInfo = (Ws::BindInfo)
 			{
 				.appLayer = Ws::AppLayer::HTTP,
 				.backlog = 128,

@@ -141,7 +141,7 @@ void testManager(int& testNumber)
         TestConnector   connector;
         ConnInfo          externalConnect;
 
-        externalConnect.bind = (Ws::BindInfo)
+        externalConnect.peerInfo = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
             .backlog = 128,
