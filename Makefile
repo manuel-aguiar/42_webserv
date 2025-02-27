@@ -67,6 +67,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
+$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
