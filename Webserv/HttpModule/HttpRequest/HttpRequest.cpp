@@ -273,8 +273,19 @@ void Request::mf_prepareBodyParser()
     RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
     RequestData::headerContainer::iterator contentType = m_data.headers.find("Content-Type");
     
-    if ((contentLength == m_data.headers.end() && transferEncoding == m_data.headers.end())
-    || (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()))
+	if (contentLength == m_data.headers.end() 
+	&& transferEncoding == m_data.headers.end())
+	{
+		if (m_data.method == "POST")
+			goto exitFailure;
+		m_parsingState = COMPLETED;
+		m_parsingFunction = &Request::mf_handleNothing;
+		if (m_response)
+			m_response->receiveRequestBody(BufferView()); // send empty buffer, end of message body
+		return ;
+	}
+
+    if ((contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()))
         goto exitFailure;
     if (contentLength != m_data.headers.end())
     {
