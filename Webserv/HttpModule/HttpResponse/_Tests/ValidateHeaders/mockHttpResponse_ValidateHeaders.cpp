@@ -1,15 +1,20 @@
-# include "HttpResponse.hpp"
-# include "../../ServerContext/ServerContext.hpp"
-# include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
-# include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
-# include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
+# include "../../HttpResponse.hpp"
+
+# include "../../../../ServerContext/ServerContext.hpp"
+# include "../../../../ServerConfig/ServerBlock/ServerBlock.hpp"
+# include "../../../../ServerConfig/ServerLocation/ServerLocation.hpp"
+# include "../../../../ServerConfig/BlockFinder/BlockFinder.hpp"
+
+
+bool	returnValue;
+int		requestStatus = Http::Status::OK;
+
 
 namespace Http
 {
 	// Check Server/Location existence
 	// Check file availability
-	// Check Method allowed
-	// Check Host, Accept, Connection header
+	// Check permission to perform action
 	bool
 	Response::mf_validateHeaders()
 	{
@@ -23,14 +28,19 @@ namespace Http
 		= m_responseData.requestData->headers.find("Host");
 
 		if (host != m_responseData.requestData->headers.end())
+		{
+			std::cout << "MockResponse debug: host header: " << host->second << std::endl;
 			hostHeaderValue = host->second;
-
+		}
 		// Find ServerBlock
 		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, hostHeaderValue);
 		
 		if (m_responseData.serverBlock == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
+			requestStatus = m_responseData.requestStatus;
+			returnValue = false;
+			std::cout << "MockResponse Debug: Server block not found" << std::endl;
 			return (false);
 		}
 		
@@ -54,6 +64,9 @@ namespace Http
 		if (m_responseData.serverLocation == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
+			requestStatus = m_responseData.requestStatus;
+			returnValue = false;
+			std::cout << "MockResponse Debug: Server Location not found" << std::endl;
 			return (false);
 		}
 
@@ -63,6 +76,9 @@ namespace Http
 			// IN THIS CASE SHOULD ADD ALLOW HEADER WITH AVAILABLE OPTIONS
 			// example: "Allow: GET"
 			m_responseData.requestStatus = Http::Status::METHOD_NOT_ALLOWED;
+			requestStatus = m_responseData.requestStatus;
+			returnValue = false;
+			std::cout << "MockResponse Debug: Method Not Allowed" << std::endl;
 			return (false);
 		}
 
@@ -78,16 +94,22 @@ namespace Http
 		{
 			case FilesUtils::DIRECTORY:
 			{
+				std::cout << "MockResponse Debug: Requested resource is directory\n";
 				if (m_responseData.requestData->method == "GET" && m_responseData.serverLocation->getAutoIndex())
 				{
 					m_responseData.requestStatus = Http::Status::OK; 
+					requestStatus = m_responseData.requestStatus;
+					returnValue = true;
 					break ;
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
+				requestStatus = m_responseData.requestStatus;
+				returnValue = false;
 				return (false);
 			}
 			case FilesUtils::REGULAR_FILE:
 			{
+				std::cout << "MockResponse Debug: Requested resource " << m_responseData.targetPath.c_str() << " is regular file\n";
 				// Check Accept header
 				const std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator accept
 				= m_responseData.requestData->headers.find("Accept");
@@ -96,14 +118,20 @@ namespace Http
 					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("Accept")->second, m_responseData.targetPath))
 				{
 					m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
+					requestStatus = m_responseData.requestStatus;
+					returnValue = false;
 					return (false);
 				}
 
 				m_responseData.requestStatus = Http::Status::OK;
+				requestStatus = m_responseData.requestStatus;
 				break ;
 			}
 			default:
+				std::cout << "MockResponse Debug: Requested resource is unknown\n";
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
+				requestStatus = m_responseData.requestStatus;
+				returnValue = false;
 				return (false);
 		}
 
@@ -113,6 +141,7 @@ namespace Http
 		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
 			m_responseData.closeAfterSending = true;
 		
+		returnValue = true;
 		return (true);
 	}
 }

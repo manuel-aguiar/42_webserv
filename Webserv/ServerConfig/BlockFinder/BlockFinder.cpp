@@ -6,21 +6,21 @@
 #include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
 BlockFinder::BlockFinder():
-    m_wildcardKey() {
-        m_wildcardKey.ip = 0;  // 0.0.0.0 in network byte order
-        m_wildcardKey.port = 0; // * represented as 0
-        m_wildcardKey.serverName = "*";
+	m_wildcardKey() {
+		m_wildcardKey.ip = 0;  // 0.0.0.0 in network byte order
+		m_wildcardKey.port = 0; // * represented as 0
+		m_wildcardKey.serverName = "*";
 }
 
 BlockFinder::~BlockFinder() {}
 
 std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr* addr) const
 {
-    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_extractIpPort(): Address is NULL");
-    ASSERT_EQUAL(addr->sa_family, AF_INET, "BlockFinder::mf_extractIpPort(): Currently supports only ipv4");
+	ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_extractIpPort(): Address is NULL");
+	ASSERT_EQUAL(addr->sa_family, AF_INET, "BlockFinder::mf_extractIpPort(): Currently supports only ipv4");
 
-    Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
-    return std::make_pair(ipv4->sin_addr.s_addr, ipv4->sin_port);
+	Ws::Sock::addr_in* ipv4 = (Ws::Sock::addr_in*)addr;
+	return std::make_pair(ipv4->sin_addr.s_addr, ipv4->sin_port);
 }
 
 /*
@@ -29,16 +29,16 @@ std::pair<uint32_t, uint16_t> BlockFinder::mf_extractIpPort(const Ws::Sock::addr
 **	uses normalized directives
 */
 BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const Ws::Sock::addr* addr, const std::string& serverName) const {
-    ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_createIdentifier(): Address is NULL");
+	ASSERT_EQUAL(addr != NULL, true, "BlockFinder::mf_createIdentifier(): Address is NULL");
 
-    BlockIdentifier key;
-    std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(addr);
+	BlockIdentifier key;
+	std::pair<uint32_t, uint16_t> ipPort = mf_extractIpPort(addr);
 
-    key.ip = ipPort.first;
-    key.port = ipPort.second;
-    key.serverName = serverName.empty() ? m_wildcardKey.serverName : serverName;
+	key.ip = ipPort.first;
+	key.port = ipPort.second;
+	key.serverName = serverName.empty() ? m_wildcardKey.serverName : serverName;
 
-    return key;
+	return key;
 }
 
 /*
@@ -48,7 +48,7 @@ BlockFinder::BlockIdentifier BlockFinder::mf_createIdentifier(const Ws::Sock::ad
 */
 bool	BlockFinder::hasServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
-    return (findServerBlock(address, serverName) != NULL);
+	return (findServerBlock(address, serverName) != NULL);
 }
 
 /*
@@ -60,31 +60,31 @@ bool	BlockFinder::hasServerBlock(const Ws::Sock::addr& address, const std::strin
 */
 void	BlockFinder::addServerBlock(const ServerBlock& block)
 {
-    const std::vector<const Ws::Sock::addr*>& listeners = block.getListenAddresses();
-    const std::set<std::string>& serverNames = block.getServerNames();
+	const std::vector<const Ws::Sock::addr*>& listeners = block.getListenAddresses();
+	const std::set<std::string>& serverNames = block.getServerNames();
 
-    // For each listener (IP:port pair)
-    for (std::vector<const Ws::Sock::addr*>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
-    {
-        // Port directive is mandatory and cannot be wildcard
-        ASSERT_EQUAL(mf_extractIpPort(*lit).second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
+	// For each listener (IP:port pair)
+	for (std::vector<const Ws::Sock::addr*>::const_iterator lit = listeners.begin(); lit != listeners.end(); ++lit)
+	{
+		// Port directive is mandatory and cannot be wildcard
+		ASSERT_EQUAL(mf_extractIpPort(*lit).second != 0, true, "BlockFinder::addServerBlock(): Port directive is mandatory");
 
-        // For each server name
-        for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)
-        {
-            BlockIdentifier key = mf_createIdentifier(*lit, *sit);
+		// For each server name
+		for (std::set<std::string>::const_iterator sit = serverNames.begin(); sit != serverNames.end(); ++sit)
+		{
+			BlockIdentifier key = mf_createIdentifier(*lit, *sit);
 
-            // Add to map if not already present
-            if (m_serverBlocks.find(key) == m_serverBlocks.end())
-                m_serverBlocks[key] = &block;
-        }
-    }
+			// Add to map if not already present
+			if (m_serverBlocks.find(key) == m_serverBlocks.end())
+				m_serverBlocks[key] = &block;
+		}
+	}
 }
 
 void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
 {
-    for (std::vector<ServerBlock>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
-        addServerBlock(*it);
+	for (std::vector<ServerBlock>::const_iterator it = blocks.begin(); it != blocks.end(); ++it)
+		addServerBlock(*it);
 }
 
 /*
@@ -94,36 +94,39 @@ void    BlockFinder::loadServerBlocks(const std::vector<ServerBlock>& blocks)
 **
 **	The order of precedence for finding a matching block is as follows:
 **	- Exact match for the combination of IP, port, and server name.
-**	- IP:port match, but different server name.
+**	- IP:port match, but wildcard (*) server name.
 **	- IP wildcard (0.0.0.0), but exact port and server name.
-**	- IP:port match, but server name is a wildcard (*).
 */
 const ServerBlock*	BlockFinder::findServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
-    BlockIdentifier key = mf_createIdentifier(&address, serverName);
+	BlockIdentifier key = mf_createIdentifier(&address, serverName);
 
-    if (m_serverBlocks.empty())
-        return (NULL);
+	if (m_serverBlocks.empty())
+		return (NULL);
+		
+	std::map<BlockIdentifier, const ServerBlock*>::iterator it;
 
-    // Try exact match
-    std::map<BlockIdentifier, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
-    if (it != m_serverBlocks.end())
-        return (it->second);
+	// Try exact match
+	if (!serverName.empty())
+	{
+		it = m_serverBlocks.find(key);
+		if (it != m_serverBlocks.end())
+			return (it->second);
+	}
+	// Try wildcard server name
+	key.serverName = m_wildcardKey.serverName;
+	it = m_serverBlocks.find(key);
+	if (it != m_serverBlocks.end())
+		return (it->second);
 
-    // Try wildcard server name
-    key.serverName = m_wildcardKey.serverName;
-    it = m_serverBlocks.find(key);
-    if (it != m_serverBlocks.end())
-        return (it->second);
+	// Try wildcard IP with exact server name
+	key = mf_createIdentifier(&address, serverName);
+	key.ip = m_wildcardKey.ip;
+	it = m_serverBlocks.find(key);
+	if (it != m_serverBlocks.end())
+		return (it->second);
 
-    // Try wildcard IP with exact server name
-    key = mf_createIdentifier(&address, serverName);
-    key.ip = m_wildcardKey.ip;
-    it = m_serverBlocks.find(key);
-    if (it != m_serverBlocks.end())
-        return (it->second);
-
-    return (NULL);
+	return (NULL);
 }
 
 /*
@@ -132,15 +135,15 @@ const ServerBlock*	BlockFinder::findServerBlock(const Ws::Sock::addr& address, c
 */
 void	BlockFinder::removeServerBlock(const Ws::Sock::addr& address, const std::string& serverName)
 {
-    BlockIdentifier key = mf_createIdentifier(&address, serverName);
-    std::map<BlockIdentifier, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
+	BlockIdentifier key = mf_createIdentifier(&address, serverName);
+	std::map<BlockIdentifier, const ServerBlock*>::iterator it = m_serverBlocks.find(key);
 
-    if (it != m_serverBlocks.end())
-        m_serverBlocks.erase(it);
+	if (it != m_serverBlocks.end())
+		m_serverBlocks.erase(it);
 }
 
 bool BlockFinder::BlockIdentifier::operator<(const BlockIdentifier& other) const {
-    if (ip != other.ip) return ip < other.ip;
-    if (port != other.port) return port < other.port;
-    return serverName < other.serverName;
+	if (ip != other.ip) return ip < other.ip;
+	if (port != other.port) return port < other.port;
+	return serverName < other.serverName;
 }

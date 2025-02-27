@@ -70,6 +70,8 @@ class ServerLocation
 
 		// DEBUG
 		void							printLocationConfig() const;
+		void							clearMethods();
+
 
 		Config::CgiInterpreterMap&
 										accessCgiInterpreters();

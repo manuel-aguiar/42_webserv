@@ -20,11 +20,13 @@ class ServerLocation;
 
 namespace Http
 {
-	namespace Status
-	{
-		typedef enum
-		{
-			_TOTAL_CODES = 35,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+    // All http status codes
+    namespace Status
+    {
+        typedef enum
+        {
+            _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+
 
 			// 2xx
 			OK = 200,
@@ -43,18 +45,19 @@ namespace Http
 			TEMPORARY_REDIRECT = 307,
 			PERMANENT_REDIRECT = 308,
 
-			// 4xx
-			BAD_REQUEST = 400,
-			FORBIDDEN = 403,
-			NOT_FOUND = 404,
-			METHOD_NOT_ALLOWED = 405,
-			URI_TOO_LONG = 414,
-			PRECONDITION_FAILED = 412,
-			PAYLOAD_TOO_LARGE = 413,
-			UNSUPPORTED_MEDIA_TYPE = 415,
-			TOO_MANY_REQUESTS = 429,
-			REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
-			UNAVAILABLE_FOR_LEGAL_REASONS = 451,
+            // 4xx
+            BAD_REQUEST = 400,
+            FORBIDDEN = 403,
+            NOT_FOUND = 404,
+            METHOD_NOT_ALLOWED = 405,
+			NOT_ACCEPTABLE = 406,
+            URI_TOO_LONG = 414,
+            PRECONDITION_FAILED = 412,
+            PAYLOAD_TOO_LARGE = 413,
+            UNSUPPORTED_MEDIA_TYPE = 415,
+            TOO_MANY_REQUESTS = 429,
+            REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
+            UNAVAILABLE_FOR_LEGAL_REASONS = 451,
 
 			// 5xx
 			INTERNAL_ERROR = 500,

@@ -40,6 +40,7 @@ const char* getStatusMessage(int statusCode)
 		codes[i] = Http::Status::FORBIDDEN; 						messages[i] = "Forbidden"; 							i++;
 		codes[i] = Http::Status::NOT_FOUND; 						messages[i] = "Not Found"; 							i++;
 		codes[i] = Http::Status::METHOD_NOT_ALLOWED; 				messages[i] = "Method Not Allowed"; 				i++;
+		codes[i] = Http::Status::NOT_ACCEPTABLE; 					messages[i] = "Not Acceptable"; 					i++;
 		codes[i] = Http::Status::PRECONDITION_FAILED; 				messages[i] = "Precondition Failed"; 				i++;
 		codes[i] = Http::Status::PAYLOAD_TOO_LARGE; 				messages[i] = "Payload Too Large"; 					i++;
 		codes[i] = Http::Status::URI_TOO_LONG; 						messages[i] = "URI Too Long"; 						i++;
