@@ -22,6 +22,7 @@ namespace Http
 	m_responseData		(),
 	m_status			(Http::ResponseStatus::WAITING),
 	m_fillFunction		(&Response::mf_fillNothingToSend),
+	m_processFunction	(&Response::mf_processBodyNone),
 	m_file				(),
 	m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
 
