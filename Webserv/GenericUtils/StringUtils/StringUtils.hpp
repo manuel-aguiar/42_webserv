@@ -17,6 +17,7 @@ namespace StringUtils
 
 	std::string					strtrim(const std::string &str);
 	std::string					strToLower(const std::string& str);
+	std::string					strToUpper(const std::string& str);
 	int							strToInt(const std::string& str, bool &error);
 	size_t						stoull(const std::string &str);
 	std::string					intToStr(int value);

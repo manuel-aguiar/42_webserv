@@ -27,6 +27,16 @@ StringUtils::strToLower(const std::string& str)
 	return (lowercaseString);
 }
 
+std::string
+StringUtils::strToUpper(const std::string& str)
+{
+	std::string uppercaseString = str;
+	for (std::string::iterator it = uppercaseString.begin(); it != uppercaseString.end(); ++it)
+		*it = static_cast<char>(std::toupper(static_cast<unsigned char>(*it)));
+	
+	return (uppercaseString);
+}
+
 int
 StringUtils::strToInt(const std::string& str, bool &error)
 {

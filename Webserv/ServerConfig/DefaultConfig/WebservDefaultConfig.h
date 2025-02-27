@@ -26,7 +26,7 @@
 
 // Location
 # define DEFAULTCONF_LOCATION_AUTOINDEX false
-# define DEFAULTCONF_LOCATION_METHODS "get post delete" // Methods separated by spaces, lowercase 
+# define DEFAULTCONF_LOCATION_METHODS "GET POST DELETE" // Methods separated by spaces, uppercase 
 # define DEFAULTCONF_LOCATION_TYPE "regular"
 
 
