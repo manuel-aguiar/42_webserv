@@ -15,6 +15,8 @@
 
 // Test Variable from mockHttpResponse_ValidateHeaders.cpp
 extern bool returnValue;
+extern int	requestStatus;
+
 
 // Tester function
 Ws::Sock::addr_in createSockAddr(const std::string& ip, const std::string& port) {
@@ -33,51 +35,246 @@ Ws::Sock::addr_in createSockAddr(const std::string& ip, const std::string& port)
 	return addr;
 }
 
-void stateTransitionTests(int &testNumber)
+void simpleRequests(int &testNumber)
 {
 	TEST_HEADER("Http Response - mf_validateHeaders()");
 
 	// Server block setup (and blockfinder)
 	ServerBlock block1;
-	
 	BlockFinder finder;
 
-	
-	Ws::Sock::addr_in addr1 = createSockAddr("192.168.1.1", "8080");
+	Ws::Sock::addr_in addr1 = createSockAddr("0.0.0.0.0", "8080");
 	
 	block1.addListenAddress((Ws::Sock::addr*)&addr1);
 	block1.addServerName("example.com");
 	block1.accessLocations().push_back(ServerLocation());
 	block1.accessLocations().back().setPath("/");
 	char rootPath[100];
-	block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/");
 	
 	finder.addServerBlock(block1);
+
+	// Sever Context
+	ServerContext serverContext;
+	serverContext.setBlockFinder(finder);
+
+	// Response & request
 	
+	/////////////////////////////////////////////////////
 	// TESTS
+	/////////////////////////////////////////////////////
+
+	// File GET
 	TEST_INTRO(testNumber++);
 	{
-		ServerContext serverContext;
-		serverContext.setBlockFinder(finder);
-		
-		Http::Request request(serverContext);
-		Http::Response response(serverContext);
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
 		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/index.html");
+		block1.accessLocations().back().clearMethods();
+		block1.accessLocations().back().addMethod("GET");
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(returnValue, true, "GET response to exact match server block");
-			TEST_PASSED_MSG("Complete GET request passed");
+			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			TEST_PASSED_MSG("Html file GET request");
 		}
 		catch(const std::exception& e) {
 			TEST_FAILED_MSG(e.what());
 		}
 	}
+
+	/////////////////////////////////////////////////////
+
+	// File GET
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/doesntexist");
+		block1.accessLocations().back().clearMethods();
+		block1.accessLocations().back().addMethod("GET");
+		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+		
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
+			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			TEST_PASSED_MSG("Inexistent file GET request");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
+	/////////////////////////////////////////////////////
+
+	// File GET
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/doesntexist");
+		block1.accessLocations().back().clearMethods();
+		block1.accessLocations().back().addMethod("GET");
+		buffer.push("GET /doesntexist HTTP/1.1\r\nHost: example.com\r\n\r\n");
+		
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
+			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			TEST_PASSED_MSG("Inexistent location GET request");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
+	/////////////////////////////////////////////////////
+
+	// File GET
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/index.html");
+		block1.accessLocations().back().clearMethods();
+		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+		
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
+			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			TEST_PASSED_MSG("GET request not allowed");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
+	/////////////////////////////////////////////////////
+
+	
+	// Directory GET
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/");
+		block1.accessLocations().back().clearMethods();
+		block1.accessLocations().back().addMethod("GET");
+		block1.accessLocations().back().setAutoindex("0");
+		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(requestStatus, Http::Status::FORBIDDEN, "RequestStatus should be 403 FORBIDDEN");
+			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			TEST_PASSED_MSG("Directory GET request with auto index off");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
+	/////////////////////////////////////////////////////
+
+	
+	// Directory GET
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/");
+		block1.accessLocations().back().clearMethods();
+		block1.accessLocations().back().addMethod("GET");
+		block1.accessLocations().back().setAutoindex("1");
+		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			TEST_PASSED_MSG("Directory GET request with auto index on");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
+	/////////////////////////////////////////////////////
+
+	// POST
+	// TEST_INTRO(testNumber++);
+	// {
+	// 	Http::Request	request(serverContext);
+	// 	Http::Response	response(serverContext);
+	// 	response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+	// 	request.setResponse(response);
+
+	// 	Buffer<1024> buffer;
+		
+	// 	// TESTED Request Parameters
+	// 	block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/index.html");
+	// 	block1.accessLocations().back().clearMethods();
+	// 	block1.accessLocations().back().addMethod("POST");
+	// 	buffer.push("POST / HTTP/1.1\r\nHost: example.com\r\nContent-Length: 42\r\n\r\nname=John+Doe&email=john.doe%40example.com\r\n");
+		
+	// 	request.parse(buffer);
+
+	// 	try {
+	// 		EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+	// 		EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+	// 		TEST_PASSED_MSG("Html file POST request");
+	// 	}
+	// 	catch(const std::exception& e) {
+	// 		TEST_FAILED_MSG(e.what());
+	// 	}
+	// }
+
+	/////////////////////////////////////////////////////
 
 
 
@@ -236,10 +433,7 @@ int main()
 {
 	int testNumber = 1;
 
-	std::cout << "Starting HTTP Request Parser Tests...\n\n";
+	simpleRequests(testNumber);
 
-	stateTransitionTests(testNumber);
-
-	std::cout << "\nAll tests completed!\n";
 	return 0;
 }

@@ -26,9 +26,9 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 	validTypes.insert("redirection");
 	validTypes.insert("cgi");
 
-	validMethods.insert("get");
-	validMethods.insert("post");
-	validMethods.insert("delete");
+	validMethods.insert("GET");
+	validMethods.insert("POST");
+	validMethods.insert("DELETE");
 }
 
 ServerLocation::ServerLocation() :
@@ -136,12 +136,12 @@ void		ServerLocation::setAutoindex(const std::string &value)
 
 void		ServerLocation::addMethod(const std::string &value)
 {
-	std::string	lowercaseStr = StringUtils::strToLower(value);
+	std::string	uppercaseStr = StringUtils::strToUpper(value);
 	
-	if (m_directiveToSetter.validMethods.find(lowercaseStr) == m_directiveToSetter.validMethods.end())
+	if (m_directiveToSetter.validMethods.find(uppercaseStr) == m_directiveToSetter.validMethods.end())
 		throw (std::invalid_argument("invalid method"));
-	if (m_methods.find(lowercaseStr) == m_methods.end())
-		m_methods.insert(lowercaseStr);
+	if (m_methods.find(uppercaseStr) == m_methods.end())
+		m_methods.insert(uppercaseStr);
 }
 
 void	ServerLocation::addCgiInterpreter(const std::string &value)
@@ -237,4 +237,9 @@ void		ServerLocation::printLocationConfig() const
 	for (std::set<std::string>::const_iterator it = getMethods().begin(); it != getMethods().end(); it++)
 		std::cout << *it << " ";
 	std::cout << std::endl;
+}
+
+void	ServerLocation::clearMethods()
+{
+	m_methods.clear();
 }

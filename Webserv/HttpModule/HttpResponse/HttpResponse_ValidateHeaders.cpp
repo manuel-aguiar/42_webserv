@@ -16,7 +16,7 @@ namespace Http
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
 
 		// Host header
-		std::string hostHeaderValue;
+		std::string	hostHeaderValue;
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator host 
 		= m_responseData.requestData->headers.find("Host");
 
@@ -77,7 +77,7 @@ namespace Http
 			}
 			case FilesUtils::REGULAR_FILE:
 			{
-				// Check Accept header
+				// Accept header
 				const std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator accept
 				= m_responseData.requestData->headers.find("Accept");
 
