@@ -82,7 +82,6 @@ namespace Http
 			return (false);
 		}
 
-
 		// Check file (exists, extension)
 		m_responseData.targetPath = 
 			m_responseData.serverBlock->getRoot() + 
@@ -100,7 +99,7 @@ namespace Http
 				{
 					m_responseData.requestStatus = Http::Status::OK; 
 					requestStatus = m_responseData.requestStatus;
-					returnValue = false;
+					returnValue = true;
 					break ;
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;

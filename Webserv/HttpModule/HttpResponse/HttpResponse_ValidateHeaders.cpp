@@ -1,13 +1,15 @@
 # include "HttpResponse.hpp"
-
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 
-
 namespace Http
 {
+	// Check Server/Location existence
+	// Check file availability
+	// Check Method allowed
+	// Check Host, Accept, Connection header
 	bool
 	Response::mf_validateHeaders()
 	{
@@ -16,7 +18,7 @@ namespace Http
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
 
 		// Host header
-		std::string	hostHeaderValue;
+		std::string hostHeaderValue;
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator host 
 		= m_responseData.requestData->headers.find("Host");
 
@@ -55,7 +57,16 @@ namespace Http
 			return (false);
 		}
 
-		// Check file (extension, exists)
+		// Check Request Method Permission
+		if (m_responseData.serverLocation->getMethods().find(m_responseData.requestData->method) == m_responseData.serverLocation->getMethods().end())
+		{
+			// IN THIS CASE SHOULD ADD ALLOW HEADER WITH AVAILABLE OPTIONS
+			// example: "Allow: GET"
+			m_responseData.requestStatus = Http::Status::METHOD_NOT_ALLOWED;
+			return (false);
+		}
+
+		// Check file (exists, extension)
 		m_responseData.targetPath = 
 			m_responseData.serverBlock->getRoot() + 
 			m_responseData.serverLocation->getRoot() + 
@@ -67,7 +78,7 @@ namespace Http
 		{
 			case FilesUtils::DIRECTORY:
 			{
-				if (m_responseData.serverLocation->getAutoIndex())
+				if (m_responseData.requestData->method == "GET" && m_responseData.serverLocation->getAutoIndex())
 				{
 					m_responseData.requestStatus = Http::Status::OK; 
 					break ;
@@ -77,7 +88,7 @@ namespace Http
 			}
 			case FilesUtils::REGULAR_FILE:
 			{
-				// Accept header
+				// Check Accept header
 				const std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator accept
 				= m_responseData.requestData->headers.find("Accept");
 
@@ -92,7 +103,7 @@ namespace Http
 				break ;
 			}
 			default:
-				m_responseData.requestStatus = Http::Status::NOT_FOUND;  // change to the right error code
+				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				return (false);
 		}
 
@@ -101,7 +112,7 @@ namespace Http
 
 		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
 			m_responseData.closeAfterSending = true;
-
+		
 		return (true);
 	}
 }

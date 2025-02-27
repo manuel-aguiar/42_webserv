@@ -241,5 +241,6 @@ void		ServerLocation::printLocationConfig() const
 
 void	ServerLocation::clearMethods()
 {
-	m_methods.clear();
+	if (!m_methods.empty())
+		m_methods.clear();
 }
