@@ -5,7 +5,9 @@
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
 #include "../../../../ServerConfig/ServerBlock/ServerBlock.hpp"
 #include "../../../../ServerConfig/BlockFinder/BlockFinder.hpp"
+#include "../../../../ServerConfig/ServerLocation/ServerLocation.hpp"
 #include "../../../../ServerContext/ServerContext.hpp"
+
 
 #include <iomanip>
 #include <arpa/inet.h>
@@ -41,10 +43,14 @@ void stateTransitionTests(int &testNumber)
 	BlockFinder finder;
 
 	
-	Ws::Sock::addr_in addr1 = createSockAddr("0.0.0.0", "80");
+	Ws::Sock::addr_in addr1 = createSockAddr("192.168.1.1", "8080");
 	
 	block1.addListenAddress((Ws::Sock::addr*)&addr1);
 	block1.addServerName("example.com");
+	block1.accessLocations().push_back(ServerLocation());
+	block1.accessLocations().back().setPath("/");
+	char rootPath[100];
+	block1.accessLocations().back().setRoot(std::string(getcwd(rootPath, 100)) + "/Testfiles/");
 	
 	finder.addServerBlock(block1);
 	
@@ -53,12 +59,15 @@ void stateTransitionTests(int &testNumber)
 	{
 		ServerContext serverContext;
 		serverContext.setBlockFinder(finder);
+		
 		Http::Request request(serverContext);
 		Http::Response response(serverContext);
 		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
+
 		Buffer<1024> buffer;
-		buffer.push("GET /index.html HTTP/1.1\r\nHost: localhost;\r\n\r\n");
+		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
+		
 		request.parse(buffer);
 
 		try {

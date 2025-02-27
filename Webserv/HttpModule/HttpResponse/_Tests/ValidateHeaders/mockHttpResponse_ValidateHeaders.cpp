@@ -14,7 +14,6 @@ namespace Http
 	bool
 	Response::mf_validateHeaders()
 	{
-		std::cerr << "ASDSAGAEGWERGASERGSDFGSDFSDFGD\n\n\n" << std::endl;
 		ASSERT_EQUAL(m_responseData.requestData != NULL, true, "Response: Request data not set");
 		ASSERT_EQUAL(m_responseData.serverBlock, (const ServerBlock*)NULL, "Response: Server block alreadyset");
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
@@ -25,8 +24,10 @@ namespace Http
 		= m_responseData.requestData->headers.find("Host");
 
 		if (host != m_responseData.requestData->headers.end())
+		{
+			std::cout << "Response: host header: " << host->second << std::endl;
 			hostHeaderValue = host->second;
-
+		}
 		// Find ServerBlock
 		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, hostHeaderValue);
 		
@@ -34,6 +35,7 @@ namespace Http
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
 			returnValue = false;
+			std::cout << "Response: Server block not found" << std::endl;
 			return (false);
 		}
 		
@@ -58,6 +60,7 @@ namespace Http
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
 			returnValue = false;
+			std::cout << "Response: Server location not found" << std::endl;
 			return (false);
 		}
 
