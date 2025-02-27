@@ -61,7 +61,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
     m_curChunkSize = strToInteger(thisChunkSize, 16);
     if (m_curChunkSize == -1)
-    return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
+        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
 
     m_curChunkPos = 0;
 

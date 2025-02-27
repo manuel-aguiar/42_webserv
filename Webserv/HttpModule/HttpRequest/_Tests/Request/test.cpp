@@ -34,6 +34,8 @@ void stateTransitionTests(int &testNumber)
 		Buffer<1024> buffer;
 		buffer.push("GET /index.html HTTP/1.1\r\nHost: localhost;\r\n\r\n");
 		request.parse(buffer);
+		
+		try {
 		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
 		EXPECT_EQUAL(request.isCompleted(), true, "Should be completed");
 		EXPECT_EQUAL(request.getMethod(), "GET", "Should have GET method");
@@ -42,6 +44,10 @@ void stateTransitionTests(int &testNumber)
 		EXPECT_EQUAL(request.getHeaders().size(), 1, "Should have 1 (host) header");
 		EXPECT_EQUAL(request.getBody(), "", "Should have no body");
 		TEST_PASSED_MSG("Complete GET request passed");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
 	}
 
 	// Request line parsing tests
