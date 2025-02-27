@@ -22,7 +22,7 @@ int	Listener::open()
 	int 				options;
 	int 				sockfd;
 
-	sockfd = ::socket(m_info.bind.family, m_info.bind.socktype, m_info.bind.proto);
+	sockfd = ::socket(m_info.peerInfo.family, m_info.peerInfo.socktype, m_info.peerInfo.proto);
 
 	if (sockfd == -1)
 		return (0);
@@ -44,12 +44,12 @@ int	Listener::open()
 		::close(sockfd);
 		return (0);
 	}	
-	if (::bind(sockfd, (struct sockaddr*)(&m_info.bind.addr), m_info.bind.addrlen) == -1)
+	if (::bind(sockfd, (struct sockaddr*)(&m_info.peerInfo.addr), m_info.peerInfo.addrlen) == -1)
 	{
 		::close(sockfd);
 		return (0);
 	}
-	if (::listen(sockfd, m_info.bind.backlog) == -1)
+	if (::listen(sockfd, m_info.peerInfo.backlog) == -1)
 	{
 		::close(sockfd);
 		return (0);
@@ -70,9 +70,9 @@ void	Listener::close()
 int		Listener::accept(ConnInfo& accept)
 {
 	int 				sockfd;
-	Ws::BindInfo&		acceptInfo = accept.bind;
+	Ws::BindInfo&		acceptInfo = accept.peerInfo;
 
-	acceptInfo.addrlen = m_info.bind.addrlen;
+	acceptInfo.addrlen = m_info.peerInfo.addrlen;
 	sockfd = ::accept(m_info.sockfd, (struct sockaddr*)(&acceptInfo.addr), &acceptInfo.addrlen);
 
 	if (sockfd == -1)
@@ -85,21 +85,12 @@ int		Listener::accept(ConnInfo& accept)
 		return (-1);
 	}
 
-	acceptInfo.family = m_info.bind.family;
-	acceptInfo.socktype = m_info.bind.socktype;
-	acceptInfo.proto = m_info.bind.proto;
-
-	// ovewritting the ephemeral port with that of the listeningConnInfo, that's what matters for us
-	switch (acceptInfo.family)
-	{
-		case AF_INET:
-			acceptInfo.addr.sockaddr_in.sin_port = m_info.bind.addr.sockaddr_in.sin_port;
-			break;
-		default:
-			ASSERT_EQUAL(1, 0, "Accepter::accept(), unsupported family");
-	}
+	acceptInfo.family = m_info.peerInfo.family;
+	acceptInfo.socktype = m_info.peerInfo.socktype;
+	acceptInfo.proto = m_info.peerInfo.proto;
 
 	accept.sockfd = sockfd;
+	accept.listenInfo = &m_info.peerInfo;
 
 	return (1);
 }
@@ -124,7 +115,7 @@ Listener& Listener::operator=(const Listener& assign)
 	ASSERT_EQUAL (m_info.sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-to socket fd not set to none");
 	ASSERT_EQUAL (assign.m_info.sockfd, (Ws::fd)Ws::FD_NONE, "Listener::Listener(), copy assignment, copy-from socket fd not set to none");
 
-	m_info.bind = assign.m_info.bind;
+	m_info.peerInfo = assign.m_info.peerInfo;
 
 	return (*this);
 }

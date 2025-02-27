@@ -27,7 +27,7 @@ TestProtoRequest_CgiGateway::onRead(Cgi::User user, const Ws::fd readFd)
 }
 
 Cgi::IO::State		
-TestProtoRequest_CgiGateway::onReceiveHeaders(Cgi::User user, Cgi::HeaderData& headers)
+TestProtoRequest_CgiGateway::onReceiveHeaders(Cgi::User user, const Cgi::HeaderData& headers)
 {
 	return (reinterpret_cast<TestProtoRequest*>(user)->CgiReceiveHeaders(headers));
 }

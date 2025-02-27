@@ -276,9 +276,9 @@ void Request::mf_prepareBodyParser()
 		m_parsingFunction = &Request::mf_handleNothing; // next handler is nothing
         return ;
 	}
-    headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
-    headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
-    headerContainer::iterator contentType = m_data.headers.find("Content-Type");
+    RequestData::headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
+    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
+    RequestData::headerContainer::iterator contentType = m_data.headers.find("Content-Type");
     
     if ((contentLength == m_data.headers.end() && transferEncoding == m_data.headers.end())
     || (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()))

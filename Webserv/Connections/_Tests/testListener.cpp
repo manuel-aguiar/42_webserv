@@ -76,7 +76,7 @@ void testListener(int& testNumber)
         ConnInfo            externalConnect;
         ConnInfo            internalConnect;
 
-        externalConnect.bind = (Ws::BindInfo)
+        externalConnect.peerInfo = (Ws::BindInfo)
         {
             .appLayer = Ws::AppLayer::HTTP,
             .backlog = 128,
@@ -117,12 +117,12 @@ void testListener(int& testNumber)
 
         // checking the listener recorded the data from the incoming connection
         EXPECT_EQUAL(internalConnect.sockfd != Ws::FD_NONE, true, "Listener::accept(), should have set the socket fd");
-        EXPECT_EQUAL(internalConnect.bind.family, externalConnect.bind.family, "family: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.bind.socktype, externalConnect.bind.socktype, "socktype: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.bind.proto, externalConnect.bind.proto, "proto: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.bind.addrlen, externalConnect.bind.addrlen, "addrlen: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.bind.addr.sockaddr_in.sin_addr.s_addr, externalConnect.bind.addr.sockaddr_in.sin_addr.s_addr, "addr: InternalConnect and ExternalConnect info must be the same");
-        EXPECT_EQUAL(internalConnect.bind.addr.sockaddr_in.sin_port, externalConnect.bind.addr.sockaddr_in.sin_port, "port: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.peerInfo.family, externalConnect.peerInfo.family, "family: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.peerInfo.socktype, externalConnect.peerInfo.socktype, "socktype: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.peerInfo.proto, externalConnect.peerInfo.proto, "proto: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.peerInfo.addrlen, externalConnect.peerInfo.addrlen, "addrlen: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.peerInfo.addr.sockaddr_in.sin_addr.s_addr, externalConnect.peerInfo.addr.sockaddr_in.sin_addr.s_addr, "addr: InternalConnect and ExternalConnect info must be the same");
+        EXPECT_EQUAL(internalConnect.listenInfo->addr.sockaddr_in.sin_port, listenInfo.addr.sockaddr_in.sin_port, "port: InternalConnect and ExternalConnect info must be the same");
 
         listener.close();
         ::close(internalConnect.sockfd);

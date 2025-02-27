@@ -15,8 +15,9 @@ struct ConnInfo
 
 		void				reset();
 
-		Ws::Sock::fd		sockfd;
-		Ws::BindInfo		bind;
+		Ws::Sock::fd				sockfd;
+		Ws::BindInfo				peerInfo;
+		const Ws::BindInfo*			listenInfo;
 };
 
 #endif
