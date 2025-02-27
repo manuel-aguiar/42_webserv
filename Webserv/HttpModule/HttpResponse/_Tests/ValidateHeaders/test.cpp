@@ -14,8 +14,8 @@
 #include <cstdlib>
 
 // Test Variable from mockHttpResponse_ValidateHeaders.cpp
-extern bool returnValue;
-extern int	requestStatus;
+extern bool g_returnValue;
+extern int	g_requestStatus;
 
 
 // Tester function
@@ -85,8 +85,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Html file GET request (only host header)");
 		}
 		catch(const std::exception& e) {
@@ -115,8 +115,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Html file GET request with accept headers");
 		}
 		catch(const std::exception& e) {
@@ -144,8 +144,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::NOT_ACCEPTABLE, "RequestStatus should be 406 NOT ACCEPTABLE");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_ACCEPTABLE, "RequestStatus should be 406 NOT ACCEPTABLE");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("Html file GET request with application/octet-stream as only accept type");
 		}
 		catch(const std::exception& e) {
@@ -174,8 +174,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("Inexistent file GET request");
 		}
 		catch(const std::exception& e) {
@@ -204,8 +204,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("Inexistent location GET request");
 		}
 		catch(const std::exception& e) {
@@ -234,8 +234,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("GET request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -264,8 +264,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("POST request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -293,8 +293,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("DELETE request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -325,8 +325,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::FORBIDDEN, "RequestStatus should be 403 FORBIDDEN");
-			EXPECT_EQUAL(returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::FORBIDDEN, "RequestStatus should be 403 FORBIDDEN");
+			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("Directory GET request with auto index off");
 		}
 		catch(const std::exception& e) {
@@ -357,8 +357,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Directory GET request with auto index on");
 		}
 		catch(const std::exception& e) {
@@ -387,8 +387,8 @@ void simpleRequests(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Html file POST request");
 		}
 		catch(const std::exception& e) {

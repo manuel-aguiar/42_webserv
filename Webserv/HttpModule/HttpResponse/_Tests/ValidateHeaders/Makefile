@@ -10,7 +10,8 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/ValidateHeaders/test.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/ValidateHeaders/test.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/ValidateHeaders/MockHttpResponse.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
@@ -25,13 +26,13 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
+								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/ValidateHeaders/mockHttpResponse_ValidateHeaders.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
 								\
