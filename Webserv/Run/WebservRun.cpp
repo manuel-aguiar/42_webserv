@@ -6,6 +6,7 @@
 # include "../Globals/LogFile/LogFile.hpp"
 # include "../SignalHandler/SignalHandler.hpp"
 # include "../ServerConfig/ServerConfig/ServerConfig.hpp"
+# include "../ServerConfig/ServerBlock/ServerBlock.hpp"
 # include "../ServerConfig/BlockFinder/BlockFinder.hpp"
 # include "../ServerConfig/DefaultConfig/DefaultConfig.hpp"
 # include "../ServerContext/ServerContext.hpp"
@@ -46,6 +47,21 @@ int maxFdsEstimate(const ServerConfig& config)
 	res += config.getAllBindAddresses().size(); 	// listening sockets
 	res += 2;										// signal handler pipe
 	res *= config.getMaxWorkers();					// workers
+
+	return (res);
+}
+
+size_t blockFinderEntryCount(const ServerConfig& config)
+{
+	size_t res = 0;
+	const std::vector<ServerBlock>& blocks = config.getServerBlocks();
+
+	for (size_t i = 0; i < blocks.size(); ++i)
+	{
+		res += blocks[i].getListenAddresses().size() * blocks[i].getServerNames().size();
+	}
+
+	res += config.getAllBindAddresses().size(); // default block
 
 	return (res);
 }
@@ -92,7 +108,7 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 
 		// preparing ServerContext;
 		ServerContext	context;
-		BlockFinder		blockFinder;
+		BlockFinder		blockFinder(blockFinderEntryCount(config));
 		Http::Module	httpModule(config.getMaxConnections(), context);
 		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals); // NOT ADDED YET
 

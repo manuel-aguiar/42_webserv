@@ -7,6 +7,32 @@
 # include "../HttpResponse/HttpResponse.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Connections/Connection/Connection.hpp"
+# include "../../Globals/Globals.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+
+# include <arpa/inet.h>
+
+void    logDisconnection(Globals& globals, Conn::Connection& connection)
+{
+    const Ws::BindInfo& peer = connection.info_getPeerInfo();
+    const Ws::BindInfo& listen = connection.info_getListenInfo();
+    char ipPeer[INET_ADDRSTRLEN];
+    char ipListen[INET_ADDRSTRLEN];
+
+    ::inet_ntop(AF_INET, &peer.addr.sockaddr_in.sin_addr, ipPeer, INET_ADDRSTRLEN);
+    int portPeer = ::ntohs(peer.addr.sockaddr_in.sin_port);
+
+    ::inet_ntop(AF_INET, &listen.addr.sockaddr_in.sin_addr, ipListen, INET_ADDRSTRLEN);
+    int portListen = ::ntohs(listen.addr.sockaddr_in.sin_port);
+
+    std::string message = "Client disconnected from " + std::string(ipPeer) + ":" 
+                            + StringUtils::to_string(portPeer) 
+                            + " on listener " 
+                            + std::string(ipListen) + ":" 
+                            + StringUtils::to_string(portListen);
+    globals.logStatus(message);
+    std::cout << message << std::endl;
+}
 
 namespace Http
 {
@@ -73,6 +99,7 @@ namespace Http
 	void
 	Connection::closeConnection()
 	{
+		logDisconnection(*m_tcpConn->accessServerContext().getGlobals(), *m_tcpConn);
 		m_tcpConn->events_stopMonitoring(true);
 
 		if (m_myTimer != TimerTracker<Timer, Http::Connection*>::iterator())

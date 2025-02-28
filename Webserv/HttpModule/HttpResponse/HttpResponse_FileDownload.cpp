@@ -1,6 +1,7 @@
 
 
 # include "HttpResponse.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 namespace Http
 {
@@ -16,6 +17,13 @@ namespace Http
             m_fillFunction = &Response::mf_fillErrorResponse;
             return (Http::ResponseStatus::FINISHED);
         }
+        //writeBuffer.push("HTTP/1.1 200 OK\r\n", 17);
+        //writeBuffer.push("Content-Length: ", 16);
+        //writeBuffer.push(BufferView(StringUtils::to_string(m_file.size())));
+        //writeBuffer.push("\r\n", 2);
+        //writeBuffer.push("Content-Type: text/html\r\n", 25);
+        //writeBuffer.push("Connection: close\r\n", 19);
+        //writeBuffer.push("\r\n", 2);
 
         m_fillFunction = &Response::mf_sendStaticFile;
         return (mf_sendStaticFile(writeBuffer));

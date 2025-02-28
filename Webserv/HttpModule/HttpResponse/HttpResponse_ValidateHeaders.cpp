@@ -4,6 +4,8 @@
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 
+# include <arpa/inet.h>
+
 namespace Http
 {
 	// Check Server/Location existence
@@ -13,6 +15,7 @@ namespace Http
 	bool
 	Response::mf_validateHeaders()
 	{
+
 		ASSERT_EQUAL(m_responseData.requestData != NULL, true, "Response: Request data not set");
 		ASSERT_EQUAL(m_responseData.serverBlock, (const ServerBlock*)NULL, "Response: Server block alreadyset");
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
@@ -24,6 +27,7 @@ namespace Http
 
 		if (host != m_responseData.requestData->headers.end())
 			hostHeaderValue = host->second;
+
 
 		// Find ServerBlock
 		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, hostHeaderValue);
@@ -51,6 +55,7 @@ namespace Http
 				break ;
 			}		
 		}
+
 		if (m_responseData.serverLocation == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
@@ -80,7 +85,8 @@ namespace Http
 			{
 				if (m_responseData.requestData->method == "GET" && m_responseData.serverLocation->getAutoIndex())
 				{
-					m_responseData.requestStatus = Http::Status::OK; 
+					m_responseData.requestStatus = Http::Status::OK;
+					// here prepare function pointers for directory listing
 					break ;
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
@@ -100,6 +106,11 @@ namespace Http
 				}
 
 				m_responseData.requestStatus = Http::Status::OK;
+				
+				m_fillFunction = &Response::mf_prepareStaticFile;
+				// prepare function pointers for file serving
+				// detect whether cgi or static file
+
 				break ;
 			}
 			default:

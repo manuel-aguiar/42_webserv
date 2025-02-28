@@ -12,11 +12,16 @@
 # include <iomanip>
 # include <vector>
 
+# include "../../../Toolkit/MemoryPool/Heap_ObjectPool/Heap_ObjectPool.hpp"
+# include "../../GenericUtils/BufferView/BufferView.hpp"
+
 class ServerBlock;
 
-class BlockFinder {
+class BlockFinder
+{
 	public:
-		BlockFinder();
+		// # of entries = # listeners (defaults) + sum serverblock(this block names * this block listeners)
+		BlockFinder(const size_t numberOfEntries);
 		~BlockFinder();
 
 		void				loadServerBlocks(const std::vector<ServerBlock>& blocks);
@@ -28,19 +33,25 @@ class BlockFinder {
 	private:
 		struct BlockIdentifier
 		{
-			uint32_t    ip;
-			uint16_t    port;
-			std::string serverName;
-
+			BlockIdentifier();
+			BlockIdentifier(const Ws::Sock::addr& addr, const BufferView serverName);
+			~BlockIdentifier();
+			BlockIdentifier(const BlockIdentifier& copy);
+			
+			const Ws::Sock::addr* 	sockaddr;
+			const BufferView		serverName;	
+			
 			// comparison operator
 			bool operator<(const BlockIdentifier& other) const;
+			
+			private:
+				BlockIdentifier& operator=(const BlockIdentifier& copy);
 		};
 
-		BlockIdentifier                              		m_wildcardKey;
-		std::map<BlockIdentifier, const ServerBlock*>		m_serverBlocks;
-
-		std::pair<uint32_t, uint16_t>	mf_extractIpPort(const Ws::Sock::addr* addr) const;
-		BlockIdentifier				 	mf_createIdentifier(const Ws::Sock::addr* addr, const std::string& serverName) const;
+		typedef Heap_ObjectPool<BlockIdentifier>					mapPool;
+		typedef std::map<const BlockIdentifier, const ServerBlock*, std::less<BlockIdentifier>, mapPool> 					
+																	blockIDs;
+		blockIDs						m_serverBlocks;
 };
 
 #endif

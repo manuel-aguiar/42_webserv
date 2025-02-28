@@ -14,11 +14,6 @@ namespace Http
 {
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		//std::cout << "Response received data: " << data.status << std::endl;
-//
-		//for (std::map<std::string, std::string>::const_iterator it = data.headers.begin(); it != data.headers.end(); ++it)
-		//	std::cout << "\t\t" << it->first << ": " << it->second << std::endl;
-
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
 
@@ -28,10 +23,12 @@ namespace Http
 			return ;
 		}
 
-
-		m_responseData.requestStatus = Http::Status::BAD_GATEWAY;
-		m_fillFunction = &Response::mf_fillErrorResponse;
-
+		if (m_fillFunction == &Response::mf_fillNothingToSend)
+		{
+			if (m_responseData.requestStatus == Http::Status::OK)
+				m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+			m_fillFunction = &Response::mf_fillErrorResponse;
+		}
 
 	}
 

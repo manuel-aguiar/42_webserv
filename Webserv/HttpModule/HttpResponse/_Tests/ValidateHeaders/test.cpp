@@ -43,7 +43,7 @@ void simpleRequests(int &testNumber)
 
 	// Server block setup (and blockfinder)
 	ServerBlock block1;
-	BlockFinder finder;
+	BlockFinder finder(1 + 1);
 
 
 	Ws::Sock::addr_in addr1 = createSockAddr("0.0.0.0.0", "8080");
