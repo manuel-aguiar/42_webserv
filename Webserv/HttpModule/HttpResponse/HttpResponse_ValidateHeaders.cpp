@@ -33,66 +33,84 @@ namespace Http
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
 			return (false);
 		}
-		
+
 		// Find Location
-		const std::vector<ServerLocation>& locations = m_responseData.serverBlock->getLocations();
-		BufferView pathView(m_responseData.requestData->path);
+		m_responseData.serverLocation = mf_findLocation(m_responseData);
 
-		for (size_t i = 0; i < locations.size(); ++i)
-		{
-			const std::string& locationPath = locations[i].getPath();
-			if (BufferView(locationPath.c_str(), pathView.size()) == pathView &&
-			(
-				locationPath.size() == pathView.size() ||
-				locationPath[pathView.size()] == '/'
-			))
-			{
-				m_responseData.serverLocation = &locations[i];
-				break ;
-			}		
-		}
-		if (m_responseData.serverLocation == NULL)
-		{
-			m_responseData.requestStatus = Http::Status::NOT_FOUND;
-			return (false);
-		}
+		if (m_responseData.serverLocation != NULL)
+			std::cout << "Location found: " << m_responseData.serverLocation->getPath() << std::endl;
+		else
+			std::cout << "No location found" << std::endl;
 
-		// Check Request Method Permission
-		if (m_responseData.serverLocation->getMethods().find(m_responseData.requestData->method) == m_responseData.serverLocation->getMethods().end())
+		// Check Request Method Permission (No location, no method check. Everything goes!)
+		if (m_responseData.serverLocation != NULL
+			&& m_responseData.serverLocation->getMethods().find(m_responseData.requestData->method) == m_responseData.serverLocation->getMethods().end())
 		{
-			// IN THIS CASE SHOULD ADD ALLOW HEADER WITH AVAILABLE OPTIONS
-			// example: "Allow: GET"
+			// We could as per spec send Allow header with available options
 			m_responseData.requestStatus = Http::Status::METHOD_NOT_ALLOWED;
 			return (false);
 		}
 
-		// Check file (exists, extension)
-		m_responseData.targetPath = 
-			m_responseData.serverBlock->getRoot() + 
-			m_responseData.serverLocation->getRoot() + 
-			m_responseData.requestData->path.substr(pathView.size());
+		// Check redirection
 
+
+		// Assemble target path
+		// ROOT MUST BE DIRECTORY & not end with '/'
+
+		std::string targetPathNoIndex;
+
+		if (m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty()) 
+			m_responseData.targetPath = m_responseData.serverBlock->getRoot();
+		else
+			m_responseData.targetPath = m_responseData.serverLocation->getRoot();
+
+		if (*m_responseData.targetPath.rbegin() == '/')
+			m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
+
+		m_responseData.targetPath += m_responseData.requestData->path;
+
+		if (m_responseData.serverLocation != NULL
+			&& *m_responseData.requestData->path.rbegin() == '/'
+			&& !m_responseData.serverLocation->getIndex().empty()) 
+		{
+			targetPathNoIndex = m_responseData.targetPath;
+			m_responseData.targetPath += m_responseData.serverLocation->getIndex();
+		}
+
+		std::cout << "Target path: " << m_responseData.targetPath << std::endl;
+
+		// Check resource (exists, extension)
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
+		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
+
+		std::cout << "Target type: " << m_responseData.targetType << std::endl;
 
 		switch (m_responseData.targetType)
 		{
 			case FilesUtils::DIRECTORY:
-			{
-				if (m_responseData.requestData->method == "GET" && m_responseData.serverLocation->getAutoIndex())
+				if (*m_responseData.targetPath.rbegin() != '/')
+				{
+					// redirect to same path with '/' in the end ??
+					// m_responseData.requestStatus = Http::Status::MOVED_PERMANENTLY;
+					// return (false);
+					m_responseData.targetPath += "/";
+				}
+				// Autoindex default is 0, so if we dont have a location, 403.
+				// Can we access config defaults from here?
+				if (m_responseData.serverLocation != NULL 
+					&& m_responseData.requestData->method == "GET"
+					&& m_responseData.serverLocation->getAutoIndex() == 1)
 				{
 					m_responseData.requestStatus = Http::Status::OK; 
 					break ;
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				return (false);
-			}
 			case FilesUtils::REGULAR_FILE:
-			{
 				// Check Accept header
-				const std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator accept
-				= m_responseData.requestData->headers.find("Accept");
+				acceptHeader = m_responseData.requestData->headers.find("Accept");
 
-				if (accept != m_responseData.requestData->headers.end()
+				if (acceptHeader != m_responseData.requestData->headers.end()
 					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("Accept")->second, m_responseData.targetPath))
 				{
 					m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
@@ -101,7 +119,20 @@ namespace Http
 
 				m_responseData.requestStatus = Http::Status::OK;
 				break ;
-			}
+			case FilesUtils::UNDEFINED:
+				m_responseData.requestStatus = Http::Status::NOT_FOUND; // ???
+				return (false);
+			case FilesUtils::NOT_EXIST:
+				//same as above
+				if (m_responseData.serverLocation != NULL 
+					&& m_responseData.requestData->method == "GET"
+					&& m_responseData.serverLocation->getAutoIndex() == 1)
+				{
+					m_responseData.targetPath = targetPathNoIndex;
+					m_responseData.requestStatus = Http::Status::OK; 
+					break ;
+				}
+				/* fall through */	
 			default:
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				return (false);

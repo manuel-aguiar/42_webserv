@@ -41,7 +41,7 @@ int main()
             struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
             serverBlock.addListenAddress((struct sockaddr*)&addr);
             serverBlock.addServerName("example.com");
-            serverBlock.setRootPath("/var/www/html");
+            serverBlock.setRoot("/var/www/html");
             serverBlock.setClientBodySize("10M");
             serverBlock.setClientHeaderSize("8K");
             serverBlock.addErrorPage("404:/errors/404.html");
@@ -84,7 +84,7 @@ int main()
             struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "1000");
             serverBlock2.addListenAddress((struct sockaddr*)&addr2);
             serverBlock2.addServerName("example-domain.com");
-            serverBlock2.setRootPath("/var/www/html");
+            serverBlock2.setRoot("/var/www/html");
             serverBlock2.setClientBodySize("10M");
             serverBlock2.setClientHeaderSize("8K");
             serverBlock2.addErrorPage("404:/errors/404.html");
@@ -121,7 +121,7 @@ int main()
             struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
             block1.addListenAddress((struct sockaddr*)&addr1);
             block1.addServerName("example.com");
-            block1.setRootPath("/var/www/html1");
+            block1.setRoot("/var/www/html1");
             finder.addServerBlock(block1);
 
             // Second block with same server name but different port
@@ -129,7 +129,7 @@ int main()
             struct sockaddr_in addr2 = createSockAddr("127.0.0.1", "8081");
             block2.addListenAddress((struct sockaddr*)&addr2);
             block2.addServerName("example.com");
-            block2.setRootPath("/var/www/html2");
+            block2.setRoot("/var/www/html2");
             finder.addServerBlock(block2);
 
             // Test finding each block
@@ -159,7 +159,7 @@ int main()
             struct sockaddr_in addr = createSockAddr("0.0.0.0", "8080");
             block.addListenAddress((struct sockaddr*)&addr);
             block.addServerName("example.com");
-            block.setRootPath("/var/www/html");
+            block.setRoot("/var/www/html");
             finder.addServerBlock(block);
 
             // Test finding with different IPs
@@ -191,7 +191,7 @@ int main()
             block.addServerName("example.com");
             block.addServerName("www.example.com");
             block.addServerName("api.example.com");
-            block.setRootPath("/var/www/html");
+            block.setRoot("/var/www/html");
             finder.addServerBlock(block);
 
             // Test finding with different server names
