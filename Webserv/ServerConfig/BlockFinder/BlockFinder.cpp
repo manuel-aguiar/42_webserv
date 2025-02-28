@@ -105,7 +105,7 @@ const ServerBlock*	BlockFinder::findServerBlock(const Ws::Sock::addr& address, c
 		return (NULL);
 		
 	std::map<BlockIdentifier, const ServerBlock*>::iterator it;
-
+	
 	// Try exact match
 	if (!serverName.empty())
 	{

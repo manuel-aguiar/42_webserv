@@ -6,7 +6,32 @@
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../Globals/Globals.hpp"
 # include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
+
+# include <arpa/inet.h>
+
+void    logConnection(Globals& globals, Conn::Connection& connection)
+{
+    const Ws::BindInfo& peer = connection.info_getPeerInfo();
+    const Ws::BindInfo& listen = connection.info_getListenInfo();
+    char ipPeer[INET_ADDRSTRLEN];
+    char ipListen[INET_ADDRSTRLEN];
+
+    ::inet_ntop(AF_INET, &peer.addr.sockaddr_in.sin_addr, ipPeer, INET_ADDRSTRLEN);
+    int portPeer = ::ntohs(peer.addr.sockaddr_in.sin_port);
+
+    ::inet_ntop(AF_INET, &listen.addr.sockaddr_in.sin_addr, ipListen, INET_ADDRSTRLEN);
+    int portListen = ::ntohs(listen.addr.sockaddr_in.sin_port);
+
+    std::string message = "connection from " + std::string(ipPeer) + ":" 
+                            + StringUtils::to_string(portPeer) 
+                            + " on listener " 
+                            + std::string(ipListen) + ":" 
+                            + StringUtils::to_string(portListen);
+    globals.logStatus(message);
+}
 
 namespace Http
 {
@@ -39,6 +64,9 @@ namespace Http
         httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection));
 
         connection.events_startMonitoring(true);
+        
+        Globals& globals = *connection.accessServerContext().getGlobals();
+        logConnection(globals, connection);
     }
 
     void
