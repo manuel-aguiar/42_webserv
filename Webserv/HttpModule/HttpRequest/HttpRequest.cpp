@@ -279,7 +279,6 @@ void Request::mf_prepareBodyParser()
 		if (m_data.method == "POST")
 			goto exitFailure;
 		m_parsingState = COMPLETED;
-		std::cout << "Request completed" << std::endl;
 		m_parsingFunction = &Request::mf_handleNothing;
 		if (m_response)
 			m_response->receiveRequestBody(BufferView()); // send empty buffer, end of message body
