@@ -8,22 +8,29 @@
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Connections/Connection/Connection.hpp"
 
+# include <cstdlib> // exit, DELETE
+
 namespace Http
 {
 
-void
+int
 Connection::mf_read(const Ws::fd fd)
 {
-    //std::cout << "buffer before read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
+    std::cout << "buffer before read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
 
     if (m_transaction.request.isCompleted() || m_transaction.request.isError())
-        return ;
+    {
+        std::cout << "request is completed, read no more\n";
+        return (1);
+    }
 
-    m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
-
+    int readBytes = m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
+        
     std::cout << "buffer after read: " << m_readBuffer.size() << "\n\n" <<  m_readBuffer.view() << std::endl;
 
-    m_transaction.request.parse(m_readBuffer);
+    m_readBuffer.truncatePush(m_transaction.request.parse(m_readBuffer));
+
+    return (readBytes);
 }
 
 
@@ -42,7 +49,13 @@ Connection::ReadWrite()
     }
 
     if (triggeredEvents & Events::Monitor::READ)
-        mf_read(sockfd);
+    {
+        if (!mf_read(sockfd))
+        {
+            closeConnection();
+            return ;
+        }
+    }
 
     // write
     if (!(triggeredEvents & Events::Monitor::WRITE))

@@ -21,7 +21,7 @@ namespace Http
         writeBuffer.push("Content-Length: ", 16);
         writeBuffer.push(BufferView(StringUtils::to_string(m_file.size())));
         writeBuffer.push("\r\n", 2);
-        writeBuffer.push("Content-Type: text/html\r\n", 24);
+        writeBuffer.push("Content-Type: text/html\r\n", 25);
         writeBuffer.push("Connection: close\r\n", 19);
         writeBuffer.push("\r\n", 2);
 
