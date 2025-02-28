@@ -25,33 +25,16 @@ std::map<std::string, std::string > g_mockMsgBody;
 
 namespace Http
 {
-	Response::Response(ServerContext& context):
-	m_context			(context),
-	m_connAddress		(NULL),
-	m_responseData		(),
-	m_status			(Http::ResponseStatus::WAITING),
-	m_fillFunction		(&Response::mf_fillNothingToSend),
-	m_file				(),
-	m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
-
-	Response::~Response() { reset();}
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		//std::cout << "\t\tResponse received header data" << std::endl;
 		m_responseData.requestData = &data;
+		m_processFunction = &Response::mf_processBodyUpload;
 	}
 
 	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
-		//std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
-
-		const std::string& targetFile = m_responseData.requestData->multipart_Filename;
-		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())
-			g_mockMsgBody[targetFile] = "";
-		g_mockMsgBody[targetFile].append(view.data(), view.size());
-
-		return (BufferView()); // consumes all
+		return ((this->*m_processFunction)(view));
 	}
 
 
@@ -74,13 +57,5 @@ namespace Http
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)
 	{(void)addr;}
-
-	// private copy/assignment
-	Response::Response(const Response& other) :
-		m_context(other.m_context),
-		m_cgiGateway((*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI)))) {}
-
-	Response&
-	Response::operator=(const Response& other) { (void)other; return (*this);}
 
 }

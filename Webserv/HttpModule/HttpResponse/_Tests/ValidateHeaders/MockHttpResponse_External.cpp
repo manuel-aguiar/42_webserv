@@ -19,18 +19,7 @@ int		g_requestStatus = Http::Status::OK;
 
 namespace Http
 {
-	Response::Response(ServerContext& context):
-		m_context			(context),
-		m_connAddress		(NULL),
-		m_responseData		(),
-		m_status			(Http::ResponseStatus::WAITING),
-		m_fillFunction		(&Response::mf_fillNothingToSend),
-		m_processFunction	(&Response::mf_processBodyNone),
-		m_staticReadCounter	(0),
-		m_file				(),
-		m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
 
-	Response::~Response() { reset();}
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
@@ -84,12 +73,5 @@ namespace Http
 		m_connAddress = &addr;
 	}
 
-	// private copy/assignment
-	Response::Response(const Response& other) :
-		m_context(other.m_context),
-		m_cgiGateway((*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI)))) {}
-
-	Response&
-	Response::operator=(const Response& other) { (void)other; return (*this);}
 
 }
