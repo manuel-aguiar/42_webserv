@@ -35,12 +35,7 @@ namespace Http
 		}
 
 		// Find Location
-		m_responseData.serverLocation = mf_findLocation(m_responseData);
-
-		if (m_responseData.serverLocation != NULL)
-			std::cout << "Location found: " << m_responseData.serverLocation->getPath() << std::endl;
-		else
-			std::cout << "No location found" << std::endl;
+		mf_findLocation(m_responseData);
 
 		// Check Request Method Permission (No location, no method check. Everything goes!)
 		if (m_responseData.serverLocation != NULL
@@ -77,13 +72,9 @@ namespace Http
 			m_responseData.targetPath += m_responseData.serverLocation->getIndex();
 		}
 
-		std::cout << "Target path: " << m_responseData.targetPath << std::endl;
-
 		// Check resource (exists, extension)
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
-
-		std::cout << "Target type: " << m_responseData.targetType << std::endl;
 
 		switch (m_responseData.targetType)
 		{
