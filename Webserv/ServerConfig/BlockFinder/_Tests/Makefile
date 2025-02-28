@@ -32,6 +32,7 @@ SRCS_COMMON			=	$(SUBJECT_PATH)/BlockFinder.cpp \
 						$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 						$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 						$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+						$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
 						$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
 
 						
@@ -63,7 +64,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 -include $(DEPS_COMMON) $(DEPS_DEBUG) $(DEPS_TEST)
 
 clean_objs:
-	rm -f $(OBJS)
+	rm -f $(OBJS) *vgcore*
 
 clean: clean_objs
 	rm -f $(NAME)

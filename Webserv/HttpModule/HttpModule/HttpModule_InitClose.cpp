@@ -31,6 +31,7 @@ void    logConnection(Globals& globals, Conn::Connection& connection)
                             + std::string(ipListen) + ":" 
                             + StringUtils::to_string(portListen);
     globals.logStatus(message);
+    std::cout << message << std::endl;
 }
 
 namespace Http

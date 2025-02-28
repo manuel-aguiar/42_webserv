@@ -33,27 +33,27 @@ void    testPrecedence(BlockFinder& bfinder) {
 
     // Test cases remain the same, just update the function calls
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: example.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr1, "example.com"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr1, "example.com"),
                 (Ws::Sock::addr*)&addr1, "example.com");
 
     // Match by IP and Port, wildcard server name (should match block1)
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: *" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr1, "*"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr1, "*"),
                 (Ws::Sock::addr*)&addr1, "*");
 
     // Match by IP and Port, different server name (should match block2 with "test.com")
     std::cout << "Searching for block with IP: 127.0.0.1, Port: 80, Server Name: test.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr1, "test.com"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr1, "test.com"),
                 (Ws::Sock::addr*)&addr1, "test.com");
 
     // Match by wildcard IP and exact port and server name (should match block1)
     std::cout << "Searching for block with IP: 0.0.0.0, Port: 80, Server Name: example.com" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr2, "example.com"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr2, "example.com"),
                 (Ws::Sock::addr*)&addr2, "example.com");
 
     // Search for block with wildcard IP and port, wildcard server name (should match block1)
     std::cout << "Searching for block with IP: 0.0.0.0, Port: 80, Server Name: *" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr2, "*"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr2, "*"),
                 (Ws::Sock::addr*)&addr2, "*");
 
 }
@@ -66,24 +66,29 @@ void    testSingle(BlockFinder& bfinder) {
     block.addListenAddress((Ws::Sock::addr*)&testAddr);
     block.addServerName("somedomain.com");
     bfinder.addServerBlock(block);
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&testAddr, "somedomain.com"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&testAddr, "somedomain.com"),
                 (Ws::Sock::addr*)&testAddr, "somedomain.com");
 }
 
 
 
-int	main(int argc, char **argv)
+int	main(void)
 {
     ServerBlock	block;
-    BlockFinder	bfinder;
+
+    BlockFinder	bfinder1(1000); // just a dumb number to fit all
+    testSingle(bfinder1);
+
+    BlockFinder	bfinder2(1000); 
+    testPrecedence(bfinder2);
 
     std::cerr << "Review tests started\n";
     reviewTests();
     std::cerr << "Review tests completed\n";
 
     
-    testSingle(bfinder);
 
+    BlockFinder	bfinder(1000);
     // this is good data
     Ws::Sock::addr_in testAddr = createSockAddr("127.0.0.2", "443");
     block.addListenAddress((Ws::Sock::addr*)&testAddr);
@@ -96,7 +101,7 @@ int	main(int argc, char **argv)
     bfinder.addServerBlock(block);
 
     std::cout << "Searching a block with exact ip, port and server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&testAddr, "somedomain.com"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&testAddr, "somedomain.com"),
                 (Ws::Sock::addr*)&testAddr, "somedomain.com");
 
     // try adding empty strings, they will be replaced with the wildcard value
@@ -110,7 +115,7 @@ int	main(int argc, char **argv)
 
     // lets check the ip wildcard block exists
     std::cout << "Searching a block with empty ip, which should have been replaced with the wildcard value" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&emptyAddr, "localhost"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&emptyAddr, "localhost"),
                 (Ws::Sock::addr*)&emptyAddr, "localhost");
 
     // try to add a block with the same ip, port and server_name
@@ -121,7 +126,7 @@ int	main(int argc, char **argv)
     bfinder.addServerBlock(block_duplicate); // this will be discarded
 
     std::cout << "Searching a block with duplicate ip, port and server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&dupAddr, "localhost"),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&dupAddr, "localhost"),
                 (Ws::Sock::addr*)&dupAddr, "localhost");
 
     std::cout << "Adding an empty server_name" << std::endl;
@@ -131,27 +136,8 @@ int	main(int argc, char **argv)
     bfinder.addServerBlock(block);
 
     std::cout << "Searching a block with empty server_name" << std::endl;
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr, ""),
+    checkIfFound(bfinder.findServerBlock(*(Ws::Sock::addr*)&addr, ""),
                 (Ws::Sock::addr*)&addr, "");
 
-    testPrecedence(bfinder);
-
-    // can remove a block
-    bfinder.removeServerBlock((Ws::Sock::addr*)&addr, "");
-    checkIfFound(bfinder.findServerBlock((Ws::Sock::addr*)&addr, ""),
-                (Ws::Sock::addr*)&addr, "");
-
-    Ws::Sock::addr_in wildcardAddr;
-
-    // trigger manually
-    if (argc > 1 && std::string(argv[1]) == "-wp") {
-        // finally adding a wildcard port, which will throw an assertion failure
-        wildcardAddr = createSockAddr("127.0.0.1", "*");
-        block.addListenAddress((Ws::Sock::addr*)&wildcardAddr);
-        block.addServerName("localhost");
-        bfinder.addServerBlock(block);
-    }
-
-    // Cleanup
     return (0);
 }

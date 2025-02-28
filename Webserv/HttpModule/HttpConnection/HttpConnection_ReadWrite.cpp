@@ -21,7 +21,7 @@ Connection::mf_read(const Ws::fd fd)
 
     m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
 
-    //std::cout << "buffer after read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
+    std::cout << "buffer after read: " << m_readBuffer.size() << "\n\n" <<  m_readBuffer.view() << std::endl;
 
     m_transaction.request.parse(m_readBuffer);
 }
