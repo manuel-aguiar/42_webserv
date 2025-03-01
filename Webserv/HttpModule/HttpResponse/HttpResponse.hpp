@@ -58,6 +58,7 @@ namespace Http
 			void						mf_assembleTargetPath();
 			std::string					mf_getCurrentDate();
 
+			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 

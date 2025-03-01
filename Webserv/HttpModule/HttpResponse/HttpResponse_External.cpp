@@ -47,7 +47,7 @@ namespace Http
 
 				break ;
 			case ResponseData::REDIRECT:
-				// Implement
+				m_fillFunctionBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING:
 				DirectoryListing(m_responseData.targetPath);
