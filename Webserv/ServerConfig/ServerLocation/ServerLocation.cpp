@@ -279,7 +279,7 @@ void		ServerLocation::setReturn(const std::string &value)
 		throw (std::invalid_argument("code or url is empty"));
 	if (!Validation::isNumber(code))
 		throw (std::invalid_argument("code is not a valid number: " + code));
-	long long codeLong = StringUtils::stoull(code);
+	size_t codeLong = StringUtils::stoull(code);
 	if (codeLong < 300 || codeLong > 399)
 		throw (std::invalid_argument("Redirection code must be a value between 300 and 399"));
 	m_return = std::make_pair(static_cast<int>(codeLong), url);
