@@ -178,7 +178,7 @@ namespace Http
     Http::ResponseStatus::Type
 	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
-		// probably ask response to send response based on the error status code
+		// prepare the error response with the correct page here
         std::string codeStr = StringUtils::to_string(m_statusCode);
 
 		writeBuffer.push("HTTP/1.1 ", 9);
