@@ -13,7 +13,10 @@
 #include "../../../Events/Manager/Manager.hpp"
 #include "../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
 #include "../../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../../SignalHandler/SignalHandler.hpp"
 #include "../../../../Toolkit/TestHelpers/TestHelpers.h"
+
+# include <signal.h>
 
 void invalidScript(int& testNumber)
 {
@@ -22,7 +25,9 @@ void invalidScript(int& testNumber)
 	Globals 				globals(NULL, NULL, NULL, NULL);
 	Events::Manager 		eventManager(30, globals);
 	Cgi::Module 			cgi(10, 100, 5000, eventManager, globals);
-	
+
+	g_SignalHandler.ignoreSignal(SIGPIPE, NULL);
+
 	context.setAddonLayer(Ws::AddonLayer::CGI, &cgi);
 	
 	try
@@ -48,7 +53,7 @@ void invalidScript(int& testNumber)
 
 		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
 		
-		cgiGateway.sendHttpBody(BufferView());
+		BufferView mustSend = cgiGateway.sendHttpBody(BufferView("adsghasgasgasgasgasgasgasgasgasgasg"));
 
 		Buffer<5000> readBuffer;
 
@@ -57,7 +62,7 @@ void invalidScript(int& testNumber)
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
-
+			mustSend = cgiGateway.sendHttpBody(mustSend);
 			if (eventManager.getMonitoringCount() == 0)
 				break ;
 		}
@@ -105,7 +110,8 @@ void phpCgi_validScript(int& testNumber)
 
 		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
 		
-		cgiGateway.sendHttpBody(BufferView());
+		
+		cgiGateway.sendHttpBody(BufferView("some stupid message body that must be sent hurray"));
 
 		Buffer<5000> readBuffer;
 
@@ -114,7 +120,7 @@ void phpCgi_validScript(int& testNumber)
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
-
+			cgiGateway.sendHttpBody(BufferView()); // EOF
 			if (eventManager.getMonitoringCount() == 0)
 				break ;
 		}
@@ -162,7 +168,7 @@ void php_validScript(int& testNumber)
 
 		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
 		
-		cgiGateway.sendHttpBody(BufferView());
+		
 
 		Buffer<5000> readBuffer;
 
@@ -171,6 +177,9 @@ void php_validScript(int& testNumber)
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
+
+			cgiGateway.sendHttpBody(BufferView("message bodiiiiiiii nobody cares about this but yoyoyoyoyoyo"));
+			cgiGateway.sendHttpBody(BufferView()); //EOF, will be ignored hereafter
 
 			if (eventManager.getMonitoringCount() == 0)
 				break ;
@@ -219,7 +228,7 @@ void py_validScript(int& testNumber)
 
 		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
 		
-		cgiGateway.sendHttpBody(BufferView());
+		cgiGateway.sendHttpBody(BufferView("somestupidmessagebodythatmustbesent"));
 
 		Buffer<5000> readBuffer;
 
@@ -228,6 +237,8 @@ void py_validScript(int& testNumber)
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
+
+			cgiGateway.sendHttpBody(BufferView()); // EOF
 
 			if (eventManager.getMonitoringCount() == 0)
 				break ;

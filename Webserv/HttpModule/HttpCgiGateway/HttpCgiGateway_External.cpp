@@ -33,7 +33,11 @@ namespace Http
 	{
 		// still processing body, can't start writing the response yet
 		if (m_processHttpBody != &CgiGateway::mf_HttpBodyNone)
+		{
+			//std::cout << "receiving body, waiting" << std::endl;
 			return (Http::ResponseStatus::WAITING);
+		}
+		//std::cout << "can start writing" << std::endl;
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
 

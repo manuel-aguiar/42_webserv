@@ -37,6 +37,7 @@ namespace Http
 		
 		if (view.size() == 0)
         {
+            //std::cout << "received EOF, sent all" << std::endl;
             m_processHttpBody = &CgiGateway::mf_HttpBodyNone;
 			return (BufferView());
         }
@@ -44,6 +45,14 @@ namespace Http
 		if (!m_canWrite)
 			return (view);
 		
+        // received fd_none, write closed, ignore the rest of the body
+        if (m_writeFd == Ws::FD_NONE)
+        {
+            //std::cout << "write closed, nothieng to send" << std::endl;
+            m_processHttpBody = &CgiGateway::mf_HttpBodyIgnore;
+			return (BufferView());
+        }
+
 		int bytesWritten = ::write(m_writeFd, view.data(), view.size());
 
         // process closed the pipe since we checked, ignore the rest of the body

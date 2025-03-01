@@ -125,7 +125,7 @@ void	Worker::mf_writeScript()
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
 	{
 		// trick.... tell the user to write, they fail, and start ignoring
-		(m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), m_writeEvent->getFd());
+		(m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 		goto disableWriteEvent;
 	}
 	

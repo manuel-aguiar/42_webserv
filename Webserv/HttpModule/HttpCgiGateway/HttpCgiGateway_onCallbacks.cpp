@@ -63,7 +63,6 @@ namespace Http
 	{
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
-        //std::cout << "Received headers, status code: " << m_statusCode << std::endl;
 		if (!checkForbiddenHeaders(headers.getHeaders()))
 		{
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
