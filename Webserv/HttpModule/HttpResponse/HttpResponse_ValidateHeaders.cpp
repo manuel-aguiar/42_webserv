@@ -50,31 +50,15 @@ namespace Http
 
 
 		// Assemble target path
-		// ROOT MUST BE DIRECTORY & not end with '/'
-
-		std::string targetPathNoIndex;
-
-		if (m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty()) 
-			m_responseData.targetPath = m_responseData.serverBlock->getRoot();
-		else
-			m_responseData.targetPath = m_responseData.serverLocation->getRoot();
-
-		if (*m_responseData.targetPath.rbegin() == '/')
-			m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
-
-		m_responseData.targetPath += m_responseData.requestData->path;
-
-		if (m_responseData.serverLocation != NULL
-			&& *m_responseData.requestData->path.rbegin() == '/'
-			&& !m_responseData.serverLocation->getIndex().empty()) 
-		{
-			targetPathNoIndex = m_responseData.targetPath;
-			m_responseData.targetPath += m_responseData.serverLocation->getIndex();
-		}
-
+        // ROOT MUST BE DIRECTORY & not end with '/'
+		// Assemble target path using alias behavior
+		mf_assembleTargetPath();
+		
 		// Check resource (exists, extension)
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
+		
+		std::cout << "Target path: " << m_responseData.targetPath << std::endl;
 
 		switch (m_responseData.targetType)
 		{
@@ -119,7 +103,7 @@ namespace Http
 					&& m_responseData.requestData->method == "GET"
 					&& m_responseData.serverLocation->getAutoIndex() == 1)
 				{
-					m_responseData.targetPath = targetPathNoIndex;
+					m_responseData.targetPath = m_responseData.targetPath.substr(0, m_responseData.targetPath.length() - m_responseData.serverLocation->getIndex().length());
 					m_responseData.requestStatus = Http::Status::OK; 
 					break ;
 				}

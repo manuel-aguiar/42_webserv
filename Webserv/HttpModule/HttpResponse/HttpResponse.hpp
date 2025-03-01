@@ -54,8 +54,7 @@ namespace Http
 			bool						mf_validateHeaders();
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
-
-
+			void						mf_assembleTargetPath();
 
 			void						mf_generateResponse(int statusCode);
 			std::string					mf_generateStatusLine(int statusCode);

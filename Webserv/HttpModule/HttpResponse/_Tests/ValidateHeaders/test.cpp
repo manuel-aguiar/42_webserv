@@ -539,6 +539,35 @@ void test_simpleRequests(int &testNumber)
 		}
 	}
 
+	/////////////////////////////////////////////////////
+
+	// Edge Case - No location
+	TEST_INTRO(testNumber++);
+	{
+		Http::Request	request(serverContext);
+		Http::Response	response(serverContext);
+		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		request.setResponse(response);
+
+		Buffer<1024> buffer;
+		
+		// TESTED Request Parameters
+		block1.accessLocations().clear();
+
+		buffer.push("GET /index.html HTTP/1.1\r\nHost: example.com\r\n\r\n");
+		
+		request.parse(buffer);
+
+		try {
+			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			TEST_PASSED_MSG("Edge Case - No location");
+		}
+		catch(const std::exception& e) {
+			TEST_FAILED_MSG(e.what());
+		}
+	}
+
 }
 
 void test_complexLoctaions(int &testNumber)
@@ -571,7 +600,7 @@ void test_complexLoctaions(int &testNumber)
 	// Location /three
 	block1.accessLocations().push_back(ServerLocation());
 	block1.accessLocations().back().setPath("/three");
-	block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles/one/two");
+	block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles/one/two/three/four");
 	block1.accessLocations().back().setAutoindex("1");
 	block1.accessLocations().back().addMethod("GET");
 	block1.accessLocations().back().setIndex("file.txt");
@@ -579,7 +608,7 @@ void test_complexLoctaions(int &testNumber)
 	// Location /three/four
 	block1.accessLocations().push_back(ServerLocation());
 	block1.accessLocations().back().setPath("/three/four");
-	block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles/one/two");
+	block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles/one/two/three/four");
 	block1.accessLocations().back().setAutoindex("1");
 	block1.accessLocations().back().addMethod("GET");
 	block1.accessLocations().back().setIndex("nonexistent.txt");
@@ -615,7 +644,7 @@ void test_complexLoctaions(int &testNumber)
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
 			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
-			TEST_PASSED_MSG("Html file GET request (only host header)");
+			TEST_PASSED_MSG("GET request to /three");
 		}
 		catch(const std::exception& e) {
 			TEST_FAILED_MSG(e.what());
@@ -643,7 +672,7 @@ void test_complexLoctaions(int &testNumber)
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
 			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
-			TEST_PASSED_MSG("Html file GET request (only host header)");
+			TEST_PASSED_MSG("GET request to /three/four/file.txt");
 		}
 		catch(const std::exception& e) {
 			TEST_FAILED_MSG(e.what());
@@ -664,7 +693,7 @@ int main()
 
 	test_simpleRequests(testNumber);
 	test_complexLoctaions(testNumber);
-
+	
 	TEST_FOOTER;
 
 	return 0;
