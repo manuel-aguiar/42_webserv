@@ -119,3 +119,18 @@ StringUtils::move(std::string& dest, std::string& src)
 	dest.swap(src);
 	src.clear();
 }
+
+// Extracts the file extension from a path
+std::string
+StringUtils::extractFileExtension(const std::string& path)
+{
+	size_t lastSlash = path.find_last_of("/\\");
+	size_t lastDot = path.rfind('.');
+
+	if (lastDot == std::string::npos || 
+		(lastSlash != std::string::npos && lastDot < lastSlash) ||
+		lastDot == path.length() - 1)
+		return ("");
+
+	return (path.substr(lastDot));
+}
