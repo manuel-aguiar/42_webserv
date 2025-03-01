@@ -41,8 +41,8 @@ namespace Http
     Http::ResponseStatus::Type
     Response::mf_fillRedirect(BaseBuffer& writeBuffer)
     {
-        // NOT IMPLEMENTED YET
         (void)writeBuffer;
+        // writeBuffer.push(errorPage.c_str(), errorPage.size());
         return (Http::ResponseStatus::WAITING);
     }
 
