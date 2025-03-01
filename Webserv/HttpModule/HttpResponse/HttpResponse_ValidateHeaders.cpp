@@ -62,8 +62,6 @@ namespace Http
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
 		
-		std::cout << "Target path: " << m_responseData.targetPath << std::endl;
-
 		switch (m_responseData.targetType)
 		{
 			case FilesUtils::DIRECTORY:
