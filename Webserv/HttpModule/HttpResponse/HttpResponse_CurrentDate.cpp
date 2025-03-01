@@ -2,9 +2,12 @@
 # include <sstream>
 # include <iomanip>
 # include <ctime>
+# include "HttpResponse.hpp"
 
-std::string getCurrentDate()
+namespace Http
 {
+	std::string Response::mf_getCurrentDate()
+	{
 	// Get current time
 	time_t rawTime;
 	std::time(&rawTime);
@@ -26,5 +29,6 @@ std::string getCurrentDate()
 			<< std::setw(2) << std::setfill('0') << gmtTime->tm_min << ":"
 			<< std::setw(2) << std::setfill('0') << gmtTime->tm_sec << " GMT";
 
-	return (dateStream.str());
+		return (dateStream.str());
+	}
 }

@@ -32,8 +32,12 @@ namespace Http
 		{
 			m_file.close();
 
-			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK FILE
+			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK 
 			
+
+			m_fillFunction = &Response::mf_fillResponseLine;
+			m_processFunction = &Response::mf_processBodyNone;
+
 			return (view);
 		}
 
