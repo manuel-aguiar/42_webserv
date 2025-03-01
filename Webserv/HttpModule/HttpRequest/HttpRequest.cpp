@@ -266,8 +266,10 @@ void Request::mf_prepareBodyParser()
 	if (contentLength == m_data.headers.end()
 	&& transferEncoding == m_data.headers.end())
 	{
-		if (m_data.method == "POST") {
-			return mf_handleExitFailure(Http::Status::LENGTH_REQUIRED);
+		if (m_data.method == "POST")
+		{
+			mf_parseBodyExitError(Http::Status::LENGTH_REQUIRED);
+			return ;
 		}
 
 		m_parsingState = COMPLETED;

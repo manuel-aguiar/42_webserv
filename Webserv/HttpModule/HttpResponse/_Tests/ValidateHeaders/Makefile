@@ -44,9 +44,15 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_External.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_onCallbacks.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_ProcessHttpBody.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Helpers.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
+								\
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
 								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
@@ -151,7 +157,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 
 clean:
 	@echo "$(TAG) Cleaning object files."
-	@rm -rf $(OBJ_PATH)
+	@rm -rf *vgcore*
 
 fclean: clean
 	@echo "$(TAG) Full clean."

@@ -173,7 +173,6 @@ namespace Http
 		std::string                         targetPath;
 		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
-		std::string                         targetExtension;
 
 		bool                                closeAfterSending;
 
