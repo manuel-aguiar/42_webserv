@@ -132,7 +132,7 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	if (index == -1)
 		return (Http::Status::OK);							// header not in the interest list, ignore and return
 
-	m_data.headers[key.to_string()] = value.to_string();			// dangerous, may include null bytes.........
+	m_data.headers[StringUtils::strToLower(key.to_string())] = value.to_string();			// dangerous, may include null bytes.........
 
 	return (Http::Status::OK);
 }

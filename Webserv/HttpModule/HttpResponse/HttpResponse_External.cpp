@@ -10,18 +10,72 @@
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
 
+// TODO: move to response scope
+extern std::string DirectoryListing(const std::string& path);
+
 namespace Http
 {
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
+		
+		m_fillFunction = &Response::mf_fillResponseLine;
 
-		if (data.status != Http::Status::OK || !mf_validateHeaders())
-		{
-			m_fillFunction = &Response::mf_fillErrorResponse;
-			return ;
+		if (data.status == Http::Status::OK)
+		{	
+
+			mf_validateHeaders();
+
+			// DELETE FILE
 		}
+
+		size_t contentLength = 0;
+		std::string contentType = "";
+
+		switch (m_responseData.responseType)
+		{
+			case ResponseData::CGI:
+				// m_processFunction = &Response::mf_processBodyCgi;
+				// m_fillFunction = &Response::mf_fillCgiResponse;
+				return ;
+			case ResponseData::STATIC:
+				// mf_prepareStaticFile();
+				// m_fillFunctionBody = &Response::mf_fillStaticFile;
+
+				break ;
+			case ResponseData::REDIRECT:
+				// Implement
+				break ;
+			case ResponseData::DIRECTORY_LISTING:
+				DirectoryListing(m_responseData.targetPath);
+				m_fillFunctionBody = &Response::mf_fillDirectoryListing;
+				break ;
+			case ResponseData::FILE_UPLOAD:
+				m_fillFunction = &Response::mf_fillNothingToSend;
+				m_processFunction = &Response::mf_processBodyUpload;
+				return ;
+			case ResponseData::ERROR:
+				/* fall through */
+			default:
+				m_fillFunctionBody = &Response::mf_fillErrorResponse;
+				return ;
+		}
+
+		// Common headers
+		m_responseData.headers.insert(std::make_pair("content-length", contentLength));
+		m_responseData.headers.insert(std::make_pair("content-type", contentType));
+
+
+		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
+		m_responseData.headers.insert(std::make_pair("date", mf_getCurrentDate()));
+		if (m_responseData.closeAfterSending == true)
+			m_responseData.headers.insert(std::make_pair("connection", "close"));
+		else
+			m_responseData.headers.insert(std::make_pair("connection", "keep-alive"));
+		// ETag
+		// Last-Modified
+
 
 		if (m_fillFunction == &Response::mf_fillNothingToSend)
 		{
@@ -29,7 +83,6 @@ namespace Http
 				m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
 			m_fillFunction = &Response::mf_fillErrorResponse;
 		}
-
 	}
 
 	BufferView
@@ -42,11 +95,8 @@ namespace Http
 	Http::ResponseStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
-
-		return (m_status);
 	}
 
 	Http::ResponseStatus::Type
@@ -60,12 +110,14 @@ namespace Http
 	{
 		m_responseData.reset();
 		m_fillFunction = &Response::mf_fillNothingToSend;
+		m_fillFunctionBody = NULL;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_pendingWrite.clear();
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
 		m_cgiGateway.reset();
+		m_connAddress = NULL;
 	}
 
 	void

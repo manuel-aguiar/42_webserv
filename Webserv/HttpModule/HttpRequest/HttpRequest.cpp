@@ -259,11 +259,11 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 // UNDER REVIEW
 void Request::mf_prepareBodyParser()
 {
-    RequestData::headerContainer::iterator contentLength = m_data.headers.find("Content-Length");
-    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("Transfer-Encoding");
-    RequestData::headerContainer::iterator contentType = m_data.headers.find("Content-Type");
-
-	if (contentLength == m_data.headers.end()
+    RequestData::headerContainer::iterator contentLength = m_data.headers.find("content-length");
+    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("transfer-encoding");
+    RequestData::headerContainer::iterator contentType = m_data.headers.find("content-Type");
+    
+	if (contentLength == m_data.headers.end() 
 	&& transferEncoding == m_data.headers.end())
 	{
 		if (m_data.method == "POST") {
