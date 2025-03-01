@@ -37,7 +37,7 @@ class ServerLocation
 			E_LOCATION_REDIRECTION,
 			E_LOCATION_CGI
 		}	t_locationType;
-	
+
 		ServerLocation();
 		~ServerLocation();
 		ServerLocation &operator=(const ServerLocation &other);
@@ -78,7 +78,7 @@ class ServerLocation
 										accessCgiInterpreters();
 
 	private:
-		
+
 		struct DirectiveToSetter
 		{
 			DirectiveToSetter();
@@ -102,10 +102,10 @@ class ServerLocation
 		std::string						m_type;
 		int								m_autoIndex;
 		std::set<std::string>			m_methods;
-		Config::CgiInterpreterMap		m_cgiInterpreters;
+		Config::CgiInterpreterMap		 m_cgiInterpreters;
 		std::string						m_index;
 		std::pair<int, std::string>		m_return;
-		
+
 
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here

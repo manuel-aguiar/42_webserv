@@ -24,11 +24,11 @@ namespace Http
 		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
-		
+
 		m_fillFunction = &Response::mf_fillResponseLine;
 
 		if (data.status == Http::Status::OK)
-		{	
+		{
 
 			mf_validateHeaders();
 
@@ -49,7 +49,7 @@ namespace Http
 				// m_fillFunctionBody = &Response::mf_fillStaticFile;
 				break ;
 			case ResponseData::REDIRECT:
-				// Implement
+				m_fillFunctionBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING:
 				DirectoryListing(m_responseData.targetPath);
@@ -126,7 +126,7 @@ namespace Http
 		m_file.reset();
 		if (m_cgiGateway)
 		{
-			Http::CgiInterface& cgiInterface = 
+			Http::CgiInterface& cgiInterface =
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
 			cgiInterface.releaseGateway(*m_cgiGateway);
 		}

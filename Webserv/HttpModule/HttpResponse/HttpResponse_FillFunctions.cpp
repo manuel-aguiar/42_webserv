@@ -1,5 +1,3 @@
-
-
 # include "HttpResponse.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
@@ -27,7 +25,7 @@ namespace Http
 			return (Http::ResponseStatus::WRITING);
 
 		writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
-		writeBuffer.push(StringUtils::to_string(m_responseData.requestStatus).c_str(), StringUtils::to_string(m_responseData.requestStatus).size()); // always 3 digits	
+		writeBuffer.push(StringUtils::to_string(m_responseData.requestStatus).c_str(), StringUtils::to_string(m_responseData.requestStatus).size()); // always 3 digits
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
 		writeBuffer.push("\r\n", 2);
@@ -66,7 +64,38 @@ namespace Http
 		// go to next stage
 		m_fillFunction = m_fillFunctionBody;
         return (Http::ResponseStatus::WRITING);
-    }	
+    }
+
+    Http::ResponseStatus::Type
+    Response::mf_fillRedirect(BaseBuffer& writeBuffer)
+    {
+        (void)writeBuffer;
+        std::string codeStr = StringUtils::to_string(m_responseData.requestStatus);
+        std::string redirPage = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
+
+        size_t writeSize = Http::HttpStandard::HTTP_VERSION.size()
+		+ StringUtils::to_string(m_responseData.requestStatus).size() + 1
+		+ std::strlen(getStatusMessage(m_responseData.requestStatus)) + 2
+		+ 15 + StringUtils::to_string(redirPage.size()).size() + 2
+		+ 19 + std::strlen("Content-Type: text/html\r\n") + 2
+		+ redirPage.size();
+
+        if (writeBuffer.available() < writeSize)
+            return (Http::ResponseStatus::WRITING);
+
+        writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
+        writeBuffer.push(codeStr.c_str(), codeStr.size());
+        writeBuffer.push(" ", 1);
+        writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
+        writeBuffer.push("\r\n", 2);
+        writeBuffer.push("Content-Length: ", 15);
+        writeBuffer.push(StringUtils::to_string(redirPage.size()).c_str(), StringUtils::to_string(redirPage.size()).size());
+        writeBuffer.push("\r\n", 2);
+        writeBuffer.push("Content-Type: text/html\r\n", std::strlen("Content-Type: text/html\r\n"));
+        writeBuffer.push("\r\n", 2);
+        writeBuffer.push(redirPage.c_str(), redirPage.size());
+        return (Http::ResponseStatus::FINISHED);
+    }
 
     Http::ResponseStatus::Type
     Response::mf_fillErrorResponse(BaseBuffer& writeBuffer)
