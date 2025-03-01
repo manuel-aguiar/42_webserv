@@ -43,21 +43,18 @@ namespace Http
 
 		size_t writeSize = 0;
 
-		if (m_currentHeader == NULL)
-			*m_currentHeader = m_responseData.headers.begin();
-
-		while (*m_currentHeader != m_responseData.headers.end())
+		while (m_currentHeader != m_responseData.headers.end())
 		{
-			ASSERT_EQUAL((*m_currentHeader)->first.empty() || (*m_currentHeader)->second.empty(), false, "Response::mf_fillHeaders: incomplete header");
+			ASSERT_EQUAL(m_currentHeader->first.empty() || m_currentHeader->second.empty(), false, "Response::mf_fillHeaders: incomplete header");
 
-			std::string	header = (*m_currentHeader)->first + ": " + (*m_currentHeader)->second;
+			std::string	header = m_currentHeader->first + ": " + m_currentHeader->second;
 			writeSize = header.size();
 
 			if (writeBuffer.available() < writeSize)
 				return (Http::ResponseStatus::WRITING);
 
 			writeBuffer.push(header.c_str(), header.size());
-			(*m_currentHeader)++;
+			m_currentHeader++;
 		}
 
 		// If no body, we're done

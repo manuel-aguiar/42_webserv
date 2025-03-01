@@ -101,7 +101,7 @@ namespace Http
 			size_t						m_staticReadCounter;
 			File						m_file;
 			Http::CgiGateway*			m_cgiGateway;
-			std::map<std::string, std::string>::const_iterator*	m_currentHeader; // index of the current header to be writter
+			std::map<std::string, std::string>::iterator	m_currentHeader; // index of the current header to be writter
 	};
 }
 

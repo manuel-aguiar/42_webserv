@@ -15,10 +15,13 @@
 // TODO: move to response scope
 extern std::string DirectoryListing(const std::string& path);
 
+# include <cstdlib>
+
 namespace Http
 {
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
+		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
 
@@ -44,7 +47,6 @@ namespace Http
 			case ResponseData::STATIC:
 				// mf_prepareStaticFile();
 				// m_fillFunctionBody = &Response::mf_fillStaticFile;
-
 				break ;
 			case ResponseData::REDIRECT:
 				m_fillFunctionBody = &Response::mf_fillRedirect;
