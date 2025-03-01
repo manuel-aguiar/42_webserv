@@ -32,7 +32,7 @@ namespace Http
 			Http::ResponseStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
 
-			BufferView				receiveRequestBody(const BufferView& view);
+			BufferView				sendHttpBody(const BufferView& view);
 
 			// execution after callbacks
 			void 					onCgiSuccess();
@@ -43,7 +43,8 @@ namespace Http
 
 		private:
 			
-			typedef Http::ResponseStatus::Type (CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::ResponseStatus::Type 	(CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef BufferView					(CgiGateway::*ProcessHttpBody)(const BufferView& view);
 
 			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
@@ -52,19 +53,24 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
-			Cgi::Module& 			m_module;
-			Cgi::Request* 			m_cgiRequest;
+			BufferView					mf_HttpBodyNone(const BufferView& view);
+			BufferView					mf_HttpBodyIgnore(const BufferView& view);
+			BufferView					mf_HttpBodySend(const BufferView& view);	
 
-			// Cgi IO
-			bool 					m_canRead;
-			bool 					m_canWrite;
-			Ws::fd 					m_readFd;
-			Ws::fd 					m_writeFd;
+			Cgi::Module& 				m_module;
+			Cgi::Request* 				m_cgiRequest;
 
-			int						m_statusCode;
-			const Cgi::HeaderData* 	m_headers;
-			int						m_currentHeader;
-			FillFunction			m_fillFunction;
+			bool 						m_canRead;
+			bool 						m_canWrite;
+			Ws::fd 						m_readFd;
+			Ws::fd 						m_writeFd;
+
+			int							m_statusCode;
+			const Cgi::HeaderData* 		m_headers;
+			int							m_currentHeader;
+
+			ProcessHttpBody				m_processHttpBody;
+			FillFunction				m_fillFunction;
 
 
 			CgiGateway(const CgiGateway& other);

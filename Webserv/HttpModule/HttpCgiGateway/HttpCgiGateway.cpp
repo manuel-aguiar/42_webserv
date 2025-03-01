@@ -7,6 +7,8 @@
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 # include "../../Connections/Connection/Connection.hpp"
 
+# include <unistd.h> // write
+
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool isHeaderIgnored(const Cgi::Header& header);
 extern const char* getStatusMessage(int statusCode);
@@ -23,6 +25,7 @@ namespace Http
 		, m_statusCode(-1)
 		, m_headers(NULL)
 		, m_currentHeader(-1)
+		, m_processHttpBody(&CgiGateway::mf_HttpBodyNone)
 		, m_fillFunction(&CgiGateway::mf_fillNothingToSend) {}
 
 
@@ -35,6 +38,7 @@ namespace Http
 	void
 	CgiGateway::onCgiError()
 	{
+		// must check if i am already sending data back
 		m_statusCode = Http::Status::INTERNAL_ERROR;
 		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
 	}
@@ -52,6 +56,14 @@ namespace Http
 	{
 		m_writeFd = writeFd;
 		m_canWrite = true;
+
+		// not sending anything anymore, may close write
+		if (m_processHttpBody != &CgiGateway::mf_HttpBodySend)
+		{
+			m_writeFd = Ws::FD_NONE;			
+			m_canWrite = false;
+			return (Cgi::IO::CLOSE);
+		}
 		return (Cgi::IO::CONTINUE);
 	}
 
@@ -126,11 +138,14 @@ namespace Http
 		// QUERY_STRING
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::QUERY_STRING, data.queryString);
 		
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REDIRECT_STATUS, "200");
+
 		// REQUEST_METHOD -> HttpRequestData
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REQUEST_METHOD, data.method);
 		
 		// SCRIPT_NAME	-> script
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SCRIPT_NAME, responseData.targetPath);
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SCRIPT_FILENAME, responseData.targetPath);
 
 		// SERVER_NAME -> webserv
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_NAME, "42_webserv");
@@ -176,20 +191,6 @@ namespace Http
 		m_currentHeader = -1;
 		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 	}
-
-	Http::ResponseStatus::Type
-	CgiGateway::fillWriteBuffer(BaseBuffer& writeBuffer)
-	{
-		return ((this->*m_fillFunction)(writeBuffer));
-	}
-
-	BufferView
-	CgiGateway::receiveRequestBody(const BufferView& view)
-	{
-
-		(void)view;
-		return (BufferView());
-	}	
 		
 	CgiGateway::~CgiGateway() {}
 	CgiGateway::CgiGateway(const CgiGateway& other)

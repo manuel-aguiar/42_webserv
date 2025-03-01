@@ -70,4 +70,10 @@ namespace Http
 
         return (Http::ResponseStatus::MARK_TO_CLOSE);
     }
+
+    Http::ResponseStatus::Type
+    Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
+    {
+        return (m_cgiGateway.fillWriteBuffer(writeBuffer));
+    }
 }

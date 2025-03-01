@@ -71,6 +71,9 @@ namespace Http
 			
 			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
+			
+			// call the Cgi Gateway to fill the response
+			Http::ResponseStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
 			
@@ -78,6 +81,8 @@ namespace Http
 			BufferView					mf_processBodyNone(const BufferView& receivedView);
 			BufferView					mf_processBodyUpload(const BufferView& receivedView);
 
+			// pass the body to the CgiGateway
+			BufferView					mf_processBodyCgi(const BufferView& receivedView);
 
 			// Debatable
 

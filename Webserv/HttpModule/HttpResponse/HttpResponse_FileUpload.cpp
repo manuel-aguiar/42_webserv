@@ -59,4 +59,12 @@ namespace Http
 		m_fillFunction = &Response::mf_fillErrorResponse;
 		return (view);
 	}
+
+
+	BufferView
+	Response::mf_processBodyCgi(const BufferView& view)
+	{
+		// does nothing, returns the full view back
+		return (view);
+	}
 }
