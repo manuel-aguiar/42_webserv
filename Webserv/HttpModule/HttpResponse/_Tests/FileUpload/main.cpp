@@ -32,8 +32,8 @@ void fileUpload(int& testNumber, size_t readBufSize)
 
 	try
 	{
-		Http::RequestData data;
-		Http::Response response(context);
+		Http::RequestData	data;
+		Http::Response		response(context);
 		
 		response.receiveRequestData(data);
 

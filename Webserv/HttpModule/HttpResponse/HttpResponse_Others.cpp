@@ -25,21 +25,10 @@ void				Response::mf_generateResponse(int statusCode)
 	(void)statusCode;
 }
 
-std::string			Response::mf_generateStatusLine(int statusCode)
-{
-    (void)statusCode;
-    return ("hey");
-}
-
-std::string			Response::mf_generateHeaderString()
-{
-    return ("hey");
-}
-
-std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage)
+	std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage)
 	{
 		std::stringstream ss;
-        const char* statusText = getStatusMessage(statusCode);
+		const char* statusText = getStatusMessage(statusCode);
 
 		ss << "<!DOCTYPE html>\n"
 		<< "<html>\n"

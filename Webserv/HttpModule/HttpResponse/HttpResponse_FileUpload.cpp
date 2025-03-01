@@ -32,8 +32,12 @@ namespace Http
 		{
 			m_file.close();
 
-			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK FILE
+			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK 
 			
+
+			//m_fillFunction = &Response::mf_fillResponseLine;
+			//m_processFunction = &Response::mf_processBodyNone;
+
 			return (view);
 		}
 
@@ -58,5 +62,13 @@ namespace Http
 		m_processFunction = &Response::mf_processBodyNone;
 		m_fillFunction = &Response::mf_fillErrorResponse;
 		return (view);
+	}
+
+
+	BufferView
+	Response::mf_processBodyCgi(const BufferView& view)
+	{
+		ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
+		return (m_cgiGateway->sendHttpBody(view));
 	}
 }

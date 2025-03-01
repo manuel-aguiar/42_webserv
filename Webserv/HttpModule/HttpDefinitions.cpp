@@ -36,6 +36,7 @@ namespace Http
     , headers()
     , responseType(UNDEFINED)
     , targetPath()
+    , targetExtension()
     , targetType(FilesUtils::UNDEFINED)
     , closeAfterSending(false) {}
 
@@ -48,6 +49,7 @@ namespace Http
     , headers(copy.headers)
     , responseType(copy.responseType)
     , targetPath(copy.targetPath)
+    , targetExtension(copy.targetExtension)
     , targetType(copy.targetType)
     , closeAfterSending(copy.closeAfterSending)
      {}
@@ -64,6 +66,7 @@ namespace Http
         headers = assign.headers;
         responseType = assign.responseType;
         targetPath = assign.targetPath;
+        targetExtension = assign.targetExtension;
         targetType = assign.targetType;
         closeAfterSending = assign.closeAfterSending;
 
@@ -80,6 +83,7 @@ namespace Http
         headers.clear();
         responseType = UNDEFINED;
         targetPath.clear();
+        targetExtension.clear();
         targetType = FilesUtils::UNDEFINED;
         closeAfterSending = false;
     }

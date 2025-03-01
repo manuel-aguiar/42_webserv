@@ -25,7 +25,7 @@ namespace Http
     {
         typedef enum
         {
-            _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+            _TOTAL_CODES = 37,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
 
 			// 2xx
@@ -51,6 +51,7 @@ namespace Http
             NOT_FOUND = 404,
             METHOD_NOT_ALLOWED = 405,
 			NOT_ACCEPTABLE = 406,
+			LENGTH_REQUIRED = 411,
             URI_TOO_LONG = 414,
             PRECONDITION_FAILED = 412,
             PAYLOAD_TOO_LARGE = 413,
@@ -160,18 +161,24 @@ namespace Http
 			UNDEFINED,
 			STATIC,
 			CGI,
-			REDIRECT
+			REDIRECT,
+			DIRECTORY_LISTING,
+			FILE_UPLOAD,
+			ERROR
 		}	ResponseType;
+
+		typedef std::string HeaderKey;
+		typedef std::string HeaderValue;
 
 		const Http::RequestData*	        requestData;
 		Http::Status::Number		        requestStatus;
 		const ServerBlock*			        serverBlock;
 		const ServerLocation*		        serverLocation;
-		std::map<std::string, std::string>  headers;
+		std::map<HeaderKey, HeaderValue>	headers;
 		ResponseType				        responseType;
 		std::string                         targetPath;
+		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
-		std::string                         targetExtension;
 
 		bool                                closeAfterSending;
 

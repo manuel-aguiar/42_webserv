@@ -29,6 +29,13 @@ void	Worker::mf_EventCallback_OnEmergency(Events::Subscription& event)
 	worker->mf_readEmergencyPhone();
 }
 
+void	Worker::mf_failSendHeaders()
+{
+	m_headerParser.parse(m_headerBuffer);
+	(m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), m_headerParser);
+	mf_recycleRuntimeFailure();
+}
+
 void	Worker::mf_readScript()
 {
 	int 					bytesRead = 0;
@@ -36,23 +43,28 @@ void	Worker::mf_readScript()
 	Cgi::IO::State 			state;
 
 	triggeredEvents = m_readEvent->getTriggeredEvents();
-	//std::cout << "\t\t\tread called" << std::endl;
+	////std::cout << "\t\t\tread called" << std::endl;
 
-	// if closed and there is no data
 	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
+	{
+		if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
+		{
+			//std::cout << "not finished, failing" << std::endl;
+			return (mf_failSendHeaders());
+		}
 		goto disableReadEvent;
+	}
 
-	// nothing to read, return
 	if (!(triggeredEvents & Events::Monitor::READ))
 		return ;
 
 	if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 	{
-		// headers didn't fit the buffer, abort
+		// headers didn't fit the buffer, inform the user of failure and abort
 		if (m_headerBuffer.size() == m_headerBuffer.capacity())
 		{
-			mf_recycleRuntimeFailure();
-			return ;
+			//std::cout << "buffer full failing" << std::endl;
+			return (mf_failSendHeaders());
 		}
 
 		bytesRead = m_headerBuffer.read(m_readEvent->getFd(), m_headerBuffer.size());
@@ -60,28 +72,24 @@ void	Worker::mf_readScript()
 		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readScript(): bytesread should never be -1");
 
 		if (bytesRead == 0)
-			goto disableReadEvent;
-
-		switch (m_headerParser.parse(m_headerBuffer))
 		{
-			case Cgi::HeaderData::FAIL:
+			//std::cout << "eof without headers finished, failing" << std::endl;
+			return (mf_failSendHeaders());
+		}
+
+		Cgi::HeaderData::Status headerStatus = m_headerParser.parse(m_headerBuffer);
+		//std::cout << "header status: " << headerStatus << std::endl;
+		if (headerStatus != Cgi::HeaderData::NEED_MORE_DATA)
+		{
+			state = (m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), m_headerParser);
+			if (headerStatus == Cgi::HeaderData::FAIL)
+			{
+				//std::cout << "header failed" << std::endl;
 				mf_recycleRuntimeFailure();
 				return ;
-			case Cgi::HeaderData::PASS:
-			{
-				// send status code and headers to the user
-				state = (m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), m_headerParser);
-				switch (state)
-				{
-					case Cgi::IO::CONTINUE:
-						break ;
-					case Cgi::IO::CLOSE:
-						goto disableReadEvent;
-				}
-				break ;
 			}
-			default:
-				break ;
+			if (state == Cgi::IO::CLOSE)
+				goto disableReadEvent;
 		}
 	}
 	else
@@ -89,16 +97,9 @@ void	Worker::mf_readScript()
 		// notify user that body is ready
 		// more body data to be read
 		
-
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
-		
-		switch (state)
-		{
-			case Cgi::IO::CONTINUE:
-				return ;
-			case Cgi::IO::CLOSE:
-				goto disableReadEvent;
-		}
+		if (state == Cgi::IO::CLOSE)
+			goto disableReadEvent;
 	}
 
 
@@ -116,11 +117,17 @@ void	Worker::mf_writeScript()
 	Events::Monitor::Mask 	triggeredEvents;
 	Cgi::IO::State 			state;
 	
+	////std::cout << "\t\t\twrite called" << std::endl;
+
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
 	
 	// error, disable straight away
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
+	{
+		// trick.... tell the user to write, they fail, and start ignoring
+		(m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 		goto disableWriteEvent;
+	}
 	
 	// no write, return
 	if (!(triggeredEvents & Events::Monitor::WRITE))
@@ -134,13 +141,16 @@ void	Worker::mf_writeScript()
 		case Cgi::IO::CONTINUE:
 			return ;
 		case Cgi::IO::CLOSE:
+		{
+			////std::cout << "received indication to close" << std::endl;
 			goto disableWriteEvent;
+		}
 	}
 
 	return ;
 
 	disableWriteEvent:
-
+		////std::cout << "write disabled" << std::endl;
 		mf_disableCloseMyEvent(*m_writeEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 			mf_waitChild();
@@ -172,7 +182,7 @@ void	Worker::mf_readEmergencyPhone()
 {
 	int		triggeredEvents;
 	int		bytesRead;
-
+	
 	triggeredEvents = m_EmergencyEvent->getTriggeredEvents();
 	
 	if (triggeredEvents & EPOLLIN)

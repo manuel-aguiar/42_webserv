@@ -1,4 +1,3 @@
-
 /* *********************************/
 /*                                 */
 /*   http_parse_message_body.cpp   */
@@ -39,10 +38,10 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
     const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
     BufferView thisChunkSize;
-    
+
     if (remaining.size() <= delimiter.size())
         return (remaining); // not enough to go through yet
-    
+
     size_t headerEnd = remaining.find(delimiter, m_findPivot);
     if (headerEnd == BufferView::npos)
     {
@@ -50,10 +49,10 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_bufferCapacity)
-            return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); // chunk header too long
+            return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
         return (remaining); // not enough to go through yet
     }
-    
+
     m_findPivot = 0;
 
     thisChunkSize = remaining.substr(0, headerEnd);
@@ -61,7 +60,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
     m_curChunkSize = strToInteger(thisChunkSize, 16);
     if (m_curChunkSize == -1)
-        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
+        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 
     m_curChunkPos = 0;
 
@@ -126,16 +125,16 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
         m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_bufferCapacity)
-            return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
+            return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
         return (remaining); // not enough to go through yet
     }
-    
+
     m_findPivot = 0;
-    
+
     remaining = remaining.substr(bodyEnd + delimiter.size(), remaining.size() - bodyEnd - delimiter.size()); // move view past the header
 
     if (bodyEnd != 0)
-    return (mf_parseBodyExitError(Http::Status::BAD_REQUEST)); 
+        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));  // 400 - Malformed chunk delimiter
 
     if (m_curChunkSize == 0)
     {
