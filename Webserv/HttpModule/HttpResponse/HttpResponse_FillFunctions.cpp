@@ -44,14 +44,6 @@ namespace Http
     Response::mf_fillErrorResponse(BaseBuffer& writeBuffer)
     {
 
-        // NOT IMPLEMENTED YET
-
-
-
-
-
-        (void)writeBuffer;
-
         std::string codeStr = StringUtils::to_string(m_responseData.requestStatus);
         std::string errorPage = mf_generateDefaultErrorPage(m_responseData.requestStatus, "YOU SUCK");
 

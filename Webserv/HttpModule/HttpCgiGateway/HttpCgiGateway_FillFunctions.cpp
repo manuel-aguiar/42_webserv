@@ -8,10 +8,10 @@
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool isHeaderIgnored(const Cgi::Header& header);
 extern const char* getStatusMessage(int statusCode);
+extern std::string generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
 
 namespace Http
 {
-
     Http::ResponseStatus::Type
     CgiGateway::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
@@ -178,20 +178,23 @@ namespace Http
     Http::ResponseStatus::Type
 	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
-		// prepare the error response with the correct page here
         std::string codeStr = StringUtils::to_string(m_statusCode);
+        std::string errorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");
 
 		writeBuffer.push("HTTP/1.1 ", 9);
 		writeBuffer.push(codeStr.c_str(), codeStr.size());
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_statusCode));
 		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Content-Length: 37\r\n", 19);
+		writeBuffer.push("Content-Length: ", 15);
+        writeBuffer.push(StringUtils::to_string(errorPage.size()).c_str(), StringUtils::to_string(errorPage.size()).size());
+        writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Connection: close\r\n", 19);
+        writeBuffer.push("Content-Type: text/html\r\n", std::strlen("Content-Type: text/html\r\n"));
 		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Cgi script failed to execute correctly", 37);
+        writeBuffer.push(errorPage.c_str(), errorPage.size());
 
-		return (Http::ResponseStatus::MARK_TO_CLOSE);
+        return (Http::ResponseStatus::MARK_TO_CLOSE);
 	}
 
 }

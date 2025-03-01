@@ -28,13 +28,11 @@ namespace Http
 		, m_processHttpBody(&CgiGateway::mf_HttpBodyNone)
 		, m_fillFunction(&CgiGateway::mf_fillNothingToSend) {}
 
-
 	void
 	CgiGateway::close()
 	{
-		if (!m_cgiRequest)
-			return ;
-		m_module.finishRequest(*m_cgiRequest, true);
+		if (m_cgiRequest)
+			m_module.finishRequest(*m_cgiRequest, true);
 		reset();
 	}
 
@@ -84,8 +82,6 @@ namespace Http
 		m_currentHeader = other.m_currentHeader;
 		m_processHttpBody = other.m_processHttpBody;
 		m_fillFunction = other.m_fillFunction;
-
-
 
 		return (*this);
 	}	

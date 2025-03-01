@@ -170,6 +170,7 @@ namespace Http
 		std::map<std::string, std::string>  headers;
 		ResponseType				        responseType;
 		std::string                         targetPath;
+		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
 
 		bool                                closeAfterSending;

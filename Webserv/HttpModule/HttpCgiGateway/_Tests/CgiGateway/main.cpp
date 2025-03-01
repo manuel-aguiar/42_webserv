@@ -8,6 +8,7 @@
 #include "../../../../GenericUtils/Buffer/HeapBuffer.hpp"
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
 #include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../../../ServerConfig/ServerLocation/ServerLocation.hpp"
 #include "../../../../Globals/Globals.hpp"
 #include "../../../../Events/Manager/Manager.hpp"
 #include "../../../../GenericUtils/FileDescriptor/FileDescriptor.hpp"
@@ -25,11 +26,26 @@ void test1(int& testNumber)
 
 	context.setAddonLayer(Ws::AddonLayer::CGI, &cgi);
 	
+	
+
 	try
 	{
-		Http::Response 		response(context);
+		ServerLocation 		location;
+		location.setRoot("./");
+		location.addCgiInterpreter(".php:/usr/bin/php-cgi");
+
 		Http::RequestData 	requestData;
+
+		requestData.method = "POST";
+		requestData.headers.insert("Content-Type", "application/x-www-form-urlencoded");
+
 		Http::ResponseData 	responseData;
+
+		responseData.serverLocation = &location;
+		responseData.targetPath = "Scripts/simple.php";
+		responseData.targetExtension = ".php";
+		responseData.requestData = &requestData;
+		
 
 
 		TEST_PASSED_MSG("Cgi Tests");
