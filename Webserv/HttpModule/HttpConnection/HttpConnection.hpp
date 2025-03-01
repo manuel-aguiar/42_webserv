@@ -61,7 +61,7 @@ namespace Http
 			Buffer<1024>										m_writeBuffer;
 
 
-			void												mf_read(const Ws::fd fd);
+			int													mf_read(const Ws::fd fd);
 			void												mf_write(const Ws::fd fd);
 	};
 }

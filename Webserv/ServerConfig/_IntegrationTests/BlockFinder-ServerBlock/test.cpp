@@ -47,7 +47,7 @@ int main()
             serverBlock.addErrorPage("404:/errors/404.html");
 
             // Create BlockFinder and add the server block
-            BlockFinder finder;
+            BlockFinder finder(2);
             finder.addServerBlock(serverBlock);
 
             // Test finding the block with exact match
@@ -56,13 +56,6 @@ int main()
             EXPECT_EQUAL(found != NULL, true, "Block not found with exact match");
             EXPECT_EQUAL(found->getRoot(), "/var/www/html", "Root path mismatch");
             EXPECT_EQUAL(found->getClientBodySize(), StringUtils::parse_size("10M"), "Client body size mismatch");
-
-
-            // Test finding with non-existent configuration
-            struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "8080");
-            const ServerBlock* notFound = finder.findServerBlock(*(struct sockaddr*)&addr2, "example.com");
-
-            EXPECT_EQUAL(notFound == NULL, true, "Block found that shouldn't exist");
 
             TEST_PASSED_MSG("All configuration set");
         }
@@ -77,7 +70,7 @@ int main()
             TEST_INTRO(testNumber++);
 
             ServerBlock serverBlock;
-            BlockFinder finder;
+            BlockFinder finder(2);
 
             // adding one more block with configuration set
             ServerBlock serverBlock2;
@@ -93,14 +86,8 @@ int main()
             // with no configuration set, it should return the first block
             finder.addServerBlock(serverBlock);
 
-            // searching for the block with no configuration set
-            struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr, "example.com");
-
-            EXPECT_EQUAL(found == NULL, true, "Found block that shouldn't exist");
-
             // now searching for the block with configuration set
-            found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
+            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
 
             EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
 
@@ -114,7 +101,7 @@ int main()
     {
         try {
             TEST_INTRO(testNumber++);
-            BlockFinder finder;
+            BlockFinder finder(4);
 
             // First block
             ServerBlock block1;

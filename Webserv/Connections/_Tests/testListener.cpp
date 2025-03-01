@@ -107,7 +107,7 @@ void testListener(int& testNumber)
             subs->setCallback(AccepterCallback);
             subs->setUser(&bundle);
             eventManager.startMonitoring(*subs, false);  
-            eventManager.ProcessEvents(-1);
+            eventManager.ProcessEvents(20000);
             eventManager.stopMonitoring(*subs, false);
             eventManager.returnSubscription(*subs);
         }

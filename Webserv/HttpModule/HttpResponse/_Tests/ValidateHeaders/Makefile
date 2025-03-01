@@ -37,6 +37,8 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FindLocation.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
+								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
