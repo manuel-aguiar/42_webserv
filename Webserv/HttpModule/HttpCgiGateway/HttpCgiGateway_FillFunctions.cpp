@@ -5,10 +5,10 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 
-extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
-extern bool isHeaderIgnored(const Cgi::Header& header);
-extern const char* getStatusMessage(int statusCode);
-extern std::string generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
+extern int          checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
+extern bool         isHeaderIgnored(const Cgi::Header& header);
+extern const char*  getStatusMessage(int statusCode);
+extern std::string  generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
 
 namespace Http
 {
