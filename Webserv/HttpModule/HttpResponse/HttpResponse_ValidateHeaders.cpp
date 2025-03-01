@@ -3,6 +3,7 @@
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 # include <arpa/inet.h>
 
@@ -85,6 +86,7 @@ namespace Http
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				return (false);
 			case FilesUtils::REGULAR_FILE:
+				m_responseData.targetExtension = StringUtils::extractFileExtension(m_responseData.targetPath);
 				// Check Accept header
 				acceptHeader = m_responseData.requestData->headers.find("Accept");
 
