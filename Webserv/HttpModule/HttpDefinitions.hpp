@@ -177,8 +177,8 @@ namespace Http
 		std::map<HeaderKey, HeaderValue>	headers;
 		ResponseType				        responseType;
 		std::string                         targetPath;
+		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
-		std::string                         targetExtension;
 
 		bool                                closeAfterSending;
 

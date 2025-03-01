@@ -107,7 +107,7 @@ class Worker
 		void				mf_readScript();
 		void				mf_writeScript();
 		void				mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale = true);
-
+		void				mf_failSendHeaders();
 		// Other helpers
 		void				mf_closeFd(Ws::fd& fd);
 		void				mf_childFailure();

@@ -42,6 +42,8 @@ namespace Cgi
 					REMOTE_IDENT,
 					REMOTE_USER,
 					REQUEST_METHOD,
+					REDIRECT_STATUS,
+					SCRIPT_FILENAME,
 					SCRIPT_NAME,
 					SERVER_NAME,
 					SERVER_PORT,
@@ -65,6 +67,8 @@ namespace Cgi
 			const char* const REMOTE_IDENT = "REMOTE_IDENT";
 			const char* const REMOTE_USER = "REMOTE_USER";
 			const char* const REQUEST_METHOD = "REQUEST_METHOD";
+			const char* const REDIRECT_STATUS = "REDIRECT_STATUS";
+			const char* const SCRIPT_FILENAME = "SCRIPT_FILENAME";
 			const char* const SCRIPT_NAME = "SCRIPT_NAME";
 			const char* const SERVER_NAME = "SERVER_NAME";
 			const char* const SERVER_PORT = "SERVER_PORT";

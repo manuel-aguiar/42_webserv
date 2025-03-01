@@ -15,10 +15,11 @@ namespace Http
 {
 
 Module::Module(const size_t maxConnections, ServerContext& context)
-    : m_context(context),
-      m_connections(maxConnections),
-      m_availableConnections(maxConnections),
-      m_timers(maxConnections)
+    :   m_context(context),
+        m_cgiInterface(*reinterpret_cast<Cgi::Module*>(context.getAddonLayer(Ws::AddonLayer::CGI)), maxConnections),
+        m_connections(maxConnections),
+        m_availableConnections(maxConnections),
+        m_timers(maxConnections)
 {
     // create and load connections
     for (size_t i = 0; i < maxConnections; ++i)
@@ -64,6 +65,12 @@ ServerContext&
 Module::accessServerContext()
 {
     return (m_context);
+}
+
+Http::CgiInterface&
+Module::accessCgiInterface()
+{
+    return (m_cgiInterface);
 }
 
 int 

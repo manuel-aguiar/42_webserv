@@ -47,6 +47,8 @@ ImplModule::ImplModule(const size_t workers, const size_t backlog, const size_t 
 	m_baseEnv[Cgi::Env::Enum::REMOTE_IDENT] 		= Cgi::Env::Str::REMOTE_IDENT;
 	m_baseEnv[Cgi::Env::Enum::REMOTE_USER] 			= Cgi::Env::Str::REMOTE_USER;
 	m_baseEnv[Cgi::Env::Enum::REQUEST_METHOD] 		= Cgi::Env::Str::REQUEST_METHOD;
+	m_baseEnv[Cgi::Env::Enum::REDIRECT_STATUS] 		= Cgi::Env::Str::REDIRECT_STATUS;
+	m_baseEnv[Cgi::Env::Enum::SCRIPT_FILENAME] 		= Cgi::Env::Str::SCRIPT_FILENAME;
 	m_baseEnv[Cgi::Env::Enum::SCRIPT_NAME] 			= Cgi::Env::Str::SCRIPT_NAME;
 	m_baseEnv[Cgi::Env::Enum::SERVER_NAME] 			= Cgi::Env::Str::SERVER_NAME;
 	m_baseEnv[Cgi::Env::Enum::SERVER_PORT] 			= Cgi::Env::Str::SERVER_PORT;
