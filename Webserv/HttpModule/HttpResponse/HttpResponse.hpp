@@ -41,7 +41,6 @@ namespace Http
 			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
 		private:
-
 			typedef enum
 			{
 				NONE,
