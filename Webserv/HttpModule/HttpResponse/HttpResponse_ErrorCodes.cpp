@@ -13,7 +13,7 @@ const char* getStatusMessage(int statusCode);
 */
 const char* getStatusMessage(int statusCode)
 {
-	static int			codes	[Http::Status::_TOTAL_CODES]; 
+	static int			codes	[Http::Status::_TOTAL_CODES];
 	static const char*	messages[Http::Status::_TOTAL_CODES];
 	static bool 		initialized;
 
@@ -27,20 +27,21 @@ const char* getStatusMessage(int statusCode)
 		codes[i] = Http::Status::NO_CONTENT; 						messages[i] = "No Content"; 						i++;
 		codes[i] = Http::Status::RESET_CONTENT; 					messages[i] = "Reset Content";						i++;
 		codes[i] = Http::Status::PARTIAL_CONTENT; 					messages[i] = "Partial Content"; 					i++;
-		// 3xx Redirection		
+		// 3xx Redirection
 		codes[i] = Http::Status::MULTIPLE_CHOICES; 					messages[i] = "Multiple Choices"; 					i++;
 		codes[i] = Http::Status::MOVED_PERMANENTLY; 				messages[i] = "Moved Permanently";					i++;
 		codes[i] = Http::Status::FOUND; 							messages[i] = "Found"; 								i++;
 		codes[i] = Http::Status::SEE_OTHER; 						messages[i] = "See Other"; 							i++;
-		codes[i] = Http::Status::NOT_MODIFIED; 						messages[i] = "Not Modified"; 						i++;
+		codes[i] = Http::Status::NOT_MODIFIED; 						messages[i] = "Not Modified"; 						 i++;
 		codes[i] = Http::Status::TEMPORARY_REDIRECT; 				messages[i] = "Temporary Redirect"; 				i++;
 		codes[i] = Http::Status::PERMANENT_REDIRECT; 				messages[i] = "Permanent Redirect"; 				i++;
-		// 4xx Client Errors		
+		// 4xx Client Errors
 		codes[i] = Http::Status::BAD_REQUEST; 						messages[i] = "Bad Request"; 						i++;
 		codes[i] = Http::Status::FORBIDDEN; 						messages[i] = "Forbidden"; 							i++;
 		codes[i] = Http::Status::NOT_FOUND; 						messages[i] = "Not Found"; 							i++;
 		codes[i] = Http::Status::METHOD_NOT_ALLOWED; 				messages[i] = "Method Not Allowed"; 				i++;
 		codes[i] = Http::Status::NOT_ACCEPTABLE; 					messages[i] = "Not Acceptable"; 					i++;
+		codes[i] = Http::Status::LENGTH_REQUIRED; 					messages[i] = "Length Required"; 					i++;
 		codes[i] = Http::Status::PRECONDITION_FAILED; 				messages[i] = "Precondition Failed"; 				i++;
 		codes[i] = Http::Status::PAYLOAD_TOO_LARGE; 				messages[i] = "Payload Too Large"; 					i++;
 		codes[i] = Http::Status::URI_TOO_LONG; 						messages[i] = "URI Too Long"; 						i++;
@@ -63,7 +64,7 @@ const char* getStatusMessage(int statusCode)
 		codes[i] = Http::Status::NETWORK_AUTHENTICATION_REQUIRED; 	messages[i] = "Network Authentication Required"; 	i++;
 
 		initialized = true;
-		
+
 		// size test
 		ASSERT_EQUAL(i, Http::Status::_TOTAL_CODES, "Status code array size mismatch");
 
