@@ -25,7 +25,7 @@ namespace Http
     {
         typedef enum
         {
-            _TOTAL_CODES = 36,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+            _TOTAL_CODES = 37,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
 
 			// 2xx
@@ -51,6 +51,7 @@ namespace Http
             NOT_FOUND = 404,
             METHOD_NOT_ALLOWED = 405,
 			NOT_ACCEPTABLE = 406,
+			LENGTH_REQUIRED = 411,
             URI_TOO_LONG = 414,
             PRECONDITION_FAILED = 412,
             PAYLOAD_TOO_LARGE = 413,
@@ -91,7 +92,7 @@ namespace Http
 		const std::set<std::string>& getAllowedMethods();
 	}
 
-	
+
 	namespace ResponseStatus
 	{
 		typedef enum
@@ -102,31 +103,31 @@ namespace Http
 			MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing
 		}	Type;
 	}
-	
+
 	struct RequestData
 	{
 		RequestData();
 		~RequestData();
 		RequestData(const RequestData& copy);
 		RequestData& operator=(const RequestData& assign);
-		
+
 		void reset();
-		
+
 		enum BodyType {
 			NONE,
 			REGULAR,
 			CHUNKED
 		};
-		
+
 		enum ContentType {
 			RAW,
 			MULTIPART
 		};
-		
+
 		typedef std::string HeaderKey;
 		typedef std::string HeaderValue;
 		typedef std::map<Http::RequestData::HeaderKey, Http::RequestData::HeaderValue> headerContainer;
-		
+
 		std::string							method;
 		std::string							uri;
 		std::string							path;
@@ -154,7 +155,7 @@ namespace Http
 		ResponseData& operator=(const ResponseData& assign);
 
 		void reset();
-		
+
 		typedef enum
 		{
 			UNDEFINED,
@@ -172,6 +173,7 @@ namespace Http
 		std::string                         targetPath;
 		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
+		std::string                         targetExtension;
 
 		bool                                closeAfterSending;
 

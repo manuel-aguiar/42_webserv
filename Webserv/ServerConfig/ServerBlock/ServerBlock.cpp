@@ -25,7 +25,7 @@ ServerBlock::DirectiveToSetter::DirectiveToSetter() :
 	map["timeout_inter_send"]	= &ServerBlock::setTimeoutInterSend;
 	map["timeout_inter_receive"]= &ServerBlock::setTimeoutInterReceive;
 	map["timeout_keep_alive"]	= &ServerBlock::setTimeoutKeepAlive;
-	map["root"]					= &ServerBlock::setRootPath;
+	map["root"]					= &ServerBlock::setRoot;
 	map["error_pages"]			= &ServerBlock::addErrorPage;
 }
 
@@ -77,7 +77,7 @@ ServerBlock::ServerBlock(const ServerBlock &other) :
 	m_locations					(other.m_locations),
 	m_mapLocations				(other.m_mapLocations) {}
 
-void	ServerBlock::setRootPath(const std::string &value)
+void	ServerBlock::setRoot(const std::string &value)
 {
 	m_root = value;
 }
@@ -303,7 +303,7 @@ std::map<std::string, const ServerLocation*>&	ServerBlock::accessMappedLocations
 void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
 	if (m_root.empty())
-		setRootPath(defaultConfig.server_Root);
+		setRoot(defaultConfig.server_Root);
 }
 
 bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)

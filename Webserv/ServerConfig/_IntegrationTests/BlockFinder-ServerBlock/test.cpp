@@ -41,12 +41,13 @@ int main()
             struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
             serverBlock.addListenAddress((struct sockaddr*)&addr);
             serverBlock.addServerName("example.com");
-            serverBlock.setRootPath("/var/www/html");
+            serverBlock.setRoot("/var/www/html");
             serverBlock.setClientBodySize("10M");
             serverBlock.setClientHeaderSize("8K");
             serverBlock.addErrorPage("404:/errors/404.html");
 
             // Create BlockFinder and add the server block
+            BlockFinder finder(2);
             BlockFinder finder(2);
             finder.addServerBlock(serverBlock);
 
@@ -71,13 +72,14 @@ int main()
 
             ServerBlock serverBlock;
             BlockFinder finder(2);
+            BlockFinder finder(2);
 
             // adding one more block with configuration set
             ServerBlock serverBlock2;
             struct sockaddr_in addr2 = createSockAddr("127.0.0.2", "1000");
             serverBlock2.addListenAddress((struct sockaddr*)&addr2);
             serverBlock2.addServerName("example-domain.com");
-            serverBlock2.setRootPath("/var/www/html");
+            serverBlock2.setRoot("/var/www/html");
             serverBlock2.setClientBodySize("10M");
             serverBlock2.setClientHeaderSize("8K");
             serverBlock2.addErrorPage("404:/errors/404.html");
@@ -87,6 +89,7 @@ int main()
             finder.addServerBlock(serverBlock);
 
             // now searching for the block with configuration set
+            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
             const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
 
             EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
@@ -102,13 +105,14 @@ int main()
         try {
             TEST_INTRO(testNumber++);
             BlockFinder finder(4);
+            BlockFinder finder(4);
 
             // First block
             ServerBlock block1;
             struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
             block1.addListenAddress((struct sockaddr*)&addr1);
             block1.addServerName("example.com");
-            block1.setRootPath("/var/www/html1");
+            block1.setRoot("/var/www/html1");
             finder.addServerBlock(block1);
 
             // Second block with same server name but different port
@@ -116,7 +120,7 @@ int main()
             struct sockaddr_in addr2 = createSockAddr("127.0.0.1", "8081");
             block2.addListenAddress((struct sockaddr*)&addr2);
             block2.addServerName("example.com");
-            block2.setRootPath("/var/www/html2");
+            block2.setRoot("/var/www/html2");
             finder.addServerBlock(block2);
 
             // Test finding each block

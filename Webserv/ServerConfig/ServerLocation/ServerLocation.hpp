@@ -1,5 +1,3 @@
-
-
 #ifndef SERVERLOCATION_HPP
 
 # define SERVERLOCATION_HPP
@@ -53,7 +51,8 @@ class ServerLocation
 		const std::string&				getType() const;
 		const Config::CgiInterpreterMap&
 										getCgiInterpreters() const;
-
+		const std::string&				getIndex() const;
+		const std::pair<int, std::string>&	getReturn() const;
 
 		void							setType(const std::string &value);
 		void							setPath(const std::string &value);
@@ -61,6 +60,8 @@ class ServerLocation
 		void							setAutoindex(const std::string &value);
 		void							addMethod(const std::string &value);
 		void							addCgiInterpreter(const std::string &value);
+		void							setIndex(const std::string &value);
+		void							setReturn(const std::string &value);
 
 		bool							fillInheritedSettings(const ServerConfig& config);
 
@@ -102,6 +103,9 @@ class ServerLocation
 		int								m_autoIndex;
 		std::set<std::string>			m_methods;
 		Config::CgiInterpreterMap		m_cgiInterpreters;
+		std::string						m_index;
+		std::pair<int, std::string>		m_return;
+		
 
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here

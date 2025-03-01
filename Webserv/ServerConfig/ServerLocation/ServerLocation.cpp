@@ -1,5 +1,3 @@
-
-
 // Own Headers
 # include "./ServerLocation.hpp"
 # include "../DefaultConfig/DefaultConfig.hpp"
@@ -11,7 +9,7 @@
 ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
 
 ServerLocation::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(6)),									// 6 magic: number of keys
+	map(std::less<std::string>(), mapPool(8)),									// 8 magic: number of keys
 	validTypes(std::less<std::string>(), Heap_ObjectPool<std::string>(3)),		// 3 magic: number of types
 	validMethods(std::less<std::string>(), Heap_ObjectPool<std::string>(3))		// 3 magic: number of methods
 {
@@ -21,6 +19,8 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 	map["auto_index"]		= &ServerLocation::setAutoindex;
 	map["methods"]			= &ServerLocation::addMethod;
 	map["cgi"]				= &ServerLocation::addCgiInterpreter;
+	map["index"]			= &ServerLocation::setIndex;
+	map["return"]			= &ServerLocation::setReturn;
 
 	validTypes.insert("regular"); 
 	validTypes.insert("redirection");
@@ -51,6 +51,8 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_autoIndex = other.m_autoIndex;
 	m_methods = other.m_methods;
 	m_cgiInterpreters = other.m_cgiInterpreters;
+	m_index = other.m_index;
+	m_return = other.m_return;
 
 	return (*this);
 }
@@ -61,7 +63,9 @@ ServerLocation::ServerLocation(const ServerLocation &other) :
 	m_type				(other.m_type),
 	m_autoIndex			(other.m_autoIndex),
 	m_methods			(other.m_methods),
-	m_cgiInterpreters	(other.m_cgiInterpreters) {}
+	m_cgiInterpreters	(other.m_cgiInterpreters),
+	m_index				(other.m_index),
+	m_return			(other.m_return) {}
 
 void	ServerLocation::addConfigValue(const std::string &key, const std::string &value)
 {
@@ -243,4 +247,38 @@ void	ServerLocation::clearMethods()
 {
 	if (!m_methods.empty())
 		m_methods.clear();
+}
+
+const std::string&	ServerLocation::getIndex() const
+{
+	return (m_index);
+}
+
+const std::pair<int, std::string>&	ServerLocation::getReturn() const
+{
+	return (m_return);
+}
+
+void		ServerLocation::setIndex(const std::string &value)
+{
+	m_index = value;
+}
+
+void		ServerLocation::setReturn(const std::string &value)
+{
+	std::string			code;
+	std::string			url;
+	size_t				separator;
+	bool				conversionError;
+
+	separator = value.find_first_of(':', 0);
+	if (separator == std::string::npos)
+		throw (std::invalid_argument("no separator \":\" found while adding return directive (code:url)"));
+	code = value.substr(0, separator);
+	url = value.substr(separator + 1);
+	if (code.empty() || url.empty())
+		throw (std::invalid_argument("code or url is empty"));
+	if (!Validation::isNumber(code) || StringUtils::stoull(code) < 100 || StringUtils::stoull(code) > 599)
+		throw (std::invalid_argument("code is not a valid number: " + code + ". It must be a value between 100 and 599"));
+	m_return = std::make_pair(StringUtils::strToInt(code, conversionError), url);
 }
