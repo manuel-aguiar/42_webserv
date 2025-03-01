@@ -35,8 +35,8 @@ namespace Http
 			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK 
 			
 
-			m_fillFunction = &Response::mf_fillResponseLine;
-			m_processFunction = &Response::mf_processBodyNone;
+			//m_fillFunction = &Response::mf_fillResponseLine;
+			//m_processFunction = &Response::mf_processBodyNone;
 
 			return (view);
 		}

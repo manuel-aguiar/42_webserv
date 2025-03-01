@@ -65,7 +65,7 @@ namespace Http
 		}
 
 		// Common headers
-		m_responseData.headers.insert(std::make_pair("content-length", contentLength));
+		m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(contentLength)));
 		m_responseData.headers.insert(std::make_pair("content-type", contentType));
 
 
