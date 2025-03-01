@@ -23,7 +23,7 @@ namespace Http
 
 		// Host header
 		std::string hostHeaderValue;
-		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator host 
+		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator host
 		= m_responseData.requestData->headers.find("Host");
 
 		if (host != m_responseData.requestData->headers.end())
@@ -32,7 +32,7 @@ namespace Http
 
 		// Find ServerBlock
 		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, hostHeaderValue);
-		
+
 		if (m_responseData.serverBlock == NULL)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
@@ -52,17 +52,19 @@ namespace Http
 		}
 
 		// Check redirection
-
+		const bool isRedirect = mf_checkRedirect();
+		if (isRedirect)
+			return (false);
 
 		// Assemble target path
         // ROOT MUST BE DIRECTORY & not end with '/'
 		// Assemble target path using alias behavior
 		mf_assembleTargetPath();
-		
+
 		// Check resource (exists, extension)
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
-		
+
 		switch (m_responseData.targetType)
 		{
 			case FilesUtils::DIRECTORY:
@@ -75,7 +77,7 @@ namespace Http
 				}
 				// Autoindex default is 0, so if we dont have a location, 403.
 				// Can we access config defaults from here?
-				if (m_responseData.serverLocation != NULL 
+				if (m_responseData.serverLocation != NULL
 					&& m_responseData.requestData->method == "GET"
 					&& m_responseData.serverLocation->getAutoIndex() == 1)
 				{
@@ -104,26 +106,26 @@ namespace Http
 				return (false);
 			case FilesUtils::NOT_EXIST:
 				//same as above
-				if (m_responseData.serverLocation != NULL 
+				if (m_responseData.serverLocation != NULL
 					&& m_responseData.requestData->method == "GET"
 					&& m_responseData.serverLocation->getAutoIndex() == 1)
 				{
 					m_responseData.targetPath = m_responseData.targetPath.substr(0, m_responseData.targetPath.length() - m_responseData.serverLocation->getIndex().length());
-					m_responseData.requestStatus = Http::Status::OK; 
+					m_responseData.requestStatus = Http::Status::OK;
 					break ;
 				}
-				/* fall through */	
+				/* fall through */
 			default:
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				return (false);
 		}
 
-		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection 
+		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
 		= m_responseData.requestData->headers.find("Connection");
 
 		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
 			m_responseData.closeAfterSending = true;
-		
+
 		return (true);
 	}
 }

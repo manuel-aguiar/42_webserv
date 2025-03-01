@@ -1,5 +1,3 @@
-
-
 # include "HttpResponse.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
@@ -34,6 +32,14 @@ namespace Http
 
     Http::ResponseStatus::Type
     Response::mf_fillBodyStream(BaseBuffer& writeBuffer)
+    {
+        // NOT IMPLEMENTED YET
+        (void)writeBuffer;
+        return (Http::ResponseStatus::WAITING);
+    }
+
+    Http::ResponseStatus::Type
+    Response::mf_fillRedirect(BaseBuffer& writeBuffer)
     {
         // NOT IMPLEMENTED YET
         (void)writeBuffer;

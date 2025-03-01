@@ -22,7 +22,7 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 	map["index"]			= &ServerLocation::setIndex;
 	map["return"]			= &ServerLocation::setReturn;
 
-	validTypes.insert("regular"); 
+	validTypes.insert("regular");
 	validTypes.insert("redirection");
 	validTypes.insert("cgi");
 
@@ -101,7 +101,7 @@ const std::string&	ServerLocation::getType() const
 	return (m_type);
 }
 
-const Config::CgiInterpreterMap&	
+const Config::CgiInterpreterMap&
 ServerLocation::getCgiInterpreters() const
 {
 	return (m_cgiInterpreters);
@@ -141,7 +141,7 @@ void		ServerLocation::setAutoindex(const std::string &value)
 void		ServerLocation::addMethod(const std::string &value)
 {
 	std::string	uppercaseStr = StringUtils::strToUpper(value);
-	
+
 	if (m_directiveToSetter.validMethods.find(uppercaseStr) == m_directiveToSetter.validMethods.end())
 		throw (std::invalid_argument("invalid method"));
 	if (m_methods.find(uppercaseStr) == m_methods.end())
@@ -167,9 +167,9 @@ void	ServerLocation::addCgiInterpreter(const std::string &value)
 
 	if (colonPos != std::string::npos)
 		path = value.substr(colonPos + 1);
-		
+
 	m_cgiInterpreters[extension] = path;
-	
+
 	return ;
 
 exitError:
@@ -191,14 +191,14 @@ bool ServerLocation::fillInheritedSettings(const ServerConfig& config)
 		serverLevel = base.find(thisInterpreter->first);
 		if (serverLevel != base.end())
 			thisInterpreter->second = serverLevel->second;
-			
+
 		else
 		{
 			std::cerr << "Error: location «" << getRoot() << "» 'cgi': no interpreter for extension '" << thisInterpreter->first << "'" << std::endl;
 			return (false);
 		}
 	}
-	return (true);	
+	return (true);
 }
 
 bool		ServerLocation::validate() const
@@ -269,7 +269,6 @@ void		ServerLocation::setReturn(const std::string &value)
 	std::string			code;
 	std::string			url;
 	size_t				separator;
-	bool				conversionError;
 
 	separator = value.find_first_of(':', 0);
 	if (separator == std::string::npos)
@@ -278,7 +277,10 @@ void		ServerLocation::setReturn(const std::string &value)
 	url = value.substr(separator + 1);
 	if (code.empty() || url.empty())
 		throw (std::invalid_argument("code or url is empty"));
-	if (!Validation::isNumber(code) || StringUtils::stoull(code) < 100 || StringUtils::stoull(code) > 599)
-		throw (std::invalid_argument("code is not a valid number: " + code + ". It must be a value between 100 and 599"));
-	m_return = std::make_pair(StringUtils::strToInt(code, conversionError), url);
+	if (!Validation::isNumber(code))
+		throw (std::invalid_argument("code is not a valid number: " + code));
+	long long codeLong = StringUtils::stoull(code);
+	if (codeLong < 300 || codeLong > 399)
+		throw (std::invalid_argument("Redirection code must be a value between 300 and 399"));
+	m_return = std::make_pair(static_cast<int>(codeLong), url);
 }

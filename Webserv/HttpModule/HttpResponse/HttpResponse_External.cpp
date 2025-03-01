@@ -19,6 +19,11 @@ namespace Http
 
 		if (data.status != Http::Status::OK || !mf_validateHeaders())
 		{
+			if (m_responseData.responseType == ResponseData::REDIRECT) {
+				m_fillFunction = &Response::mf_fillRedirect;
+				return ;
+			}
+
 			m_fillFunction = &Response::mf_fillErrorResponse;
 			return ;
 		}

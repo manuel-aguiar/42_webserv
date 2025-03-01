@@ -15,9 +15,14 @@ const char* getStatusMessage(int statusCode);
 
 namespace Http
 {
+ResponseData		Response::getResponseData() const
+{
+	return (m_responseData);
+}
+
 void				Response::mf_generateResponse(int statusCode)
 {
-    (void)statusCode;
+	(void)statusCode;
 }
 
 std::string			Response::mf_generateStatusLine(int statusCode)
@@ -102,7 +107,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		{
 			switch (statusCode)
 			{
-				// In case of CGI it will be handled differently 
+				// In case of CGI it will be handled differently
 				case Http::Status::OK:
 					if (FilesUtils::isDirectory(m_requestData->uri.c_str()))
 					{
@@ -181,7 +186,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		// Common headers
 		if (body.empty() && m_file.fd() == Ws::FD_NONE) // CGI
 			m_headers["Transfer-Encoding"] = "chunked";
-		else 
+		else
 			m_headers["Content-Length"] = StringUtils::intToStr(body.size());
 		m_headers["Date"]			= getCurrentDate();
 		m_headers["Server"] 		= SERVER_NAME_VERSION;
@@ -191,8 +196,8 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		headers = mf_generateHeaderString();
 
 		if (body.empty())
-			m_pendingWrite = statusLine + headers; // CRLF included in headers 
-		else 
+			m_pendingWrite = statusLine + headers; // CRLF included in headers
+		else
 			m_pendingWrite = statusLine + headers + body + "\r\n\r\n";
 
 		m_status = WRITING;
@@ -209,7 +214,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 	{
 		std::ostringstream								headerStream;
 		std::map<std::string, std::string>::iterator	it;
-		
+
 		for (it = m_headers.begin(); it != m_headers.end(); ++it)
 			headerStream << it->first << ": " << it->second << "\r\n";
 		headerStream << "\r\n";
