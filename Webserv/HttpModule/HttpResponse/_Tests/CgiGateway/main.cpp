@@ -28,9 +28,11 @@ void test1(int& testNumber)
 	try
 	{
 		Http::Response 		response(context);
+		Http::RequestData 	requestData;
+		Http::ResponseData 	responseData;
 
 
-		TEST_PASSED_MSG("Cgi  Tests");
+		TEST_PASSED_MSG("Cgi Tests");
 	}
 	catch(const std::exception& e)
 	{

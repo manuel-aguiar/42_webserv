@@ -27,10 +27,7 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::RequestData& data, 
-													const Conn::Connection* connection,
-													const std::string& script,
-													const std::string& interpreterPath);
+			bool					initiateRequest(const Http::ResponseData& data);
 
 			Http::ResponseStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
@@ -38,11 +35,11 @@ namespace Http
 			BufferView				receiveRequestBody(const BufferView& view);
 
 			// execution after callbacks
-			void 					onSuccess();
-			void 					onError();
-			Cgi::IO::State 			onRead(const Ws::fd readFd);
-			Cgi::IO::State 			onWrite(const Ws::fd writeFd);
-			Cgi::IO::State 			onReceiveHeaders(const Cgi::HeaderData& headers);
+			void 					onCgiSuccess();
+			void 					onCgiError();
+			Cgi::IO::State 			onCgiRead(const Ws::fd readFd);
+			Cgi::IO::State 			onCgiWrite(const Ws::fd writeFd);
+			Cgi::IO::State 			onCgiReceiveHeaders(const Cgi::HeaderData& headers);
 
 		private:
 			

@@ -27,20 +27,20 @@ namespace Http
 
 
 	void
-	CgiGateway::onSuccess()
+	CgiGateway::onCgiSuccess()
 	{
 		// dunno yet
 	}
 
 	void
-	CgiGateway::onError()
+	CgiGateway::onCgiError()
 	{
 		m_statusCode = Http::Status::INTERNAL_ERROR;
 		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
 	}
 
 	Cgi::IO::State
-	CgiGateway::onRead(const Ws::fd readFd)
+	CgiGateway::onCgiRead(const Ws::fd readFd)
 	{
 		m_readFd = readFd;
 		m_canRead = true;
@@ -48,7 +48,7 @@ namespace Http
 	}
 
 	Cgi::IO::State
-	CgiGateway::onWrite(const Ws::fd writeFd)
+	CgiGateway::onCgiWrite(const Ws::fd writeFd)
 	{
 		m_writeFd = writeFd;
 		m_canWrite = true;
@@ -56,7 +56,7 @@ namespace Http
 	}
 
 	Cgi::IO::State
-	CgiGateway::onReceiveHeaders(const Cgi::HeaderData& headers)
+	CgiGateway::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
@@ -75,11 +75,10 @@ namespace Http
 	}
 
 	bool
-	CgiGateway::initiateRequest(const Http::RequestData& data, 
-								const Conn::Connection* connection,
-								const std::string& script,
-								const std::string& interpreterPath)
+	CgiGateway::initiateRequest(const Http::ResponseData& responseData)
 	{
+		const Http::RequestData& data = *responseData.requestData;
+
 		Http::RequestData::headerContainer::const_iterator finder;
 
 		m_cgiRequest = m_module.acquireRequest();
@@ -94,13 +93,14 @@ namespace Http
 		m_cgiRequest->setReadBodyFromScript_Callback(&CgiHandlers::onRead);
 		m_cgiRequest->setReceiveStatusHeaders_Callback(&CgiHandlers::onReceiveHeaders);
 
-		m_cgiRequest->setInterpreterPath(interpreterPath); // hardcoded for now
+		// looking at location to find the interpreter
+		// m_cgiRequest->setInterpreterPath(interpreterPath); // hardcoded for now
 
 
 		// CONTENT-LENGTH
 		finder = data.headers.find("Content-Length");
 		if (finder != data.headers.end())
-			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_TYPE, finder->second);
+			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, finder->second);
 
 		// CONTENT-TYPE
 		finder = data.headers.find("Content-Type");
@@ -111,11 +111,11 @@ namespace Http
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::GATEWAY_INTERFACE, "CGI/1.1");
 		
 		// REMOTE_ADDR -> from the connection
-		if (connection)
-		{
-			m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
-				StringUtils::to_string(::ntohl(connection->info_getPeerInfo().addr.sockaddr_in.sin_addr.s_addr)));
-		}
+		//if (connection)
+		//{
+		//	m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
+		//		StringUtils::to_string(::ntohl(connection->info_getPeerInfo().addr.sockaddr_in.sin_addr.s_addr)));
+		//}
 
 		// PATH_INFO
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::PATH_INFO, data.path);
@@ -130,17 +130,17 @@ namespace Http
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REQUEST_METHOD, data.method);
 		
 		// SCRIPT_NAME	-> script
-		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SCRIPT_NAME, script);
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SCRIPT_NAME, responseData.targetPath);
 
 		// SERVER_NAME -> webserv
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_NAME, "42_webserv");
 
 		// SERVER_PORT -> from connection
-		if (connection)
-		{
-			m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
-				StringUtils::to_string(::ntohs(connection->info_getPeerInfo().addr.sockaddr_in.sin_port)));
-		}
+		//if (connection)
+		//{
+		//	m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PORT, 
+		//		StringUtils::to_string(::ntohs(connection->info_getPeerInfo().addr.sockaddr_in.sin_port)));
+		//}
 
 		// SERVER_PROTOCOL HTTP/1.1
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_PROTOCOL, "HTTP/1.1");
