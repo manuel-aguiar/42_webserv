@@ -6,6 +6,7 @@
 namespace Http
 {
 
+
     Http::ResponseStatus::Type
 	Response::mf_prepareStaticFile(BaseBuffer& writeBuffer)
     {
@@ -17,6 +18,16 @@ namespace Http
             m_fillFunction = &Response::mf_fillErrorResponse;
             return (Http::ResponseStatus::FINISHED);
         }
+        //writeBuffer.push("HTTP/1.1 200 OK\r\n", 17);
+        //writeBuffer.push("Content-Length: ", 16);
+        //writeBuffer.push(BufferView(StringUtils::to_string(m_file.size())));
+        //writeBuffer.push("\r\n", 2);
+        //writeBuffer.push("Content-Type: text/html\r\n", 25);
+		// TODO: add content-type	
+        //writeBuffer.push("Connection: close\r\n", 19);
+
+		// End of headers
+        //writeBuffer.push("\r\n", 2);
 
         m_fillFunction = &Response::mf_sendStaticFile;
         return (mf_sendStaticFile(writeBuffer));

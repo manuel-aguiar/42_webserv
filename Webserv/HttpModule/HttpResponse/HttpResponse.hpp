@@ -54,10 +54,8 @@ namespace Http
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
 			void						mf_assembleTargetPath();
+			std::string					mf_getCurrentDate();
 
-			void						mf_generateResponse(int statusCode);
-			std::string					mf_generateStatusLine(int statusCode);
-			std::string					mf_generateHeaderString();
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
@@ -68,6 +66,7 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillDirectoryListing(BaseBuffer& writeBuffer);
 			
 			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
@@ -93,10 +92,12 @@ namespace Http
 			Http::ResponseStatus::Type	m_status;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			FillFunction				m_fillFunction;
+			FillFunction				m_fillFunctionBody;
 			ProcessBodyFunction			m_processFunction;
 			size_t						m_staticReadCounter;
 			File						m_file;
 			Http::CgiGateway*			m_cgiGateway;
+			std::map<std::string, std::string>::const_iterator*	m_currentHeader; // index of the current header to be writter
 	};
 }
 

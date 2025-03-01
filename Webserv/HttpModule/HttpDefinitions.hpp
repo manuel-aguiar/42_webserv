@@ -161,14 +161,20 @@ namespace Http
 			UNDEFINED,
 			STATIC,
 			CGI,
-			REDIRECT
+			REDIRECT,
+			DIRECTORY_LISTING,
+			FILE_UPLOAD,
+			ERROR
 		}	ResponseType;
+
+		typedef std::string HeaderKey;
+		typedef std::string HeaderValue;
 
 		const Http::RequestData*	        requestData;
 		Http::Status::Number		        requestStatus;
 		const ServerBlock*			        serverBlock;
 		const ServerLocation*		        serverLocation;
-		std::map<std::string, std::string>  headers;
+		std::map<HeaderKey, HeaderValue>	headers;
 		ResponseType				        responseType;
 		std::string                         targetPath;
 		std::string							targetExtension;
