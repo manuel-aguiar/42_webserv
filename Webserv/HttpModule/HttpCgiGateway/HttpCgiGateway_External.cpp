@@ -4,6 +4,7 @@
 # include "CgiHandlers.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 # include "../../Connections/Connection/Connection.hpp"
 
@@ -43,6 +44,17 @@ namespace Http
 
 		Http::RequestData::headerContainer::const_iterator finder;
 
+        const std::map<std::string, std::string>& interpreterMap = responseData.serverLocation->getCgiInterpreters();
+        std::map<std::string, std::string>::const_iterator interpPtr = interpreterMap.find(responseData.targetExtension);
+
+        if (interpPtr == interpreterMap.end())
+        {
+            m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
+            m_statusCode = Http::Status::BAD_GATEWAY;
+            m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+            return (false);
+        }
+
 		m_cgiRequest = m_module.acquireRequest();
 
 		if (!m_cgiRequest)
@@ -72,6 +84,10 @@ namespace Http
 		// GATEWAY_INTERFACE CGI/1.1
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::GATEWAY_INTERFACE, "CGI/1.1");
 		
+        m_cgiRequest->setInterpreterPath(interpPtr->second);
+
+        m_cgiRequest->setScriptPath(responseData.targetPath);
+
 		// REMOTE_ADDR -> from the connection
 		//if (connection)
 		//{
@@ -114,6 +130,8 @@ namespace Http
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_SOFTWARE, "42_webserv");
 		
 		m_module.enqueueRequest(*m_cgiRequest, true);
+
+        m_processHttpBody = &CgiGateway::mf_HttpBodySend;
 
 		return (true);
 	}

@@ -6,6 +6,8 @@
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
+#include "../HttpModule/HttpModule.hpp"
+#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
@@ -29,7 +31,6 @@ namespace Http
 				m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
 			m_fillFunction = &Response::mf_fillErrorResponse;
 		}
-
 	}
 
 	BufferView
@@ -43,10 +44,11 @@ namespace Http
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 
+
+		// if cgi, call cgi to fill
+
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
-
-		return (m_status);
 	}
 
 	Http::ResponseStatus::Type
@@ -65,7 +67,13 @@ namespace Http
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
-		m_cgiGateway.reset();
+		if (m_cgiGateway)
+		{
+			Http::CgiInterface& cgiInterface = 
+			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
+			cgiInterface.releaseGateway(*m_cgiGateway);
+		}
+		m_cgiGateway = NULL;
 	}
 
 	void

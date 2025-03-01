@@ -37,7 +37,7 @@ void test1(int& testNumber)
 		Http::RequestData 	requestData;
 
 		requestData.method = "POST";
-		requestData.headers.insert("Content-Type", "application/x-www-form-urlencoded");
+		requestData.headers.insert(std::pair<std::string, std::string>("Content-Type", "application/x-www-form-urlencoded"));
 
 		Http::ResponseData 	responseData;
 
@@ -46,7 +46,24 @@ void test1(int& testNumber)
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
+		Http::CgiGateway 	cgiGateway(cgi);
 
+		cgiGateway.initiateRequest(responseData);
+		cgiGateway.sendHttpBody(BufferView());
+
+		Buffer<5000> readBuffer;
+
+		while (1)
+		{
+			int timeout = cgi.processRequests();
+
+			eventManager.ProcessEvents(timeout);
+			cgiGateway.fillWriteBuffer(readBuffer);
+			if (eventManager.getMonitoringCount() == 0)
+				break ;
+		}
+
+		
 
 		TEST_PASSED_MSG("Cgi Tests");
 	}

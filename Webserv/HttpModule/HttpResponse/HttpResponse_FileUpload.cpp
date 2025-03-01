@@ -64,7 +64,7 @@ namespace Http
 	BufferView
 	Response::mf_processBodyCgi(const BufferView& view)
 	{
-		// does nothing, returns the full view back
-		return (view);
+		ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
+		return (m_cgiGateway->sendHttpBody(view));
 	}
 }

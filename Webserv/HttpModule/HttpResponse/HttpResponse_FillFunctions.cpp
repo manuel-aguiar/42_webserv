@@ -29,15 +29,9 @@ namespace Http
     {
         // NOT IMPLEMENTED YET
         (void)writeBuffer;
-        return (Http::ResponseStatus::WAITING);
-    }
-
-    Http::ResponseStatus::Type
-    Response::mf_fillBodyStream(BaseBuffer& writeBuffer)
-    {
-        // NOT IMPLEMENTED YET
-        (void)writeBuffer;
-        return (Http::ResponseStatus::WAITING);
+        
+        m_fillFunction = mf_prepareStaticFile; // static file/ directory listing
+        return (mf_prepareStaticFile(writeBuffer));
     }
 
     Http::ResponseStatus::Type
@@ -66,6 +60,7 @@ namespace Http
     Http::ResponseStatus::Type
     Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
     {
-        return (m_cgiGateway.fillWriteBuffer(writeBuffer));
+        ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
+        return (m_cgiGateway->fillWriteBuffer(writeBuffer));
     }
 }

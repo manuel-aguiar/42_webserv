@@ -96,7 +96,7 @@ namespace Http
 			ProcessBodyFunction			m_processFunction;
 			size_t						m_staticReadCounter;
 			File						m_file;
-			Http::CgiGateway			m_cgiGateway;
+			Http::CgiGateway*			m_cgiGateway;
 	};
 }
 

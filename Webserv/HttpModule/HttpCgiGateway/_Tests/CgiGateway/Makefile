@@ -44,6 +44,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_External.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_onCallbacks.cpp \

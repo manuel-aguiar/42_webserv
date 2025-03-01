@@ -144,7 +144,6 @@ namespace Http
 
         if (!m_canRead)
             return (Http::ResponseStatus::WAITING);
-
             
         if (writeBuffer.available() < hexHeaderSize + 1)
             return (Http::ResponseStatus::WAITING);
@@ -152,7 +151,7 @@ namespace Http
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
 
-        scriptBytesRead = writeBuffer.read(m_readFd);
+        scriptBytesRead = writeBuffer.readAppend(m_readFd);
         if (scriptBytesRead == 0)
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);

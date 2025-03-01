@@ -33,6 +33,7 @@ namespace Http
 	{
 		if (m_cgiRequest)
 			m_module.finishRequest(*m_cgiRequest, true);
+		m_cgiRequest = NULL;
 		reset();
 	}
 
@@ -52,7 +53,7 @@ namespace Http
 		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
 	}
 		
-	CgiGateway::~CgiGateway() {}
+	CgiGateway::~CgiGateway() { close();}
 	CgiGateway::CgiGateway(const CgiGateway& other)
 		: m_module(other.m_module)
 		, m_canRead(other.m_canRead)
