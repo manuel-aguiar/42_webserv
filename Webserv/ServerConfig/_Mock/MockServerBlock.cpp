@@ -8,7 +8,7 @@ ServerBlock::ServerBlock()
 	m_keys["server_names"]			= &ServerBlock::addServerName;
 	m_keys["client_body_size"]		= &ServerBlock::setClientBodySize;
 	m_keys["client_header_size"]	= &ServerBlock::setClientHeaderSize;
-	m_keys["root"]					= &ServerBlock::setRootPath;
+	m_keys["root"]					= &ServerBlock::setRoot;
 	m_keys["error_pages"]			= &ServerBlock::addErrorPage;
 
 	m_config["listen"];
@@ -96,7 +96,7 @@ void	ServerBlock::setListener(const std::string &value, const int &flag)
 // 	return (1);
 // }
 
-void	ServerBlock::setRootPath(const std::string &value, const int &flag)
+void	ServerBlock::setRoot(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["root"].empty())
 		throw (std::invalid_argument("root path already set"));

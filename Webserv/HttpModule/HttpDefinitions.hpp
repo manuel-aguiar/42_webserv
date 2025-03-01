@@ -171,6 +171,7 @@ namespace Http
 		ResponseType				        responseType;
 		std::string                         targetPath;
 		FilesUtils::FileType                targetType;
+		std::string                         targetExtension;
 
 		bool                                closeAfterSending;
 

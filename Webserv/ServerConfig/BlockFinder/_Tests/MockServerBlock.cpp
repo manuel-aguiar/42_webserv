@@ -32,7 +32,7 @@ ServerBlock& ServerBlock::operator=(const ServerBlock &other) {
 const std::set<std::string>& ServerBlock::getDomainNames() const { return m_server_name; }
 const std::vector<ServerLocation>& ServerBlock::getLocations() const { return m_locations; }
 void ServerBlock::mapLocations() {  }
-void ServerBlock::setRootPath(const std::string &value) { m_root = value; }
+void ServerBlock::setRoot(const std::string &value) { m_root = value; }
 void ServerBlock::setClientBodySize(const std::string &value) { m_http_maxClientBodySize = std::atoi(value.c_str()); }
 void ServerBlock::setClientHeaderSize(const std::string &value) { m_http_maxClientHeaderSize = std::atoi(value.c_str()); }
 void ServerBlock::addListener(const std::string &value) { (void)value; }

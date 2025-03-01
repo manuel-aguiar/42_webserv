@@ -68,7 +68,7 @@ class ServerBlock
 										getListenAddresses() const;
 
 
-		void							setRootPath(const std::string &value);
+		void							setRoot(const std::string &value);
 		void							setClientBodySize(const std::string &value);
 		void							setClientHeaderSize(const std::string &value);
 		void							setTimeoutFullHeader(const std::string &value);
