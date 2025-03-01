@@ -79,11 +79,16 @@ SRCS 					=																			\
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 		\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_External.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Helpers.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_onCallbacks.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_ProcessHttpBody.cpp \
 		\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
 																									\
 																									\
 		$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp								\
