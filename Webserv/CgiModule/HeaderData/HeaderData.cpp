@@ -130,12 +130,10 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 
 	while (remaining.size() > 0)
 	{	
-		//std::cout << "remaining: " << remaining << std::endl;
 		size_t pos_LineEnd = remaining.find(CgiDelimiter, m_findPivot);
 		if (pos_LineEnd == BufferView::npos)
 		{
 			m_findPivot = std::max((int)remaining.size() - (int)CgiDelimiter.size(), 0);
-			// if bigger than buffer capacity, fail
 			return (HeaderData::NEED_MORE_DATA);
 		}
 
@@ -162,7 +160,6 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 				else
 					return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
 			}
-			//std::cout << "new line at beginning, should reach here" << std::endl;
 			m_state = HeaderData::FINISH;
 			return (HeaderData::PASS);
 		}
@@ -179,15 +176,10 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 			line = line.substr(0, line.size() - 1);
 		}
 
-		//std::cout << "line:\t\t\t\t '" << line << "', length: " << line.size() << std::endl;
 		size_t pos_Separator = line.find(headedSeparator, 0);
-		//std::cout << "pos_Separator: " << pos_Separator << std::endl;
 	
 		if (pos_Separator == BufferView::npos)
-		{
-			//std::cout << "no coma separator found in header" << std::endl;
 			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
-		}
 	
 		BufferView key = line.substr(0, pos_Separator);
 		BufferView value = line.substr(pos_Separator + headedSeparator.size(), line.size() - pos_Separator - headedSeparator.size());
@@ -220,11 +212,9 @@ HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 {
 	BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
 
-	//std::cout << view << std::endl;
 
 	if (view.size() == 0 || m_lastBufferSize == (int)buffer.size())
 	{
-		//std::cout << "no new data" << std::endl;
 		if (m_state != HeaderData::FINISH)
 			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
 		return ((m_statusCode != -1 && m_statusCode != CGI_SUCCESS) ? HeaderData::FAIL : HeaderData::PASS);
