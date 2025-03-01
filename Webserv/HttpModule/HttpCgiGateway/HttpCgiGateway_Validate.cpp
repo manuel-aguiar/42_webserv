@@ -7,13 +7,13 @@
 
 static const char* forbiddenHeaders[] =
 {
-	"Connection"
-	"Transfer-Encoding",
+	"connection"
+	"transfer-encoding",
 };
 
 static const char* ignoredHeaders[] =
 {
-	"Content-Length",
+	"content-length",
 };
 
 static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)

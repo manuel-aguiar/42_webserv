@@ -38,7 +38,7 @@ void fileDownload(int& testNumber, const BaseBuffer& comparison)
 		
 		response.receiveRequestData(data);
 
-		HeapBuffer testBuffer(comparison.capacity());
+		HeapBuffer testBuffer(comparison.capacity() + 500);
 
 		
 		Http::ResponseStatus::Type status = Http::ResponseStatus::WAITING;

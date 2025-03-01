@@ -11,6 +11,7 @@
 # include "../../../Toolkit/Arrays/StackArray/StackArray.hpp"
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 
+# include "../HttpCgiInterface/HttpCgiInterface.hpp"
 
 // forward declarations
 
@@ -41,6 +42,7 @@ namespace Http
 			void                returnConnection(Http::Connection& connection);
 
 			ServerContext&		accessServerContext();
+			Http::CgiInterface& accessCgiInterface();
 
 			// timer management
 			TimerTracker<Timer, Http::Connection*>::iterator 
@@ -52,6 +54,7 @@ namespace Http
 		private:
 			// infrastructure
 			ServerContext&							m_context;
+			Http::CgiInterface						m_cgiInterface;
 			HeapArray<Http::Connection>				m_connections;
 			HeapCircularQueue<Http::Connection*>	m_availableConnections;
 			TimerTracker<Timer, Http::Connection*>	m_timers;

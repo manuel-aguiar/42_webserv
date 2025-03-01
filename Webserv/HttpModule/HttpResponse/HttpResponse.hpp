@@ -41,6 +41,14 @@ namespace Http
 			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
 		private:
+			typedef enum
+			{
+				NONE,
+				STATIC,
+				CGI,
+				REDIRECT
+			}	Type;
+
 
 			bool						mf_validateHeaders();
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
@@ -62,6 +70,9 @@ namespace Http
 			
 			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
+			
+			// call the Cgi Gateway to fill the response
+			Http::ResponseStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
 			
@@ -69,6 +80,8 @@ namespace Http
 			BufferView					mf_processBodyNone(const BufferView& receivedView);
 			BufferView					mf_processBodyUpload(const BufferView& receivedView);
 
+			// pass the body to the CgiGateway
+			BufferView					mf_processBodyCgi(const BufferView& receivedView);
 
 			// Debatable
 
@@ -83,7 +96,7 @@ namespace Http
 			ProcessBodyFunction			m_processFunction;
 			size_t						m_staticReadCounter;
 			File						m_file;
-			Http::CgiGateway			m_cgiGateway;
+			Http::CgiGateway*			m_cgiGateway;
 			std::map<std::string, std::string>::const_iterator*	m_currentHeader; // index of the current header to be writter
 	};
 }

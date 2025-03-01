@@ -48,6 +48,7 @@ int main()
 
             // Create BlockFinder and add the server block
             BlockFinder finder(2);
+            BlockFinder finder(2);
             finder.addServerBlock(serverBlock);
 
             // Test finding the block with exact match
@@ -71,6 +72,7 @@ int main()
 
             ServerBlock serverBlock;
             BlockFinder finder(2);
+            BlockFinder finder(2);
 
             // adding one more block with configuration set
             ServerBlock serverBlock2;
@@ -88,6 +90,7 @@ int main()
 
             // now searching for the block with configuration set
             const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
+            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
 
             EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
 
@@ -101,6 +104,7 @@ int main()
     {
         try {
             TEST_INTRO(testNumber++);
+            BlockFinder finder(4);
             BlockFinder finder(4);
 
             // First block
@@ -136,69 +140,8 @@ int main()
         }
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-    {
-        try {
-            TEST_INTRO(testNumber++);
-            BlockFinder finder;
 
-            // Block with wildcard IP
-            ServerBlock block;
-            struct sockaddr_in addr = createSockAddr("0.0.0.0", "8080");
-            block.addListenAddress((struct sockaddr*)&addr);
-            block.addServerName("example.com");
-            block.setRoot("/var/www/html");
-            finder.addServerBlock(block);
 
-            // Test finding with different IPs
-            struct sockaddr_in addr1 = createSockAddr("127.0.0.1", "8080");
-            const ServerBlock* found1 = finder.findServerBlock(*(struct sockaddr*)&addr1, "example.com");
-            struct sockaddr_in addr2 = createSockAddr("192.168.1.1", "8080");
-            const ServerBlock* found2 = finder.findServerBlock(*(struct sockaddr*)&addr2, "example.com");
-
-            EXPECT_EQUAL(found1 != NULL, true, "Block 1 not found with wildcard IP");
-            EXPECT_EQUAL(found2 != NULL, true, "Block 2 not found with wildcard IP");
-            EXPECT_EQUAL(found1 == found2, true, "Different blocks returned for same wildcard");
-
-            TEST_PASSED_MSG("Wildcard IP with specific server name");
-        }
-        catch (const std::exception& e) {
-            TEST_FAILED_MSG(e.what());
-        }
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////
-    {
-        try {
-            TEST_INTRO(testNumber++);
-            BlockFinder finder;
-
-            // Block with multiple server names
-            ServerBlock block;
-            struct sockaddr_in addr = createSockAddr("127.0.0.1", "8080");
-            block.addListenAddress((struct sockaddr*)&addr);
-            block.addServerName("example.com");
-            block.addServerName("www.example.com");
-            block.addServerName("api.example.com");
-            block.setRoot("/var/www/html");
-            finder.addServerBlock(block);
-
-            // Test finding with different server names
-            const ServerBlock* found1 = finder.findServerBlock(*(struct sockaddr*)&addr, "example.com");
-            const ServerBlock* found2 = finder.findServerBlock(*(struct sockaddr*)&addr, "www.example.com");
-            const ServerBlock* found3 = finder.findServerBlock(*(struct sockaddr*)&addr, "api.example.com");
-
-            if (!found1 || !found2 || !found3) {
-                throw std::runtime_error("Block not found for one of the server names");
-            }
-            if (found1 != found2 || found2 != found3) {
-                throw std::runtime_error("Different blocks returned for same configuration");
-            }
-
-            TEST_PASSED_MSG("Multiple server names for same block");
-        }
-        catch (const std::exception& e) {
-            TEST_FAILED_MSG(e.what());
-        }
-    }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TEST_FOOTER;

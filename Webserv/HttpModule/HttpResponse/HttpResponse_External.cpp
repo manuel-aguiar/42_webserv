@@ -6,6 +6,8 @@
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
+#include "../HttpModule/HttpModule.hpp"
+#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
@@ -63,7 +65,7 @@ namespace Http
 		}
 
 		// Common headers
-		m_responseData.headers.insert(std::make_pair("content-length", contentLength));
+		m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(contentLength)));
 		m_responseData.headers.insert(std::make_pair("content-type", contentType));
 
 
@@ -95,6 +97,10 @@ namespace Http
 	Http::ResponseStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
+
+
+		// if cgi, call cgi to fill
+
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
@@ -116,7 +122,13 @@ namespace Http
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
-		m_cgiGateway.reset();
+		if (m_cgiGateway)
+		{
+			Http::CgiInterface& cgiInterface = 
+			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
+			cgiInterface.releaseGateway(*m_cgiGateway);
+		}
+		m_cgiGateway = NULL;
 		m_connAddress = NULL;
 	}
 

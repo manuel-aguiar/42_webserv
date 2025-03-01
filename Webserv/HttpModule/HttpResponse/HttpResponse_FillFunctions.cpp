@@ -112,4 +112,11 @@ namespace Http
 		(void)writeBuffer;
 		return (Http::ResponseStatus::WAITING);
 	}
+
+    Http::ResponseStatus::Type
+    Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
+    {
+        ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
+        return (m_cgiGateway->fillWriteBuffer(writeBuffer));
+    }
 }
