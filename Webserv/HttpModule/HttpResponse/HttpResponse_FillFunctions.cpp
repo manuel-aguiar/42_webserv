@@ -30,7 +30,7 @@ namespace Http
         // NOT IMPLEMENTED YET
         (void)writeBuffer;
         
-        m_fillFunction = mf_prepareStaticFile; // static file/ directory listing
+        m_fillFunction = &Response::mf_prepareStaticFile; // static file/ directory listing
         return (mf_prepareStaticFile(writeBuffer));
     }
 

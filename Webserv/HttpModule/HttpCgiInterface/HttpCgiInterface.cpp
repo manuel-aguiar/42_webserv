@@ -24,8 +24,8 @@ namespace Http
 
     CgiInterface::CgiInterface(const CgiInterface& copy)
         : m_cgiModule(copy.m_cgiModule)
-        , m_cgiGateways(copy.m_cgiGateways)
-        , m_availableGateways(copy.m_availableGateways)
+        , m_cgiGateways(0)
+        , m_availableGateways(0)
     {
         // nothing
     }
@@ -37,9 +37,6 @@ namespace Http
             return (*this);
 
         ASSERT_EQUAL(&m_cgiModule, &assign.m_cgiModule, "CgiInterface::operator=() - module mismatch");
-
-        m_cgiGateways = assign.m_cgiGateways;
-        m_availableGateways = assign.m_availableGateways;
 
         return (*this);
     }

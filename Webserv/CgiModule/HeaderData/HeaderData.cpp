@@ -40,10 +40,12 @@ int binSearch(const std::vector<T>& target, const T& value)
 namespace Cgi
 {
 HeaderData::HeaderData() 
-: m_state               (HeaderData::START)
-, m_statusCode          (-1)
-, m_totalParsedBytes    (0)
-, m_hasBody             (false) {}
+	: m_state               (HeaderData::START)
+	, m_statusCode          (-1)
+	, m_totalParsedBytes    (0)
+	, m_lastBufferSize      (0)
+	, m_findPivot		   	(0)
+	, m_hasBody             (false) {}
 
 
 HeaderData::~HeaderData() {}
@@ -56,6 +58,8 @@ HeaderData::reset()
 	m_state = HeaderData::START;
 	m_statusCode = -1;
 	m_totalParsedBytes = 0;
+	m_lastBufferSize = 0;
+	m_findPivot = 0;
 	m_hasBody = false;
 	m_headers.clear();
 	m_tempBody = BufferView();
@@ -98,117 +102,103 @@ HeaderData::mf_validateHeaders()
 	if (contentType != -1)
 		m_hasBody = true;
 
-	//std::cout << "headers validated" << std::endl;
 	return (HeaderData::PASS);
 }
 
 HeaderData::Status
 HeaderData::mf_parseHeaders(BufferView& view)
 {
-	//std::cout << "\tBufferView begin: " << view << std::endl;
+	BufferView remaining = view;
+	BufferView delimiter = BufferView(CGI_LINE_SEPARATOR, 1);
 
-	size_t pos_LineEnd = view.find(CGI_LINE_SEPARATOR);
-	if (pos_LineEnd == BufferView::npos)
-	{
+	if (remaining.size() == 0)
 		return (HeaderData::NEED_MORE_DATA);
-	}
-	
-	// second newline right at the beginning
-	if (pos_LineEnd == 0 && m_state != HeaderData::START)
-	{
-		m_totalParsedBytes++;
-		view = view.substr(pos_LineEnd + 1, view.size() - pos_LineEnd - 1);
 
-		//std::cout << "view size: " << view.size() << std::endl;
-
-		if (mf_validateHeaders() == HeaderData::FAIL)
-			return (HeaderData::FAIL);
-		//std::cout << "m_hasbody" << m_hasBody << std::endl;
-		if (view.size() > 0)
+	while (remaining.size() > 0)
+	{	
+		size_t pos_LineEnd = view.find(delimiter, m_findPivot);
+		if (pos_LineEnd == BufferView::npos)
 		{
-			if (m_hasBody == true)
-				m_tempBody = view;
-			else
-				return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
+			// if bigger than buffer capacity, fail
+			return (HeaderData::NEED_MORE_DATA);
 		}
-		//std::cout << "new line at beginning, should reach here" << std::endl;
-		m_state = HeaderData::FINISH;
-		return (HeaderData::PASS);
+
+		m_findPivot = 0;
+		
+		// second newline right at the beginning
+		if (pos_LineEnd == 0 && m_state != HeaderData::START)
+		{
+			m_totalParsedBytes++;
+			view = view.substr(pos_LineEnd + 1, view.size() - pos_LineEnd - 1);
+	
+			if (mf_validateHeaders() == HeaderData::FAIL)
+				return (HeaderData::FAIL);
+
+			if (view.size() > 0)
+			{
+				if (m_hasBody == true)
+					m_tempBody = view;
+				else
+					return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+			}
+			//std::cout << "new line at beginning, should reach here" << std::endl;
+			m_state = HeaderData::FINISH;
+			return (HeaderData::PASS);
+		}
+	
+		m_state = HeaderData::HEADERS;
+	
+		BufferView line = view.substr(0, pos_LineEnd);
+		//std::cout << "line: '" << line << "', length: " << line.size() << std::endl;
+		size_t pos_Separator = line.find(CGI_HEADER_SEPARATOR, 2, 0);
+		//std::cout << "pos_Separator: " << pos_Separator << std::endl;
+	
+		if (pos_Separator == BufferView::npos)
+		{
+			//std::cout << "no coma separator found in header" << std::endl;
+			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+		}
+	
+		BufferView key = line.substr(0, pos_Separator);
+		BufferView value = line.substr(pos_Separator + 2, line.size() - pos_Separator - 2);
+	
+		if (key == BufferView("Status"))
+		{
+			if (m_statusCode != -1)
+				return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE)); // doubled status header
+			m_statusCode = std::atoi(value.data());
+			if (m_statusCode != CGI_SUCCESS)
+				return (mf_setStatus(HeaderData::FAIL, m_statusCode));
+		}
+		else	
+			m_headers.push_back(Cgi::Header(key, value));	// save header
+	
+		m_totalParsedBytes += line.size() + 1;
+		view = view.substr(line.size() + 1, view.size() - line.size() - 1); // move view to one past end of line
 	}
 
-	m_state = HeaderData::HEADERS;
-
-	BufferView line = view.substr(0, pos_LineEnd);
-	//std::cout << "line: '" << line << "', length: " << line.size() << std::endl;
-	size_t pos_Separator = line.find(CGI_HEADER_SEPARATOR, 2, 0);
-	//std::cout << "pos_Separator: " << pos_Separator << std::endl;
-
-	if (pos_Separator == BufferView::npos)
-	{
-		//std::cout << "no coma separator found in header" << std::endl;
-		return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
-	}
-
-	BufferView key = line.substr(0, pos_Separator);
-	BufferView value = line.substr(pos_Separator + 2, line.size() - pos_Separator - 2);
-	//std::cout << "key: '" <<  key << "', value: '" << value << "'" << std::endl;
-
-	if (key == BufferView("Status"))
-	{
-		if (m_statusCode != -1)
-			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE)); // doubled status header
-		m_statusCode = std::atoi(value.data());
-		if (m_statusCode != CGI_SUCCESS)
-			return (mf_setStatus(HeaderData::FAIL, m_statusCode));
-	}
-	else	
-		m_headers.push_back(Cgi::Header(key, value));	// save header
-
-	
-	
-
-	m_totalParsedBytes += line.size() + 1;
-
-	view = view.substr(line.size() + 1, view.size() - line.size() - 1); // move view to one past end of line
-	
-	//std::cout << "\tBufferView end: " << view << std::endl;
-	if (view.size() == 0)
-		return (HeaderData::NEED_MORE_DATA);
-	return (HeaderData::KEEP_PARSING);
-
-	
+	return (HeaderData::NEED_MORE_DATA);
 }
 
 HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 {
-	// pickup where you left off
 	BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
 
-	//std::cout << "total parsed bytes: " << m_totalParsedBytes << ", view size: " << view.size() << std::endl;
-
-	if (view.size() == 0)
+	if (view.size() == 0 || m_lastBufferSize == (int)buffer.size())
 	{
 		if (m_state != HeaderData::FINISH)
 			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
 		return ((m_statusCode != -1 && m_statusCode != CGI_SUCCESS) ? HeaderData::FAIL : HeaderData::PASS);
 	}
 
-	while (view.size() > 0)
-	{
-		switch ((int)m_state)
-		{
-			case HeaderData::START: //allow to fall to headers
-			case HeaderData::HEADERS:
-			{
-				HeaderData::Status retStatus = mf_parseHeaders(view);
-				if (retStatus != HeaderData::KEEP_PARSING)
-					return (retStatus);
-				break ;
-			}
-			case HeaderData::FINISH:
-				return (HeaderData::PASS);
-		}
-	}
+	m_lastBufferSize = buffer.size();
+
+	HeaderData::Status retStatus = mf_parseHeaders(view);
+
+	if (retStatus != HeaderData::NEED_MORE_DATA)
+		return (retStatus);
+
 	return (HeaderData::NEED_MORE_DATA);
 }
 

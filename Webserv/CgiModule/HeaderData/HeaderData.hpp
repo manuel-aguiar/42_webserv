@@ -11,7 +11,7 @@
 // C++ headers
 # include <vector>
 
-# define CGI_LINE_SEPARATOR '\n'
+# define CGI_LINE_SEPARATOR "\n"
 # define CGI_HEADER_SEPARATOR ": "
 # define CGI_VALUE_SEPARATOR "; "
 
@@ -45,7 +45,6 @@ namespace Cgi
 			{
 				PASS,
 				FAIL,
-				KEEP_PARSING,
 				NEED_MORE_DATA
 			};
 
@@ -56,24 +55,26 @@ namespace Cgi
 				FINISH
 			};
 			
-			void                            reset();
+			void                            	reset();
 
-			Status                          parse(BaseBuffer& buffer);
+			Status                          	parse(BaseBuffer& buffer);
 			
-			ParsingState					getParsingState() const;	
-			const std::vector<Cgi::Header>& getHeaders() const;
-			const BufferView&               getTempBody() const;
-			int							  	getStatusCode() const;
-			bool                            hasBody() const;		
+			ParsingState						getParsingState() const;	
+			const std::vector<Cgi::Header>& 	getHeaders() const;
+			const BufferView&               	getTempBody() const;
+			int							  		getStatusCode() const;
+			bool                            	hasBody() const;		
 
 		private:
 			
 			ParsingState						m_state;
-			int                         m_statusCode;
-			int							m_totalParsedBytes;
-			std::vector<Cgi::Header> 	m_headers;
-			bool						m_hasBody;
-			BufferView					m_tempBody;
+			int                         		m_statusCode;
+			int									m_totalParsedBytes;
+			int									m_lastBufferSize;
+			int									m_findPivot;
+			std::vector<Cgi::Header> 			m_headers;
+			bool								m_hasBody;
+			BufferView							m_tempBody;
 
 			Status	mf_validateHeaders();
 			Status	mf_parseHeaders(BufferView& view);

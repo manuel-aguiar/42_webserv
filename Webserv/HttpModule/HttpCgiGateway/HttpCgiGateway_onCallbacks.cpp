@@ -27,6 +27,7 @@ namespace Http
 	void
 	CgiGateway::onCgiError()
 	{
+        //std::cout << "onerror received" << std::endl;
 		// must check if i am already sending data back
 		m_statusCode = Http::Status::INTERNAL_ERROR;
 		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
@@ -61,7 +62,7 @@ namespace Http
 	{
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
-
+        //std::cout << "Received headers, status code: " << m_statusCode << std::endl;
 		if (!checkForbiddenHeaders(headers.getHeaders()))
 		{
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
@@ -70,6 +71,7 @@ namespace Http
 			m_fillFunction = &CgiGateway::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
+        //std::cout << "filling response line?" << std::endl;
 		m_fillFunction = &CgiGateway::mf_fillResponseLine;
 
 		return (Cgi::IO::CONTINUE);

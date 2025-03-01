@@ -15,24 +15,22 @@
 #include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
-void test1(int& testNumber)
+void invalidScript(int& testNumber)
 {
-	TEST_INTRO(testNumber++);
-
+	
 	ServerContext 			context;
 	Globals 				globals(NULL, NULL, NULL, NULL);
 	Events::Manager 		eventManager(30, globals);
 	Cgi::Module 			cgi(10, 100, 5000, eventManager, globals);
-
+	
 	context.setAddonLayer(Ws::AddonLayer::CGI, &cgi);
 	
-	
-
 	try
 	{
+		TEST_INTRO(testNumber++);
 		ServerLocation 		location;
 		location.setRoot("./");
-		location.addCgiInterpreter(".php:/usr/bin/php-cgi");
+		location.addCgiInterpreter(".php:/usr/bin/php");
 
 		Http::RequestData 	requestData;
 
@@ -42,13 +40,14 @@ void test1(int& testNumber)
 		Http::ResponseData 	responseData;
 
 		responseData.serverLocation = &location;
-		responseData.targetPath = "Scripts/simple.php";
+		responseData.targetPath = "Scripts/invalid.php";
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
 		Http::CgiGateway 	cgiGateway(cgi);
 
-		cgiGateway.initiateRequest(responseData);
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		
 		cgiGateway.sendHttpBody(BufferView());
 
 		Buffer<5000> readBuffer;
@@ -56,16 +55,16 @@ void test1(int& testNumber)
 		while (1)
 		{
 			int timeout = cgi.processRequests();
-
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
+
 			if (eventManager.getMonitoringCount() == 0)
 				break ;
 		}
 
-		
+		std::cout << readBuffer.view() << std::endl;
 
-		TEST_PASSED_MSG("Cgi Tests");
+		TEST_PASSED_MSG("Cgi Tests bad script");
 	}
 	catch(const std::exception& e)
 	{
@@ -73,7 +72,62 @@ void test1(int& testNumber)
 	}
 }
 
+void validScript(int& testNumber)
+{
+	
+	ServerContext 			context;
+	Globals 				globals(NULL, NULL, NULL, NULL);
+	Events::Manager 		eventManager(30, globals);
+	Cgi::Module 			cgi(10, 100, 5000, eventManager, globals);
+	
+	context.setAddonLayer(Ws::AddonLayer::CGI, &cgi);
+	
+	try
+	{
+		TEST_INTRO(testNumber++);
+		ServerLocation 		location;
+		location.setRoot("./");
+		location.addCgiInterpreter(".php:/usr/bin/php");
 
+		Http::RequestData 	requestData;
+
+		requestData.method = "POST";
+		requestData.headers.insert(std::pair<std::string, std::string>("Content-Type", "application/x-www-form-urlencoded"));
+
+		Http::ResponseData 	responseData;
+
+		responseData.serverLocation = &location;
+		responseData.targetPath = "Scripts/valid.php";
+		responseData.targetExtension = ".php";
+		responseData.requestData = &requestData;
+		
+		Http::CgiGateway 	cgiGateway(cgi);
+
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		
+		cgiGateway.sendHttpBody(BufferView());
+
+		Buffer<5000> readBuffer;
+
+		while (1)
+		{
+			int timeout = cgi.processRequests();
+			eventManager.ProcessEvents(timeout);
+			cgiGateway.fillWriteBuffer(readBuffer);
+
+			if (eventManager.getMonitoringCount() == 0)
+				break ;
+		}
+
+		std::cout << readBuffer.view() << std::endl;
+
+		TEST_PASSED_MSG("Cgi Tests valid script");
+	}
+	catch(const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
+}
 
 int main(void)
 {
@@ -82,7 +136,8 @@ int main(void)
 
 	int testNumber = 1;
 
-	test1(testNumber);
+	invalidScript(testNumber);
+	validScript(testNumber);
 
 	TEST_FOOTER;
 
