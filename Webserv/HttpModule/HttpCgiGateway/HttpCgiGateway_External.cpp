@@ -74,12 +74,12 @@ namespace Http
 
 
 		// CONTENT-LENGTH
-		finder = data.headers.find("Content-Length");
+		finder = data.headers.find("content-length");
 		if (finder != data.headers.end())
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, finder->second);
 
 		// CONTENT-TYPE
-		finder = data.headers.find("Content-Type");
+		finder = data.headers.find("content-type");
 		if (finder != data.headers.end())
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_TYPE, finder->second);
 
@@ -106,7 +106,7 @@ namespace Http
 		// QUERY_STRING
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::QUERY_STRING, data.queryString);
 		
-		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REDIRECT_STATUS, "200");
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REDIRECT_STATUS, StringUtils::to_string(data.status));
 
 		// REQUEST_METHOD -> HttpRequestData
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::REQUEST_METHOD, data.method);

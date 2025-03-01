@@ -29,6 +29,7 @@ namespace Http
 	{
         //std::cout << "onerror received" << std::endl;
 		// must check if i am already sending data back
+        //std::cout << "received errpor" << std::endl;
 		m_statusCode = Http::Status::INTERNAL_ERROR;
 		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
 	}

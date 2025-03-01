@@ -68,7 +68,7 @@ namespace Cgi
 			const char* const REMOTE_USER = "REMOTE_USER";
 			const char* const REQUEST_METHOD = "REQUEST_METHOD";
 			const char* const REDIRECT_STATUS = "REDIRECT_STATUS";
-			const char* const SCRIPT_FILENAME = "SCRIPT_NAME";
+			const char* const SCRIPT_FILENAME = "SCRIPT_FILENAME";
 			const char* const SCRIPT_NAME = "SCRIPT_NAME";
 			const char* const SERVER_NAME = "SERVER_NAME";
 			const char* const SERVER_PORT = "SERVER_PORT";

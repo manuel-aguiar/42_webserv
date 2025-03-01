@@ -42,9 +42,9 @@ namespace Http
 		if (m_currentHeader == -1) // nothing sent yet
 		{
 			if (m_headers->hasBody())
-				writeBuffer.push("Transfer-Encoding: chunked\r\n", 28);
+				writeBuffer.push("transfer-encoding: chunked\r\n", 28);
 			else
-				writeBuffer.push("Content-Length: 0\r\n", 19);
+				writeBuffer.push("content-length: 0\r\n", 19);
             m_currentHeader = 0;
 		}
 
@@ -185,11 +185,11 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_statusCode));
 		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Content-Length: ", 15);
+		writeBuffer.push("content-length: ", 15);
         writeBuffer.push(StringUtils::to_string(errorPage.size()).c_str(), StringUtils::to_string(errorPage.size()).size());
         writeBuffer.push("\r\n", 2);
-		writeBuffer.push("Connection: close\r\n", 19);
-        writeBuffer.push("Content-Type: text/html\r\n", std::strlen("Content-Type: text/html\r\n"));
+		writeBuffer.push("connection: close\r\n", 19);
+        writeBuffer.push("content-type: text/html\r\n", std::strlen("content-type: text/html\r\n"));
 		writeBuffer.push("\r\n", 2);
         writeBuffer.push(errorPage.c_str(), errorPage.size());
 
