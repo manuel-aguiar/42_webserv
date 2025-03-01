@@ -25,10 +25,9 @@ namespace Http
     {
         // return empty view, tells Request "all processed" but does nothing with it
         // we receive and EOF from the request, we are ready to process the response
+        
         if (view.size() == 0)
-        {
             m_processHttpBody = &CgiGateway::mf_HttpBodyNone;
-        }
         return (BufferView());
     }
 
