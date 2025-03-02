@@ -487,36 +487,40 @@ void testErrorCodes(int &testNumber)
 	// }
 
 	// Multipart form data error tests
-	TEST_INTRO(testNumber++);
-	{
-		ServerContext serverContext;
-		Http::Response response(serverContext);
-		Http::Request request(serverContext);
 
-		// Set up a mock connection address for the response
-		Ws::Sock::addr mockAddr = createMockAddr();
-		response.setConnectionAddress(mockAddr);
 
-		request.setResponse(response);
-		try {
-			Buffer<1024> buffer;
-			buffer.push("POST /upload HTTP/1.1\r\n"
-					   "Host: localhost\r\n"
-					   "Content-Type: multipart/form-data\r\n"  // Missing boundary
-					   "Content-Length: 100\r\n\r\n");
-			request.parse(buffer);
+	// requires blockfinder
 
-			if (request.isError()) {
-				EXPECT_EQUAL(request.getStatus(), Http::Status::BAD_REQUEST,
-					"Should return BAD_REQUEST for multipart without boundary");
-			}
-
-			TEST_PASSED_MSG("Multipart form data error tests passed");
-		}
-		catch(const std::exception& e) {
-			TEST_FAILED_MSG(e.what());
-		}
-	}
+//	TEST_INTRO(testNumber++);
+//	{
+//		ServerContext serverContext;
+//		Http::Response response(serverContext);
+//		Http::Request request(serverContext);
+//
+//		// Set up a mock connection address for the response
+//		Ws::Sock::addr mockAddr = createMockAddr();
+//		response.setConnectionAddress(mockAddr);
+//
+//		request.setResponse(response);
+//		try {
+//			Buffer<1024> buffer;
+//			buffer.push("POST /upload HTTP/1.1\r\n"
+//					   "Host: localhost\r\n"
+//					   "Content-Type: multipart/form-data\r\n"  // Missing boundary
+//					   "Content-Length: 100\r\n\r\n");
+//			request.parse(buffer);
+//
+//			if (request.isError()) {
+//				EXPECT_EQUAL(request.getStatus(), Http::Status::BAD_REQUEST,
+//					"Should return BAD_REQUEST for multipart without boundary");
+//			}
+//
+//			TEST_PASSED_MSG("Multipart form data error tests passed");
+//		}
+//		catch(const std::exception& e) {
+//			TEST_FAILED_MSG(e.what());
+//		}
+//	}
 
 	TEST_FOOTER;
 }

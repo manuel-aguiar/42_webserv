@@ -68,6 +68,14 @@ namespace Http
 			m_cgiResponse->reset();
 	}
 
+
+	void
+	Response::close()
+	{
+		reset();
+		m_connAddress = NULL;
+	}	
+
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)
 	{

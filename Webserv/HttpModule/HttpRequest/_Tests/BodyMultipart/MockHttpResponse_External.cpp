@@ -60,6 +60,9 @@ namespace Http
 	Response::reset()
 	{}
 	void
+	Response::close()
+	{}
+	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)
 	{(void)addr;}
 
