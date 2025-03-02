@@ -53,6 +53,12 @@ namespace Http
 		}
 
 		// Check redirection
+		if (m_responseData.serverLocation != NULL)
+		{
+			const bool isRedirect = mf_checkRedirect();
+			if (isRedirect)
+				return (false);
+		}
 
 		// Assemble target path
         // ROOT MUST BE DIRECTORY & not end with '/'

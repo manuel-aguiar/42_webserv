@@ -29,10 +29,11 @@ namespace Http
 			Response& operator=(const Response& other);
 
 			Http::ResponseStatus::Type	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
-			
+
 			void    					reset(); // reset the response to its initial state
 
 			Http::ResponseStatus::Type	getStatus() const;
+			ResponseData				getResponseData() const; // mainly for testing
 
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
 
@@ -53,30 +54,33 @@ namespace Http
 			bool						mf_validateHeaders();
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
+			bool						mf_checkRedirect();
 			void						mf_assembleTargetPath();
 			std::string					mf_getCurrentDate();
 
+			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
-				
+
 			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillDirectoryListing(BaseBuffer& writeBuffer);
-			
+
 			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
-			
+
 			// call the Cgi Gateway to fill the response
 			Http::ResponseStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
-			
-			BufferView					mf_processBodyIgnore(const BufferView& receivedView);	
+
+			BufferView					mf_processBodyIgnore(const BufferView& receivedView);
 			BufferView					mf_processBodyNone(const BufferView& receivedView);
 			BufferView					mf_processBodyUpload(const BufferView& receivedView);
 
