@@ -53,10 +53,10 @@ namespace Http
 			{
 				Http::CgiInterface& cgiInterface =
 				reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
-				m_cgiGateway = cgiInterface.acquireGateway();
+				m_cgiResponse = cgiInterface.acquireGateway();
 
-				ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
-				m_cgiGateway->initiateRequest(m_responseData);
+				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
+				m_cgiResponse->initiateRequest(m_responseData);
 				m_fillFunction = &Response::mf_fillCgiResponse;
 				m_processFunction = &Response::mf_processBodyCgi;
 				return ;
@@ -136,13 +136,13 @@ namespace Http
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
-		if (m_cgiGateway)
+		if (m_cgiResponse)
 		{
 			Http::CgiInterface& cgiInterface =
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
-			cgiInterface.releaseGateway(*m_cgiGateway);
+			cgiInterface.releaseGateway(*m_cgiResponse);
 		}
-		m_cgiGateway = NULL;
+		m_cgiResponse = NULL;
 		m_connAddress = NULL;
 	}
 

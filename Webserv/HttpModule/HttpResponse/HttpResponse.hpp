@@ -100,7 +100,7 @@ namespace Http
 			ProcessBodyFunction			m_processFunction;
 			size_t						m_staticReadCounter;
 			File						m_file;
-			Http::CgiResponse*			m_cgiGateway;
+			Http::CgiResponse*			m_cgiResponse;
 			std::map<std::string, std::string>::iterator	m_currentHeader; // index of the current header to be writter
 	};
 }
