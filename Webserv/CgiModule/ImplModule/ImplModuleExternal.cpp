@@ -17,7 +17,7 @@
 Cgi::Request*	ImplModule::acquireRequest()
 {
 	InternalReq*     data;
-
+	
 	if (!m_availableRequestData.size())
 		return (NULL);
 	data = m_availableRequestData.back();

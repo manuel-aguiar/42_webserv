@@ -29,15 +29,15 @@ namespace Http
 	// must be sorted or WILL ABORT
 	static const char* headersOfInterest[] = 
 	{
-		"Accept",
-		"Accept-Encoding",
-		"Accept-Language",
-		"Connection",
-		"Content-Length",
-		"Content-Type",
-		"Host",
-		"Proxy-Connection",
-		"Transfer-Encoding",
+		"accept",
+		"accept-encoding",
+		"accept-language",
+		"connection",
+		"content-length",
+		"content-type",
+		"host",
+		"proxy-connection",
+		"transfer-encoding",
 	};
 }
 
@@ -128,11 +128,15 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	if (!keyIsValid(key) || !valueIsValid(value))			
 		return (Http::Status::BAD_REQUEST);					// bad key or value, replace with correct error code
 
-	int index = binSearch(Http::headersOfInterest, sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]), key);
+	std::string lowerCaseKey = StringUtils::strToLower(key.to_string());
+
+	int index = binSearch(Http::headersOfInterest, sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]), 
+				BufferView(lowerCaseKey));
+	
 	if (index == -1)
 		return (Http::Status::OK);							// header not in the interest list, ignore and return
 
-	m_data.headers[StringUtils::strToLower(key.to_string())] = value.to_string();			// dangerous, may include null bytes.........
+	m_data.headers[lowerCaseKey] = value.to_string();			// dangerous, may include null bytes.........
 
 	return (Http::Status::OK);
 }

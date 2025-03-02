@@ -64,6 +64,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
@@ -170,7 +171,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #####################################################
 
 clean:
-	rm -rf $(OBJ_PATH)
+	rm -rf $(OBJ_PATH) *vgcore*
 
 fclean: clean
 	rm -rf $(NAME) $(BUILD_DIR)

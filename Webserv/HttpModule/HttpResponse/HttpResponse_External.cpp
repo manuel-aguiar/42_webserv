@@ -41,9 +41,17 @@ namespace Http
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::CGI:
-				// m_processFunction = &Response::mf_processBodyCgi;
-				// m_fillFunction = &Response::mf_fillCgiResponse;
+			{
+				Http::CgiInterface& cgiInterface =
+				reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
+				m_cgiGateway = cgiInterface.acquireGateway();
+
+				ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
+				m_cgiGateway->initiateRequest(m_responseData);
+				m_fillFunction = &Response::mf_fillCgiResponse;
+				m_processFunction = &Response::mf_processBodyCgi;
 				return ;
+			}
 			case ResponseData::STATIC:
 				// mf_prepareStaticFile();
 				// m_fillFunctionBody = &Response::mf_fillStaticFile;
@@ -99,11 +107,6 @@ namespace Http
 	Http::ResponseStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-
-
-		// if cgi, call cgi to fill
-
-		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
