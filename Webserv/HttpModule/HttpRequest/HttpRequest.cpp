@@ -91,12 +91,6 @@ Request::reset()
     m_curContentPos = -1;
 }
 
-void
-Request::close()
-{
-	reset();
-}
-
 /*
 	Buffer is not const anymore,
 	if there is not enough data, Request will
@@ -110,7 +104,7 @@ Request::close()
 BufferView
 Request::parse(const BaseBuffer& buffer)
 {
-	std::cout << "parse request" << std::endl;
+	//std::cout << "parse request" << std::endl;
 	BufferView remaining(buffer.data(), buffer.size());
 
 	try

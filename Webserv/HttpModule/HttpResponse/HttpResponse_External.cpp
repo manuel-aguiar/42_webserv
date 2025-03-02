@@ -21,7 +21,7 @@ namespace Http
 {
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
-		std::cout << "receiving request data" << std::endl;
+		//std::cout << "receiving request data" << std::endl;
 		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
@@ -37,13 +37,13 @@ namespace Http
 		}
 
 		//Full debug print of wtf is going on:
-		std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
-		std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
-		std::cout << "Location: " << m_responseData.serverLocation << std::endl;
-		std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
-		std::cout << "TargetType: " << m_responseData.targetType << std::endl;
-		std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
-		std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
+		//std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
+		//std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
+		//std::cout << "Location: " << m_responseData.serverLocation << std::endl;
+		//std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
+		//std::cout << "TargetType: " << m_responseData.targetType << std::endl;
+		//std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
+		//std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
 
 		size_t contentLength = 0;
 		std::string contentType = "";
@@ -110,7 +110,7 @@ namespace Http
 	BufferView
 	Response::receiveRequestBody(const BufferView& view)
 	{
-		std::cout << "Response received body, size: " << view.size() << std::endl;
+		//std::cout << "Response received body, size: " << view.size() << std::endl;
 		return ((this->*m_processFunction)(view));
 	}
 

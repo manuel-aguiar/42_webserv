@@ -47,7 +47,6 @@ void	Worker::mf_readScript()
 
 	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
 	{
-		std::cout << "\t\t\t worker read clsoed" << std::endl;
 		if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 		{
 			//std::cout << "not finished, failing" << std::endl;
@@ -99,7 +98,6 @@ void	Worker::mf_readScript()
 	{
 		// notify user that body is ready
 		// more body data to be read
-		std::cout << "\t\t\t worker read body" << std::endl;
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
 			goto disableReadEvent;

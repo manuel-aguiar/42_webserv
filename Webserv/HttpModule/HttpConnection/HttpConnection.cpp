@@ -126,7 +126,6 @@ namespace Http
 	void
 	Connection::resetTransaction()
 	{
-		std::cout << "reset transaction called" << std::endl;
 		m_transaction.reset();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();

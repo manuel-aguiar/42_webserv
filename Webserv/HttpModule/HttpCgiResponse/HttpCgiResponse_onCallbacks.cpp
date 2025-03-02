@@ -64,21 +64,18 @@ namespace Http
 	Cgi::IO::State
 	CgiResponse::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
-		std::cout << "receiving cgi headers" << std::endl;
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
 		if (!checkForbiddenHeaders(headers.getHeaders()))
 		{
-			std::cout << "bad headers" << std::endl;
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
 			m_module.finishRequest(*m_cgiRequest, true);
 			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
-        std::cout << "filling response line?" << std::endl;
-		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 
+		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 		return (Cgi::IO::CONTINUE);
 	}
 }

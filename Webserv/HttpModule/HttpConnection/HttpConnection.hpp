@@ -46,7 +46,6 @@ namespace Http
 			void						closeConnection();
 
 			void						resetTransaction();
-			void						closeTransaction();
 
 		private:
 		

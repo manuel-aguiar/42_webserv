@@ -61,7 +61,6 @@ namespace Http
 	BufferView
 	Response::mf_processBodyCgi(const BufferView& view)
 	{
-		std::cout << "process body cgi" << std::endl;
 		ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
 		return (m_cgiResponse->sendHttpBody(view));
 	}

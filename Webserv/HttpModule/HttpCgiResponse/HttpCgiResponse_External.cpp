@@ -12,6 +12,9 @@
 
 #include <iostream>
 
+static const char* contentLengthFind = "Content-Length";
+static const char* contentTypeFind = "Content-Type";
+
 namespace Http
 {
 
@@ -25,7 +28,6 @@ namespace Http
 	BufferView
 	CgiResponse::sendHttpBody(const BufferView& view)
 	{
-		std::cout << "send body, size: " << view.size() << std::endl;
 		return ((this->*m_processHttpBody)(view));
 	}
 
@@ -86,14 +88,20 @@ namespace Http
 		// looking at location to find the interpreter
 		// m_cgiRequest->setInterpreterPath(interpreterPath); // hardcoded for now
 
+		#ifndef NDEBUG
+			std::string test = contentLengthFind;
+			ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentLengthFind), true, "contentLengthFind is not correctly formated");
+			test = contentTypeFind;
+			ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentTypeFind), true, "contentTypeFind is not correctly formated");
+		#endif
 
 		// CONTENT-LENGTH
-		finder = data.headers.find("content-length");
+		finder = data.headers.find(contentLengthFind);
 		if (finder != data.headers.end())
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, finder->second);
 
 		// CONTENT-TYPE
-		finder = data.headers.find("content-type");
+		finder = data.headers.find(contentTypeFind);
 		if (finder != data.headers.end())
 			m_cgiRequest->setEnvBase(Cgi::Env::Enum::CONTENT_TYPE, finder->second);
 

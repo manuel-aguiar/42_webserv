@@ -41,7 +41,6 @@ namespace Http
 
 		if (m_currentHeader == -1) // nothing sent yet
 		{
-            //writeBuffer.push("Connection: close\r\n", 19);
 			if (m_headers->hasBody())
 				writeBuffer.push("Transfer-Encoding: chunked\r\n", 28);
 			else
