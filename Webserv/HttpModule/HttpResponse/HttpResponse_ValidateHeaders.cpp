@@ -146,6 +146,7 @@ namespace Http
 				return (false);
 		}
 
+
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
 		= m_responseData.requestData->headers.find("connection");
 

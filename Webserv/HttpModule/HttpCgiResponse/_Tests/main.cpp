@@ -1,6 +1,6 @@
 
 #include "../../HttpResponse/HttpResponse.hpp"
-#include "../../HttpCgiGateway/HttpCgiGateway.hpp"
+#include "../../HttpCgiResponse/HttpCgiResponse.hpp"
 #include "../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 #include "../../../ServerContext/ServerContext.hpp"
@@ -49,9 +49,9 @@ void invalidScript(int& testNumber)
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
-		Http::CgiGateway 	cgiGateway(cgi);
+		Http::CgiResponse 	cgiGateway(cgi);
 
-		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiResponse::initiateRequest() - success");
 		
 		BufferView mustSend = cgiGateway.sendHttpBody(BufferView("adsghasgasgasgasgasgasgasgasgasgasg"));
 
@@ -106,9 +106,9 @@ void phpCgi_validScript(int& testNumber)
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
-		Http::CgiGateway 	cgiGateway(cgi);
+		Http::CgiResponse 	cgiGateway(cgi);
 
-		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiResponse::initiateRequest() - success");
 		
 		
 		cgiGateway.sendHttpBody(BufferView("some stupid message body that must be sent hurray"));
@@ -164,9 +164,9 @@ void php_validScript(int& testNumber)
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
-		Http::CgiGateway 	cgiGateway(cgi);
+		Http::CgiResponse 	cgiGateway(cgi);
 
-		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiResponse::initiateRequest() - success");
 		
 		
 
@@ -224,9 +224,9 @@ void py_validScript(int& testNumber)
 		responseData.targetExtension = ".php";
 		responseData.requestData = &requestData;
 		
-		Http::CgiGateway 	cgiGateway(cgi);
+		Http::CgiResponse 	cgiGateway(cgi);
 
-		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiGateway::initiateRequest() - success");
+		EXPECT_EQUAL(cgiGateway.initiateRequest(responseData), true, "CgiResponse::initiateRequest() - success");
 		
 		cgiGateway.sendHttpBody(BufferView("somestupidmessagebodythatmustbesent"));
 

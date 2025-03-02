@@ -1,6 +1,6 @@
 
 
-# include "HttpCgiGateway.hpp"
+# include "HttpCgiResponse.hpp"
 
 // C++ headers
 # include <vector>

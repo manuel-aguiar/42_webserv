@@ -41,6 +41,17 @@ namespace Http
 	};
 }
 
+bool isLowerCase(const BufferView view)
+{
+	for (size_t i = 0; i < view.size(); ++i)
+	{
+		if (view[i] >= 'A' && view[i] <= 'Z')
+			return (false);
+	}
+
+	return (true);
+}
+
 static bool isOnlySpaces(const BufferView& view)
 {
 	for (size_t i = 0; i < view.size(); ++i)
@@ -112,9 +123,13 @@ Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
+		ASSERT_EQUAL(isLowerCase(Http::headersOfInterest[0]), true, "Header key is not lower case");
 		// check if headersOfInterest is sorted and unique
 		for (size_t i = 1; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
+		{
 			ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
+			ASSERT_EQUAL(isLowerCase(Http::headersOfInterest[i]), true, "Header key is not lower case");
+		}
 	#endif
 
 	size_t colonPos = thisHeader.find(": ");

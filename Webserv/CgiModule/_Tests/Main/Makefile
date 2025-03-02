@@ -20,7 +20,7 @@ COMMON_SRCS = 	$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test1.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Main/test2.cpp \
 				\
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequest.cpp \
-				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHttpCgiGateway.cpp \
+				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHttpCgiResponse.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/TestProtoRequest/TestProtoRequestHandlers.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockLogFile.cpp \
 				$(SRC_PATH)/Webserv/CgiModule/_Tests/Mocks/MockGlobals.cpp \

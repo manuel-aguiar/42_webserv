@@ -142,7 +142,7 @@ namespace Http
     Http::ResponseStatus::Type
     Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
     {
-        ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
-        return (m_cgiGateway->fillWriteBuffer(writeBuffer));
+        ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
+        return (m_cgiResponse->fillWriteBuffer(writeBuffer));
     }
 }
