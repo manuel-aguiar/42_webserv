@@ -34,8 +34,6 @@ namespace Http
 
 	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
-		//std::cout << "\t\tResponse received view: '" << view << "'" << std::endl;
-
 		const std::string& targetFile = m_responseData.requestData->multipart_Filename;
 		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())
 			g_mockMsgBody[targetFile] = "";

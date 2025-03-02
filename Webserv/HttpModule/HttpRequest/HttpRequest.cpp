@@ -261,7 +261,7 @@ void Request::mf_prepareBodyParser()
 {
     RequestData::headerContainer::iterator contentLength = m_data.headers.find("content-length");
     RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("transfer-encoding");
-    RequestData::headerContainer::iterator contentType = m_data.headers.find("content-Type");
+    RequestData::headerContainer::iterator contentType = m_data.headers.find("content-type");
     
 	if (contentLength == m_data.headers.end() 
 	&& transferEncoding == m_data.headers.end())

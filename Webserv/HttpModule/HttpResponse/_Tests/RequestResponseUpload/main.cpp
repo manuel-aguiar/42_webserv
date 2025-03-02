@@ -83,7 +83,6 @@ void fileUpload(int& testNumber, size_t readBufSize)
             readBuffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
 
-            // parse, tell the buffer to put the unconsumed part at the beginning
             readBuffer.truncatePush(request.parse(readBuffer));
         }
 

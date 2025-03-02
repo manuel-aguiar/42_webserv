@@ -9,6 +9,7 @@
 // Project headers
 #include "HttpRequest.hpp"
 #include "../HttpResponse/HttpResponse.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C++ headers
 #include <sstream>
@@ -132,9 +133,11 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 
 		BufferView key = thisHeader.substr(0, keyPos);
-		if (key != BufferView("Content-Disposition"))
-			continue ;
+		std::string lowerKey = StringUtils::strToLower(key.to_string());
 
+		if (BufferView(lowerKey) != BufferView("content-disposition"))
+			continue ;
+		
 
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);

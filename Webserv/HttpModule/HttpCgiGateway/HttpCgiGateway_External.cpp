@@ -51,6 +51,11 @@ namespace Http
         const std::map<std::string, std::string>& interpreterMap = responseData.serverLocation->getCgiInterpreters();
         std::map<std::string, std::string>::const_iterator interpPtr = interpreterMap.find(responseData.targetExtension);
 
+		m_cgiRequest = m_module.acquireRequest();
+
+		if (!m_cgiRequest)
+			return (false);
+
         if (interpPtr == interpreterMap.end())
         {
             m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
@@ -59,10 +64,6 @@ namespace Http
             return (false);
         }
 
-		m_cgiRequest = m_module.acquireRequest();
-
-		if (!m_cgiRequest)
-			return (false);
 		
         m_cgiRequest->setTimeoutMs(10000);
 
@@ -138,6 +139,8 @@ namespace Http
 		m_module.enqueueRequest(*m_cgiRequest, true);
 
         m_processHttpBody = &CgiGateway::mf_HttpBodySend;
+
+		std::cout << "CgiGateway::initiateRequest() - success" << std::endl;
 
 		return (true);
 	}

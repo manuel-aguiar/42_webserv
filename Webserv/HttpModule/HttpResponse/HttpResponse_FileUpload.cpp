@@ -25,19 +25,12 @@ namespace Http
 	{
 		BufferView		remaining;
 		int 			bytesWritten = 0;
-
+		
 		// receive empty view, queue to EOF
 		if (view.size() == 0
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
-
-			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK 
-			
-
-			//m_fillFunction = &Response::mf_fillResponseLine;
-			//m_processFunction = &Response::mf_processBodyNone;
-
 			return (view);
 		}
 
