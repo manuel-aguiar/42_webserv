@@ -13,6 +13,7 @@ namespace Http
 	// Check file availability
 	// Check Method allowed
 	// Check Host, Accept, Connection header
+	
 	bool
 	Response::mf_validateHeaders()
 	{

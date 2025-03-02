@@ -109,6 +109,10 @@ int main(void)
 
 		EXPECT_EQUAL(assigned, "World", "should be equal to World");
 
+		BufferView test("   Hello World!   ");
+		BufferView trimmed = test.trim(BufferView(" "));
+
+		EXPECT_EQUAL(trimmed, "Hello World!", "should be equal to Hello World!");
 		TEST_PASSED_MSG("simple test");
 	}
 	catch(const std::exception& e)
@@ -116,6 +120,41 @@ int main(void)
 		TEST_FAILED_MSG(e.what());
 	}
 
+	try
+	{
+		TEST_INTRO(testNumber++);
+
+		std::string str = "\t   \r hello world!  \v  \n";
+		
+		BufferView trimmed = BufferView(str).trim(BufferView(" \t\r\n\v"));
+		EXPECT_EQUAL(trimmed, BufferView("hello world!"), "should be equal to Hello World!");
+
+		trimmed.modify_ToCapitalized();
+		EXPECT_EQUAL(trimmed, BufferView("Hello World!"), "should be equal to Hello World!");
+
+		std::string contentType = "content-type: text/html";
+		BufferView capitalized = BufferView(contentType).modify_ToCapitalized();
+		EXPECT_EQUAL(capitalized, "Content-Type: Text/Html", "should be equal to Content-Type: Text/Html");
+
+		capitalized.modify_ToUpperCase();
+
+		EXPECT_EQUAL(capitalized, "CONTENT-TYPE: TEXT/HTML", "should be equal to CONTENT-TYPE: TEXT/HTML");
+
+		capitalized.modify_ToCapitalized();
+
+		EXPECT_EQUAL(capitalized, "Content-Type: Text/Html", "should be equal to Content-Type: Text/Html");
+		
+
+		BufferView chained = BufferView(str).trim(BufferView(" \t\r\n\v")).modify_ToCapitalized();
+		EXPECT_EQUAL(chained, "Hello World!", "should be equal to Hello World!");
+
+		TEST_PASSED_MSG("trimming, modification tests");
+	}
+	catch(const std::exception& e)
+	{
+		TEST_FAILED_MSG(e.what());
+	}
+	
 	
 
 

@@ -12,6 +12,14 @@
 # include <cstdlib> //atoi
 # include  <algorithm> //max/min
 
+
+static const char* contentLengthFind = "Content-Length";
+static const char* contentTypeFind = "Content-Type";
+static const char* transferEncodingFind = "Transfer-Encoding";
+static const char* multipartFind = "multipart/form-data";
+static const char* multipartBoundaryFind = "boundary=";
+static const char* chunkedFind = "chunked";
+
 namespace Http
 {
 
@@ -230,7 +238,7 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 				m_response->receiveRequestData(m_data);
             return ((this->*m_parsingFunction)(remaining));
 		}
-		BufferView thisHeader = remaining.substr(0, headerEnd); // segregate this header
+		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
 
 		//std::cout << "\t this header line: '" << thisHeader << "'" << std::endl;
 
@@ -259,9 +267,23 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 // UNDER REVIEW
 void Request::mf_prepareBodyParser()
 {
-    RequestData::headerContainer::iterator contentLength = m_data.headers.find("content-length");
-    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find("transfer-encoding");
-    RequestData::headerContainer::iterator contentType = m_data.headers.find("content-type");
+	#ifndef NDEBUG
+		// making sure everything is correctly formatted
+		std::string test = contentLengthFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentLengthFind), true, "contentLengthFind is not correctly formated");
+		test = contentTypeFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentTypeFind), true, "contentTypeFind is not correctly formated");
+		test = transferEncodingFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(transferEncodingFind), true, "transferEncodingFind is not correctly formated");
+		test = multipartFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(multipartFind), true, "multipartFind is not correctly formated");
+		test = multipartBoundaryFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(multipartBoundaryFind), true, "multipartBoundaryFind is not correctly formated");
+	#endif
+
+    RequestData::headerContainer::iterator contentLength = m_data.headers.find(contentLengthFind);
+    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find(transferEncodingFind);
+    RequestData::headerContainer::iterator contentType = m_data.headers.find(contentTypeFind);
     
 	if (contentLength == m_data.headers.end() 
 	&& transferEncoding == m_data.headers.end())
@@ -289,9 +311,9 @@ void Request::mf_prepareBodyParser()
         m_curContentPos = 0;
         m_parsingFunction = &Request::mf_parseRegularBody;
 		if (contentType != m_data.headers.end()
-		&& contentType->second.find("multipart/form-data") != std::string::npos)
+		&& contentType->second.find(multipartFind) != std::string::npos)
 		{
-			size_t boundaryPos = contentType->second.find("boundary=");
+			size_t boundaryPos = contentType->second.find(multipartBoundaryFind);
 			if (boundaryPos == std::string::npos) {
 				return mf_handleExitFailure(Http::Status::BAD_REQUEST);
 			}
@@ -299,7 +321,7 @@ void Request::mf_prepareBodyParser()
 			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
 		}
     }
-    else if (transferEncoding->second == "chunked")
+    else if (transferEncoding->second == chunkedFind)
     {
         m_parsingFunction = &Request::mf_parseChunkedBody_GetChunk;
     }

@@ -42,9 +42,9 @@ namespace Http
 		if (m_currentHeader == -1) // nothing sent yet
 		{
 			if (m_headers->hasBody())
-				writeBuffer.push("transfer-encoding: chunked\r\n", 28);
+				writeBuffer.push("Transfer-Encoding: chunked\r\n", 28);
 			else
-				writeBuffer.push("content-length: 0\r\n", 19);
+				writeBuffer.push("Content-Length: 0\r\n", 19);
             m_currentHeader = 0;
 		}
 

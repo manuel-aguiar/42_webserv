@@ -42,11 +42,10 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 -include $(DEPS)
 
 clean:
-	rm -f $(OBJS)
-	find $(ROOT_PATH) -type d -empty -delete 2>/dev/null || true
+	rm -rf *vgcore*
 
 fclean: clean
-	rm -f $(TARGET_DEBUG)
+	rm -rf $(TARGET_DEBUG)
 
 re: fclean all
 

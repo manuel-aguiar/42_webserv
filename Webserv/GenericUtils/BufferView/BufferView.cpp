@@ -66,6 +66,73 @@ BufferView::substr(size_t startPos, size_t targetLength) const
 	return (BufferView(const_cast<char*>(m_data) + startPos, targetLength));
 }
 
+BufferView
+BufferView::trim(const BufferView trimSet) const
+{
+	size_t start = 0;
+	size_t end = m_size;
+
+	while (start < end && trimSet.find(m_data[start]) != BufferView::npos)
+		++start;
+	while (end > start && trimSet.find(m_data[end - 1]) != BufferView::npos)
+		--end;
+	return (BufferView(m_data + start, end - start));
+}
+
+BufferView
+BufferView::modify_ToLowerCase()
+{
+	char* data = const_cast<char*>(m_data);
+
+	for (size_t i = 0; i < m_size; ++i)
+	{
+		if (std::isalpha(data[i]) && std::isupper(data[i]))
+			data[i] = std::tolower(data[i]);
+	}
+	return (*this);
+}
+
+BufferView
+BufferView::modify_ToUpperCase()
+{
+	char* data = const_cast<char*>(m_data);
+
+	for (size_t i = 0; i < m_size; ++i)
+	{
+		if (std::isalpha(data[i]) && std::islower(data[i]))
+			data[i] = std::toupper(data[i]);
+	}
+	return (*this);
+}
+
+BufferView
+BufferView::modify_ToCapitalized()
+{
+	char* data = const_cast<char*>(m_data);
+
+	if (m_size > 0 && std::isalpha(data[0]) && std::islower(data[0]))
+		data[0] = std::toupper(data[0]);
+	for (size_t i = 1; i < m_size; ++i)
+	{
+		if (!std::isalpha(data[i - 1]) && std::islower(data[i]))
+			data[i] = std::toupper(data[i]);
+		else if (std::isalpha(data[i - 1]) && std::isupper(data[i]))
+			data[i] = std::tolower(data[i]);
+	}
+	return (*this);
+}
+
+bool
+BufferView::isOnlyTheseChars(const BufferView charSet) const
+{
+	for (size_t i = 0; i < m_size; ++i)
+	{
+		if (charSet.find(m_data[i]) == BufferView::npos)
+			return (false);
+	}
+	return (true);
+}
+
 size_t
 BufferView::find(char ch, size_t startPos) const
 {

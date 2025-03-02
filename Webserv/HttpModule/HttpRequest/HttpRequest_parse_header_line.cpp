@@ -29,15 +29,15 @@ namespace Http
 	// must be sorted or WILL ABORT
 	static const char* headersOfInterest[] = 
 	{
-		"accept",
-		"accept-encoding",
-		"accept-language",
-		"connection",
-		"content-length",
-		"content-type",
-		"host",
-		"proxy-connection",
-		"transfer-encoding",
+		"Accept",
+		"Accept-Encoding",
+		"Accept-Language",
+		"Connection",
+		"Content-Length",
+		"Content-Type",
+		"Host",
+		"Proxy-Connection",
+		"Transfer-Encoding",
 	};
 }
 
@@ -52,23 +52,13 @@ bool isLowerCase(const BufferView view)
 	return (true);
 }
 
-static bool isOnlySpaces(const BufferView& view)
-{
-	for (size_t i = 0; i < view.size(); ++i)
-	{
-		if (view[i] != ' ' && view[i] != '\t')
-			return (false);
-	}
-
-	return (true);
-}
 
 static bool keyIsValid(const BufferView& key)
 {
 	if (key.size() == 0)
 		return (false);
 
-	if (isOnlySpaces(key))
+	if (key.isOnlyTheseChars(" \t"))
 		return (false);
 
 	// more validation stuff here
@@ -81,7 +71,7 @@ static bool valueIsValid(const BufferView& key)
 	if (key.size() == 0)
 		return (false);
 
-	if (isOnlySpaces(key))
+	if (key.isOnlyTheseChars(" \t"))
 		return (false);
 
 	// more validation stuff here
@@ -123,12 +113,15 @@ Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
-		ASSERT_EQUAL(isLowerCase(Http::headersOfInterest[0]), true, "Header key is not lower case");
 		// check if headersOfInterest is sorted and unique
-		for (size_t i = 1; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
+		for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
 		{
-			ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
-			ASSERT_EQUAL(isLowerCase(Http::headersOfInterest[i]), true, "Header key is not lower case");
+			if (i > 0)
+				ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
+			
+			std::string copy = Http::headersOfInterest[i];
+			ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToCapitalized() == BufferView(Http::headersOfInterest[i]), 
+			true, "headersOfInterest is not correctly formated, must have no leading/trailing spaces and be capitalized");
 		}
 	#endif
 
@@ -137,21 +130,21 @@ Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 	if (colonPos == BufferView::npos)
 		return (Http::Status::BAD_REQUEST);					// bad header format, correct error code?
 
-	BufferView key = thisHeader.substr(0, colonPos);
-	BufferView value = thisHeader.substr(colonPos + 2, thisHeader.size() - colonPos - 2);
+	BufferView key = thisHeader.substr(0, colonPos).trim("\t\v\r\n ");
+	BufferView value = thisHeader.substr(colonPos + 2, thisHeader.size() - colonPos - 2).trim("\t\v\r\n ");
 
 	if (!keyIsValid(key) || !valueIsValid(value))			
 		return (Http::Status::BAD_REQUEST);					// bad key or value, replace with correct error code
 
-	std::string lowerCaseKey = StringUtils::strToLower(key.to_string());
+	key.modify_ToCapitalized();								// capitalize the key
 
 	int index = binSearch(Http::headersOfInterest, sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]), 
-				BufferView(lowerCaseKey));
+				key);
 	
 	if (index == -1)
 		return (Http::Status::OK);							// header not in the interest list, ignore and return
 
-	m_data.headers[lowerCaseKey] = value.to_string();			// dangerous, may include null bytes.........
+	m_data.headers[key.to_string()] = value.to_string();			// dangerous, may include null bytes.........
 
 	return (Http::Status::OK);
 }
