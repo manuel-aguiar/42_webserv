@@ -38,12 +38,6 @@ namespace Http
 		size_t contentLength = 0;
 		std::string contentType = "";
 
-		std::cout << m_responseData.targetPath << std::endl;
-		std::cout << m_responseData.responseType << std::endl;
-
-		m_responseData.responseType = ResponseData::CGI;
-		m_responseData.targetExtension = StringUtils::extractFileExtension(m_responseData.targetPath);
-		
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::CGI:

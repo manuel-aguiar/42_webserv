@@ -140,8 +140,6 @@ namespace Http
 
         m_processHttpBody = &CgiGateway::mf_HttpBodySend;
 
-		std::cout << "CgiGateway::initiateRequest() - success" << std::endl;
-
 		return (true);
 	}
 
