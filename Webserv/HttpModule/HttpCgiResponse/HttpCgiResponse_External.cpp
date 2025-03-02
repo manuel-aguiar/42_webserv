@@ -56,6 +56,11 @@ namespace Http
 		if (!m_cgiRequest)
 			return (false);
 
+		m_cgiRequest = m_module.acquireRequest();
+
+		if (!m_cgiRequest)
+			return (false);
+
         if (interpPtr == interpreterMap.end())
         {
             m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
