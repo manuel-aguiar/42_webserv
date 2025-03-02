@@ -11,6 +11,7 @@
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 
 namespace Http { class CgiResponse;}
+namespace Http { class CgiResponse;}
 namespace Cgi { class Module;}
 
 namespace Http

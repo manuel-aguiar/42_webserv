@@ -2,6 +2,7 @@
 
 # include "HttpCgiInterface.hpp"
 # include "../HttpCgiResponse/HttpCgiResponse.hpp"
+# include "../HttpCgiResponse/HttpCgiResponse.hpp"
 
 namespace Http
 {
