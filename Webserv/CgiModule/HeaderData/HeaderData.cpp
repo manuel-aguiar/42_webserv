@@ -10,6 +10,10 @@
 
 # include <iostream>            //DEBUG, erase afterwards
 
+static const char* cgiStatusFind = "Status";
+static const char* cgiContentTypeFind = "Content-Type";
+static const char* cgiLocationFind = "Location";
+
 template<typename T>
 int binSearch(const std::vector<T>& target, const T& value)
 {
@@ -98,8 +102,8 @@ HeaderData::mf_validateHeaders()
 		}
 	}
 
-	int contentType = binSearch(m_headers, Cgi::Header("content-type", ""));
-	int location    = binSearch(m_headers, Cgi::Header("location", ""));
+	int contentType = binSearch(m_headers, Cgi::Header(cgiContentTypeFind, ""));
+	int location    = binSearch(m_headers, Cgi::Header(cgiLocationFind, ""));
 
 	if (m_statusCode == -1 && contentType == -1 && location == -1)
 	{
@@ -119,6 +123,15 @@ HeaderData::mf_validateHeaders()
 HeaderData::Status
 HeaderData::mf_parseHeaders(BufferView& receivedView)
 {
+	#ifndef NDEBUG
+		std::string test = cgiStatusFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiStatusFind), true, "cgiStatusFind is not correctly formated");
+		test = cgiContentTypeFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiContentTypeFind), true, "cgiContentTypeFind is not correctly formated");
+		test = cgiLocationFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiLocationFind), true, "cgiLocationFind is not correctly formated");
+	#endif
+
 	BufferView remaining = receivedView;
 	const BufferView CgiDelimiter = BufferView(CGI_LINE_SEPARATOR, std::strlen(CGI_LINE_SEPARATOR));
 	const BufferView headedSeparator = BufferView(CGI_HEADER_SEPARATOR, std::strlen(CGI_HEADER_SEPARATOR));
@@ -181,15 +194,12 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 		if (pos_Separator == BufferView::npos)
 			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
 	
-		BufferView key = line.substr(0, pos_Separator);
-		BufferView value = line.substr(pos_Separator + headedSeparator.size(), line.size() - pos_Separator - headedSeparator.size());
+		BufferView key = line.substr(0, pos_Separator).trim(" \t\v\n\r").modify_ToCapitalized();
+		BufferView value = line.substr(pos_Separator + headedSeparator.size(), line.size() - pos_Separator - headedSeparator.size()).trim(" \t\v\n\r");
 		
-		toLowerCase(key);
-
 		//std::cout << "key:\t\t\t\t '" << key << "', length: " << key.size() << std::endl;
 		//std::cout << "value:\t\t\t\t '" << value << "', length: " << value.size() << std::endl;
-
-		if (key == BufferView("status"))
+		if (key == BufferView(cgiStatusFind))
 		{
 			if (m_statusCode != -1)
 				return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE)); // doubled status header

@@ -18,11 +18,11 @@ namespace Conn { class Connection; }
 
 namespace Http
 {
-	class CgiGateway
+	class CgiResponse
 	{
 		public:
-			CgiGateway(Cgi::Module& module);
-			~CgiGateway();
+			CgiResponse(Cgi::Module& module);
+			~CgiResponse();
 
 			void					reset();
 			void					close();
@@ -43,8 +43,8 @@ namespace Http
 
 		private:
 			
-			typedef Http::ResponseStatus::Type 	(CgiGateway::*FillFunction)(BaseBuffer& writeBuffer);
-			typedef BufferView					(CgiGateway::*ProcessHttpBody)(const BufferView& view);
+			typedef Http::ResponseStatus::Type 	(CgiResponse::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef BufferView					(CgiResponse::*ProcessHttpBody)(const BufferView& view);
 
 			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
@@ -72,10 +72,8 @@ namespace Http
 			ProcessHttpBody				m_processHttpBody;
 			FillFunction				m_fillFunction;
 
-
-			CgiGateway(const CgiGateway& other);
-			CgiGateway& operator=(const CgiGateway& other);
-
+			CgiResponse(const CgiResponse& other);
+			CgiResponse& operator=(const CgiResponse& other);
 
 	};
 

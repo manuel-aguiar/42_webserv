@@ -4,7 +4,7 @@
 
 // Project headers
 # include "../HttpDefinitions.hpp"
-# include "../HttpCgiGateway/HttpCgiGateway.hpp"
+# include "../HttpCgiResponse/HttpCgiResponse.hpp"
 # include "../../Ws_Namespace.h"
 # include "../../GenericUtils/Files/File.hpp"
 
@@ -100,7 +100,7 @@ namespace Http
 			ProcessBodyFunction			m_processFunction;
 			size_t						m_staticReadCounter;
 			File						m_file;
-			Http::CgiGateway*			m_cgiGateway;
+			Http::CgiResponse*			m_cgiResponse;
 			std::map<std::string, std::string>::iterator	m_currentHeader; // index of the current header to be writter
 	};
 }

@@ -47,7 +47,8 @@ int BaseBuffer::readAppend(const Ws::fd fd)
 
 int BaseBuffer::write(Ws::fd fd, int startIndex)
 {
-    ASSERT_EQUAL((size_t)startIndex < m_size, true, "BaseBuffer::write(): starting index is beyond current buffer size");
+    if (startIndex >= (int)m_size)
+        return (0);
 
     int bytesWritten = ::write(fd, m_begin + startIndex, m_size - startIndex);
     

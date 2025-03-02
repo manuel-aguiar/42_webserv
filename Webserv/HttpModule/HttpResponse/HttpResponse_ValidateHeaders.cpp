@@ -13,6 +13,7 @@ namespace Http
 	// Check file availability
 	// Check Method allowed
 	// Check Host, Accept, Connection header
+	
 	bool
 	Response::mf_validateHeaders()
 	{
@@ -145,6 +146,7 @@ namespace Http
 				m_responseData.responseType = ResponseData::ERROR;
 				return (false);
 		}
+
 
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
 		= m_responseData.requestData->headers.find("connection");

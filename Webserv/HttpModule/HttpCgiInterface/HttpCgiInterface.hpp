@@ -10,31 +10,32 @@
 # include "../../../Toolkit/Arrays/HeapCircularQueue/HeapCircularQueue.hpp"
 # include "../../../Toolkit/Arrays/HeapArray/HeapArray.hpp"
 
-namespace Http { class CgiGateway;}
+namespace Http { class CgiResponse;}
+namespace Http { class CgiResponse;}
 namespace Cgi { class Module;}
 
 namespace Http
 {
-    class CgiInterface
-    {
-        public:
-            CgiInterface(Cgi::Module& cgiModule, const size_t numberOfResponses);
-            ~CgiInterface();
+	class CgiInterface
+	{
+		public:
+			CgiInterface(Cgi::Module& cgiModule, const size_t numberOfResponses);
+			~CgiInterface();
 
-            Http::CgiGateway*   acquireGateway();
-            void                releaseGateway(Http::CgiGateway& gateway);
+			Http::CgiResponse*   acquireGateway();
+			void                releaseGateway(Http::CgiResponse& gateway);
 
-        private:
-            Cgi::Module&                            m_cgiModule;
-            HeapArray<Http::CgiGateway>             m_cgiGateways;
-            HeapCircularQueue<Http::CgiGateway*>    m_availableGateways;
+		private:
+			Cgi::Module&                                m_cgiModule;
+			HeapArray<Http::CgiResponse>                m_cgiGateways;
+			HeapCircularQueue<Http::CgiResponse*>       m_availableGateways;
 
-            CgiInterface(const CgiInterface& other);
-            CgiInterface& operator=(const CgiInterface& other);
-    };
+			CgiInterface(const CgiInterface& other);
+			CgiInterface& operator=(const CgiInterface& other);
+	};
 
 
-    
+	
 }
 
 

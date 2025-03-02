@@ -1,6 +1,6 @@
 
 
-# include "HttpCgiGateway.hpp"
+# include "HttpCgiResponse.hpp"
 # include "CgiHandlers.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
@@ -22,17 +22,17 @@ namespace Http
 	//           -> engage the fill function pointers
 
 	BufferView
-	CgiGateway::sendHttpBody(const BufferView& view)
+	CgiResponse::sendHttpBody(const BufferView& view)
 	{
 		return ((this->*m_processHttpBody)(view));
 	}
 
 
 	Http::ResponseStatus::Type
-	CgiGateway::fillWriteBuffer(BaseBuffer& writeBuffer)
+	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		// still processing body, can't start writing the response yet
-		if (m_processHttpBody != &CgiGateway::mf_HttpBodyNone)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
 		{
 			//std::cout << "receiving body, waiting" << std::endl;
 			return (Http::ResponseStatus::WAITING);
@@ -42,7 +42,7 @@ namespace Http
 	}
 
 	bool
-	CgiGateway::initiateRequest(const Http::ResponseData& responseData)
+	CgiResponse::initiateRequest(const Http::ResponseData& responseData)
 	{
 		const Http::RequestData& data = *responseData.requestData;
 
@@ -51,18 +51,24 @@ namespace Http
         const std::map<std::string, std::string>& interpreterMap = responseData.serverLocation->getCgiInterpreters();
         std::map<std::string, std::string>::const_iterator interpPtr = interpreterMap.find(responseData.targetExtension);
 
-        if (interpPtr == interpreterMap.end())
-        {
-            m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
-            m_statusCode = Http::Status::BAD_GATEWAY;
-            m_fillFunction = &CgiGateway::mf_fillErrorResponse;
-            return (false);
-        }
+		m_cgiRequest = m_module.acquireRequest();
+
+		if (!m_cgiRequest)
+			return (false);
 
 		m_cgiRequest = m_module.acquireRequest();
 
 		if (!m_cgiRequest)
 			return (false);
+
+        if (interpPtr == interpreterMap.end())
+        {
+            m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
+            m_statusCode = Http::Status::BAD_GATEWAY;
+            m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+            return (false);
+        }
+
 		
         m_cgiRequest->setTimeoutMs(10000);
 
@@ -137,7 +143,7 @@ namespace Http
 		
 		m_module.enqueueRequest(*m_cgiRequest, true);
 
-        m_processHttpBody = &CgiGateway::mf_HttpBodySend;
+        m_processHttpBody = &CgiResponse::mf_HttpBodySend;
 
 		return (true);
 	}

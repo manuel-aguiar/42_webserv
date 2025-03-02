@@ -1,15 +1,8 @@
 # FINAL TODO
 
-- File Download (manuel)                        -> ETA 28-02           (DONE)
-- Cgi message passing in (manuel)               -> ETA 28-02
-- Cgi message passing out (manuel)              -> ETA 28-02
-- HttpResponse output (manuel)                  -> ETA 01-03 maybe 
 - HttpConnection revision and Timers (manuel)   -> ETA 01-03 maybe 
 
 - BlockFinder, locate target resource (rafa)
-
-- HttpRequest recheck error messages and header parsing requirements (raj)
-
 
 Unnassigned:
 

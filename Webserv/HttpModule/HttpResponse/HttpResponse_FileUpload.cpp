@@ -25,19 +25,12 @@ namespace Http
 	{
 		BufferView		remaining;
 		int 			bytesWritten = 0;
-
+		
 		// receive empty view, queue to EOF
 		if (view.size() == 0
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
-
-			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK 
-			
-
-			//m_fillFunction = &Response::mf_fillResponseLine;
-			//m_processFunction = &Response::mf_processBodyNone;
-
 			return (view);
 		}
 
@@ -68,7 +61,7 @@ namespace Http
 	BufferView
 	Response::mf_processBodyCgi(const BufferView& view)
 	{
-		ASSERT_EQUAL(m_cgiGateway != NULL, true, "Response: CgiGateway not set");
-		return (m_cgiGateway->sendHttpBody(view));
+		ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
+		return (m_cgiResponse->sendHttpBody(view));
 	}
 }

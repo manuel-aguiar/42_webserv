@@ -9,11 +9,16 @@
 // Project headers
 #include "HttpRequest.hpp"
 #include "../HttpResponse/HttpResponse.hpp"
+#include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 // C++ headers
 #include <sstream>
 #include <cstdlib>
 #include <climits>
+
+static const char* contentDispositionFind = "Content-Disposition";
+static const char* contentDispositionNameFind = "name=\"";
+static const char* contentDispositionFilenameFind = "filename=\"";
 
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
@@ -58,7 +63,6 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	if (requestLine.find(boundaryView, 0) != 2) // must have boundary at position 2
 		return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 
-
 	// success, move to next pointer
 	m_parsingFunction = &Request::mf_parseMultipartBody_Headers;
 	return (mf_parseMultipartBody_Headers(remaining));
@@ -69,6 +73,15 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 */
 BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& currentView)
 {
+	#ifdef NDEBUG
+		std::string test = contentDispositionFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentDispositionFind), true, "contentDispositionFind is not correctly formated");
+		test = contentDispositionNameFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(contentDispositionNameFind), true, "contentDispositionNameFind is not correctly formated");	
+		test = contentDispositionFilenameFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(contentDispositionFilenameFind), true, "contentDispositionFilenameFind is not correctly formated");
+	#endif
+
 	const BufferView delimiter("\r\n", 2);
 	BufferView remaining = currentView;
 
@@ -117,7 +130,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			m_parsingFunction = &Request::mf_parseMultipartBody_Content;
 			return (mf_parseMultipartBody_Content(remaining));
 		}
-		BufferView thisHeader = remaining.substr(0, headerEnd); // segregate this header
+		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
 
 		//std::cout << "\t\t\t\theader: ->" << thisHeader << "<-" << std::endl;
 
@@ -131,14 +144,14 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 		if (keyPos == BufferView::npos)
 			return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 
-		BufferView key = thisHeader.substr(0, keyPos);
-		if (key != BufferView("Content-Disposition"))
+		BufferView key = thisHeader.substr(0, keyPos).trim(" \r\v\t\n").modify_ToCapitalized();
+
+		if (key != BufferView(contentDispositionFind))
 			continue ;
-
-
+		
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			size_t nameStart = value.find("name=\"");
+			size_t nameStart = value.find(contentDispositionNameFind);
 			if (nameStart == BufferView::npos)
 				return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 			value = value.substr(nameStart + 6, value.size() - nameStart - 6);
@@ -150,7 +163,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		{	// getting the "filename" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			size_t nameStart = value.find("filename=\"");
+			size_t nameStart = value.find(contentDispositionFilenameFind);
 			if (nameStart == BufferView::npos)
 				return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 			value = value.substr(nameStart + 10, value.size() - nameStart - 10);

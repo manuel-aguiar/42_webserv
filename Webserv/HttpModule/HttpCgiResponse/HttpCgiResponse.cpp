@@ -1,6 +1,6 @@
 
 
-# include "HttpCgiGateway.hpp"
+# include "HttpCgiResponse.hpp"
 # include "CgiHandlers.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
@@ -15,7 +15,7 @@ extern const char* getStatusMessage(int statusCode);
 
 namespace Http
 {
-	CgiGateway::CgiGateway(Cgi::Module& module)
+	CgiResponse::CgiResponse(Cgi::Module& module)
 		: m_module(module)
 		, m_cgiRequest(NULL)
 		, m_canRead(false)
@@ -25,11 +25,11 @@ namespace Http
 		, m_statusCode(-1)
 		, m_headers(NULL)
 		, m_currentHeader(-1)
-		, m_processHttpBody(&CgiGateway::mf_HttpBodyNone)
-		, m_fillFunction(&CgiGateway::mf_fillNothingToSend) {}
+		, m_processHttpBody(&CgiResponse::mf_HttpBodyNone)
+		, m_fillFunction(&CgiResponse::mf_fillNothingToSend) {}
 
 	void
-	CgiGateway::close()
+	CgiResponse::close()
 	{
 		if (m_cgiRequest)
 			m_module.finishRequest(*m_cgiRequest, true);
@@ -38,7 +38,7 @@ namespace Http
 	}
 
 	void
-	CgiGateway::reset()
+	CgiResponse::reset()
 	{
 		m_cgiRequest = NULL;
 		m_canRead = false;
@@ -49,12 +49,12 @@ namespace Http
 		m_statusCode = -1;
 		m_headers = NULL;
 		m_currentHeader = -1;
-		m_processHttpBody = &CgiGateway::mf_HttpBodyNone;
-		m_fillFunction = &CgiGateway::mf_fillNothingToSend;
+		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+		m_fillFunction = &CgiResponse::mf_fillNothingToSend;
 	}
 		
-	CgiGateway::~CgiGateway() { close();}
-	CgiGateway::CgiGateway(const CgiGateway& other)
+	CgiResponse::~CgiResponse() { close();}
+	CgiResponse::CgiResponse(const CgiResponse& other)
 		: m_module(other.m_module)
 		, m_canRead(other.m_canRead)
 		, m_canWrite(other.m_canWrite)
@@ -66,8 +66,8 @@ namespace Http
 		, m_processHttpBody(other.m_processHttpBody)
 		, m_fillFunction(other.m_fillFunction) {}
 
-	CgiGateway&
-	CgiGateway::operator=(const CgiGateway& other)
+	CgiResponse&
+	CgiResponse::operator=(const CgiResponse& other)
 	{
 		if (this == &other)
 			return (*this);

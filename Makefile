@@ -64,6 +64,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
@@ -79,14 +80,14 @@ SRCS 					=																			\
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_External.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Helpers.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_onCallbacks.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_ProcessHttpBody.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/CgiHandlers.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp \
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
 																									\
@@ -170,7 +171,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #####################################################
 
 clean:
-	rm -rf $(OBJ_PATH)
+	rm -rf $(OBJ_PATH) *vgcore*
 
 fclean: clean
 	rm -rf $(NAME) $(BUILD_DIR)

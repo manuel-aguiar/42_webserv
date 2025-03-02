@@ -109,13 +109,17 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 		// preparing ServerContext;
 		ServerContext	context;
 		BlockFinder		blockFinder(blockFinderEntryCount(config));
-		Http::Module	httpModule(config.getMaxConnections(), context);
+
 		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals); // NOT ADDED YET
+		context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);		
+		
+		// NOT ADDED YET
+		Http::Module	httpModule(config.getMaxConnections(), context);
+
 
 		blockFinder.loadServerBlocks(config.getServerBlocks());
 
 		context.setAppLayer(Ws::AppLayer::HTTP, &httpModule, &Http::Module::InitConnection);
-		//context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);													// NOT ADDED YET
 		context.setBlockFinder(blockFinder);
 		context.setGlobals(globals);
 		context.setServerConfig(config);

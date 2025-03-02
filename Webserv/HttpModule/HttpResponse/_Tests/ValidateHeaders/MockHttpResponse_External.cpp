@@ -64,8 +64,8 @@ namespace Http
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
-		if (m_cgiGateway)
-			m_cgiGateway->reset();
+		if (m_cgiResponse)
+			m_cgiResponse->reset();
 	}
 
 	void
