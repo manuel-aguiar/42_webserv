@@ -41,7 +41,7 @@ namespace Http
 	};
 }
 
-static bool isLowerCase(const BufferView view)
+bool isLowerCase(const BufferView view)
 {
 	for (size_t i = 0; i < view.size(); ++i)
 	{
