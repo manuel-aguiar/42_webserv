@@ -1,6 +1,6 @@
 
 
-# include "HttpCgiGateway.hpp"
+# include "HttpCgiResponse.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
@@ -13,14 +13,14 @@ extern std::string  generateDefaultErrorPage(int statusCode, const std::string& 
 namespace Http
 {
     Http::ResponseStatus::Type
-    CgiGateway::mf_fillNothingToSend(BaseBuffer& writeBuffer)
+    CgiResponse::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
         return (Http::ResponseStatus::WAITING);
     }
 
     Http::ResponseStatus::Type
-    CgiGateway::mf_fillResponseLine(BaseBuffer& writeBuffer)
+    CgiResponse::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
         writeBuffer.push("HTTP/1.1 ", 9);
         writeBuffer.push(StringUtils::to_string(m_statusCode).c_str(), StringUtils::to_string(m_statusCode).size());
@@ -29,12 +29,12 @@ namespace Http
         writeBuffer.push("\r\n", 2);
 
         // go to next stage
-        m_fillFunction = &CgiGateway::mf_fillHeaders;
+        m_fillFunction = &CgiResponse::mf_fillHeaders;
         return (mf_fillHeaders(writeBuffer));
     }
 
 	Http::ResponseStatus::Type
-	CgiGateway::mf_fillHeaders(BaseBuffer& writeBuffer)
+	CgiResponse::mf_fillHeaders(BaseBuffer& writeBuffer)
 	{
 		int current;
 		const std::vector<Cgi::Header>& headers = m_headers->getHeaders();
@@ -79,7 +79,7 @@ namespace Http
         if (m_headers->hasBody())
         {
             // go to next stage
-            m_fillFunction = &CgiGateway::mf_fillBodyTemp;
+            m_fillFunction = &CgiResponse::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
         }
         return (Http::ResponseStatus::FINISHED);
@@ -106,7 +106,7 @@ namespace Http
     }
 
     Http::ResponseStatus::Type
-    CgiGateway::mf_fillBodyTemp(BaseBuffer& writeBuffer)
+    CgiResponse::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
         BufferView tempBody = m_headers->getTempBody();
 
@@ -129,14 +129,14 @@ namespace Http
     startBodyStream:
 
         // go to next stage
-        m_fillFunction = &CgiGateway::mf_fillBodyStream;
+        m_fillFunction = &CgiResponse::mf_fillBodyStream;
         return (mf_fillBodyStream(writeBuffer));
     }
 
 
 
     Http::ResponseStatus::Type
-    CgiGateway::mf_fillBodyStream(BaseBuffer& writeBuffer)
+    CgiResponse::mf_fillBodyStream(BaseBuffer& writeBuffer)
     {
         int scriptBytesRead = 0;
         char hexHeader[10] = {0};
@@ -161,7 +161,7 @@ namespace Http
 
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
 
-            m_fillFunction = &CgiGateway::mf_fillNothingToSend;
+            m_fillFunction = &CgiResponse::mf_fillNothingToSend;
 
             return (Http::ResponseStatus::FINISHED);
         }
@@ -175,7 +175,7 @@ namespace Http
     }
 
     Http::ResponseStatus::Type
-	CgiGateway::mf_fillErrorResponse(BaseBuffer& writeBuffer)
+	CgiResponse::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
         std::string codeStr = StringUtils::to_string(m_statusCode);
         std::string errorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");

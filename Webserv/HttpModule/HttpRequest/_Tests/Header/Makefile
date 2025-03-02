@@ -51,14 +51,14 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_External.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_onCallbacks.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_ProcessHttpBody.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Helpers.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/CgiHandlers.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
 								\

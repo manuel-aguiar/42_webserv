@@ -1,7 +1,7 @@
 
 
 # include "HttpCgiInterface.hpp"
-# include "../HttpCgiGateway/HttpCgiGateway.hpp"
+# include "../HttpCgiResponse/HttpCgiResponse.hpp"
 
 namespace Http
 {
@@ -41,18 +41,18 @@ namespace Http
         return (*this);
     }
 
-    Http::CgiGateway*
+    Http::CgiResponse*
     CgiInterface::acquireGateway()
     {
         if (m_availableGateways.size() == 0)
             return (NULL);
-        Http::CgiGateway* gateway = m_availableGateways.front();
+        Http::CgiResponse* gateway = m_availableGateways.front();
         m_availableGateways.pop_front();
         return (gateway);
     }
 
     void
-    CgiInterface::releaseGateway(Http::CgiGateway& gateway)
+    CgiInterface::releaseGateway(Http::CgiResponse& gateway)
     {
         // check if belongs to this interface
         ASSERT_EQUAL(&gateway >= &m_cgiGateways[0] && &gateway <= &m_cgiGateways[m_cgiGateways.size() - 1], true, "CgiInterface::releaseGateway() - gateway out of range");

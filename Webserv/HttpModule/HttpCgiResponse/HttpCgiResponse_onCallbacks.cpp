@@ -1,7 +1,7 @@
 
 
 
-# include "HttpCgiGateway.hpp"
+# include "HttpCgiResponse.hpp"
 # include "CgiHandlers.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
@@ -19,23 +19,23 @@ namespace Http
 
 
 	void
-	CgiGateway::onCgiSuccess()
+	CgiResponse::onCgiSuccess()
 	{
 		// dunno yet
 	}
 
 	void
-	CgiGateway::onCgiError()
+	CgiResponse::onCgiError()
 	{
         //std::cout << "onerror received" << std::endl;
 		// must check if i am already sending data back
         //std::cout << "received errpor" << std::endl;
 		m_statusCode = Http::Status::INTERNAL_ERROR;
-		m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+		m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 	}
 
 	Cgi::IO::State
-	CgiGateway::onCgiRead(const Ws::fd readFd)
+	CgiResponse::onCgiRead(const Ws::fd readFd)
 	{
 		m_readFd = readFd;
 		m_canRead = true;
@@ -43,13 +43,13 @@ namespace Http
 	}
 
 	Cgi::IO::State
-	CgiGateway::onCgiWrite(const Ws::fd writeFd)
+	CgiResponse::onCgiWrite(const Ws::fd writeFd)
 	{
 		m_writeFd = writeFd;
 		m_canWrite = true;
 
 		// not sending anything anymore, may close write
-		if (m_processHttpBody != &CgiGateway::mf_HttpBodySend)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
 		{
 			m_writeFd = Ws::FD_NONE;			
 			m_canWrite = false;
@@ -59,7 +59,7 @@ namespace Http
 	}
 
 	Cgi::IO::State
-	CgiGateway::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
+	CgiResponse::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
@@ -68,11 +68,11 @@ namespace Http
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
 			m_module.finishRequest(*m_cgiRequest, true);
 			m_statusCode = Http::Status::BAD_GATEWAY;
-			m_fillFunction = &CgiGateway::mf_fillErrorResponse;
+			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
         //std::cout << "filling response line?" << std::endl;
-		m_fillFunction = &CgiGateway::mf_fillResponseLine;
+		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 
 		return (Cgi::IO::CONTINUE);
 	}
