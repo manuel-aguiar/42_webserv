@@ -113,7 +113,6 @@ Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
 	#ifndef NDEBUG
-		ASSERT_EQUAL(isLowerCase(Http::headersOfInterest[0]), true, "Header key is not lower case");
 		// check if headersOfInterest is sorted and unique
 		for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
 		{
