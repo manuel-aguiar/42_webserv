@@ -72,10 +72,8 @@ namespace Http
 			ProcessHttpBody				m_processHttpBody;
 			FillFunction				m_fillFunction;
 
-
 			CgiResponse(const CgiResponse& other);
 			CgiResponse& operator=(const CgiResponse& other);
-
 
 	};
 
