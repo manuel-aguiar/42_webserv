@@ -62,9 +62,9 @@ void fileUpload(int& testNumber, size_t readBufSize)
 
 		std::string requestHeader = 
 		"POST /upload HTTP/1.1\r\n"
-		"Host: example.com\r\n"
-		"Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
-		"Content-Length: " + TestHelpers::to_string(requestBodyMultipart.size()) + "\r\n"
+		"hoSt: example.com\r\n"
+		"ConTEnt-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+		"contenT-lenGth: " + TestHelpers::to_string(requestBodyMultipart.size()) + "\r\n"
 		"\r\n";
 	
 		std::string fullRequest = requestHeader + requestBodyMultipart;

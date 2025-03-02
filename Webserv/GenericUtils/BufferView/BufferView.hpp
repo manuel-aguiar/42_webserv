@@ -21,12 +21,19 @@ class BufferView
 
 
         const char* data() const;
-        size_t 	size() const;
+        size_t 	    size() const;
 
         const char& operator[](size_t startPos) const;
         const char& at(size_t startPos) const;
 
         BufferView substr(size_t startPos, size_t targetLength) const;
+        BufferView trim(const BufferView trimSet) const;       
+
+        BufferView modify_ToLowerCase();
+        BufferView modify_ToUpperCase();
+        BufferView modify_ToCapitalized();
+
+        bool isOnlyTheseChars(const BufferView charSet) const;
 
         size_t find(char ch, size_t startPos = 0) const;
         size_t find(const char* target, size_t targetLength, size_t startPos = 0) const;

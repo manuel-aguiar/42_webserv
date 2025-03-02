@@ -107,12 +107,12 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
 
 int main()
 {
-    TEST_HEADER("Http Request - Chunked Body");
+    TEST_HEADER("Http Request - Multipart Body");
     int testNumber = 1;
     chunkedReadBuffer(testNumber, 73);
-    //for (size_t i = 73; i < 123; ++i)
-    //    chunkedReadBuffer(testNumber, i);
-    //chunkedReadBuffer(testNumber, 1024);
+    for (size_t i = 73; i < 123; ++i)
+        chunkedReadBuffer(testNumber, i);
+    chunkedReadBuffer(testNumber, 1024);
     TEST_FOOTER;
     return 0;
 }
