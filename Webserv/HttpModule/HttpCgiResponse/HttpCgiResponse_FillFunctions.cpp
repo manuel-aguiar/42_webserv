@@ -41,6 +41,7 @@ namespace Http
 
 		if (m_currentHeader == -1) // nothing sent yet
 		{
+            //writeBuffer.push("Connection: close\r\n", 19);
 			if (m_headers->hasBody())
 				writeBuffer.push("Transfer-Encoding: chunked\r\n", 28);
 			else
@@ -142,6 +143,18 @@ namespace Http
         char hexHeader[10] = {0};
         const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
 
+        if (m_readFd == Ws::FD_NONE)
+        {
+            size_t currentPosition = writeBuffer.size();
+            writeBuffer.push(hexHeader, hexHeaderSize);
+            fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
+            hexHeader[hexHeaderSize - 2] = '\r';
+            hexHeader[hexHeaderSize - 1] = '\n';
+            std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            m_fillFunction = &CgiResponse::mf_fillNothingToSend;
+            return (Http::ResponseStatus::FINISHED);
+        }
+
         if (!m_canRead)
             return (Http::ResponseStatus::WAITING);
             
@@ -155,14 +168,10 @@ namespace Http
         if (scriptBytesRead == 0)
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
-
             hexHeader[hexHeaderSize - 2] = '\r';
             hexHeader[hexHeaderSize - 1] = '\n';
-
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
-
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
-
             return (Http::ResponseStatus::FINISHED);
         }
 
@@ -170,7 +179,6 @@ namespace Http
         std::memcpy(&writeBuffer[currentPosition], hexHeader, 10);
 
         m_canRead = false;
-
         return (Http::ResponseStatus::WRITING);
     }
 

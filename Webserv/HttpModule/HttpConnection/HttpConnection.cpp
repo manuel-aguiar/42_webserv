@@ -111,6 +111,7 @@ namespace Http
 		m_writeTimer = Timer();
 
 		resetTransaction();
+		m_transaction.response.close();
 
 		m_module.returnConnection(*this);
 
@@ -125,6 +126,7 @@ namespace Http
 	void
 	Connection::resetTransaction()
 	{
+		std::cout << "reset transaction called" << std::endl;
 		m_transaction.reset();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();

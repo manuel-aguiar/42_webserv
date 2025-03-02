@@ -31,6 +31,7 @@ namespace Http
 			Http::ResponseStatus::Type	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
 			void    					reset(); // reset the response to its initial state
+			void						close(); // close the response, no more data to be sent
 
 			Http::ResponseStatus::Type	getStatus() const;
 			ResponseData				getResponseData() const; // mainly for testing

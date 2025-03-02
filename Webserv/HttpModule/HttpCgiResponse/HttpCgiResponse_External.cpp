@@ -10,6 +10,7 @@
 
 # include <unistd.h> // write
 
+#include <iostream>
 
 namespace Http
 {
@@ -24,6 +25,7 @@ namespace Http
 	BufferView
 	CgiResponse::sendHttpBody(const BufferView& view)
 	{
+		std::cout << "send body, size: " << view.size() << std::endl;
 		return ((this->*m_processHttpBody)(view));
 	}
 
@@ -31,12 +33,14 @@ namespace Http
 	Http::ResponseStatus::Type
 	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
+		//std::cout << "cgi fillWriteBuffer" << std::endl;
 		// still processing body, can't start writing the response yet
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
 		{
 			//std::cout << "receiving body, waiting" << std::endl;
 			return (Http::ResponseStatus::WAITING);
 		}
+		//std::cout << "can start writing" << std::endl;
 		//std::cout << "can start writing" << std::endl;
 		return ((this->*m_fillFunction)(writeBuffer));
 	}

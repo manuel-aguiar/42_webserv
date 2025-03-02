@@ -21,6 +21,7 @@ namespace Http
 {
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
+		std::cout << "receiving request data" << std::endl;
 		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
@@ -109,6 +110,7 @@ namespace Http
 	BufferView
 	Response::receiveRequestBody(const BufferView& view)
 	{
+		std::cout << "Response received body, size: " << view.size() << std::endl;
 		return ((this->*m_processFunction)(view));
 	}
 
@@ -143,8 +145,14 @@ namespace Http
 			cgiInterface.releaseGateway(*m_cgiResponse);
 		}
 		m_cgiResponse = NULL;
-		m_connAddress = NULL;
 	}
+
+	void
+	Response::close()
+	{
+		reset();
+		m_connAddress = NULL;
+	}	
 
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)

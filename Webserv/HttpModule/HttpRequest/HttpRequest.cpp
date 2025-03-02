@@ -91,6 +91,12 @@ Request::reset()
     m_curContentPos = -1;
 }
 
+void
+Request::close()
+{
+	reset();
+}
+
 /*
 	Buffer is not const anymore,
 	if there is not enough data, Request will
@@ -104,6 +110,7 @@ Request::reset()
 BufferView
 Request::parse(const BaseBuffer& buffer)
 {
+	std::cout << "parse request" << std::endl;
 	BufferView remaining(buffer.data(), buffer.size());
 
 	try
@@ -233,9 +240,11 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 			// \r\n found at the beginning: end of headers, move to BODY
 			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
 			m_parsingState = BODY;
-			mf_prepareBodyParser(); // next handler is body
+
 			if (m_response)
 				m_response->receiveRequestData(m_data);
+
+			mf_prepareBodyParser(); // next handler is body
             return ((this->*m_parsingFunction)(remaining));
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header

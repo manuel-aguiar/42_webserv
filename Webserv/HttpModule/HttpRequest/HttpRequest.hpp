@@ -45,7 +45,7 @@ namespace Http
 			Request& operator=(const Request& assign);
 
 			void										reset(); // reset the request to its initial state
-
+			void										close();
 			// Main parsing interface
 			BufferView 									parse(const BaseBuffer& buffer);
 
