@@ -21,9 +21,9 @@ static const char* contentDispositionNameFind = "name=\"";
 static const char* contentDispositionFilenameFind = "filename=\"";
 
 #ifndef NDEBUG
-	int testHeadersOfInterest();
+	static int testHeadersOfInterest();
 	static const int g_testHeadersOfInterest = testHeadersOfInterest();
-	int testHeadersOfInterest()
+	static int testHeadersOfInterest()
 	{
 		std::string test = contentDispositionFind;
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() 

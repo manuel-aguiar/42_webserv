@@ -15,6 +15,21 @@
 static const char* contentLengthFind = "Content-Length";
 static const char* contentTypeFind = "Content-Type";
 
+
+#ifndef NDEBUG
+	static int testHeadersOfInterest();
+	static const int g_testHeadersOfInterest = testHeadersOfInterest();
+	static int testHeadersOfInterest()
+	{
+		std::string test = contentLengthFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentLengthFind), true, "contentLengthFind is not correctly formated");
+		test = contentTypeFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentTypeFind), true, "contentTypeFind is not correctly formated");
+		return (0);
+	}
+	
+#endif
+
 namespace Http
 {
 
@@ -90,12 +105,6 @@ namespace Http
 		// looking at location to find the interpreter
 		// m_cgiRequest->setInterpreterPath(interpreterPath); // hardcoded for now
 
-		#ifndef NDEBUG
-			std::string test = contentLengthFind;
-			ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentLengthFind), true, "contentLengthFind is not correctly formated");
-			test = contentTypeFind;
-			ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentTypeFind), true, "contentTypeFind is not correctly formated");
-		#endif
 
 		// CONTENT-LENGTH
 		finder = data.headers.find(contentLengthFind);

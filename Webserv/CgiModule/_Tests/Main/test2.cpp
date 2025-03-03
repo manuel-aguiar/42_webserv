@@ -90,7 +90,6 @@ void scriptTest(int& testNumber, const std::string& scriptPath, const std::strin
 		// tests
 		EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Manager still has events");
 		EXPECT_EQUAL(cgi.getBusyWorkerCount(), 0, "Cgi::Module still has workers rolling");
-		std::cout << protoRequest.m_buffer.view() << std::endl;
 		EXPECT_EQUAL(protoRequest.m_CgiResultStatus, expected, "ProtoRequest didn't receive success notice");
 
 

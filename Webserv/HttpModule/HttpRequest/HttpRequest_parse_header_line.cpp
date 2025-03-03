@@ -31,11 +31,11 @@ namespace Http
 
 	#ifndef NDEBUG
 
-		int testHeadersOfInterest();
+		static int testHeadersOfInterest();
 
 		static const int g_testHeadersOfInterest = testHeadersOfInterest();
 
-		int testHeadersOfInterest()
+		static int testHeadersOfInterest()
 		{
 			for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
 			{
