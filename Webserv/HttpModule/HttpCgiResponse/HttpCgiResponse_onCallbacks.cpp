@@ -68,6 +68,7 @@ namespace Http
 		std::cout << "received headers, code: " << headers.getStatusCode() << std::endl;
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
+		m_tempBody = headers.getTempBody();
 		if (m_statusCode != Cgi::RequestConsts::Status::SUCCESS
 		||	!checkForbiddenHeaders(headers.getHeaders()))
 		{

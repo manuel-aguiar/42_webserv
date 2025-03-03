@@ -24,6 +24,7 @@ namespace Http
 		, m_writeFd(Ws::FD_NONE) 
 		, m_statusCode(-1)
 		, m_headers(NULL)
+		, m_tempBody()	
 		, m_currentHeader(-1)
 		, m_processHttpBody(&CgiResponse::mf_HttpBodyNone)
 		, m_fillFunction(&CgiResponse::mf_fillNothingToSend) {}
@@ -48,6 +49,7 @@ namespace Http
 
 		m_statusCode = -1;
 		m_headers = NULL;
+		m_tempBody = BufferView();
 		m_currentHeader = -1;
 		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
 		m_fillFunction = &CgiResponse::mf_fillNothingToSend;
@@ -62,6 +64,7 @@ namespace Http
 		, m_writeFd(other.m_writeFd)
 		, m_statusCode(other.m_statusCode)
 		, m_headers(other.m_headers)
+		, m_tempBody()
 		, m_currentHeader(other.m_currentHeader)
 		, m_processHttpBody(other.m_processHttpBody)
 		, m_fillFunction(other.m_fillFunction) {}
@@ -80,6 +83,7 @@ namespace Http
 		m_writeFd = other.m_writeFd;
 		m_statusCode = other.m_statusCode;
 		m_headers = other.m_headers;
+		m_tempBody = other.m_tempBody;
 		m_currentHeader = other.m_currentHeader;
 		m_processHttpBody = other.m_processHttpBody;
 		m_fillFunction = other.m_fillFunction;

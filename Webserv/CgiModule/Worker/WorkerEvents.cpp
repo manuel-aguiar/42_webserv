@@ -107,7 +107,7 @@ void	Worker::mf_readScript()
 	return ;
 
 	disableReadEvent:
-
+		std::cout << "read disabled" << std::endl;
 		mf_disableCloseMyEvent(*m_readEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 			mf_waitChild();	

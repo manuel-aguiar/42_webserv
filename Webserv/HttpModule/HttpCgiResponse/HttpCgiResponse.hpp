@@ -67,6 +67,7 @@ namespace Http
 
 			int							m_statusCode;
 			const Cgi::HeaderData* 		m_headers;
+			BufferView					m_tempBody;
 			int							m_currentHeader;
 
 			ProcessHttpBody				m_processHttpBody;

@@ -108,26 +108,38 @@ namespace Http
     Http::ResponseStatus::Type
     CgiResponse::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
-        BufferView tempBody = m_headers->getTempBody();
-
+        BufferView  thisPush;
+        size_t      thisPushSize;
         char        hexHeader[10] = {0};
         const int   hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
         int         currentPosition;
 
-        if (tempBody.size() == 0)
+        if (m_tempBody.size() == 0)
             goto startBodyStream;
-        if (writeBuffer.available() < tempBody.size() + hexHeaderSize + 2) // 2 \r\n after chunk
+        if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::ResponseStatus::WAITING); // no room
         
         currentPosition = writeBuffer.size();
-
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
-        fillHexHeader(hexHeader, hexHeaderSize, tempBody.size());
-        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
-        writeBuffer.push(tempBody.data(), tempBody.size());
-        writeBuffer.push("\r\n", 2);
-    startBodyStream:
+        thisPushSize = std::min(writeBuffer.available() - 2, m_tempBody.size());
 
+        fillHexHeader(hexHeader, hexHeaderSize, thisPushSize);
+        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+        
+        thisPush = m_tempBody.substr(0, thisPushSize);
+        std::cout << "thisPush size: " << thisPush.size() << ", vs temp size: " << m_tempBody.size() << std::endl;
+        if (thisPush.size() == m_tempBody.size())
+            m_tempBody = BufferView();
+        else
+            m_tempBody = m_tempBody.substr(thisPushSize, m_tempBody.size() - thisPushSize);
+
+        writeBuffer.push(thisPush);
+        writeBuffer.push("\r\n", 2);
+
+        return (Http::ResponseStatus::WRITING);
+
+    startBodyStream:
+        std::cout << "start body stream" << std::endl;
         // go to next stage
         m_fillFunction = &CgiResponse::mf_fillBodyStream;
         return (mf_fillBodyStream(writeBuffer));
