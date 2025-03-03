@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <arpa/inet.h>
 #include <cstdlib>
+#include <cstdio>
 
 // Test Variable from mockHttpResponse_ValidateHeaders.cpp
 extern bool g_returnValue;
@@ -493,11 +494,17 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().clearMethods();
 		block1.accessLocations().back().addMethod("DELETE");
 		buffer.push("DELETE /todelete.txt HTTP/1.1\r\nHost: example.com\r\n\r\n");
+
+		std::string filePath = std::string(rootPath) + "/Testfiles/todelete.txt";
 		
+		// Create file to delete
+		FILE *file = fopen(filePath.c_str(), "w");
+		fclose(file);
+
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::NO_CONTENT, "RequestStatus should be 204 NO CONTENT");
 			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Html file DELETE request");
 		}

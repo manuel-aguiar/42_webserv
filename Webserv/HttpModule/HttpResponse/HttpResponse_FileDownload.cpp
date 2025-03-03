@@ -5,33 +5,24 @@
 
 namespace Http
 {
+	bool
+	Response::mf_prepareStaticFile(const char* path)
+	{
+		ASSERT_EQUAL(m_file.fd() == Ws::FD_NONE, true, "Response: File should not open");
 
+		if (!m_file.open(path, O_RDONLY, 0666))
+		{
+			// We need to think this through
+			m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+			m_responseData.responseType = ResponseData::ERROR;
+			m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
+			m_fillFunction = &Response::mf_fillDefaultPage;
+			return (false);
+		}
 
-    Http::ResponseStatus::Type
-	Response::mf_prepareStaticFile(BaseBuffer& writeBuffer)
-    {
-        ASSERT_EQUAL(m_file.fd() == Ws::FD_NONE, true, "Response: File should not open");
-
-        if (!m_file.open(m_responseData.targetPath.c_str(), O_RDONLY, 0666))
-        {
-            m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
-            m_fillFunction = &Response::mf_fillErrorResponse;
-            return (Http::ResponseStatus::FINISHED);
-        }
-        //writeBuffer.push("HTTP/1.1 200 OK\r\n", 17);
-        //writeBuffer.push("Content-Length: ", 16);
-        //writeBuffer.push(BufferView(StringUtils::to_string(m_file.size())));
-        //writeBuffer.push("\r\n", 2);
-        //writeBuffer.push("Content-Type: text/html\r\n", 25);
-		// TODO: add content-type	
-        //writeBuffer.push("Connection: close\r\n", 19);
-
-		// End of headers
-        //writeBuffer.push("\r\n", 2);
-
-        m_fillFunction = &Response::mf_sendStaticFile;
-        return (mf_sendStaticFile(writeBuffer));
-    }
+		m_fillFunction = &Response::mf_fillResponseLine;
+		return (true);
+	}
 
 	Http::ResponseStatus::Type
 	Response::mf_sendStaticFile(BaseBuffer& writeBuffer)

@@ -13,6 +13,7 @@
 extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
+extern std::string 	getMimeType(const std::string &path);
 
 namespace Http
 {

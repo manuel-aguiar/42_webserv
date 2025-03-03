@@ -1,5 +1,0 @@
-this
-file
-
-contains
-text
