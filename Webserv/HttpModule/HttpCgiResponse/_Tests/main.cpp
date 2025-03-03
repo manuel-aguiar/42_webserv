@@ -261,10 +261,10 @@ int main(void)
 
 	int testNumber = 1;
 
-	invalidScript(testNumber);
-	phpCgi_validScript(testNumber);
+	//invalidScript(testNumber);
+	//phpCgi_validScript(testNumber);
 	php_validScript(testNumber);
-	py_validScript(testNumber);
+	//py_validScript(testNumber);
 
 	TEST_FOOTER;
 

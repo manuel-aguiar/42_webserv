@@ -76,6 +76,32 @@ namespace Cgi
 			const char* const SERVER_SOFTWARE = "SERVER_SOFTWARE";
 		}
 	}
+
+	namespace RequestConsts
+	{
+		namespace Header
+		{
+			const char* const Status = "Status";
+			const char* const ContentType = "Content-Type";
+			const char* const Location = "Location";
+		}
+		namespace Separator
+		{
+			const char* const Line = "\n";
+			const char* const Header = ": ";
+			const char* const Value = "; ";
+			const char* const HttpLine = "\r\n";			
+		}
+		namespace Status
+		{
+			enum
+			{
+				SUCCESS = 200,
+				FAILURE = 500				
+			};
+		}
+	}
+
 	typedef Cgi::Env::Enum				CgiEnvEnum;
 
 	struct EnvVariables

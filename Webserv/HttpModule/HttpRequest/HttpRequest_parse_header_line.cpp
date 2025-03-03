@@ -10,19 +10,8 @@
 #include "HttpRequest.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
-
+#include "../../../Toolkit/Assert/StaticAssert/StaticAssert.h"
 // C++ headers
-#include <sstream>
-
-// Edge cases:
-// split \r \n between two reads "http/1.1 \r" + "\n"
-// "http " + "1.1 \r\n"
-// add a filter for headers of interest here
-// probably add a byte buffer to cache intermediary leftover data
-// ideally, nginx way of having multiple buffers
-
-
-// headers we care, all others are discarded
 
 namespace Http
 {
@@ -39,17 +28,28 @@ namespace Http
 		"Proxy-Connection",
 		"Transfer-Encoding",
 	};
-}
 
-bool isLowerCase(const BufferView view)
-{
-	for (size_t i = 0; i < view.size(); ++i)
-	{
-		if (view[i] >= 'A' && view[i] <= 'Z')
-			return (false);
-	}
+	#ifndef NDEBUG
 
-	return (true);
+		int testHeadersOfInterest();
+
+		static const int g_testHeadersOfInterest = testHeadersOfInterest();
+
+		int testHeadersOfInterest()
+		{
+			for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
+			{
+				if (i > 0)
+					ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
+				
+				std::string copy = Http::headersOfInterest[i];
+				ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToCapitalized() == BufferView(Http::headersOfInterest[i]), 
+				true, "headersOfInterest is not correctly formated, must have no leading/trailing spaces and be capitalized");
+			}
+			return (0);
+		}
+	#endif
+
 }
 
 
@@ -112,19 +112,6 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 Http::Status::Number
 Http::Request::mf_parseHeaders(const BufferView &thisHeader)
 {
-	#ifndef NDEBUG
-		// check if headersOfInterest is sorted and unique
-		for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
-		{
-			if (i > 0)
-				ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
-			
-			std::string copy = Http::headersOfInterest[i];
-			ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToCapitalized() == BufferView(Http::headersOfInterest[i]), 
-			true, "headersOfInterest is not correctly formated, must have no leading/trailing spaces and be capitalized");
-		}
-	#endif
-
 	size_t colonPos = thisHeader.find(": ");
 
 	if (colonPos == BufferView::npos)
