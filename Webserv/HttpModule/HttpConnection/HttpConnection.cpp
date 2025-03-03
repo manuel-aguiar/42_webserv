@@ -99,7 +99,7 @@ namespace Http
 	void
 	Connection::closeConnection()
 	{
-		std::cout << "closing connection" << std::endl;
+		std::cout << "\t\t" <<  this << " closing connection" << std::endl;
 		logDisconnection(*m_tcpConn->accessServerContext().getGlobals(), *m_tcpConn);
 		m_tcpConn->events_stopMonitoring(true);
 
@@ -117,11 +117,13 @@ namespace Http
 		m_module.returnConnection(*this);
 
 		if (m_tcpConn == NULL)
+		{
+			std::cout << "\t\t" <<  this << " closing connection, tcpConn is already NULL" << std::endl;
 			return ;
-
-		m_tcpConn->close();
+		}
+		Conn::Connection* tcpConn = m_tcpConn;
 		m_tcpConn = NULL;
-
+		tcpConn->close();
 	}
 
 	void

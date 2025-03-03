@@ -9,6 +9,7 @@
 # include "../../Connections/Connection/Connection.hpp"
 
 # include <cstdlib> // exit, DELETE
+# include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 namespace Http
 {
@@ -30,7 +31,7 @@ Connection::mf_read(const Ws::fd fd)
 void
 Connection::ReadWrite()
 {
-    ASSERT_EQUAL(m_tcpConn != NULL, true, "HttpConnection::ReadWrite(): m_tcpConn is NULL, event subscribed without owning a tcp connection");
+    ASSERT_EQUAL(m_tcpConn != NULL, true, std::string("HttpConnection::ReadWrite(): m_tcpConn is NULL, ") + StringUtils::to_string(this));
 
     Events::Monitor::Mask triggeredEvents = m_tcpConn->events_getTriggeredEvents();
     Ws::fd sockfd = m_tcpConn->info_getFd();
@@ -70,10 +71,16 @@ Connection::ReadWrite()
         return ;
     }
     // ask response for data
-    switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
+
+    Http::ResponseStatus::Type status = m_transaction.response.fillWriteBuffer(m_writeBuffer);
+    if (m_writeBuffer.size() != 0)
+        std::cout << m_writeBuffer.view() << std::endl;
+
+    switch (status)
     {
         case Http::ResponseStatus::FINISHED:
         {	
+            
             m_writeBuffer.write(sockfd);
 
             if (m_writeBuffer.size() == 0)

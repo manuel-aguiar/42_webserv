@@ -74,24 +74,22 @@ namespace Http
         const std::map<std::string, std::string>& interpreterMap = responseData.serverLocation->getCgiInterpreters();
         std::map<std::string, std::string>::const_iterator interpPtr = interpreterMap.find(responseData.targetExtension);
 
-		m_cgiRequest = m_module.acquireRequest();
-
-		if (!m_cgiRequest)
-			return (false);
-
-		m_cgiRequest = m_module.acquireRequest();
-
-		if (!m_cgiRequest)
-			return (false);
-
+		
         if (interpPtr == interpreterMap.end())
         {
-            m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
-            m_statusCode = Http::Status::BAD_GATEWAY;
+			m_statusCode = Http::Status::BAD_GATEWAY;
             m_fillFunction = &CgiResponse::mf_fillErrorResponse;
             return (false);
         }
 
+		std::cout << "\t\t\t" << "gateway " << this << " acquired request " << m_cgiRequest << std::endl;
+		
+		m_cgiRequest = m_module.acquireRequest();
+
+		ASSERT_EQUAL(m_cgiRequest != NULL, true, "CgiResponse::initiateRequest(): failed to acquire request");
+		
+		if (!m_cgiRequest)
+			return (false);
 		
         m_cgiRequest->setTimeoutMs(10000);
 

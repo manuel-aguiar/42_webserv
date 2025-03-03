@@ -31,7 +31,7 @@ namespace Http
         //std::cout << "onerror received" << std::endl;
 		// must check if i am already sending data back
         //std::cout << "received errpor" << std::endl;
-
+		std::cout << "\t\t\t" << "gateway " << this << " returning request " << m_cgiRequest << "  on Callback error " << std::endl;
 		m_module.finishRequest(*m_cgiRequest, true);
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
@@ -76,7 +76,10 @@ namespace Http
 		{
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
 			if (m_statusCode == Cgi::RequestConsts::Status::SUCCESS)
+			{
+				std::cout << "\t\t\t" << "gateway " << this << " returning request " << m_cgiRequest << "  on headers error " << std::endl;
 				m_module.finishRequest(*m_cgiRequest, true);
+			}
 			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);

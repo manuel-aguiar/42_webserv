@@ -84,7 +84,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
@@ -172,10 +172,10 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #####################################################
 
 clean:
-	rm -rf $(OBJ_PATH) *vgcore*
+	rm -rf *vgcore*
 
 fclean: clean
-	rm -rf $(NAME) $(BUILD_DIR)
+	rm -rf $(NAME) $(OBJ_PATH)
 
 re: fclean all
 

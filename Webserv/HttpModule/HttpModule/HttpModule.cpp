@@ -40,12 +40,14 @@ Module::acquireConnection()
         return (NULL);
     Http::Connection* connection = m_availableConnections.front();
     m_availableConnections.pop_front();
+    std::cout << "\t\t" <<  connection << " was acquired" << std::endl;
     return (connection);
 }
 
 void
 Module::returnConnection(Http::Connection& connection)
 {
+    std::cout << "\t\t" <<  &connection << " was returned" << std::endl;
     m_availableConnections.push_back(&connection);
 }
 

@@ -56,6 +56,7 @@ void	Worker::mf_readScript()
 		mf_disableCloseMyEvent(*m_readEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 			mf_waitChild();	
+		std::cerr << "worker sending fd -1" << std::endl;
 		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 	}
 
@@ -103,6 +104,7 @@ void	Worker::mf_readScript()
 	{
 		// notify user that body is ready
 		// more body data to be read
+		std::cerr << "naturally sending body, fd: " << m_readEvent->getFd() << std::endl;
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
 		{

@@ -54,11 +54,15 @@ void	Worker::mf_waitChild()
 
 	if ((WIFEXITED(status) && WEXITSTATUS(status) != 0) || WIFSIGNALED(status))
 	{
+		
 		mf_accessGlobals().logError("InternalCgiWorker::mf_executeChild(), child exited with status: " + StringUtils::to_string(status));
 		mf_recycleRuntimeFailure();
 	}
 	else
+	{
+		std::cerr << "recycle success" << std::endl;
 		mf_recycleSuccess();
+	}
 }
 
 void 	Worker::mf_closeFd(Ws::fd& fd)

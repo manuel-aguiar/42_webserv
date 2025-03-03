@@ -158,6 +158,11 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 	ASSERT_EQUAL(internal >= m_allRequestData.getArray() && internal <= m_allRequestData.getArray() + m_allRequestData.size(), true, 
 	"ImplModule::enqueueRequest(), request was not supplied by this Module");
 
+	#ifndef NDEBUG
+		for (size_t i = 0; i < m_availableRequestData.size(); ++i)
+			ASSERT_EQUAL(m_availableRequestData[i] != internal, true, "ImplModule::finishRequest(), request is already available");
+	#endif
+
 	state = internal->getState();
 	
 	switch (state)

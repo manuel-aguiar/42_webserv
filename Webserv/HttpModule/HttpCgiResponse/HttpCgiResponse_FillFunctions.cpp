@@ -88,6 +88,7 @@ namespace Http
             m_fillFunction = &CgiResponse::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
         }
+        std::cout << "\t\t\t" << "gateway " << this << " returning request " << m_cgiRequest << " at no message body " << std::endl;
         m_module.finishRequest(*m_cgiRequest, true);
         return (Http::ResponseStatus::FINISHED);
     }
@@ -163,6 +164,9 @@ namespace Http
             if (writeBuffer.available() < 5)
                 return (Http::ResponseStatus::WAITING); // no room for 0\r\n\r\n
             writeBuffer.push("0\r\n\r\n", 5);
+            std::cout << "\t\t\t" << "gateway " << this << " returning request " << m_cgiRequest << " (at read fd -1) " <<  std::endl;
+            m_module.finishRequest(*m_cgiRequest, true);
+            std::cout << "called for finish request" << std::endl;
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }
@@ -183,6 +187,8 @@ namespace Http
             hexHeader[hexHeaderSize - 2] = '\r';
             hexHeader[hexHeaderSize - 1] = '\n';
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            std::cout << "\t\t\t" << "gateway " << this << " returning request " << m_cgiRequest  << " (at read 0 bytes) " << std::endl;
+            m_module.finishRequest(*m_cgiRequest, true);
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }

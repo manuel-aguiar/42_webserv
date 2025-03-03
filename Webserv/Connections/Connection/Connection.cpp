@@ -48,7 +48,7 @@ namespace Conn
 	{
 		ASSERT_EQUAL(m_connManager != NULL, true, "Connection::close(), connManager is NULL");
 		//std::cout << "Connection::close()" << std::endl;
-		m_monitor.unsubscribe(false);
+		m_monitor.unsubscribe(true);
 		if (m_peerInfo.sockfd != Ws::FD_NONE)
 		{
 			::close(m_peerInfo.sockfd);

@@ -56,6 +56,7 @@ namespace Http
         writeBuffer.push("\r\n", 2);
         writeBuffer.push("Content-Type: text/html\r\n", 25);
 		writeBuffer.push("\r\n", 2);
+        
         m_fillFunction = &CgiResponse::mf_fillErrorDefaultPage;
         return (mf_fillErrorDefaultPage(writeBuffer));
 	}

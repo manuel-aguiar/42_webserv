@@ -58,7 +58,7 @@ namespace Http
 
 			// buffers
 			Buffer<1024>										m_readBuffer;
-			Buffer<1024>											m_writeBuffer;
+			Buffer<150>											m_writeBuffer;
 
 
 			int													mf_read(const Ws::fd fd);
