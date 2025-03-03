@@ -54,7 +54,6 @@ namespace Http
 
 				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
 
-				std::cout << "response acquired gateway " << m_cgiResponse << std::endl;
 				m_cgiResponse->initiateRequest(m_responseData);
 				m_fillFunction = &Response::mf_fillCgiResponse;
 				m_processFunction = &Response::mf_processBodyCgi;
@@ -170,7 +169,6 @@ namespace Http
 		{
 			Http::CgiInterface& cgiInterface =
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
-			std::cout << "response releasing gateway " << m_cgiResponse << std::endl;
 			cgiInterface.releaseGateway(*m_cgiResponse);
 			m_cgiResponse = NULL;
 		}

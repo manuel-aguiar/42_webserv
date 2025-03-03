@@ -36,6 +36,13 @@ void	Worker::mf_failSendHeaders()
 	mf_recycleRuntimeFailure();
 }
 
+void	Worker::mf_disableAndWait(Events::Subscription& myEvent)
+{
+	mf_disableCloseMyEvent(myEvent, true);
+	if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
+		mf_waitChild();
+}
+
 void	Worker::mf_readScript()
 {
 	int 					bytesRead = 0;
@@ -43,20 +50,12 @@ void	Worker::mf_readScript()
 	Cgi::IO::State 			state;
 	
 	triggeredEvents = m_readEvent->getTriggeredEvents();
-	////std::cout << "\t\t\tread called" << std::endl;
 
 	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
 	{
-		//std::cout << "hangup without read, end of output" << std::endl;
 		if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
-		{
-			//std::cout << "not finished, failing" << std::endl;
 			return (mf_failSendHeaders());
-		}
-		mf_disableCloseMyEvent(*m_readEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();	
-		std::cerr << "worker sending fd -1" << std::endl;
+		mf_disableAndWait(*m_readEvent);
 		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 	}
 
@@ -65,62 +64,35 @@ void	Worker::mf_readScript()
 
 	if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 	{
-		// headers didn't fit the buffer, inform the user of failure and abort
 		if (m_headerBuffer.size() == m_headerBuffer.capacity())
-		{
-			//std::cout << "buffer full failing" << std::endl;
 			return (mf_failSendHeaders());
-		}
 
 		bytesRead = m_headerBuffer.read(m_readEvent->getFd(), m_headerBuffer.size());
 		
 		ASSERT_EQUAL(bytesRead != -1, true, "InternalCgiWorker::mf_readScript(): bytesread should never be -1");
 
 		if (bytesRead == 0)
-		{
-			//std::cout << "eof without headers finished, failing" << std::endl;
 			return (mf_failSendHeaders());
-		}
 
 		Cgi::HeaderData::Status headerStatus = m_headerParser.parse(m_headerBuffer);
-		//std::cout << "header status: " << headerStatus << std::endl;
 		if (headerStatus != Cgi::HeaderData::NEED_MORE_DATA)
 		{
 			state = (m_curRequestData->getReceiveHeaders_Callback())(m_curRequestData->getUser(), m_headerParser);
 			if (headerStatus == Cgi::HeaderData::FAIL)
 			{
-				//std::cout << "header failed" << std::endl;
 				mf_recycleRuntimeFailure();
 				return ;
 			}
 			if (state == Cgi::IO::CLOSE)
-			{
-				//std::cout << "header state close" << std::endl;
-				goto disableReadEvent;
-			}
+				return (mf_disableAndWait(*m_readEvent));
 		}
 	}
 	else
 	{
-		// notify user that body is ready
-		// more body data to be read
-		std::cerr << "naturally sending body, fd: " << m_readEvent->getFd() << std::endl;
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
-		{
-			//std::cout << "body state close" << std::endl;
-			goto disableReadEvent;
-		}
+			return (mf_disableAndWait(*m_readEvent));
 	}
-
-
-	return ;
-
-	disableReadEvent:
-		//std::cout << "read disabled" << std::endl;
-		mf_disableCloseMyEvent(*m_readEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();	
 }
 
 void	Worker::mf_writeScript()
@@ -128,23 +100,17 @@ void	Worker::mf_writeScript()
 	Events::Monitor::Mask 	triggeredEvents;
 	Cgi::IO::State 			state;
 	
-	////std::cout << "\t\t\twrite called" << std::endl;
-
 	triggeredEvents = m_writeEvent->getTriggeredEvents();
 	
-	// error, disable straight away
 	if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
 	{
-		// trick.... tell the user to write, they fail, and start ignoring
 		(m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
-		goto disableWriteEvent;
+		return (mf_disableAndWait(*m_writeEvent));
 	}
 	
-	// no write, return
 	if (!(triggeredEvents & Events::Monitor::WRITE))
 		return ;
 
-	// ask the user to write and report on what it needs
 	state = (m_curRequestData->getWriteToScript_Callback())(m_curRequestData->getUser(), m_writeEvent->getFd());
 	
 	switch (state)
@@ -152,19 +118,8 @@ void	Worker::mf_writeScript()
 		case Cgi::IO::CONTINUE:
 			return ;
 		case Cgi::IO::CLOSE:
-		{
-			////std::cout << "received indication to close" << std::endl;
-			goto disableWriteEvent;
-		}
+			return (mf_disableAndWait(*m_writeEvent));
 	}
-
-	return ;
-
-	disableWriteEvent:
-		////std::cout << "write disabled" << std::endl;
-		mf_disableCloseMyEvent(*m_writeEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();
 }
 
 

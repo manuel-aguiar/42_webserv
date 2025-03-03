@@ -86,8 +86,6 @@ namespace Http
 
 		m_cgiRequest = m_module.acquireRequest();
 		
-		std::cout << "\t\t\t" << "gateway " << this << " acquired request " << m_cgiRequest << std::endl;
-
 		ASSERT_EQUAL(m_cgiRequest != NULL, true, "CgiResponse::initiateRequest(): failed to acquire request");
 		
 		if (!m_cgiRequest)

@@ -4,7 +4,6 @@
 # include "../InternalReq/InternalReq.hpp"
 # include "ImplModule.hpp"
 
-
 void
 ImplModule::mf_returnWorker(Worker& worker)
 {

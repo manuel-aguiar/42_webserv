@@ -36,10 +36,16 @@ namespace Http
 	void
 	CgiResponse::close()
 	{
+		mf_finishAndRelease();
+		reset();
+	}
+
+	void
+	CgiResponse::mf_finishAndRelease()
+	{
 		if (m_cgiRequest)
 			m_module.finishRequest(*m_cgiRequest, true);
 		m_cgiRequest = NULL;
-		reset();
 	}
 
 	void

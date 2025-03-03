@@ -61,6 +61,8 @@ namespace Http
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);
 			BufferView					mf_HttpBodySend(const BufferView& view);	
 
+			void						mf_finishAndRelease();
+
 			Cgi::Module& 				m_module;
 			Cgi::Request* 				m_cgiRequest;
 

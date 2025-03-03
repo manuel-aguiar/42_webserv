@@ -105,12 +105,9 @@ HeaderData::mf_validateHeaders()
 HeaderData::Status
 HeaderData::mf_parseHeaders(BufferView& receivedView)
 {
-
 	BufferView remaining = receivedView;
 	const BufferView CgiDelimiter = BufferView(Cgi::RequestConsts::Separator::Line, std::strlen(Cgi::RequestConsts::Separator::Line));
 	const BufferView headerSeparator = BufferView(Cgi::RequestConsts::Separator::Header, std::strlen(Cgi::RequestConsts::Separator::Header));
-
-	
 
 	if (remaining.size() == 0)
 		return (HeaderData::NEED_MORE_DATA);
@@ -126,19 +123,14 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 
 		m_findPivot = 0;
 		
-		// second newline right at the beginning
 		if ((pos_LineEnd == 0 || (pos_LineEnd == 1 && remaining[0] == '\r'))
 		&& m_state != HeaderData::START)
 		{
-			//std::cout << "\t\t\t exiting heaer parsing" << std::endl;
 			m_totalParsedBytes += CgiDelimiter.size();
 			remaining = remaining.substr(pos_LineEnd + CgiDelimiter.size(), remaining.size() - pos_LineEnd - CgiDelimiter.size());
 	
 			if (mf_validateHeaders() == HeaderData::FAIL)
-			{
-				//std::cout << "header validation failed" << std::endl;
 				return (HeaderData::FAIL);
-			}
 
 			if (remaining.size() > 0)
 			{
@@ -155,7 +147,6 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 	
 		BufferView line = remaining.substr(0, pos_LineEnd);
 
-		// trim, php-cgi already output \r\n........... not CGI spec, requires just \n
 		bool isHttpTerminated = false;
 		if (line[line.size() - 1] == '\r')
 		{
@@ -171,8 +162,6 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 		BufferView key = line.substr(0, pos_Separator).trim(" \t\v\n\r").modify_ToCapitalized();
 		BufferView value = line.substr(pos_Separator + headerSeparator.size(), line.size() - pos_Separator - headerSeparator.size()).trim(" \t\v\n\r");
 		
-		//std::cout << "key:\t\t\t\t '" << key << "', length: " << key.size() << std::endl;
-		//std::cout << "value:\t\t\t\t '" << value << "', length: " << value.size() << std::endl;
 		if (key == BufferView(Cgi::RequestConsts::Header::Status))
 		{
 			if (m_statusCode != -1)
@@ -196,7 +185,6 @@ HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 {
 	BufferView view = BufferView(buffer.data() + m_totalParsedBytes, buffer.size() - m_totalParsedBytes);
 
-
 	if (view.size() == 0 || m_lastBufferSize == (int)buffer.size())
 	{
 		if (m_state != HeaderData::FINISH)
@@ -207,7 +195,7 @@ HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 	m_lastBufferSize = buffer.size();
 
 	HeaderData::Status retStatus = mf_parseHeaders(view);
-	//std::cout << "retStatus: " << retStatus << std::endl;
+	
 	if (retStatus != HeaderData::NEED_MORE_DATA)
 		return (retStatus);
 

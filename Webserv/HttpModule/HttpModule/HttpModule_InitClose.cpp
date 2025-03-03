@@ -49,7 +49,6 @@ namespace Http
         "Http::Module::InitConnection - failed to acquire connection, there should be connections available for everyone");
 
         httpConnection->setMyTCP(connection);
-        std::cout << "\t\t" << httpConnection << " was assigned Connection: " << &connection << std::endl;
         connection.appLayer_setCloseCallback(Http::Module::ForcedClose);
         connection.appLayer_setConn(httpConnection);
 
