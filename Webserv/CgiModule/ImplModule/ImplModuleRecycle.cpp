@@ -58,7 +58,7 @@ ImplModule::mf_recycleRequestData(InternalReq& data)
 		m_timerTracker.erase(timer);
 
 	data.reset();
-
+	std::cout << &data <<" cgirequest placed on available" << std::endl;
 	m_availableRequestData.push_back(&data);
 }
 
@@ -77,6 +77,8 @@ ImplModule::mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale)
 	
 	worker->stop();
 	mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR);
+	mf_recycleWorker(*worker, markFdsAsStale);
+	mf_recycleRequestData(data);
 }
 
 void

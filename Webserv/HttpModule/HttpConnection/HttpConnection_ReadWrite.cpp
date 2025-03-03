@@ -73,8 +73,8 @@ Connection::ReadWrite()
     // ask response for data
 
     Http::ResponseStatus::Type status = m_transaction.response.fillWriteBuffer(m_writeBuffer);
-    if (m_writeBuffer.size() != 0)
-        std::cout << m_writeBuffer.view() << std::endl;
+    //if (m_writeBuffer.size() != 0)
+    //    std::cout << m_writeBuffer.view() << std::endl;
 
     switch (status)
     {

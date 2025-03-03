@@ -82,9 +82,11 @@ namespace Http
             return (false);
         }
 
-		std::cout << "\t\t\t" << "gateway " << this << " acquired request " << m_cgiRequest << std::endl;
-		
+		ASSERT_EQUAL(m_cgiRequest == NULL, true, "CgiResponse::initiateRequest(): already had a request");
+
 		m_cgiRequest = m_module.acquireRequest();
+		
+		std::cout << "\t\t\t" << "gateway " << this << " acquired request " << m_cgiRequest << std::endl;
 
 		ASSERT_EQUAL(m_cgiRequest != NULL, true, "CgiResponse::initiateRequest(): failed to acquire request");
 		
