@@ -95,10 +95,11 @@ void	CgiStressTest::ValidShell(TestProtoRequest& proto, int index)
 void	CgiStressTest::ValidPHP(TestProtoRequest& proto, int index)
 {
 	(void)index;
-	proto.m_CgiRequestData->setInterpreterPath("/usr/bin/php");
+	proto.m_CgiRequestData->setInterpreterPath("/home/codespace/.php/current/bin/php");
 	proto.m_CgiRequestData->setScriptPath("../TestScripts/php/ValidLongBody.php");
-
-	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "WhereAmI");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::SCRIPT_FILENAME, "../TestScripts/php/ValidLongBody.php");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::SCRIPT_NAME, "../TestScripts/php/ValidLongBody.php");
+	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::PATH_INFO, "../TestScripts/php/ValidLongBody.php");
 	proto.m_CgiRequestData->setEnvExtra("CUSTOM_ENTRY3", "SomeHttpStuff_in_here");
 	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::CONTENT_LENGTH, "charIsUserFault");
 
@@ -289,9 +290,9 @@ void CgiStressTest::StressTest(int& testNumber,
 			
 			if (eventManager.getMonitoringCount() != 0)
 				eventManager.ProcessEvents(nextWait);
-			else
-				break ;
 			while (::read(testpipe[0], pipeDrain, sizeof(pipeDrain)) > 0);
+			if (cgi.getBusyWorkerCount() == 0)
+				break ;
 		}
 
 		if (eventManager.getMonitoringCount() != 0)

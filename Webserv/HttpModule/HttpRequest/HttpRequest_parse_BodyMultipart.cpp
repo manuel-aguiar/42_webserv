@@ -20,6 +20,25 @@ static const char* contentDispositionFind = "Content-Disposition";
 static const char* contentDispositionNameFind = "name=\"";
 static const char* contentDispositionFilenameFind = "filename=\"";
 
+#ifndef NDEBUG
+	static int testHeadersOfInterest();
+	static const int g_testHeadersOfInterest = testHeadersOfInterest();
+	static int testHeadersOfInterest()
+	{
+		std::string test = contentDispositionFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() 
+			== BufferView(contentDispositionFind), true, "contentDispositionFind is not correctly formated");
+		test = contentDispositionNameFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
+			== BufferView(contentDispositionNameFind), true, "contentDispositionNameFind is not correctly formated");	
+		test = contentDispositionFilenameFind;
+		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
+			== BufferView(contentDispositionFilenameFind), true, "contentDispositionFilenameFind is not correctly formated");
+		return (0);
+	}
+#endif
+
+
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
@@ -73,15 +92,6 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 */
 BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& currentView)
 {
-	#ifdef NDEBUG
-		std::string test = contentDispositionFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentDispositionFind), true, "contentDispositionFind is not correctly formated");
-		test = contentDispositionNameFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(contentDispositionNameFind), true, "contentDispositionNameFind is not correctly formated");	
-		test = contentDispositionFilenameFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(contentDispositionFilenameFind), true, "contentDispositionFilenameFind is not correctly formated");
-	#endif
-
 	const BufferView delimiter("\r\n", 2);
 	BufferView remaining = currentView;
 

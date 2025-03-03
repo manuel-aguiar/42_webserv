@@ -11,14 +11,6 @@
 // C++ headers
 # include <vector>
 
-# define CGI_LINE_SEPARATOR "\n"
-# define HTTP_LINE_SEPARATOR "\r\n"
-# define CGI_HEADER_SEPARATOR ": "
-# define CGI_VALUE_SEPARATOR "; "
-
-# define CGI_SUCCESS 200
-# define CGI_FAILURE 500
-
 // forward declarations
 class BaseBuffer;
 

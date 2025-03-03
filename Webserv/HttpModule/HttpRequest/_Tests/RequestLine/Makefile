@@ -50,6 +50,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \

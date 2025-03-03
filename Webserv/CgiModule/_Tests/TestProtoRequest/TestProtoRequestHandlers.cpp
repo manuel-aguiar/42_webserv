@@ -9,22 +9,35 @@ Cgi::IO::State
 TestProtoRequest::CgiRead(int readFd)
 {
 	int bytesRead;
+	//std::cout << "message body read received" << std::endl;
 
-	//std::cout << "buffer size before read: " << m_buffer.size() << std::endl;
+	//std::cout << "fd: " << readFd << std::endl;
+
+	if (readFd == -1)
+	{
+		m_cgi.finishRequest(*m_CgiRequestData, true);
+		return (Cgi::IO::CLOSE);
+	}
 
 	bytesRead = m_buffer.read(readFd, m_buffer.size());
+
+	//std::cout << "bytes read: " << bytesRead << std::endl;
 
 	//std::cout << "\t read: " << bytesRead << " bytes, buffer size after read: " << m_buffer.size() << std::endl;
 	//std::cout << m_buffer.view() << std::endl;
 	
 	if (bytesRead == 0)
+	{
+		m_cgi.finishRequest(*m_CgiRequestData, true);
 		return (Cgi::IO::CLOSE);
+	}
 	return (Cgi::IO::CONTINUE);
 }
 
 Cgi::IO::State
 TestProtoRequest::CgiWrite(int writeFd)
 {
+	//std::cout << "write receved" << std::endl;
 	int bytesWritten;
 
 	if (m_msgBody.size() == 0)
@@ -46,6 +59,7 @@ void
 TestProtoRequest::SuccessCgi()
 {
 	m_CgiResultStatus = E_CGI_STATUS_SUCCESS;
+	//std::cout << "success received" << std::endl;
 }
 
 /*
@@ -55,6 +69,8 @@ void
 TestProtoRequest::FailureCgi()
 {	
 	m_CgiResultStatus = E_CGI_STATUS_ERROR;
+	//std::cout << "error received" << std::endl;
+	m_cgi.finishRequest(*m_CgiRequestData, true);
 }
 
 

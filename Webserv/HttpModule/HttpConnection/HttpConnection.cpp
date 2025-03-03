@@ -99,6 +99,7 @@ namespace Http
 	void
 	Connection::closeConnection()
 	{
+		std::cout << "closing connection" << std::endl;
 		logDisconnection(*m_tcpConn->accessServerContext().getGlobals(), *m_tcpConn);
 		m_tcpConn->events_stopMonitoring(true);
 
@@ -126,6 +127,7 @@ namespace Http
 	void
 	Connection::resetTransaction()
 	{
+		std::cout << "resetting transaction" << std::endl;
 		m_transaction.reset();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();
