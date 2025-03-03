@@ -116,7 +116,7 @@ namespace Http
 
         if (tempBody.size() == 0)
             goto startBodyStream;
-        if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
+        if (writeBuffer.available() < tempBody.size() + hexHeaderSize + 2) // 2 \r\n after chunk
             return (Http::ResponseStatus::WAITING); // no room
         
         currentPosition = writeBuffer.size();
@@ -125,7 +125,7 @@ namespace Http
         fillHexHeader(hexHeader, hexHeaderSize, tempBody.size());
         std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
         writeBuffer.push(tempBody.data(), tempBody.size());
-
+        writeBuffer.push("\r\n", 2);
     startBodyStream:
 
         // go to next stage
@@ -144,12 +144,9 @@ namespace Http
 
         if (m_readFd == Ws::FD_NONE)
         {
-            size_t currentPosition = writeBuffer.size();
-            writeBuffer.push(hexHeader, hexHeaderSize);
-            fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
-            hexHeader[hexHeaderSize - 2] = '\r';
-            hexHeader[hexHeaderSize - 1] = '\n';
-            std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            if (writeBuffer.available() < 5)
+                return (Http::ResponseStatus::WAITING); // no room for 0\r\n\r\n
+            writeBuffer.push("0\r\n\r\n", 5);
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }
@@ -157,13 +154,13 @@ namespace Http
         if (!m_canRead)
             return (Http::ResponseStatus::WAITING);
             
-        if (writeBuffer.available() < hexHeaderSize + 1)
+        if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::ResponseStatus::WAITING);
         
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
 
-        scriptBytesRead = writeBuffer.readAppend(m_readFd);
+        scriptBytesRead = writeBuffer.readAppend(m_readFd, writeBuffer.available() - 2);
         if (scriptBytesRead == 0)
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
@@ -176,7 +173,8 @@ namespace Http
 
         fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
         std::memcpy(&writeBuffer[currentPosition], hexHeader, 10);
-
+        writeBuffer.push("\r\n", 2);
+        
         m_canRead = false;
         return (Http::ResponseStatus::WRITING);
     }

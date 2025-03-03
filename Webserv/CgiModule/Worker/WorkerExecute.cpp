@@ -193,9 +193,7 @@ void	Worker::mf_executeChild()
 		while (1)
 			::usleep(1000);
 	}
-
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
-
 	EmergencyCode[0] = E_EMER_EXECVE;
 	EmergencyCode[1] = errno;
 

@@ -74,6 +74,7 @@ Connection::ReadWrite()
     {
         case Http::ResponseStatus::FINISHED:
         {	
+            std::cout << m_writeBuffer.view() << std::endl;
             m_writeBuffer.write(sockfd);
 
             if (m_writeBuffer.size() == 0)
