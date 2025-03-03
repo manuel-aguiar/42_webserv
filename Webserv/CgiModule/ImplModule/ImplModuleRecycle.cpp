@@ -82,13 +82,24 @@ ImplModule::mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale)
 void
 ImplModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
-	InternalReq* 		data = worker.accessRequestData();
+	InternalReq* 			data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 
 	worker.disableCloseAllEvents(markFdsAsStale);
-	mf_recycleWorker(worker, markFdsAsStale);
-	mf_recycleRequestData(*data);
+	data->setState(Cgi::RequestState::PENDING_FINISH);
 	if (user && handler)
 		(handler)(user);
+	//std::cout << "state set to pending finish" << std::endl;
+}
+
+void
+ImplModule::mf_recyclePendingFinish(InternalReq& data, bool markFdsAsStale)
+{
+	Worker*		worker = data.accessExecutor();
+
+	ASSERT_EQUAL(worker != NULL, true, "ImplModule::mf_recyclePendingFinish(), there must be a worker that is still associated");
+
+	mf_recycleWorker(*worker, markFdsAsStale);
+	mf_recycleRequestData(data);
 }

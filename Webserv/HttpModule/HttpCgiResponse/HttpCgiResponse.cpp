@@ -21,7 +21,11 @@ namespace Http
 		, m_canRead(false)
 		, m_canWrite(false)
 		, m_readFd(Ws::FD_NONE)
-		, m_writeFd(Ws::FD_NONE) 
+		, m_writeFd(Ws::FD_NONE)
+		, m_responseData(NULL)
+		, m_file()
+		, m_staticReadCounter(0)
+		, m_defaultErrorPage()
 		, m_statusCode(-1)
 		, m_headers(NULL)
 		, m_tempBody()	
@@ -46,7 +50,10 @@ namespace Http
 		m_canWrite = false;
 		m_readFd = Ws::FD_NONE;
 		m_writeFd = Ws::FD_NONE;
-
+		m_responseData = NULL;
+		m_file.reset();
+		m_staticReadCounter = 0;
+		m_defaultErrorPage.clear();
 		m_statusCode = -1;
 		m_headers = NULL;
 		m_tempBody = BufferView();
@@ -62,6 +69,9 @@ namespace Http
 		, m_canWrite(other.m_canWrite)
 		, m_readFd(other.m_readFd)
 		, m_writeFd(other.m_writeFd)
+		, m_responseData(other.m_responseData)
+		, m_staticReadCounter(other.m_staticReadCounter)
+		, m_defaultErrorPage(other.m_defaultErrorPage)
 		, m_statusCode(other.m_statusCode)
 		, m_headers(other.m_headers)
 		, m_tempBody()
@@ -81,6 +91,9 @@ namespace Http
 		m_canWrite = other.m_canWrite;
 		m_readFd = other.m_readFd;
 		m_writeFd = other.m_writeFd;
+		m_responseData = other.m_responseData;
+		m_staticReadCounter = other.m_staticReadCounter;
+		m_defaultErrorPage = other.m_defaultErrorPage;
 		m_statusCode = other.m_statusCode;
 		m_headers = other.m_headers;
 		m_tempBody = other.m_tempBody;

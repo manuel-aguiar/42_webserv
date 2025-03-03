@@ -50,6 +50,8 @@ namespace Http
 	bool
 	CgiResponse::initiateRequest(const Http::ResponseData& responseData)
 	{
+		m_responseData = &responseData;
+
 		const Http::RequestData& data = *responseData.requestData;
 
 		Http::RequestData::headerContainer::const_iterator finder;

@@ -238,7 +238,6 @@ void py_validScript(int& testNumber, int readBuffSize)
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
-			std::cout << readBuffer.view() << std::endl;
 			cache.push(readBuffer.view());
 			readBuffer.clear();
 			cgiGateway.sendHttpBody(BufferView()); // EOF
@@ -289,7 +288,7 @@ int main(void)
 	//phpCgi_validScript(testNumber);
 	//php_validScript(testNumber);
 	py_validScript(testNumber, 5000);
-	py_validScript(testNumber, 104);
+	py_validScript(testNumber, 5000);
 
 	TEST_FOOTER;
 

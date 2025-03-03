@@ -192,6 +192,7 @@ namespace Cgi
 			ACQUIRED,
 			QUEUED,
 			EXECUTING,
+			PENDING_FINISH,
 			CANCELLED
 		} 	Type;
 	}
