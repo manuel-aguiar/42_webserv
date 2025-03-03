@@ -1,6 +1,6 @@
 # FINAL TODO
 
-- HttpConnection revision and Timers (manuel)   -> ETA 01-03 maybe 
+- HttpConnection revision and Timers (manuel)   -> ETA 03-03 maybe 
 
 Unnassigned:
 
