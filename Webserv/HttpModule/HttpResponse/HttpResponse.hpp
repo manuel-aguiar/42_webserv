@@ -55,7 +55,7 @@ namespace Http
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
 			bool						mf_checkRedirect();
-			void						mf_assembleTargetPath();
+			bool						mf_assembleTargetPath();
 			std::string					mf_getCurrentDate();
 
 			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
@@ -69,10 +69,12 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillDirectoryListing(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
-			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillFinish();
+
+			bool	mf_prepareStaticFile(const char* path);
+
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 
 			// call the Cgi Gateway to fill the response
@@ -95,9 +97,12 @@ namespace Http
 
 			Http::ResponseStatus::Type	m_status;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
+			std::string					m_defaultPageContent; // Load the default pages in here (Directory Listing, Error Page)
+
 			FillFunction				m_fillFunction;
 			FillFunction				m_fillFunctionBody;
 			ProcessBodyFunction			m_processFunction;
+
 			size_t						m_staticReadCounter;
 			File						m_file;
 			Http::CgiResponse*			m_cgiResponse;

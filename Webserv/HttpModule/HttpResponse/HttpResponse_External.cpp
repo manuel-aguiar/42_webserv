@@ -8,14 +8,14 @@
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 #include "../HttpModule/HttpModule.hpp"
 #include "../HttpCgiInterface/HttpCgiInterface.hpp"
+#include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
 
 // TODO: move to response scope
 extern std::string DirectoryListing(const std::string& path);
-
-# include <cstdlib>
+extern std::string getMimeType(const std::string &path);
 
 namespace Http
 {
@@ -29,23 +29,17 @@ namespace Http
 
 		if (data.status == Http::Status::OK)
 		{
-
 			mf_validateHeaders();
-
-			// DELETE FILE
 		}
 
 		//Full debug print of wtf is going on:
-		std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
-		std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
-		std::cout << "Location: " << m_responseData.serverLocation << std::endl;
-		std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
-		std::cout << "TargetType: " << m_responseData.targetType << std::endl;
-		std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
-		std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
-
-		size_t contentLength = 0;
-		std::string contentType = "";
+		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
+		// std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
+		// std::cout << "Location: " << m_responseData.serverLocation << std::endl;
+		// std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
+		// std::cout << "TargetType: " << m_responseData.targetType << std::endl;
+		// std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
+		// std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
 
 		switch (m_responseData.responseType)
 		{
@@ -62,34 +56,59 @@ namespace Http
 				return ;
 			}
 			case ResponseData::STATIC:
-				// mf_prepareStaticFile();
-				// m_fillFunctionBody = &Response::mf_fillStaticFile;
+				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_file.size())));
+				m_responseData.headers.insert(std::make_pair("content-type", getMimeType(m_responseData.targetPath)));
+
+				m_fillFunctionBody = &Response::mf_sendStaticFile;
 				break ;
 			case ResponseData::REDIRECT:
 				m_fillFunctionBody = &Response::mf_fillRedirect;
-				break ;
-			case ResponseData::DIRECTORY_LISTING:
-				DirectoryListing(m_responseData.targetPath);
-				m_fillFunctionBody = &Response::mf_fillDirectoryListing;
 				break ;
 			case ResponseData::FILE_UPLOAD:
 				m_fillFunction = &Response::mf_fillNothingToSend;
 				m_processFunction = &Response::mf_processBodyUpload;
 				return ;
+			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
+				m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
+
+				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
+				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+
+				m_fillFunctionBody = &Response::mf_fillDefaultPage;
+				break ;
 			case ResponseData::ERROR:
-				/* fall through */
+				if (m_responseData.serverBlock != NULL)
+				{
+					if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
+					{
+						mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
+
+						m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_file.size())));
+						m_responseData.headers.insert(std::make_pair("content-type", getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str())));
+
+						m_fillFunctionBody = &Response::mf_sendStaticFile;
+						break ;
+					}
+				}
+				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, ":)");
+
+				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
+				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+				break ;
+			case ResponseData::NO_CONTENT:
+				m_fillFunctionBody = NULL;
+				return ;
 			default:
-				m_fillFunctionBody = &Response::mf_fillErrorResponse;
 				return ;
 		}
 
 		// Common headers
-		m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(contentLength)));
-		m_responseData.headers.insert(std::make_pair("content-type", contentType));
-
-
 		m_responseData.headers.insert(std::make_pair("server", SERVER_NAME_VERSION));
 		m_responseData.headers.insert(std::make_pair("date", mf_getCurrentDate()));
+		if (m_responseData.headers.find("content-length") == m_responseData.headers.end())
+			m_responseData.headers.insert(std::make_pair("content-length", "0"));
+		if (m_responseData.headers.find("content-type") == m_responseData.headers.end())
+			m_responseData.headers.insert(std::make_pair("content-type", "plain/text"));
 		if (m_responseData.closeAfterSending == true)
 			m_responseData.headers.insert(std::make_pair("connection", "close"));
 		else
@@ -97,13 +116,18 @@ namespace Http
 		// ETag
 		// Last-Modified
 
+		m_currentHeader = m_responseData.headers.begin();
 
+		// TEST CODE
 		if (m_fillFunction == &Response::mf_fillNothingToSend)
 		{
 			if (m_responseData.requestStatus == Http::Status::OK)
 				m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
-			m_fillFunction = &Response::mf_fillErrorResponse;
+			m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
+			m_fillFunction = &Response::mf_fillDefaultPage;
 		}
+
+		// Go to fillFunctions
 	}
 
 	BufferView

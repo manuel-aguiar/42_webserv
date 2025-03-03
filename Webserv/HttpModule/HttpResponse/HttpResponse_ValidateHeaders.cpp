@@ -7,6 +7,8 @@
 
 # include <arpa/inet.h>
 
+# include <cstdlib> // DELETE ME
+
 namespace Http
 {
 	// Check Server/Location existence
@@ -21,6 +23,12 @@ namespace Http
 		ASSERT_EQUAL(m_responseData.requestData != NULL, true, "Response: Request data not set");
 		ASSERT_EQUAL(m_responseData.serverBlock, (const ServerBlock*)NULL, "Response: Server block alreadyset");
 		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
+
+		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
+		= m_responseData.requestData->headers.find("Connection");
+
+		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
+			m_responseData.closeAfterSending = true;
 
 		// Host header
 		std::string hostHeaderValue;
@@ -64,12 +72,10 @@ namespace Http
 		// Assemble target path
         // ROOT MUST BE DIRECTORY & not end with '/'
 		// Assemble target path using alias behavior
-		mf_assembleTargetPath();
-
+		bool indexAppended = mf_assembleTargetPath();
 		// Check resource (exists, extension)
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
-
 		switch (m_responseData.targetType)
 		{
 			case FilesUtils::DIRECTORY:
@@ -104,7 +110,6 @@ namespace Http
 				return (false); // error
 			case FilesUtils::REGULAR_FILE:
 				m_responseData.targetExtension = StringUtils::extractFileExtension(m_responseData.targetPath);
-
 				if (m_responseData.serverLocation != NULL
 					&& m_responseData.serverLocation->getCgiInterpreters().find(m_responseData.targetExtension) != m_responseData.serverLocation->getCgiInterpreters().end())
 				{
@@ -112,47 +117,67 @@ namespace Http
 					return (true);
 				}
 
-				// TODO: GET -> open the file
-				// TODO: DELETE -> delete the file
-
-				// Check Accept header
-				acceptHeader = m_responseData.requestData->headers.find("accept");
-
-				if (acceptHeader != m_responseData.requestData->headers.end()
-					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("accept")->second, m_responseData.targetPath))
+				if (m_responseData.requestData->method == "GET")
 				{
-					m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
-					m_responseData.responseType = ResponseData::ERROR;
-					return (false);
+					// Check Accept header
+					acceptHeader = m_responseData.requestData->headers.find("Accept");
+
+					if (acceptHeader != m_responseData.requestData->headers.end()
+						&& !mf_validateAcceptType(acceptHeader->second, m_responseData.targetPath))
+					{
+						m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
+						m_responseData.responseType = ResponseData::ERROR;
+						return (false);
+					}
+					// try to open file
+					if (mf_prepareStaticFile(m_responseData.targetPath.c_str()))
+					{	
+						m_responseData.responseType = ResponseData::STATIC;
+						return (true);
+					}
+					else
+					{
+						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR; // Check Error Code
+						m_responseData.responseType = ResponseData::ERROR;
+						return (false);
+					}
+				}
+				else if (m_responseData.requestData->method == "DELETE")
+				{
+					// MAKE TESTS FOR DELETE
+					if (!unlink(m_responseData.targetPath.c_str()))
+					{
+						m_responseData.requestStatus = Http::Status::NO_CONTENT;
+						m_responseData.responseType = ResponseData::STATIC;
+					}
+					else
+					{
+						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+						m_responseData.responseType = ResponseData::ERROR;
+						return (false);
+					}
 				}
 
 				m_responseData.responseType = ResponseData::STATIC;
 				break ;
 			case FilesUtils::UNDEFINED:
 				m_responseData.requestStatus = Http::Status::NOT_FOUND; // ???
+				m_responseData.responseType = ResponseData::ERROR;
 				return (false);
 			case FilesUtils::NOT_EXIST:
-				//same as above
-				if (m_responseData.serverLocation != NULL
-					&& m_responseData.requestData->method == "GET"
-					&& m_responseData.serverLocation->getAutoIndex() == 1)
+				if (indexAppended)
 				{
 					m_responseData.targetPath = m_responseData.targetPath.substr(0, m_responseData.targetPath.length() - m_responseData.serverLocation->getIndex().length());
 					break ;
 				}
-				/* fall through */
+				m_responseData.requestStatus = Http::Status::NOT_FOUND; // ???
+				m_responseData.responseType = ResponseData::ERROR;
+				return (false);
 			default:
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				m_responseData.responseType = ResponseData::ERROR;
 				return (false);
 		}
-
-
-		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
-		= m_responseData.requestData->headers.find("connection");
-
-		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
-			m_responseData.closeAfterSending = true;
 
 		return (true);
 	}

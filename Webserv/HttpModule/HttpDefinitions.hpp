@@ -164,7 +164,8 @@ namespace Http
 			REDIRECT,
 			DIRECTORY_LISTING,
 			FILE_UPLOAD,
-			ERROR
+			ERROR,
+			NO_CONTENT
 		}	ResponseType;
 
 		typedef std::string HeaderKey;
