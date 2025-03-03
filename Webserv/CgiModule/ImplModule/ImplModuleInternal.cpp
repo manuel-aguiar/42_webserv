@@ -36,6 +36,8 @@ int	ImplModule::mf_finishTimedOut()
 					mf_recycleRequestData(*curRequest); break ;
 				case Cgi::RequestState::EXECUTING:
 					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
+				case Cgi::RequestState::PENDING_FINISH:
+					mf_recyclePendingFinish(*curRequest, false); break ;
 				case Cgi::RequestState::QUEUED:
 					curRequest->setState(Cgi::RequestState::CANCELLED); break;
 				default: break ;

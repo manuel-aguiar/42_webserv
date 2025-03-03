@@ -1,13 +1,15 @@
 #ifndef MOCK_DEPENDENCIES_HPP
 #define MOCK_DEPENDENCIES_HPP
 
+# include "../../../HttpRequest/HttpRequest.hpp"
 // just for testing
 namespace Http
 {
 	// implementation just to satisfy the linker
-	void Response::mf_assembleTargetPath()
+	bool Response::mf_assembleTargetPath()
 	{
 		// Do nothing - this is just a for testing
+		return (true);
 	}
 
 	// Additional stubs for testing

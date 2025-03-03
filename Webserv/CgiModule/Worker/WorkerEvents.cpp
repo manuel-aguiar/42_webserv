@@ -47,14 +47,16 @@ void	Worker::mf_readScript()
 
 	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
 	{
+		//std::cout << "hangup without read, end of output" << std::endl;
 		if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 		{
 			//std::cout << "not finished, failing" << std::endl;
 			return (mf_failSendHeaders());
 		}
-		else
-			(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
-		goto disableReadEvent;
+		mf_disableCloseMyEvent(*m_readEvent, true);
+		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
+			mf_waitChild();	
+		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 	}
 
 	if (!(triggeredEvents & Events::Monitor::READ))
@@ -91,7 +93,10 @@ void	Worker::mf_readScript()
 				return ;
 			}
 			if (state == Cgi::IO::CLOSE)
+			{
+				//std::cout << "header state close" << std::endl;
 				goto disableReadEvent;
+			}
 		}
 	}
 	else
@@ -100,14 +105,17 @@ void	Worker::mf_readScript()
 		// more body data to be read
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
+		{
+			//std::cout << "body state close" << std::endl;
 			goto disableReadEvent;
+		}
 	}
 
 
 	return ;
 
 	disableReadEvent:
-
+		//std::cout << "read disabled" << std::endl;
 		mf_disableCloseMyEvent(*m_readEvent, true);
 		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
 			mf_waitChild();	

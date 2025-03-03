@@ -74,7 +74,7 @@ namespace Http
 
 			Http::ResponseStatus::Type	mf_fillFinish();
 
-			bool	mf_prepareStaticFile(const char* path);
+			bool						mf_prepareStaticFile(const char* path);
 
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 

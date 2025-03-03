@@ -7,13 +7,6 @@
 # include <vector>
 # include <algorithm>
 
-
-# include <iostream>            //DEBUG, erase afterwards
-
-static const char* cgiStatusFind = "Status";
-static const char* cgiContentTypeFind = "Content-Type";
-static const char* cgiLocationFind = "Location";
-
 template<typename T>
 int binSearch(const std::vector<T>& target, const T& value)
 {
@@ -39,17 +32,6 @@ int binSearch(const std::vector<T>& target, const T& value)
 		return (-1);
 
 	return (low);
-}
-
-void	toLowerCase(BufferView& view)
-{
-	char *data = const_cast<char*>(view.data());
-
-	for (size_t i = 0; i < view.size(); ++i)
-	{
-		if (data[i] >= 'A' && data[i] <= 'Z')
-			data[i] += 32;
-	}
 }
 
 namespace Cgi
@@ -98,21 +80,21 @@ HeaderData::mf_validateHeaders()
 		if (m_headers[i - 1].key == m_headers[i].key)
 		{
 			//std::cout << "duplicate header found: " << m_headers[i].key << std::endl;
-			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+			return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE));
 		}
 	}
 
-	int contentType = binSearch(m_headers, Cgi::Header(cgiContentTypeFind, ""));
-	int location    = binSearch(m_headers, Cgi::Header(cgiLocationFind, ""));
+	int contentType = binSearch(m_headers, Cgi::Header(Cgi::RequestConsts::Header::ContentType, ""));
+	int location    = binSearch(m_headers, Cgi::Header(Cgi::RequestConsts::Header::Location, ""));
 
 	if (m_statusCode == -1 && contentType == -1 && location == -1)
 	{
 		//std::cout << "lacking at least one mandatory header" << std::endl;
-		return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+		return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE));
 	}
 	
 	if (m_statusCode == -1)
-		m_statusCode = CGI_SUCCESS;
+		m_statusCode = Cgi::RequestConsts::Status::SUCCESS;
 
 	if (contentType != -1)
 		m_hasBody = true;
@@ -123,18 +105,10 @@ HeaderData::mf_validateHeaders()
 HeaderData::Status
 HeaderData::mf_parseHeaders(BufferView& receivedView)
 {
-	#ifndef NDEBUG
-		std::string test = cgiStatusFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiStatusFind), true, "cgiStatusFind is not correctly formated");
-		test = cgiContentTypeFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiContentTypeFind), true, "cgiContentTypeFind is not correctly formated");
-		test = cgiLocationFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(cgiLocationFind), true, "cgiLocationFind is not correctly formated");
-	#endif
 
 	BufferView remaining = receivedView;
-	const BufferView CgiDelimiter = BufferView(CGI_LINE_SEPARATOR, std::strlen(CGI_LINE_SEPARATOR));
-	const BufferView headedSeparator = BufferView(CGI_HEADER_SEPARATOR, std::strlen(CGI_HEADER_SEPARATOR));
+	const BufferView CgiDelimiter = BufferView(Cgi::RequestConsts::Separator::Line, std::strlen(Cgi::RequestConsts::Separator::Line));
+	const BufferView headerSeparator = BufferView(Cgi::RequestConsts::Separator::Header, std::strlen(Cgi::RequestConsts::Separator::Header));
 
 	
 
@@ -171,7 +145,7 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 				if (m_hasBody == true)
 					m_tempBody = remaining;
 				else
-					return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+					return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE));
 			}
 			m_state = HeaderData::FINISH;
 			return (HeaderData::PASS);
@@ -189,22 +163,22 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 			line = line.substr(0, line.size() - 1);
 		}
 
-		size_t pos_Separator = line.find(headedSeparator, 0);
+		size_t pos_Separator = line.find(headerSeparator, 0);
 	
 		if (pos_Separator == BufferView::npos)
-			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
+			return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE));
 	
 		BufferView key = line.substr(0, pos_Separator).trim(" \t\v\n\r").modify_ToCapitalized();
-		BufferView value = line.substr(pos_Separator + headedSeparator.size(), line.size() - pos_Separator - headedSeparator.size()).trim(" \t\v\n\r");
+		BufferView value = line.substr(pos_Separator + headerSeparator.size(), line.size() - pos_Separator - headerSeparator.size()).trim(" \t\v\n\r");
 		
 		//std::cout << "key:\t\t\t\t '" << key << "', length: " << key.size() << std::endl;
 		//std::cout << "value:\t\t\t\t '" << value << "', length: " << value.size() << std::endl;
-		if (key == BufferView(cgiStatusFind))
+		if (key == BufferView(Cgi::RequestConsts::Header::Status))
 		{
 			if (m_statusCode != -1)
-				return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE)); // doubled status header
+				return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE)); // doubled status header
 			m_statusCode = std::atoi(value.data());
-			if (m_statusCode != CGI_SUCCESS)
+			if (m_statusCode != Cgi::RequestConsts::Status::SUCCESS)
 				return (mf_setStatus(HeaderData::FAIL, m_statusCode));
 		}
 		else	
@@ -226,8 +200,8 @@ HeaderData::Status	HeaderData::parse(BaseBuffer& buffer)
 	if (view.size() == 0 || m_lastBufferSize == (int)buffer.size())
 	{
 		if (m_state != HeaderData::FINISH)
-			return (mf_setStatus(HeaderData::FAIL, CGI_FAILURE));
-		return ((m_statusCode != -1 && m_statusCode != CGI_SUCCESS) ? HeaderData::FAIL : HeaderData::PASS);
+			return (mf_setStatus(HeaderData::FAIL, Cgi::RequestConsts::Status::FAILURE));
+		return ((m_statusCode != -1 && m_statusCode != Cgi::RequestConsts::Status::SUCCESS) ? HeaderData::FAIL : HeaderData::PASS);
 	}
 
 	m_lastBufferSize = buffer.size();

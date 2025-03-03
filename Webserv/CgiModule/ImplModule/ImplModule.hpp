@@ -107,7 +107,8 @@ class ImplModule
 		void				mf_recycleTimeoutFailure(Worker& worker);
 		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
 		void				mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale);
-		
+		void				mf_recyclePendingFinish(InternalReq& data, bool markFdsAsStale);
+
 		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
 		void				mf_recycleRequestData(InternalReq& data);
 		

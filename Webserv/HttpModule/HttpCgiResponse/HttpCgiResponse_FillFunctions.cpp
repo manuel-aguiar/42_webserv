@@ -9,6 +9,7 @@ extern int          checkForbiddenHeaders(const std::vector<Cgi::Header>& header
 extern bool         isHeaderIgnored(const Cgi::Header& header);
 extern const char*  getStatusMessage(int statusCode);
 extern std::string  generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
+extern std::string  getCurrentDate();
 
 namespace Http
 {
@@ -22,7 +23,8 @@ namespace Http
     Http::ResponseStatus::Type
     CgiResponse::mf_fillResponseLine(BaseBuffer& writeBuffer)
     {
-        writeBuffer.push("HTTP/1.1 ", 9);
+        writeBuffer.push(BufferView(Http::HttpStandard::HTTP_VERSION));
+        writeBuffer.push(" ", 1);
         writeBuffer.push(StringUtils::to_string(m_statusCode).c_str(), StringUtils::to_string(m_statusCode).size());
         writeBuffer.push(" ", 1);
         writeBuffer.push(getStatusMessage(m_statusCode));
@@ -41,6 +43,11 @@ namespace Http
 
 		if (m_currentHeader == -1) // nothing sent yet
 		{
+            writeBuffer.push("Connection: keep-alive\r\n", 24);
+            writeBuffer.push("Server: 42_webserv/1.0\r\n", 24);
+            writeBuffer.push("Date: ", 6);
+            writeBuffer.push(BufferView(getCurrentDate()));
+            writeBuffer.push("\r\n", 2);
 			if (m_headers->hasBody())
 				writeBuffer.push("Transfer-Encoding: chunked\r\n", 28);
 			else
@@ -78,10 +85,10 @@ namespace Http
 
         if (m_headers->hasBody())
         {
-            // go to next stage
             m_fillFunction = &CgiResponse::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
         }
+        m_module.finishRequest(*m_cgiRequest, true);
         return (Http::ResponseStatus::FINISHED);
     }
 
@@ -108,29 +115,38 @@ namespace Http
     Http::ResponseStatus::Type
     CgiResponse::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
-        BufferView tempBody = m_headers->getTempBody();
-
+        BufferView  thisPush;
+        size_t      thisPushSize;
         char        hexHeader[10] = {0};
         const int   hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
         int         currentPosition;
 
-        if (tempBody.size() == 0)
-            goto startBodyStream;
-        if (writeBuffer.available() < tempBody.size() + hexHeaderSize)
+        if (m_tempBody.size() == 0)
+        {
+            m_fillFunction = &CgiResponse::mf_fillBodyStream;
+            return (mf_fillBodyStream(writeBuffer));
+        }
+        if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::ResponseStatus::WAITING); // no room
         
         currentPosition = writeBuffer.size();
-
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
-        fillHexHeader(hexHeader, hexHeaderSize, tempBody.size());
+        thisPushSize = std::min(writeBuffer.available() - 2, m_tempBody.size());
+
+        fillHexHeader(hexHeader, hexHeaderSize, thisPushSize);
         std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
-        writeBuffer.push(tempBody.data(), tempBody.size());
+        
+        thisPush = m_tempBody.substr(0, thisPushSize);
 
-    startBodyStream:
+        if (thisPush.size() == m_tempBody.size())
+            m_tempBody = BufferView();
+        else
+            m_tempBody = m_tempBody.substr(thisPushSize, m_tempBody.size() - thisPushSize);
 
-        // go to next stage
-        m_fillFunction = &CgiResponse::mf_fillBodyStream;
-        return (mf_fillBodyStream(writeBuffer));
+        writeBuffer.push(thisPush);
+        writeBuffer.push("\r\n", 2);
+
+        return (Http::ResponseStatus::WRITING);
     }
 
 
@@ -144,12 +160,9 @@ namespace Http
 
         if (m_readFd == Ws::FD_NONE)
         {
-            size_t currentPosition = writeBuffer.size();
-            writeBuffer.push(hexHeader, hexHeaderSize);
-            fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
-            hexHeader[hexHeaderSize - 2] = '\r';
-            hexHeader[hexHeaderSize - 1] = '\n';
-            std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            if (writeBuffer.available() < 5)
+                return (Http::ResponseStatus::WAITING); // no room for 0\r\n\r\n
+            writeBuffer.push("0\r\n\r\n", 5);
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }
@@ -157,13 +170,13 @@ namespace Http
         if (!m_canRead)
             return (Http::ResponseStatus::WAITING);
             
-        if (writeBuffer.available() < hexHeaderSize + 1)
+        if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::ResponseStatus::WAITING);
         
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
 
-        scriptBytesRead = writeBuffer.readAppend(m_readFd);
+        scriptBytesRead = writeBuffer.readAppend(m_readFd, writeBuffer.available() - 2);
         if (scriptBytesRead == 0)
         {
             fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
@@ -176,31 +189,10 @@ namespace Http
 
         fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
         std::memcpy(&writeBuffer[currentPosition], hexHeader, 10);
-
+        writeBuffer.push("\r\n", 2);
+        
         m_canRead = false;
         return (Http::ResponseStatus::WRITING);
     }
-
-    Http::ResponseStatus::Type
-	CgiResponse::mf_fillErrorResponse(BaseBuffer& writeBuffer)
-	{
-        std::string codeStr = StringUtils::to_string(m_statusCode);
-        std::string errorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");
-
-		writeBuffer.push("HTTP/1.1 ", 9);
-		writeBuffer.push(codeStr.c_str(), codeStr.size());
-		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(m_statusCode));
-		writeBuffer.push("\r\n", 2);
-		writeBuffer.push("content-length: ", 15);
-        writeBuffer.push(StringUtils::to_string(errorPage.size()).c_str(), StringUtils::to_string(errorPage.size()).size());
-        writeBuffer.push("\r\n", 2);
-		writeBuffer.push("connection: close\r\n", 19);
-        writeBuffer.push("content-type: text/html\r\n", std::strlen("content-type: text/html\r\n"));
-		writeBuffer.push("\r\n", 2);
-        writeBuffer.push(errorPage.c_str(), errorPage.size());
-
-        return (Http::ResponseStatus::MARK_TO_CLOSE);
-	}
 
 }

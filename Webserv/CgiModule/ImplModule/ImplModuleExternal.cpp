@@ -168,6 +168,8 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 			mf_cancelAndRecycle(*internal, isCalledFromEventLoop); break ;
 		case Cgi::RequestState::QUEUED:
 			internal->setState(Cgi::RequestState::CANCELLED); break ;
+		case Cgi::RequestState::PENDING_FINISH:
+			mf_recyclePendingFinish(*internal, isCalledFromEventLoop); break ;
 		default:
 			break ;
 	}

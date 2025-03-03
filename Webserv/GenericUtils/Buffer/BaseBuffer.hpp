@@ -21,7 +21,7 @@ class BaseBuffer
 		int			read(const Ws::fd fd, const int startIndex = 0);
 		int			write(const Ws::fd fd, const int startIndex = 0);
 
-		int			readAppend(const Ws::fd fd);
+		int			readAppend(const Ws::fd fd, size_t maxBytes);
 
 		const unsigned char*	data() const;
 		unsigned char&			operator[](size_t index);

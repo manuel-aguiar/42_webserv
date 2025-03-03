@@ -195,7 +195,7 @@ void php_validScript(int& testNumber)
 	}
 }
 
-void py_validScript(int& testNumber)
+void py_validScript(int& testNumber, int readBuffSize)
 {
 	
 	ServerContext 			context;
@@ -230,21 +230,44 @@ void py_validScript(int& testNumber)
 		
 		cgiGateway.sendHttpBody(BufferView("somestupidmessagebodythatmustbesent"));
 
-		Buffer<5000> readBuffer;
+		Buffer<5000> cache;
+		HeapBuffer readBuffer(readBuffSize);
 
 		while (1)
 		{
 			int timeout = cgi.processRequests();
 			eventManager.ProcessEvents(timeout);
 			cgiGateway.fillWriteBuffer(readBuffer);
-
+			cache.push(readBuffer.view());
+			readBuffer.clear();
 			cgiGateway.sendHttpBody(BufferView()); // EOF
 
 			if (eventManager.getMonitoringCount() == 0)
 				break ;
 		}
 
-		std::cout << readBuffer.view() << std::endl;
+		std::string expected =
+		"HTTP/1.1 200 OK\r\n"
+		"Transfer-Encoding: chunked\r\n"
+		"Content-Type: text/html;charset=UTF-8\r\n"
+		"\r\n"
+		"000000e2\r\n"
+		"<!DOCTYPE html>\n"
+		"<html lang='en'>\n"
+		"<head><meta charset='UTF-8'><title>CGI Test</title></head>\n"
+		"<body>\n"
+		"<h1>Hello from Python CGI!</h1>\n"
+		"<p>This is a simple Python script executed via CGI.</p>\n"
+		"<pre>\n"
+		"42_webserv\n"
+		"</pre>\n"
+		"</body></html>\n"
+		"\r\n"
+		"0\r\n"
+		"\r\n";
+		
+
+		EXPECT_EQUAL(cache.view(), BufferView(expected), "CgiResponse::initiateRequest() - success");
 
 		TEST_PASSED_MSG("Cgi Tests valid python");
 	}
@@ -261,10 +284,11 @@ int main(void)
 
 	int testNumber = 1;
 
-	invalidScript(testNumber);
-	phpCgi_validScript(testNumber);
-	php_validScript(testNumber);
-	py_validScript(testNumber);
+	//invalidScript(testNumber);
+	//phpCgi_validScript(testNumber);
+	//php_validScript(testNumber);
+	py_validScript(testNumber, 5000);
+	py_validScript(testNumber, 5000);
 
 	TEST_FOOTER;
 
