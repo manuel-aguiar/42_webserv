@@ -6,6 +6,36 @@
 #include <cctype>
 #include "HttpResponse.hpp"
 
+std::string getMimeType(const std::string &path)
+{
+	// optimize this map however you see fit
+	std::map<std::string, std::string>	mimeMap;
+
+	mimeMap[".html"]	= "text/html";
+	mimeMap[".htm"]		= "text/html";
+	mimeMap[".css"]		= "text/css";
+	mimeMap[".js"]		= "text/javascript";
+	mimeMap[".xml"]		= "text/xml";
+	mimeMap[".txt"]		= "text/plain";
+	mimeMap[".json"]	= "application/json";
+	mimeMap[".jpg"]		= "image/jpeg";
+	mimeMap[".jpeg"]	= "image/jpeg";
+	mimeMap[".png"]		= "image/png";
+	mimeMap[".gif"]		= "image/gif";
+	mimeMap[".ico"]		= "image/x-icon";
+
+	size_t	dotPos = path.rfind('.');
+
+	if (dotPos != std::string::npos)
+	{
+		std::string ext = path.substr(dotPos);
+		if (mimeMap.find(ext) != mimeMap.end())
+			return (mimeMap[ext]);
+	}
+
+	return ("application/octet-stream");
+}
+
 namespace Http
 {
 	struct MediaRange
@@ -15,35 +45,7 @@ namespace Http
 		float q;
 	};
 
-	std::string getMimeType(const std::string &path)
-	{
-		// optimize this map however you see fit
-		std::map<std::string, std::string>	mimeMap;
-
-		mimeMap[".html"]	= "text/html";
-		mimeMap[".htm"]		= "text/html";
-		mimeMap[".css"]		= "text/css";
-		mimeMap[".js"]		= "text/javascript";
-		mimeMap[".xml"]		= "text/xml";
-		mimeMap[".txt"]		= "text/plain";
-		mimeMap[".json"]	= "application/json";
-		mimeMap[".jpg"]		= "image/jpeg";
-		mimeMap[".jpeg"]	= "image/jpeg";
-		mimeMap[".png"]		= "image/png";
-		mimeMap[".gif"]		= "image/gif";
-		mimeMap[".ico"]		= "image/x-icon";
-
-		size_t	dotPos = path.rfind('.');
-
-		if (dotPos != std::string::npos)
-		{
-			std::string ext = path.substr(dotPos);
-			if (mimeMap.find(ext) != mimeMap.end())
-				return (mimeMap[ext]);
-		}
-
-		return ("application/octet-stream");
-	}
+	
 
 	bool doesAccept(const std::vector<MediaRange>& ranges, const std::string& mediaType)
 	{

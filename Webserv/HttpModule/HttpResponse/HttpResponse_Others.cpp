@@ -15,26 +15,65 @@ const char* getStatusMessage(int statusCode);
 
 namespace Http
 {
-void				Response::mf_generateResponse(int statusCode)
-{
-    (void)statusCode;
-}
+	ResponseData		Response::getResponseData() const
+	{
+		return (m_responseData);
+	}
 
-std::string			Response::mf_generateStatusLine(int statusCode)
-{
-    (void)statusCode;
-    return ("hey");
-}
-
-std::string			Response::mf_generateHeaderString()
-{
-    return ("hey");
-}
-
-std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage)
+	std::string			Response::mf_generateRedirectPage(int statusCode, const std::string& location)
 	{
 		std::stringstream ss;
-        const char* statusText = getStatusMessage(statusCode);
+		const char* statusText = getStatusMessage(statusCode);
+
+		ss << "<!DOCTYPE html>\n"
+		<< "<html>\n"
+		<< "<head>\n"
+		<< "<title>" << statusCode << " " << statusText << "</title>\n"
+		<< "<style>\n"
+		<< "body {\n"
+		<< "    font-family: system-ui, sans-serif;\n"
+		<< "    margin: 40px auto;\n"
+		<< "    max-width: 1750px;\n"
+		<< "    padding: 0 10px;\n"
+		<< "    color: #444;\n"
+		<< "    text-align: center;\n"
+		<< "}\n"
+		<< ".server {\n"
+		<< "    font-size: 20px;\n"
+		<< "    font-weight: bold;\n"
+		<< "}\n"
+		<< ".status-code {\n"
+		<< "    font-size: 48px;\n"
+		<< "    font-weight: bold;\n"
+		<< "    color:rgba(0, 128, 255, 0.91);\n"
+		<< "    margin: 30px 0 10px 0;\n"
+		<< "}\n"
+		<< "h1 {\n"
+		<< "    margin: 10px 0;\n"
+		<< "}\n"
+		<< "hr {\n"
+		<< "    width: 100%;\n"
+		<< "    margin: 10px auto;\n"
+		<< "    border: none;\n"
+		<< "    border-top: 1px solid #ddd;\n"
+		<< "}\n"
+		<< "</style>\n"
+		<< "</head>\n"
+		<< "<body>\n"
+		<< "    <div class=\"server\">" << SERVER_NAME_VERSION << "</div>\n"
+		<< "    <hr>\n"
+		<< "    <div class=\"status-code\">" << statusCode << "</div>\n"
+		<< "    <h1>" << statusText << "</h1>\n"
+		<< "    <p>The request resource has been " << statusText << " <a href=\"" << location << "\">here</a></p>\n"
+		<< "</body>\n"
+		<< "</html>\n";
+		return (ss.str());
+	}
+
+	std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage)
+	{
+		std::stringstream ss;
+		const char* statusText = getStatusMessage(statusCode);
 
 		ss << "<!DOCTYPE html>\n"
 		<< "<html>\n"
@@ -102,7 +141,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		{
 			switch (statusCode)
 			{
-				// In case of CGI it will be handled differently 
+				// In case of CGI it will be handled differently
 				case Http::Status::OK:
 					if (FilesUtils::isDirectory(m_requestData->uri.c_str()))
 					{
@@ -181,7 +220,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		// Common headers
 		if (body.empty() && m_file.fd() == Ws::FD_NONE) // CGI
 			m_headers["Transfer-Encoding"] = "chunked";
-		else 
+		else
 			m_headers["Content-Length"] = StringUtils::intToStr(body.size());
 		m_headers["Date"]			= getCurrentDate();
 		m_headers["Server"] 		= SERVER_NAME_VERSION;
@@ -191,8 +230,8 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 		headers = mf_generateHeaderString();
 
 		if (body.empty())
-			m_pendingWrite = statusLine + headers; // CRLF included in headers 
-		else 
+			m_pendingWrite = statusLine + headers; // CRLF included in headers
+		else
 			m_pendingWrite = statusLine + headers + body + "\r\n\r\n";
 
 		m_status = WRITING;
@@ -209,7 +248,7 @@ std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const st
 	{
 		std::ostringstream								headerStream;
 		std::map<std::string, std::string>::iterator	it;
-		
+
 		for (it = m_headers.begin(); it != m_headers.end(); ++it)
 			headerStream << it->first << ": " << it->second << "\r\n";
 		headerStream << "\r\n";

@@ -16,18 +16,11 @@ namespace Http
 int
 Connection::mf_read(const Ws::fd fd)
 {
-    std::cout << "buffer before read: " << m_readBuffer.size() << m_readBuffer.view() << std::endl;
-
     if (m_transaction.request.isCompleted() || m_transaction.request.isError())
-    {
-        std::cout << "request is completed, read no more\n";
         return (1);
-    }
 
     int readBytes = m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
         
-    std::cout << "buffer after read: " << m_readBuffer.size() << "\n\n" <<  m_readBuffer.view() << std::endl;
-
     m_readBuffer.truncatePush(m_transaction.request.parse(m_readBuffer));
 
     return (readBytes);
@@ -76,7 +69,6 @@ Connection::ReadWrite()
         
         return ;
     }
-    
     // ask response for data
     switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
     {
@@ -102,7 +94,9 @@ Connection::ReadWrite()
         }
 
         case Http::ResponseStatus::WAITING: // nothing
+        {
             break ;
+        }
     }
 }
 }

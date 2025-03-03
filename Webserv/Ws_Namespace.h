@@ -16,6 +16,8 @@ namespace Conn { class Connection;}
 
 namespace Ws
 {
+	#define WEBSERVER_VERSION_NAME "42_webserv/1.0"
+
 	typedef int					fd;
 	typedef unsigned char		byte;
 	enum { FD_NONE = -1 };

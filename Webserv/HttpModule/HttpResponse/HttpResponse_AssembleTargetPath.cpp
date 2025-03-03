@@ -6,7 +6,7 @@
 
 namespace Http
 {
-	void Response::mf_assembleTargetPath()
+	bool Response::mf_assembleTargetPath()
 	{
 		if (m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty()) 
 		{
@@ -37,9 +37,14 @@ namespace Http
 		}
 
 		if (m_responseData.serverLocation != NULL
+			&& m_responseData.requestData->path == m_responseData.serverLocation->getPath()
 			&& *m_responseData.requestData->path.rbegin() == '/'
 			&& !m_responseData.serverLocation->getIndex().empty()) 
-		m_responseData.targetPath += m_responseData.serverLocation->getIndex();
+			{
+			m_responseData.targetPath += m_responseData.serverLocation->getIndex();
+			return (true);
+		}
+		return (false);
 	}
 }
 

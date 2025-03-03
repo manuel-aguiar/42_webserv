@@ -4,7 +4,7 @@
 
 // Project headers
 # include "../HttpDefinitions.hpp"
-# include "../HttpCgiGateway/HttpCgiGateway.hpp"
+# include "../HttpCgiResponse/HttpCgiResponse.hpp"
 # include "../../Ws_Namespace.h"
 # include "../../GenericUtils/Files/File.hpp"
 
@@ -29,10 +29,12 @@ namespace Http
 			Response& operator=(const Response& other);
 
 			Http::ResponseStatus::Type	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
-			
+
 			void    					reset(); // reset the response to its initial state
+			void						close(); // close the response, no more data to be sent
 
 			Http::ResponseStatus::Type	getStatus() const;
+			ResponseData				getResponseData() const; // mainly for testing
 
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
 
@@ -41,7 +43,6 @@ namespace Http
 			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
 
 		private:
-
 			typedef enum
 			{
 				NONE,
@@ -54,31 +55,40 @@ namespace Http
 			bool						mf_validateHeaders();
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
-			void						mf_assembleTargetPath();
+			bool						mf_checkRedirect();
+			bool						mf_assembleTargetPath();
+			std::string					mf_getCurrentDate();
 
-			void						mf_generateResponse(int statusCode);
-			std::string					mf_generateStatusLine(int statusCode);
-			std::string					mf_generateHeaderString();
+			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
-				
+
 			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
-			
-			Http::ResponseStatus::Type	mf_prepareStaticFile(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
+
+			Http::ResponseStatus::Type	mf_fillFinish();
+
+			bool	mf_prepareStaticFile(const char* path);
+
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 
+			// call the Cgi Gateway to fill the response
+			Http::ResponseStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
+
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
-			
-			BufferView					mf_processBodyIgnore(const BufferView& receivedView);	
+
+			BufferView					mf_processBodyIgnore(const BufferView& receivedView);
 			BufferView					mf_processBodyNone(const BufferView& receivedView);
 			BufferView					mf_processBodyUpload(const BufferView& receivedView);
 
+			// pass the body to the CgiGateway
+			BufferView					mf_processBodyCgi(const BufferView& receivedView);
 
 			// Debatable
 
@@ -88,11 +98,16 @@ namespace Http
 
 			Http::ResponseStatus::Type	m_status;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
+			std::string					m_defaultPageContent; // Load the default pages in here (Directory Listing, Error Page)
+
 			FillFunction				m_fillFunction;
+			FillFunction				m_fillFunctionBody;
 			ProcessBodyFunction			m_processFunction;
+
 			size_t						m_staticReadCounter;
 			File						m_file;
-			Http::CgiGateway			m_cgiGateway;
+			Http::CgiResponse*			m_cgiResponse;
+			std::map<std::string, std::string>::iterator	m_currentHeader; // index of the current header to be writter
 	};
 }
 

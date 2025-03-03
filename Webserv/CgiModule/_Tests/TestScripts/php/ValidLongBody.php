@@ -11,7 +11,7 @@ $env_vars = [
 ];
 
 echo "Status: 200 potato\n";  // Valid header
-echo "Content-Type: text/html; charset=UTF-8\n";  // Valid header
+echo "Content-type: text/html; charset=UTF-8\n";  // Valid header
 
 
 echo "\n";

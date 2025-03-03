@@ -1,7 +1,7 @@
-
 # Makefile
 
-TARGET_TEST 			=		test.out
+# TARGET_DEBUG 			=		debug_Http::Request.out
+TARGET_TEST 			=		test_responseRedirect.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
 
@@ -10,41 +10,51 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/_Tests/CompileAll/main.cpp \
-								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
+SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/Redirection/main.cpp \
+
+SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
 								\
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
+								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_message_body.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyChunked.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
-$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateHeaders.cpp \
-$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FindLocation.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
+
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_Validate.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/HttpCgiGateway_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiGateway/CgiHandlers.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/CgiHandlers.cpp \
 								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
@@ -54,7 +64,6 @@ $(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp 
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
 							 	$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
-								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
@@ -109,21 +118,35 @@ $(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp 
 								\
 								$(SRC_PATH)/Webserv/SignalHandler/SignalHandler.cpp \
 
-								
-
-								
-# Delete the 4 above
 
 
+OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
+OBJS_DEBUG				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_DEBUG))
 OBJS_TEST				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_TEST))
 
+DEPS_COMMON 			= 		$(OBJS_COMMON:.o=.d)
+DEPS_DEBUG 				= 		$(OBJS_DEBUG:.o=.d)
 DEPS_TEST 				= 		$(OBJS_TEST:.o=.d)
 
+#=== COLORS ===#
 
+RED =		\033[0;31m
+GREEN =		\033[0;92m
+YELLOW =	\033[93m
+BLUE =		\033[0;34m
+MAGENTA =	\033[0;35m
+CYAN =		\033[96m
+RESET =		\033[0m
+
+TAG =		$(CYAN)[$(TARGET_TEST)]$(RESET)
 
 #=== RULES ===#
 
-all: $(TARGET_TEST)
+all: $(TARGET_TEST) # $(TARGET_DEBUG)
+
+$(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
+	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
+	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_DEBUG) -o $(TARGET_DEBUG)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)
 	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_TEST) -o $(TARGET_TEST)
@@ -132,16 +155,21 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
--include $(DEPS_TEST)
+-include $(DEPS_COMMON) $(DEPS_DEBUG) $(DEPS_TEST)
 
 clean:
+	@echo "$(TAG) Cleaning object files."
 	@rm -rf $(OBJ_PATH)
 
 fclean: clean
-	@rm -f $(NAME)
+	@echo "$(TAG) Full clean."
+	@rm -f $(TARGET_TEST)
 
 test: $(TARGET_TEST)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
+
+debug: $(TARGET_DEBUG)
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_DEBUG)
 
 re: fclean all
 	@echo "$(TAG) Recompiling."

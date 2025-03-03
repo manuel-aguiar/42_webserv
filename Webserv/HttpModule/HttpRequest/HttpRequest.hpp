@@ -45,7 +45,7 @@ namespace Http
 			Request& operator=(const Request& assign);
 
 			void										reset(); // reset the request to its initial state
-
+			
 			// Main parsing interface
 			BufferView 									parse(const BaseBuffer& buffer);
 
@@ -109,13 +109,13 @@ namespace Http
 
 			// internal parsing state
 			ParsingState								m_parsingState;
-			
+
 			// parseHandler functions
 			ParsingFunction								m_parsingFunction;
-			
+
 			// Components
 			Http::RequestData 							m_data;	// holds request data
-			
+
 			// state helpers
 			size_t										m_bufferCapacity;
 			int											m_findPivot;
@@ -129,18 +129,18 @@ namespace Http
 			BufferView									mf_handleRequestLine	(const BufferView& currentView);
 			BufferView									mf_handleHeaders		(const BufferView& currentView);
 			BufferView									mf_parseRegularBody		(const BufferView& currentView);
-			
+
 			// chunked body intermediaries......
 			BufferView									mf_parseChunkedBody_GetChunk	(const BufferView& currentView);
 			BufferView									mf_parseChunkedBody_ParseChunk	(const BufferView& currentView);
 			BufferView									mf_parseChunkedBody_EndChunk	(const BufferView& currentView);
-			
+
 			// multi part intermediaries........
 			BufferView 									mf_parseMultipartBody_Start		(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Headers	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
-			
+
 			BufferView									mf_parseBodyExitError	(const Http::Status::Number status);
 
 			// main parsers
@@ -164,6 +164,8 @@ namespace Http
 
 
 			size_t										mf_findHeaderEnd(const BufferView& currentView);
+			void										mf_handleExitFailure(Http::Status::Number status);
+			BufferView									mf_handleExitFailure(BufferView& remaining,Http::Status::Number status);
 	};
 
 } // namespace Http

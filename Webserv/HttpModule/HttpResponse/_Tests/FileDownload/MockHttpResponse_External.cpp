@@ -31,7 +31,13 @@ namespace Http
 	{
 		m_responseData.requestData = &data;
 		m_responseData.targetPath = data.path;
-		m_fillFunction = &Response::mf_prepareStaticFile;
+		
+		if (!m_file.open(m_responseData.targetPath.c_str(), O_RDONLY, 0666))
+		{
+			return ;
+		}
+
+		m_fillFunction = &Response::mf_sendStaticFile;
 	}
 
 	BufferView	Response::receiveRequestBody(const BufferView& view)
@@ -53,6 +59,9 @@ namespace Http
 	}
 	void
 	Response::reset()
+	{}
+	void
+	Response::close()
 	{}
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)

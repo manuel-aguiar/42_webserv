@@ -25,15 +25,12 @@ namespace Http
 	{
 		BufferView		remaining;
 		int 			bytesWritten = 0;
-
+		
 		// receive empty view, queue to EOF
 		if (view.size() == 0
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
-
-			// CHECK FOR FAILURE IN EXECUTION NEEDED, UNLINK FILE
-			
 			return (view);
 		}
 
@@ -56,7 +53,16 @@ namespace Http
 	exitFailure:
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 		m_processFunction = &Response::mf_processBodyNone;
-		m_fillFunction = &Response::mf_fillErrorResponse;
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
+		m_fillFunction = &Response::mf_fillDefaultPage;
 		return (view);
+	}
+
+
+	BufferView
+	Response::mf_processBodyCgi(const BufferView& view)
+	{
+		ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
+		return (m_cgiResponse->sendHttpBody(view));
 	}
 }

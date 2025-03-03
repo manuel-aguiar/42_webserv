@@ -72,6 +72,9 @@ void   Worker::execute(bool markFdsAsStale)
 	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
 	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
 
+	//std::cout << "program name: " << m_argPtr[0] << std::endl;
+	//std::cout << "script name: " << m_argPtr[1] << std::endl;
+
 	m_pid = ::fork();
 	if (m_pid == -1)
 	{
@@ -79,7 +82,8 @@ void   Worker::execute(bool markFdsAsStale)
 		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
 	
-
+	//std::cout << "worker parsing all goods" <<std::endl;
+	
 	if (m_pid == 0)
 		mf_executeChild();
 	else
@@ -189,7 +193,7 @@ void	Worker::mf_executeChild()
 		while (1)
 			::usleep(1000);
 	}
-		
+
 	::execve(m_argPtr[0], m_argPtr.getArray(), m_envPtr.getArray());
 
 	EmergencyCode[0] = E_EMER_EXECVE;

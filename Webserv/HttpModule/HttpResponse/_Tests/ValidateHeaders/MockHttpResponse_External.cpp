@@ -64,8 +64,17 @@ namespace Http
 		m_status = ResponseStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
-		m_cgiGateway.reset();
+		if (m_cgiResponse)
+			m_cgiResponse->reset();
 	}
+
+
+	void
+	Response::close()
+	{
+		reset();
+		m_connAddress = NULL;
+	}	
 
 	void
 	Response::setConnectionAddress(const Ws::Sock::addr& addr)

@@ -17,7 +17,7 @@
 Cgi::Request*	ImplModule::acquireRequest()
 {
 	InternalReq*     data;
-
+	
 	if (!m_availableRequestData.size())
 		return (NULL);
 	data = m_availableRequestData.back();
@@ -52,7 +52,7 @@ void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoo
 	timeout = internal->getTimeoutMs();
 	timeout = (timeout > m_maxTimeout) ? m_maxTimeout : timeout;	
 	timeout = (timeout < (unsigned int)ImplModule::MIN_TIMEOUT) ? (unsigned int)ImplModule::MIN_TIMEOUT : timeout;
-	
+
 	// tell the requestData where its timer is, in case of premature finish/cancelation
 	internal->setMyTimer(m_timerTracker.insert(Timer::now() + timeout, internal));
 	if (m_availableWorkers.size() == 0)

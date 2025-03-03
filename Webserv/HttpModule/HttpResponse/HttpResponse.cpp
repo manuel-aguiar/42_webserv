@@ -13,6 +13,7 @@
 extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
+extern std::string 	getMimeType(const std::string &path);
 
 namespace Http
 {
@@ -22,10 +23,12 @@ namespace Http
 		m_responseData		(),
 		m_status			(Http::ResponseStatus::WAITING),
 		m_fillFunction		(&Response::mf_fillNothingToSend),
+		m_fillFunctionBody	(NULL),
 		m_processFunction	(&Response::mf_processBodyNone),
 		m_staticReadCounter	(0),
 		m_file				(),
-		m_cgiGateway		(*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI))) {}
+		m_cgiResponse		(NULL),
+		m_currentHeader		(m_responseData.headers.begin()) {}
 
 	Response::~Response() { reset();}
 
@@ -33,7 +36,7 @@ namespace Http
 	// private copy/assignment
 	Response::Response(const Response& other) :
 		m_context(other.m_context),
-		m_cgiGateway((*reinterpret_cast<Cgi::Module*>(m_context.getAddonLayer(Ws::AddonLayer::CGI)))) {}
+		m_cgiResponse(NULL) {}
 
 	Response&
 	Response::operator=(const Response& other) { (void)other; return (*this);}
