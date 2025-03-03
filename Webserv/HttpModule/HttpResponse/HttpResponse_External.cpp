@@ -91,6 +91,7 @@ namespace Http
 						break ;
 					}
 				}
+				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, ":)");
 
 				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));

@@ -8,7 +8,7 @@
 #include "../../Ws_Namespace.h"
 #include "../../GenericUtils/Validation/Validation.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
-
+#include "../../GenericUtils/Files/FilesUtils.hpp"
 // C++ headers
 # include <cstdlib> // for atoi
 
@@ -79,6 +79,10 @@ ServerBlock::ServerBlock(const ServerBlock &other) :
 
 void	ServerBlock::setRoot(const std::string &value)
 {
+	if (FilesUtils::testPath(value.c_str()) == -1)
+		throw (std::invalid_argument("Invalid root path not accessible"));
+	if (FilesUtils::testPath(value.c_str()) == 0)
+		throw (std::invalid_argument("No read/write premissions"));
 	m_root = value;
 }
 
