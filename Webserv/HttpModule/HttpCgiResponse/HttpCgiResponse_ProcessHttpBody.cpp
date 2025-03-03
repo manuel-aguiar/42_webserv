@@ -9,6 +9,7 @@
 # include "../../Connections/Connection/Connection.hpp"
 
 # include <unistd.h> // write
+# include <iostream>
 
 namespace Http
 {
@@ -34,7 +35,6 @@ namespace Http
     BufferView
     CgiResponse::mf_HttpBodySend(const BufferView& view)
     {
-		
 		if (view.size() == 0)
         {
             //std::cout << "received EOF, sent all" << std::endl;

@@ -31,4 +31,11 @@ namespace Http
 		request.reset();
 		response.reset();
 	}
+
+	void
+	Transaction::close()
+	{
+		request.reset();
+		response.close();
+	}
 }

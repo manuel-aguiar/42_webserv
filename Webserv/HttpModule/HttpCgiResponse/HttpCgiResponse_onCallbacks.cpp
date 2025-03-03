@@ -9,6 +9,7 @@
 # include "../../Connections/Connection/Connection.hpp"
 
 # include <unistd.h> // write
+#include <iostream>
 
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool isHeaderIgnored(const Cgi::Header& header);
@@ -39,6 +40,8 @@ namespace Http
 	{
 		m_readFd = readFd;
 		m_canRead = true;
+		if (m_readFd == Ws::FD_NONE)
+			return (Cgi::IO::CLOSE);
 		return (Cgi::IO::CONTINUE);
 	}
 
@@ -71,9 +74,8 @@ namespace Http
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
-        //std::cout << "filling response line?" << std::endl;
-		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 
+		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 		return (Cgi::IO::CONTINUE);
 	}
 }

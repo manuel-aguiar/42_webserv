@@ -158,7 +158,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 
 clean:
 	@echo "$(TAG) Cleaning object files."
-	@rm -rf $(OBJ_PATH)
+	@rm -rf *vgcore*
 
 fclean: clean
 	@echo "$(TAG) Full clean."
