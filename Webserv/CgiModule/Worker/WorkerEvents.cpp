@@ -41,7 +41,7 @@ void	Worker::mf_readScript()
 	int 					bytesRead = 0;
 	Events::Monitor::Mask 	triggeredEvents;
 	Cgi::IO::State 			state;
-
+	
 	triggeredEvents = m_readEvent->getTriggeredEvents();
 	////std::cout << "\t\t\tread called" << std::endl;
 
@@ -52,6 +52,8 @@ void	Worker::mf_readScript()
 			//std::cout << "not finished, failing" << std::endl;
 			return (mf_failSendHeaders());
 		}
+		else
+			(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 		goto disableReadEvent;
 	}
 
@@ -96,7 +98,6 @@ void	Worker::mf_readScript()
 	{
 		// notify user that body is ready
 		// more body data to be read
-		
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
 			goto disableReadEvent;

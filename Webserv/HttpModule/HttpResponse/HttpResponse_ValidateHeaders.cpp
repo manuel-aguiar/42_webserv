@@ -116,10 +116,10 @@ namespace Http
 				// TODO: DELETE -> delete the file
 
 				// Check Accept header
-				acceptHeader = m_responseData.requestData->headers.find("accept");
+				acceptHeader = m_responseData.requestData->headers.find("Accept");
 
 				if (acceptHeader != m_responseData.requestData->headers.end()
-					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("accept")->second, m_responseData.targetPath))
+					&& !mf_validateAcceptType(m_responseData.requestData->headers.find("Accept")->second, m_responseData.targetPath))
 				{
 					m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
 					m_responseData.responseType = ResponseData::ERROR;
@@ -149,7 +149,7 @@ namespace Http
 
 
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
-		= m_responseData.requestData->headers.find("connection");
+		= m_responseData.requestData->headers.find("Connection");
 
 		if (connection != m_responseData.requestData->headers.end() && connection->second == "close")
 			m_responseData.closeAfterSending = true;

@@ -111,6 +111,7 @@ namespace Http
 		m_writeTimer = Timer();
 
 		resetTransaction();
+		m_transaction.response.close();
 
 		m_module.returnConnection(*this);
 
