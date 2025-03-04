@@ -151,13 +151,11 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 		//////////////////////////////////////////
 		while (run.yes)
 		{
-			int cgiTimeout = cgiModule.processRequests();						//NOT ADDED YET		
+			int cgiTimeout = cgiModule.processRequests();	
 			int httpTimeout = httpModule.closeTimedOutConnections();
-			eventManager.ProcessEvents(std::min(cgiTimeout, httpTimeout));	// NOT ADDED YET
+			eventManager.ProcessEvents(std::min(cgiTimeout, httpTimeout));
 		}
 		/////////////////////////////////////////
-
-		// all RAII cleanup
 	}
 	catch(const std::exception& e)
 	{

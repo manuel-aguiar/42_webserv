@@ -88,7 +88,7 @@ namespace Http
             m_fillFunction = &CgiResponse::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
         }
-        m_module.finishRequest(*m_cgiRequest, true);
+        mf_finishAndRelease();
         return (Http::ResponseStatus::FINISHED);
     }
 
@@ -158,17 +158,18 @@ namespace Http
         char hexHeader[10] = {0};
         const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
 
+        if (!m_canRead)
+            return (Http::ResponseStatus::WAITING);
+
         if (m_readFd == Ws::FD_NONE)
         {
             if (writeBuffer.available() < 5)
                 return (Http::ResponseStatus::WAITING); // no room for 0\r\n\r\n
             writeBuffer.push("0\r\n\r\n", 5);
+            mf_finishAndRelease();
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }
-
-        if (!m_canRead)
-            return (Http::ResponseStatus::WAITING);
             
         if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::ResponseStatus::WAITING);
@@ -183,6 +184,7 @@ namespace Http
             hexHeader[hexHeaderSize - 2] = '\r';
             hexHeader[hexHeaderSize - 1] = '\n';
             std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            mf_finishAndRelease();
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }

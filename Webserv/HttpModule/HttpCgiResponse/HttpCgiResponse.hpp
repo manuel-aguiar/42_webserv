@@ -28,7 +28,7 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::ResponseData& data);
+			bool					initiateRequest(const Http::ResponseData& data, const Conn::Connection* connection = NULL);
 
 			Http::ResponseStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
@@ -60,6 +60,8 @@ namespace Http
 			BufferView					mf_HttpBodyNone(const BufferView& view);
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);
 			BufferView					mf_HttpBodySend(const BufferView& view);	
+
+			void						mf_finishAndRelease();
 
 			Cgi::Module& 				m_module;
 			Cgi::Request* 				m_cgiRequest;

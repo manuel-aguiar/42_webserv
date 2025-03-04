@@ -1,13 +1,13 @@
 
 
 #include "HttpResponse.hpp"
+#include "../HttpModule/HttpModule.hpp"
+#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 #include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../ServerContext/ServerContext.hpp"
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
-#include "../HttpModule/HttpModule.hpp"
-#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 #include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 // Move to adequate scope
@@ -47,17 +47,7 @@ namespace Http
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::CGI:
-			{
-				Http::CgiInterface& cgiInterface =
-				reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
-				m_cgiResponse = cgiInterface.acquireGateway();
-
-				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
-				m_cgiResponse->initiateRequest(m_responseData);
-				m_fillFunction = &Response::mf_fillCgiResponse;
-				m_processFunction = &Response::mf_processBodyCgi;
-				return ;
-			}
+				return (mf_prepareCgiExecution());
 			case ResponseData::STATIC:
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 
@@ -81,21 +71,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
-				if (m_responseData.serverBlock != NULL)
-				{
-					if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
-					{
-						mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
-						mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str()));
-
-						m_fillFunctionBody = &Response::mf_sendStaticFile;
-						break ;
-					}
-				}
-				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Task failed successfully");
-				m_fillFunctionBody = &Response::mf_fillDefaultPage;
-
+				mf_prepareErrorMessage();
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");
@@ -162,21 +138,28 @@ namespace Http
 			Http::CgiInterface& cgiInterface =
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
 			cgiInterface.releaseGateway(*m_cgiResponse);
+			m_cgiResponse = NULL;
 		}
-		m_cgiResponse = NULL;
 	}
 
 	void
 	Response::close()
 	{
 		reset();
-		m_connAddress = NULL;
+		m_listenAddress = NULL;
+		m_tcpConn = NULL;
 	}	
 
 	void
-	Response::setConnectionAddress(const Ws::Sock::addr& addr)
+	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{
-		m_connAddress = &addr;
+		m_listenAddress = &addr;
+	}
+
+	void
+	Response::setTcpConnection(const Conn::Connection& tcpConn)
+	{
+		m_tcpConn = &tcpConn;
 	}
 
 }

@@ -28,11 +28,7 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
-        //std::cout << "onerror received" << std::endl;
-		// must check if i am already sending data back
-        //std::cout << "received errpor" << std::endl;
-
-		m_module.finishRequest(*m_cgiRequest, true);
+		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
@@ -67,7 +63,6 @@ namespace Http
 	Cgi::IO::State
 	CgiResponse::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
-		//std::cout << "received headers, code: " << headers.getStatusCode() << std::endl;
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
 		m_tempBody = headers.getTempBody();
@@ -75,14 +70,11 @@ namespace Http
 		||	!checkForbiddenHeaders(headers.getHeaders()))
 		{
 			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
-			if (m_statusCode == Cgi::RequestConsts::Status::SUCCESS)
-				m_module.finishRequest(*m_cgiRequest, true);
+			mf_finishAndRelease();
 			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
-		
-		//std::cout << "fill response line" << std::endl;
 		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 		return (Cgi::IO::CONTINUE);
 	}

@@ -30,6 +30,18 @@ namespace Http
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);
 
+			struct Timeout
+			{
+				typedef enum
+				{
+					NONE,
+					KEEP_ALIVE,
+					FULL_HEADER,
+					INTER_SEND,
+					INTER_RECV
+				}	Type;
+			};
+
 			static void ReadWrite_Callback(Events::Subscription& subscription);
 
 			void 	ReadWrite();
@@ -38,7 +50,7 @@ namespace Http
 			const Ws::Sock::addr& 		getClientAddr() const; // sockaddr -> BlockFinder
 			ServerContext& 				accessServerContext(); //Conn::Connection
 
-			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer);
+			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer, const Http::Connection::Timeout::Type timeoutType);
 
 			void 						setMyTCP(Conn::Connection& tcpConn);
 
@@ -47,22 +59,24 @@ namespace Http
 
 			void						resetTransaction();
 
+
+
 		private:
 		
 			Http::Module& 										m_module;
-			Timer 												m_readTimer;
-			Timer 												m_writeTimer;
+			Timeout::Type 										m_liveTimeout;
 			TimerTracker<Timer, Http::Connection*>::iterator 	m_myTimer;
 			Conn::Connection* 									m_tcpConn;
 			Http::Transaction 									m_transaction;
 
 			// buffers
 			Buffer<1024>										m_readBuffer;
-			Buffer<1024>											m_writeBuffer;
+			Buffer<1024>										m_writeBuffer;
 
 
-			int													mf_read(const Ws::fd fd);
-			void												mf_write(const Ws::fd fd);
+			int													mf_readIntoReadBuffer(const Ws::fd fd);
+			void 												mf_parseReadBuffer();
+			void												mf_newRequestSameConnection();
 	};
 }
 

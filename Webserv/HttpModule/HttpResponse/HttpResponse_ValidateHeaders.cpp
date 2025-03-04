@@ -1,4 +1,8 @@
+
+
 # include "HttpResponse.hpp"
+# include "../HttpModule/HttpModule.hpp"
+# include "../HttpCgiInterface/HttpCgiInterface.hpp"
 # include "../../ServerContext/ServerContext.hpp"
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 # include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
@@ -8,6 +12,8 @@
 # include <arpa/inet.h>
 
 # include <cstdlib> // DELETE ME
+
+extern std::string getMimeType(const std::string &path);
 
 namespace Http
 {
@@ -22,7 +28,7 @@ namespace Http
 
 		ASSERT_EQUAL(m_responseData.requestData != NULL, true, "Response: Request data not set");
 		ASSERT_EQUAL(m_responseData.serverBlock, (const ServerBlock*)NULL, "Response: Server block alreadyset");
-		ASSERT_EQUAL(m_connAddress != NULL, true, "Response: Connection address not set");
+		ASSERT_EQUAL(m_listenAddress != NULL, true, "Response: Connection address not set");
 
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator connection
 		= m_responseData.requestData->headers.find("Connection");
@@ -39,7 +45,7 @@ namespace Http
 			hostHeaderValue = host->second;
 
 		// Find ServerBlock
-		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_connAddress, hostHeaderValue);
+		m_responseData.serverBlock = m_context.getBlockFinder()->findServerBlock(*m_listenAddress, hostHeaderValue);
 
 		if (m_responseData.serverBlock == NULL)
 		{
@@ -179,4 +185,5 @@ namespace Http
 
 		return (true);
 	}
+
 }

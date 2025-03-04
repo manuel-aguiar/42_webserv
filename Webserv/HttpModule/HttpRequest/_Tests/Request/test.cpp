@@ -370,7 +370,7 @@ void testErrorCodes(int &testNumber)
 
 	// 	// Set up a mock connection address for the response
 	// 	Ws::Sock::addr mockAddr = createMockAddr();
-	// 	response.setConnectionAddress(mockAddr);
+	// 	response.setListenAddress(mockAddr);
 
 	// 	request.setResponse(response);
 	// 	try {
@@ -444,7 +444,7 @@ void testErrorCodes(int &testNumber)
 
 	// 	// Set up a mock connection address for the response
 	// 	Ws::Sock::addr mockAddr = createMockAddr();
-	// 	response.setConnectionAddress(mockAddr);
+	// 	response.setListenAddress(mockAddr);
 
 	// 	request.setResponse(response);
 	// 	try {
@@ -463,7 +463,7 @@ void testErrorCodes(int &testNumber)
 	// 		// Reset for next test
 	// 		request.reset();
 	// 		response = Http::Response(serverContext);
-	// 		response.setConnectionAddress(mockAddr);
+	// 		response.setListenAddress(mockAddr);
 	// 		request.setResponse(response);
 
 	// 		buffer.clear();
@@ -499,7 +499,7 @@ void testErrorCodes(int &testNumber)
 //
 //		// Set up a mock connection address for the response
 //		Ws::Sock::addr mockAddr = createMockAddr();
-//		response.setConnectionAddress(mockAddr);
+//		response.setListenAddress(mockAddr);
 //
 //		request.setResponse(response);
 //		try {
