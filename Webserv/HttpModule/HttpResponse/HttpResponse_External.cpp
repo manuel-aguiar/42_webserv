@@ -89,21 +89,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
-				if (m_responseData.serverBlock != NULL)
-				{
-					if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
-					{
-						mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
-						mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str()));
-
-						m_fillFunctionBody = &Response::mf_sendStaticFile;
-						break ;
-					}
-				}
-				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Task failed successfully");
-				m_fillFunctionBody = &Response::mf_fillDefaultPage;
-
+				mf_prepareErrorMessage();
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");
