@@ -49,16 +49,11 @@ void	Worker::mf_readScript()
 	Events::Monitor::Mask 	triggeredEvents;
 	
 	triggeredEvents = m_readEvent->getTriggeredEvents();
-	std::cout << "worker " << this << " read received, cur request: " << m_curRequestData << std::endl;
+
 	if ((triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP)) && !(triggeredEvents & Events::Monitor::READ))
 	{
-		std::cout << &m_headerParser << " parsing state " << m_headerParser.getParsingState() << std::endl;
 		if (m_headerParser.getParsingState() == Cgi::HeaderData::NEED_MORE_DATA)
-		{
-			std::cout << &m_headerParser << " still needs data? " << std::endl;
 			return (mf_recycleRuntimeFailure());
-		}
-		std::cout << "headers done, send -1 body" << std::endl;
 		mf_disableAndWait(*m_readEvent);
 		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 	}
@@ -79,13 +74,11 @@ void	Worker::mf_readScript()
 			return (mf_recycleRuntimeFailure());
 
 		Cgi::HeaderData::ParsingState parseStatus = m_headerParser.parse(m_headerBuffer);
-		std::cout << &m_headerParser << " parse status: " << parseStatus << std::endl;
 		switch (parseStatus)
 		{
 			case::Cgi::HeaderData::NEED_MORE_DATA:
 				return ;
 			case::Cgi::HeaderData::FAIL:
-				std::cout << " header parsing failed, recycling" << std::endl;
 				return (mf_recycleRuntimeFailure());
 			case::Cgi::HeaderData::PASS:
 			{

@@ -28,7 +28,6 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
-		std::cout << "received error from cgi" << std::endl;
 		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
@@ -64,8 +63,6 @@ namespace Http
 	Cgi::IO::State
 	CgiResponse::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
-		std::cout << &headers << " received, parsingstate: " << headers.getParsingState() << std::endl;
-		//std::cout << "received headers, code: " << headers.getStatusCode() << std::endl;
 		m_statusCode = headers.getStatusCode();
 		m_headers = &headers;
 		m_tempBody = headers.getTempBody();
@@ -78,7 +75,6 @@ namespace Http
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 			return (Cgi::IO::CLOSE);
 		}
-		std::cout << &headers << " received, parsingstate: " << headers.getParsingState() << std::endl;
 		m_fillFunction = &CgiResponse::mf_fillResponseLine;
 		return (Cgi::IO::CONTINUE);
 	}

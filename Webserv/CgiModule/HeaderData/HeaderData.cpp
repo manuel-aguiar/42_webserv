@@ -52,7 +52,6 @@ HeaderData::~HeaderData() {}
 void
 HeaderData::reset()
 {
-	std::cout << this << " was reset" << std::endl;
 	m_state = HeaderData::NEED_MORE_DATA;
 	m_statusCode = -1;
 	m_totalParsedBytes = 0;

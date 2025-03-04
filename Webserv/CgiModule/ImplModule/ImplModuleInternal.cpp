@@ -11,7 +11,6 @@ void	ImplModule::mf_execute(Worker& worker, InternalReq& data, bool markFdsAsSta
 	data.assignExecutor(worker);
 	worker.assignRequestData(data);
 	worker.execute(markFdsAsStale);
-	std::cout << "worker " << &worker << " executing request " << &data << std::endl;
 }
 
 

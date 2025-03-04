@@ -3,8 +3,7 @@
 // Required header for CGI scripts
 //echo ("Content-type: text/html;charset=UTF-8\n\n");
 header("tretas: 1000");
-header("status: 200");
-header("status: 200");
+header("tREtas : 1000");
 echo "<!DOCTYPE html>\n";
 echo "<html lang='en'>\n";
 echo "<head><meta charset='UTF-8'><title>CGI Test</title></head>\n";
