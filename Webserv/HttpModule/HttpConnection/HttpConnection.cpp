@@ -54,35 +54,6 @@ namespace Http
 		connection->ReadWrite();
 	}
 
-
-	/*
-		Error or Hangup:
-			- close the connection (we as a server have nothing left to do)
-
-		Read:
-			- read from the socket into the read buffer
-			- if there is no request or the last request is completed, create a new request
-			- parse the read buffer into the request
-
-		Write: if there is data left in the write buffer, write it to the socket (until all data is written)
-			- if there is no data left in the write buffer, check if there is a response to write
-			- if there is a response to write, fill the write buffer with the response and write it to the socket
-				- if not all can be written in one go, writeOffset != m_size, back to step 1
-	*/
-
-
-
-
-
-	/*
-		Cleanup everything associated with it:
-		- unsubscribe events
-		- delete request and response queues
-		- unsubscribe its timer at the Http::Module
-		- return itself to the Http::Module
-		- lastly, close the Conn::HttpConnection associated with it
-	*/
-
 	void
 	Connection::setMyTCP(Conn::Connection& tcpConn)
 	{

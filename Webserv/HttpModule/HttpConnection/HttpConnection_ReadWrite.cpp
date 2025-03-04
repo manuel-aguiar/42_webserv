@@ -15,18 +15,23 @@ namespace Http
 {
 
 int
-Connection::mf_read(const Ws::fd fd)
+Connection::mf_readIntoReadBuffer(const Ws::fd fd)
 {
     if (m_transaction.request.isCompleted() || m_transaction.request.isError())
         return (1);
 
     int readBytes = m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
         
-    m_readBuffer.truncatePush(m_transaction.request.parse(m_readBuffer));
+    mf_parseReadBuffer();
 
     return (readBytes);
 }
 
+void
+Connection::mf_parseReadBuffer()
+{
+    m_readBuffer.truncatePush(m_transaction.request.parse(m_readBuffer));
+}
 
 void
 Connection::ReadWrite()
@@ -44,7 +49,7 @@ Connection::ReadWrite()
 
     if (triggeredEvents & Events::Monitor::READ)
     {
-        if (!mf_read(sockfd))
+        if (!mf_readIntoReadBuffer(sockfd))
         {
             closeConnection();
             return ;
@@ -64,7 +69,10 @@ Connection::ReadWrite()
             return ;
 
         if (m_transaction.response.getStatus() == Http::ResponseStatus::FINISHED)
+        {
             resetTransaction();
+            return (mf_parseReadBuffer());
+        }
         else if (m_transaction.response.getStatus() == Http::ResponseStatus::MARK_TO_CLOSE)
             closeConnection(); // transaction finished
         
@@ -78,7 +86,10 @@ Connection::ReadWrite()
             m_writeBuffer.write(sockfd);
 
             if (m_writeBuffer.size() == 0)
+            {
                 resetTransaction();
+                return (mf_parseReadBuffer());
+            }
             return ;
         }
         case Http::ResponseStatus::MARK_TO_CLOSE:
