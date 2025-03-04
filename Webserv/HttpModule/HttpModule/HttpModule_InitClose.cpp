@@ -31,7 +31,7 @@ void    logConnection(Globals& globals, Conn::Connection& connection)
                             + std::string(ipListen) + ":" 
                             + StringUtils::to_string(portListen);
     globals.logStatus(message);
-    //std::cout << message << std::endl;
+    std::cout << message << std::endl;
 }
 
 namespace Http
@@ -61,7 +61,7 @@ namespace Http
         
         ServerConfig& serverConfig = *connection.accessServerContext().getServerConfig();                                    
         int timeout = serverConfig.getTimeoutFullHeader();
-        httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection));
+        httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection), Http::Connection::Timeout::FULL_HEADER);
 
         connection.events_startMonitoring(true);
         

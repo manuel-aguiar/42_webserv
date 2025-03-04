@@ -5,6 +5,7 @@
 # define TIMER_HPP
 
 // C++headers
+#include <ostream>
 #include <cstddef>
 
 // C headers
@@ -44,5 +45,7 @@ class Timer
     private:
         struct timeval m_time;
 };
+
+std::ostream& operator<<(std::ostream& os, const Timer& timer);
 
 #endif

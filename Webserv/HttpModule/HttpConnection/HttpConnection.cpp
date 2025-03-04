@@ -31,7 +31,7 @@ void    logDisconnection(Globals& globals, Conn::Connection& connection)
                             + std::string(ipListen) + ":" 
                             + StringUtils::to_string(portListen);
     globals.logStatus(message);
-    //std::cout << message << std::endl;
+    std::cout << message << std::endl;
 }
 
 namespace Http
@@ -39,8 +39,7 @@ namespace Http
 
 	Connection::Connection(Http::Module& module)
 		: m_module(module)
-		, m_readTimer()
-		, m_writeTimer()
+		, m_liveTimeout(Timeout::NONE)
 		, m_myTimer()
 		, m_tcpConn(NULL)
 		, m_transaction(m_module.accessServerContext()) {}
@@ -63,9 +62,34 @@ namespace Http
 	}
 
 	void
-	Connection::setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer)
+	Connection::setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer,
+						const Http::Connection::Timeout::Type timeoutType)
 	{
 		m_myTimer = timer;
+		m_liveTimeout = timeoutType;
+		
+		// cosy debug print
+
+		//std::cout << this << " connection, timer ";
+		//switch (timeoutType)
+		//{
+		//	case Timeout::KEEP_ALIVE:
+		//		std::cout << "KEEP_ALIVE";
+		//		break ;
+		//	case Timeout::FULL_HEADER:
+		//		std::cout << "FULL_HEADER";
+		//		break ;
+		//	case Timeout::INTER_SEND:
+		//		std::cout << "INTER_SEND";
+		//		break ;
+		//	case Timeout::INTER_RECV:
+		//		std::cout << "INTER_RECV";
+		//		break ;
+		//	default:
+		//		std::cout << "NONE";
+		//		break ;
+		//}
+		//std::cout << " set to " << (timer->first - Timer::now()) << std::endl;
 	}
 
 	void
@@ -79,9 +103,7 @@ namespace Http
 		
 		// reset timer related stuff
 		m_myTimer = TimerTracker<Timer, Http::Connection*>::iterator();
-		m_readTimer = Timer();
-		m_writeTimer = Timer();
-
+		m_liveTimeout = Timeout::NONE;
 		resetTransaction();
 		m_transaction.response.close();
 

@@ -81,14 +81,15 @@ Module::closeTimedOutConnections()
     Timer timer = Timer::now();
 
     TimerTracker<Timer, Http::Connection*>::iterator 	it = m_timers.begin();
-    Http::Connection* 								    curRequest;
+    Http::Connection* 								    curConnection;
     
     for (; it != m_timers.end(); ++it) 
     {
         if (it->first < timer)
         {
-            curRequest = it->second;
-            curRequest->closeConnection();
+            curConnection = it->second;
+            std::cout << "connection " << curConnection << " timed out" << std::endl;
+            curConnection->closeConnection();
         }
         else
             break ;
