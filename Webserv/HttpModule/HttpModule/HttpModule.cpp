@@ -30,7 +30,9 @@ Module::Module(const size_t maxConnections, ServerContext& context)
 
 }
 
-Module::~Module() {}
+Module::~Module()
+{
+}
 
 Http::Connection*
 Module::acquireConnection()

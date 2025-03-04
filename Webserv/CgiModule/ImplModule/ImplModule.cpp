@@ -58,7 +58,7 @@ ImplModule::ImplModule(const size_t workers, const size_t backlog, const size_t 
 
 ImplModule::~ImplModule()
 {
-	stopAndReset();
+	forceStop();
 }
 
 //private as usual, bare minimum implementation to compile

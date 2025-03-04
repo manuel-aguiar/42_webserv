@@ -196,13 +196,41 @@ void	ImplModule::stopAndReset()
 		data = m_allWorkers[i].accessRequestData();
 		if (!data)
 			continue ;
-		mf_cancelAndReturn(*data); break ;
+		if (data->getState() == Cgi::RequestState::PENDING_FINISH)
+			mf_returnPendingFinish(m_allWorkers[i]);
+		else
+			mf_cancelAndReturn(m_allWorkers[i]);
 	}
 	
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
 		(data->getNotifyOnError_Callback())(data->getUser());
+		mf_returnRequestData(*data);
+	}
+		
+	m_executionQueue.clear();
+}
+
+// calls no events, nothing is reentrant, just stop
+void	ImplModule::forceStop()
+{
+	InternalReq* data;
+
+	for (size_t i = 0; i < m_allWorkers.size(); ++i)
+	{
+		data = m_allWorkers[i].accessRequestData();
+		if (!data)
+			continue ;
+		if (data->getState() == Cgi::RequestState::PENDING_FINISH)
+			mf_returnPendingFinish(m_allWorkers[i]);
+		else
+			mf_cancelAndReturn(m_allWorkers[i]);
+	}
+	
+	for (size_t i = 0; i < m_executionQueue.size(); ++i)
+	{
+		data = m_executionQueue[i];
 		mf_returnRequestData(*data);
 	}
 		

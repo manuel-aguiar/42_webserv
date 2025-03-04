@@ -175,7 +175,7 @@ clean:
 	rm -rf *vgcore*
 
 fclean: clean
-	rm -rf $(NAME) $(OBJ_PATH)
+	rm -rf $(NAME) $(BUILD_DIR)
 
 re: fclean all
 
