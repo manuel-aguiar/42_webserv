@@ -58,13 +58,14 @@ void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoo
 	if (m_availableWorkers.size() == 0)
 	{
 		internal->setState(Cgi::RequestState::QUEUED);
+		std::cout << "request " << internal << " queued" << std::endl;
 		m_executionQueue.push_back(internal);
 		return ;
 	}
 	worker = m_availableWorkers.back();
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
-	
+	std::cout << "request " << internal << " going to execute" << std::endl;
 	mf_execute(*worker, *internal, isCalledFromEventLoop);
 }
 
@@ -164,7 +165,7 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 	#endif
 
 	state = internal->getState();
-	
+	std::cout << internal << " finished called on request in state " << state << std::endl;
 	switch (state)
 	{
 		case Cgi::RequestState::ACQUIRED:

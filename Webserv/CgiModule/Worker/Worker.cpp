@@ -78,8 +78,8 @@ void    Worker::reset()
 	m_headerBuffer.clear();
 	
 	enableAllHandlers();
-	ASSERT_EQUAL(m_EmergencyEvent->isSubscribed(), false, "Worker::reset(), EmergencyEvent should not be subscribed");
 	ASSERT_EQUAL(m_readEvent->isSubscribed(), false, "Worker::reset(), readEvent should not be subscribed");
+	ASSERT_EQUAL(m_EmergencyEvent->isSubscribed(), false, "Worker::reset(), EmergencyEvent should not be subscribed");
 	ASSERT_EQUAL(m_writeEvent->isSubscribed(), false, "Worker::reset(), writeEvent should not be subscribed");
 }
 
