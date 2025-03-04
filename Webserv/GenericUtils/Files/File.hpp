@@ -28,7 +28,8 @@ class File
 		size_t				size() const;
 		const std::string&	path() const;
 		Ws::fd				fd() const;
-
+		time_t				getLastModified() const;
+		off_t				seek(off_t offset, int whence);
 	private:
 		Ws::fd				m_fd;
 		size_t				m_size;

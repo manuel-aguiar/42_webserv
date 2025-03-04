@@ -87,6 +87,25 @@ Ws::fd File::fd() const
 	return (m_fd);
 }
 
+time_t File::getLastModified() const
+{
+	struct stat info;
+	
+	if (::stat(m_path.c_str(), &info) != 0)
+	{
+		std::cerr << "File: error getting last modified time" << std::endl;
+		return 0;
+	}
+	
+	return info.st_mtime;
+}
+
+off_t	File::seek(off_t offset, int whence)
+{
+	ASSERT_EQUAL(m_fd != Ws::FD_NONE, true, "File: no file is open for seeking");
+	return (::lseek(m_fd, offset, whence));
+}
+
 // private
 File::File(const File& copy) { static_cast<void>(copy);}
 File& File::operator=(const File& copy) { static_cast<void>(copy); return (*this);}

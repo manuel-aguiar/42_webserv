@@ -104,12 +104,18 @@ namespace Http
 	Http::ResponseStatus::Type
 	Response::mf_fillDefaultPage(BaseBuffer& writeBuffer)
 	{
+		std::cout << "mf_fillDefaultPage" << std::endl;
 		size_t writeSize = m_defaultPageContent.size();
 
+		// Chunked Transfer Encoding Please !!!!!!!!!!!!!!!!!!!1
 		if (writeBuffer.available() < writeSize)
-			return (Http::ResponseStatus::WRITING);
-
-		writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
+		{
+			std::string pushbit = m_defaultPageContent.substr(0, writeBuffer.available());
+			writeBuffer.push(pushbit.c_str(), pushbit.size());
+			m_defaultPageContent = m_defaultPageContent.substr(pushbit.size());
+		}
+		else
+			writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
 
 		return (mf_fillFinish());
 	}

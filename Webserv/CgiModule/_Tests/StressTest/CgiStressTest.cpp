@@ -95,7 +95,7 @@ void	CgiStressTest::ValidShell(TestProtoRequest& proto, int index)
 void	CgiStressTest::ValidPHP(TestProtoRequest& proto, int index)
 {
 	(void)index;
-	proto.m_CgiRequestData->setInterpreterPath("/usr/bin/php");
+	proto.m_CgiRequestData->setInterpreterPath("/home/codespace/.php/current/bin/php");
 	proto.m_CgiRequestData->setScriptPath("../TestScripts/php/ValidLongBody.php");
 	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::SCRIPT_FILENAME, "../TestScripts/php/ValidLongBody.php");
 	proto.m_CgiRequestData->setEnvBase(Cgi::Env::Enum::SCRIPT_NAME, "../TestScripts/php/ValidLongBody.php");

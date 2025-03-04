@@ -61,6 +61,7 @@ namespace Http
 
 			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
+			std::string					mf_generateEtag(File& file, time_t last_modified);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
@@ -72,6 +73,9 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
+			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
+			bool						mf_addCacheControlHeaders();
+			bool						mf_addHeader(const std::string& key, const std::string& value);
 			Http::ResponseStatus::Type	mf_fillFinish();
 
 			bool						mf_prepareStaticFile(const char* path);

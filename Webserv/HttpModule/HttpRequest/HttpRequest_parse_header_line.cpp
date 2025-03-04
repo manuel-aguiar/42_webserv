@@ -25,6 +25,8 @@ namespace Http
 		"Content-Length",
 		"Content-Type",
 		"Host",
+		"If-Modified-Since",
+		"If-None-Match",
 		"Proxy-Connection",
 		"Transfer-Encoding",
 	};

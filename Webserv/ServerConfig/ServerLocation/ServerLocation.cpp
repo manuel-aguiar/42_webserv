@@ -4,6 +4,8 @@
 # include "../ServerConfig/ServerConfig.hpp"
 # include "../../GenericUtils/Validation/Validation.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../GenericUtils/Files/FilesUtils.hpp"
+
 # include "../../Ws_Namespace.h"
 
 ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
@@ -128,6 +130,10 @@ void		ServerLocation::setPath(const std::string &value)
 
 void		ServerLocation::setRoot(const std::string &value)
 {
+	if (FilesUtils::testPath(value.c_str()) == -1)
+		throw (std::invalid_argument("Invalid root path not accessible"));
+	if (FilesUtils::testPath(value.c_str()) == 0)
+		throw (std::invalid_argument("No read/write premissions"));
 	m_root = value;
 }
 

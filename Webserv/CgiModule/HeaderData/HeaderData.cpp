@@ -105,9 +105,18 @@ HeaderData::mf_validateHeaders()
 HeaderData::Status
 HeaderData::mf_parseHeaders(BufferView& receivedView)
 {
+<<<<<<< HEAD
 	BufferView remaining = receivedView;
 	const BufferView CgiDelimiter = BufferView(Cgi::RequestConsts::Separator::Line, std::strlen(Cgi::RequestConsts::Separator::Line));
 	const BufferView headerSeparator = BufferView(Cgi::RequestConsts::Separator::Header, std::strlen(Cgi::RequestConsts::Separator::Header));
+=======
+
+	BufferView remaining = receivedView;
+	const BufferView CgiDelimiter = BufferView(Cgi::RequestConsts::Separator::Line, std::strlen(Cgi::RequestConsts::Separator::Line));
+	const BufferView headerSeparator = BufferView(Cgi::RequestConsts::Separator::Header, std::strlen(Cgi::RequestConsts::Separator::Header));
+
+	
+>>>>>>> main
 
 	if (remaining.size() == 0)
 		return (HeaderData::NEED_MORE_DATA);
@@ -162,6 +171,11 @@ HeaderData::mf_parseHeaders(BufferView& receivedView)
 		BufferView key = line.substr(0, pos_Separator).trim(" \t\v\n\r").modify_ToCapitalized();
 		BufferView value = line.substr(pos_Separator + headerSeparator.size(), line.size() - pos_Separator - headerSeparator.size()).trim(" \t\v\n\r");
 		
+<<<<<<< HEAD
+=======
+		//std::cout << "key:\t\t\t\t '" << key << "', length: " << key.size() << std::endl;
+		//std::cout << "value:\t\t\t\t '" << value << "', length: " << value.size() << std::endl;
+>>>>>>> main
 		if (key == BufferView(Cgi::RequestConsts::Header::Status))
 		{
 			if (m_statusCode != -1)

@@ -88,7 +88,11 @@ namespace Http
             m_fillFunction = &CgiResponse::mf_fillBodyTemp;
             return (mf_fillBodyTemp(writeBuffer));
         }
+<<<<<<< HEAD
         mf_finishAndRelease();
+=======
+        m_module.finishRequest(*m_cgiRequest, true);
+>>>>>>> main
         return (Http::ResponseStatus::FINISHED);
     }
 
@@ -166,7 +170,10 @@ namespace Http
             if (writeBuffer.available() < 5)
                 return (Http::ResponseStatus::WAITING); // no room for 0\r\n\r\n
             writeBuffer.push("0\r\n\r\n", 5);
+<<<<<<< HEAD
             mf_finishAndRelease();
+=======
+>>>>>>> main
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }
