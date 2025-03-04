@@ -12,8 +12,8 @@ namespace Http
 		{
 			// No location or no root/alias - use server root
 			m_responseData.targetPath = m_responseData.serverBlock->getRoot();
-			// if (*m_responseData.targetPath.rbegin() == '/')
-			// 	m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
+			if (*m_responseData.targetPath.rbegin() == '/')
+				m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
 			m_responseData.targetPath += m_responseData.requestData->path;
 		}
 		else
@@ -23,9 +23,8 @@ namespace Http
 			
 			// Construct final path using alias
 			m_responseData.targetPath = m_responseData.serverLocation->getRoot();
-			// if (*m_responseData.targetPath.rbegin() == '/')
-			// 	m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
-			// Only add remainingPath if it's not empty
+			if (*m_responseData.targetPath.rbegin() == '/')
+				m_responseData.targetPath.erase(m_responseData.targetPath.size() - 1);
 			if (!remainingPath.empty())
 			{
 				if (*remainingPath.begin() != '/')
@@ -36,8 +35,8 @@ namespace Http
 				m_responseData.targetPath += "/";
 		}
 
-		if (m_responseData.serverLocation != NULL
-			&& m_responseData.requestData->path == m_responseData.serverLocation->getPath()
+		if (FilesUtils::isDirectory(m_responseData.targetPath.c_str())
+			&& m_responseData.serverLocation != NULL
 			&& *m_responseData.requestData->path.rbegin() == '/'
 			&& !m_responseData.serverLocation->getIndex().empty()) 
 			{

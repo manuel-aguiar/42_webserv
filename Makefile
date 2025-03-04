@@ -75,6 +75,8 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FindLocation.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Etag.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AddHeaders.cpp \
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 		\
@@ -84,7 +86,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
