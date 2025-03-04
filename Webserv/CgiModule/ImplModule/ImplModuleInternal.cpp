@@ -35,7 +35,13 @@ int	ImplModule::mf_finishTimedOut()
 				case Cgi::RequestState::ACQUIRED:
 					mf_recycleRequestData(*curRequest); break ;
 				case Cgi::RequestState::EXECUTING:
+				{
+					ASSERT_EQUAL(curRequest->accessExecutor() != NULL, true, "ImplModule::finishTimedOut(), request is executing but has no executor");
+					ASSERT_EQUAL(curRequest->accessExecutor()->accessRequestData() != NULL, true, "ImplModule::finishTimedOut(), request is executing but executor has no request");
+					ASSERT_EQUAL(curRequest->accessExecutor()->accessRequestData() == curRequest, true, "ImplModule::finishTimedOut(), request is executing but executor has different request");
+					
 					mf_recycleTimeoutFailure(*curRequest->accessExecutor()); break;
+				}
 				case Cgi::RequestState::PENDING_FINISH:
 					mf_recyclePendingFinish(*curRequest, false); break ;
 				case Cgi::RequestState::QUEUED:

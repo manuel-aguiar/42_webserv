@@ -84,7 +84,7 @@ namespace Http
 		if (!m_cgiRequest)
 			return (false);
 		
-        m_cgiRequest->setTimeoutMs(10000);
+        m_cgiRequest->setTimeoutMs(100);
 
 		m_cgiRequest->setUser(this);
 		m_cgiRequest->setNotify_onSuccess(&CgiHandlers::onSuccess);

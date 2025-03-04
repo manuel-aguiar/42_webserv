@@ -62,7 +62,7 @@ void    Worker::reset()
 	mf_closeFd(m_ChildToParent[1]);
 	mf_closeFd(m_EmergencyPhone[0]);
 	mf_closeFd(m_EmergencyPhone[1]);
-
+	
 	// clear args for execve, keep size for reuse
 	m_argPtr.clear();
 	m_envPtr.clear();
@@ -78,6 +78,13 @@ void    Worker::reset()
 	m_headerBuffer.clear();
 	
 	enableAllHandlers();
+	disableCloseAllEvents(true);
+	std::cout << "emergency? " << m_EmergencyEvent->isSubscribed() << "  " << m_EmergencyEvent->getFd() << std::endl;
+	std::cout << "read? " << m_readEvent->isSubscribed() << "  " << m_readEvent->getFd() << std::endl;
+	std::cout << "write? " << m_writeEvent->isSubscribed() << "  " << m_writeEvent->getFd() << std::endl;
+	ASSERT_EQUAL(m_EmergencyEvent->isSubscribed(), false, "Worker::reset(), EmergencyEvent should not be subscribed");
+	ASSERT_EQUAL(m_readEvent->isSubscribed(), false, "Worker::reset(), readEvent should not be subscribed");
+	ASSERT_EQUAL(m_writeEvent->isSubscribed(), false, "Worker::reset(), writeEvent should not be subscribed");
 }
 
 
@@ -176,12 +183,13 @@ Worker::enableAllHandlers()
 void	Worker::mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsStale)
 {
 	Ws::fd fd = myEvent.getFd();
-
-	if (fd == -1)
+	std::cout << "disabling: " << fd << std::endl;
+	if (fd == Ws::FD_NONE)
 		return ;
 	mf_accessEventManager().stopMonitoring(myEvent, markAsStale);
 	::close(fd);
-	myEvent.setFd(-1);
+	myEvent.setFd(Ws::FD_NONE);
+	std::cout << " is subscribed= " << myEvent.isSubscribed() << std::endl;
 }
 
 // private, bare minimum to compile

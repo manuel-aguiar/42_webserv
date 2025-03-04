@@ -51,6 +51,12 @@ ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 void
 ImplModule::mf_recycleRequestData(InternalReq& data)
 {	
+	#ifndef NDEBUG
+		for (size_t i = 0; i < m_availableRequestData.size(); ++i)
+			ASSERT_EQUAL(m_availableRequestData[i] != &data, true, 
+			"ImplModule::mf_recycleRequestData(), request is already available");
+	#endif
+
 	TimerTracker<Timer, InternalReq*>::iterator 	timer;
 
 	timer = data.getMyTimer();
@@ -66,6 +72,7 @@ void
 ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 {
 	InternalReq*	data = worker.accessRequestData();
+	ASSERT_EQUAL(data != NULL, true, "ImplModule::mf_recycleTimeoutFailure(), there must be a worker that is still associated");
 	worker.stop();
 	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR);
 	mf_recycleWorker(worker, false);
