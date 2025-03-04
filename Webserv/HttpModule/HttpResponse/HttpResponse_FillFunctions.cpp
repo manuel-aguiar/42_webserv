@@ -107,12 +107,12 @@ namespace Http
 		std::cout << "mf_fillDefaultPage" << std::endl;
 		size_t writeSize = m_defaultPageContent.size();
 
-		// Chunked Transfer Encoding Please !!!!!!!!!!!!!!!!!!!1
 		if (writeBuffer.available() < writeSize)
 		{
-			std::string pushbit = m_defaultPageContent.substr(0, writeBuffer.available());
-			writeBuffer.push(pushbit.c_str(), pushbit.size());
-			m_defaultPageContent = m_defaultPageContent.substr(pushbit.size());
+			std::string	pageChunk = m_defaultPageContent.substr(0, writeBuffer.available());
+			writeBuffer.push(pageChunk.c_str(), pageChunk.size());
+			m_defaultPageContent = m_defaultPageContent.substr(pageChunk.size());
+			return (Http::ResponseStatus::WRITING);
 		}
 		else
 			writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
