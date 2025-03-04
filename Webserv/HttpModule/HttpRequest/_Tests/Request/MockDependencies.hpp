@@ -6,11 +6,7 @@
 namespace Http
 {
 	// implementation just to satisfy the linker
-	bool Response::mf_assembleTargetPath()
-	{
-		// Do nothing - this is just a for testing
-		return (true);
-	}
+
 
 	// Additional stubs for testing
 	// bool Response::mf_validateHeaders()

@@ -4,7 +4,6 @@
 # include "../InternalReq/InternalReq.hpp"
 # include "ImplModule.hpp"
 
-
 void
 ImplModule::mf_returnWorker(Worker& worker)
 {
@@ -19,12 +18,14 @@ ImplModule::mf_returnRequestData(InternalReq& data)
 }
 
 void
-ImplModule::mf_cancelAndReturn(InternalReq& data)
+ImplModule::mf_cancelAndReturn(Worker& worker)
 {
-	Worker*		worker = data.accessExecutor();
+	InternalReq*		data = worker.accessRequestData();
 	
-	worker->stop();
-	mf_returnExecutionUnit(*worker, false, Cgi::Notify::ON_ERROR);
+	worker.stop();
+	worker.disableCloseAllEvents(true);
+	mf_returnWorker(worker);
+	mf_returnRequestData(*data);
 }
 
 void
@@ -39,4 +40,13 @@ ImplModule::mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cg
 	mf_returnRequestData(*data);
 	if (user && handler)
 		(handler)(user);
+}
+
+void
+ImplModule::mf_returnPendingFinish(Worker& worker)
+{
+	InternalReq* 			data = worker.accessRequestData();
+	
+	mf_returnWorker(worker);
+	mf_returnRequestData(*data);
 }

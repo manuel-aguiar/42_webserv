@@ -39,8 +39,7 @@ namespace Http
 
 	Connection::Connection(Http::Module& module)
 		: m_module(module)
-		, m_readTimer()
-		, m_writeTimer()
+		, m_liveTimeout(Timeout::NONE)
 		, m_myTimer()
 		, m_tcpConn(NULL)
 		, m_transaction(m_module.accessServerContext()) {}
@@ -54,52 +53,48 @@ namespace Http
 		connection->ReadWrite();
 	}
 
-
-	/*
-		Error or Hangup:
-			- close the connection (we as a server have nothing left to do)
-
-		Read:
-			- read from the socket into the read buffer
-			- if there is no request or the last request is completed, create a new request
-			- parse the read buffer into the request
-
-		Write: if there is data left in the write buffer, write it to the socket (until all data is written)
-			- if there is no data left in the write buffer, check if there is a response to write
-			- if there is a response to write, fill the write buffer with the response and write it to the socket
-				- if not all can be written in one go, writeOffset != m_size, back to step 1
-	*/
-
-
-
-
-
-	/*
-		Cleanup everything associated with it:
-		- unsubscribe events
-		- delete request and response queues
-		- unsubscribe its timer at the Http::Module
-		- return itself to the Http::Module
-		- lastly, close the Conn::HttpConnection associated with it
-	*/
-
 	void
 	Connection::setMyTCP(Conn::Connection& tcpConn)
 	{
 		m_tcpConn = &tcpConn;
-		m_transaction.response.setConnectionAddress(tcpConn.info_getListenInfo().addr.sockaddr);
+		m_transaction.response.setListenAddress(tcpConn.info_getListenInfo().addr.sockaddr);
+		m_transaction.response.setTcpConnection(tcpConn);
 	}
 
 	void
-	Connection::setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer)
+	Connection::setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer,
+						const Http::Connection::Timeout::Type timeoutType)
 	{
 		m_myTimer = timer;
+		m_liveTimeout = timeoutType;
+		
+		// cosy debug print
+
+		//std::cout << this << " connection, timer ";
+		//switch (timeoutType)
+		//{
+		//	case Timeout::KEEP_ALIVE:
+		//		std::cout << "KEEP_ALIVE";
+		//		break ;
+		//	case Timeout::FULL_HEADER:
+		//		std::cout << "FULL_HEADER";
+		//		break ;
+		//	case Timeout::INTER_SEND:
+		//		std::cout << "INTER_SEND";
+		//		break ;
+		//	case Timeout::INTER_RECV:
+		//		std::cout << "INTER_RECV";
+		//		break ;
+		//	default:
+		//		std::cout << "NONE";
+		//		break ;
+		//}
+		//std::cout << " set to " << (timer->first - Timer::now()) << std::endl;
 	}
 
 	void
 	Connection::closeConnection()
 	{
-		std::cout << "closing connection" << std::endl;
 		logDisconnection(*m_tcpConn->accessServerContext().getGlobals(), *m_tcpConn);
 		m_tcpConn->events_stopMonitoring(true);
 
@@ -108,9 +103,7 @@ namespace Http
 		
 		// reset timer related stuff
 		m_myTimer = TimerTracker<Timer, Http::Connection*>::iterator();
-		m_readTimer = Timer();
-		m_writeTimer = Timer();
-
+		m_liveTimeout = Timeout::NONE;
 		resetTransaction();
 		m_transaction.response.close();
 
@@ -118,16 +111,14 @@ namespace Http
 
 		if (m_tcpConn == NULL)
 			return ;
-
-		m_tcpConn->close();
+		Conn::Connection* tcpConn = m_tcpConn;
 		m_tcpConn = NULL;
-
+		tcpConn->close();
 	}
 
 	void
 	Connection::resetTransaction()
 	{
-		std::cout << "resetting transaction" << std::endl;
 		m_transaction.reset();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();

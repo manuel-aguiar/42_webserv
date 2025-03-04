@@ -2,6 +2,8 @@
 
 #include "Timer.hpp"
 
+# include <iomanip>
+
 Timer::Timer() :
     m_time()
 
@@ -123,4 +125,20 @@ Timer& Timer::operator+=(long milliseconds)
 unsigned int Timer::getMilliseconds() const
 {
     return m_time.tv_sec * 1000 + m_time.tv_usec / 1000;
+}
+
+std::ostream& operator<<(std::ostream& os, const Timer& timer)
+{
+    long total_seconds = timer.getSeconds();
+    long hours = total_seconds / 3600;
+    long minutes = (total_seconds % 3600) / 60;
+    long seconds = total_seconds % 60;
+    long microseconds = timer.getMicroseconds();
+
+    os << std::setfill('0') << std::setw(2) << hours << "h:"
+       << std::setw(2) << minutes << "m:"
+       << std::setw(2) << seconds << "s "
+       << std::setw(6) << microseconds << "us";
+    
+    return os;
 }

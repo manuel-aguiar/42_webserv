@@ -174,7 +174,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 #####################################################
 
 clean:
-	rm -rf $(OBJ_PATH) *vgcore*
+	rm -rf *vgcore*
 
 fclean: clean
 	rm -rf $(NAME) $(BUILD_DIR)

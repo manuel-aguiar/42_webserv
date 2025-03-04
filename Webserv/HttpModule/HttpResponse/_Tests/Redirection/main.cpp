@@ -63,7 +63,7 @@ void test_basicRedirects(int &testNumber)
 	{
 		Http::Request request(serverContext);
 		Http::Response response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -121,7 +121,7 @@ void test_basicRedirects(int &testNumber)
 	{
 		Http::Request request(serverContext);
 		Http::Response response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -177,7 +177,7 @@ void test_basicRedirects(int &testNumber)
 	{
 		Http::Request request(serverContext);
 		Http::Response response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;

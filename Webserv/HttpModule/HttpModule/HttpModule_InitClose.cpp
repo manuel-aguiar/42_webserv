@@ -49,7 +49,6 @@ namespace Http
         "Http::Module::InitConnection - failed to acquire connection, there should be connections available for everyone");
 
         httpConnection->setMyTCP(connection);
-
         connection.appLayer_setCloseCallback(Http::Module::ForcedClose);
         connection.appLayer_setConn(httpConnection);
 
@@ -62,7 +61,7 @@ namespace Http
         
         ServerConfig& serverConfig = *connection.accessServerContext().getServerConfig();                                    
         int timeout = serverConfig.getTimeoutFullHeader();
-        httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection));
+        httpConnection->setMyTimer(module.insertTimer(Timer::now() + timeout, *httpConnection), Http::Connection::Timeout::FULL_HEADER);
 
         connection.events_startMonitoring(true);
         
