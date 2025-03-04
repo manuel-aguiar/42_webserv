@@ -1,13 +1,13 @@
 
 
 #include "HttpResponse.hpp"
+#include "../HttpModule/HttpModule.hpp"
+#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 #include "../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../ServerContext/ServerContext.hpp"
 #include "../../GenericUtils/Files/FilesUtils.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
-#include "../HttpModule/HttpModule.hpp"
-#include "../HttpCgiInterface/HttpCgiInterface.hpp"
 #include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 // Move to adequate scope
@@ -47,25 +47,7 @@ namespace Http
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::CGI:
-			{
-				Http::CgiInterface& cgiInterface =
-				reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
-				ASSERT_EQUAL(m_cgiResponse == NULL, true, "Response::receiveRequestData(): already had a gateway");
-				
-				m_cgiResponse = cgiInterface.acquireGateway();
-				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): there must be a gateway available");
-				
-				if (!m_cgiResponse->initiateRequest(m_responseData, m_tcpConn))
-				{
-					m_responseData.requestStatus = Http::Status::SERVICE_UNAVAILABLE;
-					mf_prepareErrorMessage();
-					break ;
-				}
-
-				m_fillFunction = &Response::mf_fillCgiResponse;
-				m_processFunction = &Response::mf_processBodyCgi;
-				return ;
-			}
+				return (mf_prepareCgiExecution());
 			case ResponseData::STATIC:
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 

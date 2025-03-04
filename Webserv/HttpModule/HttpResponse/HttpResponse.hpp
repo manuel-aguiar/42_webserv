@@ -96,7 +96,7 @@ namespace Http
 			BufferView					mf_processBodyCgi(const BufferView& receivedView);
 			
 			void						mf_prepareErrorMessage();
-
+			void						mf_prepareCgiExecution();
 			// Debatable
 
 			ServerContext&       		m_context;

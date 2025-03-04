@@ -61,4 +61,10 @@ namespace Http
 	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{(void)addr;}
 
+	void
+	Response::setTcpConnection(const Conn::Connection& tcpConn)
+	{
+		m_tcpConn = &tcpConn;
+	}
+
 }

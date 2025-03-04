@@ -82,5 +82,10 @@ namespace Http
 		m_listenAddress = &addr;
 	}
 
+	void
+	Response::setTcpConnection(const Conn::Connection& tcpConn)
+	{
+		m_tcpConn = &tcpConn;
+	}
 
 }
