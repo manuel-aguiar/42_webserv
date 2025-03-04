@@ -190,17 +190,14 @@ namespace Http
 			if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
 			{
 				mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
-
-				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_file.size())));
-				m_responseData.headers.insert(std::make_pair("content-type", getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str())));
+				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str()));
 
 				m_fillFunctionBody = &Response::mf_sendStaticFile;
 				return ;
 			}
 		}
-		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, ":)");
-
-		m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
-		m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+		mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Task failed successfully");
+		m_fillFunctionBody = &Response::mf_fillDefaultPage;
 	}
 }

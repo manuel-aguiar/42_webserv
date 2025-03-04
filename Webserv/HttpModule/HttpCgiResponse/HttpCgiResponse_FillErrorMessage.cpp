@@ -36,46 +36,27 @@ namespace Http
         if (m_responseData->serverBlock != NULL)
         {
             const std::map<int, std::string>& errorPages = m_responseData->serverBlock->getErrorPages();
-<<<<<<< HEAD
             std::map<int, std::string>::const_iterator targetPage = errorPages.find(m_statusCode);
             if (targetPage != errorPages.end()
             && m_file.open(targetPage->second.c_str(), O_RDONLY, 0666))
             {
                 writeBuffer.push("Content-Length: ", 16);
-=======
-            std::map<int, std::string>::const_iterator targetPage = errorPages.find(m_responseData->requestStatus);
-            if (targetPage != errorPages.end()
-            && m_file.open(targetPage->second.c_str(), O_RDONLY, 0666))
-            {
-                writeBuffer.push("Content-Length: ", 15);
->>>>>>> main
                 writeBuffer.push(BufferView(StringUtils::to_string(m_file.size()).c_str()));
                 writeBuffer.push("\r\n", 2);
                 writeBuffer.push("Content-Type: ", 14);
                 writeBuffer.push(BufferView(getMimeType(targetPage->second.c_str())));
-<<<<<<< HEAD
                 writeBuffer.push("\r\n\r\n", 4);
-=======
-                writeBuffer.push("\r\n", 2);
->>>>>>> main
                 m_fillFunction = &CgiResponse::mf_fillErrorFile;
                 return (mf_fillErrorFile(writeBuffer));
             }
         }
         m_defaultErrorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");
-<<<<<<< HEAD
 		writeBuffer.push("Content-Length: ", 16);
-=======
-		writeBuffer.push("Content-Length: ", 15);
->>>>>>> main
         writeBuffer.push(BufferView(StringUtils::to_string(m_defaultErrorPage.size()).c_str()));
         writeBuffer.push("\r\n", 2);
         writeBuffer.push("Content-Type: text/html\r\n", 25);
 		writeBuffer.push("\r\n", 2);
-<<<<<<< HEAD
         
-=======
->>>>>>> main
         m_fillFunction = &CgiResponse::mf_fillErrorDefaultPage;
         return (mf_fillErrorDefaultPage(writeBuffer));
 	}
@@ -92,15 +73,8 @@ namespace Http
         ASSERT_EQUAL(bytesRead >= 0, true, "Response: File read error");
 
         m_staticReadCounter += bytesRead;
-<<<<<<< HEAD
         if (m_staticReadCounter == m_file.size())
         {
-=======
-        std::cout << "sent " << bytesRead << " bytes of error file, total: " << m_staticReadCounter << std::endl;
-        if (m_staticReadCounter == m_file.size())
-        {
-            std::cout << "sent full error file" << std::endl;
->>>>>>> main
             m_file.close();
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
@@ -114,15 +88,8 @@ namespace Http
         size_t thisPush = std::min(writeBuffer.available(), m_defaultErrorPage.size() - m_staticReadCounter);
         writeBuffer.push(m_defaultErrorPage.c_str() + m_staticReadCounter, thisPush);
         m_staticReadCounter += thisPush;
-<<<<<<< HEAD
         if (m_staticReadCounter == m_defaultErrorPage.size())
         {
-=======
-        std::cout << "sent " << thisPush << " bytes of error default page, total: " << m_staticReadCounter << "  page: " << m_defaultErrorPage.size() << std::endl;
-        if (m_staticReadCounter == m_defaultErrorPage.size())
-        {
-            std::cout << "sent full error default page" << std::endl;
->>>>>>> main
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::ResponseStatus::FINISHED);
         }

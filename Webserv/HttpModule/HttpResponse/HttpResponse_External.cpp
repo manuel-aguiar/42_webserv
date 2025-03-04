@@ -89,9 +89,6 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
-<<<<<<< HEAD
-				mf_prepareErrorMessage();
-=======
 				if (m_responseData.serverBlock != NULL)
 				{
 					if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
@@ -107,7 +104,6 @@ namespace Http
 				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Task failed successfully");
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 
->>>>>>> main
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");

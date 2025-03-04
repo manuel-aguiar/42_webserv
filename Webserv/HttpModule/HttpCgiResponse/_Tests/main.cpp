@@ -266,11 +266,6 @@ void py_validScript(int& testNumber, int readBuffSize)
 		"0\r\n"
 		"\r\n";
 		
-<<<<<<< HEAD
-=======
-
-		EXPECT_EQUAL(cache.view(), BufferView(expected), "CgiResponse::initiateRequest() - success");
->>>>>>> main
 
 		EXPECT_EQUAL(cache.view(), BufferView(expected), "CgiResponse::initiateRequest() - success");
 		

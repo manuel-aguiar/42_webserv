@@ -56,14 +56,7 @@ void	Worker::mf_readScript()
 		//std::cout << "hangup without read, end of output" << std::endl;
 		if (m_headerParser.getParsingState() != Cgi::HeaderData::FINISH)
 			return (mf_failSendHeaders());
-<<<<<<< HEAD
 		mf_disableAndWait(*m_readEvent);
-=======
-		}
-		mf_disableCloseMyEvent(*m_readEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();	
->>>>>>> main
 		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
 	}
 
@@ -92,39 +85,15 @@ void	Worker::mf_readScript()
 				return ;
 			}
 			if (state == Cgi::IO::CLOSE)
-<<<<<<< HEAD
 				return (mf_disableAndWait(*m_readEvent));
-=======
-			{
-				//std::cout << "header state close" << std::endl;
-				goto disableReadEvent;
-			}
->>>>>>> main
 		}
 	}
 	else
 	{
 		state = (m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), m_readEvent->getFd());
 		if (state == Cgi::IO::CLOSE)
-<<<<<<< HEAD
 			return (mf_disableAndWait(*m_readEvent));
 	}
-=======
-		{
-			//std::cout << "body state close" << std::endl;
-			goto disableReadEvent;
-		}
-	}
-
-
-	return ;
-
-	disableReadEvent:
-		//std::cout << "read disabled" << std::endl;
-		mf_disableCloseMyEvent(*m_readEvent, true);
-		if (m_writeEvent->getFd() == -1 && m_readEvent->getFd() == -1)
-			mf_waitChild();	
->>>>>>> main
 }
 
 void	Worker::mf_writeScript()
