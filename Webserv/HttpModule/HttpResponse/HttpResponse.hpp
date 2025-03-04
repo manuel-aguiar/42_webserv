@@ -89,6 +89,8 @@ namespace Http
 
 			// pass the body to the CgiGateway
 			BufferView					mf_processBodyCgi(const BufferView& receivedView);
+			
+			void						mf_prepareErrorMessage();
 
 			// Debatable
 

@@ -74,19 +74,12 @@ namespace Http
         const std::map<std::string, std::string>& interpreterMap = responseData.serverLocation->getCgiInterpreters();
         std::map<std::string, std::string>::const_iterator interpPtr = interpreterMap.find(responseData.targetExtension);
 
-		
         if (interpPtr == interpreterMap.end())
-        {
-			m_statusCode = Http::Status::BAD_GATEWAY;
-            m_fillFunction = &CgiResponse::mf_fillErrorResponse;
             return (false);
-        }
 
 		ASSERT_EQUAL(m_cgiRequest == NULL, true, "CgiResponse::initiateRequest(): already had a request");
 
 		m_cgiRequest = m_module.acquireRequest();
-		
-		ASSERT_EQUAL(m_cgiRequest != NULL, true, "CgiResponse::initiateRequest(): failed to acquire request");
 		
 		if (!m_cgiRequest)
 			return (false);

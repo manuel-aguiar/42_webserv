@@ -9,6 +9,8 @@
 
 # include <cstdlib> // DELETE ME
 
+extern std::string getMimeType(const std::string &path);
+
 namespace Http
 {
 	// Check Server/Location existence
@@ -180,5 +182,27 @@ namespace Http
 		}
 
 		return (true);
+	}
+
+	void
+	Response::mf_prepareErrorMessage()
+	{
+		if (m_responseData.serverBlock != NULL)
+		{
+			if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
+			{
+				mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
+
+				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_file.size())));
+				m_responseData.headers.insert(std::make_pair("content-type", getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str())));
+
+				m_fillFunctionBody = &Response::mf_sendStaticFile;
+				return ;
+			}
+		}
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, ":)");
+
+		m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
+		m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
 	}
 }

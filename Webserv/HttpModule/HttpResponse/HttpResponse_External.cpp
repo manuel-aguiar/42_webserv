@@ -51,10 +51,15 @@ namespace Http
 				ASSERT_EQUAL(m_cgiResponse == NULL, true, "Response::receiveRequestData(): already had a gateway");
 				
 				m_cgiResponse = cgiInterface.acquireGateway();
+				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): there must be a gateway available");
+				
+				if (!m_cgiResponse->initiateRequest(m_responseData))
+				{
+					m_responseData.requestStatus = Http::Status::SERVICE_UNAVAILABLE;
+					mf_prepareErrorMessage();
+					break ;
+				}
 
-				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): failed to acquire cgi gateway");
-
-				m_cgiResponse->initiateRequest(m_responseData);
 				m_fillFunction = &Response::mf_fillCgiResponse;
 				m_processFunction = &Response::mf_processBodyCgi;
 				return ;
@@ -81,23 +86,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
-				if (m_responseData.serverBlock != NULL)
-				{
-					if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
-					{
-						mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
-
-						m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_file.size())));
-						m_responseData.headers.insert(std::make_pair("content-type", getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str())));
-
-						m_fillFunctionBody = &Response::mf_sendStaticFile;
-						break ;
-					}
-				}
-				m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, ":)");
-
-				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
-				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+				mf_prepareErrorMessage();
 				break ;
 			case ResponseData::NO_CONTENT:
 				m_fillFunctionBody = NULL;
