@@ -87,7 +87,8 @@ namespace Http
 	Connection::setMyTCP(Conn::Connection& tcpConn)
 	{
 		m_tcpConn = &tcpConn;
-		m_transaction.response.setConnectionAddress(tcpConn.info_getListenInfo().addr.sockaddr);
+		m_transaction.response.setListenAddress(tcpConn.info_getListenInfo().addr.sockaddr);
+		m_transaction.response.setTcpConnection(tcpConn);
 	}
 
 	void

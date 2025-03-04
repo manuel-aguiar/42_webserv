@@ -55,7 +55,7 @@ namespace Http
 				m_cgiResponse = cgiInterface.acquireGateway();
 				ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): there must be a gateway available");
 				
-				if (!m_cgiResponse->initiateRequest(m_responseData))
+				if (!m_cgiResponse->initiateRequest(m_responseData), m_tcpConn)
 				{
 					m_responseData.requestStatus = Http::Status::SERVICE_UNAVAILABLE;
 					mf_prepareErrorMessage();
@@ -158,6 +158,8 @@ namespace Http
 	Response::reset()
 	{
 		m_responseData.reset();
+		m_listenAddress = NULL;
+		m_tcpConn = NULL;
 		m_fillFunction = &Response::mf_fillNothingToSend;
 		m_fillFunctionBody = NULL;
 		m_processFunction = &Response::mf_processBodyNone;
@@ -178,13 +180,19 @@ namespace Http
 	Response::close()
 	{
 		reset();
-		m_connAddress = NULL;
+		m_listenAddress = NULL;
 	}	
 
 	void
-	Response::setConnectionAddress(const Ws::Sock::addr& addr)
+	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{
-		m_connAddress = &addr;
+		m_listenAddress = &addr;
+	}
+
+	void
+	Response::setTcpConnection(const Conn::Connection& tcpConn)
+	{
+		m_tcpConn = &tcpConn;
 	}
 
 }

@@ -40,7 +40,8 @@ namespace Http
 
 			BufferView					receiveRequestBody(const BufferView& view);			// request send body
 
-			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
+			void						setListenAddress(const Ws::Sock::addr& addr);	// called by http::connection
+			void						setTcpConnection(const Conn::Connection& addr);
 
 		private:
 			typedef enum
@@ -99,7 +100,8 @@ namespace Http
 			// Debatable
 
 			ServerContext&       		m_context;
-			const Ws::Sock::addr*		m_connAddress;
+			const Ws::Sock::addr*		m_listenAddress;
+			const Conn::Connection*		m_tcpConn;
 			ResponseData				m_responseData;
 
 			Http::ResponseStatus::Type	m_status;

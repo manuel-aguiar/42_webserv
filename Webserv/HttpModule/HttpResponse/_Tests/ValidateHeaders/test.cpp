@@ -73,7 +73,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -105,7 +105,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -136,7 +136,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -168,7 +168,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -200,7 +200,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -232,7 +232,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -263,7 +263,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -294,7 +294,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -324,7 +324,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -356,7 +356,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -387,7 +387,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -419,7 +419,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -451,7 +451,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -483,7 +483,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		buffer.clear();
@@ -520,7 +520,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -553,7 +553,7 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -638,7 +638,7 @@ void test_complexLoctaions(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;
@@ -666,7 +666,7 @@ void test_complexLoctaions(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
-		response.setConnectionAddress(*(const Ws::Sock::addr*)&addr1);
+		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
 		Buffer<1024> buffer;

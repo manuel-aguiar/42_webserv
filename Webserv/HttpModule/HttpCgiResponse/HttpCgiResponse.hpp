@@ -28,7 +28,7 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::ResponseData& data);
+			bool					initiateRequest(const Http::ResponseData& data, const Conn::Connection* connection = NULL);
 
 			Http::ResponseStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
