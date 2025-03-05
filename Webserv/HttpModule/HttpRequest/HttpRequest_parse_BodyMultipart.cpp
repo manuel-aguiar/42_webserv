@@ -105,7 +105,10 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
 			if (remaining.size() >= m_bufferCapacity)
+			{
+				//std::cout << "payload too large" << std::endl;
 				return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
+			}
 			return (remaining); // push the remaining data back to the beginning
 
 		}

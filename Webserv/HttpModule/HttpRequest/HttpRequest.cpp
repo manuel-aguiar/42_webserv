@@ -139,7 +139,6 @@ BufferView Request::mf_handleNothing(const BufferView& remaining)
 */
 BufferView Http::Request::mf_parseBodyExitError(const Http::Status::Number status)
 {
-	std::cout << "parse body exit error " << status << std::endl;
     m_parsingState = ERROR;
     m_data.status = status;
 
