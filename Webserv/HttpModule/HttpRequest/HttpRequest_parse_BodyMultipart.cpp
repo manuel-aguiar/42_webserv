@@ -165,7 +165,6 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
 			const BufferView nameFind(contentDispositionNameFind);
 			size_t nameStart = value.find(nameFind);
-			//std::cout << "name at position: " << nameStart << std::endl;
 			if (nameStart != BufferView::npos)
 			{
 				value = value.substr(nameStart + nameFind.size(), value.size() - nameStart - nameFind.size());
