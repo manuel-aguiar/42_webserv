@@ -3,20 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="style.css">
-    <title>Redirection tests</title>
+    <title>Webserv Redirection Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .code {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Redirection tests</h1>
-    </header>
+    <h1>Webserv HTTP Redirection Tests</h1>
 
-    <nav>
-        <ul>
-            <li><a href="/wip-folder/index.html">Will redirect</a></li>
-            <li><a href="/legacy-folder/index.html">Can go here</a></li>
-        </ul>
-    </nav>
+    <h2>HTTP Redirect Status Codes</h2>
+    <table>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Method Handling</th>
+            <th>Caching</th>
+        </tr>
+        <tr>
+            <td>301</td>
+            <td>Moved Permanently</td>
+            <td>Resource has been permanently moved to a new URL</td>
+            <td>May convert POST to GET</td>
+            <td>Cacheable</td>
+        </tr>
+        <tr>
+            <td>302</td>
+            <td>Found (Temporary Redirect)</td>
+            <td>Resource temporarily located at a different URL</td>
+            <td>May convert POST to GET</td>
+            <td>Not cacheable</td>
+        </tr>
+        <tr>
+            <td>303</td>
+            <td>See Other</td>
+            <td>Response to request can be found at another URL using GET</td>
+            <td>Always use GET for the new location</td>
+            <td>Not cacheable</td>
+        </tr>
+        <tr>
+            <td>307</td>
+            <td>Temporary Redirect</td>
+            <td>Same as 302 but strictly preserves method</td>
+            <td>Preserves original method</td>
+            <td>Not cacheable</td>
+        </tr>
+        <tr>
+            <td>308</td>
+            <td>Permanent Redirect</td>
+            <td>Same as 301 but strictly preserves method</td>
+            <td>Preserves original method</td>
+            <td>Cacheable</td>
+        </tr>
+    </table>
 
+    <h2>Test Cases</h2>
+
+    <h3>Basic Status Code Tests</h3>
+    <ul>
+        <li><a href="/301-test">301 Moved Permanently</a></li>
+        <li><a href="/302-test">302 Found</a></li>
+        <li><a href="/303-test">303 See Other</a></li>
+        <li><a href="/temp-redirect">307 Temporary Redirect</a></li>
+        <li><a href="/perm-redirect">308 Permanent Redirect</a></li>
+    </ul>
+
+    <h3>Path Format Tests</h3>
+    <ul>
+        <li><a href="/relative-test">Relative Path</a></li>
+        <li><a href="/semi-relative-test">Semi-Relative Path</a></li>
+        <li><a href="/absolute-test">Absolute URL</a></li>
+    </ul>
+
+    <h3>Edge Cases</h3>
+    <ul>
+        <li><a href="/redirect-chain-1">Redirect Chain</a></li>
+        <li><a href="/query-test">Query String</a></li>
+        <li><a href="/fragment-test">Fragment Handling</a></li>
+        <li><a href="/special%20chars">Special Characters</a></li>
+        <li><a href="/external">External Redirect</a></li>
+        <li><a href="/no-slash">Directory Trailing Slash</a></li>
+        <li><a href="/port-test">Port Handling</a></li>
+        <li><form method="POST" action="/302-test"><button type="submit">POST to 302</button></form></li>
+        <li><form method="POST" action="/temp-redirect"><button type="submit">POST to 307</button></form></li>
+    </ul>
+
+    <h3>Target Directories</h3>
+    <ul>
+        <li><a href="/legacy-folder/">Legacy Folder</a></li>
+        <li><a href="/target-folder/">Target Folder</a></li>
+    </ul>
+
+    <footer>
+        <p><small>42 Webserv Project - Redirection Test Suite</small></p>
+    </footer>
 </body>
 </html>
