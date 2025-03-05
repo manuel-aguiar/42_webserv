@@ -51,10 +51,13 @@ namespace Http
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
+		
+		std::cout << " response " << m_responseData.responseType << " type, FILEUPLOAD IS 5" << std::endl;
 
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::CGI:
+				return (mf_prepareCgiExecution());
 				return (mf_prepareCgiExecution());
 			case ResponseData::STATIC:
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
@@ -79,6 +82,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
+				m_processFunction = &Response::mf_processBodyIgnore;
 				mf_prepareErrorMessage();
 				break ;
 			case ResponseData::NO_CONTENT:
@@ -98,6 +102,7 @@ namespace Http
 	Response::receiveRequestBody(const BufferView& view)
 	{
 		//std::cout << "Response received body, size: " << view.size() << std::endl;
+		std::cout << "receive request body" << std::endl;
 		return ((this->*m_processFunction)(view));
 	}
 
@@ -131,6 +136,7 @@ namespace Http
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
 			cgiInterface.releaseGateway(*m_cgiResponse);
 			m_cgiResponse = NULL;
+			m_cgiResponse = NULL;
 		}
 	}
 
@@ -138,6 +144,8 @@ namespace Http
 	Response::close()
 	{
 		reset();
+		m_listenAddress = NULL;
+		m_tcpConn = NULL;
 		m_listenAddress = NULL;
 		m_tcpConn = NULL;
 	}	

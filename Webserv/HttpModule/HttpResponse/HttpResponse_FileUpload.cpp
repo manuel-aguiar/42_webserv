@@ -7,7 +7,6 @@ namespace Http
 	BufferView
 	Response::mf_processBodyNone(const BufferView& view)
 	{
-		// does nothing, returns the full view back
 		return (view);
 	}
 
@@ -31,7 +30,7 @@ namespace Http
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
-			return (view);
+			return (BufferView()); // ignore
 		}
 
 		if (m_responseData.requestData->multipart_Filename != m_file.path())
