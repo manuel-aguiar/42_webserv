@@ -136,7 +136,6 @@ void fileUpload(int& testNumber, size_t readBufSize)
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
-		exit(0);
 	}
 
 	::unlink(file1_Name);

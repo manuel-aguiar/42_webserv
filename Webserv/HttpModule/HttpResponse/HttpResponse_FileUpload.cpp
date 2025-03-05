@@ -29,10 +29,9 @@ namespace Http
 		if (view.size() == 0) // eof
 		{
 			std::cout << "closing file " << std::endl;
-			m_file.close();
-
-			if (m_responseData.requestData->multipart_Filename.empty()
-			&& m_responseData.requestData->multipart_Filename.empty())
+			if (!m_responseData.requestData->multipart_Filename.empty())
+				m_file.close();
+			else if (m_responseData.requestData->multipart_Name.empty())
 			{
 				// finished
 				m_fillFunction = &Response::mf_fillResponseLine;
