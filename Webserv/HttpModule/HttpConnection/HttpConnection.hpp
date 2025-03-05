@@ -49,7 +49,7 @@ namespace Http
 			const Conn::Connection* 	getTCP() const; // sockaddr, fd, ServerContext
 			const Ws::Sock::addr& 		getClientAddr() const; // sockaddr -> BlockFinder
 			ServerContext& 				accessServerContext(); //Conn::Connection
-
+			
 			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer, const Http::Connection::Timeout::Type timeoutType);
 
 			void 						prepareConnection(Conn::Connection& tcpConn);

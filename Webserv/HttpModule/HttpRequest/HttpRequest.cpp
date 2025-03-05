@@ -135,8 +135,8 @@ Request::parse()
 	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
 	//std::cout << "parse request" << std::endl;
 
-	bool isCgi = (m_httpResponse && m_httpResponse->getResponseData().responseType == Http::ResponseData::CGI);
-	if (isCgi && m_parsingState == BODY)
+	bool cgiPass = (m_httpResponse && m_httpResponse->getResponseData().cgiPass == true);
+	if (cgiPass && m_parsingState == BODY)
 		return (Http::IOStatus::WAITING);
 
 	return (mf_innerParse());

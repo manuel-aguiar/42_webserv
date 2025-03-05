@@ -28,7 +28,7 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::ResponseData& data, Http::Request& request, const Conn::Connection* connection = NULL);
+			bool					initiateRequest(Http::ResponseData& data, Http::Request& request, const Conn::Connection* connection = NULL);
 
 			Http::IOStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
@@ -71,7 +71,7 @@ namespace Http
 			Ws::fd 						m_readFd;
 			Ws::fd 						m_writeFd;
 
-			const Http::ResponseData*	m_responseData;
+			Http::ResponseData*			m_responseData;
 			Http::Request*				m_httpRequest;
 			File 						m_file;
 			size_t						m_staticReadCounter;

@@ -182,6 +182,7 @@ namespace Http
 		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
 		bool								indexAppended;
+		bool								cgiPass;			
 
 		bool                                closeAfterSending;
 

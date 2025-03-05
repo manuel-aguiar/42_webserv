@@ -39,6 +39,7 @@ namespace Http
     , targetExtension()
     , targetType(FilesUtils::UNDEFINED)
     , indexAppended(false)
+    , cgiPass(false)
     , closeAfterSending(false) {}
 
     ResponseData::~ResponseData() {}
@@ -53,6 +54,7 @@ namespace Http
     , targetExtension(copy.targetExtension)
     , targetType(copy.targetType)
     , indexAppended(copy.indexAppended)
+    , cgiPass(copy.cgiPass)
     , closeAfterSending(copy.closeAfterSending)
      {}
 
@@ -72,6 +74,7 @@ namespace Http
         targetType = assign.targetType;
         closeAfterSending = assign.closeAfterSending;
 		indexAppended = assign.indexAppended;
+        cgiPass = assign.cgiPass;
 	
         return (*this);
     }
@@ -88,6 +91,7 @@ namespace Http
         targetPath.clear();
         targetExtension.clear();
         targetType = FilesUtils::UNDEFINED;
+        cgiPass = false;
         closeAfterSending = false;
 		indexAppended = false;
     }

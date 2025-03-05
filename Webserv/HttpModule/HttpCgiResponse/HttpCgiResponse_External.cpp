@@ -62,7 +62,7 @@ namespace Http
 	}
 
 	bool
-	CgiResponse::initiateRequest(const Http::ResponseData& responseData, Http::Request& request, const Conn::Connection* connection)
+	CgiResponse::initiateRequest(Http::ResponseData& responseData, Http::Request& request, const Conn::Connection* connection)
 	{
 		m_responseData = &responseData;
 		m_httpRequest = &request;

@@ -159,7 +159,7 @@ namespace Http
 			mf_prepareErrorMessage();
 			return ;
 		}
-
+		m_responseData.cgiPass = true;
 		m_fillFunction = &Response::mf_fillCgiResponse;
 		m_processFunction = &Response::mf_processBodyCgi;
 	}

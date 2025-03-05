@@ -53,15 +53,11 @@ namespace Http
 		
 		ASSERT_EQUAL(m_httpRequest != NULL, true, "CgiResponse::onCgiWrite(): no request assigned");
 
-		m_httpRequest->forceParse(); // ask request to send us data
-
-		// not sending anything anymore, may close write
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
-		{
-			m_writeFd = Ws::FD_NONE;			
-			m_canWrite = false;
+		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
-		}
+
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
+			return (Cgi::IO::CLOSE);
 		return (Cgi::IO::CONTINUE);
 	}
 
