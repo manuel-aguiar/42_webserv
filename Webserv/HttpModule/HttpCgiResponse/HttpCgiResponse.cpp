@@ -44,14 +44,19 @@ namespace Http
 	void
 	CgiResponse::mf_finishAndRelease()
 	{
+		std::cout << " cgi " << this << " finish release called" << std::endl;
 		if (m_cgiRequest)
+		{
+			std::cout << " cgi " << this << " returning request" << std::endl;
 			m_module.finishRequest(*m_cgiRequest, true);
+		}
 		m_cgiRequest = NULL;
 	}
 
 	void
 	CgiResponse::reset()
 	{
+		std::cout << "cgi " << this << " reseting: " << std::endl;
 		m_cgiRequest = NULL;
 		m_canRead = false;
 		m_canWrite = false;

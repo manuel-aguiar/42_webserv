@@ -51,8 +51,8 @@ namespace Http
 		m_writeFd = writeFd;
 		m_canWrite = true;
 		
+		std::cout << "cgi writing: " << this << std::endl;
 		ASSERT_EQUAL(m_httpRequest != NULL, true, "CgiResponse::onCgiWrite(): no request assigned");
-
 		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
 

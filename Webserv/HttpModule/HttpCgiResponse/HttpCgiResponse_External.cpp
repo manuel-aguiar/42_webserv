@@ -64,6 +64,7 @@ namespace Http
 	bool
 	CgiResponse::initiateRequest(Http::ResponseData& responseData, Http::Request& request, const Conn::Connection* connection)
 	{
+		std::cout << "cgi initing: " << this << std::endl;
 		m_responseData = &responseData;
 		m_httpRequest = &request;
 

@@ -35,7 +35,7 @@ namespace Http
     BufferView
     CgiResponse::mf_HttpBodySend(const BufferView& view)
     {
-        std::cout << "process body, received:\n" << view << std::endl;
+        //std::cout << "process body, received:\n" << view << std::endl;
 		if (view.size() == 0)
         {
             //std::cout << "received EOF, sent all" << std::endl;

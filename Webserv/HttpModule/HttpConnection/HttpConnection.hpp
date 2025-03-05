@@ -50,6 +50,7 @@ namespace Http
 			const Ws::Sock::addr& 		getClientAddr() const; // sockaddr -> BlockFinder
 			ServerContext& 				accessServerContext(); //Conn::Connection
 			
+			Http::Connection::Timeout::Type getLiveTimeoutType() const;
 			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer, const Http::Connection::Timeout::Type timeoutType);
 
 			void 						prepareConnection(Conn::Connection& tcpConn);

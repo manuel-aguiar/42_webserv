@@ -75,7 +75,7 @@ namespace Http
 		
 		// cosy debug print
 
-		//std::cout << this << " connection, timer ";
+		//std::cout << this << " connection, update timer ";
 		//switch (timeoutType)
 		//{
 		//	case Timeout::KEEP_ALIVE:
@@ -97,6 +97,12 @@ namespace Http
 		//std::cout << " set to " << (timer->first - Timer::now()) << std::endl;
 	}
 
+	Http::Connection::Timeout::Type
+	Connection::getLiveTimeoutType() const
+	{
+		return (m_liveTimeout);
+	}
+
 	void
 	Connection::closeConnection()
 	{
@@ -104,29 +110,7 @@ namespace Http
 		m_tcpConn->events_stopMonitoring(true);
 
 		if (m_myTimer != TimerTracker<Timer, Http::Connection*>::iterator())
-		{
-			std::cout << this << " connection, timemedout at ";
-			switch (m_liveTimeout)
-			{
-				case Timeout::KEEP_ALIVE:
-					std::cout << "KEEP_ALIVE";
-					break ;
-				case Timeout::FULL_HEADER:
-					std::cout << "FULL_HEADER";
-					break ;
-				case Timeout::INTER_SEND:
-					std::cout << "INTER_SEND";
-					break ;
-				case Timeout::INTER_RECV:
-					std::cout << "INTER_RECV";
-					break ;
-				default:
-					std::cout << "NONE";
-					break ;
-			}
-			std::cout << std::endl;
 			m_module.removeTimer(m_myTimer);
-		}
 		
 		// reset timer related stuff
 		m_myTimer = TimerTracker<Timer, Http::Connection*>::iterator();

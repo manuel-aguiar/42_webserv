@@ -89,7 +89,26 @@ Module::closeTimedOutConnections()
         if (it->first < timer)
         {
             curConnection = it->second;
-            std::cout << "connection " << curConnection << " timed out" << std::endl;
+            std::cout << "connection " << curConnection << " timed out ";
+            switch (curConnection->getLiveTimeoutType())
+            {
+                case Http::Connection::Timeout::KEEP_ALIVE:
+                    std::cout << "KEEP_ALIVE";
+                    break ;
+                case Http::Connection::Timeout::FULL_HEADER:
+                    std::cout << "FULL_HEADER";
+                    break ;
+                case Http::Connection::Timeout::INTER_SEND:
+                    std::cout << "INTER_SEND";
+                    break ;
+                case Http::Connection::Timeout::INTER_RECV:
+                    std::cout << "INTER_RECV";
+                    break ;
+                default:
+                    std::cout << "NONE";
+                    break ;
+            }
+            std::cout << std::endl;
             curConnection->closeConnection();
         }
         else
