@@ -180,6 +180,7 @@ namespace Http
 		std::string                         targetPath;
 		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
+		bool								indexAppended;
 
 		bool                                closeAfterSending;
 

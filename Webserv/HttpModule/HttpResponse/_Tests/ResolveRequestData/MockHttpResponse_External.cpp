@@ -14,12 +14,23 @@ extern const char*	getStatusMessage(int statusCode);
 extern std::string	DirectoryListing(const std::string& path);
 extern std::string 	getCurrentDate();
 
-bool	g_returnValue;
-int		g_requestStatus = Http::Status::OK;
+FilesUtils::FileType	g_targetType = FilesUtils::UNDEFINED;
+int						g_requestStatus = Http::Status::OK;
+
+
 
 namespace Http
 {
+	void	Response::mf_resolveRequestData()
+{	
+	if (m_responseData.requestStatus != Http::Status::OK 
+		|| !mf_resolveServerAndLocation()
+		|| !mf_checkPermissions()
+		|| mf_checkRedirect())
+		return ;
 
+	mf_validateTargetPath();
+}
 
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
@@ -27,7 +38,8 @@ namespace Http
 		m_responseData.requestStatus = data.status;
 
 		// mock the caller, not the target!!!!!!!
-		g_returnValue = mf_validateHeaders();
+		mf_resolveRequestData();
+		g_targetType = m_responseData.targetType;
 		g_requestStatus = m_responseData.requestStatus;		
 	}
 
