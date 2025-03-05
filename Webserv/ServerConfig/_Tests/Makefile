@@ -11,9 +11,7 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/main.cpp \
-
-SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
+SRCS_TEST				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/test.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
@@ -27,7 +25,6 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
-OBJS_DEBUG				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_DEBUG))
 OBJS_TEST				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_TEST))
 
 DEPS_COMMON 			= 		$(OBJS_COMMON:.o=.d)
@@ -48,11 +45,7 @@ TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 #=== RULES ===#
 
-all: $(TARGET_DEBUG) $(TARGET_TEST)
-
-$(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
-	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
-	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_DEBUG) -o $(TARGET_DEBUG)
+all: $(TARGET_TEST)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)
 	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_TEST) -o $(TARGET_TEST)
