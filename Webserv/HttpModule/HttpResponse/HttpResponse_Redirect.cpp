@@ -12,7 +12,7 @@ namespace Http
         ASSERT_EQUAL(m_responseData.serverBlock != NULL, true, "Server block is NULL");
 
         const std::pair<int, std::string>& locReturn = m_responseData.serverLocation->getReturn();
-        std::cout << "Checking redirect" << "status: " << locReturn.first;
+        std::cout << "Checking redirect" << "status: " << locReturn.first << std::endl;
         if (locReturn.first <  Http::Status::MOVED_PERMANENTLY || \
             locReturn.first > Http::Status::PERMANENT_REDIRECT) return (false);
 
@@ -21,10 +21,11 @@ namespace Http
         ASSERT_EQUAL(redirectPath.empty(), false, "Redirect path is empty! Config error");
 
         m_responseData.responseType = ResponseData::REDIRECT;
-        std::cout << "Redirecting to: " << redirectPath << std::endl;
+        std::cout << "Redirecting to: " << redirectPath << "with status" << m_responseData.requestStatus << std::endl;
 
         // Already an absolute URL - use as is
-        if (redirectPath.find("http://") == 0) { // only http supported
+        if (redirectPath.find("http://") == 0 || redirectPath.find("https://") == 0) {
+            std::cout << "Redirecting to absolute path" << redirectPath << std::endl;
             m_responseData.headers["location"] = redirectPath;
             return (true);
         }
