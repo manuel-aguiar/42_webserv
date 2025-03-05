@@ -48,18 +48,46 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		std::string boundary = "----WebKitFormBoundary12345";
 		std::string contentDisp1 = "Content-Disposition: form-data; name=\"file1\"; filename=\"" + std::string(file1_Name) + "\"";
 		std::string contentDisp2 = "Content-Disposition: form-data; name=\"file2\"; filename=\"" + std::string(file2_Name) + "\"";
+		std::string form1 = "Content-Disposition: form-data; name=\"field1\";";
+		std::string form2 = "Content-Disposition: form-data; name=\"field2\";";
 
 		std::string requestBodyMultipart = 
+
 			"--" + boundary + "\r\n"
+			///////////////////////  a file
 			+ contentDisp1 + "\r\n"
 			"\r\n"
 			+ file1_Content + "\r\n"
 			"--" + boundary + "\r\n"
+			///////////////////////  same file twice
+			+ contentDisp1 + "\r\n"
+			"\r\n"
+			+ file1_Content + "\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////  form 1
+			+ form1 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////  form 2
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			/////////////////////// second file
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
-			"--" + boundary + "--\r\n" + "\r\n";
-			
+			"--" + boundary + "\r\n"
+			//////////////////////// form2 again
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			///////////////////////// second file again
+			+ contentDisp2 + "\r\n"
+			"\r\n"
+			+ file2_Content + "\r\n"
+			"--" + boundary 
+			//////////////////////// the end
+			+ "--\r\n" + "\r\n";
 
 
 		std::string requestHeader = 

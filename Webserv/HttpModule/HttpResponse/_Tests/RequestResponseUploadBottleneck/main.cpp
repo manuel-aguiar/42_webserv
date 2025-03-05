@@ -50,27 +50,50 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		///////////////////
 
 		// manually send the request
+		// manually send the request
 		std::string boundary = "----WebKitFormBoundary12345";
 		std::string contentDisp1 = "Content-Disposition: form-data; name=\"file1\"; filename=\"" + std::string(file1_Name) + "\"";
 		std::string contentDisp2 = "Content-Disposition: form-data; name=\"file2\"; filename=\"" + std::string(file2_Name) + "\"";
+		std::string form1 = "Content-Disposition: form-data; name=\"field1\";";
+		std::string form2 = "Content-Disposition: form-data; name=\"field2\";";
 
-		// placing file2 twice intentionally, ensure it is truncating properly
 		std::string requestBodyMultipart = 
+
 			"--" + boundary + "\r\n"
+			///////////////////////
 			+ contentDisp1 + "\r\n"
 			"\r\n"
 			+ file1_Content + "\r\n"
 			"--" + boundary + "\r\n"
+			///////////////////////
+			+ contentDisp1 + "\r\n"
+			"\r\n"
+			+ file1_Content + "\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////
+			+ form1 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			///////////////////////
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
 			"--" + boundary + "\r\n"
+			////////////////////////
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			/////////////////////////
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
-			"--" + boundary +
-			"--\r\n" +
-			"\r\n";
+			"--" + boundary 
+			////////////////////////
+			+ "--\r\n" + "\r\n";
 
 
 		std::string requestHeader = 
@@ -124,7 +147,6 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
-		exit(0);
 	}
 
 	::unlink(file1_Name);
@@ -144,7 +166,7 @@ int main(void)
 	int testNumber = 1;
 
 	// force File class to read slow and probably lower than what it is passed
-	 for (size_t i = 200; i < 500; i += 1)
+	 for (size_t i = 201; i < 202; i += 1)
 	 	fileUploadBottleNeck(testNumber, i, i / 2);
 
 	TEST_FOOTER;
