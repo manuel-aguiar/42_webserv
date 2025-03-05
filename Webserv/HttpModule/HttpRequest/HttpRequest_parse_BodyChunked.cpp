@@ -48,7 +48,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
         m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-        if (remaining.size() >= m_bufferCapacity)
+        if (remaining.size() >= m_readBuffer->capacity())
             return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
         return (remaining); // not enough to go through yet
     }
@@ -87,8 +87,8 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
     size_t      bytesSending = (bytesLeft > remaining.size()) ? remaining.size() : bytesLeft;
     BufferView  unconsumed;
 
-    if (m_response && bytesSending > 0)
-        unconsumed = m_response->receiveRequestBody(remaining.substr(0, bytesSending));
+    if (m_httpResponse && bytesSending > 0)
+        unconsumed = m_httpResponse->receiveRequestBody(remaining.substr(0, bytesSending));
 
     size_t bytesConsumed = bytesSending - unconsumed.size();
 
@@ -125,7 +125,7 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
     {
         m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
-        if (remaining.size() >= m_bufferCapacity)
+        if (remaining.size() >= m_readBuffer->capacity())
             return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
         return (remaining); // not enough to go through yet
     }
@@ -140,8 +140,8 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
     if (m_curChunkSize == 0)
     {
         m_parsingState = COMPLETED;
-        if (m_response)
-            m_response->receiveRequestBody(BufferView()); // send "eof" to signal end of body
+        if (m_httpResponse)
+            m_httpResponse->receiveRequestBody(BufferView()); // send "eof" to signal end of body
         m_parsingFunction = &Request::mf_handleNothing;
     }
     else

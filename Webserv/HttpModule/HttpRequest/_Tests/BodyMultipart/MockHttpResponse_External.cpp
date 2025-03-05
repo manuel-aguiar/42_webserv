@@ -43,18 +43,18 @@ namespace Http
 	}
 
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		(void)writeBuffer;
 		
-		return (m_status);
+		return (m_ioStatus);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::getStatus() const
 	{
-		return (m_status);
+		return (m_ioStatus);
 	}
 	void
 	Response::reset()

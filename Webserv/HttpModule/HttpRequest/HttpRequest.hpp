@@ -18,7 +18,6 @@
 // # include "../HttpResponse/HttpResponse.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
 # include "../../GenericUtils/BufferView/BufferView.hpp"
-# include "../../ServerContext/ServerContext.hpp"
 
 // Forward declarations
 class BaseBuffer;
@@ -26,12 +25,6 @@ class BufferView;
 class ServerContext;
 
 namespace Http { class Response;}
-
-struct ChunkInfo
-{
-	size_t size;
-	size_t headerEnd;
-};
 
 namespace Http
 {
@@ -45,13 +38,16 @@ namespace Http
 			Request& operator=(const Request& assign);
 
 			void										reset(); // reset the request to its initial state
-			
+			void										close();
+
 			// Main parsing interface
-			BufferView 									parse(const BaseBuffer& buffer);
+			Http::IOStatus::Type						read();
+			Http::IOStatus::Type 						parse();
 
 			// my response
 			Http::Response&								getResponse();
 			void										setResponse(Http::Response& response);
+			void										setBuffer_ReadFd(BaseBuffer& buffer, const Ws::fd fd);
 
 			const Http::RequestData&					getData() const;
 
@@ -105,7 +101,9 @@ namespace Http
 			ServerContext&								m_serverContext;
 
 			// my response
-			Http::Response								*m_response;
+			Http::Response*								m_httpResponse;
+			BaseBuffer*									m_readBuffer;
+			Ws::fd										m_readFd;
 
 			// internal parsing state
 			ParsingState								m_parsingState;
@@ -117,7 +115,6 @@ namespace Http
 			Http::RequestData 							m_data;	// holds request data
 
 			// state helpers
-			size_t										m_bufferCapacity;
 			int											m_findPivot;
 			int											m_curChunkSize;
 			int											m_curChunkPos;
@@ -154,9 +151,7 @@ namespace Http
 			Http::Status::Number						mf_parseUriComponents(const std::string& uri);
 			std::string									mf_decodeUriComp(const std::string& encoded) const;
 
-			ChunkInfo									mf_parseChunkHeader(const std::string& data, size_t pos);
 			Http::Status::Number						mf_parseChunkedBody(const std::string& data);
-			bool										mf_validateAndExtractChunk(const std::string& data, const ChunkInfo& chunk, size_t& pos,std::string& assembled_body);
 			Http::Status::Number						mf_parseMultipartData(const std::string& data);
 			Http::Status::Number						mf_parseRegularBody(const std::string& data);
 			Http::RequestData::BodyType					mf_bodyType();

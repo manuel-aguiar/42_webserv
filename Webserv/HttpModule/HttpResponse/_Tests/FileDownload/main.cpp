@@ -41,8 +41,8 @@ void fileDownload(int& testNumber, const BaseBuffer& comparison)
 		HeapBuffer testBuffer(comparison.capacity() + 500);
 
 		
-		Http::ResponseStatus::Type status = Http::ResponseStatus::WAITING;
-        while (status != Http::ResponseStatus::FINISHED)
+		Http::IOStatus::Type status = Http::IOStatus::WAITING;
+        while (status != Http::IOStatus::FINISHED)
 			status = response.fillWriteBuffer(testBuffer);
 
 		EXPECT_EQUAL(testBuffer.view(), comparison.view(), "File content should match");

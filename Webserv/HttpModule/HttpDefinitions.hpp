@@ -93,11 +93,12 @@ namespace Http
 	}
 
 
-	namespace ResponseStatus
+	namespace IOStatus
 	{
 		typedef enum
 		{
 			WAITING, 				// have nothing to push, no sign transaction is finished
+			READING,
 			WRITING, 				// pushed data to buffer
 			FINISHED,				// transaction is finished
 			MARK_TO_CLOSE 			// tell the Http::Connection to close the connection after writing

@@ -13,7 +13,7 @@
 # include "../../GenericUtils/BufferView/BufferView.hpp"
 # include "../../GenericUtils/Files/File.hpp"
 
-namespace Http { class Response; }
+namespace Http { class Response; class Request; }
 
 namespace Conn { class Connection; }
 
@@ -28,9 +28,9 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::ResponseData& data, const Conn::Connection* connection = NULL);
+			bool					initiateRequest(const Http::ResponseData& data, Http::Request& request, const Conn::Connection* connection = NULL);
 
-			Http::ResponseStatus::Type
+			Http::IOStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
 
 			BufferView				sendHttpBody(const BufferView& view);
@@ -44,18 +44,18 @@ namespace Http
 
 		private:
 			
-			typedef Http::ResponseStatus::Type 	(CgiResponse::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::IOStatus::Type 	(CgiResponse::*FillFunction)(BaseBuffer& writeBuffer);
 			typedef BufferView					(CgiResponse::*ProcessHttpBody)(const BufferView& view);
 
-			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillBodyTemp(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillBodyTemp(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
-			Http::ResponseStatus::Type	mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillErrorFile(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillErrorFile(BaseBuffer& writeBuffer);
 			
 			BufferView					mf_HttpBodyNone(const BufferView& view);
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);
@@ -72,6 +72,7 @@ namespace Http
 			Ws::fd 						m_writeFd;
 
 			const Http::ResponseData*	m_responseData;
+			Http::Request*				m_httpRequest;
 			File 						m_file;
 			size_t						m_staticReadCounter;
 			std::string					m_defaultErrorPage;

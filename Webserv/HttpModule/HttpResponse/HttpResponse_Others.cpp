@@ -153,7 +153,7 @@ namespace Http
 		m_cgiResponse = cgiInterface.acquireGateway();
 		ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response::receiveRequestData(): there must be a gateway available");
 		
-		if (!m_cgiResponse->initiateRequest(m_responseData, m_tcpConn))
+		if (!m_cgiResponse->initiateRequest(m_responseData, *m_httpRequest, m_tcpConn))
 		{
 			m_responseData.requestStatus = Http::Status::SERVICE_UNAVAILABLE;
 			mf_prepareErrorMessage();

@@ -4,6 +4,7 @@
 // project headers
 # include "HttpModule.hpp"
 # include "../HttpConnection/HttpConnection.hpp"
+# include "../../ServerContext/ServerContext.hpp"
 # include "../../ServerConfig/DefaultConfig/DefaultConfig.hpp"
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"

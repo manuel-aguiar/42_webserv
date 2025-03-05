@@ -46,7 +46,7 @@ namespace Http
 	}
 
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		//std::cout << "cgi fillWriteBuffer" << std::endl;
@@ -54,7 +54,7 @@ namespace Http
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
 		{
 			//std::cout << "receiving body, waiting" << std::endl;
-			return (Http::ResponseStatus::WAITING);
+			return (Http::IOStatus::WAITING);
 		}
 		//std::cout << "can start writing" << std::endl;
 		//std::cout << "can start writing" << std::endl;
@@ -62,9 +62,10 @@ namespace Http
 	}
 
 	bool
-	CgiResponse::initiateRequest(const Http::ResponseData& responseData, const Conn::Connection* connection)
+	CgiResponse::initiateRequest(const Http::ResponseData& responseData, Http::Request& request, const Conn::Connection* connection)
 	{
 		m_responseData = &responseData;
+		m_httpRequest = &request;
 
 		const Http::RequestData& data = *responseData.requestData;
 

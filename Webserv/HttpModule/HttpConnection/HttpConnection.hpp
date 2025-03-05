@@ -52,11 +52,11 @@ namespace Http
 
 			void 						setMyTimer(TimerTracker<Timer, Http::Connection*>::iterator timer, const Http::Connection::Timeout::Type timeoutType);
 
-			void 						setMyTCP(Conn::Connection& tcpConn);
+			void 						prepareConnection(Conn::Connection& tcpConn);
 
 			// clean all stored state to be reused later
 			void						closeConnection();
-
+			void						closeTransaction();	
 			void						resetTransaction();
 
 
@@ -74,9 +74,9 @@ namespace Http
 			Buffer<1024>										m_writeBuffer;
 
 
-			int													mf_readIntoReadBuffer(const Ws::fd fd);
-			void 												mf_parseReadBuffer();
-			void												mf_newRequestSameConnection();
+			Http::IOStatus::Type								mf_readEventHandler();
+			Http::IOStatus::Type 								mf_parseReadBuffer();
+			Http::IOStatus::Type								mf_newRequestSameConnection();
 	};
 }
 

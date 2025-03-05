@@ -57,7 +57,7 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	{
 		m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 		// HARD LIMIT, request line cannot be bigger than buffer size
-		if (remaining.size() >= m_bufferCapacity)
+		if (remaining.size() >= m_readBuffer->capacity())
 			return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
 		return (remaining); // not enough to go through yet
 	}
@@ -104,7 +104,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 		{
 			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
-			if (remaining.size() >= m_bufferCapacity)
+			if (remaining.size() >= m_readBuffer->capacity())
 			{
 				//std::cout << "payload too large" << std::endl;
 				return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
@@ -214,8 +214,8 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 	if (m_curContentPos + (int)chunkEnd > m_curContentLength)
 		return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
 
-	if (m_response && chunkEnd > 0)
-        unconsumed = m_response->receiveRequestBody(currentView.substr(0, chunkEnd));
+	if (m_httpResponse && chunkEnd > 0)
+        unconsumed = m_httpResponse->receiveRequestBody(currentView.substr(0, chunkEnd));
 
 	size_t bytesConsumed = chunkEnd - unconsumed.size();
 
@@ -269,8 +269,8 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	
 	remaining = remaining.substr(found.size(), remaining.size() - found.size());
 	m_curContentPos += found.size();
-	if (m_response)
-		m_response->receiveRequestBody(BufferView());
+	if (m_httpResponse)
+		m_httpResponse->receiveRequestBody(BufferView());
 	m_data.multipart_Name.clear();
 	m_data.multipart_Filename.clear();
 	return ((this->*m_parsingFunction)(remaining));

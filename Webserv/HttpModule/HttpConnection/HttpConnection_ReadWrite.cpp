@@ -7,23 +7,20 @@
 # include "../HttpResponse/HttpResponse.hpp"
 # include "../../Events/Subscription/Subscription.hpp"
 # include "../../Connections/Connection/Connection.hpp"
+# include "../../ServerContext/ServerContext.hpp"
 # include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 # include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
-
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 namespace Http
 {
 
-int
-Connection::mf_readIntoReadBuffer(const Ws::fd fd)
+Http::IOStatus::Type
+Connection::mf_readEventHandler()
 {
     const ServerConfig& config = *reinterpret_cast<const ServerConfig*>(m_module.accessServerContext().getServerConfig());
 
-    if (m_transaction.request.isCompleted() || m_transaction.request.isError())
-        return (1);
-
-    int readBytes = m_readBuffer.read(fd, m_readBuffer.size() == m_readBuffer.capacity() ? 0 : m_readBuffer.size());
+    Http::IOStatus::Type ioStatus = m_transaction.request.read();
     
     if (m_liveTimeout == Timeout::KEEP_ALIVE)
     {
@@ -39,16 +36,16 @@ Connection::mf_readIntoReadBuffer(const Ws::fd fd)
 
     mf_parseReadBuffer();
 
-    return (readBytes);
+    return (ioStatus);
 }
 
-void
+Http::IOStatus::Type
 Connection::mf_parseReadBuffer()
 {
-    m_readBuffer.truncatePush(m_transaction.request.parse(m_readBuffer));
+    return (m_transaction.request.parse());
 }
 
-void
+Http::IOStatus::Type
 Connection::mf_newRequestSameConnection()
 {
     const ServerConfig& config = *reinterpret_cast<const ServerConfig*>(m_module.accessServerContext().getServerConfig());
@@ -67,6 +64,8 @@ Connection::mf_newRequestSameConnection()
 
     int timeoutKeepAlive = (serverBlock != NULL) ? serverBlock->getTimeoutKeepAlive() : config.getTimeoutKeepAlive();
     setMyTimer(m_module.insertTimer(Timer::now() + timeoutKeepAlive, *this), Timeout::KEEP_ALIVE);
+
+    return (Http::IOStatus::WAITING);
 }
 
 void
@@ -76,7 +75,6 @@ Connection::ReadWrite()
     const ServerConfig& config = *reinterpret_cast<const ServerConfig*>(m_module.accessServerContext().getServerConfig());
 
     Events::Monitor::Mask triggeredEvents = m_tcpConn->events_getTriggeredEvents();
-    Ws::fd sockfd = m_tcpConn->info_getFd();
 
     if (triggeredEvents & (Events::Monitor::ERROR | Events::Monitor::HANGUP))
     {
@@ -86,7 +84,7 @@ Connection::ReadWrite()
 
     if (triggeredEvents & Events::Monitor::READ)
     {
-        if (!mf_readIntoReadBuffer(sockfd))
+        if (mf_readEventHandler() == Http::IOStatus::MARK_TO_CLOSE)
         {
             closeConnection();
             return ;
@@ -97,58 +95,32 @@ Connection::ReadWrite()
     if (!(triggeredEvents & Events::Monitor::WRITE))
         return ;
 
-    // still have data on buffer, write that first
-    if (m_writeBuffer.writeOffset() != m_writeBuffer.size())
+
+    Http::IOStatus::Type ioStatus = m_transaction.response.write();
+
+    switch (ioStatus)
     {
-        m_writeBuffer.write(sockfd, m_writeBuffer.writeOffset());
-
-        m_module.removeTimer(m_myTimer);
-        setMyTimer(m_module.insertTimer(Timer::now() 
-        + m_transaction.response.getResponseData().serverBlock->getTimeoutInterSend(), *this), Timeout::INTER_SEND);
-
-        if (m_writeBuffer.size() != 0)
-            return ;
-
-        if (m_transaction.response.getStatus() == Http::ResponseStatus::FINISHED)
-            return (mf_newRequestSameConnection());
-        else if (m_transaction.response.getStatus() == Http::ResponseStatus::MARK_TO_CLOSE)
-            closeConnection(); // transaction finished
-        
-        return ;
-    }
-
-    switch (m_transaction.response.fillWriteBuffer(m_writeBuffer))
-    {
-        case Http::ResponseStatus::FINISHED:
-        {	
-            m_writeBuffer.write(sockfd);
-
-            if (m_writeBuffer.size() == 0)
-                return (mf_newRequestSameConnection());
+        case Http::IOStatus::FINISHED:
+        {
+            mf_newRequestSameConnection();
             return ;
         }
-        case Http::ResponseStatus::MARK_TO_CLOSE:
+        case Http::IOStatus::MARK_TO_CLOSE:
         {
-            m_writeBuffer.write(sockfd);
-            if (m_writeBuffer.size() == 0)
-                closeConnection();
+            closeConnection();
             return ;
         }
-        case Http::ResponseStatus::WRITING:
+        case Http::IOStatus::WRITING:
         {
-            m_writeBuffer.write(sockfd); // got data, write
             m_module.removeTimer(m_myTimer);
             int timeOutInterSend = (m_transaction.response.getResponseData().serverBlock != NULL)
             ? m_transaction.response.getResponseData().serverBlock->getTimeoutInterSend() : config.getTimeoutInterSend();
-            setMyTimer(m_module.insertTimer(Timer::now() 
-            + timeOutInterSend, *this), Timeout::INTER_SEND);
+            setMyTimer(m_module.insertTimer(Timer::now() + timeOutInterSend, *this), Timeout::INTER_SEND);
             return ;
         }
-
-        case Http::ResponseStatus::WAITING: // nothing
-        {
+        default:
             break ;
-        }
     }
+
 }
 }
