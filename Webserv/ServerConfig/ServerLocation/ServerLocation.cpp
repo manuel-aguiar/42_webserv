@@ -11,7 +11,7 @@
 ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
 
 ServerLocation::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(8)),									// 8 magic: number of keys
+	map(std::less<std::string>(), mapPool(9)),									// 9 magic: number of keys
 	validTypes(std::less<std::string>(), Heap_ObjectPool<std::string>(3)),		// 3 magic: number of types
 	validMethods(std::less<std::string>(), Heap_ObjectPool<std::string>(3))		// 3 magic: number of methods
 {
@@ -23,6 +23,7 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 	map["cgi"]				= &ServerLocation::addCgiInterpreter;
 	map["index"]			= &ServerLocation::setIndex;
 	map["return"]			= &ServerLocation::setReturn;
+	map["upload"]			= &ServerLocation::setUploadPath;
 
 	validTypes.insert("regular");
 	validTypes.insert("redirection");
@@ -55,7 +56,7 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_cgiInterpreters = other.m_cgiInterpreters;
 	m_index = other.m_index;
 	m_return = other.m_return;
-
+	m_uploadPath = other.m_uploadPath;
 	return (*this);
 }
 
@@ -67,7 +68,8 @@ ServerLocation::ServerLocation(const ServerLocation &other) :
 	m_methods			(other.m_methods),
 	m_cgiInterpreters	(other.m_cgiInterpreters),
 	m_index				(other.m_index),
-	m_return			(other.m_return) {}
+	m_return			(other.m_return),
+	m_uploadPath		(other.m_uploadPath) {}
 
 static void	_throw_ifInvalidPath(const std::string& path)
 {
@@ -101,6 +103,11 @@ const std::string&	ServerLocation::getRoot() const
 bool	ServerLocation::getAutoIndex() const
 {
 	return (m_autoIndex);
+}
+
+const std::string&	ServerLocation::getUploadPath() const
+{
+	return (m_uploadPath);
 }
 
 const std::set<std::string>&	ServerLocation::getMethods() const
@@ -149,6 +156,12 @@ void		ServerLocation::setAutoindex(const std::string &value)
 	if (value.size() != 1 || (value[0] != '0' && value[0] != '1'))
 		throw (std::invalid_argument("invalid autoIndex value"));
 	m_autoIndex = (value[0] == '1');
+}
+
+void		ServerLocation::setUploadPath(const std::string &value)
+{
+	_throw_ifInvalidPath(value);
+	m_uploadPath = value;
 }
 
 void		ServerLocation::addMethod(const std::string &value)
