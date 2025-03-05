@@ -11,8 +11,6 @@
 
 # include <arpa/inet.h>
 
-# include <cstdlib> // DELETE ME
-
 extern std::string getMimeType(const std::string &path);
 
 namespace Http
@@ -50,6 +48,15 @@ namespace Http
 
 		// Find Location
 		mf_findLocation(m_responseData);
+
+		if ((m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty())
+			&& m_responseData.serverBlock->getRoot().empty())
+		{
+			m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+			m_responseData.responseType = ResponseData::ERROR;
+			m_responseData.errorMessage = "Additional configuration needed: No root directory assigned";
+			return (false);
+		}
 
 		return (true);
 	}
@@ -96,6 +103,7 @@ namespace Http
 					{
 						m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not serve an acceptable media type";
 						return ;
 					}
 					// try to open file
@@ -106,8 +114,9 @@ namespace Http
 					}
 					else
 					{
-						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR; // Check Error Code
+						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not open file";
 						return ;
 					}
 				}
@@ -122,6 +131,7 @@ namespace Http
 					{
 						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not delete file";
 						return ;
 					}
 				}
@@ -154,6 +164,7 @@ namespace Http
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Not allowed to access resource";
 				return ;
 			case FilesUtils::NOT_EXIST:
 				if (m_responseData.indexAppended)
@@ -164,10 +175,12 @@ namespace Http
 				}
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Resource not found";
 				return ;
 			case FilesUtils::UNDEFINED:
 				m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Problem identifying resource";
 				return ;
 		}
 	}

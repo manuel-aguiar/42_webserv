@@ -222,11 +222,6 @@ bool		ServerLocation::validate() const
 		std::cerr << "Error: server config validation: path not assigned" << std::endl;
 		return (0);
 	}
-	if (m_root.empty())
-	{
-		std::cerr << "Error: server config validation: root not assigned" << std::endl;
-		return (0);
-	}
 	return (1);
 }
 

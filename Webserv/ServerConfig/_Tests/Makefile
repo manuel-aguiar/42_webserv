@@ -20,8 +20,10 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp
 								$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
+								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))

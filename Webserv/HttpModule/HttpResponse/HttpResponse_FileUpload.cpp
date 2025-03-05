@@ -60,8 +60,9 @@ namespace Http
 	exitFailure:
 		std::cout << "exitFailure" << std::endl;
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+		m_responseData.errorMessage = "Upload failed";
 		m_processFunction = &Response::mf_processBodyNone;
-		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		m_fillFunction = &Response::mf_fillDefaultPage;
 		return (view);
 	}

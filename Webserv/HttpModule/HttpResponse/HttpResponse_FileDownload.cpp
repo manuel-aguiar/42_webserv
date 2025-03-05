@@ -15,7 +15,8 @@ namespace Http
 			// We need to think this through
 			m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 			m_responseData.responseType = ResponseData::ERROR;
-			m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
+			m_responseData.errorMessage = "Could not open file";
+			m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 			m_fillFunction = &Response::mf_fillDefaultPage;
 			return (false);
 		}

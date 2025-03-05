@@ -104,6 +104,8 @@ namespace Http
 		}	Type;
 	}
 
+	#define DEFAULT_ERROR_MESSAGE "Generic Error Message"
+
 	struct RequestData
 	{
 		RequestData();
@@ -181,6 +183,7 @@ namespace Http
 		std::string							targetExtension;
 		FilesUtils::FileType                targetType;
 		bool								indexAppended;
+		std::string							errorMessage;
 
 		bool                                closeAfterSending;
 

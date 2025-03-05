@@ -39,6 +39,7 @@ namespace Http
     , targetExtension()
     , targetType(FilesUtils::UNDEFINED)
     , indexAppended(false)
+    , errorMessage(DEFAULT_ERROR_MESSAGE)
     , closeAfterSending(false) {}
 
     ResponseData::~ResponseData() {}
@@ -53,6 +54,7 @@ namespace Http
     , targetExtension(copy.targetExtension)
     , targetType(copy.targetType)
     , indexAppended(copy.indexAppended)
+    , errorMessage(copy.errorMessage)
     , closeAfterSending(copy.closeAfterSending)
      {}
 
@@ -72,6 +74,8 @@ namespace Http
         targetType = assign.targetType;
         closeAfterSending = assign.closeAfterSending;
 		indexAppended = assign.indexAppended;
+		errorMessage = assign.errorMessage;
+
 	
         return (*this);
     }
@@ -90,6 +94,7 @@ namespace Http
         targetType = FilesUtils::UNDEFINED;
         closeAfterSending = false;
 		indexAppended = false;
+		errorMessage.clear();
     }
 ///////////////////////////////////////////////////////////
 
