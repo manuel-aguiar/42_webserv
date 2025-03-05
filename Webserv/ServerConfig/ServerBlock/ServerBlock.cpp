@@ -77,12 +77,20 @@ ServerBlock::ServerBlock(const ServerBlock &other) :
 	m_locations					(other.m_locations),
 	m_mapLocations				(other.m_mapLocations) {}
 
+static void	_throw_ifInvalidPath(const std::string& path)
+{
+	int	result = FilesUtils::testPath(path.c_str());
+
+	if (result == -1)
+		throw (std::invalid_argument("Invalid path not accessible"));
+	if (result == 0)
+		throw (std::invalid_argument("No read premissions for path"));
+}
+
+
 void	ServerBlock::setRoot(const std::string &value)
 {
-	if (FilesUtils::testPath(value.c_str()) == -1)
-		throw (std::invalid_argument("Invalid root path not accessible"));
-	if (FilesUtils::testPath(value.c_str()) == 0)
-		throw (std::invalid_argument("No read/write premissions"));
+	_throw_ifInvalidPath(value);
 	m_root = value;
 }
 
@@ -180,6 +188,7 @@ void	ServerBlock::addErrorPage(const std::string &value)
 		throw (std::invalid_argument("error code is not a valid number: " + errorCode + ". It must be a value between 100 and 599"));
 	if (m_error_pages.find(StringUtils::strToInt(errorCode, conversionError)) != m_error_pages.end())
 		throw (std::invalid_argument("error page already set: " + value));
+	_throw_ifInvalidPath(path);
 	m_error_pages[StringUtils::strToInt(errorCode, conversionError)] = path;
 }
 

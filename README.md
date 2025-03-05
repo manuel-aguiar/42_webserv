@@ -11,5 +11,3 @@ to take the execution forward <---  tests
 
 - testing Multiple requests in the same buffer
     - httprequest should stop parsing
-- file upload compared to nginx
-- directory listing chunking

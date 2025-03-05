@@ -19,17 +19,25 @@ extern std::string getMimeType(const std::string &path);
 
 namespace Http
 {
+
+	void	Response::mf_resolveRequestData()
+	{	
+		if (m_responseData.requestStatus != Http::Status::OK 
+			|| !mf_resolveServerAndLocation()
+			|| !mf_checkPermissions()
+			|| mf_checkRedirect())
+			return ;
+
+		mf_validateTargetPath();
+	}
+
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
-
 		m_fillFunction = &Response::mf_fillResponseLine;
 
-		if (data.status == Http::Status::OK)
-		{
-			mf_validateHeaders();
-		}
+		mf_resolveRequestData();
 
 		// Full debug print of wtf is going on:
 		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
@@ -43,14 +51,11 @@ namespace Http
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
-		
-		std::cout << " response " << m_responseData.responseType << " type, FILEUPLOAD IS 5" << std::endl;
 
+		std::cout << "responseType: " << m_responseData.responseType << std::endl;
+		
 		switch (m_responseData.responseType)
 		{
-			case ResponseData::CGI:
-				return (mf_prepareCgiExecution());
-				return (mf_prepareCgiExecution());
 			case ResponseData::STATIC:
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 
@@ -59,12 +64,10 @@ namespace Http
 				else
 					m_fillFunctionBody = &Response::mf_sendStaticFile;
 				break ;
+			case ResponseData::CGI:
+				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
 				m_fillFunctionBody = &Response::mf_fillRedirect;
-				break ;
-			case ResponseData::FILE_UPLOAD:
-				m_fillFunction = &Response::mf_fillNothingToSend;
-				m_processFunction = &Response::mf_processBodyUpload;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
 				m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
@@ -72,6 +75,10 @@ namespace Http
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
 
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
+				break ;
+			case ResponseData::FILE_UPLOAD:
+				m_fillFunction = &Response::mf_fillNothingToSend;
+				m_processFunction = &Response::mf_processBodyUpload;
 				break ;
 			case ResponseData::ERROR:
 				m_processFunction = &Response::mf_processBodyIgnore;
@@ -88,29 +95,12 @@ namespace Http
 		m_currentHeader = m_responseData.headers.begin();
 
 		return ;
-		
-		
-		// mf_addHeader("content-length", "0");
-		// mf_addHeader("content-type", "plain/text");
-
-
-		// // TEST CODE
-		// if (m_fillFunction == &Response::mf_fillNothingToSend)
-		// {
-		// 	if (m_responseData.requestStatus == Http::Status::OK)
-		// 		m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
-		// 	m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
-		// 	m_fillFunction = &Response::mf_fillDefaultPage;
-		// }
-
-		// Go to fillFunctions
 	}
 
 	BufferView
 	Response::receiveRequestBody(const BufferView& view)
 	{
 		//std::cout << "Response received body, size: " << view.size() << std::endl;
-		std::cout << "receive request body" << std::endl;
 		return ((this->*m_processFunction)(view));
 	}
 

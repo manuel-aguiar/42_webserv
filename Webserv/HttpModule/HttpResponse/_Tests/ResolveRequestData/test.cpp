@@ -7,17 +7,33 @@
 #include "../../../../ServerConfig/BlockFinder/BlockFinder.hpp"
 #include "../../../../ServerConfig/ServerLocation/ServerLocation.hpp"
 #include "../../../../ServerContext/ServerContext.hpp"
-
+#include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 
 #include <iomanip>
 #include <arpa/inet.h>
 #include <cstdlib>
 #include <cstdio>
 
-// Test Variable from mockHttpResponse_ValidateHeaders.cpp
-extern bool g_returnValue;
-extern int	g_requestStatus;
+// Test Variable from mockHttpResponse_ResolveRequestData.cpp
+extern FilesUtils::FileType	g_targetType;
+extern int					g_requestStatus;
 
+std::string decodeTargetType(FilesUtils::FileType targetType)
+{
+	switch (targetType)
+	{
+		case FilesUtils::REGULAR_FILE:
+			return "REGULAR_FILE";
+		case FilesUtils::DIRECTORY:
+			return "DIRECTORY";
+		case FilesUtils::NOT_EXIST:
+			return "NOT_EXIST";
+		case FilesUtils::UNDEFINED:
+			return "UNDEFINED";
+		default:
+			return "UNKNOWN";
+	}
+}
 
 // Tester function
 Ws::Sock::addr_in createSockAddr(const std::string& ip, const std::string& port) {
@@ -38,7 +54,7 @@ Ws::Sock::addr_in createSockAddr(const std::string& ip, const std::string& port)
 
 void test_simpleRequests(int &testNumber)
 {
-	TEST_HEADER("Http Response - mf_validateHeaders() - Simple Requests");
+	TEST_HEADER("Http Response - mf_ResolveRequestData() - Simple Requests");
 	Buffer<1024> buffer;
 
 	// Server block setup (and blockfinder)
@@ -76,7 +92,7 @@ void test_simpleRequests(int &testNumber)
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
-		Buffer<1024> buffer;
+		buffer.clear();
 		
 		// TESTED Request Parameters
 		block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles");
@@ -90,7 +106,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Html file GET request (only host header)");
 		}
 		catch(const std::exception& e) {
@@ -108,7 +124,8 @@ void test_simpleRequests(int &testNumber)
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
-		Buffer<1024> buffer;
+		buffer.clear();
+
 		
 		// TESTED Request Parameters
 		block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles");
@@ -122,7 +139,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Html file GET request with accept headers");
 		}
 		catch(const std::exception& e) {
@@ -132,6 +149,7 @@ void test_simpleRequests(int &testNumber)
 
 	/////////////////////////////////////////////////////
 
+	// File GET with application/octet-stream as only accept type
 	TEST_INTRO(testNumber++);
 	{
 		Http::Request	request(serverContext);
@@ -139,7 +157,8 @@ void test_simpleRequests(int &testNumber)
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
-		Buffer<1024> buffer;
+		buffer.clear();
+
 		
 		// TESTED Request Parameters
 		block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles");
@@ -153,7 +172,6 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_ACCEPTABLE, "RequestStatus should be 406 NOT ACCEPTABLE");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("Html file GET request with application/octet-stream as only accept type");
 		}
 		catch(const std::exception& e) {
@@ -185,7 +203,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::NOT_EXIST, "Should be NOT_EXIST but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Inexistent file GET request");
 		}
 		catch(const std::exception& e) {
@@ -217,7 +235,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::NOT_EXIST, "Should be NOT_EXIST but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Inexistent location GET request");
 		}
 		catch(const std::exception& e) {
@@ -248,7 +266,6 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("GET request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -279,7 +296,6 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("POST request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -309,7 +325,6 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
 			TEST_PASSED_MSG("DELETE request not allowed");
 		}
 		catch(const std::exception& e) {
@@ -341,7 +356,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::FORBIDDEN, "RequestStatus should be 403 FORBIDDEN");
-			EXPECT_EQUAL(g_returnValue, false, "Return value should be unsuccessful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::DIRECTORY, "Should be DIRECTORY but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Directory GET request with auto index off");
 		}
 		catch(const std::exception& e) {
@@ -372,7 +387,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::DIRECTORY, "Should be DIRECTORY but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Directory GET request with auto index on");
 		}
 		catch(const std::exception& e) {
@@ -404,7 +419,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Directory GET request with auto index on, and index file. Should get index file.");
 		}
 		catch(const std::exception& e) {
@@ -436,7 +451,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::NOT_EXIST, "Should be NOT_EXIST but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Directory GET request with auto index on, and non existent index file");
 		}
 		catch(const std::exception& e) {
@@ -468,7 +483,6 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
 			TEST_PASSED_MSG("Html file POST request");
 		}
 		catch(const std::exception& e) {
@@ -505,7 +519,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NO_CONTENT, "RequestStatus should be 204 NO CONTENT");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Html file DELETE request");
 		}
 		catch(const std::exception& e) {
@@ -523,7 +537,8 @@ void test_simpleRequests(int &testNumber)
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
-		Buffer<1024> buffer;
+		buffer.clear();
+
 		
 		// TESTED Request Parameters
 		block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles");
@@ -538,7 +553,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Html file GET request (only host header)");
 		}
 		catch(const std::exception& e) {
@@ -556,7 +571,8 @@ void test_simpleRequests(int &testNumber)
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
-		Buffer<1024> buffer;
+		buffer.clear();
+
 		
 		// TESTED Request Parameters
 		block1.accessLocations().clear();
@@ -567,7 +583,7 @@ void test_simpleRequests(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("Edge Case - No location");
 		}
 		catch(const std::exception& e) {
@@ -579,7 +595,7 @@ void test_simpleRequests(int &testNumber)
 
 void test_complexLoctaions(int &testNumber)
 {
-	TEST_HEADER("Http Response - mf_validateHeaders() - Complex Locations");
+	TEST_HEADER("Http Response - mf_ResolveRequestData() - Complex Locations");
 
 	Buffer<1024> buffer;
 
@@ -650,7 +666,7 @@ void test_complexLoctaions(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("GET request to /three");
 		}
 		catch(const std::exception& e) {
@@ -678,7 +694,7 @@ void test_complexLoctaions(int &testNumber)
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
-			EXPECT_EQUAL(g_returnValue, true, "Return value should be successful");
+			EXPECT_EQUAL(g_targetType, FilesUtils::REGULAR_FILE, "Should be REGULAR_FILE but is " + decodeTargetType(g_targetType));
 			TEST_PASSED_MSG("GET request to /three/four/file.txt");
 		}
 		catch(const std::exception& e) {
@@ -696,7 +712,7 @@ int main()
 {
 	int testNumber = 1;
 
-	TEST_HEADER("Http Response - mf_validateHeaders()");
+	TEST_HEADER("Http Response - mf_ResolveRequestData()");
 
 	test_simpleRequests(testNumber);
 	test_complexLoctaions(testNumber);

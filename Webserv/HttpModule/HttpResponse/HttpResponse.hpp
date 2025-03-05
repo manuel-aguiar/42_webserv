@@ -53,11 +53,15 @@ namespace Http
 			}	Type;
 
 
-			bool						mf_validateHeaders();
+			void						mf_resolveRequestData();
+			bool						mf_resolveServerAndLocation();
+			bool						mf_checkPermissions();
+			void						mf_validateTargetPath();
+
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);
 			void						mf_findLocation(ResponseData& responseData);
 			bool						mf_checkRedirect();
-			bool						mf_assembleTargetPath();
+			void						mf_assembleTargetPath();
 			std::string					mf_getCurrentDate();
 
 			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
