@@ -19,7 +19,8 @@ namespace Http
 {
 	Response::Response(ServerContext& context):
 		m_context			(context),
-		m_connAddress		(NULL),
+		m_listenAddress		(NULL),
+		m_tcpConn			(NULL),
 		m_responseData		(),
 		m_status			(Http::ResponseStatus::WAITING),
 		m_fillFunction		(&Response::mf_fillNothingToSend),

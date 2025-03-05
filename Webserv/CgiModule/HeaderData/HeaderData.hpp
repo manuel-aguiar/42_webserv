@@ -11,14 +11,6 @@
 // C++ headers
 # include <vector>
 
-# define CGI_LINE_SEPARATOR "\n"
-# define HTTP_LINE_SEPARATOR "\r\n"
-# define CGI_HEADER_SEPARATOR ": "
-# define CGI_VALUE_SEPARATOR "; "
-
-# define CGI_SUCCESS 200
-# define CGI_FAILURE 500
-
 // forward declarations
 class BaseBuffer;
 
@@ -39,23 +31,16 @@ namespace Cgi
 			HeaderData();
 			~HeaderData();
 
-			enum Status
+			enum ParsingState
 			{
 				PASS,
 				FAIL,
 				NEED_MORE_DATA
 			};
 
-			enum ParsingState
-			{
-				START,
-				HEADERS,
-				FINISH
-			};
-			
 			void                            	reset();
 
-			Status                          	parse(BaseBuffer& buffer);
+			ParsingState                        parse(BaseBuffer& buffer);
 			
 			ParsingState						getParsingState() const;	
 			const std::vector<Cgi::Header>& 	getHeaders() const;
@@ -74,10 +59,10 @@ namespace Cgi
 			bool								m_hasBody;
 			BufferView							m_tempBody;
 
-			Status	mf_validateHeaders();
-			Status	mf_parseHeaders(BufferView& view);
-			Status	mf_parseBody(BufferView& view);
-			Status	mf_setStatus(const Status status, const int statusCode);
+			ParsingState	mf_validateHeaders();
+			ParsingState	mf_parseHeaders(BufferView& view);
+			ParsingState	mf_parseBody(BufferView& view);
+			ParsingState	mf_setState_StatusCode(const ParsingState status, const int statusCode);
 	};
 }
 

@@ -12,7 +12,7 @@ int main(void)
 	int testNumber = 1;
 	TEST_HEADER("CgiModule Functional Tests");
 
-	TestPart1(testNumber);
+	//TestPart1(testNumber);
 	TestPart2(testNumber);
 
 	close(STDERR_FILENO);

@@ -1,4 +1,3 @@
-
 #ifndef FILESUTILS_HPP
 
 # define FILESUTILS_HPP
@@ -15,11 +14,13 @@ namespace FilesUtils
 		NOT_EXIST
 	}	FileType;
 
-	bool fileExists(const char* path);
-	bool isDirectory(const char* path);
-	bool isFile(const char* path);
+	bool		fileExists(const char* path);
+	bool		isDirectory(const char* path);
+	bool		isFile(const char* path);
+	int			testPath(const char* path);
 
-	FileType getFileType(const char* path);
+	FileType	getFileType(const char* path);
+
 }
 
 #endif

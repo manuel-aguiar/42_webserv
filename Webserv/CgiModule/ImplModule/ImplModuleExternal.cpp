@@ -64,7 +64,6 @@ void	ImplModule::enqueueRequest(Cgi::Request& request, bool isCalledFromEventLoo
 	worker = m_availableWorkers.back();
 	m_availableWorkers.pop_back();
 	m_busyWorkerCount++;
-	
 	mf_execute(*worker, *internal, isCalledFromEventLoop);
 }
 
@@ -158,8 +157,12 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 	ASSERT_EQUAL(internal >= m_allRequestData.getArray() && internal <= m_allRequestData.getArray() + m_allRequestData.size(), true, 
 	"ImplModule::enqueueRequest(), request was not supplied by this Module");
 
+	#ifndef NDEBUG
+		for (size_t i = 0; i < m_availableRequestData.size(); ++i)
+			ASSERT_EQUAL(m_availableRequestData[i] != internal, true, "ImplModule::finishRequest(), request is already available");
+	#endif
+
 	state = internal->getState();
-	
 	switch (state)
 	{
 		case Cgi::RequestState::ACQUIRED:
@@ -168,6 +171,8 @@ void	ImplModule::finishRequest(Cgi::Request& request, bool isCalledFromEventLoop
 			mf_cancelAndRecycle(*internal, isCalledFromEventLoop); break ;
 		case Cgi::RequestState::QUEUED:
 			internal->setState(Cgi::RequestState::CANCELLED); break ;
+		case Cgi::RequestState::PENDING_FINISH:
+			mf_recyclePendingFinish(*internal, isCalledFromEventLoop); break ;
 		default:
 			break ;
 	}
@@ -189,13 +194,41 @@ void	ImplModule::stopAndReset()
 		data = m_allWorkers[i].accessRequestData();
 		if (!data)
 			continue ;
-		mf_cancelAndReturn(*data); break ;
+		if (data->getState() == Cgi::RequestState::PENDING_FINISH)
+			mf_returnPendingFinish(m_allWorkers[i]);
+		else
+			mf_cancelAndReturn(m_allWorkers[i]);
 	}
 	
 	for (size_t i = 0; i < m_executionQueue.size(); ++i)
 	{
 		data = m_executionQueue[i];
 		(data->getNotifyOnError_Callback())(data->getUser());
+		mf_returnRequestData(*data);
+	}
+		
+	m_executionQueue.clear();
+}
+
+// calls no events, nothing is reentrant, just stop
+void	ImplModule::forceStop()
+{
+	InternalReq* data;
+
+	for (size_t i = 0; i < m_allWorkers.size(); ++i)
+	{
+		data = m_allWorkers[i].accessRequestData();
+		if (!data)
+			continue ;
+		if (data->getState() == Cgi::RequestState::PENDING_FINISH)
+			mf_returnPendingFinish(m_allWorkers[i]);
+		else
+			mf_cancelAndReturn(m_allWorkers[i]);
+	}
+	
+	for (size_t i = 0; i < m_executionQueue.size(); ++i)
+	{
+		data = m_executionQueue[i];
 		mf_returnRequestData(*data);
 	}
 		

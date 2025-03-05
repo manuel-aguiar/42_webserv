@@ -45,6 +45,7 @@ class ImplModule
 		// processing
 		int					processRequests();
 		void				stopAndReset();
+		void				forceStop();
 
 		// configuring interpreters
 		void				addInterpreter(const Cgi::InterpExtension& extension, const Cgi::InterpPath& path);
@@ -102,12 +103,14 @@ class ImplModule
 		void				mf_returnExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
 		void				mf_returnWorker(Worker& worker);
 		void				mf_returnRequestData(InternalReq& data);
-		void				mf_cancelAndReturn(InternalReq& data);
+		void				mf_cancelAndReturn(Worker& worker);
+		void				mf_returnPendingFinish(Worker& worker);
 		
 		void				mf_recycleTimeoutFailure(Worker& worker);
 		void				mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser);
 		void				mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale);
-		
+		void				mf_recyclePendingFinish(InternalReq& data, bool markFdsAsStale);
+
 		void				mf_recycleWorker(Worker& worker, bool markFdsAsStale);
 		void				mf_recycleRequestData(InternalReq& data);
 		

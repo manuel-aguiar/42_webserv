@@ -11,6 +11,7 @@
 
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/BufferView/BufferView.hpp"
+# include "../../GenericUtils/Files/File.hpp"
 
 namespace Http { class Response; }
 
@@ -27,7 +28,7 @@ namespace Http
 			void					reset();
 			void					close();
 
-			bool					initiateRequest(const Http::ResponseData& data);
+			bool					initiateRequest(const Http::ResponseData& data, const Conn::Connection* connection = NULL);
 
 			Http::ResponseStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
@@ -53,9 +54,14 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
 
+			Http::ResponseStatus::Type	mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
+			Http::ResponseStatus::Type	mf_fillErrorFile(BaseBuffer& writeBuffer);
+			
 			BufferView					mf_HttpBodyNone(const BufferView& view);
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);
 			BufferView					mf_HttpBodySend(const BufferView& view);	
+
+			void						mf_finishAndRelease();
 
 			Cgi::Module& 				m_module;
 			Cgi::Request* 				m_cgiRequest;
@@ -65,8 +71,14 @@ namespace Http
 			Ws::fd 						m_readFd;
 			Ws::fd 						m_writeFd;
 
+			const Http::ResponseData*	m_responseData;
+			File 						m_file;
+			size_t						m_staticReadCounter;
+			std::string					m_defaultErrorPage;
+
 			int							m_statusCode;
 			const Cgi::HeaderData* 		m_headers;
+			BufferView					m_tempBody;
 			int							m_currentHeader;
 
 			ProcessHttpBody				m_processHttpBody;

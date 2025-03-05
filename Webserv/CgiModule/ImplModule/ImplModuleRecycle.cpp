@@ -32,6 +32,12 @@ ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 
 	worker.reset();
 
+	#ifndef NDEBUG
+		for (size_t i = 0; i < m_availableWorkers.size(); ++i)
+			ASSERT_EQUAL(m_availableWorkers[i] != &worker, true, 
+			"ImplModule::mf_recycleWorker(), worker is already available");
+	#endif
+
 	while (m_executionQueue.size() > 0)
 	{
 		newData = m_executionQueue.front();
@@ -51,6 +57,12 @@ ImplModule::mf_recycleWorker(Worker& worker, bool markFdsAsStale)
 void
 ImplModule::mf_recycleRequestData(InternalReq& data)
 {	
+	#ifndef NDEBUG
+		for (size_t i = 0; i < m_availableRequestData.size(); ++i)
+			ASSERT_EQUAL(m_availableRequestData[i] != &data, true, 
+			"ImplModule::mf_recycleRequestData(), request is already available");
+	#endif
+
 	TimerTracker<Timer, InternalReq*>::iterator 	timer;
 
 	timer = data.getMyTimer();
@@ -58,7 +70,6 @@ ImplModule::mf_recycleRequestData(InternalReq& data)
 		m_timerTracker.erase(timer);
 
 	data.reset();
-
 	m_availableRequestData.push_back(&data);
 }
 
@@ -66,6 +77,10 @@ ImplModule::mf_recycleRequestData(InternalReq& data)
 void
 ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 {
+	InternalReq*	data = worker.accessRequestData();
+
+	ASSERT_EQUAL(data != NULL, true, "ImplModule::mf_recycleTimeoutFailure(), there must be a worker that is still associated");
+	
 	worker.stop();
 	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR);
 }
@@ -76,19 +91,30 @@ ImplModule::mf_cancelAndRecycle(InternalReq& data, bool markFdsAsStale)
 	Worker*		worker = data.accessExecutor();
 	
 	worker->stop();
-	mf_recycleExecutionUnit(*worker, markFdsAsStale, Cgi::Notify::ON_ERROR);
+	worker->disableCloseAllEvents(markFdsAsStale);
+	mf_recycleWorker(*worker, markFdsAsStale);
+	mf_recycleRequestData(data);
 }
 
 void
 ImplModule::mf_recycleExecutionUnit(Worker& worker, bool markFdsAsStale, const Cgi::Notify::Type callUser)
 {
-	InternalReq* 		data = worker.accessRequestData();
+	InternalReq* 			data = worker.accessRequestData();
 	Cgi::User 				user = data->getUser();
 	Cgi::Notify::Callback	handler = data->getRuntime_Handler(callUser);
 
 	worker.disableCloseAllEvents(markFdsAsStale);
-	mf_recycleWorker(worker, markFdsAsStale);
-	mf_recycleRequestData(*data);
+	data->setState(Cgi::RequestState::PENDING_FINISH);
 	if (user && handler)
 		(handler)(user);
+}
+
+void
+ImplModule::mf_recyclePendingFinish(InternalReq& data, bool markFdsAsStale)
+{
+	Worker*		worker = data.accessExecutor();
+
+	ASSERT_EQUAL(worker != NULL, true, "ImplModule::mf_recyclePendingFinish(), there must be a worker that is still associated");
+	mf_recycleWorker(*worker, markFdsAsStale);
+	mf_recycleRequestData(data);
 }

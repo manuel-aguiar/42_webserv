@@ -11,5 +11,5 @@ to take the execution forward <---  tests
 
 - testing Multiple requests in the same buffer
     - httprequest should stop parsing
-- Check Permission to access root folders at ServerConfig
-- Not allow root with / at the end at ServerConfig
+- file upload compared to nginx
+- directory listing chunking

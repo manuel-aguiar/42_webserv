@@ -40,7 +40,8 @@ namespace Http
 
 			BufferView					receiveRequestBody(const BufferView& view);			// request send body
 
-			void						setConnectionAddress(const Ws::Sock::addr& addr);	// called by http::connection
+			void						setListenAddress(const Ws::Sock::addr& addr);	// called by http::connection
+			void						setTcpConnection(const Conn::Connection& addr);
 
 		private:
 			typedef enum
@@ -61,6 +62,7 @@ namespace Http
 
 			std::string					mf_generateRedirectPage(int statusCode, const std::string& redirectPath);
 			std::string 				mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage);
+			std::string					mf_generateEtag(File& file, time_t last_modified);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
 			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
@@ -72,9 +74,12 @@ namespace Http
 			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
 			Http::ResponseStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
+			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
+			bool						mf_addCacheControlHeaders();
+			bool						mf_addHeader(const std::string& key, const std::string& value);
 			Http::ResponseStatus::Type	mf_fillFinish();
 
-			bool	mf_prepareStaticFile(const char* path);
+			bool						mf_prepareStaticFile(const char* path);
 
 			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 
@@ -89,11 +94,14 @@ namespace Http
 
 			// pass the body to the CgiGateway
 			BufferView					mf_processBodyCgi(const BufferView& receivedView);
-
+			
+			void						mf_prepareErrorMessage();
+			void						mf_prepareCgiExecution();
 			// Debatable
 
 			ServerContext&       		m_context;
-			const Ws::Sock::addr*		m_connAddress;
+			const Ws::Sock::addr*		m_listenAddress;
+			const Conn::Connection*		m_tcpConn;
 			ResponseData				m_responseData;
 
 			Http::ResponseStatus::Type	m_status;

@@ -25,7 +25,6 @@ BufferView Http::Request::mf_parseRegularBody(const BufferView& currentView)
     size_t      bytesSending = (bytesLeft > currentView.size()) ? currentView.size() : bytesLeft;
     BufferView  unconsumed;
 
-    // don't send empty body
     if (m_response && bytesSending > 0)
         unconsumed = m_response->receiveRequestBody(currentView.substr(0, bytesSending));
 

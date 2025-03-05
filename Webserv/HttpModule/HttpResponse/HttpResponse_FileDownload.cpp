@@ -31,7 +31,7 @@ namespace Http
 
         ASSERT_EQUAL(m_file.fd() != Ws::FD_NONE, true, "Response: File not open");
         
-        bytesRead = writeBuffer.readAppend(m_file.fd());
+        bytesRead = writeBuffer.readAppend(m_file.fd(), writeBuffer.available());
 
         ASSERT_EQUAL(bytesRead >= 0, true, "Response: File read error");
 

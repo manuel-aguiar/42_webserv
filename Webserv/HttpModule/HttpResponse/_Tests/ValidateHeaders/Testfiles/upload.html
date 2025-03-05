@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Test</title>
+</head>
+<body>
+    <h1>Upload Content to Test Multipart HTTP Requests</h1>
+ 
+    <form action="post/" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose file to upload:</label>
+        <input type="file" id="file" name="file" required>
+        <br><br>
+ 
+        <label for="text">Additional Text (Optional):</label>
+        <textarea id="text" name="text" rows="4" cols="50" placeholder="Enter any text here..."></textarea>
+        <br><br>
+ 
+        <button type="submit">Upload File</button>
+    </form>
+ 
+    <p><strong>Note:</strong> Ensure your server is configured to handle multipart/form-data requests.</p>
+</body>
+</html>

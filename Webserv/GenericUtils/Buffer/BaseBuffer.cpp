@@ -35,11 +35,11 @@ int BaseBuffer::read(const Ws::fd fd, const int startIndex)
     return (bytesRead);
 }
 
-int BaseBuffer::readAppend(const Ws::fd fd)
+int BaseBuffer::readAppend(const Ws::fd fd, size_t maxBytes)
 {
     int bytesRead;
 
-    bytesRead = ::read(fd, m_begin + m_size, capacity() - m_size);
+    bytesRead = ::read(fd, m_begin + m_size, std::min(capacity() - m_size, maxBytes));
 
     m_size += bytesRead;
     return (bytesRead);
