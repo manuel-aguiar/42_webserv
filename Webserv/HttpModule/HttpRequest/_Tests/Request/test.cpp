@@ -1,5 +1,6 @@
 #include "../../HttpRequest.hpp"
 #include "../../../HttpResponse/HttpResponse.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 #include "../../../../GenericUtils/Buffer/Buffer.hpp"
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
@@ -59,7 +60,8 @@ void stateTransitionTests(int &testNumber)
 		Http::Request request(serverContext);
 		Buffer<1024> buffer;
 		buffer.push("GET /index.html HTTP/1.1\r\nHost: localhost;\r\n\r\n");
-		request.parse(buffer);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+		request.parse();
 
 		try {
 		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be completed");
@@ -85,13 +87,15 @@ void stateTransitionTests(int &testNumber)
 			// Partial request line
 			Buffer<1024> buffer;
 			buffer.push("GET /index.html");
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.isStarted(), true, "Should be started after partial request");
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::REQLINE, "Should stay in REQLINE state with partial data");
 
 			// Complete request line by sending only the missing part
 			buffer.push(" HTTP/1.1\r\n");  // Only send the missing part
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::HEADERS, "Should transition to HEADERS state");
 			TEST_PASSED_MSG("Request line parsing state transitions passed");
 		}
@@ -113,17 +117,17 @@ void stateTransitionTests(int &testNumber)
 				"Host: localhost\r\n"
 				"Content-Type: text/plain\r\n"
 			);
-			request.parse(partialBuffer);
+			request.setBuffer_ReadFd(partialBuffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::HEADERS, "Should stay in HEADERS state with partial headers");
 
 			// Complete headers
-			Buffer<1024> completeBuffer;
-
 			// pushing the remaining
-			completeBuffer.push(
+			partialBuffer.push(
 				"\r\n"
 			);
-			request.parse(completeBuffer);
+			request.setBuffer_ReadFd(partialBuffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should transition to COMPLETED state");
 			TEST_PASSED_MSG("Headers parsing state transitions passed");
 		}
@@ -145,7 +149,8 @@ void stateTransitionTests(int &testNumber)
 				"Content-Length: 11\r\n\r\n"
 				"Hello World"
 			);
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Should be COMPLETED with full body");
 			EXPECT_EQUAL(request.isCompleted(), true, "Should be marked as completed");
 			TEST_PASSED_MSG("Content-Length body parsing state transitions passed");
@@ -201,7 +206,8 @@ void stateTransitionTests(int &testNumber)
 			// Invalid request line
 			Buffer<1024> buffer;
 			buffer.push("INVALID /index.html HTTP/1.1\r\n");
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.isError(), true, "Should be in error state with invalid request");
 			EXPECT_EQUAL(request.getParsingState(), Http::Request::ERROR, "Should be in ERROR state");
 
@@ -231,14 +237,16 @@ void testErrorCodes(int &testNumber)
 		try {
 			Buffer<1024> buffer;
 			buffer.push("CONNECT /index.html HTTP/1.1\r\n\r\n");
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.isError(), true, "Should be in error state with unsupported method");
 			EXPECT_EQUAL(request.getStatus(), Http::Status::METHOD_NOT_ALLOWED, "Should return METHOD_NOT_ALLOWED for unsupported method");
 
 			request.reset();
 			buffer.clear();
 			buffer.push("PUT /index.html HTTP/1.1\r\n\r\n");
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getStatus(), Http::Status::METHOD_NOT_ALLOWED, "Should return METHOD_NOT_ALLOWED for PUT method");
 
 			TEST_PASSED_MSG("METHOD_NOT_ALLOWED tests passed");
@@ -257,28 +265,32 @@ void testErrorCodes(int &testNumber)
 			Http::Request request1(serverContext);
 			Buffer<1024> buffer1;
 			buffer1.push("GET /index.html HTTP/2.0\r\n\r\n");
-			request1.parse(buffer1);
+			request1.setBuffer_ReadFd(buffer1, Ws::FD_NONE);
+			request1.parse();
 			EXPECT_EQUAL(request1.getStatus(), Http::Status::BAD_REQUEST, "Should return BAD_REQUEST for invalid HTTP version");
 
 			// Malformed request line
 			Http::Request request2(serverContext);
 			Buffer<1024> buffer2;
 			buffer2.push("GET/index.html HTTP/1.1\r\n\r\n");  // Missing space
-			request2.parse(buffer2);
+			request2.setBuffer_ReadFd(buffer2, Ws::FD_NONE);
+			request2.parse();
 			EXPECT_EQUAL(request2.getStatus(), Http::Status::BAD_REQUEST, "Should return BAD_REQUEST for malformed request line");
 
 			// Malformed header
 			Http::Request request3(serverContext);
 			Buffer<1024> buffer3;
 			buffer3.push("GET /index.html HTTP/1.1\r\nBadHeader\r\n\r\n");  // Missing colon
-			request3.parse(buffer3);
+			request3.setBuffer_ReadFd(buffer3, Ws::FD_NONE);
+			request3.parse();
 			EXPECT_EQUAL(request3.getStatus(), Http::Status::BAD_REQUEST, "Should return BAD_REQUEST for malformed header");
 
 			// Invalid URL encoding
 			Http::Request request4(serverContext);
 			Buffer<1024> buffer4;
 			buffer4.push("GET /test%2xtest HTTP/1.1\r\n\r\n");  // Invalid hex in URL encoding
-			request4.parse(buffer4);
+			request4.setBuffer_ReadFd(buffer4, Ws::FD_NONE);
+			request4.parse();
 			EXPECT_EQUAL(request4.getStatus(), Http::Status::BAD_REQUEST, "Should return BAD_REQUEST for invalid URL encoding");
 
 			TEST_PASSED_MSG("BAD_REQUEST tests passed");
@@ -301,7 +313,8 @@ void testErrorCodes(int &testNumber)
 			}
 			longUri += " HTTP/1.1\r\n\r\n";
 			buffer.push(longUri);
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getStatus(), Http::Status::URI_TOO_LONG, "Should return URI_TOO_LONG for URI exceeding max length");
 
 			TEST_PASSED_MSG("URI_TOO_LONG tests passed");
@@ -327,7 +340,8 @@ void testErrorCodes(int &testNumber)
 			}
 			longHeaderName += ": value\r\n\r\n";
 			buffer.push(longHeaderName);
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 
 			// If the parse method actually errors on this, check the status
 			if (request.isError()) {
@@ -350,7 +364,8 @@ void testErrorCodes(int &testNumber)
 		try {
 			Buffer<1024> buffer;
 			buffer.push("POST /submit HTTP/1.1\r\nHost: localhost\r\n\r\n");  // POST without Content-Length
-			request.parse(buffer);
+			request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+			request.parse();
 			EXPECT_EQUAL(request.getStatus(), Http::Status::LENGTH_REQUIRED,
 				"Should return LENGTH_REQUIRED for POST without Content-Length");
 
@@ -402,7 +417,8 @@ void testErrorCodes(int &testNumber)
 			buffer.push("POST /submit HTTP/1.1\r\n"
 					   "Host: localhost\r\n"
 					   "Transfer-Encoding: gzip\r\n\r\n");  // Unsupported Transfer-Encoding
-			request.parse(buffer);
+					   request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+					   request.parse();
 			EXPECT_EQUAL(request.getStatus(), Http::Status::NOT_IMPLEMENTED,
 				"Should return NOT_IMPLEMENTED for unsupported Transfer-Encoding");
 
@@ -424,7 +440,8 @@ void testErrorCodes(int &testNumber)
 					   "Host: localhost\r\n"
 					   "Content-Length: 10\r\n"
 					   "Transfer-Encoding: chunked\r\n\r\n");  // Both Content-Length and Transfer-Encoding
-			request.parse(buffer);
+					   request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+					   request.parse();
 			EXPECT_EQUAL(request.getStatus(), Http::Status::BAD_REQUEST,
 				"Should return BAD_REQUEST for conflicting Content-Length and Transfer-Encoding headers");
 

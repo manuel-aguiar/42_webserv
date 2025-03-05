@@ -47,6 +47,8 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		
 		fileData.push(file1_Content);
 
+		response.setBuffer_writeFd(testBuffer, Ws::FD_NONE);
+
         while (fileData.size() && data.status == Http::Status::OK)
         {
             int thisPush = readBuffer.available() < fileData.size() ? readBuffer.available() : fileData.size();

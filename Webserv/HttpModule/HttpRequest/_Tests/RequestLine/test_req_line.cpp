@@ -1,6 +1,7 @@
 
 
 #include "../../HttpRequest.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../HttpResponse/HttpResponse.hpp"
 #include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
@@ -24,7 +25,8 @@ void validRequestLineTests(int &testNumber)
         buffer.push(requestData.c_str(), requestData.size());
         try
         {
-            request.parse(buffer);
+            request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            request.parse();
             EXPECT_EQUAL(request.getParsingState(), (int)Http::Request::COMPLETED, "Parsing state should be COMPLETED");
             
             const Http::RequestData& data = request.getData();
@@ -59,7 +61,8 @@ void validRequestLineTests(int &testNumber)
         buffer.push(requestData.c_str(), requestData.size());
         try
         {
-            request.parse(buffer);
+            request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            request.parse();
 
             const Http::RequestData& data = request.getData();
 
@@ -93,7 +96,8 @@ void invalidRequestLineTests(int &testNumber)
         buffer.push(requestData.c_str(), requestData.size());
         try
         {
-            Request.parse(buffer);
+            Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            Request.parse();
             const Http::RequestData& data = Request.getData();
             EXPECT_EQUAL(data.status, (int)Http::Status::METHOD_NOT_ALLOWED, "Should fail");
             TEST_PASSED_MSG("Invalid method detection");
@@ -120,7 +124,8 @@ void invalidRequestLineTests(int &testNumber)
 
         try
         {
-            Request.parse(buffer);
+            Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            Request.parse();
             const Http::RequestData& data = Request.getData();
 
             EXPECT_EQUAL(data.status, (int)Http::Status::URI_TOO_LONG, "Should fail");
@@ -149,7 +154,8 @@ void encodedUriTests(int &testNumber)
         buffer.push(requestData.c_str(), requestData.size());
         try
         {
-            Request.parse(buffer);
+            Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            Request.parse();
             const Http::RequestData& data = Request.getData();
 
             EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
@@ -176,7 +182,8 @@ void encodedUriTests(int &testNumber)
 
         try
         {
-            Request.parse(buffer);
+            Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+            Request.parse();
             const Http::RequestData& data = Request.getData();
             EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
             TEST_PASSED_MSG("Invalid URI encoding detection");

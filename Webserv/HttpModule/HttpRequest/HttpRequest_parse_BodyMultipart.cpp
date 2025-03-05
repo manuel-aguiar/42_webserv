@@ -255,6 +255,8 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 		m_findPivot = 0;
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
+		m_data.multipart_Name.clear();
+		m_data.multipart_Filename.clear();
 		if (m_curContentPos + found.size() != (size_t)m_curContentLength)
 			return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
 	}

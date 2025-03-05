@@ -87,6 +87,8 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		HeapBuffer testBuffer(std::max(file1_ContentSize, file2_ContentSize) + 100);
 		
 		bufferRequest.push(fullRequest.c_str(), fullRequest.size());
+		
+		request.setBuffer_ReadFd(readBuffer, Ws::FD_NONE);
 
         while (bufferRequest.size() && request.getStatus() == Http::Status::OK)
         {
@@ -95,7 +97,7 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
 
             // parse, tell the buffer to put the unconsumed part at the beginning
-            readBuffer.truncatePush(request.parse(readBuffer));
+            request.parse();
         }
 
 

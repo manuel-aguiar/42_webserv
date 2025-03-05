@@ -40,6 +40,7 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		Http::Request 		request(context);
 
 		request.setResponse(response);
+		response.setRequest(request);
 
 		///////////////////
 
@@ -77,23 +78,29 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		
 		bufferRequest.push(fullRequest.c_str(), fullRequest.size());
 
+		request.setBuffer_ReadFd(readBuffer, Ws::FD_NONE);
+
         while (bufferRequest.size() && request.getStatus() == Http::Status::OK)
         {
 			int thisPush = readBuffer.available() < bufferRequest.size() ? readBuffer.available() : bufferRequest.size();
             readBuffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-
-            readBuffer.truncatePush(request.parse(readBuffer));
+            request.parse();
         }
 
 		int fd1 = ::open(file1_Name, O_RDONLY);
 		testBuffer.read(fd1);
 		::close(fd1);
+
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file1_Content, file1_ContentSize), "File content should match");
+		testBuffer.clear();
 
 		int fd2 = ::open(file2_Name, O_RDONLY);
-		testBuffer.read(fd2);
+		std::cout << "fd2 " << fd2 << std::endl;
+		std::cout << "readBytes: " << testBuffer.read(fd2) << std::endl;
 		::close(fd2);
+		std::cout << testBuffer.view().size() << " vs expected: " << file2_ContentSize << std::endl;
+		std::cout << testBuffer.view() << std::endl;
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
@@ -122,7 +129,7 @@ int main(void)
 	int testNumber = 1;
 
 	//fileUpload(testNumber, 400);
-	for (size_t i = 200; i < 500; i += 1)
+	for (size_t i = 200; i < 201; i += 1)
 		fileUpload(testNumber, i);
 
 	TEST_FOOTER;

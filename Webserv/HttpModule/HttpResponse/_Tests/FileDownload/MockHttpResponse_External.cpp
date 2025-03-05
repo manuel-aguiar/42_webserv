@@ -60,6 +60,11 @@ namespace Http
 	void
 	Response::reset()
 	{}
+
+	Http::IOStatus::Type
+	Response::write()
+	{return m_ioStatus;}
+
 	void
 	Response::close()
 	{}

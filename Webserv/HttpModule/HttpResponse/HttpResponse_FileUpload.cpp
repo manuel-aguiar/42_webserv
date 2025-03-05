@@ -25,23 +25,28 @@ namespace Http
 		BufferView		remaining;
 		int 			bytesWritten = 0;
 		
-		// receive empty view, queue to EOF
-		if (view.size() == 0
-		|| m_responseData.requestData->multipart_Filename.empty())
+		
+		if (view.size() == 0) // eof
 		{
-			m_file.close();
+			if (m_responseData.requestData->multipart_Filename.empty())
+			{
+				///both empty means end
+				if (m_responseData.requestData->multipart_Name.empty()) 
+				{
+					m_fillFunction = &Response::mf_fillResponseLine;
+					m_processFunction = &Response::mf_processBodyIgnore;
+					mf_prepareErrorMessage();
+					m_fillFunctionBody = &Response::mf_fillDefaultPage;
+					m_responseData.requestStatus = Http::Status::OK;
+				}
 
-			m_fillFunction = &Response::mf_fillResponseLine;
-			m_processFunction = &Response::mf_processBodyIgnore;
-			mf_prepareErrorMessage();
-			m_fillFunctionBody = &Response::mf_fillDefaultPage;
-			m_responseData.requestStatus = Http::Status::OK; // check this
-			// m_responseData.responseType = ResponseData::NO_CONTENT;
-			
-			return (BufferView()); // ignore
+				return (BufferView());
+			}
+			m_file.close();
 		}
 
-		if (m_responseData.requestData->multipart_Filename != m_file.path())
+		if (!m_responseData.requestData->multipart_Filename.empty()
+		&&	m_responseData.requestData->multipart_Filename != m_file.path())
 		{
 			m_file.close();
 			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
