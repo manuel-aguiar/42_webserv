@@ -28,7 +28,7 @@ namespace Http
 		
 		if (view.size() == 0) // eof
 		{
-			std::cout << "closing file " << std::endl;
+			//std::cout << "closing file " << std::endl;
 			if (!m_responseData.requestData->multipart_Filename.empty())
 				m_file.close();
 			else if (m_responseData.requestData->multipart_Name.empty())
@@ -45,13 +45,13 @@ namespace Http
 
 		if (m_responseData.requestData->multipart_Filename.empty())
 		{
-			std::cout << "form data, ignore" << std::endl;
+			//std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
 		}
 
 		if (m_responseData.requestData->multipart_Filename != m_file.path())
 		{
-			std::cout << "new file, open" << std::endl;
+			//std::cout << "new file, open" << std::endl;
 			// new file, open
 			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
@@ -59,7 +59,7 @@ namespace Http
 		}
 
 		bytesWritten = m_file.write(view.data(), view.size());
-		std::cout << "view.size() = " << view.size() << ", bytesWritten = " << bytesWritten << std::endl;
+		//std::cout << "view.size() = " << view.size() << ", bytesWritten = " << bytesWritten << std::endl;
 		if (bytesWritten < 0)
 			goto exitFailure;
 		
