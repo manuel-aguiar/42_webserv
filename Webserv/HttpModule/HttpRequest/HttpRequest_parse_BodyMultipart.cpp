@@ -97,13 +97,8 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 	if (remaining.size() <= delimiter.size())
 		return (remaining); // not enough to go through yet
-	//std::cout << "multipart headers" << std::endl;
-	//std::cout << "remaining: ->" << remaining << "<-" << std::endl;
 	while (remaining.size() > 0)
 	{
-		////std::cout << "\t\t multipar headers in loop " << remaining.size() << ", view: ->" << remaining << "<->" << std::endl;
-
-		//////std::cout << "lookup pivot: " << m_findPivot << std::endl;
 		size_t headerEnd = remaining.find(delimiter, m_findPivot);
 		if (headerEnd == BufferView::npos)
 		{
@@ -120,12 +115,9 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		m_findPivot = 0;
 
-		//std::cout << "header end: " << headerEnd << std::endl;
 
 		if (headerEnd == 0)
 		{
-			////std::cout << " found end of headers" << std::endl;
-			// \r\n found at the beginning: end of headers, move to BODY
 			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
 
 			m_curContentPos += delimiter.size();	//header delimiters in multi part count towards content length
@@ -133,9 +125,6 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			if (m_curContentPos > m_curContentLength ||
 				(m_data.multipart_Name.empty() && m_data.multipart_Filename.empty()))
 			{
-				//std::cout << " content pos: " << m_curContentPos << ", content length: " << m_curContentLength << std::endl;
-				//std::cout << " filename " << m_data.multipart_Filename << std::endl;
-				//std::cout << " name " << m_data.multipart_Name << std::endl;
 				return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
 			}
 
@@ -144,7 +133,6 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
 
-		////std::cout << "\t\t\t\theader: ->" << thisHeader << "<-" << std::endl;
 
 		remaining = remaining.substr(headerEnd + delimiter.size(), remaining.size() - headerEnd - delimiter.size()); // move to next header
 		m_curContentPos += (thisHeader.size() + delimiter.size());
@@ -160,7 +148,6 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		if (key != BufferView(contentDispositionFind))
 			continue ;
-		//std::cout << "found content disposition" << std::endl;
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
 			const BufferView nameFind(contentDispositionNameFind);
@@ -243,9 +230,10 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 		if (m_curContentPos > m_curContentLength)
 			return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
 		m_parsingFunction = &Request::mf_parseMultipartBody_End;
+		return (mf_parseMultipartBody_End(remaining));
 	}
 
-	return ((this->*m_parsingFunction)(remaining));
+	return (remaining);
 }
 
 /*

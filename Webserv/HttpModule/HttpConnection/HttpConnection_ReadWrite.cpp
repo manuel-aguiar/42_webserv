@@ -51,7 +51,8 @@ Connection::mf_parseReadBuffer()
 void
 Connection::mf_newRequestSameConnection()
 {
-    const ServerBlock& serverBlock = *m_transaction.response.getResponseData().serverBlock;
+    const ServerConfig& config = *reinterpret_cast<const ServerConfig*>(m_module.accessServerContext().getServerConfig());
+    const ServerBlock* serverBlock = m_transaction.response.getResponseData().serverBlock;
 
     resetTransaction();
 
@@ -59,16 +60,20 @@ Connection::mf_newRequestSameConnection()
     
     if (m_readBuffer.size() != 0)
     {
-        setMyTimer(m_module.insertTimer(Timer::now() + serverBlock.getTimeoutFullHeader(), *this), Timeout::FULL_HEADER);
+        int timeoutFullHeader = (serverBlock != NULL) ? serverBlock->getTimeoutFullHeader() : config.getTimeoutFullHeader();
+        setMyTimer(m_module.insertTimer(Timer::now() + timeoutFullHeader, *this), Timeout::FULL_HEADER);
         return (mf_parseReadBuffer());
     }
-    setMyTimer(m_module.insertTimer(Timer::now() + serverBlock.getTimeoutKeepAlive(), *this), Timeout::KEEP_ALIVE);
+
+    int timeoutKeepAlive = (serverBlock != NULL) ? serverBlock->getTimeoutKeepAlive() : config.getTimeoutKeepAlive();
+    setMyTimer(m_module.insertTimer(Timer::now() + timeoutKeepAlive, *this), Timeout::KEEP_ALIVE);
 }
 
 void
 Connection::ReadWrite()
 {
     ASSERT_EQUAL(m_tcpConn != NULL, true, std::string("HttpConnection::ReadWrite(): m_tcpConn is NULL, ") + StringUtils::to_string(this));
+    const ServerConfig& config = *reinterpret_cast<const ServerConfig*>(m_module.accessServerContext().getServerConfig());
 
     Events::Monitor::Mask triggeredEvents = m_tcpConn->events_getTriggeredEvents();
     Ws::fd sockfd = m_tcpConn->info_getFd();
@@ -133,8 +138,10 @@ Connection::ReadWrite()
         {
             m_writeBuffer.write(sockfd); // got data, write
             m_module.removeTimer(m_myTimer);
+            int timeOutInterSend = (m_transaction.response.getResponseData().serverBlock != NULL)
+            ? m_transaction.response.getResponseData().serverBlock->getTimeoutInterSend() : config.getTimeoutInterSend();
             setMyTimer(m_module.insertTimer(Timer::now() 
-            + m_transaction.response.getResponseData().serverBlock->getTimeoutInterSend(), *this), Timeout::INTER_SEND);
+            + timeOutInterSend, *this), Timeout::INTER_SEND);
             return ;
         }
 
