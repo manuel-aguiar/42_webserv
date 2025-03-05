@@ -209,6 +209,8 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 {
 	//std::cout << "body content called,  name: " << m_data.multipart_Name << ", filename: " << m_data.multipart_Filename << std::endl;
 	//std::cout << "current view: ->" << currentView << "<-" << std::endl;
+	std::cout << "current view: ->" << currentView << "<-" << std::endl;
+	std::cout << "current view size: " << currentView.size() << std::endl;
 	const BufferView	delimiter("\r\n--", 4);
 	BufferView	remaining = currentView;
 	BufferView	unconsumed;

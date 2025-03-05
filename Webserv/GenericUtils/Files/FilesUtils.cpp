@@ -13,8 +13,8 @@ int FilesUtils::testPath(const char* path)
 	if (stat(path, &buffer) != 0)
 		return -1;
 
-	if (access(path, R_OK | W_OK /*| X_OK*/) != 0)
-		return 0; // No read/write permissions
+	if (access(path, R_OK /* | W_OK | X_OK*/ ) != 0)
+		return 0; // No read permission
 
 	return 1; // Path exists and has permissions
 }

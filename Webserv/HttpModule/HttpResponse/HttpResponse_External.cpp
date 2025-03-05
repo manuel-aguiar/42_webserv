@@ -19,17 +19,25 @@ extern std::string getMimeType(const std::string &path);
 
 namespace Http
 {
+
+	void	Response::mf_resolveRequestData()
+	{	
+		if (m_responseData.requestStatus != Http::Status::OK 
+			|| !mf_resolveServerAndLocation()
+			|| !mf_checkPermissions()
+			|| mf_checkRedirect())
+			return ;
+
+		mf_validateTargetPath();
+	}
+
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
 		m_responseData.requestData = &data;
 		m_responseData.requestStatus = data.status;
-
 		m_fillFunction = &Response::mf_fillResponseLine;
 
-		if (data.status == Http::Status::OK)
-		{
-			mf_validateHeaders();
-		}
+		mf_resolveRequestData();
 
 		// Full debug print of wtf is going on:
 		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
@@ -84,22 +92,6 @@ namespace Http
 		m_currentHeader = m_responseData.headers.begin();
 
 		return ;
-		
-		
-		// mf_addHeader("content-length", "0");
-		// mf_addHeader("content-type", "plain/text");
-
-
-		// // TEST CODE
-		// if (m_fillFunction == &Response::mf_fillNothingToSend)
-		// {
-		// 	if (m_responseData.requestStatus == Http::Status::OK)
-		// 		m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
-		// 	m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
-		// 	m_fillFunction = &Response::mf_fillDefaultPage;
-		// }
-
-		// Go to fillFunctions
 	}
 
 	BufferView

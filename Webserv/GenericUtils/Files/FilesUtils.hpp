@@ -10,8 +10,8 @@ namespace FilesUtils
 	{
 		REGULAR_FILE,
 		DIRECTORY,
-		UNDEFINED,
-		NOT_EXIST
+		NOT_EXIST,
+		UNDEFINED
 	}	FileType;
 
 	bool		fileExists(const char* path);

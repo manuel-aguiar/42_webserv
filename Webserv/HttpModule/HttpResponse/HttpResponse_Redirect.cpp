@@ -8,8 +8,10 @@ namespace Http
 {
     bool Response::mf_checkRedirect()
     {
-        ASSERT_EQUAL(m_responseData.serverLocation != NULL, true, "Server location is NULL");
         ASSERT_EQUAL(m_responseData.serverBlock != NULL, true, "Server block is NULL");
+
+		if (m_responseData.serverLocation == NULL)
+			return (false);
 
         const std::pair<int, std::string>& locReturn = m_responseData.serverLocation->getReturn();
         if (locReturn.first <  Http::Status::MOVED_PERMANENTLY || \
