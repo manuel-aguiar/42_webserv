@@ -50,6 +50,7 @@ namespace Http
 		{
 			case ResponseData::CGI:
 				return (mf_prepareCgiExecution());
+				return (mf_prepareCgiExecution());
 			case ResponseData::STATIC:
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 
@@ -143,6 +144,7 @@ namespace Http
 			reinterpret_cast<Http::Module*>(m_context.getAppLayerModule(Ws::AppLayer::HTTP))->accessCgiInterface();
 			cgiInterface.releaseGateway(*m_cgiResponse);
 			m_cgiResponse = NULL;
+			m_cgiResponse = NULL;
 		}
 	}
 
@@ -150,6 +152,8 @@ namespace Http
 	Response::close()
 	{
 		reset();
+		m_listenAddress = NULL;
+		m_tcpConn = NULL;
 		m_listenAddress = NULL;
 		m_tcpConn = NULL;
 	}	
