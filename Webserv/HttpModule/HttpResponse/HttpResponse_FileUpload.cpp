@@ -7,8 +7,6 @@ namespace Http
 	BufferView
 	Response::mf_processBodyNone(const BufferView& view)
 	{
-		std::cout << "mf_processBodyNone" << std::endl;
-		// does nothing, returns the full view back
 		return (view);
 	}
 
@@ -17,7 +15,6 @@ namespace Http
 	{
 		//returns empty view, tells Request "all processed" but does nothing with it
 		(void)view;
-		std::cout << "mf_processBodyIgnore" << std::endl;
 
 		return (BufferView());
 	}
@@ -25,7 +22,6 @@ namespace Http
 	BufferView
 	Response::mf_processBodyUpload(const BufferView& view)
 	{
-		std::cout << "mf_processBodyUpload" << std::endl;
 		BufferView		remaining;
 		int 			bytesWritten = 0;
 		
