@@ -227,9 +227,10 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 		if (m_curContentPos > m_curContentLength)
 			return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
 		m_parsingFunction = &Request::mf_parseMultipartBody_End;
+		return (mf_parseMultipartBody_End(remaining));
 	}
 
-	return ((this->*m_parsingFunction)(remaining));
+	return (remaining);
 }
 
 /*
