@@ -44,6 +44,8 @@ namespace Http
 			Http::IOStatus::Type						read();
 			Http::IOStatus::Type 						parse();
 
+			Http::IOStatus::Type						forceParse(); // to be called by cgi
+
 			// my response
 			Http::Response&								getResponse();
 			void										setResponse(Http::Response& response);
@@ -143,7 +145,8 @@ namespace Http
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
 
 			BufferView									mf_parseBodyExitError	(const BufferView& remaining, const Http::Status::Number status);
-
+			
+			Http::IOStatus::Type						mf_innerParse();
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);

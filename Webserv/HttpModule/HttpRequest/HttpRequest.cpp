@@ -134,6 +134,17 @@ Request::parse()
 {
 	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
 	//std::cout << "parse request" << std::endl;
+
+	bool isCgi = (m_httpResponse && m_httpResponse->getResponseData().responseType == Http::ResponseData::CGI);
+	if (isCgi && m_parsingState == BODY)
+		return (Http::IOStatus::WAITING);
+
+	return (mf_innerParse());
+}
+
+Http::IOStatus::Type
+Request::mf_innerParse()
+{
 	BufferView remaining(m_readBuffer->data(), m_readBuffer->size());
 
 	try
@@ -148,6 +159,15 @@ Request::parse()
 		m_httpResponse->receiveRequestData(m_data);             //blew up, tell response to inform
 	}
 	return (Http::IOStatus::WAITING);
+}
+
+//parse unrestricted
+Http::IOStatus::Type
+Request::forceParse()
+{
+	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
+
+	return (mf_innerParse());
 }
 
 /*

@@ -51,7 +51,9 @@ namespace Http
 		m_writeFd = writeFd;
 		m_canWrite = true;
 		
-		m_httpRequest->parse(); // ask request to send us data
+		ASSERT_EQUAL(m_httpRequest != NULL, true, "CgiResponse::onCgiWrite(): no request assigned");
+
+		m_httpRequest->forceParse(); // ask request to send us data
 
 		// not sending anything anymore, may close write
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
