@@ -3,6 +3,7 @@
 
 # include "HttpCgiResponse.hpp"
 # include "CgiHandlers.hpp"
+# include "../HttpRequest/HttpRequest.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
@@ -49,6 +50,8 @@ namespace Http
 	{
 		m_writeFd = writeFd;
 		m_canWrite = true;
+		
+		m_httpRequest->parse(); // ask request to send us data
 
 		// not sending anything anymore, may close write
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)

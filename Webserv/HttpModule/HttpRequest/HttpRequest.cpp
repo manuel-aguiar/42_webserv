@@ -166,8 +166,9 @@ BufferView Request::mf_handleNothing(const BufferView& remaining)
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
-BufferView Http::Request::mf_parseBodyExitError(const Http::Status::Number status)
+BufferView Http::Request::mf_parseBodyExitError(const BufferView& remaining, const Http::Status::Number status)
 {
+	(void)remaining;
     m_parsingState = ERROR;
     m_data.status = status;
 
@@ -267,8 +268,7 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 			if (m_httpResponse)
 				m_httpResponse->receiveRequestData(m_data);
 
-			mf_prepareBodyParser(); // next handler is body
-            return ((this->*m_parsingFunction)(remaining));
+            return (Request::mf_prepareBodyParser(remaining));
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
 
@@ -297,7 +297,8 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 */
 
 // UNDER REVIEW
-void Request::mf_prepareBodyParser()
+BufferView
+Request::mf_prepareBodyParser(const BufferView& receivedView)
 {
 	#ifndef NDEBUG
 		// making sure everything is correctly formatted
@@ -316,54 +317,54 @@ void Request::mf_prepareBodyParser()
     RequestData::headerContainer::iterator contentLength = m_data.headers.find(contentLengthFind);
     RequestData::headerContainer::iterator transferEncoding = m_data.headers.find(transferEncodingFind);
     RequestData::headerContainer::iterator contentType = m_data.headers.find(contentTypeFind);
-    
+    bool isCgi = (m_httpResponse && m_httpResponse->getResponseData().responseType == Http::ResponseData::CGI);
+
 	if (contentLength == m_data.headers.end() 
 	&& transferEncoding == m_data.headers.end())
 	{
 		if (m_data.method == "POST")
-		{
-			mf_parseBodyExitError(Http::Status::LENGTH_REQUIRED);
-			return ;
-		}
+			return (mf_parseBodyExitError(receivedView, Http::Status::LENGTH_REQUIRED));
 
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
 		if (m_httpResponse)
 			m_httpResponse->receiveRequestBody(BufferView()); // send empty buffer, end of message body
-		return;
 	}
 
-    if (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()) {
-		return mf_handleExitFailure(Http::Status::BAD_REQUEST);
+    else if (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end())
+	{
+		return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
 	}
 
-    if (contentLength != m_data.headers.end())
+    else if (contentLength != m_data.headers.end())
     {
         m_curContentLength = std::atoi(contentLength->second.c_str());
         m_curContentPos = 0;
-        m_parsingFunction = &Request::mf_parseRegularBody;
+        m_parsingFunction = &Request::mf_parseLengthBody;
 		if (contentType != m_data.headers.end()
 		&& contentType->second.find(multipartFind) != std::string::npos)
 		{
 			size_t boundaryPos = contentType->second.find(multipartBoundaryFind);
-			if (boundaryPos == std::string::npos) {
-				return mf_handleExitFailure(Http::Status::BAD_REQUEST);
-			}
+			if (boundaryPos == std::string::npos)
+				return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
 			m_data.multipart_Boundary = contentType->second.substr(boundaryPos + 9);
 			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
+			
+			// if response is CGI, wait for it to signal that is time to parse
+			if (isCgi)
+				m_parsingFunction = &Request::mf_parseLengthBody; // cgi treats multipart as regular
 		}
     }
     else if (transferEncoding->second == chunkedFind)
-    {
         m_parsingFunction = &Request::mf_parseChunkedBody_GetChunk;
-    }
     else
-    {
-		return mf_handleExitFailure(Http::Status::NOT_IMPLEMENTED);
-    }
+		return (mf_parseBodyExitError(receivedView, Http::Status::NOT_IMPLEMENTED));
 
-	//std::cout << "Body parser prepared" << std::endl;
-	return;
+	// if cgi stop the parsing, wait for cgi to signal
+	if (isCgi)
+		return (receivedView);
+
+	return ((this->*m_parsingFunction)(receivedView));
 }
 
 void Request::mf_handleExitFailure(Http::Status::Number status)

@@ -49,7 +49,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_readBuffer->capacity())
-            return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE));
+            return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
         return (remaining); // not enough to go through yet
     }
 
@@ -60,7 +60,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
     m_curChunkSize = strToInteger(thisChunkSize, 16);
     if (m_curChunkSize == -1)
-        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));
+        return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
 
     m_curChunkPos = 0;
 
@@ -126,7 +126,7 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
         m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_readBuffer->capacity())
-            return (mf_parseBodyExitError(Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
+            return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
         return (remaining); // not enough to go through yet
     }
 
@@ -135,7 +135,7 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
     remaining = remaining.substr(bodyEnd + delimiter.size(), remaining.size() - bodyEnd - delimiter.size()); // move view past the header
 
     if (bodyEnd != 0)
-        return (mf_parseBodyExitError(Http::Status::BAD_REQUEST));  // 400 - Malformed chunk delimiter
+        return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));  // 400 - Malformed chunk delimiter
 
     if (m_curChunkSize == 0)
     {

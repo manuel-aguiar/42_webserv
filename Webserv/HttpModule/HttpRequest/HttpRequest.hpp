@@ -125,7 +125,11 @@ namespace Http
 			BufferView									mf_handleNothing		(const BufferView& currentView);
 			BufferView									mf_handleRequestLine	(const BufferView& currentView);
 			BufferView									mf_handleHeaders		(const BufferView& currentView);
-			BufferView									mf_parseRegularBody		(const BufferView& currentView);
+
+			// distributes game to the body parsers
+			BufferView									mf_prepareBodyParser(const BufferView& receivedView);
+
+			BufferView									mf_parseLengthBody		(const BufferView& currentView);
 
 			// chunked body intermediaries......
 			BufferView									mf_parseChunkedBody_GetChunk	(const BufferView& currentView);
@@ -138,13 +142,13 @@ namespace Http
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
 
-			BufferView									mf_parseBodyExitError	(const Http::Status::Number status);
+			BufferView									mf_parseBodyExitError	(const BufferView& remaining, const Http::Status::Number status);
 
 			// main parsers
 			Http::Status::Number						mf_parseRequestLine	(const BufferView& currentView);
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);
 			Http::Status::Number						mf_parseBody		(const BufferView& currentView);
-			void										mf_prepareBodyParser();
+			
 
 
 
@@ -153,14 +157,14 @@ namespace Http
 
 			Http::Status::Number						mf_parseChunkedBody(const std::string& data);
 			Http::Status::Number						mf_parseMultipartData(const std::string& data);
-			Http::Status::Number						mf_parseRegularBody(const std::string& data);
+			Http::Status::Number						mf_parseLengthBody(const std::string& data);
 			Http::RequestData::BodyType					mf_bodyType();
 			Http::RequestData::ContentType				mf_contentType();
 
 
 			size_t										mf_findHeaderEnd(const BufferView& currentView);
 			void										mf_handleExitFailure(Http::Status::Number status);
-			BufferView									mf_handleExitFailure(BufferView& remaining,Http::Status::Number status);
+			BufferView									mf_handleExitFailure(BufferView& remaining, Http::Status::Number status);
 	};
 
 } // namespace Http
