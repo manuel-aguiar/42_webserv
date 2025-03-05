@@ -4,46 +4,42 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include <arpa/inet.h>
 
+static bool isAbsoluteUrl(const std::string& path)
+{
+    return (path.find("http://") == 0 || path.find("https://") == 0);
+}
+
+static bool isRelativePath(const std::string& path)
+{
+    return (!path.empty() && path[0] != '/');
+}
+
+static std::string buildLocationHeader(const std::string& host, const std::string& path)
+{
+    if (host.empty())
+        return (isRelativePath(path) ? "/" + path : path);
+
+    std::string location = "http://" + host;
+    if (isRelativePath(path))
+        location += "/";
+    location += path;
+    return (location);
+}
+
+static bool shouldPreserveMethod(Http::Status::Number status)
+{
+    return (status == Http::Status::TEMPORARY_REDIRECT ||
+            status == Http::Status::PERMANENT_REDIRECT);
+}
+
+static bool shouldConvertToGet(Http::Status::Number status)
+{
+    return (status == Http::Status::MOVED_PERMANENTLY ||
+            status == Http::Status::FOUND ||
+            status == Http::Status::SEE_OTHER);
+}
 namespace Http
 {
-    namespace
-    {
-        bool isAbsoluteUrl(const std::string& path)
-        {
-            return (path.find("http://") == 0 || path.find("https://") == 0);
-        }
-
-        bool isRelativePath(const std::string& path)
-        {
-            return (!path.empty() && path[0] != '/');
-        }
-
-        std::string buildLocationHeader(const std::string& host, const std::string& path)
-        {
-            if (host.empty())
-                return (isRelativePath(path) ? "/" + path : path);
-
-            std::string location = "http://" + host;
-            if (isRelativePath(path))
-                location += "/";
-            location += path;
-            return (location);
-        }
-
-        bool shouldPreserveMethod(Http::Status::Number status)
-        {
-            return (status == Http::Status::TEMPORARY_REDIRECT ||
-                    status == Http::Status::PERMANENT_REDIRECT);
-        }
-
-        bool shouldConvertToGet(Http::Status::Number status)
-        {
-            return (status == Http::Status::MOVED_PERMANENTLY ||
-                    status == Http::Status::FOUND ||
-                    status == Http::Status::SEE_OTHER);
-        }
-    }
-
     bool Response::mf_checkRedirect()
     {
         ASSERT_EQUAL(m_responseData.serverLocation != NULL, true, "Server location is NULL");
