@@ -25,14 +25,16 @@ namespace Http
 		BufferView		remaining;
 		int 			bytesWritten = 0;
 		
-		
 		if (view.size() == 0) // eof
 		{
-			//std::cout << "closing file " << std::endl;
 			if (!m_responseData.requestData->multipart_Filename.empty())
+			{
+				//std::cout << "\t\t\t\t closing file" << std::endl;
 				m_file.close();
+			}
 			else if (m_responseData.requestData->multipart_Name.empty())
 			{
+				//std::cout << "\t\t\t\t ready to respond" << std::endl;
 				// finished
 				m_fillFunction = &Response::mf_fillResponseLine;
 				m_processFunction = &Response::mf_processBodyIgnore;
@@ -68,6 +70,7 @@ namespace Http
 		return (remaining);
 	
 	exitFailure:
+		std::cout << "error writing file" << std::endl;
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 		m_processFunction = &Response::mf_processBodyIgnore;
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");

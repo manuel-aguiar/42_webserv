@@ -296,7 +296,7 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	BufferView remaining = currentView;
 	BufferView found;
 	const BufferView continueDelim("\r\n", 2);
-	const BufferView finalDelim("--\r\n\r\n", 6);
+	const BufferView finalDelim("--\r\n", 4);
 
 	if (remaining.size() < finalDelim.size())
 		return (remaining);

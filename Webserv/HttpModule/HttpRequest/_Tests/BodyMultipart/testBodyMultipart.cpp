@@ -61,7 +61,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         "\r\n"
         "This is file 5.\r\n"        
         "------WebKitFormBoundary12345--\r\n"
-        "\r\n";
+        ;
 
         std::string requestHeader = 
         "POST /upload HTTP/1.1\r\n"
@@ -138,7 +138,7 @@ void    chunkedReadBuffer2(int& testNumber, size_t readBufSize)
     "Accept-Language: en-US,en;q=0.5\r\n"
     "Accept-Encoding: gzip, deflate, br, zstd\r\n"
     "Content-Type: multipart/form-data; boundary=----geckoformboundaryef89c3853670c9dfbafd72221d637292\r\n"
-    "Content-Length: 335\r\n"
+    "Content-Length: 333\r\n"
     "Origin: http://localhost:8080\r\n"
     "Connection: keep-alive\r\n"
     "Referer: http://localhost:8080/upload.html\r\n"
@@ -158,7 +158,7 @@ void    chunkedReadBuffer2(int& testNumber, size_t readBufSize)
     "Content-Disposition: form-data; name=\"text\"\r\n"
     "\r\n"
     "------geckoformboundaryef89c3853670c9dfbafd72221d637292--\r\n"
-    "\r\n";
+    ;
     
     std::string requestBodyTranslated = "Wikipedia in \rchunks.\r";
 
@@ -184,7 +184,7 @@ void    chunkedReadBuffer2(int& testNumber, size_t readBufSize)
         EXPECT_EQUAL(BufferView(g_mockMsgBody["small.text"]), BufferView("small text file"), "Body should match");
         EXPECT_EQUAL(requestData.status, Http::Status::OK, "Request should be OK");
         EXPECT_EQUAL(HttpRequest.getParsingState(), Http::Request::COMPLETED, "request should be completed by now");
-        
+
         TEST_PASSED_MSG(std::string("Valid body, multipart, small.text [" 
         + g_mockMsgBody["small.text"] + "], readBuf size: ") 
         + TestHelpers::to_string(readBufSize));

@@ -49,22 +49,14 @@ namespace Http
 	Http::IOStatus::Type
 	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-		//std::cout << "cgi fillWriteBuffer" << std::endl;
-		// still processing body, can't start writing the response yet
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
-		{
-			//std::cout << "receiving body, waiting" << std::endl;
 			return (Http::IOStatus::WAITING);
-		}
-		//std::cout << "can start writing" << std::endl;
-		//std::cout << "can start writing" << std::endl;
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
 	bool
 	CgiResponse::initiateRequest(Http::ResponseData& responseData, Http::Request& request, const Conn::Connection* connection)
 	{
-		std::cout << "cgi initing: " << this << std::endl;
 		m_responseData = &responseData;
 		m_httpRequest = &request;
 

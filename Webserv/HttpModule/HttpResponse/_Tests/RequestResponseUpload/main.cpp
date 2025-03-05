@@ -87,7 +87,7 @@ void fileUpload(int& testNumber, size_t readBufSize)
 			+ file2_Content + "\r\n"
 			"--" + boundary 
 			//////////////////////// the end
-			+ "--\r\n" + "\r\n";
+			+ "--\r\n";
 
 
 		std::string requestHeader = 

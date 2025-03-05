@@ -92,7 +92,7 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 			+ file2_Content + "\r\n"
 			"--" + boundary 
 			//////////////////////// the end
-			+ "--\r\n" + "\r\n";
+			+ "--\r\n";
 
 
 		std::string requestHeader = 
