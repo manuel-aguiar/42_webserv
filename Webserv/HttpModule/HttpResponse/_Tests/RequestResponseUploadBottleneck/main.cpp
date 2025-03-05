@@ -45,6 +45,7 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		Http::Request 		request(context);
 
 		request.setResponse(response);
+		response.setRequest(request);
 
 		///////////////////
 
@@ -68,7 +69,8 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 			"\r\n"
 			+ file2_Content + "\r\n"
 			"--" + boundary +
-			"--\r\n";
+			"--\r\n" +
+			"\r\n";
 
 
 		std::string requestHeader = 
@@ -99,11 +101,12 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
             // parse, tell the buffer to put the unconsumed part at the beginning
             request.parse();
         }
-
+		std::cout << "request status: " << request.getStatus() << std::endl;
 
 		int fd1 = ::open(file1_Name, O_RDONLY);
 		testBuffer.read(fd1);
 		::close(fd1);
+		EXPECT_EQUAL(testBuffer.view().size(), file1_ContentSize, "File size should match");
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file1_Content, file1_ContentSize), "File content should match");
 
 		int fd2 = ::open(file2_Name, O_RDONLY);
@@ -112,6 +115,7 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
+		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Request parsing state should be BODY_DONE");
 
 		TEST_PASSED_MSG("FileUpload Bottleneck Request-Response integration"
 			", read buffer size: " + TestHelpers::to_string(readBufSize) 
@@ -120,6 +124,7 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
+		exit(0);
 	}
 
 	::unlink(file1_Name);

@@ -52,11 +52,17 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         "\r\n"
         "This is file 4.\r\n"
         "------WebKitFormBoundary12345\r\n"
+        "Content-Disposition: form-data; name=\"file4\"\r\n"
+        "Content-Type: text/plain\r\n"
+        "\r\n"
+        "\r\n"
+        "------WebKitFormBoundary12345\r\n"
         "Content-Disposition: form-data; name=\"file5\"; filename=\"file5.txt\"\r\n"
         "Content-Type: text/plain\r\n"
         "\r\n"
         "This is file 5.\r\n"        
-        "------WebKitFormBoundary12345--\r\n";
+        "------WebKitFormBoundary12345--\r\n"
+        "\r\n";
 
         std::string requestHeader = 
         "POST /upload HTTP/1.1\r\n"
@@ -93,7 +99,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file4.txt"]), BufferView("This is file 4."), "Body should match");
         EXPECT_EQUAL(BufferView(g_mockMsgBody["file5.txt"]), BufferView("This is file 5."), "Body should match");
         EXPECT_EQUAL(requestData.status, Http::Status::OK, "Request should be OK");
-
+        EXPECT_EQUAL(HttpRequest.getParsingState(), Http::Request::COMPLETED, "request should be completed by now");
         TEST_PASSED_MSG(std::string("Valid body, multipart, file1.txt [" 
         + g_mockMsgBody["file1.txt"] + "], file2.txt [" 
         + g_mockMsgBody["file2.txt"] + "], readBuf size: ") 
@@ -132,7 +138,7 @@ void    chunkedReadBuffer2(int& testNumber, size_t readBufSize)
     "Accept-Language: en-US,en;q=0.5\r\n"
     "Accept-Encoding: gzip, deflate, br, zstd\r\n"
     "Content-Type: multipart/form-data; boundary=----geckoformboundaryef89c3853670c9dfbafd72221d637292\r\n"
-    "Content-Length: 335\r\n"
+    "Content-Length: 337\r\n"
     "Origin: http://localhost:8080\r\n"
     "Connection: keep-alive\r\n"
     "Referer: http://localhost:8080/upload.html\r\n"
@@ -150,6 +156,7 @@ void    chunkedReadBuffer2(int& testNumber, size_t readBufSize)
     "small text file\r\n"
     "------geckoformboundaryef89c3853670c9dfbafd72221d637292\r\n"
     "Content-Disposition: form-data; name=\"text\"\r\n"
+    "\r\n"
     "\r\n"
     "------geckoformboundaryef89c3853670c9dfbafd72221d637292--\r\n"
     "\r\n";

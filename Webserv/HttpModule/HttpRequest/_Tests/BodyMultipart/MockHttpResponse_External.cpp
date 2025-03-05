@@ -35,6 +35,13 @@ namespace Http
 	BufferView	Response::receiveRequestBody(const BufferView& view)
 	{
 		const std::string& targetFile = m_responseData.requestData->multipart_Filename;
+		if (targetFile.empty())
+		{
+			//std::cout << "received body data, must be form data" << std::endl;
+			return (BufferView());
+		}
+		else
+			//std::cout << targetFile << " received body data" << std::endl;
 		if (g_mockMsgBody.find(targetFile) == g_mockMsgBody.end())
 			g_mockMsgBody[targetFile] = "";
 		g_mockMsgBody[targetFile].append(view.data(), view.size());

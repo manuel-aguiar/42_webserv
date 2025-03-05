@@ -58,7 +58,8 @@ void fileUpload(int& testNumber, size_t readBufSize)
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
-			"--" + boundary + "--\r\n";
+			"--" + boundary + "--\r\n" + "\r\n";
+			
 
 
 		std::string requestHeader = 
@@ -93,17 +94,14 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		::close(fd1);
 
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file1_Content, file1_ContentSize), "File content should match");
-		testBuffer.clear();
 
 		int fd2 = ::open(file2_Name, O_RDONLY);
-		std::cout << "fd2 " << fd2 << std::endl;
-		std::cout << "readBytes: " << testBuffer.read(fd2) << std::endl;
+		testBuffer.read(fd2);
 		::close(fd2);
-		std::cout << testBuffer.view().size() << " vs expected: " << file2_ContentSize << std::endl;
-		std::cout << testBuffer.view() << std::endl;
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
+		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Request parsing state should be BODY_DONE");
 
 		TEST_PASSED_MSG("FileUpload Request-Response integration test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
 	}
@@ -129,7 +127,7 @@ int main(void)
 	int testNumber = 1;
 
 	//fileUpload(testNumber, 400);
-	for (size_t i = 200; i < 201; i += 1)
+	for (size_t i = 200; i < 500; i += 1)
 		fileUpload(testNumber, i);
 
 	TEST_FOOTER;

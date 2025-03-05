@@ -28,11 +28,14 @@ namespace Http
 		
 		if (view.size() == 0) // eof
 		{
+			//std::cout << "received end of file" << std::endl;
 			if (m_responseData.requestData->multipart_Filename.empty())
 			{
+				//std::cout << "no filename" << std::endl;
 				///both empty means end
 				if (m_responseData.requestData->multipart_Name.empty()) 
 				{
+					//std::cout << "nor field name" << std::endl;
 					m_fillFunction = &Response::mf_fillResponseLine;
 					m_processFunction = &Response::mf_processBodyIgnore;
 					mf_prepareErrorMessage();
@@ -43,12 +46,18 @@ namespace Http
 				return (BufferView());
 			}
 			m_file.close();
+			return (BufferView());
 		}
 
-		if (!m_responseData.requestData->multipart_Filename.empty()
-		&&	m_responseData.requestData->multipart_Filename != m_file.path())
+		if (m_responseData.requestData->multipart_Filename.empty())
 		{
-			m_file.close();
+			// form data, ignore
+			return (BufferView());
+		}
+
+		if (m_responseData.requestData->multipart_Filename != m_file.path())
+		{
+			// new file, open
 			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
 				goto exitFailure;
@@ -63,7 +72,6 @@ namespace Http
 		return (remaining);
 	
 	exitFailure:
-		std::cout << "exitFailure" << std::endl;
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
