@@ -43,6 +43,8 @@ namespace Http
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
+		
+		std::cout << " response " << m_responseData.responseType << " type, FILEUPLOAD IS 5" << std::endl;
 
 		switch (m_responseData.responseType)
 		{
@@ -71,6 +73,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				break ;
 			case ResponseData::ERROR:
+				m_processFunction = &Response::mf_processBodyIgnore;
 				mf_prepareErrorMessage();
 				break ;
 			case ResponseData::NO_CONTENT:
@@ -106,6 +109,7 @@ namespace Http
 	Response::receiveRequestBody(const BufferView& view)
 	{
 		//std::cout << "Response received body, size: " << view.size() << std::endl;
+		std::cout << "receive request body" << std::endl;
 		return ((this->*m_processFunction)(view));
 	}
 
