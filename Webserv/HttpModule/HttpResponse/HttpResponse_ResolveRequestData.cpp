@@ -138,7 +138,7 @@ namespace Http
 				}
 				// Upload
 				if (m_responseData.requestData->method == "POST"
-					&& m_responseData.requestData->headers.find("Content-Type")->second == "multipart/form-data")
+					&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0) // Please review this comparison
 				{
 					m_responseData.responseType = ResponseData::FILE_UPLOAD;
 					return ;
