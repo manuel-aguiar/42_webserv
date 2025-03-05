@@ -69,6 +69,7 @@ int	File::read(void* buffer, size_t size)
 int	File::write(const void* buffer, size_t size)
 {
 	ASSERT_EQUAL(m_fd != Ws::FD_NONE, true, "File: no file is open for writing");
+	std::cout << "\t\tfile writing: " << size << " bytes" << std::endl;
 	return (::write(m_fd, buffer, std::min(size, g_maxFileWrite)));
 }
 

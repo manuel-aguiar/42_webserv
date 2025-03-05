@@ -50,7 +50,6 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		///////////////////
 
 		// manually send the request
-		// manually send the request
 		std::string boundary = "----WebKitFormBoundary12345";
 		std::string contentDisp1 = "Content-Disposition: form-data; name=\"file1\"; filename=\"" + std::string(file1_Name) + "\"";
 		std::string contentDisp2 = "Content-Disposition: form-data; name=\"file2\"; filename=\"" + std::string(file2_Name) + "\"";
@@ -60,47 +59,47 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		std::string requestBodyMultipart = 
 
 			"--" + boundary + "\r\n"
-			///////////////////////
+			///////////////////////  a file
 			+ contentDisp1 + "\r\n"
 			"\r\n"
 			+ file1_Content + "\r\n"
 			"--" + boundary + "\r\n"
-			///////////////////////
+			///////////////////////  same file twice
 			+ contentDisp1 + "\r\n"
 			"\r\n"
 			+ file1_Content + "\r\n"
 			"--" + boundary + "\r\n"
-			////////////////////////
+			////////////////////////  form 1
 			+ form1 + "\r\n"
 			"\r\n"
 			"--" + boundary + "\r\n"
-			////////////////////////
+			////////////////////////  form 2
 			+ form2 + "\r\n"
 			"\r\n"
 			"--" + boundary + "\r\n"
-			///////////////////////
+			/////////////////////// second file
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
 			"--" + boundary + "\r\n"
-			////////////////////////
+			//////////////////////// form2 again
 			+ form2 + "\r\n"
 			"\r\n"
 			"--" + boundary + "\r\n"
-			/////////////////////////
+			///////////////////////// second file again
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
 			"--" + boundary 
-			////////////////////////
+			//////////////////////// the end
 			+ "--\r\n" + "\r\n";
 
 
 		std::string requestHeader = 
 		"POST /upload HTTP/1.1\r\n"
-		"Host: example.com\r\n"
-		"Content-Type: multipart/form-data; boundary=" + boundary + "\r\n"
-		"Content-Length: " + TestHelpers::to_string(requestBodyMultipart.size()) + "\r\n"
+		"hoSt: example.com\r\n"
+		"ConTEnt-Type: multipart/form-data; boundary=" + boundary + "\r\n"
+		"contenT-lenGth: " + TestHelpers::to_string(requestBodyMultipart.size()) + "\r\n"
 		"\r\n";
 	
 		std::string fullRequest = requestHeader + requestBodyMultipart;
@@ -112,24 +111,21 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		HeapBuffer testBuffer(std::max(file1_ContentSize, file2_ContentSize) + 100);
 		
 		bufferRequest.push(fullRequest.c_str(), fullRequest.size());
-		
+
 		request.setBuffer_ReadFd(readBuffer, Ws::FD_NONE);
 
-        while (bufferRequest.size() && request.getStatus() == Http::Status::OK)
+        while ( (bufferRequest.size() || readBuffer.size()) && request.getStatus() == Http::Status::OK)
         {
 			int thisPush = readBuffer.available() < bufferRequest.size() ? readBuffer.available() : bufferRequest.size();
             readBuffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-
-            // parse, tell the buffer to put the unconsumed part at the beginning
             request.parse();
         }
-		std::cout << "request status: " << request.getStatus() << std::endl;
 
 		int fd1 = ::open(file1_Name, O_RDONLY);
 		testBuffer.read(fd1);
 		::close(fd1);
-		EXPECT_EQUAL(testBuffer.view().size(), file1_ContentSize, "File size should match");
+
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file1_Content, file1_ContentSize), "File content should match");
 
 		int fd2 = ::open(file2_Name, O_RDONLY);
@@ -140,13 +136,12 @@ void fileUploadBottleNeck(int& testNumber, size_t readBufSize, size_t maxFileWri
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
 		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Request parsing state should be BODY_DONE");
 
-		TEST_PASSED_MSG("FileUpload Bottleneck Request-Response integration"
-			", read buffer size: " + TestHelpers::to_string(readBufSize) 
-			+ ", maxFileWrite: " + TestHelpers::to_string(maxFileWrite));
+		TEST_PASSED_MSG("FileUpload Request-Response integration test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
 	}
 	catch(const std::exception& e)
 	{
 		TEST_FAILED_MSG(e.what());
+		exit(0);
 	}
 
 	::unlink(file1_Name);
@@ -166,7 +161,7 @@ int main(void)
 	int testNumber = 1;
 
 	// force File class to read slow and probably lower than what it is passed
-	 for (size_t i = 201; i < 202; i += 1)
+	 for (size_t i = 209; i < 510; i += 1)
 	 	fileUploadBottleNeck(testNumber, i, i / 2);
 
 	TEST_FOOTER;

@@ -28,35 +28,31 @@ namespace Http
 		
 		if (view.size() == 0) // eof
 		{
-			//std::cout << "received end of file" << std::endl;
-			if (m_responseData.requestData->multipart_Filename.empty())
-			{
-				//std::cout << "no filename" << std::endl;
-				///both empty means end
-				if (m_responseData.requestData->multipart_Name.empty()) 
-				{
-					//std::cout << "nor field name" << std::endl;
-					m_fillFunction = &Response::mf_fillResponseLine;
-					m_processFunction = &Response::mf_processBodyIgnore;
-					mf_prepareErrorMessage();
-					m_fillFunctionBody = &Response::mf_fillDefaultPage;
-					m_responseData.requestStatus = Http::Status::OK;
-				}
-
-				return (BufferView());
-			}
+			std::cout << "closing file " << std::endl;
 			m_file.close();
+
+			if (m_responseData.requestData->multipart_Filename.empty()
+			&& m_responseData.requestData->multipart_Filename.empty())
+			{
+				// finished
+				m_fillFunction = &Response::mf_fillResponseLine;
+				m_processFunction = &Response::mf_processBodyIgnore;
+				mf_prepareErrorMessage();
+				m_fillFunctionBody = &Response::mf_fillDefaultPage;
+				m_responseData.requestStatus = Http::Status::OK;
+			}
 			return (BufferView());
 		}
 
 		if (m_responseData.requestData->multipart_Filename.empty())
 		{
-			// form data, ignore
+			std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
 		}
 
 		if (m_responseData.requestData->multipart_Filename != m_file.path())
 		{
+			std::cout << "new file, open" << std::endl;
 			// new file, open
 			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
@@ -64,6 +60,7 @@ namespace Http
 		}
 
 		bytesWritten = m_file.write(view.data(), view.size());
+		std::cout << "view.size() = " << view.size() << ", bytesWritten = " << bytesWritten << std::endl;
 		if (bytesWritten < 0)
 			goto exitFailure;
 		
@@ -73,7 +70,7 @@ namespace Http
 	
 	exitFailure:
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
-		m_processFunction = &Response::mf_processBodyNone;
+		m_processFunction = &Response::mf_processBodyIgnore;
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
 		m_fillFunction = &Response::mf_fillDefaultPage;
 		return (view);

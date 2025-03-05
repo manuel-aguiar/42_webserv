@@ -140,6 +140,7 @@ namespace Http
 
 			// multi part intermediaries........
 			BufferView 									mf_parseMultipartBody_Start		(const BufferView& currentView);
+			BufferView									mf_parseMultipartBody_Check		(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Headers	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
