@@ -288,5 +288,7 @@ void		ServerLocation::setReturn(const std::string &value)
 	size_t codeLong = StringUtils::stoull(code);
 	if (codeLong < 300 || codeLong > 399)
 		throw (std::invalid_argument("Redirection code must be a value between 300 and 399"));
+
+	std::cout << "Setting return: " << codeLong << " " << url << std::endl;
 	m_return = std::make_pair(static_cast<int>(codeLong), url);
 }

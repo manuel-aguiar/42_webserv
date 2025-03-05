@@ -21,7 +21,7 @@ namespace Http
 	// Check file availability
 	// Check Method allowed
 	// Check Host, Accept, Connection header
-	
+
 	bool
 	Response::mf_validateHeaders()
 	{
@@ -70,6 +70,7 @@ namespace Http
 		// Check redirection
 		if (m_responseData.serverLocation != NULL)
 		{
+			std::cout << "Checking redirect" << std::endl;
 			const bool isRedirect = mf_checkRedirect();
 			if (isRedirect)
 				return (false);
@@ -134,7 +135,7 @@ namespace Http
 					}
 					// try to open file
 					if (mf_prepareStaticFile(m_responseData.targetPath.c_str()))
-					{	
+					{
 						m_responseData.responseType = ResponseData::STATIC;
 						return (true);
 					}
