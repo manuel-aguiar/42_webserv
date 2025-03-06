@@ -69,6 +69,16 @@ ServerLocation::ServerLocation(const ServerLocation &other) :
 	m_index				(other.m_index),
 	m_return			(other.m_return) {}
 
+static void	_throw_ifInvalidPath(const std::string& path)
+{
+	int	result = FilesUtils::testPath(path.c_str());
+
+	if (result == -1)
+		throw (std::invalid_argument("Invalid path not accessible"));
+	if (result == 0)
+		throw (std::invalid_argument("No read premissions for path"));
+}
+
 void	ServerLocation::addConfigValue(const std::string &key, const std::string &value)
 {
 	if (m_directiveToSetter.map.find(key) == m_directiveToSetter.map.end())
@@ -130,10 +140,7 @@ void		ServerLocation::setPath(const std::string &value)
 
 void		ServerLocation::setRoot(const std::string &value)
 {
-	if (FilesUtils::testPath(value.c_str()) == -1)
-		throw (std::invalid_argument("Invalid root path not accessible"));
-	if (FilesUtils::testPath(value.c_str()) == 0)
-		throw (std::invalid_argument("No read/write premissions"));
+	_throw_ifInvalidPath(value);
 	m_root = value;
 }
 
@@ -173,6 +180,7 @@ void	ServerLocation::addCgiInterpreter(const std::string &value)
 
 	if (colonPos != std::string::npos)
 		path = value.substr(colonPos + 1);
+	_throw_ifInvalidPath(path);
 
 	m_cgiInterpreters[extension] = path;
 

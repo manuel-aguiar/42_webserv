@@ -6,7 +6,7 @@
 
 namespace Http
 {
-	bool Response::mf_assembleTargetPath()
+	void Response::mf_assembleTargetPath()
 	{
 		if (m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty()) 
 		{
@@ -41,9 +41,8 @@ namespace Http
 			&& !m_responseData.serverLocation->getIndex().empty()) 
 			{
 			m_responseData.targetPath += m_responseData.serverLocation->getIndex();
-			return (true);
+			m_responseData.indexAppended = true;
 		}
-		return (false);
 	}
 }
 

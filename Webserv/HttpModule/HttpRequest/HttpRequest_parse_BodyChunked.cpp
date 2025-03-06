@@ -100,10 +100,11 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
 
     // if consumed all bytes until border
     if (m_curChunkPos == m_curChunkSize)
+    {
         m_parsingFunction = &Request::mf_parseChunkedBody_EndChunk;
-
-    return ((this->*m_parsingFunction)(remaining));
-
+        return (Request::mf_parseChunkedBody_EndChunk(remaining));
+    }
+    return (remaining);
 }
 
 /*

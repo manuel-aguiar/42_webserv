@@ -7,7 +7,6 @@ namespace Http
 	BufferView
 	Response::mf_processBodyNone(const BufferView& view)
 	{
-		// does nothing, returns the full view back
 		return (view);
 	}
 
@@ -31,7 +30,15 @@ namespace Http
 		|| m_responseData.requestData->multipart_Filename.empty())
 		{
 			m_file.close();
-			return (view);
+
+			m_fillFunction = &Response::mf_fillResponseLine;
+			m_processFunction = &Response::mf_processBodyIgnore;
+			mf_prepareErrorMessage();
+			m_fillFunctionBody = &Response::mf_fillDefaultPage;
+			m_responseData.requestStatus = Http::Status::OK; // check this
+			// m_responseData.responseType = ResponseData::NO_CONTENT;
+			
+			return (BufferView()); // ignore
 		}
 
 		if (m_responseData.requestData->multipart_Filename != m_file.path())
@@ -51,6 +58,7 @@ namespace Http
 		return (remaining);
 	
 	exitFailure:
+		std::cout << "exitFailure" << std::endl;
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
