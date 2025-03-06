@@ -25,6 +25,8 @@ class ServerLocation;
 class ServerContext;
 class BaseBuffer;
 
+namespace Http {class CgiResponse;}
+
 namespace Http
 {
 	class Response
