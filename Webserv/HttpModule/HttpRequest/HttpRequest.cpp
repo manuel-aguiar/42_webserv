@@ -25,11 +25,12 @@ namespace Http
 
 Request::Request(ServerContext &serverContext):
 	m_serverContext(serverContext),
-	m_response(NULL),
+	m_httpResponse(NULL),
+	m_readBuffer(NULL),
+	m_readFd(Ws::FD_NONE),
 	m_parsingState(IDLE),
 	m_parsingFunction(&Request::mf_handleNothing),
 	m_data(),
-	m_bufferCapacity(0),
 	m_findPivot(0),
     m_curChunkSize(-1),
     m_curChunkPos(-1),
@@ -43,11 +44,12 @@ Request::~Request(){}
 
 Request::Request(const Request& copy):
 	m_serverContext(copy.m_serverContext),
-	m_response(copy.m_response),
+	m_httpResponse(copy.m_httpResponse),
+	m_readBuffer(copy.m_readBuffer),
+	m_readFd(copy.m_readFd),
 	m_parsingState(copy.m_parsingState),
 	m_parsingFunction(copy.m_parsingFunction),
 	m_data(copy.m_data),
-	m_bufferCapacity(copy.m_bufferCapacity),
 	m_findPivot(copy.m_findPivot),
     m_curChunkSize(copy.m_curChunkSize),
     m_curChunkPos(copy.m_curChunkPos),
@@ -63,11 +65,12 @@ Request::operator=(const Request& copy)
 	if (this == &copy)
 		return (*this);
 
-	m_response = copy.m_response;
+	m_httpResponse = copy.m_httpResponse;
+	m_readBuffer = copy.m_readBuffer;
+	m_readFd = copy.m_readFd;
 	m_data = copy.m_data;
 	m_parsingState = copy.m_parsingState;
 	m_parsingFunction = copy.m_parsingFunction;
-	m_bufferCapacity = copy.m_bufferCapacity;
 	m_findPivot = copy.m_findPivot;
     m_curChunkSize = copy.m_curChunkSize;
     m_curChunkPos = copy.m_curChunkPos;
@@ -78,12 +81,19 @@ Request::operator=(const Request& copy)
 }
 
 void
+Request::close()
+{
+	reset();
+	m_readBuffer = NULL;
+	m_readFd = Ws::FD_NONE;
+}
+
+void
 Request::reset()
 {
 	m_data.reset();
 	m_parsingState = IDLE;
 	m_parsingFunction = &Request::mf_handleNothing;
-	m_bufferCapacity = 0;
 	m_findPivot = 0;
     m_curChunkSize = -1;
     m_curChunkPos = -1;
@@ -101,24 +111,63 @@ Request::reset()
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
-BufferView
-Request::parse(const BaseBuffer& buffer)
+
+Http::IOStatus::Type
+Request::read()
 {
+	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::read(): request has no read buffer assigned");
+	ASSERT_EQUAL(m_readFd != Ws::FD_NONE, true, "Request::read(): request has no read fd assigned");
+
+	if (m_parsingState == COMPLETED || m_readBuffer->available() == 0)
+		return (Http::IOStatus::WAITING);
+
+	int readBytes = m_readBuffer->read(m_readFd, m_readBuffer->size() == m_readBuffer->capacity() ? 0 : m_readBuffer->size());
+
+	if (readBytes <= 0)
+		return (Http::IOStatus::MARK_TO_CLOSE);
+	return (Http::IOStatus::WAITING);
+}
+
+
+Http::IOStatus::Type
+Request::parse()
+{
+	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
 	//std::cout << "parse request" << std::endl;
-	BufferView remaining(buffer.data(), buffer.size());
+
+	bool cgiPass = (m_httpResponse && m_httpResponse->getResponseData().cgiPass == true);
+	if (cgiPass && m_parsingState == BODY)
+		return (Http::IOStatus::WAITING);
+
+	return (mf_innerParse());
+}
+
+Http::IOStatus::Type
+Request::mf_innerParse()
+{
+	BufferView remaining(m_readBuffer->data(), m_readBuffer->size());
 
 	try
 	{
-		m_bufferCapacity = buffer.capacity();
 		remaining = ((this->*m_parsingFunction)(remaining));
+		m_readBuffer->truncatePush(remaining);
 	}
 	catch (const std::exception& e)
 	{
 		m_parsingState = ERROR;
 		m_data.status = Http::Status::INTERNAL_ERROR;
-		m_response->receiveRequestData(m_data);             //blew up, tell response to inform
+		return (Http::IOStatus::MARK_TO_CLOSE);
 	}
-	return (remaining);
+	return (Http::IOStatus::WAITING);
+}
+
+//parse unrestricted
+Http::IOStatus::Type
+Request::forceParse()
+{
+	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
+
+	return (mf_innerParse());
 }
 
 /*
@@ -137,13 +186,14 @@ BufferView Request::mf_handleNothing(const BufferView& remaining)
 /*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
-BufferView Http::Request::mf_parseBodyExitError(const Http::Status::Number status)
+BufferView Http::Request::mf_parseBodyExitError(const BufferView& remaining, const Http::Status::Number status)
 {
+	(void)remaining;
     m_parsingState = ERROR;
     m_data.status = status;
 
-    if (m_response)
-        m_response->receiveRequestBody(BufferView()); // send "eof" to signal end of body
+    if (m_httpResponse)
+        m_httpResponse->receiveRequestBody(BufferView()); // send "eof" to signal end of body
 
     m_parsingFunction = &Request::mf_handleNothing;
     return (BufferView());
@@ -167,11 +217,11 @@ BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
 	{
 		m_findPivot = std::max((int)remaining.size() - (int)target.size(), 0);
 		// HARD LIMIT, request line cannot be bigger than buffer size
-		if (remaining.size() >= m_bufferCapacity)
+		if (remaining.size() >= m_readBuffer->capacity())
 		{
 			m_parsingState = ERROR;
 			m_data.status = Http::Status::URI_TOO_LONG;      // URI too long
-			m_response->receiveRequestData(m_data);         // inform response right away
+			m_httpResponse->receiveRequestData(m_data);         // inform response right away
 		}
 		return (remaining); // not enough to go through yet
 	}
@@ -187,8 +237,8 @@ BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
 	if (m_data.status != Http::Status::OK)
 	{
 		m_parsingState = ERROR;
-		if (m_response)
-			m_response->receiveRequestData(m_data);                 // inform response right away
+		if (m_httpResponse)
+			m_httpResponse->receiveRequestData(m_data);                 // inform response right away
 		return (remaining);
 	}
 
@@ -218,7 +268,7 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 		{
 			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
-			if (remaining.size() >= m_bufferCapacity)
+			if (remaining.size() >= m_readBuffer->capacity())
 			{
 				return mf_handleExitFailure(remaining, Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE);
 			}
@@ -235,11 +285,10 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
 			m_parsingState = BODY;
 
-			if (m_response)
-				m_response->receiveRequestData(m_data);
+			if (m_httpResponse)
+				m_httpResponse->receiveRequestData(m_data);
 
-			mf_prepareBodyParser(); // next handler is body
-            return ((this->*m_parsingFunction)(remaining));
+            return (Request::mf_prepareBodyParser(remaining));
 		}
 		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
 
@@ -268,7 +317,8 @@ BufferView Request::mf_handleHeaders(const BufferView& receivedView)
 */
 
 // UNDER REVIEW
-void Request::mf_prepareBodyParser()
+BufferView
+Request::mf_prepareBodyParser(const BufferView& receivedView)
 {
 	#ifndef NDEBUG
 		// making sure everything is correctly formatted
@@ -287,54 +337,54 @@ void Request::mf_prepareBodyParser()
     RequestData::headerContainer::iterator contentLength = m_data.headers.find(contentLengthFind);
     RequestData::headerContainer::iterator transferEncoding = m_data.headers.find(transferEncodingFind);
     RequestData::headerContainer::iterator contentType = m_data.headers.find(contentTypeFind);
-    
+    bool isCgi = (m_httpResponse && m_httpResponse->getResponseData().responseType == Http::ResponseData::CGI);
+
 	if (contentLength == m_data.headers.end() 
 	&& transferEncoding == m_data.headers.end())
 	{
 		if (m_data.method == "POST")
-		{
-			mf_parseBodyExitError(Http::Status::LENGTH_REQUIRED);
-			return ;
-		}
+			return (mf_parseBodyExitError(receivedView, Http::Status::LENGTH_REQUIRED));
 
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
-		if (m_response)
-			m_response->receiveRequestBody(BufferView()); // send empty buffer, end of message body
-		return;
+		if (m_httpResponse)
+			m_httpResponse->receiveRequestBody(BufferView()); // send empty buffer, end of message body
 	}
 
-    if (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end()) {
-		return mf_handleExitFailure(Http::Status::BAD_REQUEST);
+    else if (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end())
+	{
+		return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
 	}
 
-    if (contentLength != m_data.headers.end())
+    else if (contentLength != m_data.headers.end())
     {
         m_curContentLength = std::atoi(contentLength->second.c_str());
         m_curContentPos = 0;
-        m_parsingFunction = &Request::mf_parseRegularBody;
+        m_parsingFunction = &Request::mf_parseLengthBody;
 		if (contentType != m_data.headers.end()
 		&& contentType->second.find(multipartFind) != std::string::npos)
 		{
 			size_t boundaryPos = contentType->second.find(multipartBoundaryFind);
-			if (boundaryPos == std::string::npos) {
-				return mf_handleExitFailure(Http::Status::BAD_REQUEST);
-			}
+			if (boundaryPos == std::string::npos)
+				return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
 			m_data.multipart_Boundary = contentType->second.substr(boundaryPos + 9);
 			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
+			
+			// if response is CGI, wait for it to signal that is time to parse
+			if (isCgi)
+				m_parsingFunction = &Request::mf_parseLengthBody; // cgi treats multipart as regular
 		}
     }
     else if (transferEncoding->second == chunkedFind)
-    {
         m_parsingFunction = &Request::mf_parseChunkedBody_GetChunk;
-    }
     else
-    {
-		return mf_handleExitFailure(Http::Status::NOT_IMPLEMENTED);
-    }
+		return (mf_parseBodyExitError(receivedView, Http::Status::NOT_IMPLEMENTED));
 
-	//std::cout << "Body parser prepared" << std::endl;
-	return;
+	// if cgi stop the parsing, wait for cgi to signal
+	if (isCgi)
+		return (receivedView);
+
+	return ((this->*m_parsingFunction)(receivedView));
 }
 
 void Request::mf_handleExitFailure(Http::Status::Number status)
@@ -342,8 +392,8 @@ void Request::mf_handleExitFailure(Http::Status::Number status)
     m_parsingState = ERROR;
     m_data.status = status;
     m_parsingFunction = &Request::mf_handleNothing;
-    if (m_response) {
-		m_response->receiveRequestData(m_data);
+    if (m_httpResponse) {
+		m_httpResponse->receiveRequestData(m_data);
 	}
 
 	return;
@@ -355,10 +405,17 @@ BufferView Request::mf_handleExitFailure(BufferView& remaining, Http::Status::Nu
 	return (remaining);
 }
 
+void
+Request::setBuffer_ReadFd(BaseBuffer& buffer, const Ws::fd fd)
+{
+	m_readBuffer = &buffer;
+	m_readFd = fd;
+}
+
 // setters
 void Request::setResponse(Http::Response& response)
 {
-	m_response = &response;
+	m_httpResponse = &response;
 }
 
 // Getters
@@ -369,7 +426,7 @@ const Request::ParsingState& Request::getParsingState() const
 
 Http::Response& Request::getResponse()
 {
-	return (*m_response);
+	return (*m_httpResponse);
 }
 
 const std::string& Request::getMethod() const

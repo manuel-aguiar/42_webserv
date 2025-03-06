@@ -1,6 +1,7 @@
 
 
 #include "../../HttpRequest.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void bodyTests(int &testNumber)
@@ -29,10 +30,12 @@ void bodyTests(int &testNumber)
 		"{\"name\":\"John Doe\",\"email\":\"johndoe@example.com\",\"password\":\"securepassword\"}";
 	buffer.clear();
 	buffer.push(requestData.c_str(), requestData.size());
+
 	try
 	{
 		Http::Request	Request(context);
-		Request.parse(buffer);
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+		Request.parse();
 		const Http::RequestData& data = Request.getData();
 
 		EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");

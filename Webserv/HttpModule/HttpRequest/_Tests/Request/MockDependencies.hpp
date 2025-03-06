@@ -15,10 +15,10 @@ namespace Http
 	// }
 
 	// For avoiding connection address errors
-	// Http::ResponseStatus::Type Response::fillWriteBuffer(BaseBuffer& writeBuffer)
+	// Http::IOStatus::Type Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	// {
 	// 	(void)writeBuffer;
-	// 	return Http::ResponseStatus::FINISHED;
+	// 	return Http::IOStatus::FINISHED;
 	// }
 }
 

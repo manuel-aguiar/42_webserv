@@ -40,6 +40,7 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		Http::Request 		request(context);
 
 		request.setResponse(response);
+		response.setRequest(request);
 
 		///////////////////
 
@@ -47,17 +48,46 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		std::string boundary = "----WebKitFormBoundary12345";
 		std::string contentDisp1 = "Content-Disposition: form-data; name=\"file1\"; filename=\"" + std::string(file1_Name) + "\"";
 		std::string contentDisp2 = "Content-Disposition: form-data; name=\"file2\"; filename=\"" + std::string(file2_Name) + "\"";
+		std::string form1 = "Content-Disposition: form-data; name=\"field1\";";
+		std::string form2 = "Content-Disposition: form-data; name=\"field2\";";
 
 		std::string requestBodyMultipart = 
+
 			"--" + boundary + "\r\n"
+			///////////////////////  a file
 			+ contentDisp1 + "\r\n"
 			"\r\n"
 			+ file1_Content + "\r\n"
 			"--" + boundary + "\r\n"
+			///////////////////////  same file twice
+			+ contentDisp1 + "\r\n"
+			"\r\n"
+			+ file1_Content + "\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////  form 1
+			+ form1 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			////////////////////////  form 2
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			/////////////////////// second file
 			+ contentDisp2 + "\r\n"
 			"\r\n"
 			+ file2_Content + "\r\n"
-			"--" + boundary + "--\r\n";
+			"--" + boundary + "\r\n"
+			//////////////////////// form2 again
+			+ form2 + "\r\n"
+			"\r\n"
+			"--" + boundary + "\r\n"
+			///////////////////////// second file again
+			+ contentDisp2 + "\r\n"
+			"\r\n"
+			+ file2_Content + "\r\n"
+			"--" + boundary 
+			//////////////////////// the end
+			+ "--\r\n";
 
 
 		std::string requestHeader = 
@@ -77,18 +107,20 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		
 		bufferRequest.push(fullRequest.c_str(), fullRequest.size());
 
+		request.setBuffer_ReadFd(readBuffer, Ws::FD_NONE);
+
         while (bufferRequest.size() && request.getStatus() == Http::Status::OK)
         {
 			int thisPush = readBuffer.available() < bufferRequest.size() ? readBuffer.available() : bufferRequest.size();
             readBuffer.push(BufferView(bufferRequest.data(), thisPush));
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
-
-            readBuffer.truncatePush(request.parse(readBuffer));
+            request.parse();
         }
 
 		int fd1 = ::open(file1_Name, O_RDONLY);
 		testBuffer.read(fd1);
 		::close(fd1);
+
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file1_Content, file1_ContentSize), "File content should match");
 
 		int fd2 = ::open(file2_Name, O_RDONLY);
@@ -97,6 +129,7 @@ void fileUpload(int& testNumber, size_t readBufSize)
 		EXPECT_EQUAL(testBuffer.view(), BufferView(file2_Content, file2_ContentSize), "File content should match");
 
 		EXPECT_EQUAL(request.getStatus(), Http::Status::OK, "Request status should be OK");
+		EXPECT_EQUAL(request.getParsingState(), Http::Request::COMPLETED, "Request parsing state should be BODY_DONE");
 
 		TEST_PASSED_MSG("FileUpload Request-Response integration test passed, read buffer size: " + TestHelpers::to_string(readBufSize));
 	}

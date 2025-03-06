@@ -38,25 +38,31 @@ namespace Http
 	}
 
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 		(void)writeBuffer;
 		
-		return (m_status);
+		return (m_ioStatus);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::getStatus() const
 	{
-		return (m_status);
+		return (m_ioStatus);
 	}
 	void
 	Response::reset()
 	{}
+
+	Http::IOStatus::Type
+	Response::write()
+	{return m_ioStatus;}
+
 	void
 	Response::close()
 	{}
+	
 	void
 	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{(void)addr;}

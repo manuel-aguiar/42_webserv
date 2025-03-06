@@ -82,7 +82,7 @@ void test_basicRedirects(int &testNumber)
 		// Check the response status code
 		try {
 			// Check if response is in waiting state
-			EXPECT_EQUAL(response.getStatus(), Http::ResponseStatus::WAITING, "Response should be waiting to send");
+			EXPECT_EQUAL(response.getStatus(), Http::IOStatus::WAITING, "Response should be waiting to send");
 
 			Http::ResponseData data = response.getResponseData();
 
@@ -97,7 +97,7 @@ void test_basicRedirects(int &testNumber)
 
 			// Test the output when writing to buffer
 			Buffer<1024> writeBuffer;
-			Http::ResponseStatus::Type result = response.fillWriteBuffer(writeBuffer);
+			Http::IOStatus::Type result = response.fillWriteBuffer(writeBuffer);
 
 			// Don't check the result status - it's always WAITING for now
 			// EXPECT_EQUAL(result, Http::ResponseStatus::FINISHED, "Response should be FINISHED");
@@ -138,7 +138,7 @@ void test_basicRedirects(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(response.getStatus(), Http::ResponseStatus::WAITING, "Response should be waiting to send");
+			EXPECT_EQUAL(response.getStatus(), Http::IOStatus::WAITING, "Response should be waiting to send");
 
 			Http::ResponseData data = response.getResponseData();
 
@@ -153,7 +153,7 @@ void test_basicRedirects(int &testNumber)
 
 			// Test the output when writing to buffer
 			Buffer<1024> writeBuffer;
-			Http::ResponseStatus::Type result = response.fillWriteBuffer(writeBuffer);
+			Http::IOStatus::Type result = response.fillWriteBuffer(writeBuffer);
 
 			// Don't check the result status - it's always WAITING for now
 			// EXPECT_EQUAL(result, Http::ResponseStatus::FINISHED, "Response should be FINISHED");
@@ -194,7 +194,7 @@ void test_basicRedirects(int &testNumber)
 		request.parse(buffer);
 
 		try {
-			EXPECT_EQUAL(response.getStatus(), Http::ResponseStatus::WAITING, "Response should be waiting to send");
+			EXPECT_EQUAL(response.getStatus(), Http::IOStatus::WAITING, "Response should be waiting to send");
 
 			Http::ResponseData data = response.getResponseData();
 
@@ -209,7 +209,7 @@ void test_basicRedirects(int &testNumber)
 
 			// Test the output when writing to buffer
 			Buffer<1024> writeBuffer;
-			Http::ResponseStatus::Type result = response.fillWriteBuffer(writeBuffer);
+			Http::IOStatus::Type result = response.fillWriteBuffer(writeBuffer);
 
 			// Don't check the result status - it's always WAITING for now
 			// EXPECT_EQUAL(result, Http::ResponseStatus::FINISHED, "Response should be FINISHED");
