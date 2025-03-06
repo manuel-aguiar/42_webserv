@@ -66,7 +66,6 @@ namespace Http
         // Validate redirect path
         const std::string& redirectPath = locReturn.second;
         ASSERT_EQUAL(redirectPath.empty(), false, "Redirect path is empty! Config error");
-        throw std::invalid_argument(redirectPath);
 
         // Set response status and type
         m_responseData.requestStatus = static_cast<Http::Status::Number>(locReturn.first);
