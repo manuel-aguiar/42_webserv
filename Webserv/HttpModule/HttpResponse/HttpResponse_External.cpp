@@ -77,7 +77,8 @@ namespace Http
 				//m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
 
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-
+				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+				m_responseData.headers.insert(std::make_pair("transfer-encoding", "chunked"));
 				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:

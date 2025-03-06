@@ -32,7 +32,10 @@ namespace Http
 		m_staticReadCounter	(0),
 		m_file				(),
 		m_cgiResponse		(NULL),
-		m_currentHeader		(m_responseData.headers.begin()) {}
+		m_currentHeader		(m_responseData.headers.begin()),
+		m_dirListing_target (NULL),
+		m_dirListing_curEntry (NULL) 
+		{}
 
 	Response::~Response() { reset();}
 
