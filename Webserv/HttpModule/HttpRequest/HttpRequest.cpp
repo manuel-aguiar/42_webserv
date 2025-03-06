@@ -123,7 +123,7 @@ Request::read()
 
 	int readBytes = m_readBuffer->read(m_readFd, m_readBuffer->size() == m_readBuffer->capacity() ? 0 : m_readBuffer->size());
 
-	if (!readBytes)
+	if (readBytes <= 0)
 		return (Http::IOStatus::MARK_TO_CLOSE);
 	return (Http::IOStatus::WAITING);
 }
@@ -156,7 +156,7 @@ Request::mf_innerParse()
 	{
 		m_parsingState = ERROR;
 		m_data.status = Http::Status::INTERNAL_ERROR;
-		m_httpResponse->receiveRequestData(m_data);             //blew up, tell response to inform
+		return (Http::IOStatus::MARK_TO_CLOSE);
 	}
 	return (Http::IOStatus::WAITING);
 }

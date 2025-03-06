@@ -22,6 +22,9 @@ Connection::mf_readEventHandler()
 
     Http::IOStatus::Type ioStatus = m_transaction.request.read();
     
+    if (ioStatus == Http::IOStatus::MARK_TO_CLOSE)
+        return (ioStatus);
+
     if (m_liveTimeout == Timeout::KEEP_ALIVE)
     {
         m_module.removeTimer(m_myTimer);
@@ -34,9 +37,7 @@ Connection::mf_readEventHandler()
         setMyTimer(m_module.insertTimer(Timer::now() + config.getTimeoutInterReceive(), *this), Timeout::INTER_RECV);
     }
 
-    mf_parseReadBuffer();
-
-    return (ioStatus);
+    return (mf_parseReadBuffer());
 }
 
 Http::IOStatus::Type
