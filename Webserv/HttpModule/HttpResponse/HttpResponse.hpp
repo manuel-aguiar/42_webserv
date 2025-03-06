@@ -28,18 +28,21 @@ namespace Http
 			~Response();
 			Response& operator=(const Response& other);
 
-			Http::ResponseStatus::Type	fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
+			Http::IOStatus::Type		write();
+			Http::IOStatus::Type		fillWriteBuffer(BaseBuffer& writeBuffer); // give me all data you can, until Buffer::capacity()
 
 			void    					reset(); // reset the response to its initial state
 			void						close(); // close the response, no more data to be sent
 
-			Http::ResponseStatus::Type	getStatus() const;
+			Http::IOStatus::Type		getStatus() const;
 			ResponseData				getResponseData() const; // mainly for testing
 
 			void						receiveRequestData(const Http::RequestData& data); 	// request sends headers
 
 			BufferView					receiveRequestBody(const BufferView& view);			// request send body
 
+			void						setRequest(Http::Request& request);
+			void						setBuffer_writeFd(BaseBuffer& buffer, const Ws::fd fd);
 			void						setListenAddress(const Ws::Sock::addr& addr);	// called by http::connection
 			void						setTcpConnection(const Conn::Connection& addr);
 
@@ -69,26 +72,26 @@ namespace Http
 			std::string					mf_generateEtag(File& file, time_t last_modified);
 			void						mf_setGetRqContentType(std::map<std::string, std::string> &m_headers, int fileExtension);
 
-			typedef Http::ResponseStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
+			typedef Http::IOStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
 
-			Http::ResponseStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
-			Http::ResponseStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
 			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
 			bool						mf_addCacheControlHeaders();
 			bool						mf_addHeader(const std::string& key, const std::string& value);
-			Http::ResponseStatus::Type	mf_fillFinish();
+			Http::IOStatus::Type	mf_fillFinish();
 
 			bool						mf_prepareStaticFile(const char* path);
 
-			Http::ResponseStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
 
 			// call the Cgi Gateway to fill the response
-			Http::ResponseStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
 
@@ -104,11 +107,16 @@ namespace Http
 			// Debatable
 
 			ServerContext&       		m_context;
+			Http::Request*				m_httpRequest;
+			BaseBuffer*					m_writeBuffer;
+			Ws::fd						m_writeFd;
+
+
 			const Ws::Sock::addr*		m_listenAddress;
 			const Conn::Connection*		m_tcpConn;
 			ResponseData				m_responseData;
 
-			Http::ResponseStatus::Type	m_status;
+			Http::IOStatus::Type		m_ioStatus;
 			std::string					m_pendingWrite;		// cache data that you generated but couldn't write
 			std::string					m_defaultPageContent; // Load the default pages in here (Directory Listing, Error Page)
 

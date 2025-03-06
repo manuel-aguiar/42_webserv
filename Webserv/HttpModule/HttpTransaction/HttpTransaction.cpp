@@ -6,7 +6,11 @@ namespace Http
 {
 	Transaction::Transaction(ServerContext& context)
 		: request(context),
-		  response(context) {request.setResponse(response);}
+		  response(context)
+	{
+		request.setResponse(response);
+		response.setRequest(request);
+	}
 
 	Transaction::Transaction(const Transaction& other)
 		: request(other.request),
@@ -35,7 +39,7 @@ namespace Http
 	void
 	Transaction::close()
 	{
-		request.reset();
+		request.close();
 		response.close();
 	}
 }

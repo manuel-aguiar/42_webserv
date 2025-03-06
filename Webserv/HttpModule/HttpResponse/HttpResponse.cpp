@@ -19,10 +19,13 @@ namespace Http
 {
 	Response::Response(ServerContext& context):
 		m_context			(context),
+		m_httpRequest			(NULL),
+		m_writeBuffer		(NULL),
+		m_writeFd			(Ws::FD_NONE),
 		m_listenAddress		(NULL),
 		m_tcpConn			(NULL),
 		m_responseData		(),
-		m_status			(Http::ResponseStatus::WAITING),
+		m_ioStatus			(Http::IOStatus::WAITING),
 		m_fillFunction		(&Response::mf_fillNothingToSend),
 		m_fillFunctionBody	(NULL),
 		m_processFunction	(&Response::mf_processBodyNone),
@@ -41,5 +44,18 @@ namespace Http
 
 	Response&
 	Response::operator=(const Response& other) { (void)other; return (*this);}
+
+	void
+	Response::setRequest(Http::Request& request)
+	{
+		m_httpRequest = &request;
+	}
+
+	void
+	Response::setBuffer_writeFd(BaseBuffer& buffer, const Ws::fd fd)
+	{
+		m_writeBuffer = &buffer;
+		m_writeFd = fd;
+	}
 
 }

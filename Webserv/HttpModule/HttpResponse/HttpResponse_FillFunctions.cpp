@@ -7,14 +7,14 @@ extern const char* getStatusMessage(int statusCode);
 
 namespace Http
 {
-    Http::ResponseStatus::Type
+    Http::IOStatus::Type
     Response::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
-        return (Http::ResponseStatus::WAITING);
+        return (Http::IOStatus::WAITING);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::mf_fillResponseLine(BaseBuffer& writeBuffer)
 	{
 		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
@@ -22,7 +22,7 @@ namespace Http
 			+ std::strlen(getStatusMessage(m_responseData.requestStatus)) + 2;
 
 		if (writeBuffer.available() < writeSize)
-			return (Http::ResponseStatus::WRITING);
+			return (Http::IOStatus::WRITING);
 
 		writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
 		writeBuffer.push(" ", 1);
@@ -33,10 +33,10 @@ namespace Http
 		// go to next stage
 		m_fillFunction = &Response::mf_fillHeaders;
 
-		return (Http::ResponseStatus::WRITING);
+		return (Http::IOStatus::WRITING);
     }
 
-    Http::ResponseStatus::Type
+    Http::IOStatus::Type
     Response::mf_fillHeaders(BaseBuffer& writeBuffer)
     {
 		ASSERT_EQUAL(m_responseData.headers.empty(), false, "Response::mf_fillHeaders: m_responseData.headers is empty");
@@ -51,14 +51,14 @@ namespace Http
 			writeSize = header.size() + 2;
 
 			if (writeBuffer.available() < writeSize)
-				return (Http::ResponseStatus::WRITING);
+				return (Http::IOStatus::WRITING);
 
 			writeBuffer.push(header.c_str(), header.size());
 			m_currentHeader++;
 		}
 
 		if (writeBuffer.available() < 2)
-			return (Http::ResponseStatus::WRITING);
+			return (Http::IOStatus::WRITING);
 		writeBuffer.push("\r\n", 2);
 
 		// If no body, we're done
@@ -67,10 +67,10 @@ namespace Http
 
 		// go to next stage
 		m_fillFunction = m_fillFunctionBody;
-		return (Http::ResponseStatus::WRITING);
+		return (Http::IOStatus::WRITING);
 	}
 
-    Http::ResponseStatus::Type
+    Http::IOStatus::Type
     Response::mf_fillRedirect(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
@@ -85,7 +85,7 @@ namespace Http
 		+ redirPage.size();
 
         if (writeBuffer.available() < writeSize)
-            return (Http::ResponseStatus::WRITING);
+            return (Http::IOStatus::WRITING);
 
         writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
         writeBuffer.push(codeStr.c_str(), codeStr.size());
@@ -101,7 +101,7 @@ namespace Http
         return (mf_fillFinish());
     }
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::mf_fillDefaultPage(BaseBuffer& writeBuffer)
 	{
 		std::cout << "mf_fillDefaultPage" << std::endl;
@@ -112,7 +112,7 @@ namespace Http
 			std::string	pageChunk = m_defaultPageContent.substr(0, writeBuffer.available());
 			writeBuffer.push(pageChunk.c_str(), pageChunk.size());
 			m_defaultPageContent = m_defaultPageContent.substr(pageChunk.size());
-			return (Http::ResponseStatus::WRITING);
+			return (Http::IOStatus::WRITING);
 		}
 		else
 			writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
@@ -120,19 +120,19 @@ namespace Http
 		return (mf_fillFinish());
 	}
 
-    Http::ResponseStatus::Type
+    Http::IOStatus::Type
     Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
     {
         ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
         return (m_cgiResponse->fillWriteBuffer(writeBuffer));
     }
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::mf_fillFinish()
 	{
 		if (m_responseData.closeAfterSending == true)
-			return (Http::ResponseStatus::MARK_TO_CLOSE);
+			return (Http::IOStatus::MARK_TO_CLOSE);
 		else
-			return (Http::ResponseStatus::FINISHED);
+			return (Http::IOStatus::FINISHED);
 	}
 }
