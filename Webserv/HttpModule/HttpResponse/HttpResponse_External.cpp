@@ -86,7 +86,7 @@ namespace Http
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");
-				m_fillFunctionBody = NULL;
+				m_fillFunctionBody = &Response::mf_fillFinish;
 				break ;
 			default:
 				break ;

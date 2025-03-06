@@ -84,7 +84,7 @@ namespace Http
 			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
 			bool						mf_addCacheControlHeaders();
 			bool						mf_addHeader(const std::string& key, const std::string& value);
-			Http::IOStatus::Type	mf_fillFinish();
+			Http::IOStatus::Type		mf_fillFinish(BaseBuffer& writeBuffer);
 
 			bool						mf_prepareStaticFile(const char* path);
 

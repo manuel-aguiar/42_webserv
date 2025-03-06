@@ -63,7 +63,7 @@ namespace Http
 
 		// If no body, we're done
 		if (m_fillFunctionBody == NULL)
-			return (mf_fillFinish());
+			return (mf_fillFinish(writeBuffer));
 
 		// go to next stage
 		m_fillFunction = m_fillFunctionBody;
@@ -98,7 +98,7 @@ namespace Http
         writeBuffer.push("Content-Type: text/html\r\n", std::strlen("Content-Type: text/html\r\n"));
         writeBuffer.push("\r\n", 2);
         writeBuffer.push(redirPage.c_str(), redirPage.size());
-        return (mf_fillFinish());
+        return (mf_fillFinish(writeBuffer));
     }
 
 	Http::IOStatus::Type
@@ -117,7 +117,7 @@ namespace Http
 		else
 			writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
 
-		return (mf_fillFinish());
+		return (mf_fillFinish(writeBuffer));
 	}
 
     Http::IOStatus::Type
@@ -128,8 +128,9 @@ namespace Http
     }
 
 	Http::IOStatus::Type
-	Response::mf_fillFinish()
+	Response::mf_fillFinish(BaseBuffer& writeBuffer)
 	{
+		(void)writeBuffer;
 		if (m_responseData.closeAfterSending == true)
 			return (Http::IOStatus::MARK_TO_CLOSE);
 		else
