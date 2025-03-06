@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragment Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 70vh;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+        }
+        .active {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fragment Handling Test</h1>
+
+    <p>This page is used to test if URL fragments are properly handled during redirects. If you were redirected with a fragment, the browser should automatically scroll to that section.</p>
+
+    <section id="section1">
+        <h2>Section 1</h2>
+        <div class="highlight" id="section1-highlight"></div>
+    </section>
+
+    <section id="section2">
+        <h2>Section 2</h2>
+        <div class="highlight" id="section2-highlight"></div>
+    </section>
+
+    <section id="section3">
+        <h2>Section 3</h2>
+        <div class="highlight" id="section3-highlight"></div>
+    </section>
+
+    <p><a href="/">Return to Testing Index</a></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight the targeted section if fragment exists
+            if (window.location.hash) {
+               // remove the last and first chars from the hash
+               const sectionId = window.location.hash.substring(1, window.location.hash.length - 1);
+                const targetElement = document.getElementById(sectionId + '-highlight');
+                if (targetElement) {
+                    targetElement.parentElement.scrollIntoView({ behavior: 'smooth' });
+                    targetElement.classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
