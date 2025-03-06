@@ -168,7 +168,7 @@ namespace Http
 			::closedir(m_dirListing_target);
 			m_dirListing_target = NULL;
 		}
-
+		m_dirListing_curEntry = NULL;
 	}
 
 	void

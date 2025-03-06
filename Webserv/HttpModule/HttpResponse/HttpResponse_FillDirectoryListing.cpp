@@ -179,6 +179,8 @@ namespace Http
 			if (stat(fullPath.c_str(), &st) != 0)
 				return (Http::IOStatus::MARK_TO_CLOSE);
 			
+			bool isDirectory = S_ISDIR(st.st_mode);
+
 			totalSize = 0;
 			///////////////////////////////////////////////
 			writeBuffer.push(DirList_Folder1, DirList_Folder1_len);
@@ -187,7 +189,7 @@ namespace Http
 			writeBuffer.push(m_dirListing_curEntry->d_name, entryNameLen);
 				totalSize += entryNameLen;
 			///////////////////////////////////////////////       
-			if (S_ISDIR(st.st_mode))
+			if (isDirectory)
 			{
 				writeBuffer.push("/", 1);
 				totalSize++;
@@ -199,7 +201,7 @@ namespace Http
 			writeBuffer.push(m_dirListing_curEntry->d_name, entryNameLen);
 				totalSize += entryNameLen;
 			///////////////////////////////////////////////
-			if (S_ISDIR(st.st_mode))
+			if (isDirectory)
 			{
 				writeBuffer.push("/", 1);
 				totalSize++;
@@ -208,7 +210,7 @@ namespace Http
 			writeBuffer.push(DirList_Folder3, DirList_Folder3_len);
 				totalSize += DirList_Folder3_len;
 			///////////////////////////////////////////////
-			if (S_ISDIR(st.st_mode))
+			if (isDirectory)
 			{
 				writeBuffer.push("-", 1);
 				totalSize++;
