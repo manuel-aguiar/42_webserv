@@ -65,12 +65,22 @@
         <li><a href="/redirect-chain-1">Redirect Chain</a></li>
         <li><a href="/query-test">Query String</a></li>
         <li><a href="/fragment-test">Fragment Handling</a></li>
-        <li><a href="/special%20chars">Special Characters</a></li>
         <li><a href="/external">External Redirect</a></li>
         <li><a href="/no-slash">Directory Trailing Slash</a></li>
         <li><a href="/port-test">Port Handling</a></li>
-        <li><form method="POST" action="/302-test"><button type="submit">POST to 302</button></form></li>
-        <li><form method="POST" action="/temp-redirect"><button type="submit">POST to 307</button></form></li>
+        <li>
+            <form method="POST" action="/302-test" enctype="multipart/form-data">
+                <input type="file" name="testfile">
+                <button type="submit">POST to 302</button> <sub>This will not preserve the method, will convert to GET</sub>
+            </form>
+        </li>
+        <li>
+            <form method="POST" action="/temp-redirect" enctype="multipart/form-data" id="uploadForm307">
+                <input type="file" name="testfile" required>
+                <button type="submit">POST with file to 307</button>
+                <div id="uploadStatus"></div>
+            </form>
+        </li>
     </ul>
 
     <h3>Target Directories</h3>
@@ -78,5 +88,41 @@
         <li><a href="/legacy-folder/">Legacy Folder</a></li>
         <li><a href="/target-folder/">Target Folder</a></li>
     </ul>
+
+    <script>
+        document.getElementById('uploadForm307').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const statusDiv = document.getElementById('uploadStatus');
+            const formData = new FormData(form);
+
+            try {
+                statusDiv.textContent = 'Sending request...';
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'follow'
+                });
+
+                if (response.ok) {
+                    statusDiv.textContent = `Upload successful! Final URL: ${response.url}`;
+                } else {
+                    statusDiv.textContent = `Upload failed with status: ${response.status}`;
+                }
+
+                // Log the full redirect chain
+                if (response.redirected) {
+                    console.log('Redirect chain completed:', {
+                        originalURL: form.action,
+                        finalURL: response.url,
+                        redirected: response.redirected
+                    });
+                }
+            } catch (error) {
+                statusDiv.textContent = `Error: ${error.message}`;
+                console.error('Upload error:', error);
+            }
+        });
+    </script>
 </body>
 </html>

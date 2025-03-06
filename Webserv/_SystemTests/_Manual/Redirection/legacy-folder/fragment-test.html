@@ -16,6 +16,7 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            height: 70vh;
         }
         .highlight {
             background-color: #fff3cd;
@@ -54,8 +55,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Highlight the targeted section if fragment exists
             if (window.location.hash) {
-                const targetElement = document.querySelector(window.location.hash + '-highlight');
+               // remove the last and first chars from the hash
+               const sectionId = window.location.hash.substring(1, window.location.hash.length - 1);
+                const targetElement = document.getElementById(sectionId + '-highlight');
                 if (targetElement) {
+                    targetElement.parentElement.scrollIntoView({ behavior: 'smooth' });
                     targetElement.classList.add('active');
                 }
             }
