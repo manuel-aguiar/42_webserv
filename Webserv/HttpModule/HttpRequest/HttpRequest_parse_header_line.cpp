@@ -104,8 +104,9 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 		else
 			low = mid + 1;
 	}
-
-	if (target != BufferView(lookup[low]))
+	if (low >= (int)sizeOfLookup 
+	|| high < 0
+	|| target != BufferView(lookup[low]))
 		return (-1);
 
 	return (low);
