@@ -1,4 +1,5 @@
 #include "../../HttpRequest.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void headerTests(int &testNumber)
@@ -24,9 +25,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");
 			TEST_PASSED_MSG("Common request");
@@ -72,9 +74,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 			buffer.clear();
 			buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no key nor value");
@@ -95,9 +98,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 				const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no key");
@@ -118,9 +122,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with space as key");
@@ -141,9 +146,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with no value");
@@ -164,9 +170,10 @@ void headerTests(int &testNumber)
 			"\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::BAD_REQUEST, "Should fail");
 			TEST_PASSED_MSG("header with space as value");
@@ -185,9 +192,10 @@ void headerTests(int &testNumber)
 			"Host: www.example.com\r\n";
 		buffer.clear();
 		buffer.push(requestData.c_str(), requestData.size());
+		Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		try
 		{
-			Request.parse(buffer);
+			Request.parse();
 			const Http::RequestData& data = Request.getData();
 			EXPECT_EQUAL(data.status, (int)Http::Status::OK, "no problems yet");
 			EXPECT_EQUAL(Request.getParsingState(), (int)Http::Request::HEADERS, "Should be in HEADERS state, no double CRLF");

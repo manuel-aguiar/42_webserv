@@ -25,7 +25,7 @@ namespace Http
 		return (true);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::mf_sendStaticFile(BaseBuffer& writeBuffer)
 	{
 		int      bytesRead;
@@ -42,8 +42,8 @@ namespace Http
         {
             m_file.close();
             m_fillFunction = &Response::mf_fillNothingToSend;
-            return (Http::ResponseStatus::FINISHED);
+            return (Http::IOStatus::FINISHED);
         }
-        return (Http::ResponseStatus::WRITING);
+        return (Http::IOStatus::WRITING);
 	}
 }

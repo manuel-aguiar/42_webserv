@@ -58,7 +58,7 @@ namespace Http
 		// check if belongs to this interface
 		ASSERT_EQUAL(&gateway >= &m_cgiGateways[0] && &gateway <= &m_cgiGateways[m_cgiGateways.size() - 1], true, "CgiInterface::releaseGateway() - gateway out of range");
 		
-		gateway.reset();
+		gateway.close();
 		m_availableGateways.push_back(&gateway);
 	}
 }

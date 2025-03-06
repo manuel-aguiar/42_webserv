@@ -9,6 +9,7 @@
 # include "../../Connections/Connection/Connection.hpp"
 # include "../../Globals/Globals.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
+# include "../../ServerContext/ServerContext.hpp"
 
 # include <arpa/inet.h>
 
@@ -54,11 +55,15 @@ namespace Http
 	}
 
 	void
-	Connection::setMyTCP(Conn::Connection& tcpConn)
+	Connection::prepareConnection(Conn::Connection& tcpConn)
 	{
+		Ws::fd sockfd = tcpConn.info_getFd();
+
 		m_tcpConn = &tcpConn;
 		m_transaction.response.setListenAddress(tcpConn.info_getListenInfo().addr.sockaddr);
 		m_transaction.response.setTcpConnection(tcpConn);
+		m_transaction.request.setBuffer_ReadFd(m_readBuffer, sockfd);
+		m_transaction.response.setBuffer_writeFd(m_writeBuffer, sockfd);
 	}
 
 	void
@@ -70,7 +75,7 @@ namespace Http
 		
 		// cosy debug print
 
-		//std::cout << this << " connection, timer ";
+		//std::cout << this << " connection, update timer ";
 		//switch (timeoutType)
 		//{
 		//	case Timeout::KEEP_ALIVE:
@@ -90,6 +95,12 @@ namespace Http
 		//		break ;
 		//}
 		//std::cout << " set to " << (timer->first - Timer::now()) << std::endl;
+	}
+
+	Http::Connection::Timeout::Type
+	Connection::getLiveTimeoutType() const
+	{
+		return (m_liveTimeout);
 	}
 
 	void
@@ -120,6 +131,14 @@ namespace Http
 	Connection::resetTransaction()
 	{
 		m_transaction.reset();
+		m_readBuffer.clear();
+		m_writeBuffer.clear();
+	}
+
+	void
+	Connection::closeTransaction()
+	{
+		m_transaction.close();
 		m_readBuffer.clear();
 		m_writeBuffer.clear();
 	}

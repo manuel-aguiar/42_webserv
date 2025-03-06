@@ -1,4 +1,5 @@
 #include "../../HttpRequest.hpp"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
 void lineTests(int &testNumber)
@@ -27,9 +28,10 @@ void lineTests(int &testNumber)
 		"\r\n";
 	Buffer<2048> buffer;
 	buffer.push(requestData.c_str(), requestData.size());
-	try
-	{
-		Request.parse(buffer);
+	Request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
+		try
+		{
+			Request.parse();
 
 		const Http::RequestData& data = Request.getData();
 		EXPECT_EQUAL(data.status, (int)Http::Status::OK, "Should pass");

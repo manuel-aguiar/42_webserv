@@ -15,7 +15,7 @@ extern std::string  getMimeType(const std::string &path);
 
 namespace Http
 {
-    Http::ResponseStatus::Type
+    Http::IOStatus::Type
 	CgiResponse::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
         std::string codeStr = StringUtils::to_string(m_statusCode);
@@ -61,7 +61,7 @@ namespace Http
         return (mf_fillErrorDefaultPage(writeBuffer));
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	CgiResponse::mf_fillErrorFile(BaseBuffer& writeBuffer)
 	{
 		int      bytesRead;
@@ -77,12 +77,12 @@ namespace Http
         {
             m_file.close();
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
-            return (Http::ResponseStatus::FINISHED);
+            return (Http::IOStatus::FINISHED);
         }
-        return (Http::ResponseStatus::WRITING);
+        return (Http::IOStatus::WRITING);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	CgiResponse::mf_fillErrorDefaultPage(BaseBuffer& writeBuffer)
     {
         size_t thisPush = std::min(writeBuffer.available(), m_defaultErrorPage.size() - m_staticReadCounter);
@@ -91,8 +91,8 @@ namespace Http
         if (m_staticReadCounter == m_defaultErrorPage.size())
         {
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
-            return (Http::ResponseStatus::FINISHED);
+            return (Http::IOStatus::FINISHED);
         }
-        return (Http::ResponseStatus::WRITING);
+        return (Http::IOStatus::WRITING);
     }
 }
