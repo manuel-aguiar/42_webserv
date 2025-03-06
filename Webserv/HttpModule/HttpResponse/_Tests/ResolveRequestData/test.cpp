@@ -89,6 +89,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -102,7 +105,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -121,6 +124,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -135,7 +141,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET / HTTP/1.1\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.5\r\nConnection: keep-alive\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -154,6 +160,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -168,7 +177,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET / HTTP/1.1\r\nAccept: application/octet-stream\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.5\r\nConnection: keep-alive\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_ACCEPTABLE, "RequestStatus should be 406 NOT ACCEPTABLE");
@@ -186,6 +195,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -199,7 +211,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET /doesntexist.html HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
@@ -218,6 +230,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -231,7 +246,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET /doesntexist/ HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_FOUND, "RequestStatus should be 404 NOT FOUND");
@@ -250,6 +265,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -262,7 +280,7 @@ void test_simpleRequests(int &testNumber)
 
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
@@ -280,6 +298,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -292,7 +313,7 @@ void test_simpleRequests(int &testNumber)
 
 		buffer.push("POST / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
@@ -310,6 +331,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -321,7 +345,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().clearMethods();
 		buffer.push("DELETE / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::METHOD_NOT_ALLOWED, "RequestStatus should be 405 METHOD NOT ALLOWED");
@@ -339,6 +363,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -352,7 +379,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().addMethod("GET");
 		buffer.push("GET /dir/ HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::FORBIDDEN, "RequestStatus should be 403 FORBIDDEN");
@@ -371,6 +398,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -383,7 +413,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().addMethod("GET");
 		buffer.push("GET /dir/ HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -402,6 +432,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -415,7 +448,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("index.html");
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -434,6 +467,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -447,7 +483,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().setIndex("doesntexist.html");
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -466,6 +502,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -479,7 +518,7 @@ void test_simpleRequests(int &testNumber)
 		block1.accessLocations().back().addMethod("POST");
 		buffer.push("POST /file.php HTTP/1.1\r\nHost: example.com\r\nContent-Length: 42\r\n\r\nname=John+Doe&email=john.doe%40example.com\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -497,6 +536,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -515,7 +557,7 @@ void test_simpleRequests(int &testNumber)
 		FILE *file = fopen(filePath.c_str(), "w");
 		fclose(file);
 
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::NO_CONTENT, "RequestStatus should be 204 NO CONTENT");
@@ -534,6 +576,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -549,7 +594,7 @@ void test_simpleRequests(int &testNumber)
 
 		buffer.push("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -568,6 +613,9 @@ void test_simpleRequests(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -579,7 +627,7 @@ void test_simpleRequests(int &testNumber)
 
 		buffer.push("GET /index.html HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -654,6 +702,9 @@ void test_complexLoctaions(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -662,7 +713,7 @@ void test_complexLoctaions(int &testNumber)
 		// TESTED Request Parameters
 		buffer.push("GET /three/ HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
@@ -682,6 +733,9 @@ void test_complexLoctaions(int &testNumber)
 	{
 		Http::Request	request(serverContext);
 		Http::Response	response(serverContext);
+		request.setResponse(response);
+		response.setRequest(request);
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		response.setListenAddress(*(const Ws::Sock::addr*)&addr1);
 		request.setResponse(response);
 
@@ -690,7 +744,7 @@ void test_complexLoctaions(int &testNumber)
 		// TESTED Request Parameters
 		buffer.push("GET /three/four/file.txt HTTP/1.1\r\nHost: example.com\r\n\r\n");
 		
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");

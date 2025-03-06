@@ -48,7 +48,7 @@ namespace Http
         ASSERT_EQUAL(httpConnection != NULL, true, 
         "Http::Module::InitConnection - failed to acquire connection, there should be connections available for everyone");
 
-        httpConnection->setMyTCP(connection);
+        httpConnection->prepareConnection(connection);
         connection.appLayer_setCloseCallback(Http::Module::ForcedClose);
         connection.appLayer_setConn(httpConnection);
 

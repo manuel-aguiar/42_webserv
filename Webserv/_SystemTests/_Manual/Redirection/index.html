@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webserv Redirection Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .code {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webserv HTTP Redirection Tests</h1>
+
+    <h2>Test Cases</h2>
+
+    <h3>Basic Status Code Tests</h3>
+    <ul>
+        <li><a href="/301-test">301 Moved Permanently</a></li>
+        <li><a href="/302-test">302 Found</a></li>
+        <li><a href="/303-test">303 See Other</a></li>
+        <li><a href="/temp-redirect">307 Temporary Redirect</a></li>
+        <li><a href="/perm-redirect">308 Permanent Redirect</a></li>
+    </ul>
+
+    <h3>Path Format Tests</h3>
+    <ul>
+        <li><a href="/relative-test">Relative Path</a></li>
+        <li><a href="/semi-relative-test">Semi-Relative Path</a></li>
+        <li><a href="/absolute-test">Absolute URL</a></li>
+    </ul>
+
+    <h3>Edge Cases</h3>
+    <ul>
+        <li><a href="/redirect-chain-1">Redirect Chain</a></li>
+        <li><a href="/query-test">Query String</a></li>
+        <li><a href="/fragment-test">Fragment Handling</a></li>
+        <li><a href="/external">External Redirect</a></li>
+        <li><a href="/no-slash">Directory Trailing Slash</a></li>
+        <li><a href="/port-test">Port Handling</a></li>
+        <li>
+            <form method="POST" action="/302-test" enctype="multipart/form-data">
+                <input type="file" name="testfile">
+                <button type="submit">POST to 302</button> <sub>This will not preserve the method, will convert to GET</sub>
+            </form>
+        </li>
+        <li>
+            <form method="POST" action="/temp-redirect" enctype="multipart/form-data" id="uploadForm307">
+                <input type="file" name="testfile" required>
+                <button type="submit">POST with file to 307</button>
+                <div id="uploadStatus"></div>
+            </form>
+        </li>
+    </ul>
+
+    <h3>Target Directories</h3>
+    <ul>
+        <li><a href="/legacy-folder/">Legacy Folder</a></li>
+        <li><a href="/target-folder/">Target Folder</a></li>
+    </ul>
+
+    <script>
+        document.getElementById('uploadForm307').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const statusDiv = document.getElementById('uploadStatus');
+            const formData = new FormData(form);
+
+            try {
+                statusDiv.textContent = 'Sending request...';
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'follow'
+                });
+
+                if (response.ok) {
+                    statusDiv.textContent = `Upload successful! Final URL: ${response.url}`;
+                } else {
+                    statusDiv.textContent = `Upload failed with status: ${response.status}`;
+                }
+
+                // Log the full redirect chain
+                if (response.redirected) {
+                    console.log('Redirect chain completed:', {
+                        originalURL: form.action,
+                        finalURL: response.url,
+                        redirected: response.redirected
+                    });
+                }
+            } catch (error) {
+                statusDiv.textContent = `Error: ${error.message}`;
+                console.error('Upload error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

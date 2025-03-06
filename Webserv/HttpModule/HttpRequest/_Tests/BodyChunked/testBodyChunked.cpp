@@ -1,6 +1,7 @@
 #include "../../HttpRequest.hpp"
 #include "../../../HttpResponse/HttpResponse.hpp"
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
+#include "../../../../ServerContext/ServerContext.hpp"
 #include "../../../../GenericUtils/Buffer/Buffer.hpp"
 #include "../../../../GenericUtils/Buffer/HeapBuffer.hpp"
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
@@ -18,14 +19,17 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
     ServerContext context;
 
     Http::Request   HttpRequest(context);
-    Http::Response  response(context);
+    Http::Response  HttpResponse(context);
+
     const Http::RequestData& requestData = HttpRequest.getData();
 
     Buffer<1024> bufferRequest;
 
-    HttpRequest.setResponse(response);
+    HttpRequest.setResponse(HttpResponse);
+    HttpResponse.setRequest(HttpRequest);
 
     HeapBuffer buffer(readBufSize);
+    HttpRequest.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 
     std::string requestheader = "POST /test HTTP/1.1\r\n"
         "Transfer-Encoding: chunked\r\n"
@@ -58,7 +62,7 @@ void    chunkedReadBuffer(int& testNumber, size_t readBufSize)
             bufferRequest.truncatePush(BufferView(bufferRequest.data() + thisPush, bufferRequest.size() - thisPush));
 
             // parse, tell the buffer to put the unconsumed part at the beginning
-            buffer.truncatePush(HttpRequest.parse(buffer));
+            HttpRequest.parse();
         }
         //std::cout << "requestData.status = " << requestData.status << std::endl;
         EXPECT_EQUAL(g_mockMsgBody.view(), BufferView(requestBodyTranslated), "Body should match");

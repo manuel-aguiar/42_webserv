@@ -1,5 +1,3 @@
-
-
 # include "HttpResponse.hpp"
 # include "../HttpModule/HttpModule.hpp"
 # include "../HttpCgiInterface/HttpCgiInterface.hpp"
@@ -10,8 +8,6 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 # include <arpa/inet.h>
-
-# include <cstdlib> // DELETE ME
 
 extern std::string getMimeType(const std::string &path);
 

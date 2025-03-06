@@ -23,6 +23,7 @@ namespace Http
 		, m_readFd(Ws::FD_NONE)
 		, m_writeFd(Ws::FD_NONE)
 		, m_responseData(NULL)
+		, m_httpRequest(NULL)
 		, m_file()
 		, m_staticReadCounter(0)
 		, m_defaultErrorPage()
@@ -57,6 +58,7 @@ namespace Http
 		m_readFd = Ws::FD_NONE;
 		m_writeFd = Ws::FD_NONE;
 		m_responseData = NULL;
+		m_httpRequest = NULL;
 		m_file.reset();
 		m_staticReadCounter = 0;
 		m_defaultErrorPage.clear();

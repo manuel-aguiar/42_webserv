@@ -3,6 +3,7 @@
 
 # include "HttpCgiResponse.hpp"
 # include "CgiHandlers.hpp"
+# include "../HttpRequest/HttpRequest.hpp"
 # include "../../GenericUtils/Buffer/BaseBuffer.hpp"
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
@@ -49,14 +50,14 @@ namespace Http
 	{
 		m_writeFd = writeFd;
 		m_canWrite = true;
-
-		// not sending anything anymore, may close write
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
-		{
-			m_writeFd = Ws::FD_NONE;			
-			m_canWrite = false;
+		
+		//std::cout << "cgi writing: " << this << std::endl;
+		ASSERT_EQUAL(m_httpRequest != NULL, true, "CgiResponse::onCgiWrite(): no request assigned");
+		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
-		}
+
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
+			return (Cgi::IO::CLOSE);
 		return (Cgi::IO::CONTINUE);
 	}
 

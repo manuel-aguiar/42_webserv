@@ -105,16 +105,38 @@ namespace Http
 	}
 
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-		return ((this->*m_fillFunction)(writeBuffer));
+		if (m_ioStatus == Http::IOStatus::FINISHED || 
+			m_ioStatus == Http::IOStatus::MARK_TO_CLOSE)
+			return (m_ioStatus);
+		m_ioStatus = (this->*m_fillFunction)(writeBuffer);
+		return (m_ioStatus);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::getStatus() const
 	{
-		return (m_status);
+		return (m_ioStatus);
+	}
+
+	Http::IOStatus::Type
+	Response::write()
+	{
+		Http::IOStatus::Type responseStatus = fillWriteBuffer(*m_writeBuffer);
+
+		int bytesWritten = m_writeBuffer->write(m_writeFd); // write all you can, from the beginning
+		
+		if (bytesWritten == -1)
+			return (Http::IOStatus::MARK_TO_CLOSE);
+		
+		m_writeBuffer->truncatePush(m_writeBuffer->view().substr(bytesWritten, m_writeBuffer->size() - bytesWritten));
+
+		if (m_writeBuffer->size() == 0)
+			return (responseStatus);
+
+		return (Http::IOStatus::WAITING);
 	}
 
 	void
@@ -125,7 +147,7 @@ namespace Http
 		m_fillFunctionBody = NULL;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_pendingWrite.clear();
-		m_status = ResponseStatus::WAITING;
+		m_ioStatus = IOStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
 		if (m_cgiResponse)
@@ -142,8 +164,8 @@ namespace Http
 	Response::close()
 	{
 		reset();
-		m_listenAddress = NULL;
-		m_tcpConn = NULL;
+		m_writeBuffer = NULL;
+		m_writeFd = Ws::FD_NONE;
 		m_listenAddress = NULL;
 		m_tcpConn = NULL;
 	}	

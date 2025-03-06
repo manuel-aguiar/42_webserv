@@ -50,20 +50,18 @@ namespace Http
 	}
 
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
 
 		// call the current filling function
 		return ((this->*m_fillFunction)(writeBuffer));
-
-		return (m_status);
 	}
 
-	Http::ResponseStatus::Type
+	Http::IOStatus::Type
 	Response::getStatus() const
 	{
-		return (m_status);
+		return (m_ioStatus);
 	}
 
 	void
@@ -73,7 +71,7 @@ namespace Http
 		m_fillFunction = &Response::mf_fillNothingToSend;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_pendingWrite.clear();
-		m_status = ResponseStatus::WAITING;
+		m_ioStatus = IOStatus::WAITING;
 		m_staticReadCounter = 0;
 		m_file.reset();
 		if (m_cgiResponse)
@@ -87,7 +85,9 @@ namespace Http
 		reset();
 		m_listenAddress = NULL;
 	}	
-
+	Http::IOStatus::Type
+	Response::write()
+	{return m_ioStatus;}
 	void
 	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{

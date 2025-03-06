@@ -53,8 +53,6 @@ int BaseBuffer::write(Ws::fd fd, int startIndex)
     int bytesWritten = ::write(fd, m_begin + startIndex, m_size - startIndex);
     
     m_writeOffset += bytesWritten;
-    if (m_writeOffset == m_size)
-        clear();
 
     return (bytesWritten);
 }
