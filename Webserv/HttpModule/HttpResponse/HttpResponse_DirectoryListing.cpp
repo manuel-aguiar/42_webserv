@@ -136,8 +136,6 @@ std::string	DirectoryListing(const std::string& path)
 	return (output);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 // Header
 static const char* DirList_Header1 = 	"<!DOCTYPE html>\n"
 										"<html>\n<head>\n"
@@ -280,12 +278,7 @@ namespace Http
 			}
 			size_t entryNameLen = std::strlen(m_dirListing_curEntry->d_name);
 			size_t totalSize = fixedEntrySize + 2 * entryNameLen;
-			size_t requirement = totalSize + (curPosition == -1 ? hexHeaderSize + 2 : 0);
-
-			if (writeBuffer.capacity() < requirement)
-				return (Http::IOStatus::MARK_TO_CLOSE);
-
-			if (writeBuffer.available() < requirement)
+			if (writeBuffer.available() < totalSize + (curPosition == -1 ? hexHeaderSize + 2 : 0))
 				goto writeAvailable;
 			
 			if (curPosition == -1)
@@ -295,8 +288,9 @@ namespace Http
 			}
 
 			std::string fullPath = targetPath + "/" + m_dirListing_curEntry->d_name;
+			
 			struct stat st;
-			if (stat(fullPath.c_str(), &st) == 0)
+			if (stat(fullPath.c_str(), &st) != 0)
 				return (Http::IOStatus::MARK_TO_CLOSE);
 			
 			totalSize = 0;
