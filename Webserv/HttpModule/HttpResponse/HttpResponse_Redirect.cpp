@@ -20,8 +20,6 @@ static std::string buildLocationHeader(const std::string& host, const std::strin
         return (isRelativePath(path) ? "/" + path : path);
 
     std::string location = "http://" + host;
-    // std::string location = "http://";
-    // location += "127.0.0.1:8080";
     if (isRelativePath(path))
         location += "/";
 
@@ -68,6 +66,7 @@ namespace Http
         // Validate redirect path
         const std::string& redirectPath = locReturn.second;
         ASSERT_EQUAL(redirectPath.empty(), false, "Redirect path is empty! Config error");
+        throw std::invalid_argument(redirectPath);
 
         // Set response status and type
         m_responseData.requestStatus = static_cast<Http::Status::Number>(locReturn.first);
@@ -82,11 +81,11 @@ namespace Http
         else
         {
             std::string host;
-            // if (!m_responseData.serverBlock->getServerNames().empty())
-            //     host = *m_responseData.serverBlock->getServerNames().begin();
             if (m_responseData.requestData &&
                      m_responseData.requestData->headers.find("Host") != m_responseData.requestData->headers.end())
-                host = m_responseData.requestData->headers.at("Host");
+                host = m_responseData.requestData->headers.at("Host"); // host takes precedence
+            else if (!m_responseData.serverBlock->getServerNames().empty())
+                host = *m_responseData.serverBlock->getServerNames().begin(); // over server names
 
             std::cout << "Host: " << host << std::endl;
             m_responseData.headers["location"] = buildLocationHeader(host, redirectPath);
@@ -104,6 +103,17 @@ namespace Http
             {
                 m_responseData.headers["x-http-method-override"] = "GET";
             }
+        }
+
+        // add cache-control header based on the status (this is for primitive stuff)
+        if (m_responseData.requestStatus == Http::Status::MOVED_PERMANENTLY ||
+            m_responseData.requestStatus == Http::Status::PERMANENT_REDIRECT)
+        {
+            m_responseData.headers["cache-control"] = "public, max-age=31536000";
+        }
+        else
+        {
+            m_responseData.headers["cache-control"] = "no-cache, no-store, must-revalidate";
         }
 
         return (true);
