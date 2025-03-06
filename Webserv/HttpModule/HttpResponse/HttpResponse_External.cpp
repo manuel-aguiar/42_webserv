@@ -71,7 +71,7 @@ namespace Http
 			case ResponseData::CGI:
 				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
-				m_defaultPageContent = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["Location"]);
+				m_defaultPageContent = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
 				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
 				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
 				m_fillFunctionBody = &Response::mf_fillRedirect;

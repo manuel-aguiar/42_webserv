@@ -133,7 +133,7 @@ namespace Http
 					// redirect to same path with '/' in the end
 					m_responseData.responseType = ResponseData::REDIRECT;
 					m_responseData.requestStatus = Http::Status::MOVED_PERMANENTLY;
-					mf_addHeader("Location", m_responseData.requestData->path + "/");
+					mf_addHeader("location", m_responseData.requestData->path + "/");
 					return ;
 				}
 				// Upload
