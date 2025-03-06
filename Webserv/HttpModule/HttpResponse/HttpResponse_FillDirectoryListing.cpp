@@ -284,7 +284,6 @@ namespace Http
         writeBuffer.push("\r\n", 2);
 		writeBuffer.push("0\r\n\r\n", 5);
 
-		std::cout << writeBuffer.view() << std::endl;
 		return (mf_fillFinish(writeBuffer));		
 	}
 }
