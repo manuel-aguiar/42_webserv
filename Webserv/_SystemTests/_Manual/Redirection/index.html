@@ -42,52 +42,6 @@
 <body>
     <h1>Webserv HTTP Redirection Tests</h1>
 
-    <h2>HTTP Redirect Status Codes</h2>
-    <table>
-        <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Method Handling</th>
-            <th>Caching</th>
-        </tr>
-        <tr>
-            <td>301</td>
-            <td>Moved Permanently</td>
-            <td>Resource has been permanently moved to a new URL</td>
-            <td>May convert POST to GET</td>
-            <td>Cacheable</td>
-        </tr>
-        <tr>
-            <td>302</td>
-            <td>Found (Temporary Redirect)</td>
-            <td>Resource temporarily located at a different URL</td>
-            <td>May convert POST to GET</td>
-            <td>Not cacheable</td>
-        </tr>
-        <tr>
-            <td>303</td>
-            <td>See Other</td>
-            <td>Response to request can be found at another URL using GET</td>
-            <td>Always use GET for the new location</td>
-            <td>Not cacheable</td>
-        </tr>
-        <tr>
-            <td>307</td>
-            <td>Temporary Redirect</td>
-            <td>Same as 302 but strictly preserves method</td>
-            <td>Preserves original method</td>
-            <td>Not cacheable</td>
-        </tr>
-        <tr>
-            <td>308</td>
-            <td>Permanent Redirect</td>
-            <td>Same as 301 but strictly preserves method</td>
-            <td>Preserves original method</td>
-            <td>Cacheable</td>
-        </tr>
-    </table>
-
     <h2>Test Cases</h2>
 
     <h3>Basic Status Code Tests</h3>

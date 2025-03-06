@@ -163,7 +163,7 @@ DEPS               		=       $(OBJS:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-    @echo 'redir-local.com 127.0.0.1' | sudo tee -a /etc/hosts
+   # @echo 'redir-local.com 127.0.0.1' | sudo tee -a /etc/hosts
 	$(CXX) $(CXXFLAGS)  $(OBJS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp

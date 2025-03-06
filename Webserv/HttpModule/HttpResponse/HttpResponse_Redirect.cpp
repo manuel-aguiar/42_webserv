@@ -20,8 +20,11 @@ static std::string buildLocationHeader(const std::string& host, const std::strin
         return (isRelativePath(path) ? "/" + path : path);
 
     std::string location = "http://" + host;
+    // std::string location = "http://";
+    // location += "127.0.0.1:8080";
     if (isRelativePath(path))
         location += "/";
+
     location += path;
     return (location);
 }
@@ -40,6 +43,8 @@ static bool shouldConvertToGet(Http::Status::Number status)
 }
 namespace Http
 {
+    // documentation:
+    // https://www.rfc-editor.org/rfc/rfc9110.html#name-redirection-3xx
     bool Response::mf_checkRedirect()
     {
         ASSERT_EQUAL(m_responseData.serverLocation != NULL, true, "Server location is NULL");
@@ -68,22 +73,26 @@ namespace Http
         m_responseData.requestStatus = static_cast<Http::Status::Number>(locReturn.first);
         m_responseData.responseType = ResponseData::REDIRECT;
 
+        // building the location first
         if (isAbsoluteUrl(redirectPath))
         {
+            std::cout << "Absolute URL??" << redirectPath << std::endl;
             m_responseData.headers["location"] = redirectPath;
         }
         else
         {
             std::string host;
-            if (!m_responseData.serverBlock->getServerNames().empty())
-                host = *m_responseData.serverBlock->getServerNames().begin();
-            else if (m_responseData.requestData &&
+            // if (!m_responseData.serverBlock->getServerNames().empty())
+            //     host = *m_responseData.serverBlock->getServerNames().begin();
+            if (m_responseData.requestData &&
                      m_responseData.requestData->headers.find("Host") != m_responseData.requestData->headers.end())
                 host = m_responseData.requestData->headers.at("Host");
 
+            std::cout << "Host: " << host << std::endl;
             m_responseData.headers["location"] = buildLocationHeader(host, redirectPath);
         }
 
+        // preserve method or convert based on the status
         if (m_responseData.requestData)
         {
             if (shouldPreserveMethod(m_responseData.requestStatus)) // 307, 308
@@ -95,16 +104,6 @@ namespace Http
             {
                 m_responseData.headers["x-http-method-override"] = "GET";
             }
-        }
-
-        if (m_responseData.requestStatus == Http::Status::MOVED_PERMANENTLY ||
-            m_responseData.requestStatus == Http::Status::PERMANENT_REDIRECT)
-        {
-            m_responseData.headers["cache-control"] = "public, max-age=31536000";
-        }
-        else
-        {
-            m_responseData.headers["cache-control"] = "no-cache, no-store, must-revalidate";
         }
 
         return (true);
