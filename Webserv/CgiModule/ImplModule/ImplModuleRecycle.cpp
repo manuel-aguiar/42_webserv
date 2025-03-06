@@ -78,6 +78,7 @@ void
 ImplModule::mf_recycleTimeoutFailure(Worker& worker)
 {
 	ASSERT_EQUAL(data != NULL, true, "ImplModule::mf_recycleTimeoutFailure(), there must be a worker that is still associated");
+	(void)data;
 	
 	worker.stop();
 	mf_recycleExecutionUnit(worker, false, Cgi::Notify::ON_ERROR);
