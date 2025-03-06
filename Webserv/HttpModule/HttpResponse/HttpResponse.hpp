@@ -11,11 +11,21 @@
 // C++ headers
 # include <string>
 
+
+// C headers
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
+
+
 // forward declarations
 class ServerBlock;
 class ServerLocation;
 class ServerContext;
 class BaseBuffer;
+
+namespace Http {class CgiResponse;}
 
 namespace Http
 {
@@ -74,24 +84,29 @@ namespace Http
 
 			typedef Http::IOStatus::Type (Response::*FillFunction)(BaseBuffer& writeBuffer);
 
-			Http::IOStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillRedirect(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillDefaultPage(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillRedirect(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
 			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
 			bool						mf_addCacheControlHeaders();
 			bool						mf_addHeader(const std::string& key, const std::string& value);
-			Http::IOStatus::Type	mf_fillFinish();
+			Http::IOStatus::Type		mf_fillFinish(BaseBuffer& writeBuffer);
 
 			bool						mf_prepareStaticFile(const char* path);
 
-			Http::IOStatus::Type	mf_sendStaticFile(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_sendStaticFile(BaseBuffer& writeBuffer);
 
 			// call the Cgi Gateway to fill the response
-			Http::IOStatus::Type	mf_fillCgiResponse(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillCgiResponse(BaseBuffer& writeBuffer);
+
+			// Directory Listing
+			Http::IOStatus::Type		mf_fillDirectoryListing_Head(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillDirectoryListing_Folders(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillDirectoryListing_Tail(BaseBuffer& writeBuffer);
 
 			typedef BufferView (Response::*ProcessBodyFunction)(const BufferView& receivedView);
 
@@ -128,6 +143,9 @@ namespace Http
 			File						m_file;
 			Http::CgiResponse*			m_cgiResponse;
 			std::map<std::string, std::string>::iterator	m_currentHeader; // index of the current header to be writter
+
+			DIR*						m_dirListing_target;
+			struct dirent*				m_dirListing_curEntry;
 	};
 }
 

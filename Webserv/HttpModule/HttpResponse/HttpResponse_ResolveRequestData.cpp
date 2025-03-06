@@ -100,7 +100,7 @@ namespace Http
 					}
 					// try to open file
 					if (mf_prepareStaticFile(m_responseData.targetPath.c_str()))
-					{	
+					{
 						m_responseData.responseType = ResponseData::STATIC;
 						return ;
 					}
@@ -126,7 +126,7 @@ namespace Http
 					}
 				}
 				m_responseData.responseType = ResponseData::STATIC;
-				break ;				
+				break ;
 			case FilesUtils::DIRECTORY:
 				if (*m_responseData.targetPath.rbegin() != '/')
 				{

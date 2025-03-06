@@ -10,6 +10,10 @@
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 #include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
 
@@ -70,11 +74,12 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
-				m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
+				//m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
 
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-
-				m_fillFunctionBody = &Response::mf_fillDefaultPage;
+				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
+				m_responseData.headers.insert(std::make_pair("transfer-encoding", "chunked"));
+				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:
 				m_fillFunction = &Response::mf_fillNothingToSend;
@@ -86,7 +91,7 @@ namespace Http
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");
-				m_fillFunctionBody = NULL;
+				m_fillFunctionBody = &Response::mf_fillFinish;
 				break ;
 			default:
 				break ;
@@ -158,6 +163,12 @@ namespace Http
 			m_cgiResponse = NULL;
 			m_cgiResponse = NULL;
 		}
+		if (m_dirListing_target)
+		{
+			::closedir(m_dirListing_target);
+			m_dirListing_target = NULL;
+		}
+		m_dirListing_curEntry = NULL;
 	}
 
 	void

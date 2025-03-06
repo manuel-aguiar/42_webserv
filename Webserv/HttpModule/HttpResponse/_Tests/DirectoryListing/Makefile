@@ -20,7 +20,9 @@ SRCS		 =  $(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryList
 				$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/DirectoryListing/main.cpp \
 													\
 				$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
-				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
+				$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp 
 
 OBJS 			= 	$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS))
 DEPS 			= 	$(OBJS:.o=.d)

@@ -24,7 +24,7 @@ static const char* ignoredHeaders[] =
 		for (size_t i = 0; i < sizeof(forbiddenHeaders) / sizeof(forbiddenHeaders[0]); ++i)
 		{
 			if (i > 0)
-				ASSERT_EQUAL(forbiddenHeaders[i] > forbiddenHeaders[i - 1], true, "forbidden headers must be sorted and have unique values");
+				ASSERT_EQUAL(BufferView(forbiddenHeaders[i]) > BufferView(forbiddenHeaders[i - 1]), true, "forbidden headers must be sorted and have unique values");
 			std::string copy = forbiddenHeaders[i];
 			ASSERT_EQUAL(BufferView(copy).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(forbiddenHeaders[i]), true, "forbidden headers are not correctly formated");
 		}
@@ -37,7 +37,6 @@ static const char* ignoredHeaders[] =
 		}
 		return (0);
 	}
-		
 #endif
 
 static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
@@ -62,7 +61,9 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 			low = mid + 1;
 	}
 
-	if (target != BufferView(lookup[low]))
+	if (low >= (int)sizeOfLookup
+	|| high < 0
+	|| target != BufferView(lookup[low]))
 		return (-1);
 
 	return (low);

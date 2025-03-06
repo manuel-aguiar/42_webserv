@@ -28,7 +28,9 @@ int binSearch(const std::vector<T>& target, const T& value)
 			low = mid + 1;
 	}
 
-	if (value != target[low])
+	if (low >= (int)target.size()
+	|| high < 0
+	|| value != target[low])
 		return (-1);
 
 	return (low);

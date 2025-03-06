@@ -41,6 +41,8 @@ void test_basicRedirects(int &testNumber)
 
 	char rootPath[100];
 	getcwd(rootPath, 100);
+	std::cout << "Root path: " << rootPath << std::endl;
+
 	block1.addListenAddress((Ws::Sock::addr*)&addr);
 	block1.addServerName("example.com");
 	block1.setRoot(std::string(rootPath) + "/Testfiles");
@@ -48,6 +50,11 @@ void test_basicRedirects(int &testNumber)
 	// Create a location with a redirect
 	block1.accessLocations().push_back(ServerLocation());
 	block1.accessLocations().back().setPath("/oldpath");
+	std::string root = std::string(rootPath) + "/Testfiles";
+	std::cout << "Root: " << root << std::endl;
+	block1.accessLocations().back().setRoot(root);
+	block1.accessLocations().back().addMethod("GET");
+	block1.accessLocations().back().setReturn("301:/newpath");
 	block1.accessLocations().back().setRoot(std::string(rootPath) + "/Testfiles");
 	block1.accessLocations().back().addMethod("GET");
 	block1.accessLocations().back().setReturn("301:/newpath");
@@ -69,8 +76,9 @@ void test_basicRedirects(int &testNumber)
 		Buffer<1024> buffer;
 		buffer.push("GET /oldpath HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		// Parse the request
-		request.parse(buffer);
+		request.parse();
 
 		// Check the response status code
 		try {
@@ -127,8 +135,9 @@ void test_basicRedirects(int &testNumber)
 		Buffer<1024> buffer;
 		buffer.push("GET /external HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		// Parse the request
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(response.getStatus(), Http::IOStatus::WAITING, "Response should be waiting to send");
@@ -183,8 +192,9 @@ void test_basicRedirects(int &testNumber)
 		Buffer<1024> buffer;
 		buffer.push("GET /relative HTTP/1.1\r\nHost: example.com\r\n\r\n");
 
+		request.setBuffer_ReadFd(buffer, Ws::FD_NONE);
 		// Parse the request
-		request.parse(buffer);
+		request.parse();
 
 		try {
 			EXPECT_EQUAL(response.getStatus(), Http::IOStatus::WAITING, "Response should be waiting to send");

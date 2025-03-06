@@ -62,11 +62,7 @@ namespace Http
 	void
 	Response::close()
 	{}
-	Http::IOStatus::Type
-	Response::write()
-	{
-		return (m_ioStatus);
-	}
+	
 	void
 	Response::setListenAddress(const Ws::Sock::addr& addr)
 	{(void)addr;}
