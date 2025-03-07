@@ -25,7 +25,7 @@ Module::Module(const size_t maxConnections, ServerContext& context)
     // create and load connections
     for (size_t i = 0; i < maxConnections; ++i)
     {
-        m_connections.emplace_back(*this);
+        m_connections.emplace_back(*this, 4096, 4096);
         m_availableConnections.emplace_back(&m_connections.back());
     }
 

@@ -31,7 +31,7 @@ namespace Cgi { struct EnvVariables; }
 class Worker
 {
 	public:
-		Worker(ImplModule& cgi);
+		Worker(ImplModule& cgi, const size_t workerBufferSize);
 		~Worker();
 
 		void    			execute(bool markFdsAsStale);

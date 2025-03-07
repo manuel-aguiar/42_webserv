@@ -31,7 +31,7 @@ void TestPart1(int& testNumber)
 		TEST_INTRO(testNumber++);
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
-		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, 4096, eventManager, globals);				// 10 workers, 100 backlog
 
 		TEST_PASSED_MSG("instantiation and cleanup");
 	}
@@ -50,7 +50,7 @@ void TestPart1(int& testNumber)
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
 
-		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, 4096, eventManager, globals);				// 10 workers, 100 backlog
 		Cgi::Request* data = cgi.acquireRequest();
 		(void)data;
 		TEST_PASSED_MSG("acquiring and just going away");
@@ -69,7 +69,7 @@ void TestPart1(int& testNumber)
 		TEST_INTRO(testNumber++);
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(30, globals);
-		Cgi::Module cgi(10, 100, 1000, eventManager, globals);				// 10 workers, 100 backlog
+		Cgi::Module cgi(10, 100, 1000, 4096, eventManager, globals);				// 10 workers, 100 backlog
 
 		cgi.processRequests();
 		TEST_PASSED_MSG("finish timeout with empty queues");

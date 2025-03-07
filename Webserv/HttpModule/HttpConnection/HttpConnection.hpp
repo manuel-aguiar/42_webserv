@@ -25,7 +25,7 @@ namespace Http
 	class Connection
 	{
 		public:
-			Connection(Http::Module& module);
+			Connection(Http::Module& module, const size_t readBufferSize, const size_t writeBufferSize);
 			~Connection();
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);

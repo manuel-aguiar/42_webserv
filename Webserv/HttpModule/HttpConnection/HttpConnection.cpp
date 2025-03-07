@@ -38,14 +38,14 @@ void    logDisconnection(Globals& globals, Conn::Connection& connection)
 namespace Http
 {
 
-	Connection::Connection(Http::Module& module)
+	Connection::Connection(Http::Module& module, const size_t readBufferSize, const size_t writeBufferSize)
 		: m_module(module)
 		, m_liveTimeout(Timeout::NONE)
 		, m_myTimer()
 		, m_tcpConn(NULL)
 		, m_transaction(m_module.accessServerContext())
-		, m_readBuffer (4096) // 4kb, could be configurable, no effect on performance
-		, m_writeBuffer (4096) // 4kb, could be configurable, no effect on performance
+		, m_readBuffer (readBufferSize) // 4kb, could be configurable, no effect on performance
+		, m_writeBuffer (writeBufferSize) // 4kb, could be configurable, no effect on performance
 		{}
 
 	Connection::~Connection() {}
