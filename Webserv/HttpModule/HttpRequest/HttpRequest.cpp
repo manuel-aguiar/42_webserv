@@ -8,9 +8,13 @@
 
 #include "HttpRequest.hpp"
 #include "../HttpResponse/HttpResponse.hpp"
+#include "../../ServerContext/ServerContext.hpp"
+#include "../../ServerConfig/ServerConfig/ServerConfig.hpp"
 
+
+# include <limits>
 # include <cstdlib> //atoi
-# include  <algorithm> //max/min
+# include <algorithm> //max/min
 
 
 static const BufferView contentLengthFind	("Content-Length");
@@ -35,13 +39,21 @@ Request::Request(ServerContext &serverContext):
 	m_parsingState(IDLE),
 	m_parsingFunction(&Request::mf_handleNothing),
 	m_data(),
+	m_maxHeaderSize(std::numeric_limits<int>::max()),
+	m_maxBodySize(std::numeric_limits<int>::max()),
+	m_totalReadCounter(0),
 	m_findPivot(0),
     m_curChunkSize(-1),
     m_curChunkPos(-1),
     m_curContentLength(-1),
     m_curContentPos(-1)
 {
-
+	const ServerConfig* serverConfig = m_serverContext.getServerConfig();
+	if (serverConfig)
+	{
+		m_maxHeaderSize = serverConfig->getClientHeaderSize();
+		m_maxBodySize = serverConfig->getClientBodySize();
+	}
 }
 
 Request::~Request(){}
@@ -54,6 +66,9 @@ Request::Request(const Request& copy):
 	m_parsingState(copy.m_parsingState),
 	m_parsingFunction(copy.m_parsingFunction),
 	m_data(copy.m_data),
+	m_maxHeaderSize(copy.m_maxHeaderSize),
+	m_maxBodySize(copy.m_maxBodySize),
+	m_totalReadCounter(copy.m_totalReadCounter),
 	m_findPivot(copy.m_findPivot),
     m_curChunkSize(copy.m_curChunkSize),
     m_curChunkPos(copy.m_curChunkPos),
@@ -75,6 +90,9 @@ Request::operator=(const Request& copy)
 	m_data = copy.m_data;
 	m_parsingState = copy.m_parsingState;
 	m_parsingFunction = copy.m_parsingFunction;
+	m_maxHeaderSize = copy.m_maxHeaderSize;
+	m_maxBodySize = copy.m_maxBodySize;
+	m_totalReadCounter = copy.m_totalReadCounter;
 	m_findPivot = copy.m_findPivot;
     m_curChunkSize = copy.m_curChunkSize;
     m_curChunkPos = copy.m_curChunkPos;
@@ -98,6 +116,7 @@ Request::reset()
 	m_data.reset();
 	m_parsingState = IDLE;
 	m_parsingFunction = &Request::mf_handleNothing;
+	m_totalReadCounter = 0;
 	m_findPivot = 0;
     m_curChunkSize = -1;
     m_curChunkPos = -1;

@@ -114,9 +114,13 @@ namespace Http
 			ParsingFunction								m_parsingFunction;
 
 			// Components
-			Http::RequestData 							m_data;	// holds request data
-
+			Http::RequestData 							m_data;
+			
+			// max sizes
+			int											m_maxHeaderSize;
+			int											m_maxBodySize;
 			// state helpers
+			int											m_totalReadCounter;
 			int											m_findPivot;
 			int											m_curChunkSize;
 			int											m_curChunkPos;
@@ -145,7 +149,7 @@ namespace Http
 			BufferView 									mf_parseMultipartBody_Content	(const BufferView& currentView);
 			BufferView 									mf_parseMultipartBody_End		(const BufferView& currentView);
 
-			BufferView									mf_parseBodyExitError	(const BufferView& remaining, const Http::Status::Number status);
+			BufferView									mf_bodyExitError	(const BufferView& remaining, const Http::Status::Number status);
 			
 			Http::IOStatus::Type						mf_innerParse();
 			// main parsers
@@ -153,8 +157,6 @@ namespace Http
 			Http::Status::Number						mf_parseHeaders		(const BufferView& currentView);
 			Http::Status::Number						mf_parseBody		(const BufferView& currentView);
 			
-
-
 
 			Http::Status::Number						mf_parseUriComponents(const std::string& uri);
 			std::string									mf_decodeUriComp(const std::string& encoded) const;
@@ -165,10 +167,7 @@ namespace Http
 			Http::RequestData::BodyType					mf_bodyType();
 			Http::RequestData::ContentType				mf_contentType();
 
-
-			size_t										mf_findHeaderEnd(const BufferView& currentView);
-			void										mf_handleExitFailure(Http::Status::Number status);
-			BufferView									mf_handleExitFailure(BufferView& remaining, Http::Status::Number status);
+			BufferView									mf_headersExitFailure(BufferView& remaining, Http::Status::Number status);
 	};
 
 } // namespace Http
