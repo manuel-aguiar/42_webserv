@@ -13,12 +13,16 @@
 # include  <algorithm> //max/min
 
 
-static const char* contentLengthFind = "Content-Length";
-static const char* contentTypeFind = "Content-Type";
-static const char* transferEncodingFind = "Transfer-Encoding";
-static const char* multipartFind = "multipart/form-data";
-static const char* multipartBoundaryFind = "boundary=";
-static const char* chunkedFind = "chunked";
+static const BufferView contentLengthFind	("Content-Length");
+static const BufferView contentTypeFind		("Content-Type");
+static const BufferView transferEncodingFind("Transfer-Encoding");
+static const BufferView multipartFind		("multipart/form-data");
+static const BufferView multipartBoundaryFind("boundary=");
+static const BufferView chunkedFind			("chunked");
+
+
+
+
 
 namespace Http
 {
@@ -102,16 +106,8 @@ Request::reset()
 }
 
 /*
-	Buffer is not const anymore,
-	if there is not enough data, Request will
-	buffer::truncatePush the extra data back to the beginning.
-	Buffer will be read again, and "complete" the request.
-*/
-
-/*
 	@returns: BufferView of the remaining data that wasn't consumed
 */
-
 Http::IOStatus::Type
 Request::read()
 {
@@ -132,7 +128,6 @@ Http::IOStatus::Type
 Request::parse()
 {
 	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::parse(): request has no read buffer assigned");
-	//std::cout << "parse request" << std::endl;
 
 	bool cgiPass = (m_httpResponse && m_httpResponse->getResponseData().cgiPass == true);
 	if (cgiPass && m_parsingState == BODY)
@@ -168,241 +163,6 @@ Request::forceParse()
 	return (mf_innerParse());
 }
 
-/*
-	@returns: BufferView of the remaining data that wasn't consumed
-*/
-BufferView Request::mf_handleNothing(const BufferView& remaining)
-{
-	if (m_parsingState != IDLE)
-		return (remaining); // already started, do nothing
-
-	m_parsingState = REQLINE;
-	m_parsingFunction = &Request::mf_handleRequestLine;
-	return (mf_handleRequestLine(remaining));
-}
-
-/*
-	@returns: BufferView of the remaining data that wasn't consumed
-*/
-BufferView Http::Request::mf_parseBodyExitError(const BufferView& remaining, const Http::Status::Number status)
-{
-	(void)remaining;
-    m_parsingState = COMPLETED;
-    m_data.status = status;
-
-    if (m_httpResponse)
-        m_httpResponse->receiveRequestBody(BufferView()); // send "eof" to signal end of body
-
-    m_parsingFunction = &Request::mf_handleNothing;
-    return (BufferView());
-}
-
-/*
-	@returns: BufferView of the remaining data that wasn't consumed
-*/
-BufferView Request::mf_handleRequestLine(const BufferView& receivedView)
-{
-	BufferView remaining = receivedView;
-
-	if (remaining.size() == 0)
-		return (BufferView());
-
-	size_t reqLineEnd;
-
-	BufferView target("\r\n", 2);
-	reqLineEnd = remaining.find(target, m_findPivot);
-	if (reqLineEnd == BufferView::npos)
-	{
-		m_findPivot = std::max((int)remaining.size() - (int)target.size(), 0);
-		// HARD LIMIT, request line cannot be bigger than buffer size
-		if (remaining.size() >= m_readBuffer->capacity())
-		{
-			m_parsingState = ERROR;
-			m_data.status = Http::Status::URI_TOO_LONG;      // URI too long
-			m_httpResponse->receiveRequestData(m_data);         // inform response right away
-		}
-		return (remaining); // not enough to go through yet
-	}
-
-	m_findPivot = 0;
-
-	BufferView requestLine(remaining.substr(0, reqLineEnd));
-	remaining = remaining.substr(reqLineEnd + 2, remaining.size() - reqLineEnd - 2); // move view forward
-
-	m_data.status = mf_parseRequestLine(requestLine);							// call parser, error checking
-
-
-	if (m_data.status != Http::Status::OK)
-	{
-		m_parsingState = ERROR;
-		if (m_httpResponse)
-			m_httpResponse->receiveRequestData(m_data);                 // inform response right away
-		return (remaining);
-	}
-
-	// transition to headers
-	m_parsingState = HEADERS;
-
-	m_parsingFunction = &Request::mf_handleHeaders; // next handler is headers
-	return (mf_handleHeaders(remaining));
-}
-
-BufferView Request::mf_handleHeaders(const BufferView& receivedView)
-{
-	BufferView remaining = receivedView;
-	BufferView delimiter("\r\n", 2);
-
-	if (receivedView.size() == 0)
-		return (BufferView()); // not enough to go through yet
-
-	while (remaining.size() > 0)
-	{
-		//std::cout << "\t\t current size " << remaining.size() << ", view: '" << remaining << "'" << std::endl;
-
-		//std::cout << "lookup pivot: " << m_findPivot << std::endl;
-
-		size_t headerEnd = remaining.find(delimiter, m_findPivot);
-		if (headerEnd == BufferView::npos)
-		{
-			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
-			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
-			if (remaining.size() >= m_readBuffer->capacity())
-			{
-				return mf_handleExitFailure(remaining, Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE);
-			}
-			return (remaining); // push the remaining data back to the beginning
-		}
-
-		m_findPivot = 0;
-
-		//std::cout << "header end: " << headerEnd << std::endl;
-
-		if (headerEnd == 0)
-		{
-			// \r\n found at the beginning: end of headers, move to BODY
-			remaining = remaining.substr(delimiter.size(), remaining.size() - delimiter.size()); // move to body
-			m_parsingState = BODY;
-
-			if (m_httpResponse)
-				m_httpResponse->receiveRequestData(m_data);
-
-            return (Request::mf_prepareBodyParser(remaining));
-		}
-		BufferView thisHeader = remaining.substr(0, headerEnd).trim(" \r\v\t\n"); // segregate this header
-
-		//std::cout << "\t this header line: '" << thisHeader << "'" << std::endl;
-
-		remaining = remaining.substr(headerEnd + 2, remaining.size() - headerEnd - 2); // move to next header
-
-		// parse this header
-		m_data.status = mf_parseHeaders(thisHeader);
-		if (m_data.status != Http::Status::OK)
-			return mf_handleExitFailure(remaining, m_data.status);
-	}
-
-	return (remaining);
-}
-
-/*
-
-    File Upload: multipart, has a route and a file name
-    Content-Disposition: form-data; name="file"; filename="file.txt"
-
-
-    POST /upload, sends a message body to /upload, but that is not an actual upload to a file.
-    The response
-
-*/
-
-// UNDER REVIEW
-BufferView
-Request::mf_prepareBodyParser(const BufferView& receivedView)
-{
-	#ifndef NDEBUG
-		// making sure everything is correctly formatted
-		std::string test = contentLengthFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentLengthFind), true, "contentLengthFind is not correctly formated");
-		test = contentTypeFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(contentTypeFind), true, "contentTypeFind is not correctly formated");
-		test = transferEncodingFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(transferEncodingFind), true, "transferEncodingFind is not correctly formated");
-		test = multipartFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(multipartFind), true, "multipartFind is not correctly formated");
-		test = multipartBoundaryFind;
-		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() == BufferView(multipartBoundaryFind), true, "multipartBoundaryFind is not correctly formated");
-	#endif
-
-    RequestData::headerContainer::iterator contentLength = m_data.headers.find(contentLengthFind);
-    RequestData::headerContainer::iterator transferEncoding = m_data.headers.find(transferEncodingFind);
-    RequestData::headerContainer::iterator contentType = m_data.headers.find(contentTypeFind);
-    bool isCgi = (m_httpResponse && m_httpResponse->getResponseData().responseType == Http::ResponseData::CGI);
-
-	if (contentLength == m_data.headers.end() 
-	&& transferEncoding == m_data.headers.end())
-	{
-		if (m_data.method == "POST")
-			return (mf_parseBodyExitError(receivedView, Http::Status::LENGTH_REQUIRED));
-
-		m_parsingState = COMPLETED;
-		m_parsingFunction = &Request::mf_handleNothing;
-		if (m_httpResponse)
-			m_httpResponse->receiveRequestBody(BufferView()); // send empty buffer, end of message body
-	}
-
-    else if (contentLength != m_data.headers.end() && transferEncoding != m_data.headers.end())
-	{
-		return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
-	}
-
-    else if (contentLength != m_data.headers.end())
-    {
-        m_curContentLength = std::atoi(contentLength->second.c_str());
-        m_curContentPos = 0;
-        m_parsingFunction = &Request::mf_parseLengthBody;
-		if (contentType != m_data.headers.end()
-		&& contentType->second.find(multipartFind) != std::string::npos)
-		{
-			size_t boundaryPos = contentType->second.find(multipartBoundaryFind);
-			if (boundaryPos == std::string::npos)
-				return (mf_parseBodyExitError(receivedView, Http::Status::BAD_REQUEST));
-			m_data.multipart_Boundary = contentType->second.substr(boundaryPos + 9);
-			m_parsingFunction = &Request::mf_parseMultipartBody_Start;
-			
-			// if response is CGI, wait for it to signal that is time to parse
-			if (isCgi)
-				m_parsingFunction = &Request::mf_parseLengthBody; // cgi treats multipart as regular
-		}
-    }
-    else if (transferEncoding->second == chunkedFind)
-        m_parsingFunction = &Request::mf_parseChunkedBody_GetChunk;
-    else
-		return (mf_parseBodyExitError(receivedView, Http::Status::NOT_IMPLEMENTED));
-
-	// if cgi stop the parsing, wait for cgi to signal
-	if (isCgi)
-		return (receivedView);
-
-	return ((this->*m_parsingFunction)(receivedView));
-}
-
-void Request::mf_handleExitFailure(Http::Status::Number status)
-{
-    m_parsingState = ERROR;
-    m_data.status = status;
-    m_parsingFunction = &Request::mf_handleNothing;
-    if (m_httpResponse) {
-		m_httpResponse->receiveRequestData(m_data);
-	}
-
-	return;
-}
-
-BufferView Request::mf_handleExitFailure(BufferView& remaining, Http::Status::Number status)
-{
-	mf_handleExitFailure(status);
-	return (remaining);
-}
-
 void
 Request::setBuffer_ReadFd(BaseBuffer& buffer, const Ws::fd fd)
 {
@@ -416,7 +176,6 @@ void Request::setResponse(Http::Response& response)
 	m_httpResponse = &response;
 }
 
-// Getters
 const Request::ParsingState& Request::getParsingState() const
 {
 	return (m_parsingState);

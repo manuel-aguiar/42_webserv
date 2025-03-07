@@ -42,13 +42,6 @@ void   Worker::execute(bool markFdsAsStale)
 		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
 
-	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
-	//std::cout << "opening fd: " << (m_EmergencyPhone[1]) << ", phone write " << '\n';
-	//std::cout << "opening fd: " << (m_ParentToChild[0]) << ", child read " << '\n';
-	//std::cout << "opening fd: " << (m_ParentToChild[1]) << ", parent write " <<  '\n';
-	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
-	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
-
 	if (!(options & Cgi::Options::CANCEL_WRITE))
 	{
 		m_writeEvent->setFd(m_ParentToChild[1]);
@@ -63,17 +56,6 @@ void   Worker::execute(bool markFdsAsStale)
 
 	m_EmergencyEvent->setFd(m_EmergencyPhone[0]);
 	mf_accessEventManager().startMonitoring(*m_EmergencyEvent, markFdsAsStale);
-	
-
-	//std::cout << "\nopening fd: " << (m_EmergencyPhone[0]) << ", phone read " << '\n';
-	//std::cout << "opening fd: " << (m_EmergencyPhone[1]) << ", phone write " << '\n';
-	//std::cout << "opening fd: " << (m_ParentToChild[0]) << ", child read " << '\n';
-	//std::cout << "opening fd: " << (m_ParentToChild[1]) << ", parent write " <<  '\n';
-	//std::cout << "opening fd: " << (m_ChildToParent[0]) << ", parent read " <<  '\n';
-	//std::cout << "opening fd: " << (m_ChildToParent[1]) << ", child write " <<  '\n';
-
-	//std::cout << "program name: " << m_argPtr[0] << std::endl;
-	//std::cout << "script name: " << m_argPtr[1] << std::endl;
 
 	m_pid = ::fork();
 	if (m_pid == -1)
@@ -81,8 +63,6 @@ void   Worker::execute(bool markFdsAsStale)
 		mf_accessGlobals().logError("InternalCgiWorker::execute(), fork(): " + std::string(strerror(errno)));
 		return (mf_recycleStartupFailure(markFdsAsStale));
 	}
-	
-	//std::cout << "worker parsing all goods" <<std::endl;
 	
 	if (m_pid == 0)
 		mf_executeChild();
@@ -149,7 +129,6 @@ static void childCloseFd(Ws::fd fd)
 {
 	if (fd != -1)
 		::close(fd);
-	//std::cerr << " child closed " << fd << std::endl;
 }
 
 

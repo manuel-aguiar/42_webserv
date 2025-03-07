@@ -35,10 +35,8 @@ namespace Http
     BufferView
     CgiResponse::mf_HttpBodySend(const BufferView& view)
     {
-        //std::cout << "process body, received:\n" << view << std::endl;
 		if (view.size() == 0)
         {
-            //std::cout << "received EOF, sent all" << std::endl;
             m_responseData->cgiPass = false;
             m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
 			return (BufferView());
@@ -50,7 +48,6 @@ namespace Http
         // received fd_none, write closed, ignore the rest of the body
         if (m_writeFd == Ws::FD_NONE)
         {
-            //std::cout << "write closed, nothieng to send" << std::endl;
             m_responseData->cgiPass = false;
             m_processHttpBody = &CgiResponse::mf_HttpBodyIgnore;
 			return (BufferView());

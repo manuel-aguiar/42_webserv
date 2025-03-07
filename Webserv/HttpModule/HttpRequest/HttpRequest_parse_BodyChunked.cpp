@@ -20,7 +20,7 @@ static int strToInteger(const BufferView& view, int base = 10)
 {
     char* endptr = const_cast<char *>(&view.data()[view.size()]);
     long value = ::strtol(view.data(), &endptr, base);
-    //std::cout << "hex value: " << value << std::endl;
+
     if (endptr != &view.data()[view.size()]
     || value > INT_MAX || value < 0
     || (size_t)value > Http::HttpStandard::MAX_CHUNK_SIZE)
@@ -34,7 +34,6 @@ static int strToInteger(const BufferView& view, int base = 10)
 */
 BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered get chunk" << std::endl;
     const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
     BufferView thisChunkSize;
@@ -76,7 +75,6 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 */
 BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered parse chunk" << std::endl;
     BufferView remaining = receivedView;
 
     if (remaining.size() == 0)
@@ -112,7 +110,6 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
 */
 BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered end chunk" << std::endl;
     const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
 

@@ -37,7 +37,6 @@ InternalConn::forcedClose()
 void
 InternalConn::reset()
 {
-	//std::cout << "socket fd: " << m_socket.getSockFd() << ", event fd: " << m_monitor.accessEvent().getFd() << std::endl;
 	m_peerInfo.reset();
 	m_monitor.reset(false);
 	m_appConn = NULL;

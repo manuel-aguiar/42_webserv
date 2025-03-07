@@ -24,7 +24,6 @@ namespace Http
     Http::IOStatus::Type
     CgiResponse::mf_fillFinish(BaseBuffer& writeBuffer)
     {
-        std::cout << "fill finish" << std::endl;
         (void)writeBuffer;
         if (m_responseData->closeAfterSending)
             return (Http::IOStatus::MARK_TO_CLOSE);
@@ -126,7 +125,6 @@ namespace Http
     Http::IOStatus::Type
     CgiResponse::mf_fillBodyTemp(BaseBuffer& writeBuffer)
     {
-        std::cout << "fill body temp" << std::endl;
         BufferView  thisPush;
         size_t      thisPushSize;
         const int   hexHeaderSize = 10;  // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)

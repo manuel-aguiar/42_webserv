@@ -32,7 +32,7 @@ int MultiServerRun(const char* programName, ServerConfig& config, Globals& globa
 int maxEventsEstimate(const ServerConfig& config)
 {
 	int res = 0;
-	res += config.getMaxConnections();
+	res += config.getMaxConnections();			// max connections
 	res += config.getAllBindAddresses().size(); // listening sockets
 	res += config.getMaxConcurrentCgi() * 3;  	// read + write + emergency, 1 event each
 	res += 1;									// signal handler event, monitor reception of signals	
