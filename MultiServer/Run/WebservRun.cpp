@@ -121,7 +121,7 @@ int SingleServerRun(const char* programName, ServerConfig& config, Globals& glob
 		ServerContext	context;
 		BlockFinder		blockFinder(blockFinderEntryCount(config));
 
-		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals);
+		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, 4096, eventManager, globals);
 		context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);		
 		
 		Http::Module	httpModule(config.getMaxConnections(), context);
