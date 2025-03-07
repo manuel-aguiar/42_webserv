@@ -129,6 +129,7 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp												\
 		$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp										\
 		$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
+		$(SRC_PATH)/Webserv/GenericUtils/Buffer/HeapBuffer.cpp										\
 		$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
 		\
 		$(SRC_PATH)/Webserv/CgiModule/CgiNamespace.cpp \
