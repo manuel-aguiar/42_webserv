@@ -47,7 +47,8 @@ namespace Http
 		{
 			ASSERT_EQUAL(m_currentHeader->first.empty() || m_currentHeader->second.empty(), false, "Response::mf_fillHeaders: incomplete header");
 
-			writeSize = m_currentHeader->first.size() + 2 + m_currentHeader->second.size() + 2; // [: ] + [\r\n]
+			std::string	header = m_currentHeader->first + ": " + m_currentHeader->second + "\r\n";
+			writeSize = header.size() + 2;
 
 			if (writeBuffer.available() < writeSize)
 				return (Http::IOStatus::WRITING);

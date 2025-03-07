@@ -14,6 +14,10 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
 
@@ -29,7 +33,8 @@ namespace Http
 		if (m_responseData.requestStatus != Http::Status::OK 
 			|| !mf_resolveServerAndLocation()
 			|| !mf_checkPermissions()
-			|| mf_checkRedirect())
+			|| mf_checkRedirect()
+			|| mf_checkUpload())
 			return ;
 
 		mf_validateTargetPath();
@@ -44,19 +49,20 @@ namespace Http
 		mf_resolveRequestData();
 
 		// Full debug print of wtf is going on:
+		// std::cout << "---Request Data-------------------------" << std::endl;
 		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
-		// std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
-		// std::cout << "Location: " << m_responseData.serverLocation << std::endl;
-		// std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
-		// std::cout << "TargetType: " << m_responseData.targetType << std::endl;
-		// std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
+		// // std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
+		// // std::cout << "Location: " << m_responseData.serverLocation << std::endl;
+		// // std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
+		// // std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
+		// std::cout << "TargetResourceType: " << m_responseData.targetType << std::endl;
 		// std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
+		// std::cout << "---------------------------------------" << std::endl;
 
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
 
-		std::cout << "responseType: " << m_responseData.responseType << std::endl;
 		
 		switch (m_responseData.responseType)
 		{

@@ -1,5 +1,3 @@
-
-
 # include "HttpResponse.hpp"
 # include "../HttpModule/HttpModule.hpp"
 # include "../HttpCgiInterface/HttpCgiInterface.hpp"
@@ -10,8 +8,6 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 # include <arpa/inet.h>
-
-# include <cstdlib> // DELETE ME
 
 extern std::string getMimeType(const std::string &path);
 
@@ -51,6 +47,15 @@ namespace Http
 		// Find Location
 		mf_findLocation(m_responseData);
 
+		if ((m_responseData.serverLocation == NULL || m_responseData.serverLocation->getRoot().empty())
+			&& m_responseData.serverBlock->getRoot().empty())
+		{
+			m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+			m_responseData.responseType = ResponseData::ERROR;
+			m_responseData.errorMessage = "Additional configuration needed: No root directory assigned";
+			return (false);
+		}
+
 		return (true);
 	}
 
@@ -67,6 +72,27 @@ namespace Http
 		}
 
 		return (true);
+	}
+
+	bool Response::mf_checkUpload()
+	{
+		if (m_responseData.requestData->method == "POST"
+			&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0)
+		{
+			if (m_responseData.serverLocation != NULL
+				&& m_responseData.serverLocation->getAllowUpload() == true)
+			{
+				m_responseData.responseType = ResponseData::FILE_UPLOAD;
+				return (true);
+			}
+			else
+			{
+				m_responseData.requestStatus = Http::Status::FORBIDDEN;
+				m_responseData.responseType = ResponseData::ERROR;
+				return (false);
+			}
+		}
+		return (false);
 	}
 
 	void Response::mf_validateTargetPath()
@@ -86,6 +112,13 @@ namespace Http
 					m_responseData.responseType = ResponseData::CGI;
 					return ;
 				}
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (m_responseData.requestData->method == "GET")
 				{
 					// Check Accept header
@@ -96,6 +129,7 @@ namespace Http
 					{
 						m_responseData.requestStatus = Http::Status::NOT_ACCEPTABLE;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not serve an acceptable media type";
 						return ;
 					}
 					// try to open file
@@ -106,8 +140,9 @@ namespace Http
 					}
 					else
 					{
-						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR; // Check Error Code
+						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not open file";
 						return ;
 					}
 				}
@@ -122,25 +157,26 @@ namespace Http
 					{
 						m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "Could not delete file";
 						return ;
 					}
 				}
 				m_responseData.responseType = ResponseData::STATIC;
 				break ;
 			case FilesUtils::DIRECTORY:
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (*m_responseData.targetPath.rbegin() != '/')
 				{
 					// redirect to same path with '/' in the end
 					m_responseData.responseType = ResponseData::REDIRECT;
 					m_responseData.requestStatus = Http::Status::MOVED_PERMANENTLY;
 					mf_addHeader("location", m_responseData.requestData->path + "/");
-					return ;
-				}
-				// Upload
-				if (m_responseData.requestData->method == "POST"
-					&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0) // Please review this comparison
-				{
-					m_responseData.responseType = ResponseData::FILE_UPLOAD;
 					return ;
 				}
 				// Autoindex default is 0, so if we dont have a location, 403.
@@ -154,8 +190,16 @@ namespace Http
 				}
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Not allowed to access resource";
 				return ;
 			case FilesUtils::NOT_EXIST:
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (m_responseData.indexAppended)
 				{
 					m_responseData.targetPath = m_responseData.targetPath.substr(0, m_responseData.targetPath.length() - m_responseData.serverLocation->getIndex().length());
@@ -164,10 +208,12 @@ namespace Http
 				}
 				m_responseData.requestStatus = Http::Status::NOT_FOUND;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Resource not found";
 				return ;
 			case FilesUtils::UNDEFINED:
 				m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
 				m_responseData.responseType = ResponseData::ERROR;
+				m_responseData.errorMessage = "Problem identifying resource";
 				return ;
 		}
 	}

@@ -11,7 +11,7 @@
 ServerLocation::DirectiveToSetter ServerLocation::m_directiveToSetter;
 
 ServerLocation::DirectiveToSetter::DirectiveToSetter() :
-	map(std::less<std::string>(), mapPool(8)),									// 8 magic: number of keys
+	map(std::less<std::string>(), mapPool(10)),									// 8 magic: number of keys
 	validTypes(std::less<std::string>(), Heap_ObjectPool<std::string>(3)),		// 3 magic: number of types
 	validMethods(std::less<std::string>(), Heap_ObjectPool<std::string>(3))		// 3 magic: number of methods
 {
@@ -23,6 +23,7 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 	map["cgi"]				= &ServerLocation::addCgiInterpreter;
 	map["index"]			= &ServerLocation::setIndex;
 	map["return"]			= &ServerLocation::setReturn;
+	map["upload"]			= &ServerLocation::setAllowUpload;
 
 	validTypes.insert("regular");
 	validTypes.insert("redirection");
@@ -55,7 +56,7 @@ ServerLocation &ServerLocation::operator=(const ServerLocation &other)
 	m_cgiInterpreters = other.m_cgiInterpreters;
 	m_index = other.m_index;
 	m_return = other.m_return;
-
+	m_allowUpload = other.m_allowUpload;
 	return (*this);
 }
 
@@ -67,7 +68,8 @@ ServerLocation::ServerLocation(const ServerLocation &other) :
 	m_methods			(other.m_methods),
 	m_cgiInterpreters	(other.m_cgiInterpreters),
 	m_index				(other.m_index),
-	m_return			(other.m_return) {}
+	m_return			(other.m_return),
+	m_allowUpload		(other.m_allowUpload) {}
 
 static void	_throw_ifInvalidPath(const std::string& path)
 {
@@ -113,6 +115,11 @@ const std::string&	ServerLocation::getType() const
 	return (m_type);
 }
 
+bool	ServerLocation::getAllowUpload() const
+{
+	return (m_allowUpload);
+}
+
 const Config::CgiInterpreterMap&
 ServerLocation::getCgiInterpreters() const
 {
@@ -151,6 +158,13 @@ void		ServerLocation::setAutoindex(const std::string &value)
 	m_autoIndex = (value[0] == '1');
 }
 
+void		ServerLocation::setAllowUpload(const std::string &value)
+{
+	if (value.size() != 1 || (value[0] != '0' && value[0] != '1'))
+		throw (std::invalid_argument("invalid allowUpload value"));
+	m_allowUpload = (value[0] == '1');
+}
+
 void		ServerLocation::addMethod(const std::string &value)
 {
 	std::string	uppercaseStr = StringUtils::strToUpper(value);
@@ -160,6 +174,7 @@ void		ServerLocation::addMethod(const std::string &value)
 	if (m_methods.find(uppercaseStr) == m_methods.end())
 		m_methods.insert(uppercaseStr);
 }
+
 
 void	ServerLocation::addCgiInterpreter(const std::string &value)
 {
@@ -220,11 +235,6 @@ bool		ServerLocation::validate() const
 	if (m_path.empty())
 	{
 		std::cerr << "Error: server config validation: path not assigned" << std::endl;
-		return (0);
-	}
-	if (m_root.empty())
-	{
-		std::cerr << "Error: server config validation: root not assigned" << std::endl;
 		return (0);
 	}
 	return (1);

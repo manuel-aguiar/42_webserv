@@ -69,6 +69,7 @@ namespace Http
 			void						mf_resolveRequestData();
 			bool						mf_resolveServerAndLocation();
 			bool						mf_checkPermissions();
+			bool						mf_checkUpload();
 			void						mf_validateTargetPath();
 
 			bool						mf_validateAcceptType(const std::string& header, const std::string& path);

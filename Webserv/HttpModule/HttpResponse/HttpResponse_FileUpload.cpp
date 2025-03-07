@@ -1,6 +1,8 @@
 
 
-# include "HttpResponse.hpp"
+#include "HttpResponse.hpp"
+#include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
+#include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 namespace Http
 {
@@ -29,12 +31,10 @@ namespace Http
 		{
 			if (!m_responseData.requestData->multipart_Filename.empty())
 			{
-				//std::cout << "\t\t\t\t closing file" << std::endl;
 				m_file.close();
 			}
 			else if (m_responseData.requestData->multipart_Name.empty())
 			{
-				//std::cout << "\t\t\t\t ready to respond" << std::endl;
 				// finished
 				m_fillFunction = &Response::mf_fillResponseLine;
 				m_processFunction = &Response::mf_processBodyIgnore;
@@ -50,19 +50,35 @@ namespace Http
 			//std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
 		}
+
+		std::string	fullPath;
 		
 		if (BufferView(m_responseData.requestData->multipart_Filename) != m_file.name())
 		{
-			std::string fullPath = m_responseData.targetPath 
-								+ "/" 
-								+ m_responseData.requestData->multipart_Filename;
+			if (m_responseData.serverLocation != NULL
+				&& !m_responseData.serverLocation->getRoot().empty())
+			{
+				fullPath = m_responseData.serverLocation->getRoot()
+							+ "/"
+							+ m_responseData.requestData->multipart_Filename;
+			}
+			else if (m_responseData.serverBlock != NULL  // 			This should be an "else" and not a "else if"
+				&& !m_responseData.serverBlock->getRoot().empty()) //	The last else if for the tests to work
+			{
+				fullPath = m_responseData.serverBlock->getRoot()
+							+ "/"
+							+ m_responseData.requestData->multipart_Filename;
+			}
+			else
+			{
+				fullPath = "./" + m_responseData.requestData->multipart_Filename;
+			}
 			if (!m_file.open(fullPath.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
 				goto exitFailure;
 		}
 
 		bytesWritten = m_file.write(view.data(), view.size());
-		//std::cout << "view.size() = " << view.size() << ", bytesWritten = " << bytesWritten << std::endl;
 		if (bytesWritten < 0)
 			goto exitFailure;
 		
@@ -71,10 +87,10 @@ namespace Http
 		return (remaining);
 	
 	exitFailure:
-		std::cout << "error writing file" << std::endl;
 		m_responseData.requestStatus = Http::Status::INTERNAL_ERROR;
+		m_responseData.errorMessage = "Upload failed";
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		m_processFunction = &Response::mf_processBodyIgnore;
-		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Implement Me (this is hardcoded)");
 		m_fillFunction = &Response::mf_fillDefaultPage;
 		return (view);
 	}

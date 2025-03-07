@@ -521,7 +521,7 @@ void test_simpleRequests(int &testNumber)
 		request.parse();
 
 		try {
-			EXPECT_EQUAL(g_requestStatus, Http::Status::OK, "RequestStatus should be 200 OK");
+			EXPECT_EQUAL(g_requestStatus, Http::Status::NOT_IMPLEMENTED, "RequestStatus should be 501 NOT IMPLEMENTED");
 			TEST_PASSED_MSG("Html file POST request");
 		}
 		catch(const std::exception& e) {
