@@ -49,15 +49,16 @@ namespace Http
 		mf_resolveRequestData();
 
 		// Full debug print of wtf is going on:
-		std::cout << "---Request Data-------------------------" << std::endl;
-		std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
-		// std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
-		// std::cout << "Location: " << m_responseData.serverLocation << std::endl;
-		// std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
-		// std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
-		std::cout << "TargetResourceType: " << m_responseData.targetType << std::endl;
-		std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
-		std::cout << "--------------------------------" << std::endl;
+		// std::cout << "---Request Data-------------------------" << std::endl;
+		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
+		// // std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
+		// // std::cout << "Location: " << m_responseData.serverLocation << std::endl;
+		// // std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
+		// // std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
+		// std::cout << "TargetResourceType: " << m_responseData.targetType << std::endl;
+		// std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
+		// std::cout << "---------------------------------------" << std::endl;
+
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));

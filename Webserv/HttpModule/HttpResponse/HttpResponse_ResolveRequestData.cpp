@@ -112,6 +112,13 @@ namespace Http
 					m_responseData.responseType = ResponseData::CGI;
 					return ;
 				}
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (m_responseData.requestData->method == "GET")
 				{
 					// Check Accept header
@@ -157,6 +164,13 @@ namespace Http
 				m_responseData.responseType = ResponseData::STATIC;
 				break ;
 			case FilesUtils::DIRECTORY:
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (*m_responseData.targetPath.rbegin() != '/')
 				{
 					// redirect to same path with '/' in the end
@@ -179,6 +193,13 @@ namespace Http
 				m_responseData.errorMessage = "Not allowed to access resource";
 				return ;
 			case FilesUtils::NOT_EXIST:
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+					m_responseData.responseType = ResponseData::ERROR;
+					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					return ;
+				}
 				if (m_responseData.indexAppended)
 				{
 					m_responseData.targetPath = m_responseData.targetPath.substr(0, m_responseData.targetPath.length() - m_responseData.serverLocation->getIndex().length());
