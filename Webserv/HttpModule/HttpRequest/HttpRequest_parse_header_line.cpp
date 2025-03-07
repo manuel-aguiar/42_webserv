@@ -16,7 +16,7 @@
 namespace Http
 {
 	// must be sorted or WILL ABORT
-	static const char* headersOfInterest[] = 
+	static const BufferView headersOfInterest[] = 
 	{
 		"Accept",
 		"Accept-Encoding",
@@ -42,10 +42,10 @@ namespace Http
 			for (size_t i = 0; i < sizeof(Http::headersOfInterest) / sizeof(Http::headersOfInterest[0]); ++i)
 			{
 				if (i > 0)
-					ASSERT_EQUAL(BufferView(Http::headersOfInterest[i]) > BufferView(Http::headersOfInterest[i - 1]), true, "headersOfInterest are repeated/not sorted");
+					ASSERT_EQUAL(Http::headersOfInterest[i] > Http::headersOfInterest[i - 1], true, "headersOfInterest are repeated/not sorted");
 				
-				std::string copy = Http::headersOfInterest[i];
-				ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToCapitalized() == BufferView(Http::headersOfInterest[i]), 
+				std::string copy = Http::headersOfInterest[i].to_string();
+				ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToCapitalized() == Http::headersOfInterest[i], 
 				true, "headersOfInterest is not correctly formated, must have no leading/trailing spaces and be capitalized");
 			}
 			return (0);
@@ -83,7 +83,7 @@ static bool valueIsValid(const BufferView& key)
 
 
 // binary search into headersOfInterest to see if we find our target
-static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+static int binSearch(const BufferView lookup[], size_t sizeOfLookup, const BufferView& target)
 {
 	int        		low = 0;
 	int        		high = sizeOfLookup - 1;
@@ -93,10 +93,10 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 	if (sizeOfLookup <= 0)
 		return (-1);
 
-	while (low <= high)
+	while (low < high)
 	{
 		mid = low + ((high - low) / 2);
-		midView = BufferView(lookup[mid]);
+		midView = lookup[mid];
 		if (midView == target)
 			return (mid);
 		else if (midView > target)
@@ -104,9 +104,7 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 		else
 			low = mid + 1;
 	}
-	if (low >= (int)sizeOfLookup 
-	|| high < 0
-	|| target != BufferView(lookup[low]))
+	if (target != lookup[low])
 		return (-1);
 
 	return (low);

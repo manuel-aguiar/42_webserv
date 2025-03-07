@@ -127,10 +127,21 @@ namespace Http
         writeBuffer.push("\r\n", 2);
 
 		m_dirListing_target = ::opendir(targetPath.c_str());
+		if (!m_dirListing_target)
+			goto emptyFolder;
+
 		m_dirListing_curEntry = ::readdir(m_dirListing_target);
+		if (!m_dirListing_curEntry)
+			goto emptyFolder;
 
 		m_fillFunction = &Response::mf_fillDirectoryListing_Folders;
         return (mf_fillDirectoryListing_Folders(writeBuffer));
+
+		/////////////////////////////////////
+
+	emptyFolder:
+		m_fillFunction = &Response::mf_fillDirectoryListing_Tail;
+		return (mf_fillDirectoryListing_Tail(writeBuffer));
 	}
 
 	Http::IOStatus::Type		
@@ -235,19 +246,30 @@ namespace Http
 				totalSize += DirList_Folder5_len;
 			///////////////////////////////////////////////
 
-
 			totalWritten += totalSize;
 			m_dirListing_curEntry = ::readdir(m_dirListing_target);	
 		}
 
 		goto writeAvailable;	
 
+		/////////////////////////////////////////////////
+
 	writeFinished:
 
 		m_fillFunction = &Response::mf_fillDirectoryListing_Tail;
 		return (mf_fillDirectoryListing_Tail(writeBuffer));
-	
+		
+		/////////////////////////////////////////////////
+
 	writeAvailable:
+
+		if (curPosition == -1)
+		{
+			if (m_dirListing_curEntry == NULL)
+				goto writeFinished;
+			return (Http::IOStatus::WAITING);
+		}
+
 		fillHexHeader(hexHeader, hexHeaderSize, totalWritten);
         std::memcpy(&writeBuffer[curPosition], hexHeader, hexHeaderSize);
 		writeBuffer.push("\r\n", 2);
