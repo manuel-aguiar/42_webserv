@@ -108,6 +108,11 @@ bool	ServerLocation::getAutoIndex() const
 	return (m_autoIndex);
 }
 
+const std::string&	ServerLocation::getUploadPath() const
+{
+	return (m_uploadPath);
+}
+
 const std::set<std::string>&	ServerLocation::getMethods() const
 {
 	return (m_methods);
@@ -249,11 +254,6 @@ bool		ServerLocation::validate() const
 	if (m_path.empty())
 	{
 		std::cerr << "Error: server config validation: path not assigned" << std::endl;
-		return (0);
-	}
-	if (m_root.empty())
-	{
-		std::cerr << "Error: server config validation: root not assigned" << std::endl;
 		return (0);
 	}
 	return (1);

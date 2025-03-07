@@ -14,6 +14,10 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 // Move to adequate scope
 #define SERVER_NAME_VERSION "42_webserv/1.0"
 
@@ -65,7 +69,7 @@ namespace Http
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 
 				if (mf_addCacheControlHeaders())
-					m_fillFunctionBody = NULL;
+					m_fillFunctionBody = &Response::mf_fillFinish;
 				else
 					m_fillFunctionBody = &Response::mf_sendStaticFile;
 				break ;
@@ -73,8 +77,7 @@ namespace Http
 				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
 				m_defaultPageContent = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
-				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
-				m_responseData.headers.insert(std::make_pair("content-length", StringUtils::to_string(m_defaultPageContent.size())));
+				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
 				m_fillFunctionBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior

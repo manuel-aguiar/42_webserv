@@ -48,7 +48,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Etag.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AddHeaders.cpp \
-$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
 								\
@@ -79,6 +79,7 @@ $(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
 								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/HeapBuffer.cpp										\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
 										\
 								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\

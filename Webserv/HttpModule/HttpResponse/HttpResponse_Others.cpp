@@ -138,7 +138,7 @@ namespace Http
 				return ;
 			}
 		}
-		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, "Task failed successfully");
+		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
 		m_fillFunctionBody = &Response::mf_fillDefaultPage;
 	}

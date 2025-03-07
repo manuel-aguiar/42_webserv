@@ -1,6 +1,7 @@
 
 # Makefile
 
+TARGET_DEBUG 			=		TestServerConfig.out
 TARGET_TEST 			=		test.out
 CXX						=		c++
 CXXFLAGS 				=		-g -std=c++98 -Wall -Wextra -Werror -MMD -MP
@@ -10,23 +11,27 @@ ROOT_PATH				=		$(shell git rev-parse --show-toplevel)
 SRC_PATH				=		$(ROOT_PATH)/.
 OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
-SRCS_TEST				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/Internals/_main.cpp \
-								$(SRC_PATH)/Webserv/ServerConfig/_Tests/Internals/_test1.cpp
+SRCS_TEST				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/main.cpp \
+
+SRCS_DEBUG				=		$(SRC_PATH)/Webserv/ServerConfig/_Tests/ServerConfigTests.cpp \
 
 SRCS_COMMON				=		$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp  \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/DefaultConfig/DefaultConfig.cpp \
 								$(SRC_PATH)/Webserv/ServerConfig/ServerLocation/ServerLocation.cpp \
+								\
 								$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp
 
 
 OBJS_COMMON				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_COMMON))
+OBJS_DEBUG				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_DEBUG))
 OBJS_TEST				=		$(patsubst $(SRC_PATH)/%.cpp, $(OBJ_PATH)/%.o, $(SRCS_TEST))
 
 DEPS_COMMON 			= 		$(OBJS_COMMON:.o=.d)
+DEPS_DEBUG 				= 		$(OBJS_DEBUG:.o=.d)
 DEPS_TEST 				= 		$(OBJS_TEST:.o=.d)
 
 #=== COLORS ===#
@@ -43,7 +48,11 @@ TAG =		$(CYAN)[$(NAME)]$(RESET)
 
 #=== RULES ===#
 
-all: $(TARGET_TEST)
+all: $(TARGET_DEBUG) $(TARGET_TEST)
+
+$(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
+	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
+	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_DEBUG) -o $(TARGET_DEBUG)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)
 	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_TEST) -o $(TARGET_TEST)
@@ -52,7 +61,7 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
--include $(DEPS_COMMON) $(DEPS_TEST)
+-include $(DEPS_COMMON) $(DEPS_DEBUG) $(DEPS_TEST)
 
 clean:
 	@echo "$(TAG) Cleaning object files."
@@ -65,7 +74,8 @@ fclean: clean
 test: $(TARGET_TEST)
 	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_TEST)
 
-debug: test
+debug: $(TARGET_DEBUG)
+	@valgrind --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all ./$(TARGET_DEBUG)
 
 re: fclean all
 	@echo "$(TAG) Recompiling."

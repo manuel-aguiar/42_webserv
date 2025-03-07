@@ -205,7 +205,7 @@ bool		ServerConfig::m_handleClosingBracket(int &currentLevel, size_t currentLine
 	return (1);
 }
 
-int		ServerConfig::parseConfigFile()
+bool	ServerConfig::parseConfigFile()
 {
 
 	std::string		line;
@@ -213,11 +213,11 @@ int		ServerConfig::parseConfigFile()
 	int				currentLevel = PROGRAM_LEVEL;
 
 	if (!m_updateFile())
-		return (0);
+		return (false);
 	if (m_serverBlocks.size() > 0)
 	{
 		std::cerr << "Error: parsing after startup not implemented" << std::endl;
-		return (0);
+		return (false);
 	}
 	while (std::getline(m_configFileStream, line))
 	{
@@ -231,7 +231,7 @@ int		ServerConfig::parseConfigFile()
 			{
 				std::cerr << "Error: config parsing: server not on program level on line "
 					<< currentLine << std::endl;
-				return (0);
+				return (false);
 			}
 			m_serverBlocks.push_back(ServerBlock());
 			currentLevel = SERVER_LEVEL;
@@ -242,7 +242,7 @@ int		ServerConfig::parseConfigFile()
 			{
 				std::cerr << "Error: config parsing: location not on server level on line "
 					<< currentLine << std::endl;
-				return (0);
+				return (false);
 			}
 			m_serverBlocks.back().accessLocations().push_back(ServerLocation());
 			currentLevel = LOCATION_LEVEL;
@@ -250,7 +250,7 @@ int		ServerConfig::parseConfigFile()
 		else if (line == "}")
 		{
 			if (!m_handleClosingBracket(currentLevel, currentLine, m_serverBlocks))
-				return (0);
+				return (false);
 		}
 		else
 		{
@@ -258,29 +258,29 @@ int		ServerConfig::parseConfigFile()
 			{
 				std::cerr << "Error: config parsing: invalid input on line "
 					<< currentLine << std::endl;
-				return (0);
+				return (false);
 			}
 		}
 	}
 	if (m_serverBlocks.size() == 0)
 	{
 		std::cerr << "Error: no server configurations on config file" << std::endl;
-		return (0);
+		return (false);
 	}
 	if (currentLevel != PROGRAM_LEVEL)
 	{
 		std::cerr << "Error: missing closing bracket" << std::endl;
-		return (0);
+		return (false);
 	}
 
 	m_setDefaults();
 
 	if (!mf_listenDNSlookup()
 	|| 	!mf_applyInheritedSettings())
-		return (0);
+		return (false);
 		
 
-	return (1);
+	return (true);
 }
 
 // Getters & Setters

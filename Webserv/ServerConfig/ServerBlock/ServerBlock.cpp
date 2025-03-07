@@ -315,8 +315,11 @@ std::map<std::string, const ServerLocation*>&	ServerBlock::accessMappedLocations
 
 void	ServerBlock::setDefaults(const DefaultConfig& defaultConfig)
 {
-	if (m_root.empty())
-		setRoot(defaultConfig.server_Root);
+	(void)defaultConfig;
+	
+	if (!m_listen.empty() && m_server_name.empty()) // Depends on listen
+		for (std::set<Config::Listen>::const_iterator it = m_listen.begin(); it != m_listen.end(); it++)
+			addServerName(it->hostname + ":" + it->port);
 }
 
 bool	ServerBlock::fillInheritedSettings(const ServerConfig& config)
@@ -335,11 +338,6 @@ bool	ServerBlock::validate() const
 	if (m_listen.empty())
 	{
 		std::cerr << "Error: server config validation: listening port not assigned" << std::endl;
-		return (0);
-	}
-	if (m_server_name.empty())
-	{
-		std::cerr << "Error: server config validation: server_name not assigned" << std::endl;
 		return (0);
 	}
 
