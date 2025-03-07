@@ -108,7 +108,7 @@ namespace Http
 					}
 					// try to open file
 					if (mf_prepareStaticFile(m_responseData.targetPath.c_str()))
-					{	
+					{
 						m_responseData.responseType = ResponseData::STATIC;
 						return ;
 					}
@@ -136,14 +136,14 @@ namespace Http
 					}
 				}
 				m_responseData.responseType = ResponseData::STATIC;
-				break ;				
+				break ;
 			case FilesUtils::DIRECTORY:
 				if (*m_responseData.targetPath.rbegin() != '/')
 				{
 					// redirect to same path with '/' in the end
 					m_responseData.responseType = ResponseData::REDIRECT;
 					m_responseData.requestStatus = Http::Status::MOVED_PERMANENTLY;
-					mf_addHeader("Location", m_responseData.requestData->path + "/");
+					mf_addHeader("location", m_responseData.requestData->path + "/");
 					return ;
 				}
 				// Upload

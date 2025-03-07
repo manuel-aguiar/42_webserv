@@ -5,13 +5,13 @@
 // C++ headers
 # include <vector>
 
-static const char* forbiddenHeaders[] =
+static const BufferView forbiddenHeaders[] =
 {
 	"Connection",
 	"Transfer-Encoding",
 };
 
-static const char* ignoredHeaders[] =
+static const BufferView ignoredHeaders[] =
 {
 	"Content-Length",
 };
@@ -25,22 +25,21 @@ static const char* ignoredHeaders[] =
 		{
 			if (i > 0)
 				ASSERT_EQUAL(forbiddenHeaders[i] > forbiddenHeaders[i - 1], true, "forbidden headers must be sorted and have unique values");
-			std::string copy = forbiddenHeaders[i];
-			ASSERT_EQUAL(BufferView(copy).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(forbiddenHeaders[i]), true, "forbidden headers are not correctly formated");
+			std::string copy = forbiddenHeaders[i].to_string();
+			ASSERT_EQUAL(BufferView(copy).trim(" \r\n\t\v").modify_ToCapitalized() == forbiddenHeaders[i], true, "forbidden headers are not correctly formated");
 		}
 		for (size_t i = 0; i < sizeof(ignoredHeaders) / sizeof(ignoredHeaders[0]); ++i)
 		{
 			if (i > 0)
 				ASSERT_EQUAL(ignoredHeaders[i] > ignoredHeaders[i - 1], true, "ignored headers must be sorted and have unique values");
-			std::string copy = ignoredHeaders[i];
-			ASSERT_EQUAL(BufferView(copy).trim(" \r\n\t\v").modify_ToCapitalized() == BufferView(ignoredHeaders[i]), true, "ignored headers are not correctly formated");
+			std::string copy = ignoredHeaders[i].to_string();
+			ASSERT_EQUAL(BufferView(copy).trim(" \r\n\t\v").modify_ToCapitalized() == ignoredHeaders[i], true, "ignored headers are not correctly formated");
 		}
 		return (0);
 	}
-		
 #endif
 
-static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView& target)
+static int binSearch(const BufferView lookup[], size_t sizeOfLookup, const BufferView& target)
 {
 	int        		low = 0;
 	int        		high = sizeOfLookup - 1;
@@ -53,7 +52,7 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 	while (low < high)
 	{
 		mid = low + ((high - low) / 2);
-		midView = BufferView(lookup[mid]);
+		midView = lookup[mid];
 		if (midView == target)
 			return (mid);
 		else if (midView < lookup[mid])
@@ -62,7 +61,7 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 			low = mid + 1;
 	}
 
-	if (target != BufferView(lookup[low]))
+	if (target != lookup[low])
 		return (-1);
 
 	return (low);

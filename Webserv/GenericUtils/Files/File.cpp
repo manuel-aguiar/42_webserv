@@ -1,10 +1,18 @@
+
+
 #include "File.hpp"
+#include "../BufferView/BufferView.hpp"
 #include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 // Needs Testing
 
+// C++ headers
+#include <cstring> // std::memset
+
 File::File():
 	m_fd(Ws::FD_NONE),
-	m_size(0)
+	m_size(0),
+	m_path(),
+	m_name()
 {
 }
 
@@ -21,6 +29,7 @@ void	File::close()
 	m_fd = Ws::FD_NONE;
 	m_size = 0;
 	m_path.clear();
+	m_name = BufferView();
 }
 
 void	File::reset()
@@ -28,6 +37,7 @@ void	File::reset()
 	this->close();
 	m_size = 0;
 	m_path.clear();
+	m_name = BufferView();
 }
 
 bool	File::open(const char *path, int flags, int permissions)
@@ -39,6 +49,8 @@ bool	File::open(const char *path, int flags, int permissions)
 	
 	m_path = path;
 
+
+
 	struct stat info;
 
 	if (::stat(path, &info) != 0)
@@ -47,8 +59,14 @@ bool	File::open(const char *path, int flags, int permissions)
 		this->close();
 		return (false);
 	}
-	
+
 	m_size = info.st_size;
+
+	size_t pos = m_path.find_last_of('/');
+	m_name = BufferView(m_path.c_str(), m_path.size());
+	
+	if (pos != BufferView::npos)
+		m_name = m_name.substr(pos + 1, m_path.size() - pos - 1);
 
 	return (m_fd != Ws::FD_NONE);
 }
@@ -80,6 +98,12 @@ const std::string &File::path() const
 Ws::fd File::fd() const
 {
 	return (m_fd);
+}
+
+BufferView
+File::name() const
+{
+	return (m_name);
 }
 
 time_t File::getLastModified() const

@@ -10,6 +10,6 @@ ThreadPoolHeap::ThreadPoolHeap(size_t threadCount, size_t taskBacklog) :
 
 {
     ThreadPoolGeneric::init(m_threads, m_exitingThreads, m_taskQueue, threadCount);
-};
+}
 
-ThreadPoolHeap::~ThreadPoolHeap() { destroy(false); };
+ThreadPoolHeap::~ThreadPoolHeap() { destroy(false); }

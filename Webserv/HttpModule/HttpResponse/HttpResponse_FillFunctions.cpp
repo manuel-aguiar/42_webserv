@@ -30,10 +30,10 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
 		writeBuffer.push("\r\n", 2);
+
 		// go to next stage
 		m_fillFunction = &Response::mf_fillHeaders;
-
-		return (Http::IOStatus::WRITING);
+		return ((this->*m_fillFunction)(writeBuffer));
     }
 
     Http::IOStatus::Type
@@ -47,13 +47,15 @@ namespace Http
 		{
 			ASSERT_EQUAL(m_currentHeader->first.empty() || m_currentHeader->second.empty(), false, "Response::mf_fillHeaders: incomplete header");
 
-			std::string	header = m_currentHeader->first + ": " + m_currentHeader->second + "\r\n";
-			writeSize = header.size() + 2;
+			writeSize = m_currentHeader->first.size() + 2 + m_currentHeader->second.size() + 2; // [: ] + [\r\n]
 
 			if (writeBuffer.available() < writeSize)
 				return (Http::IOStatus::WRITING);
 
-			writeBuffer.push(header.c_str(), header.size());
+			writeBuffer.push(m_currentHeader->first.c_str(), m_currentHeader->first.size());
+			writeBuffer.push(": ", 2);
+			writeBuffer.push(m_currentHeader->second.c_str(), m_currentHeader->second.size());
+			writeBuffer.push("\r\n", 2);
 			m_currentHeader++;
 		}
 
@@ -61,50 +63,30 @@ namespace Http
 			return (Http::IOStatus::WRITING);
 		writeBuffer.push("\r\n", 2);
 
-		// If no body, we're done
-		if (m_fillFunctionBody == NULL)
-			return (mf_fillFinish());
+		ASSERT_EQUAL(m_fillFunction == NULL, false, "Response::mf_fillHeaders: m_fillFunction is NULL");
+		ASSERT_EQUAL(m_fillFunctionBody == NULL, false, "Response::mf_fillHeaders: m_fillFunctionBody is NULL");
 
 		// go to next stage
 		m_fillFunction = m_fillFunctionBody;
-		return (Http::IOStatus::WRITING);
+		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
     Http::IOStatus::Type
     Response::mf_fillRedirect(BaseBuffer& writeBuffer)
     {
-        (void)writeBuffer;
-        std::string codeStr = StringUtils::to_string(m_responseData.requestStatus);
-        std::string redirPage = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
+		if (writeBuffer.capacity() < m_defaultPageContent.size())
+			return (Http::IOStatus::MARK_TO_CLOSE);
 
-        size_t writeSize = Http::HttpStandard::HTTP_VERSION.size()
-		+ StringUtils::to_string(m_responseData.requestStatus).size() + 1
-		+ std::strlen(getStatusMessage(m_responseData.requestStatus)) + 2
-		+ 15 + StringUtils::to_string(redirPage.size()).size() + 2
-		+ 19 + std::strlen("Content-Type: text/html\r\n") + 2
-		+ redirPage.size();
+        if (writeBuffer.available() < m_defaultPageContent.size())
+            return (Http::IOStatus::WAITING);
 
-        if (writeBuffer.available() < writeSize)
-            return (Http::IOStatus::WRITING);
-
-        writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
-        writeBuffer.push(codeStr.c_str(), codeStr.size());
-        writeBuffer.push(" ", 1);
-        writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
-        writeBuffer.push("\r\n", 2);
-        writeBuffer.push("Content-Length: ", 15);
-        writeBuffer.push(StringUtils::to_string(redirPage.size()).c_str(), StringUtils::to_string(redirPage.size()).size());
-        writeBuffer.push("\r\n", 2);
-        writeBuffer.push("Content-Type: text/html\r\n", std::strlen("Content-Type: text/html\r\n"));
-        writeBuffer.push("\r\n", 2);
-        writeBuffer.push(redirPage.c_str(), redirPage.size());
-        return (mf_fillFinish());
+        writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
+        return (mf_fillFinish(writeBuffer));
     }
 
 	Http::IOStatus::Type
 	Response::mf_fillDefaultPage(BaseBuffer& writeBuffer)
 	{
-		std::cout << "mf_fillDefaultPage" << std::endl;
 		size_t writeSize = m_defaultPageContent.size();
 
 		if (writeBuffer.available() < writeSize)
@@ -117,7 +99,7 @@ namespace Http
 		else
 			writeBuffer.push(m_defaultPageContent.c_str(), m_defaultPageContent.size());
 
-		return (mf_fillFinish());
+		return (mf_fillFinish(writeBuffer));
 	}
 
     Http::IOStatus::Type
@@ -128,8 +110,9 @@ namespace Http
     }
 
 	Http::IOStatus::Type
-	Response::mf_fillFinish()
+	Response::mf_fillFinish(BaseBuffer& writeBuffer)
 	{
+		(void)writeBuffer;
 		if (m_responseData.closeAfterSending == true)
 			return (Http::IOStatus::MARK_TO_CLOSE);
 		else

@@ -26,7 +26,8 @@ class CgiStressTest
                         ValgrindReadandClear(const char* filename);
         static void     StressTest(int& testNumber, 
                                 const int workers, 
-                                const int backlog, 
+                                const int backlog,
+                                const int workerBufferSize, 
                                 const int connectionCount, 
                                 const unsigned int timeoutMs,
                                 void (*AssignmentCriteria)(TestProtoRequest& proto, int index),

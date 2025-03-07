@@ -197,7 +197,8 @@ void	CgiStressTest::AllInvalidCriteria(TestProtoRequest& proto, int index)
 
 void CgiStressTest::StressTest(int& testNumber, 
 					const int workers, 
-					const int backlog, 
+					const int backlog,
+					const int workerBufferSize, 
 					const int connectionCount, 
 					const unsigned int timeoutMs,
 					void (*AssignmentCriteria)(TestProtoRequest& proto, int index),
@@ -211,7 +212,7 @@ void CgiStressTest::StressTest(int& testNumber,
 		Globals globals(NULL, NULL, NULL, NULL);
 		Events::Manager eventManager(workers * 3, globals);
 
-		Cgi::Module cgi(workers, backlog, timeoutMs, eventManager, globals);
+		Cgi::Module cgi(workers, backlog, timeoutMs, workerBufferSize, eventManager, globals);
 		Cgi::Request* current;
 
 		// collects error messages, we can't throw cause we are redirecting stderr

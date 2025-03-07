@@ -12,7 +12,7 @@
 # include "../../TimerTracker/TimerTracker.hpp"
 # include "../../TimerTracker/Timer/Timer.hpp"
 # include "../../GenericUtils/Buffer/Buffer.hpp"
-
+# include "../../GenericUtils/Buffer/HeapBuffer.hpp"
 
 // forward declarations
 class 		ServerContext;
@@ -25,7 +25,7 @@ namespace Http
 	class Connection
 	{
 		public:
-			Connection(Http::Module& module);
+			Connection(Http::Module& module, const size_t readBufferSize, const size_t writeBufferSize);
 			~Connection();
 			Connection(const Connection& other);
 			Connection& operator=(const Connection& other);
@@ -71,8 +71,8 @@ namespace Http
 			Http::Transaction 									m_transaction;
 
 			// buffers
-			Buffer<1024>										m_readBuffer;
-			Buffer<1024>										m_writeBuffer;
+			HeapBuffer											m_readBuffer;
+			HeapBuffer											m_writeBuffer;
 
 
 			Http::IOStatus::Type								mf_readEventHandler();

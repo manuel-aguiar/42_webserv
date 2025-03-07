@@ -30,6 +30,7 @@ class ImplModule
 		ImplModule(	const size_t workerCount, 
 					const size_t backlogCount, 
 					const size_t maxTimeout, 
+					const size_t workerBufferSize,
 					Events::Manager& eventManager, 
 					Globals& globals);
 		~ImplModule();
