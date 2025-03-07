@@ -30,10 +30,10 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
 		writeBuffer.push("\r\n", 2);
+
 		// go to next stage
 		m_fillFunction = &Response::mf_fillHeaders;
-
-		return (Http::IOStatus::WRITING);
+		return ((this->*m_fillFunction)(writeBuffer));
     }
 
     Http::IOStatus::Type
@@ -63,18 +63,19 @@ namespace Http
 			return (Http::IOStatus::WRITING);
 		writeBuffer.push("\r\n", 2);
 
-		// If no body, we're done
-		if (m_fillFunctionBody == NULL)
-			return (mf_fillFinish(writeBuffer));
+		ASSERT_EQUAL(m_fillFunction == NULL, false, "Response::mf_fillHeaders: m_fillFunction is NULL");
+		ASSERT_EQUAL(m_fillFunctionBody == NULL, false, "Response::mf_fillHeaders: m_fillFunctionBody is NULL");
 
 		// go to next stage
 		m_fillFunction = m_fillFunctionBody;
-		return (Http::IOStatus::WRITING);
+		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
     Http::IOStatus::Type
     Response::mf_fillRedirect(BaseBuffer& writeBuffer)
     {
+		if (writeBuffer.capacity() < m_defaultPageContent.size())
+			return (Http::IOStatus::MARK_TO_CLOSE);
 
         if (writeBuffer.available() < m_defaultPageContent.size())
             return (Http::IOStatus::WAITING);
@@ -86,7 +87,6 @@ namespace Http
 	Http::IOStatus::Type
 	Response::mf_fillDefaultPage(BaseBuffer& writeBuffer)
 	{
-		std::cout << "mf_fillDefaultPage" << std::endl;
 		size_t writeSize = m_defaultPageContent.size();
 
 		if (writeBuffer.available() < writeSize)
