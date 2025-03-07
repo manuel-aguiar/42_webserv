@@ -29,7 +29,12 @@ SRCS 					=																			\
 																									\
 		$(SRC_PATH)/Webserv/main.cpp																\
 		$(SRC_PATH)/MultiServer/Run/WebservRun.cpp													\
-		$(SRC_PATH)/MultiServer/Globals.cpp															\
+		$(SRC_PATH)/MultiServer/Globals/Globals.cpp													\
+		$(SRC_PATH)/Toolkit/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp							\
+		$(SRC_PATH)/Toolkit/ThreadPool/TaskQueue/TaskQueue.cpp										\
+		$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp							\
+		$(SRC_PATH)/Toolkit/ThreadPool/ThreadWorker/ThreadWorker.cpp								\
+		$(SRC_PATH)/Toolkit/MemoryPool/_SlabImpl/SlabImpl.cpp										\
 																									\
 																									\
 		$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\

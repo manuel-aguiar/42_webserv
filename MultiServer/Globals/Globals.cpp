@@ -18,12 +18,12 @@ Globals::Globals(Clock* clock, LogFile* statusFile, LogFile* errorFile, LogFile*
 	if (m_clock && m_statusFile && m_errorFile && m_debugFile)
 		mf_setGlobals();
 	
-	pthread_mutex_init(&writeMutex, NULL);
+	ASSERT_EQUAL(pthread_mutex_init(&writeMutex, NULL), 0, "pthread mutex init failed");
 }
 
 Globals::~Globals()
 {
-	pthread_mutex_destroy(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_destroy(&writeMutex), 0, "pthread mutex init failed");
 }
 
 void	Globals::setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorFile, LogFile& debugFile)
@@ -38,28 +38,29 @@ void	Globals::setClockAndLogs(Clock& clock, LogFile& statusFile, LogFile& errorF
 
 void	Globals::logStatus(const std::string& message)
 {
-	pthread_mutex_lock(&writeMutex);
-	logStatus(message.c_str());
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
+	m_statusFile->record(message);
 	pthread_mutex_unlock(&writeMutex);
+	
 }
 
 void	Globals::logDebug(const std::string& message)
 {
-	pthread_mutex_lock(&writeMutex);
-	logDebug(message.c_str());
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
+	m_debugFile->record(message);
 	pthread_mutex_unlock(&writeMutex);
 }
 
 void	Globals::logError(const std::string& message)
 {
-	pthread_mutex_lock(&writeMutex);
-	logError(message.c_str());
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
+	m_errorFile->record(message);
 	pthread_mutex_unlock(&writeMutex);
 }
 
 void	Globals::logStatus(const char* message)
 {
-	pthread_mutex_lock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logStatus: message cannot be NULL");
 	m_statusFile->record(message);
 	pthread_mutex_unlock(&writeMutex);
@@ -67,7 +68,7 @@ void	Globals::logStatus(const char* message)
 
 void	Globals::logDebug(const char* message)
 {
-	pthread_mutex_lock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logDebug: message cannot be NULL");
 	m_debugFile->record(message);
 	pthread_mutex_unlock(&writeMutex);
@@ -75,7 +76,7 @@ void	Globals::logDebug(const char* message)
 
 void	Globals::logError(const char* message)
 {
-	pthread_mutex_lock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logError: message cannot be NULL");
 	m_errorFile->record(message);
 	pthread_mutex_unlock(&writeMutex);

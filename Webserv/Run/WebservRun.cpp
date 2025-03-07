@@ -26,15 +26,16 @@
 
 
 int	WebservRun(const char* programName, ServerConfig& config);
-int SingleServerRun(const char* programName, ServerConfig& config);
-int MultiServerRun(const char* programName, ServerConfig& config);
+int SingleServerRun(const char* programName, ServerConfig& config, Globals& globals, const int myServerNumber);
+int MultiServerRun(const char* programName, ServerConfig& config, Globals& globals, const int numServers);
 
 int maxEventsEstimate(const ServerConfig& config)
 {
 	int res = 0;
 	res += config.getMaxConnections();
+	res += config.getAllBindAddresses().size(); // listening sockets
 	res += config.getMaxConcurrentCgi() * 3;  	// read + write + emergency, 1 event each
-	res += config.getMaxWorkers();				// signal handler event, monitor reception of signals	
+	res += 1;									// signal handler event, monitor reception of signals	
 
 	return (res);
 }
@@ -81,14 +82,27 @@ struct RunCheck
 
 int	WebservRun(const char* programName, ServerConfig& config)
 {
+	Clock			clock;
+	LogFile			statusFile("status.log");
+	LogFile			errorFile("error.log");
+	LogFile			debugFile("debug.log");
+	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
+
+	// setup signal handling
+	g_SignalHandler.openSignalListeners(1, &globals);
+	g_SignalHandler.registerSignal(SIGINT, &globals);
+	g_SignalHandler.registerSignal(SIGTERM, &globals);
+	g_SignalHandler.registerSignal(SIGQUIT, &globals);
+	g_SignalHandler.ignoreSignal(SIGPIPE, &globals);
+
 	if (config.getMaxWorkers() == 1)
-		return (SingleServerRun(programName, config));
+		return (SingleServerRun(programName, config, globals, 0));
 	
-	return (SingleServerRun(programName, config));
+	return (SingleServerRun(programName, config, globals, 0));
 	//return (MultiServerRun(programName, config));	//not implemented, run as single server always
 }
 
-int SingleServerRun(const char* programName, ServerConfig& config)
+int SingleServerRun(const char* programName, ServerConfig& config, Globals& globals, const int myServerNumber)
 {
 	////////////////////////////////////
 	////////// Single Server ///////////
@@ -96,13 +110,6 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 
 	try
 	{
-		// starting point and parse config file
-		Clock			clock;
-		LogFile			statusFile("status.log");
-		LogFile			errorFile("error.log");
-		LogFile			debugFile("debug.log");
-		Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
-
 		// our number 10
 		Events::Manager	eventManager(maxEventsEstimate(config), globals, maxFdsEstimate(config));
 
@@ -110,12 +117,10 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 		ServerContext	context;
 		BlockFinder		blockFinder(blockFinderEntryCount(config));
 
-		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals); // NOT ADDED YET
+		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, eventManager, globals);
 		context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);		
 		
-		// NOT ADDED YET
 		Http::Module	httpModule(config.getMaxConnections(), context);
-
 
 		blockFinder.loadServerBlocks(config.getServerBlocks());
 
@@ -127,16 +132,10 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 		// preparing server launch
 		Conn::Manager	connManager(config.getMaxConnections(), config.getAllBindAddresses(), eventManager, globals, context);
 
-		// setup signal handling
-		g_SignalHandler.openSignalListeners(1, &globals);
-		g_SignalHandler.registerSignal(SIGINT, &globals);
-		g_SignalHandler.registerSignal(SIGTERM, &globals);
-		g_SignalHandler.registerSignal(SIGQUIT, &globals);
-
 		// monitor signal handler
 		RunCheck run;
 		Events::Subscription* signalListener = eventManager.acquireSubscription();
-		signalListener->setFd(g_SignalHandler.getSignalListener(0));
+		signalListener->setFd(g_SignalHandler.getSignalListener(myServerNumber));
 		signalListener->setMonitoredEvents(Events::Monitor::READ | Events::Monitor::ERROR | Events::Monitor::HANGUP);
 		signalListener->setUser(&run);
 		signalListener->setCallback(&RunCheck::Callback);
@@ -144,7 +143,8 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 
 
 		// oficially open the listening sockets
-		connManager.init();
+		if (!connManager.init())
+			throw std::runtime_error("SingleServerRun: connManager.init() failed");
 
 		//////////////////////////////////////////
 		/////////// Main Server Loop /////////////
@@ -165,9 +165,11 @@ int SingleServerRun(const char* programName, ServerConfig& config)
 	return (EXIT_SUCCESS);
 }
 
-int	MultiServerRun(const char* programName, const ServerConfig& config)
+int	MultiServerRun(const char* programName, const ServerConfig& config, Globals& globals, const int numServers)
 {
 	(void)programName;
 	(void)config;
+	(void)globals;
+	(void)numServers;
 	return (EXIT_SUCCESS);
 }
