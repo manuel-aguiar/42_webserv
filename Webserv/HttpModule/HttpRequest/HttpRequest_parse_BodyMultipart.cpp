@@ -300,11 +300,12 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 		m_findPivot = 0;
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
+		
 		if (m_curContentPos + found.size() != (size_t)m_curContentLength)
 			return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
 			
-			m_data.multipart_Name.clear();
-			m_data.multipart_Filename.clear();
+		m_data.multipart_Name.clear();
+		m_data.multipart_Filename.clear();
 			
 		// double signaling, one for end of this file, below to end of request
 		if (m_httpResponse)
@@ -325,7 +326,7 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	m_curContentPos += found.size();
 	m_data.multipart_Name.clear();
 	m_data.multipart_Filename.clear();
-	
+
 	return ((this->*m_parsingFunction)(remaining));
 }
 
