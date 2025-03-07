@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Webserv Blog</title>
+    <title>42 Webserv Project</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>
-        <h1>My Webserv Blog</h1>
-        <p>A simple personal blog served by Webserv</p>
+        <h1>42 Webserv Project</h1>
+        <p>A custom HTTP/1.1 server implementation</p>
     </header>
 
     <nav>
@@ -18,140 +18,135 @@
             <li><a href="/">Home</a></li>
             <li><a href="/images/">Images</a></li>
             <li><a href="/docs/">Documents</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#tests">Test Cases</a></li>
+            <li><a href="/docs/about.html">About</a></li>
         </ul>
     </nav>
 
     <div class="container">
         <main>
             <article class="blog-post">
-                <h2>Welcome to My Webserv Blog</h2>
-                <div class="post-meta">Posted on March 7, 2023 | Tags: <span class="tag">webserv</span> <span class="tag">introduction</span></div>
+                <h2>Welcome to Our Webserv Project</h2>
+                <div class="post-meta">42 School Project | Tags: <span class="tag">webserv</span> <span class="tag">http</span> <span class="tag">c++</span></div>
                 <p>
-                    Welcome to my personal blog powered by Webserv! This is a simple static site that demonstrates
-                    the capabilities of our custom HTTP server implementation. The server supports directory listing,
-                    static file serving, and various other HTTP features.
-                </p>
-                <p>
-                    This blog is designed to showcase how you can create a simple yet effective personal website
-                    using our Webserv project. Feel free to explore the different sections and features.
+                    Welcome to the demonstration site for our custom HTTP/1.1 server implementation.
+                    This static site showcases the capabilities of our server developed as part of the
+                    42 curriculum by a team of three students.
                 </p>
             </article>
 
-            <article class="blog-post">
-                <h2>Directory Listing Feature</h2>
-                <div class="post-meta">Posted on March 6, 2023 | Tags: <span class="tag">directory-listing</span> <span class="tag">feature</span></div>
-                <p>
-                    One of the key features of Webserv is directory listing. When enabled using the <code>auto_index 1</code>
-                    directive in the server configuration, Webserv will generate a list of files and directories when no index
-                    file is present.
-                </p>
-                <p>
-                    You can see this feature in action by visiting the following directories:
-                </p>
+            <section id="features" class="blog-post">
+                <h2>Webserv Features</h2>
                 <ul>
-                    <li><a href="/images/">Images Directory</a> - Browse images and media files</li>
-                    <li><a href="/docs/">Documents Directory</a> - Browse documentation files</li>
+                    <li><strong>HTTP/1.1 Compliance</strong> - Standard-compliant request and response handling</li>
+                    <li><strong>Multiple Virtual Servers</strong> - Support for different server configurations</li>
+                    <li><strong>Static File Serving</strong> - Efficiently serving various file types</li>
+                    <li><strong>Directory Listing</strong> - Auto-indexing of directories</li>
+                    <li><strong>HTTP Redirections</strong> - Support for 301, 302, 307, and 308 redirects</li>
+                    <li><strong>Custom Error Pages</strong> - Configurable error responses</li>
+                    <li><strong>File Uploads</strong> - Support for multipart form data</li>
+                    <li><strong>CGI Execution</strong> - Dynamic content generation via script interpreters</li>
+                    <li><strong>Configurable Limits</strong> - Control resource usage with configurable limits</li>
                 </ul>
                 <p>
-                    The directory listing feature is particularly useful for sharing files with others or creating a simple
-                    file browser interface without the need for complex server-side scripting.
+                    Learn more about <a href="/server_config.html">server configuration options</a> and how to set up your own Webserv instance.
                 </p>
-            </article>
-
-            <article class="blog-post">
-                <h2>HTTP Redirection in Webserv</h2>
-                <div class="post-meta">Posted on March 5, 2023 | Tags: <span class="tag">redirection</span> <span class="tag">http</span></div>
-                <p>
-                    Webserv implements HTTP redirection according to the standards. We support various redirection status codes:
-                </p>
-                <ul>
-                    <li>301 - Moved Permanently</li>
-                    <li>302 - Found (Temporary Redirect)</li>
-                    <li>307 - Temporary Redirect (preserves method)</li>
-                    <li>308 - Permanent Redirect (preserves method)</li>
-                </ul>
-                <p>
-                    Check out these examples:
-                </p>
-                <ul>
-                    <li><a href="/old-images">Redirect to Images (301)</a></li>
-                    <li><a href="/old-docs">Redirect to Documents (302)</a></li>
-                    <li><a href="/external">External Redirect (42.fr)</a></li>
-                </ul>
-            </article>
-
-            <section id="about" class="blog-post">
-                <h2>About This Blog</h2>
-                <p>
-                    This blog is a demonstration of a static site served by Webserv, a custom HTTP server implementation
-                    created as part of the 42 curriculum. The goal of the Webserv project is to create a web server that
-                    can handle HTTP/1.1 requests and responses, similar to Nginx.
-                </p>
-                <p>
-                    Features of our Webserv implementation include:
-                </p>
-                <ul>
-                    <li>Static file serving</li>
-                    <li>Directory listing</li>
-                    <li>HTTP redirections</li>
-                    <li>Custom error pages</li>
-                    <li>Multiple virtual servers</li>
-                </ul>
             </section>
 
-            <section class="directory-listing">
-                <h2>Directory Listing Navigation</h2>
-                <p>Explore the following directories with auto-indexing enabled:</p>
+            <section id="tests" class="blog-post">
+                <h2>Test Cases</h2>
+
+                <h3>HTTP Redirection Tests</h3>
                 <ul>
-                    <li><a href="/images/">Images Directory</a> - Contains images and media files</li>
-                    <li><a href="/docs/">Documents Directory</a> - Contains documentation and text files</li>
+                    <li><a href="/301-test">301 Moved Permanently</a></li>
+                    <li><a href="/302-test">302 Found</a></li>
+                    <li><a href="/307-test">307 Temporary Redirect (preserves method)</a></li>
+                    <li><a href="/308-test">308 Permanent Redirect (preserves method)</a></li>
+                    <li><a href="/external">External Redirect (42.fr)</a></li>
+                </ul>
+
+                <h3>Server Feature Tests</h3>
+                <ul>
+                    <li><a href="/images/gallery.html">Image Gallery & Upload Bucket</a> - Upload and view images</li>
+                    <li><a href="/error_demo.html">Error Pages Demo</a> - Test our custom error handling</li>
+                    <li><a href="/server_config.html">Server Configuration</a> - Learn how to configure Webserv features</li>
+                    <li><a href="/images/">Directory Listing Example</a> - Auto-indexing demonstration</li>
+                    <li><a href="/large-file.bin">Large File Download</a> - Chunked transfer encoding</li>
+                </ul>
+
+                <h3>HTTP Method Tests</h3>
+                <ul>
+                    <li>
+                        <form action="/form-test" method="POST">
+                            <input type="text" name="test_field" placeholder="Enter text">
+                            <button type="submit">Test POST Method</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="test_file">
+                            <button type="submit">Test File Upload</button>
+                        </form>
+                    </li>
+                </ul>
+
+                <h3>CGI Tests</h3>
+                <p class="note" style="background-color: #e8f4fc; padding: 10px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
+                    <strong>Note:</strong> CGI scripts require proper server configuration to run. The server must be configured to:
+                    <br>1) Map file extensions (.py, .php) to appropriate interpreters
+                    <br>2) Allow CGI execution in specific locations
+                    <br>3) Set proper permissions on script files
+                    <br>See our <a href="/server_config.html#basic-cgi">CGI Configuration Guide</a> for details.
+                </p>
+                <ul>
+                    <li><a href="/cgi-bin/calculator.py">Interactive Calculator</a> - Form processing with calculation</li>
+                    <li><a href="/cgi-bin/info.py">Server Information Script</a> - Environment details</li>
+                    <li><a href="/cgi-bin/env.py">Environment Variables</a> - View all ENV variables</li>
+                    <li>
+                        <form action="/cgi-bin/form.py" method="POST">
+                            <input type="text" name="user_input" placeholder="Your name">
+                            <button type="submit">CGI Form Processing</button>
+                        </form>
+                    </li>
                 </ul>
             </section>
         </main>
 
         <aside>
             <section class="sidebar-section">
-                <h3>About Me</h3>
-                <p>I'm a student at 42, working on web development projects. This blog is my showcase for the Webserv project.</p>
+                <h3>About The Team</h3>
+                <p>This webserver was built by a team of three 42 students as part of the curriculum's system programming track.</p>
+                <p><a href="/docs/about.html">Learn more about us</a></p>
             </section>
 
             <section class="sidebar-section">
-                <h3>Recent Posts</h3>
+                <h3>Server Status</h3>
                 <ul>
-                    <li><a href="#">Welcome to My Webserv Blog</a></li>
-                    <li><a href="#">Directory Listing Feature</a></li>
-                    <li><a href="#">HTTP Redirection in Webserv</a></li>
+                    <li>Status: <span style="color: green;">Running</span></li>
+                    <li>Uptime: <span id="uptime">Loading...</span></li>
+                    <li>Active connections: <span id="connections">Loading...</span></li>
                 </ul>
+                <script>
+                    // Simple mock for demonstration
+                    document.getElementById('uptime').textContent = Math.floor(Math.random() * 24) + ' hours';
+                    document.getElementById('connections').textContent = Math.floor(Math.random() * 10);
+                </script>
             </section>
 
             <section class="sidebar-section">
-                <h3>Tags</h3>
-                <div class="tag-list">
-                    <span class="tag">webserv</span>
-                    <span class="tag">http</span>
-                    <span class="tag">42</span>
-                    <span class="tag">directory-listing</span>
-                    <span class="tag">redirection</span>
-                    <span class="tag">feature</span>
-                </div>
-            </section>
-
-            <section class="sidebar-section">
-                <h3>Image Gallery Preview</h3>
-                <div class="image-gallery">
-                    <div class="image-item">Image 1</div>
-                    <div class="image-item">Image 2</div>
-                    <div class="image-item">Image 3</div>
-                    <div class="image-item">Image 4</div>
-                </div>
-                <p><a href="/images/">View All Images</a></p>
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#features">Server Features</a></li>
+                    <li><a href="#tests">Test Cases</a></li>
+                    <li><a href="https://github.com/manuel-aguiar/42_webserv.git" target="_blank">GitHub Repository</a></li>
+                </ul>
             </section>
         </aside>
     </div>
 
     <footer>
-        <p>&copy; 2023 Webserv Blog - A 42 Project</p>
+        <p>&copy; 2023 42 Webserv Project - Created by a team of three 42 students</p>
     </footer>
 </body>
 </html>
