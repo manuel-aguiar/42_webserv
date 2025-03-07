@@ -43,7 +43,10 @@ namespace Http
 		, m_liveTimeout(Timeout::NONE)
 		, m_myTimer()
 		, m_tcpConn(NULL)
-		, m_transaction(m_module.accessServerContext()) {}
+		, m_transaction(m_module.accessServerContext())
+		, m_readBuffer (4096) // 4kb, could be configurable, no effect on performance
+		, m_writeBuffer (4096) // 4kb, could be configurable, no effect on performance
+		{}
 
 	Connection::~Connection() {}
 

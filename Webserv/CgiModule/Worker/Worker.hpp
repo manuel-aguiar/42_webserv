@@ -14,6 +14,7 @@
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
 
 # include "../../GenericUtils/Buffer/Buffer.hpp"
+# include "../../GenericUtils/Buffer/HeapBuffer.hpp"
 // C++ headers
 # include <string>
 
@@ -89,7 +90,7 @@ class Worker
 		// External sources
 		ImplModule&			m_CgiModule;
 		Cgi::HeaderData		m_headerParser;
-		Buffer<1024>		m_headerBuffer;
+		HeapBuffer			m_headerBuffer;
 		// execute
 
 
