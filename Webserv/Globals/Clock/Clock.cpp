@@ -55,7 +55,7 @@ static char	*inPlacePutDateParameter(unsigned int nb, char* buffer, int totalCha
 
 	i = totalCharacters;
 
-	while (nb != 0 && i >= 0)
+	while (nb != 0 && i > 0)
 	{
 		print = nb % 10;
 		buffer[--i] = print + '0';

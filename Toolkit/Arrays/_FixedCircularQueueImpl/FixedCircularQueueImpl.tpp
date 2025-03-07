@@ -8,6 +8,8 @@
 // Project headers
 # include "../../Assert/AssertEqual/AssertEqual.h"
 
+# include <iterator>
+
 template <typename T>
 class FixedCircularQueueImpl
 {

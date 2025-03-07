@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 
+#include <unistd.h> // unlink
 
 extern std::string DirectoryListing(const std::string& path);
 
@@ -89,6 +90,7 @@ int main(void)
 		TEST_FAILED_MSG(e.what());
 	}
 
+	::unlink("directoryListing.html");
 
 	TEST_FOOTER;
 

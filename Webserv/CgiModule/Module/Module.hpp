@@ -11,9 +11,10 @@ namespace Cgi
     class Module : private ImplModule
     {
         public:
-            Module( size_t workers, 
-                    size_t backlog, 
-                    size_t maxTimeout, 
+            Module( const size_t workers, 
+                    const size_t backlog, 
+                    const size_t maxTimeout, 
+                    const size_t workerBufferSize,
                     Events::Manager& eventManager, 
                     Globals& globals);
             ~Module();

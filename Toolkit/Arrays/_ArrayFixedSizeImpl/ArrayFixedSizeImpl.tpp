@@ -124,6 +124,14 @@ class ArrayFixedSizeImpl
 			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
 			new (m_end++) T(arg1, arg2, arg3);
         }
+        
+        // by hand cause i neeed it
+        template <typename Arg1, typename Arg2 , typename Arg3 >
+        void emplace_back(Arg1& arg1, const Arg2& arg2, const Arg3& arg3)
+        {
+			ASSERT_EQUAL(size() < m_capacity, true, "ArrayFixedSizeImpl push: Index out of bounds");
+			new (m_end++) T(arg1, arg2, arg3);
+        }
 
     protected:
         ArrayFixedSizeImpl(T* begin, T* end, const size_t capacity) : m_begin(begin), m_end(end), m_capacity(capacity) {}

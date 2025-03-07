@@ -14,6 +14,7 @@
 # include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
 
 # include "../../GenericUtils/Buffer/Buffer.hpp"
+# include "../../GenericUtils/Buffer/HeapBuffer.hpp"
 // C++ headers
 # include <string>
 
@@ -30,7 +31,7 @@ namespace Cgi { struct EnvVariables; }
 class Worker
 {
 	public:
-		Worker(ImplModule& cgi);
+		Worker(ImplModule& cgi, const size_t workerBufferSize);
 		~Worker();
 
 		void    			execute(bool markFdsAsStale);
@@ -89,7 +90,7 @@ class Worker
 		// External sources
 		ImplModule&			m_CgiModule;
 		Cgi::HeaderData		m_headerParser;
-		Buffer<1024>		m_headerBuffer;
+		HeapBuffer			m_headerBuffer;
 		// execute
 
 

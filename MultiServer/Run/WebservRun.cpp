@@ -1,20 +1,23 @@
 
 
 // Project headers
-# include "../Globals/Globals.hpp"
-# include "../Globals/Clock/Clock.hpp"
-# include "../Globals/LogFile/LogFile.hpp"
-# include "../SignalHandler/SignalHandler.hpp"
-# include "../ServerConfig/ServerConfig/ServerConfig.hpp"
-# include "../ServerConfig/ServerBlock/ServerBlock.hpp"
-# include "../ServerConfig/BlockFinder/BlockFinder.hpp"
-# include "../ServerConfig/DefaultConfig/DefaultConfig.hpp"
-# include "../ServerContext/ServerContext.hpp"
-# include "../CgiModule/Module/Module.hpp"
-# include "../HttpModule/HttpModule/HttpModule.hpp"
-# include "../Events/Subscription/Subscription.hpp"
-# include "../Events/Manager/Manager.hpp"
-# include "../Connections/Manager/Manager.hpp"
+# include "../../Webserv/Globals/Globals.hpp"
+# include "../../Webserv/Globals/Clock/Clock.hpp"
+# include "../../Webserv/Globals/LogFile/LogFile.hpp"
+# include "../../Webserv/SignalHandler/SignalHandler.hpp"
+# include "../../Webserv/ServerConfig/ServerConfig/ServerConfig.hpp"
+# include "../../Webserv/ServerConfig/ServerBlock/ServerBlock.hpp"
+# include "../../Webserv/ServerConfig/BlockFinder/BlockFinder.hpp"
+# include "../../Webserv/ServerConfig/DefaultConfig/DefaultConfig.hpp"
+# include "../../Webserv/ServerContext/ServerContext.hpp"
+# include "../../Webserv/CgiModule/Module/Module.hpp"
+# include "../../Webserv/HttpModule/HttpModule/HttpModule.hpp"
+# include "../../Webserv/Events/Subscription/Subscription.hpp"
+# include "../../Webserv/Events/Manager/Manager.hpp"
+# include "../../Webserv/Connections/Manager/Manager.hpp"
+
+# include "../../Toolkit/ThreadPool/ThreadPool.hpp"
+
 
 // C++ headers
 # include <iostream>
@@ -35,8 +38,8 @@ int maxEventsEstimate(const ServerConfig& config)
 	res += config.getMaxConnections();
 	res += config.getAllBindAddresses().size(); // listening sockets
 	res += config.getMaxConcurrentCgi() * 3;  	// read + write + emergency, 1 event each
-	res += 1;									// signal handler event, monitor reception of signals	
-
+	res += 1;		
+	
 	return (res);
 }
 
@@ -88,18 +91,19 @@ int	WebservRun(const char* programName, ServerConfig& config)
 	LogFile			debugFile("debug.log");
 	Globals			globals(&clock, &statusFile, &errorFile, &debugFile);
 
+
+	int numServers = config.getMaxWorkers();
+
 	// setup signal handling
-	g_SignalHandler.openSignalListeners(1, &globals);
+	g_SignalHandler.openSignalListeners(numServers, &globals);
 	g_SignalHandler.registerSignal(SIGINT, &globals);
 	g_SignalHandler.registerSignal(SIGTERM, &globals);
 	g_SignalHandler.registerSignal(SIGQUIT, &globals);
 	g_SignalHandler.ignoreSignal(SIGPIPE, &globals);
 
-	if (config.getMaxWorkers() == 1)
+	if (numServers == 1)
 		return (SingleServerRun(programName, config, globals, 0));
-	
-	return (SingleServerRun(programName, config, globals, 0));
-	//return (MultiServerRun(programName, config));	//not implemented, run as single server always
+	return (MultiServerRun(programName, config, globals, numServers));
 }
 
 int SingleServerRun(const char* programName, ServerConfig& config, Globals& globals, const int myServerNumber)
@@ -145,7 +149,6 @@ int SingleServerRun(const char* programName, ServerConfig& config, Globals& glob
 		// oficially open the listening sockets
 		if (!connManager.init())
 			throw std::runtime_error("SingleServerRun: connManager.init() failed");
-
 		//////////////////////////////////////////
 		/////////// Main Server Loop /////////////
 		//////////////////////////////////////////
@@ -165,11 +168,54 @@ int SingleServerRun(const char* programName, ServerConfig& config, Globals& glob
 	return (EXIT_SUCCESS);
 }
 
-int	MultiServerRun(const char* programName, const ServerConfig& config, Globals& globals, const int numServers)
+class MultiServerTask : public IThreadTask
 {
-	(void)programName;
-	(void)config;
-	(void)globals;
-	(void)numServers;
+	public:
+		MultiServerTask(const char* programName, ServerConfig& config, Globals& globals, const int myServerNumber) : 
+			m_programName(programName), 
+			m_config(config), 
+			m_globals(globals),
+			m_myServerNumber(myServerNumber) {}
+		~MultiServerTask() {}
+		
+		void execute()
+		{
+			SingleServerRun(m_programName, m_config, m_globals, m_myServerNumber);
+		}
+	private:
+		const char*		m_programName;
+		ServerConfig&	m_config;
+		Globals&		m_globals;
+		const int		m_myServerNumber;
+};
+
+int	MultiServerRun(const char* programName, ServerConfig& config, Globals& globals, const int numServers)
+{
+	sigset_t 					threadSigSet;
+	DynArray<MultiServerTask> 	tasks;
+
+
+	/* Disable SIGINT and SIGQUIT for the threadpool workers*/
+	sigemptyset(&threadSigSet);
+	sigaddset(&threadSigSet, SIGINT);
+	sigaddset(&threadSigSet, SIGQUIT);
+	sigaddset(&threadSigSet, SIGTERM);
+
+	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
+	ThreadPoolHeap servers(numServers, numServers);
+	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);
+
+	tasks.reserve(numServers);
+	for (int i = 0; i < numServers; i++)
+	{
+		tasks.emplace_back(programName, config, globals, i);
+		servers.addTask(tasks[i], true);
+	}
+
+	while (!g_SignalHandler.getSignal())
+		usleep(1000);
+
+	servers.destroy(true);
+
 	return (EXIT_SUCCESS);
 }

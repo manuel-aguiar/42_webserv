@@ -2,7 +2,7 @@
 ## Main Webserv Makefile ##
 ###########################
 
-NAME 					= 		webserv
+NAME 					= 		multiserv
 CXX						=		c++
 CXXFLAGS				=		-Wall -Wextra -Werror -Wpedantic -std=c++98 -MMD -MP
 
@@ -28,7 +28,13 @@ endif
 SRCS 					=																			\
 																									\
 		$(SRC_PATH)/Webserv/main.cpp																\
-		$(SRC_PATH)/Webserv/Run/WebservRun.cpp														\
+		$(SRC_PATH)/MultiServer/Run/WebservRun.cpp													\
+		$(SRC_PATH)/MultiServer/Globals/Globals.cpp													\
+		$(SRC_PATH)/Toolkit/ThreadPool/_ThreadPoolImpl/ThreadPoolImpl.cpp							\
+		$(SRC_PATH)/Toolkit/ThreadPool/TaskQueue/TaskQueue.cpp										\
+		$(SRC_PATH)/Toolkit/ThreadPool/ThreadPoolHeap/ThreadPoolHeap.cpp							\
+		$(SRC_PATH)/Toolkit/ThreadPool/ThreadWorker/ThreadWorker.cpp								\
+		$(SRC_PATH)/Toolkit/MemoryPool/_SlabImpl/SlabImpl.cpp										\
 																									\
 																									\
 		$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
@@ -104,7 +110,6 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp								\
 																									\
 																									\
-		$(SRC_PATH)/Webserv/Globals/Globals.cpp														\
 		$(SRC_PATH)/Webserv/Globals/Clock/Clock.cpp													\
 		$(SRC_PATH)/Webserv/Globals/LogFile/LogFile.cpp												\
 																									\
@@ -165,7 +170,7 @@ DEPS               		=       $(OBJS:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CXX) $(CXXFLAGS)  $(OBJS) -o $(NAME)
+	$(CXX) $(CXXFLAGS)  $(OBJS) -o $(NAME) -lpthread
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp
 	@mkdir -p $(dir $@)

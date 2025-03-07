@@ -13,7 +13,7 @@ $env_vars = [
 echo "Status: 200 potato\n";  // Valid header
 echo "Content-Type: text/html; charset=UTF-8\n";  // Valid header
 
-for ($i = 1; $i <= 200; $i++) {
+for ($i = 1; $i <= 500; $i++) {
     echo "header$i: value$i\n";
 }
 

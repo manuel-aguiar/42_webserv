@@ -39,13 +39,13 @@ bool compareDirEntries(const DirEntry& a, const DirEntry& b)
 
 bool listDirectory(const std::string& path, DynArray<DirEntry>& fillEntries)
 {
-    DIR *dir = opendir(path.c_str());
+    DIR *dir = ::opendir(path.c_str());
 
     if (!dir)
         return (false);
 
     struct dirent *entry;
-    while ((entry = readdir(dir)))
+    while ((entry = ::readdir(dir)))
 	{
         if (!std::memcmp(entry->d_name, ".", 2) || !std::memcmp(entry->d_name, "..", 3))
             continue;
@@ -75,7 +75,6 @@ std::string generateDirectoryListing(const std::string &path, DynArray<DirEntry>
 	std::string output;
 
 	output = "<!DOCTYPE html>\n";
-
     output 	+= "<html>\n<head>\n";
 	output 	+= "<title>Index of ";
 	output 	+= path;
@@ -87,7 +86,6 @@ std::string generateDirectoryListing(const std::string &path, DynArray<DirEntry>
 	output 	+= "</h1>\n";
 	output 	+= "<table>\n";
 	output 	+= "<tr><th>Name</th><th>Size</th><th>Last Modified</th></tr>\n";
-
     output 	+= "<tr><td><a href=\"../\">../ (Parent Directory)</a></td><td>-</td><td>-</td></tr>\n";
 
     for (size_t i = 0; i < entries.size(); ++i)

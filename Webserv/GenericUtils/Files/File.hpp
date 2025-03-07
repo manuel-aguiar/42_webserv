@@ -5,6 +5,7 @@
 # define FILE_HPP
 
 #include "../../Ws_Namespace.h"
+#include "../BufferView/BufferView.hpp"
 #include <unistd.h>
 #include <fcntl.h>
 #include <iostream>
@@ -27,6 +28,7 @@ class File
 		int					write(const void* buffer, size_t size);
 		size_t				size() const;
 		const std::string&	path() const;
+		BufferView			name() const;
 		Ws::fd				fd() const;
 		time_t				getLastModified() const;
 		off_t				seek(off_t offset, int whence);
@@ -34,6 +36,7 @@ class File
 		Ws::fd				m_fd;
 		size_t				m_size;
 		std::string			m_path;
+		BufferView			m_name;
 
 
 		File(const File& copy);

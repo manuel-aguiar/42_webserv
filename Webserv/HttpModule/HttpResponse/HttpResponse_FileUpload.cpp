@@ -50,12 +50,13 @@ namespace Http
 			//std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
 		}
-
-		if (m_responseData.requestData->multipart_Filename != m_file.path())
+		
+		if (BufferView(m_responseData.requestData->multipart_Filename) != m_file.name())
 		{
-			//std::cout << "new file, open" << std::endl;
-			// new file, open
-			if (!m_file.open(m_responseData.requestData->multipart_Filename.c_str(),
+			std::string fullPath = m_responseData.targetPath 
+								+ "/" 
+								+ m_responseData.requestData->multipart_Filename;
+			if (!m_file.open(fullPath.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
 				goto exitFailure;
 		}

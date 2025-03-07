@@ -12,10 +12,11 @@
 # include <unistd.h>
 # include <sys/wait.h>
 
-Worker::Worker(ImplModule& cgi) :
+Worker::Worker(ImplModule& cgi, const size_t workerBufferSize) :
 	m_curRequestData	(NULL),
 	m_pid				(-1),
-	m_CgiModule			(cgi)
+	m_CgiModule			(cgi),
+	m_headerBuffer		(workerBufferSize) // 4kb, could be configurable, no effect on performance
 {
 	m_ParentToChild[0] = -1;
 	m_ParentToChild[1] = -1;
@@ -190,6 +191,7 @@ void	Worker::mf_disableCloseMyEvent(Events::Subscription& myEvent, bool markAsSt
 Worker::Worker(const Worker &other) :
 	m_curRequestData(other.m_curRequestData),
 	m_pid(other.m_pid),
-	m_CgiModule(other.m_CgiModule) {}
+	m_CgiModule(other.m_CgiModule),
+	m_headerBuffer(other.m_headerBuffer) {}
 
 Worker& Worker::operator=(const Worker &assign){(void)assign; return (*this);}

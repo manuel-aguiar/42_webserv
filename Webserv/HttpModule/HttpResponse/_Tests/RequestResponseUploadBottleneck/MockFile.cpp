@@ -28,6 +28,7 @@ void	File::close()
 	m_fd = Ws::FD_NONE;
 	m_size = 0;
 	m_path.clear();
+	m_name = BufferView();
 }
 
 void	File::reset()
@@ -35,6 +36,7 @@ void	File::reset()
 	this->close();
 	m_size = 0;
 	m_path.clear();
+	m_name = BufferView();
 }
 
 bool	File::open(const char *path, int flags, int permissions)
@@ -57,6 +59,12 @@ bool	File::open(const char *path, int flags, int permissions)
 	
 	m_size = info.st_size;
 
+	size_t pos = m_path.find_last_of('/');
+	m_name = BufferView(m_path.c_str(), m_path.size());
+
+	if (pos != BufferView::npos)
+		m_name = m_name.substr(pos + 1, m_path.size() - pos - 1);
+
 	return (m_fd != Ws::FD_NONE);
 }
 
@@ -75,6 +83,12 @@ int	File::write(const void* buffer, size_t size)
 size_t File::size() const
 {
     return (m_size);
+}
+
+BufferView
+File::name() const
+{
+	return (m_name);
 }
 
 const std::string &File::path() const

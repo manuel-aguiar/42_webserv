@@ -6,31 +6,77 @@
 #include <cctype>
 #include "HttpResponse.hpp"
 
+static const std::pair<BufferView, BufferView> mimeTypeMap[] = 
+{
+	std::pair<BufferView, BufferView>(".css",		"text/css"),
+	std::pair<BufferView, BufferView>(".gif",		"image/gif"),
+	std::pair<BufferView, BufferView>(".htm",		"text/html"),
+	std::pair<BufferView, BufferView>(".html",		"text/html"),
+	std::pair<BufferView, BufferView>(".ico",		"image/x-icon"),
+	std::pair<BufferView, BufferView>(".jpeg",	 	"image/jpeg"),
+	std::pair<BufferView, BufferView>(".jpg",		"image/jpeg"),
+	std::pair<BufferView, BufferView>(".js",		"text/javascript"),
+	std::pair<BufferView, BufferView>(".json",	 	"application/json"),
+	std::pair<BufferView, BufferView>(".png",		"image/png"),
+	std::pair<BufferView, BufferView>(".txt",		"text/plain"),
+	std::pair<BufferView, BufferView>(".xml",		"text/xml")
+};
+
+#ifndef NDEBUG
+
+	static int testMimeTypeMap();
+
+	static const int g_testMimeTypeMap = testMimeTypeMap();
+
+	static int testMimeTypeMap()
+	{
+		for (size_t i = 0; i < sizeof(mimeTypeMap) / sizeof(mimeTypeMap[0]); ++i)
+		{
+			if (i > 0)
+				ASSERT_EQUAL(mimeTypeMap[i].first > mimeTypeMap[i - 1].first, true, "mimeTypeMap is repeated/not sorted");
+		}
+		return (0);
+	}
+#endif
+
+// binary search into headersOfInterest to see if we find our target
+static int binSearch(const std::pair<BufferView, BufferView> mimeTypeMap[], size_t sizeOfLookup, const BufferView& target)
+{
+	int        		low = 0;
+	int        		high = sizeOfLookup - 1;
+	int        		mid;
+	BufferView 		midView;
+
+	if (sizeOfLookup <= 0)
+		return (-1);
+
+	while (low < high)
+	{
+		mid = low + ((high - low) / 2);
+		midView = mimeTypeMap[mid].first;
+		if (midView == target)
+			return (mid);
+		else if (midView > target)
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+	if (target != mimeTypeMap[low].first)
+		return (-1);
+
+	return (low);
+}
+
 std::string getMimeType(const std::string &path)
 {
-	// optimize this map however you see fit
-	std::map<std::string, std::string>	mimeMap;
-
-	mimeMap[".html"]	= "text/html";
-	mimeMap[".htm"]		= "text/html";
-	mimeMap[".css"]		= "text/css";
-	mimeMap[".js"]		= "text/javascript";
-	mimeMap[".xml"]		= "text/xml";
-	mimeMap[".txt"]		= "text/plain";
-	mimeMap[".json"]	= "application/json";
-	mimeMap[".jpg"]		= "image/jpeg";
-	mimeMap[".jpeg"]	= "image/jpeg";
-	mimeMap[".png"]		= "image/png";
-	mimeMap[".gif"]		= "image/gif";
-	mimeMap[".ico"]		= "image/x-icon";
-
 	size_t	dotPos = path.rfind('.');
 
 	if (dotPos != std::string::npos)
 	{
-		std::string ext = path.substr(dotPos);
-		if (mimeMap.find(ext) != mimeMap.end())
-			return (mimeMap[ext]);
+		BufferView extView = BufferView(path).substr(dotPos, path.size() - dotPos);
+		int searchPos = binSearch(mimeTypeMap, sizeof(mimeTypeMap) / sizeof(mimeTypeMap[0]), extView);
+		if (searchPos != -1)
+			return (mimeTypeMap[searchPos].second.to_string());
 	}
 
 	return ("application/octet-stream");

@@ -30,6 +30,7 @@ namespace Http
 	void	Response::receiveRequestData(const Http::RequestData& data)
 	{
 		m_responseData.requestData = &data;
+		m_responseData.targetPath = ".";
 		m_processFunction = &Response::mf_processBodyUpload;
 	}
 
