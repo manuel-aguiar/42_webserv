@@ -16,24 +16,24 @@
 #include <cstdlib>
 #include <climits>
 
-static const char* contentDispositionFind = "Content-Disposition";
-static const char* contentDispositionNameFind = "name=\"";
-static const char* contentDispositionFilenameFind = "filename=\"";
+static const BufferView contentDispositionFind			("Content-Disposition");
+static const BufferView contentDispositionNameFind		("name=\"");
+static const BufferView contentDispositionFilenameFind	("filename=\"");
 
 #ifndef NDEBUG
 	static int testHeadersOfInterest();
 	static const int g_testHeadersOfInterest = testHeadersOfInterest();
 	static int testHeadersOfInterest()
 	{
-		std::string test = contentDispositionFind;
+		std::string test = contentDispositionFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() 
-			== BufferView(contentDispositionFind), true, "contentDispositionFind is not correctly formated");
-		test = contentDispositionNameFind;
+			== contentDispositionFind, true, "contentDispositionFind is not correctly formated");
+		test = contentDispositionNameFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
-			== BufferView(contentDispositionNameFind), true, "contentDispositionNameFind is not correctly formated");	
-		test = contentDispositionFilenameFind;
+			== contentDispositionNameFind, true, "contentDispositionNameFind is not correctly formated");	
+		test = contentDispositionFilenameFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
-			== BufferView(contentDispositionFilenameFind), true, "contentDispositionFilenameFind is not correctly formated");
+			== contentDispositionFilenameFind, true, "contentDispositionFilenameFind is not correctly formated");
 		return (0);
 	}
 #endif
@@ -154,15 +154,16 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		BufferView key = thisHeader.substr(0, keyPos).trim(" \r\v\t\n").modify_ToCapitalized();
 
-		if (key != BufferView(contentDispositionFind))
+		if (key != contentDispositionFind)
 			continue ;
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			const BufferView nameFind(contentDispositionNameFind);
-			size_t nameStart = value.find(nameFind);
+			size_t nameStart = value.find(contentDispositionNameFind);
 			if (nameStart != BufferView::npos)
 			{
-				value = value.substr(nameStart + nameFind.size(), value.size() - nameStart - nameFind.size());
+				value = value.substr(nameStart 
+									+ contentDispositionNameFind.size(), 
+									value.size() - nameStart - contentDispositionNameFind.size());
 				size_t nameEnd = value.find('\"');
 				if (nameEnd != BufferView::npos)
 					m_data.multipart_Name = value.substr(0, nameEnd).to_string();
@@ -171,11 +172,12 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		{	// getting the "filename" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			const BufferView filenameFind(contentDispositionFilenameFind);
-			size_t nameStart = value.find(filenameFind);
+			size_t nameStart = value.find(contentDispositionFilenameFind);
 			if (nameStart != BufferView::npos)
 			{
-				value = value.substr(nameStart + filenameFind.size(), value.size() - nameStart - filenameFind.size());
+				value = value.substr(nameStart + 
+						contentDispositionFilenameFind.size(), 
+						value.size() - nameStart - contentDispositionFilenameFind.size());
 				size_t nameEnd = value.find('\"');
 				if (nameEnd != BufferView::npos)
 					m_data.multipart_Filename = value.substr(0, nameEnd).to_string();
@@ -243,7 +245,7 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 	size_t 		moveForward = m_data.multipart_Boundary.size() + bodyDelimiter.size();
 	size_t 		chunkEnd;
 
-	if (remaining.size() <= moveForward) // can't checkout "--" + boundary, may save accidentallys
+	if (remaining.size() <= moveForward)
 		return (remaining);
 
 	size_t doubleHifenBoundary = findDelimiterAndBoundary(remaining, bodyDelimiter, BufferView(m_data.multipart_Boundary));

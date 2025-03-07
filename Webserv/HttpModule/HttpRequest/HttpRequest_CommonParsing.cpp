@@ -23,9 +23,7 @@ static const BufferView chunkedFind			("chunked");
 #ifndef NDEBUG
 
 	static int testHeadersOfInterest();
-
 	static const int g_testHeadersOfInterest = testHeadersOfInterest();
-
 	static int testHeadersOfInterest()
 	{
 		std::string test = contentLengthFind.to_string();
