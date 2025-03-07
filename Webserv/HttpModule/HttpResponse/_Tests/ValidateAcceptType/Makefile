@@ -13,7 +13,9 @@ OBJ_PATH				=		$(ROOT_PATH)/_build/debug
 
 SRCS_TEST				=		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/_Tests/ValidateAcceptType/main.cpp \
 								\
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp
+								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
+								\
+								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp
 
 SRCS_COMMON				=		
 								
