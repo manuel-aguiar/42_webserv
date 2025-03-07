@@ -39,6 +39,7 @@ namespace Http
     , targetExtension()
     , targetType(FilesUtils::UNDEFINED)
     , indexAppended(false)
+    , errorMessage(DEFAULT_ERROR_MESSAGE)
     , cgiPass(false)
     , closeAfterSending(false) {}
 
@@ -54,6 +55,7 @@ namespace Http
     , targetExtension(copy.targetExtension)
     , targetType(copy.targetType)
     , indexAppended(copy.indexAppended)
+    , errorMessage(copy.errorMessage)
     , cgiPass(copy.cgiPass)
     , closeAfterSending(copy.closeAfterSending)
      {}
@@ -74,6 +76,7 @@ namespace Http
         targetType = assign.targetType;
         closeAfterSending = assign.closeAfterSending;
 		indexAppended = assign.indexAppended;
+		errorMessage = assign.errorMessage;
         cgiPass = assign.cgiPass;
 	
         return (*this);
@@ -91,9 +94,11 @@ namespace Http
         targetPath.clear();
         targetExtension.clear();
         targetType = FilesUtils::UNDEFINED;
+        errorMessage = DEFAULT_ERROR_MESSAGE;
         cgiPass = false;
         closeAfterSending = false;
 		indexAppended = false;
+		errorMessage.clear();
     }
 ///////////////////////////////////////////////////////////
 

@@ -72,7 +72,7 @@ class ServerConfig
 		void										setTimeoutKeepAlive(const std::string &value);	
 		void										addCgiInterpreter(const std::string &value);
 
-		int											parseConfigFile();
+		bool										parseConfigFile();
 		// Debug
 		void										printProgramConfig() const;
 		void										printConfigs() const;
