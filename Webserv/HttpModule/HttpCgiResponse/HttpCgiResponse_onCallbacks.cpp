@@ -29,7 +29,7 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
-		m_cgiRequest->setNotify_onError(NULL); // disable further notifications
+		m_cgiRequest->setNotify_onError(NULL);
 		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		m_responseData->cgiPass = false;
@@ -72,7 +72,7 @@ namespace Http
 		if (m_statusCode != Cgi::RequestConsts::Status::SUCCESS
 		||	!checkForbiddenHeaders(headers.getHeaders()))
 		{
-			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
+			m_cgiRequest->setNotify_onError(NULL);
 			mf_finishAndRelease();
 			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
