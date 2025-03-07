@@ -2,7 +2,7 @@
 ## Main Webserv Makefile ##
 ###########################
 
-NAME 					= 		webserv-redir.out
+NAME 					= 		webserv-static.out
 CXX						=		c++
 CXXFLAGS				=		-Wall -Wextra -Werror -Wpedantic -std=c++98 -MMD -MP
 

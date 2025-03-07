@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Webserv Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1>My Webserv Blog</h1>
+        <p>A simple personal blog served by Webserv</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/images/">Images</a></li>
+            <li><a href="/docs/">Documents</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <main>
+            <article class="blog-post">
+                <h2>Welcome to My Webserv Blog</h2>
+                <div class="post-meta">Posted on March 7, 2023 | Tags: <span class="tag">webserv</span> <span class="tag">introduction</span></div>
+                <p>
+                    Welcome to my personal blog powered by Webserv! This is a simple static site that demonstrates
+                    the capabilities of our custom HTTP server implementation. The server supports directory listing,
+                    static file serving, and various other HTTP features.
+                </p>
+                <p>
+                    This blog is designed to showcase how you can create a simple yet effective personal website
+                    using our Webserv project. Feel free to explore the different sections and features.
+                </p>
+            </article>
+
+            <article class="blog-post">
+                <h2>Directory Listing Feature</h2>
+                <div class="post-meta">Posted on March 6, 2023 | Tags: <span class="tag">directory-listing</span> <span class="tag">feature</span></div>
+                <p>
+                    One of the key features of Webserv is directory listing. When enabled using the <code>auto_index 1</code>
+                    directive in the server configuration, Webserv will generate a list of files and directories when no index
+                    file is present.
+                </p>
+                <p>
+                    You can see this feature in action by visiting the following directories:
+                </p>
+                <ul>
+                    <li><a href="/images/">Images Directory</a> - Browse images and media files</li>
+                    <li><a href="/docs/">Documents Directory</a> - Browse documentation files</li>
+                </ul>
+                <p>
+                    The directory listing feature is particularly useful for sharing files with others or creating a simple
+                    file browser interface without the need for complex server-side scripting.
+                </p>
+            </article>
+
+            <article class="blog-post">
+                <h2>HTTP Redirection in Webserv</h2>
+                <div class="post-meta">Posted on March 5, 2023 | Tags: <span class="tag">redirection</span> <span class="tag">http</span></div>
+                <p>
+                    Webserv implements HTTP redirection according to the standards. We support various redirection status codes:
+                </p>
+                <ul>
+                    <li>301 - Moved Permanently</li>
+                    <li>302 - Found (Temporary Redirect)</li>
+                    <li>307 - Temporary Redirect (preserves method)</li>
+                    <li>308 - Permanent Redirect (preserves method)</li>
+                </ul>
+                <p>
+                    Check out these examples:
+                </p>
+                <ul>
+                    <li><a href="/old-images">Redirect to Images (301)</a></li>
+                    <li><a href="/old-docs">Redirect to Documents (302)</a></li>
+                    <li><a href="/external">External Redirect (42.fr)</a></li>
+                </ul>
+            </article>
+
+            <section id="about" class="blog-post">
+                <h2>About This Blog</h2>
+                <p>
+                    This blog is a demonstration of a static site served by Webserv, a custom HTTP server implementation
+                    created as part of the 42 curriculum. The goal of the Webserv project is to create a web server that
+                    can handle HTTP/1.1 requests and responses, similar to Nginx.
+                </p>
+                <p>
+                    Features of our Webserv implementation include:
+                </p>
+                <ul>
+                    <li>Static file serving</li>
+                    <li>Directory listing</li>
+                    <li>HTTP redirections</li>
+                    <li>Custom error pages</li>
+                    <li>Multiple virtual servers</li>
+                </ul>
+            </section>
+
+            <section class="directory-listing">
+                <h2>Directory Listing Navigation</h2>
+                <p>Explore the following directories with auto-indexing enabled:</p>
+                <ul>
+                    <li><a href="/images/">Images Directory</a> - Contains images and media files</li>
+                    <li><a href="/docs/">Documents Directory</a> - Contains documentation and text files</li>
+                </ul>
+            </section>
+        </main>
+
+        <aside>
+            <section class="sidebar-section">
+                <h3>About Me</h3>
+                <p>I'm a student at 42, working on web development projects. This blog is my showcase for the Webserv project.</p>
+            </section>
+
+            <section class="sidebar-section">
+                <h3>Recent Posts</h3>
+                <ul>
+                    <li><a href="#">Welcome to My Webserv Blog</a></li>
+                    <li><a href="#">Directory Listing Feature</a></li>
+                    <li><a href="#">HTTP Redirection in Webserv</a></li>
+                </ul>
+            </section>
+
+            <section class="sidebar-section">
+                <h3>Tags</h3>
+                <div class="tag-list">
+                    <span class="tag">webserv</span>
+                    <span class="tag">http</span>
+                    <span class="tag">42</span>
+                    <span class="tag">directory-listing</span>
+                    <span class="tag">redirection</span>
+                    <span class="tag">feature</span>
+                </div>
+            </section>
+
+            <section class="sidebar-section">
+                <h3>Image Gallery Preview</h3>
+                <div class="image-gallery">
+                    <div class="image-item">Image 1</div>
+                    <div class="image-item">Image 2</div>
+                    <div class="image-item">Image 3</div>
+                    <div class="image-item">Image 4</div>
+                </div>
+                <p><a href="/images/">View All Images</a></p>
+            </section>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Webserv Blog - A 42 Project</p>
+    </footer>
+</body>
+</html>

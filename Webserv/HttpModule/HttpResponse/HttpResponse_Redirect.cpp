@@ -75,10 +75,7 @@ namespace Http
 
         // building the location first
         if (isAbsoluteUrl(redirectPath))
-        {
-            std::cout << "Absolute URL??" << redirectPath << std::endl;
             m_responseData.headers["location"] = redirectPath;
-        }
         else
         {
             std::string host;
@@ -88,7 +85,6 @@ namespace Http
             else if (!m_responseData.serverBlock->getServerNames().empty())
                 host = *m_responseData.serverBlock->getServerNames().begin(); // over server names
 
-            std::cout << "Host: " << host << std::endl;
             m_responseData.headers["location"] = buildLocationHeader(host, redirectPath);
         }
 
