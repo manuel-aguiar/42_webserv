@@ -1,6 +1,8 @@
 
 
-# include "HttpResponse.hpp"
+#include "HttpResponse.hpp"
+#include "../../ServerConfig/ServerLocation/ServerLocation.hpp"
+#include "../../ServerConfig/ServerBlock/ServerBlock.hpp"
 
 namespace Http
 {
@@ -22,6 +24,7 @@ namespace Http
 	BufferView
 	Response::mf_processBodyUpload(const BufferView& view)
 	{
+		std::cout << "---mf_processBodyUpload-" << std::endl;
 		BufferView		remaining;
 		int 			bytesWritten = 0;
 		
@@ -41,6 +44,7 @@ namespace Http
 				mf_prepareErrorMessage();
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				m_responseData.requestStatus = Http::Status::OK;
+				std::cout << "file uploaded " << m_responseData.targetPath << std::endl;
 			}
 			return (BufferView());
 		}
@@ -50,12 +54,36 @@ namespace Http
 			//std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
 		}
+
+		std::string fullPath;
 		
 		if (BufferView(m_responseData.requestData->multipart_Filename) != m_file.name())
 		{
-			std::string fullPath = m_responseData.targetPath 
+			ASSERT_EQUAL(m_responseData.serverLocation != NULL, true, "Response: ServerLocation not set");
+			ASSERT_EQUAL(m_responseData.serverBlock != NULL, true, "Response: ServerBlock not set");
+
+			if (!m_responseData.serverLocation->getUploadPath().empty())
+			{
+				fullPath = m_responseData.serverLocation->getUploadPath()
+							+ "/"
+							+ m_responseData.requestData->multipart_Filename;
+			}
+			else
+			{
+				std::cout << "uploading file to " << m_responseData.targetPath << std::endl;
+				if (!m_responseData.serverLocation->getRoot().empty())
+				{
+					fullPath = m_responseData.serverLocation->getRoot()
 								+ "/" 
 								+ m_responseData.requestData->multipart_Filename;
+				}
+				else
+				{
+					fullPath = m_responseData.serverBlock->getRoot()
+								+ "/"
+								+ m_responseData.requestData->multipart_Filename;
+				}
+			}
 			if (!m_file.open(fullPath.c_str(),
 				O_CREAT | O_RDWR | O_TRUNC, 0666))
 				goto exitFailure;

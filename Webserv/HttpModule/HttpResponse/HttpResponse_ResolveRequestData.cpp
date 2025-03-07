@@ -1,5 +1,3 @@
-
-
 # include "HttpResponse.hpp"
 # include "../HttpModule/HttpModule.hpp"
 # include "../HttpCgiInterface/HttpCgiInterface.hpp"
@@ -51,6 +49,11 @@ namespace Http
 		// Find Location
 		mf_findLocation(m_responseData);
 
+		std::cout << "\033[32m---Server and Location-------------------------\033[0m" << std::endl;
+		std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
+		std::cout << "Location: " << m_responseData.serverLocation << std::endl;
+		std::cout << "--------------------------------" << std::endl;
+
 		return (true);
 	}
 
@@ -69,6 +72,27 @@ namespace Http
 		return (true);
 	}
 
+	bool Response::mf_checkUpload()
+	{
+		if (m_responseData.requestData->method == "POST"
+			&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0)
+		{
+			if (m_responseData.serverLocation != NULL
+				&& m_responseData.serverLocation->getAllowUpload() == true)
+			{
+				m_responseData.responseType = ResponseData::FILE_UPLOAD;
+				return (true);
+			}
+			else
+			{
+				m_responseData.requestStatus = Http::Status::FORBIDDEN;
+				m_responseData.responseType = ResponseData::ERROR;
+				return (false);
+			}
+		}
+		return (false);
+	}
+
 	void Response::mf_validateTargetPath()
 	{
 		mf_assembleTargetPath();
@@ -76,6 +100,7 @@ namespace Http
 		m_responseData.targetType = FilesUtils::getFileType(m_responseData.targetPath.c_str());
 		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator acceptHeader;
 
+		std::cout << "-mf_validateTargetPath-" << std::endl;
 		switch (m_responseData.targetType)
 		{
 			case FilesUtils::REGULAR_FILE:
@@ -134,13 +159,6 @@ namespace Http
 					m_responseData.responseType = ResponseData::REDIRECT;
 					m_responseData.requestStatus = Http::Status::MOVED_PERMANENTLY;
 					mf_addHeader("location", m_responseData.requestData->path + "/");
-					return ;
-				}
-				// Upload
-				if (m_responseData.requestData->method == "POST"
-					&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0) // Please review this comparison
-				{
-					m_responseData.responseType = ResponseData::FILE_UPLOAD;
 					return ;
 				}
 				// Autoindex default is 0, so if we dont have a location, 403.

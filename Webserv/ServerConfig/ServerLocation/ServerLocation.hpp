@@ -53,7 +53,8 @@ class ServerLocation
 										getCgiInterpreters() const;
 		const std::string&				getIndex() const;
 		const std::pair<int, std::string>&	getReturn() const;
-
+		const std::string&				getUploadPath() const;
+		bool							getAllowUpload() const;
 		void							setType(const std::string &value);
 		void							setPath(const std::string &value);
 		void							setRoot(const std::string &value);
@@ -62,7 +63,8 @@ class ServerLocation
 		void							addCgiInterpreter(const std::string &value);
 		void							setIndex(const std::string &value);
 		void							setReturn(const std::string &value);
-
+		void							setUploadPath(const std::string &value);
+		void							setAllowUpload(const std::string &value);
 		bool							fillInheritedSettings(const ServerConfig& config);
 
 		void							setDefaults(const DefaultConfig& defaultConfig);
@@ -105,8 +107,8 @@ class ServerLocation
 		Config::CgiInterpreterMap		 m_cgiInterpreters;
 		std::string						m_index;
 		std::pair<int, std::string>		m_return;
-
-
+		std::string						m_uploadPath;
+		bool							m_allowUpload;
 		// some cgi stuff with path and extension here
 		// some redirection stuff with URL to follow here
 };
