@@ -56,8 +56,6 @@ namespace Http
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
 
-		std::cout << "responseType: " << m_responseData.responseType << std::endl;
-		
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::STATIC:
@@ -94,7 +92,9 @@ namespace Http
 				mf_addHeader("content-length", "0");
 				m_fillFunctionBody = &Response::mf_fillFinish;
 				break ;
-			default:
+			case ResponseData::UNDEFINED:
+				m_processFunction = &Response::mf_processBodyIgnore;
+				mf_prepareErrorMessage();
 				break ;
 		}
 

@@ -31,7 +31,8 @@ int BaseBuffer::read(const Ws::fd fd, const int startIndex)
 
     bytesRead = ::read(fd, m_begin + startIndex, capacity() - startIndex);
 
-    m_size = startIndex + bytesRead;
+    if (bytesRead > 0)
+        m_size = startIndex + bytesRead;
     return (bytesRead);
 }
 
@@ -41,7 +42,8 @@ int BaseBuffer::readAppend(const Ws::fd fd, size_t maxBytes)
 
     bytesRead = ::read(fd, m_begin + m_size, std::min(capacity() - m_size, maxBytes));
 
-    m_size += bytesRead;
+    if (bytesRead > 0)
+        m_size += bytesRead;
     return (bytesRead);
 }
 
@@ -52,7 +54,8 @@ int BaseBuffer::write(Ws::fd fd, int startIndex)
 
     int bytesWritten = ::write(fd, m_begin + startIndex, m_size - startIndex);
     
-    m_writeOffset += bytesWritten;
+    if (bytesWritten > 0)
+        m_writeOffset += bytesWritten;
 
     return (bytesWritten);
 }
@@ -114,6 +117,12 @@ void BaseBuffer::push(const BufferView& data)
     
     std::memmove(m_begin + m_size, data.data(), data.size());
     m_size += data.size();
+}
+
+void BaseBuffer::pop(size_t size)
+{
+    ASSERT_EQUAL(size <= m_size, true, "BaseBuffer::pop(): size to pop is beyond buffer size");
+    m_size -= size;
 }
 
 void BaseBuffer::truncatePush(const char* data)

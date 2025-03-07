@@ -118,11 +118,10 @@ Request::read()
 	ASSERT_EQUAL(m_readBuffer != NULL, true, "Request::read(): request has no read buffer assigned");
 	ASSERT_EQUAL(m_readFd != Ws::FD_NONE, true, "Request::read(): request has no read fd assigned");
 
-	if (m_parsingState == COMPLETED || m_readBuffer->available() == 0)
+	if (m_parsingState == COMPLETED || m_parsingState == ERROR || m_readBuffer->available() == 0)
 		return (Http::IOStatus::WAITING);
 
 	int readBytes = m_readBuffer->read(m_readFd, m_readBuffer->size() == m_readBuffer->capacity() ? 0 : m_readBuffer->size());
-
 	if (readBytes <= 0)
 		return (Http::IOStatus::MARK_TO_CLOSE);
 	return (Http::IOStatus::WAITING);
@@ -138,7 +137,6 @@ Request::parse()
 	bool cgiPass = (m_httpResponse && m_httpResponse->getResponseData().cgiPass == true);
 	if (cgiPass && m_parsingState == BODY)
 		return (Http::IOStatus::WAITING);
-
 	return (mf_innerParse());
 }
 
@@ -189,7 +187,7 @@ BufferView Request::mf_handleNothing(const BufferView& remaining)
 BufferView Http::Request::mf_parseBodyExitError(const BufferView& remaining, const Http::Status::Number status)
 {
 	(void)remaining;
-    m_parsingState = ERROR;
+    m_parsingState = COMPLETED;
     m_data.status = status;
 
     if (m_httpResponse)

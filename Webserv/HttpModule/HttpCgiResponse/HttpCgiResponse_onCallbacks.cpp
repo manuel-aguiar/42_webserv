@@ -29,10 +29,13 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
+		m_cgiRequest->setNotify_onError(NULL); // disable further notifications
 		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
-		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
-			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+		m_responseData->cgiPass = false;
+		m_responseData->closeAfterSending = true;
+		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+		m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 	}
 
 	Cgi::IO::State
