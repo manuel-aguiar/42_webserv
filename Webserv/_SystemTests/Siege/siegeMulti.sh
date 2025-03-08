@@ -13,7 +13,7 @@ SERVER_LOG="$SCRIPT_DIR/serverMulti.log"
 RUN_TIME="10s"  # Duration for siege
 CONCURRENCY="100" # Concurrent users for siege
 
-make -C ../../../MultiServer/
+make debug -C ../../../MultiServer/
 # Start the web server
 echo "Starting web server..."
 valgrind --tool=helgrind $SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
