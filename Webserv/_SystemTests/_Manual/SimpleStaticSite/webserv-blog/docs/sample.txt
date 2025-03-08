@@ -2,5 +2,3 @@ This is a sample text document in the docs directory.
 
 The docs directory has directory listing enabled with auto_index 1 in the server configuration.
 This allows users to browse all files in this directory.
-
-When accessing the /docs/ URL, if no index.html file is present, a directory listing will be automatically generated.
