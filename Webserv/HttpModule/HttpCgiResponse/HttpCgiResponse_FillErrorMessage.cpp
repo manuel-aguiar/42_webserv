@@ -54,7 +54,7 @@ namespace Http
                 return (mf_fillErrorFile(writeBuffer));
             }
         }
-        m_defaultErrorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");
+        m_defaultErrorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "Bad Server-Side Script");
 		writeBuffer.push("Content-Length: ", 16);
         writeBuffer.push(BufferView(StringUtils::to_string(m_defaultErrorPage.size()).c_str()));
         writeBuffer.push("\r\n", 2);
