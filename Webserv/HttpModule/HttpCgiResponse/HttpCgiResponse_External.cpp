@@ -141,9 +141,10 @@ namespace Http
 		// SERVER_SOFTWARE Webserv
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_SOFTWARE, "42_webserv");
 		
-		m_module.enqueueRequest(*m_cgiRequest, true);
-
+		m_fillFunction = &CgiResponse::mf_fillExpectContinue;
         m_processHttpBody = &CgiResponse::mf_HttpBodySend;
+
+		m_module.enqueueRequest(*m_cgiRequest, true);
 
 		return (true);
 	}
