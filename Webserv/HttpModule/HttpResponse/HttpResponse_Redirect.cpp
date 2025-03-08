@@ -45,8 +45,6 @@ namespace Http
     // https://www.rfc-editor.org/rfc/rfc9110.html#name-redirection-3xx
     bool Response::mf_checkRedirect()
     {
-        ASSERT_EQUAL(m_responseData.serverBlock != NULL, true, "Server block is NULL");
-
 		if (m_responseData.serverLocation == NULL)
 			return (false);
 
@@ -94,6 +92,8 @@ namespace Http
             if (shouldPreserveMethod(m_responseData.requestStatus)) // 307, 308
             {
                 m_responseData.headers["allow-method"] = m_responseData.requestData->method;
+                if (m_responseData.serverLocation->getPath() == "/")
+                    m_responseData.headers["location"] = m_responseData.headers["location"] + m_responseData.requestData->uri;
             }
             else if (shouldConvertToGet(m_responseData.requestStatus) &&
                      m_responseData.requestData->method == "POST")
