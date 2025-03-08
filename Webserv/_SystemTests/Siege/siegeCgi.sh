@@ -6,6 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Define absolute paths based on the script's location
 SERVER_BINARY="$SCRIPT_DIR/../../../webserv"
 CONFIG_FILE="$SCRIPT_DIR/SiegeFight.conf"
+URLS_FILE="$SCRIPT_DIR/urlsCgi.txt"
 SIEGE_LOG="$SCRIPT_DIR/siegeCgi_results.log"
 SERVER_LOG="$SCRIPT_DIR/serverCgi.log"
 
@@ -15,7 +16,7 @@ CONCURRENCY="100" # Concurrent users for siege
 make -C ../../../
 # Start the web server
 echo "Starting web server..."
-$SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
+valgrind --track-fds=yes $SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
 SERVER_PID=$!
 
 # Give server time to start
@@ -31,7 +32,7 @@ echo "Web server started with PID $SERVER_PID"
 
 # Run Siege tests in parallel
 echo "Starting Siege load test..."
-siege -c$CONCURRENCY -t$RUN_TIME "http://localhost:8080/statusfixed.log" --log=$SIEGE_LOG
+siege -c$CONCURRENCY -t$RUN_TIME -f $URLS_FILE --log=$SIEGE_LOG
 
 # Capture siege exit code
 SIEGE_EXIT_CODE=$?
