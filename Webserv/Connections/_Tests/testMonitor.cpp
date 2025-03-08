@@ -131,7 +131,7 @@ void testMonitor(int& testNumber)
         // successfully asserts in case the monitor doesn't return the subscription
         monitor.release();
 
-        EXPECT_EQUAL(calculator.getData(), Calculator::RESULT, "Failed to call the user function");
+        EXPECT_EQUAL(calculator.getData(), (int)Calculator::RESULT, "Failed to call the user function");
 
         EXPECT_EQUAL(eventManager.getMonitoringCount(), 0, "Monitor::release() should have removed the subscription from the event manager");
 
