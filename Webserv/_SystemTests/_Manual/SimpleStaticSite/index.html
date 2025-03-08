@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42 Webserv Project</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1>42 Webserv Project</h1>
+        <p>A custom HTTP/1.1 server implementation</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/images/">Images</a></li>
+            <li><a href="/docs/">Documents</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#tests">Test Cases</a></li>
+            <li><a href="/docs/about.html">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <main>
+            <article class="blog-post">
+                <h2>Welcome to Our Webserv Project</h2>
+                <div class="post-meta">42 School Project | Tags: <span class="tag">webserv</span> <span class="tag">http</span> <span class="tag">c++</span></div>
+                <p>
+                    Welcome to the demonstration site for our custom HTTP/1.1 server implementation.
+                    This static site showcases the capabilities of our server developed as part of the
+                    42 curriculum by a team of three students.
+                </p>
+            </article>
+
+            <section id="features" class="blog-post">
+                <h2>Webserv Features</h2>
+                <ul>
+                    <li><strong>HTTP/1.1 Compliance</strong> - Standard-compliant request and response handling</li>
+                    <li><strong>Multiple Virtual Servers</strong> - Support for different server configurations</li>
+                    <li><strong>Static File Serving</strong> - Efficiently serving various file types</li>
+                    <li><strong>Directory Listing</strong> - Auto-indexing of directories</li>
+                    <li><strong>HTTP Redirections</strong> - Support for 301, 302, 307, and 308 redirects</li>
+                    <li><strong>Custom Error Pages</strong> - Configurable error responses</li>
+                    <li><strong>File Uploads</strong> - Support for multipart form data</li>
+                    <li><strong>CGI Execution</strong> - Dynamic content generation via script interpreters</li>
+                    <li><strong>Configurable Limits</strong> - Control resource usage with configurable limits</li>
+                </ul>
+                <p>
+                    Learn more about <a href="/server_config.html">server configuration options</a> and how to set up your own Webserv instance.
+                </p>
+            </section>
+
+            <section id="tests" class="blog-post">
+                <h2>Test Cases</h2>
+
+                <h3>HTTP Redirection Tests</h3>
+                <ul>
+                    <li><a href="/301-test">301 Moved Permanently</a></li>
+                    <li><a href="/302-test">302 Found</a></li>
+                    <li><a href="/307-test">307 Temporary Redirect (preserves method)</a></li>
+                    <li><a href="/308-test">308 Permanent Redirect (preserves method)</a></li>
+                    <li><a href="/external">External Redirect (42.fr)</a></li>
+                </ul>
+
+                <h3>Server Feature Tests</h3>
+                <ul>
+                    <li><a href="/images/gallery.html">Image Gallery & Upload Bucket</a> - Upload and view images</li>
+                    <li><a href="/error_demo.html">Error Pages Demo</a> - Test our custom error handling</li>
+                    <li><a href="/server_config.html">Server Configuration</a> - Learn how to configure Webserv features</li>
+                    <li><a href="/images/">Directory Listing Example</a> - Auto-indexing demonstration</li>
+                    <li><a href="/large-file.bin">Large File Download</a> - Chunked transfer encoding</li>
+                </ul>
+
+                <h3>HTTP Method Tests</h3>
+                <ul>
+                    <li>
+                        <form action="/form-test" method="POST">
+                            <input type="text" name="test_field" placeholder="Enter text">
+                            <button type="submit">Test POST Method</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="/upload" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="test_file">
+                            <button type="submit">Test File Upload</button>
+                        </form>
+                    </li>
+                </ul>
+
+                <h3>CGI Tests</h3>
+                <p class="note" style="background-color: #e8f4fc; padding: 10px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
+                    <strong>Note:</strong> CGI scripts require proper server configuration to run. The server must be configured to:
+                    <br>1) Map file extensions (.py, .php) to appropriate interpreters
+                    <br>2) Allow CGI execution in specific locations
+                    <br>3) Set proper permissions on script files
+                    <br>See our <a href="/server_config.html#basic-cgi">CGI Configuration Guide</a> for details.
+                </p>
+                <ul>
+                    <li><a href="/cgi-bin/calculator.py">Interactive Calculator</a> - Form processing with calculation</li>
+                    <li><a href="/cgi-bin/info.py">Server Information Script</a> - Environment details</li>
+                    <li><a href="/cgi-bin/env.py">Environment Variables</a> - View all ENV variables</li>
+                    <li>
+                        <form action="/cgi-bin/form.py" method="POST">
+                            <input type="text" name="user_input" placeholder="Your name">
+                            <button type="submit">CGI Form Processing</button>
+                        </form>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <aside>
+            <section class="sidebar-section">
+                <h3>About The Team</h3>
+                <p>This webserver was built by a team of three 42 students as part of the curriculum's system programming track.</p>
+                <p><a href="/docs/about.html">Learn more about us</a></p>
+            </section>
+
+            <section class="sidebar-section">
+                <h3>Server Status</h3>
+                <ul>
+                    <li>Status: <span style="color: green;">Running</span></li>
+                    <li>Uptime: <span id="uptime">Loading...</span></li>
+                    <li>Active connections: <span id="connections">Loading...</span></li>
+                </ul>
+                <script>
+                    // Simple mock for demonstration
+                    document.getElementById('uptime').textContent = Math.floor(Math.random() * 24) + ' hours';
+                    document.getElementById('connections').textContent = Math.floor(Math.random() * 10);
+                </script>
+            </section>
+
+            <section class="sidebar-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#features">Server Features</a></li>
+                    <li><a href="#tests">Test Cases</a></li>
+                    <li><a href="https://github.com/manuel-aguiar/42_webserv.git" target="_blank">GitHub Repository</a></li>
+                </ul>
+            </section>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 42 Webserv Project - Created by a team of three 42 students</p>
+    </footer>
+</body>
+</html>
