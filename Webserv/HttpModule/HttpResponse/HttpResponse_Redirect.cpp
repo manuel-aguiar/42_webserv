@@ -75,9 +75,7 @@ namespace Http
 
         // building the location first
         if (isAbsoluteUrl(redirectPath))
-        {
             m_responseData.headers["location"] = redirectPath;
-        }
         else
         {
             std::string host;

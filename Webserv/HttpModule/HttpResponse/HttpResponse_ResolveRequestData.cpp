@@ -107,7 +107,7 @@ namespace Http
 			{
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				m_responseData.responseType = ResponseData::ERROR;
-				return (false);
+				return (true);
 			}
 		}
 		return (false);

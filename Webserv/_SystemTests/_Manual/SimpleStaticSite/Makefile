@@ -2,7 +2,7 @@
 ## Main Webserv Makefile ##
 ###########################
 
-NAME 					= 		webserv-redir.out
+NAME 					= 		webserv-static.out
 CXX						=		c++
 CXXFLAGS				=		-Wall -Wextra -Werror -Wpedantic -std=c++98 -MMD -MP
 
@@ -53,9 +53,9 @@ SRCS 					=																			\
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_CommonParsing.cpp \
 		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_CommonParsing.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyChunked.cpp \
@@ -66,7 +66,6 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
-		\
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
 		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
@@ -166,6 +165,7 @@ DEPS               		=       $(OBJS:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
+   # @echo 'redir-local.com 127.0.0.1' | sudo tee -a /etc/hosts
 	$(CXX) $(CXXFLAGS)  $(OBJS) -o $(NAME)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp

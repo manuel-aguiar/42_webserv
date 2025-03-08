@@ -122,35 +122,6 @@ const std::set<std::string>&	ServerLocation::getMethods() const
 		throw std::out_of_range("Key not found");
 }
 
-int	ServerLocation::getType() const
-{
-	std::map<std::string, std::set<std::string> >::const_iterator it = m_config.find("type");
-
-	if (it != m_config.end())
-	{
-		if (*it->second.begin() == "regular")
-			return (E_LOCATION_REGULAR);
-		else if (*it->second.begin() == "redirection")
-			return (E_LOCATION_REDIRECTION);
-		else if (*it->second.begin() == "cgi")
-			return (E_LOCATION_CGI);
-	}
-	else
-		throw std::out_of_range("Key not found");
-	return (-1);
-}
-
-void		ServerLocation::setType(const std::string &value, const int &flag)
-{
-	if (!flag && !m_config["type"].empty())
-		throw (std::invalid_argument("type already set"));
-	if (m_validTypes.find(value) == m_validTypes.end())
-		throw (std::invalid_argument("invalid type value"));
-	m_config["type"].clear();
-	m_config["type"].insert(value);
-
-}
-
 void		ServerLocation::setPath(const std::string &value, const int &flag)
 {
 	if (!flag && !m_config["path"].empty())
@@ -239,7 +210,6 @@ void		ServerLocation::printLocationConfig() const
 	std::cout << "║ │ ┌─ Location ──┐" << std::endl;
 	std::cout << "║ │ │ path: " << getPath() << std::endl;
 	std::cout << "║ │ │ root: " << getRoot() << std::endl;
-	std::cout << "║ │ │ type: " << getType() << std::endl;
 	std::cout << "║ │ │ autoIndex: " << getAutoindex() << std::endl;
 	std::cout << "║ │ └ methods: ";
 	for (std::set<std::string>::const_iterator it = getMethods().begin(); it != getMethods().end(); it++)
