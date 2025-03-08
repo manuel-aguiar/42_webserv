@@ -26,5 +26,7 @@ test_case() {
 }
 
 # Define tests
-test_case "test1" "GET" "/"			"../_Testfiles/index.html"
-test_case "test2" "GET" "/upload"	"../_Testfiles/upload/index.html"
+test_case "test1" "GET" "/"			                "../_Testfiles/index1.html"
+test_case "test2" "GET" "/upload"	                "../_Testfiles/upload/index.html"
+test_case "test3" "GET" "/pathtest/one/two/three"	"../_Testfiles/index2.html"
+
