@@ -10,3 +10,4 @@ for i in $(seq -w 1 10000); do
 done
 
 echo "10,000 folders created in $PARENT_DIR."
+
