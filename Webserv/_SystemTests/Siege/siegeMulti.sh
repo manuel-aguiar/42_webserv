@@ -4,19 +4,19 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Define absolute paths based on the script's location
-SERVER_BINARY="$SCRIPT_DIR/../../../webserv"
+SERVER_BINARY="$SCRIPT_DIR/../../../MultiServer/multiserv"
 CONFIG_FILE="$SCRIPT_DIR/SiegeFight.conf"
 URLS_FILE="$SCRIPT_DIR/urls.txt"
-SIEGE_LOG="$SCRIPT_DIR/siege_results.log"
-SERVER_LOG="$SCRIPT_DIR/server.log"
+SIEGE_LOG="$SCRIPT_DIR/siege_resultsMulti.log"
+SERVER_LOG="$SCRIPT_DIR/serverMulti.log"
 
 RUN_TIME="10s"  # Duration for siege
 CONCURRENCY="100" # Concurrent users for siege
 
-make -C ../../../
+make -C ../../../MultiServer/
 # Start the web server
 echo "Starting web server..."
-valgrind --track-fds=yes $SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
+valgrind --tool=helgrind $SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
 SERVER_PID=$!
 
 # Give server time to start
