@@ -21,6 +21,7 @@ const char* getStatusMessage(int statusCode)
 	{
 		size_t i = 0;
 
+		codes[i] = Http::Status::CONTINUE;							messages[i] = "Continue";							i++;
 		codes[i] = Http::Status::OK; 								messages[i] = "OK"; 								i++;
 		codes[i] = Http::Status::CREATED; 							messages[i] = "Created"; 							i++;
 		codes[i] = Http::Status::ACCEPTED; 							messages[i] = "Accepted"; 							i++;

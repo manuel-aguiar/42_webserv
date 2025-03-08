@@ -1,0 +1,91 @@
+
+https://www.baeldung.com/cs/pipes-vs-sockets
+"
+The term socket is first coined in RFC 147 in 1971 when it was used in the ARPANET.
+"
+
+
+// specific for Internet Connections, defined in <netinet/in.h>
+struct sockaddr_in {
+	short			sin_family;   // Address family (AF_INET)
+	unsigned short   sin_port;	 // Port number (in network byte order)
+	struct in_addr   sin_addr;	 // Internet address (struct in_addr)
+};
+
+there is also sockaddr (generic), and sockaddr_un (Unix domain sockets)
+
+###########################################################################
+
+	socket
+
+#include <sys/socket.h>
+int socket(int domain, int type, int protocol);
+
+Domain -> communication domain (local, ipv4, VM, packet, netlink, bluetooth)
+Type -> type of socket 
+Protocol -> socket allows more protocols, in our case just place 0
+###########################################################################
+
+
+Creates an endpoint for communication, returns an FD
+	AF -> address family
+
+
+	AF_VSOCK -> communication between a VM and its host
+
+
+
+############################################################################
+
+	socket Type
+
+	SOCK_STREAM -> byte stream communication, used for TCP communication
+
+		It is the kernel that handles and implements the TCP/IP protocol stack
+
+		connection-oriented -> before transmission "handshake" is required to establish a connection
+		"Reliable" Data will be sent and read in order. If data is corrupted or lost, retransmits data
+
+			when data is received, the receiver sends an acknowledgement to the sender
+				if the sender doesn't receive confirmation after some time, data is resent
+			checksum by receiver checks the integrity of data, if there is a problem, receiver asks the sender to send again
+			packets are numbered such that the receiver can assemble them again in case they are received in different order
+
+		Continuous stream of bytes (like reading from a file or a pipe)
+
+		Flow Control -> acknowledgement packets to ensure the receiver can handle the data being sent
+
+			Sliding window protocol -> control the ammount of data the sender can send before needing acknowledgment from the receiver
+			Rate of transmission is dinamycally adusted dependeing on the receiver and network congestion.
+
+				Both of these serve to minimize packet loss (no need to resend again)
+
+	
+	SOCK_RAW -> doesn't follow any particular protocol
+
+
+	bitwise OR
+		SOCK_NONBLOCK
+		SOCK_CLOEXEC -> close on exec, mesma coisa que dup/dup2, para nao ter leaks
+
+
+
+
+
+
+
+
+
+"
+A SIGPIPE signal is
+	   raised if a process sends or receives on a broken stream;
+"
+
+because.... a socket is like a bi-directional pipe against incoming traffic, or...
+	two pipes together, where each user can read and write
+
+
+However, naturally, sockets underneath implement the transport protocols like TCP, UDP etcetc so they are more than just two pipes and extra buffers
+underneath. One could say nevertheless that the infrastructure for read/write is almost the same (added complexity for the same fd) as two pipes.
+
+And that's why (i think) SIGPIPE is used when a soocket breaks

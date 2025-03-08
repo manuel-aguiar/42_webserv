@@ -1,4 +1,0 @@
-
-
-
-If a server is listening for connections via TCP and the client sends the request via SCTP, the connection fails because the server is not listening

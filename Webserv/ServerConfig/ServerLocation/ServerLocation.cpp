@@ -35,7 +35,8 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 }
 
 ServerLocation::ServerLocation() :
-	m_autoIndex(DefaultConfig::UINT_NONE) {}
+	m_autoIndex(DefaultConfig::UINT_NONE),
+	m_allowUpload(false) {}
 
 
 ServerLocation::~ServerLocation()

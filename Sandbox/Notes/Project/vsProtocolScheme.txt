@@ -1,0 +1,35 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    vsProtocolScheme.txt                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/13 10:32:20 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 10:45:20 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Protocol is the set of rules by which parties abide for effective communication
+http/ftp etc
+
+Scheme is the particular part of the URL/URI, at the beginning, where said protocol
+is referenced.
+
+so, it is the part before ://
+
+However, not all schemes derive from protocols:
+
+	mailto scheme; mailto:user@example.com
+		-> if you put this on the browser it opens your default email tool and places the email ready to fire LOL
+
+	data scheme;
+		-> used to embed pieces of data directly in a URL
+
+		<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..." />
+
+				-> embeds an image directly in html
+				-> base64, 64 bit architechture
+
+
+Only one scheme per URL, though

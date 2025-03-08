@@ -1,5 +1,0 @@
-
-
-At the APPLICATION layer
-
-We will be building a http server, we are building the application layer on top of the transport layer TCP/IP

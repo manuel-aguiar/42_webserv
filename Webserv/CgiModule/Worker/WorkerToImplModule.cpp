@@ -79,9 +79,6 @@ bool	Worker::mf_prepareExecve()
 
 		m_envPtr.push_back(NULL);
 
-		//std::cout << "arg0: " << m_argPtr[0] << std::endl;
-		//std::cout << "arg1: " << m_argPtr[1] << std::endl;
-		
 		return (true);
 	}
 	catch(const std::exception& e)

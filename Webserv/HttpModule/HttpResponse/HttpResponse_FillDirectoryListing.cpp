@@ -102,8 +102,7 @@ namespace Http
 	Http::IOStatus::Type		
 	Response::mf_fillDirectoryListing_Head(BaseBuffer& writeBuffer)
 	{
-		char hexHeader[10];
-		const size_t hexHeaderSize = sizeof(hexHeader) / sizeof(hexHeader[0]);
+		const size_t hexHeaderSize = 10; // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
 		const std::string& targetPath = m_responseData.targetPath;
 		size_t dirHead_len = DirList_Header_FixedLen + 2 * targetPath.size();
 		size_t totalLength = hexHeaderSize + dirHead_len;
@@ -114,10 +113,9 @@ namespace Http
             return (Http::IOStatus::WAITING); // no room
         
         size_t currentPosition = writeBuffer.size();
-        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
+        writeBuffer.push("0", hexHeaderSize); // make room for the hex header
 
-        fillHexHeader(hexHeader, hexHeaderSize, dirHead_len);
-        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+        fillHexHeader((char*)&writeBuffer[currentPosition], hexHeaderSize, dirHead_len);
         
         writeBuffer.push(DirList_Header1, DirList_Header1_len);
 		writeBuffer.push(targetPath);
@@ -147,8 +145,7 @@ namespace Http
 	Http::IOStatus::Type		
 	Response::mf_fillDirectoryListing_Folders(BaseBuffer& writeBuffer)
 	{
-		char hexHeader[10];
-		const size_t hexHeaderSize = sizeof(hexHeader) / sizeof(hexHeader[0]);
+		const size_t hexHeaderSize = 10; // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
 		const std::string& targetPath = m_responseData.targetPath;
 		const size_t fixedEntrySize = 
 				DirList_Folder_FixedLen + 
@@ -181,7 +178,7 @@ namespace Http
 			if (curPosition == -1)
 			{
 				curPosition = writeBuffer.size();
-				writeBuffer.push(hexHeader, hexHeaderSize);
+				writeBuffer.push("0", hexHeaderSize);
 			}
 
 			std::string fullPath = targetPath + "/" + m_dirListing_curEntry->d_name;
@@ -270,8 +267,7 @@ namespace Http
 			return (Http::IOStatus::WAITING);
 		}
 
-		fillHexHeader(hexHeader, hexHeaderSize, totalWritten);
-        std::memcpy(&writeBuffer[curPosition], hexHeader, hexHeaderSize);
+		fillHexHeader((char*)&writeBuffer[curPosition], hexHeaderSize, totalWritten);
 		writeBuffer.push("\r\n", 2);
 
 		if (m_dirListing_curEntry == NULL)
@@ -283,8 +279,7 @@ namespace Http
 	Http::IOStatus::Type		
 	Response::mf_fillDirectoryListing_Tail(BaseBuffer& writeBuffer)
 	{
-		char hexHeader[10];
-		const size_t hexHeaderSize = sizeof(hexHeader) / sizeof(hexHeader[0]);
+		const size_t hexHeaderSize = 10; // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
 		size_t totalLength = hexHeaderSize + DirList_Footer_len + 2 + 5;
 
 		if (m_dirListing_target != NULL)
@@ -299,10 +294,9 @@ namespace Http
             return (Http::IOStatus::WAITING); // no room
         
         size_t currentPosition = writeBuffer.size();
-        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
+        writeBuffer.push("0", hexHeaderSize); // make room for the hex header
 
-        fillHexHeader(hexHeader, hexHeaderSize, DirList_Footer_len);
-        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+        fillHexHeader((char*)&writeBuffer[currentPosition], hexHeaderSize, DirList_Footer_len);
         
         writeBuffer.push(DirList_Footer, DirList_Footer_len);
         writeBuffer.push("\r\n", 2);

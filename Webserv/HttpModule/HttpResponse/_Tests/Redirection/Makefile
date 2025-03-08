@@ -21,6 +21,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
 								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
+								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_CommonParsing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyChunked.cpp \
@@ -30,7 +31,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
-								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_DirectoryListing.cpp \
+								\
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillDirectoryListing.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
 								$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
@@ -70,8 +71,9 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/ServerConfig/BlockFinder/BlockFinder.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/FileDescriptor/FileDescriptor.cpp \
 								$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
-								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp\
-								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
+								$(SRC_PATH)/Webserv/GenericUtils/Files/File.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp \
+								$(SRC_PATH)/Webserv/GenericUtils/Buffer/HeapBuffer.cpp										\
 								$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
 										\
 								$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\

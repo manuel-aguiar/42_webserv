@@ -19,7 +19,6 @@ namespace Http
 	CgiResponse::mf_fillErrorResponse(BaseBuffer& writeBuffer)
 	{
         std::string codeStr = StringUtils::to_string(m_statusCode);
-        
 
         writeBuffer.push(BufferView(Http::HttpStandard::HTTP_VERSION));
         writeBuffer.push(" ", 1);
@@ -27,7 +26,12 @@ namespace Http
         writeBuffer.push(" ", 1);
         writeBuffer.push(getStatusMessage(m_statusCode));
         writeBuffer.push("\r\n", 2);
-        writeBuffer.push("Connection: keep-alive\r\n", 24);
+
+        if (m_responseData->closeAfterSending)
+            writeBuffer.push("Connection: close\r\n", 19);
+        else
+            writeBuffer.push("Connection: keep-alive\r\n", 24);
+
         writeBuffer.push("Server: 42_webserv/1.0\r\n", 24);
         writeBuffer.push("Date: ", 6);
         writeBuffer.push(BufferView(getCurrentDate()));
@@ -50,7 +54,7 @@ namespace Http
                 return (mf_fillErrorFile(writeBuffer));
             }
         }
-        m_defaultErrorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "YOU SUCK");
+        m_defaultErrorPage = generateDefaultErrorPage(m_statusCode, "42_webserv", "Bad Server-Side Script");
 		writeBuffer.push("Content-Length: ", 16);
         writeBuffer.push(BufferView(StringUtils::to_string(m_defaultErrorPage.size()).c_str()));
         writeBuffer.push("\r\n", 2);

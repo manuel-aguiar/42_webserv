@@ -1,3 +1,5 @@
+
+// Project headers
 # include "HttpResponse.hpp"
 # include "../HttpModule/HttpModule.hpp"
 # include "../HttpCgiInterface/HttpCgiInterface.hpp"
@@ -8,6 +10,9 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 
 # include <arpa/inet.h>
+
+// C++ headers
+# include <cstdlib> // atoi
 
 extern std::string getMimeType(const std::string &path);
 
@@ -42,6 +47,19 @@ namespace Http
 			m_responseData.requestStatus = Http::Status::NOT_FOUND;
 			m_responseData.responseType = ResponseData::ERROR;
 			return (false);
+		}
+
+		// Check Content-Length
+		std::map<RequestData::HeaderKey, RequestData::HeaderValue>::const_iterator contentLength
+		= m_responseData.requestData->headers.find("Content-Length");
+		if (contentLength != m_responseData.requestData->headers.end())
+		{
+			if (m_responseData.serverBlock->getClientBodySize() < (size_t)std::atoi(contentLength->second.c_str()))
+			{
+				m_responseData.requestStatus = Http::Status::PAYLOAD_TOO_LARGE;
+				m_responseData.responseType = ResponseData::ERROR;
+				return (false);
+			}
 		}
 
 		// Find Location

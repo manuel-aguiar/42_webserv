@@ -40,7 +40,7 @@ void	Globals::logStatus(const std::string& message)
 {
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	m_statusFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 	
 }
 
@@ -48,14 +48,14 @@ void	Globals::logDebug(const std::string& message)
 {
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	m_debugFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 }
 
 void	Globals::logError(const std::string& message)
 {
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	m_errorFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 }
 
 void	Globals::logStatus(const char* message)
@@ -63,7 +63,7 @@ void	Globals::logStatus(const char* message)
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logStatus: message cannot be NULL");
 	m_statusFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 }
 
 void	Globals::logDebug(const char* message)
@@ -71,7 +71,7 @@ void	Globals::logDebug(const char* message)
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logDebug: message cannot be NULL");
 	m_debugFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 }
 
 void	Globals::logError(const char* message)
@@ -79,7 +79,7 @@ void	Globals::logError(const char* message)
 	ASSERT_EQUAL(pthread_mutex_lock(&writeMutex), 0, "pthread mutex lock failed");
 	ASSERT_EQUAL(message != NULL, true, "Globals: logError: message cannot be NULL");
 	m_errorFile->record(message);
-	pthread_mutex_unlock(&writeMutex);
+	ASSERT_EQUAL(pthread_mutex_unlock(&writeMutex), 0, "pthread mutex unlock failed");
 }
 
 inline

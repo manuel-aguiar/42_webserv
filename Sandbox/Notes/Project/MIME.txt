@@ -1,0 +1,21 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    MIME.txt                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: codespace <codespace@student.42.fr>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/13 10:00:55 by codespace         #+#    #+#              #
+#    Updated: 2024/11/13 10:03:12 by codespace        ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+https://en.wikipedia.org/wiki/MIME
+
+MIME : Multipurpose Internet Mail Extensions (MIME)
+
+internet standard initially written for SMTP (Simple Mail Transfer Protocol)
+but also used in HTTP
+	relevant header: Content-Type
+
+	for instance Content-Type: text/plain
