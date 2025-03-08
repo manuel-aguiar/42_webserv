@@ -15,7 +15,7 @@ namespace Http
 		// Last-Modified
 		char	buffer[32];
 		time_t	lastmodified = m_file.getLastModified();
-		std::cout << "open file fd: " << m_file.fd();
+		
 		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmtime(&lastmodified));
 		m_responseData.headers.insert(std::make_pair("last-modified", buffer));
 		
