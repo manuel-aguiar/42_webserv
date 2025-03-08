@@ -11,7 +11,6 @@
 // C++ headers
 
 #include <cstdlib> // atoi 
-//chatgpt, just getters
 
 ServerBlock::ServerBlock() {}
 ServerBlock::~ServerBlock() {}

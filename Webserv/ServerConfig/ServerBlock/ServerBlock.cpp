@@ -145,7 +145,7 @@ void	ServerBlock::addListener(const std::string &value)
 		hostname = value.substr(0, colonPos);
 		port = value.substr(colonPos + 1);
 	}
-	portValue = StringUtils::stoull(port); // fix throw
+	portValue = StringUtils::stoull(port);
 	if (!Validation::isNumber(port) || portValue <= 0 || portValue > 65535)
 		throw (std::invalid_argument("Invalid port number. Port must be a number between 1 and 65535."));
 		
@@ -166,7 +166,6 @@ void	ServerBlock::addServerName(const std::string &value)
 {
 	if (m_server_name.find(value) != m_server_name.end())
 		throw (std::invalid_argument("server name already set"));
-	// up to 253 characters and 1-63 characters long between dots
 	m_server_name.insert(value);
 }
 
