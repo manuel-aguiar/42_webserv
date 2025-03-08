@@ -17,7 +17,17 @@ namespace Http
     CgiResponse::mf_fillNothingToSend(BaseBuffer& writeBuffer)
     {
         (void)writeBuffer;
+
         return (Http::IOStatus::WAITING);
+    }
+
+    Http::IOStatus::Type
+    CgiResponse::mf_fillFinish(BaseBuffer& writeBuffer)
+    {
+        (void)writeBuffer;
+        if (m_responseData->closeAfterSending)
+            return (Http::IOStatus::MARK_TO_CLOSE);
+        return (Http::IOStatus::FINISHED);
     }
 
     Http::IOStatus::Type
@@ -117,8 +127,7 @@ namespace Http
     {
         BufferView  thisPush;
         size_t      thisPushSize;
-        char        hexHeader[10] = {0};
-        const int   hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
+        const int   hexHeaderSize = 10;  // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
         int         currentPosition;
 
         if (m_tempBody.size() == 0)
@@ -129,12 +138,15 @@ namespace Http
         if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::IOStatus::WAITING); // no room
         
-        currentPosition = writeBuffer.size();
-        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
-        thisPushSize = std::min(writeBuffer.available() - 2, m_tempBody.size());
+        thisPushSize = std::min(writeBuffer.available() - hexHeaderSize - 2, m_tempBody.size());
 
-        fillHexHeader(hexHeader, hexHeaderSize, thisPushSize);
-        std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+        if (thisPushSize == 0)
+            return (Http::IOStatus::WAITING);
+
+        currentPosition = writeBuffer.size();
+        writeBuffer.push("0", hexHeaderSize); // make room for the hex header
+
+        fillHexHeader((char *)&writeBuffer[currentPosition], hexHeaderSize, thisPushSize);
         
         thisPush = m_tempBody.substr(0, thisPushSize);
 
@@ -155,8 +167,7 @@ namespace Http
     CgiResponse::mf_fillBodyStream(BaseBuffer& writeBuffer)
     {
         int scriptBytesRead = 0;
-        char hexHeader[10] = {0};
-        const int hexHeaderSize = sizeof(hexHeader)/sizeof(hexHeader[0]);
+        const int hexHeaderSize = 10;   // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
 
         if (!m_canRead)
             return (Http::IOStatus::WAITING);
@@ -175,26 +186,52 @@ namespace Http
             return (Http::IOStatus::WAITING);
         
         size_t currentPosition = writeBuffer.size();
-        writeBuffer.push(hexHeader, hexHeaderSize); // make room for the hex header
+        writeBuffer.push("0", hexHeaderSize); // make room for the hex header
 
         scriptBytesRead = writeBuffer.readAppend(m_readFd, writeBuffer.available() - 2);
-        if (scriptBytesRead == 0)
+        if (scriptBytesRead <= 0)
         {
-            fillHexHeader(hexHeader, hexHeaderSize - 2, scriptBytesRead);
-            hexHeader[hexHeaderSize - 2] = '\r';
-            hexHeader[hexHeaderSize - 1] = '\n';
-            std::memcpy(&writeBuffer[currentPosition], hexHeader, hexHeaderSize);
+            writeBuffer.pop(hexHeaderSize);
+            writeBuffer.push("0\r\n\r\n", 5);
             mf_finishAndRelease();
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::IOStatus::FINISHED);
         }
-
-        fillHexHeader(hexHeader, hexHeaderSize, scriptBytesRead);
-        std::memcpy(&writeBuffer[currentPosition], hexHeader, 10);
+        
+        fillHexHeader((char *)&writeBuffer[currentPosition], hexHeaderSize, scriptBytesRead);
         writeBuffer.push("\r\n", 2);
         
         m_canRead = false;
         return (Http::IOStatus::WRITING);
     }
+
+	Http::IOStatus::Type
+	CgiResponse::mf_fillExpectContinue(BaseBuffer& writeBuffer)
+	{
+		std::map<std::string, std::string>::const_iterator expectHeader =
+		m_responseData->requestData->headers.find("Expect");
+		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
+			+ 3 + 1
+			+ std::strlen(getStatusMessage(Http::Status::CONTINUE)) + 2;
+
+		if (expectHeader == m_responseData->requestData->headers.end())
+			goto waitUpload;
+			
+		if (writeBuffer.available() < writeSize)
+			return (Http::IOStatus::WRITING);
+
+		writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(StringUtils::to_string(Http::Status::CONTINUE).c_str(), 3); // always 3 digits status code
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(getStatusMessage(Http::Status::CONTINUE), std::strlen(getStatusMessage(Http::Status::CONTINUE)));
+		writeBuffer.push("\r\n", 2);
+		writeBuffer.push("Content-Length: 0\r\n", 19);
+		writeBuffer.push("\r\n", 2);
+
+	waitUpload:
+		m_fillFunction = &CgiResponse::mf_fillNothingToSend;
+		return (Http::IOStatus::WRITING);
+	}
 
 }

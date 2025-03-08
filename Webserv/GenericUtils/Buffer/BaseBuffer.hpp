@@ -39,6 +39,7 @@ class BaseBuffer
 		void		push(const char* data, size_t size);
 		void		push(const std::string& data);
 		void		push(const BufferView& data);
+		void		pop(size_t size);
 
 		// push target to the beginning of the buffer, effectively "clearing it"
 		void		truncatePush(const char* data);

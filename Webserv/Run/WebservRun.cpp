@@ -32,7 +32,7 @@ int MultiServerRun(const char* programName, ServerConfig& config, Globals& globa
 int maxEventsEstimate(const ServerConfig& config)
 {
 	int res = 0;
-	res += config.getMaxConnections();
+	res += config.getMaxConnections();			// max connections
 	res += config.getAllBindAddresses().size(); // listening sockets
 	res += config.getMaxConcurrentCgi() * 3;  	// read + write + emergency, 1 event each
 	res += 1;									// signal handler event, monitor reception of signals	
@@ -115,19 +115,20 @@ int SingleServerRun(const char* programName, ServerConfig& config, Globals& glob
 
 		// preparing ServerContext;
 		ServerContext	context;
+		context.setServerConfig(config);
+
 		BlockFinder		blockFinder(blockFinderEntryCount(config));
+		context.setBlockFinder(blockFinder);
 
 		Cgi::Module		cgiModule(config.getMaxConcurrentCgi(), config.getMaxCgiBacklog(), 5000, 4096, eventManager, globals);
 		context.setAddonLayer(Ws::AddonLayer::CGI, &cgiModule);		
 		
 		Http::Module	httpModule(config.getMaxConnections(), context);
+		context.setAppLayer(Ws::AppLayer::HTTP, &httpModule, &Http::Module::InitConnection);
 
 		blockFinder.loadServerBlocks(config.getServerBlocks());
 
-		context.setAppLayer(Ws::AppLayer::HTTP, &httpModule, &Http::Module::InitConnection);
-		context.setBlockFinder(blockFinder);
 		context.setGlobals(globals);
-		context.setServerConfig(config);
 
 		// preparing server launch
 		Conn::Manager	connManager(config.getMaxConnections(), config.getAllBindAddresses(), eventManager, globals, context);

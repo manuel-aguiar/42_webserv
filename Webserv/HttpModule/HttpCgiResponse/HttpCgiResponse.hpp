@@ -47,15 +47,16 @@ namespace Http
 			typedef Http::IOStatus::Type 	(CgiResponse::*FillFunction)(BaseBuffer& writeBuffer);
 			typedef BufferView					(CgiResponse::*ProcessHttpBody)(const BufferView& view);
 
-			Http::IOStatus::Type	mf_fillNothingToSend(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillResponseLine(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillHeaders(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillBodyTemp(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
-
-			Http::IOStatus::Type	mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
-			Http::IOStatus::Type	mf_fillErrorFile(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillNothingToSend(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillResponseLine(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillHeaders(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillBodyTemp(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillBodyStream(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillErrorResponse(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillFinish(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillErrorFile(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillExpectContinue(BaseBuffer& writeBuffer);
 			
 			BufferView					mf_HttpBodyNone(const BufferView& view);
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);

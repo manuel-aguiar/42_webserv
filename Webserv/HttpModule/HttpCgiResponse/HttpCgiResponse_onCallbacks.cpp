@@ -29,10 +29,13 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
+		m_cgiRequest->setNotify_onError(NULL);
 		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
-		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
-			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+		m_responseData->cgiPass = false;
+		m_responseData->closeAfterSending = true;
+		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+		m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 	}
 
 	Cgi::IO::State
@@ -51,7 +54,6 @@ namespace Http
 		m_writeFd = writeFd;
 		m_canWrite = true;
 		
-		//std::cout << "cgi writing: " << this << std::endl;
 		ASSERT_EQUAL(m_httpRequest != NULL, true, "CgiResponse::onCgiWrite(): no request assigned");
 		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
@@ -70,7 +72,7 @@ namespace Http
 		if (m_statusCode != Cgi::RequestConsts::Status::SUCCESS
 		||	!checkForbiddenHeaders(headers.getHeaders()))
 		{
-			m_cgiRequest->setNotify_onError(NULL);	//disable error notification from premature closure
+			m_cgiRequest->setNotify_onError(NULL);
 			mf_finishAndRelease();
 			m_statusCode = Http::Status::BAD_GATEWAY;
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;

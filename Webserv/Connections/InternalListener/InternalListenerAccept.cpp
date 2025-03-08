@@ -29,13 +29,10 @@ void  InternalListener::accept()
 
 int InternalListener::acceptPending(InternalConn& connection)
 {
-	//if (connection.accessEvent().isSubscribed())
-	//	std::cout << "pending accept, connection event still susbcribed"<< std::endl;
 	int result = m_listener.accept(connection.accessConnInfo());
 
 	if (result == -1)
 	{
-		//listener has nobody waiting, resubscribe itself in the event manager
 		m_monitor.subscribe(false);
 		return (result);
 	}

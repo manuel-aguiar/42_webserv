@@ -1,0 +1,4 @@
+http://localhost:8080/downloadRandom.php?name=yoyo
+http://localhost:8080/downloadRandom.php?name=yaman
+http://localhost:8080/downloadRandom.php?name=ops
+http://localhost:8080/downloadRandom.php?name=broda

@@ -48,22 +48,10 @@ namespace Http
 
 		mf_resolveRequestData();
 
-		// Full debug print of wtf is going on:
-		// std::cout << "---Request Data-------------------------" << std::endl;
-		// std::cout << "Request: " << m_responseData.requestData->method << " " << m_responseData.requestData->uri << " " << m_responseData.requestData->httpVersion << std::endl;
-		// // std::cout << "ServerBlock: " << m_responseData.serverBlock << std::endl;
-		// // std::cout << "Location: " << m_responseData.serverLocation << std::endl;
-		// // std::cout << "TargetPath: " << m_responseData.targetPath << std::endl;
-		// // std::cout << "TargetExtension: " << m_responseData.targetExtension << std::endl;
-		// std::cout << "TargetResourceType: " << m_responseData.targetType << std::endl;
-		// std::cout << "ResponseType: " << m_responseData.responseType << std::endl;
-		// std::cout << "---------------------------------------" << std::endl;
-
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
 		mf_addHeader("connection", (m_responseData.closeAfterSending ? "close" : "keep-alive"));
 
-		
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::STATIC:
@@ -89,7 +77,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:
-				m_fillFunction = &Response::mf_fillNothingToSend;
+				m_fillFunction = &Response::mf_fillExpectContinue;
 				m_processFunction = &Response::mf_processBodyUpload;
 				break ;
 			case ResponseData::ERROR:
@@ -100,7 +88,9 @@ namespace Http
 				mf_addHeader("content-length", "0");
 				m_fillFunctionBody = &Response::mf_fillFinish;
 				break ;
-			default:
+			case ResponseData::UNDEFINED:
+				m_processFunction = &Response::mf_processBodyIgnore;
+				mf_prepareErrorMessage();
 				break ;
 		}
 

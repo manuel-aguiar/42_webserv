@@ -49,7 +49,8 @@ namespace Http
 	Http::IOStatus::Type
 	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone
+		&& m_fillFunction != &CgiResponse::mf_fillExpectContinue)
 			return (Http::IOStatus::WAITING);
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
@@ -116,7 +117,7 @@ namespace Http
 		}
 
 		// PATH_INFO
-		m_cgiRequest->setEnvBase(Cgi::Env::Enum::PATH_INFO, data.path);
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::PATH_INFO, responseData.targetPath);
 
 		// QUERY_STRING
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::QUERY_STRING, data.queryString);
@@ -141,9 +142,10 @@ namespace Http
 		// SERVER_SOFTWARE Webserv
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_SOFTWARE, "42_webserv");
 		
-		m_module.enqueueRequest(*m_cgiRequest, true);
-
+		m_fillFunction = &CgiResponse::mf_fillExpectContinue;
         m_processHttpBody = &CgiResponse::mf_HttpBodySend;
+
+		m_module.enqueueRequest(*m_cgiRequest, true);
 
 		return (true);
 	}

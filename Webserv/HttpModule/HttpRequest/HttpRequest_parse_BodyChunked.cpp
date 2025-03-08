@@ -20,7 +20,7 @@ static int strToInteger(const BufferView& view, int base = 10)
 {
     char* endptr = const_cast<char *>(&view.data()[view.size()]);
     long value = ::strtol(view.data(), &endptr, base);
-    //std::cout << "hex value: " << value << std::endl;
+
     if (endptr != &view.data()[view.size()]
     || value > INT_MAX || value < 0
     || (size_t)value > Http::HttpStandard::MAX_CHUNK_SIZE)
@@ -34,7 +34,6 @@ static int strToInteger(const BufferView& view, int base = 10)
 */
 BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered get chunk" << std::endl;
     const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
     BufferView thisChunkSize;
@@ -49,7 +48,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_readBuffer->capacity())
-            return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+            return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
         return (remaining); // not enough to go through yet
     }
 
@@ -60,7 +59,7 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 
     m_curChunkSize = strToInteger(thisChunkSize, 16);
     if (m_curChunkSize == -1)
-        return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
+        return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 
     m_curChunkPos = 0;
 
@@ -76,7 +75,6 @@ BufferView Http::Request::mf_parseChunkedBody_GetChunk(const BufferView& receive
 */
 BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered parse chunk" << std::endl;
     BufferView remaining = receivedView;
 
     if (remaining.size() == 0)
@@ -96,6 +94,10 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
 
     m_curChunkPos += bytesConsumed;
 
+    m_totalReadCounter += bytesConsumed;
+    if (m_totalReadCounter > m_maxBodySize)
+        return (mf_bodyExitError(temp, Http::Status::PAYLOAD_TOO_LARGE));
+
     remaining = temp;
 
     // if consumed all bytes until border
@@ -112,7 +114,6 @@ BufferView Http::Request::mf_parseChunkedBody_ParseChunk(const BufferView& recei
 */
 BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receivedView)
 {
-    //std::cout << "entered end chunk" << std::endl;
     const BufferView delimiter("\r\n", 2);
     BufferView remaining = receivedView;
 
@@ -126,7 +127,7 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
         m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
         // HARD LIMIT, single header size cannot be bigger than the buffer capacity
         if (remaining.size() >= m_readBuffer->capacity())
-            return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
+            return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE)); // chunk too large, use 413 Payload Too Large
         return (remaining); // not enough to go through yet
     }
 
@@ -135,7 +136,7 @@ BufferView Http::Request::mf_parseChunkedBody_EndChunk(const BufferView& receive
     remaining = remaining.substr(bodyEnd + delimiter.size(), remaining.size() - bodyEnd - delimiter.size()); // move view past the header
 
     if (bodyEnd != 0)
-        return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));  // 400 - Malformed chunk delimiter
+        return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));  // 400 - Malformed chunk delimiter
 
     if (m_curChunkSize == 0)
     {

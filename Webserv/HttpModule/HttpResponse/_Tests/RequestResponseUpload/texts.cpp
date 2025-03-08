@@ -1,4 +1,5 @@
 
+#include "texts.hpp"
 #include <cstddef> // size_t
 
 const char potato_text[] = "Potatoes: A Versatile and Nutritious Staple\n\n"

@@ -16,24 +16,24 @@
 #include <cstdlib>
 #include <climits>
 
-static const char* contentDispositionFind = "Content-Disposition";
-static const char* contentDispositionNameFind = "name=\"";
-static const char* contentDispositionFilenameFind = "filename=\"";
+static const BufferView contentDispositionFind			("Content-Disposition");
+static const BufferView contentDispositionNameFind		("name=\"");
+static const BufferView contentDispositionFilenameFind	("filename=\"");
 
 #ifndef NDEBUG
 	static int testHeadersOfInterest();
 	static const int g_testHeadersOfInterest = testHeadersOfInterest();
 	static int testHeadersOfInterest()
 	{
-		std::string test = contentDispositionFind;
+		std::string test = contentDispositionFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToCapitalized() 
-			== BufferView(contentDispositionFind), true, "contentDispositionFind is not correctly formated");
-		test = contentDispositionNameFind;
+			== contentDispositionFind, true, "contentDispositionFind is not correctly formated");
+		test = contentDispositionNameFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
-			== BufferView(contentDispositionNameFind), true, "contentDispositionNameFind is not correctly formated");	
-		test = contentDispositionFilenameFind;
+			== contentDispositionNameFind, true, "contentDispositionNameFind is not correctly formated");	
+		test = contentDispositionFilenameFind.to_string();
 		ASSERT_EQUAL(BufferView(test).trim(" \r\n\t\v").modify_ToLowerCase() 
-			== BufferView(contentDispositionFilenameFind), true, "contentDispositionFilenameFind is not correctly formated");
+			== contentDispositionFilenameFind, true, "contentDispositionFilenameFind is not correctly formated");
 		return (0);
 	}
 #endif
@@ -58,7 +58,7 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 		m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 		// HARD LIMIT, request line cannot be bigger than buffer size
 		if (remaining.size() >= m_readBuffer->capacity())
-			return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+			return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 		return (remaining); // not enough to go through yet
 	}
 	m_findPivot = 0;
@@ -70,18 +70,18 @@ BufferView Http::Request::mf_parseMultipartBody_Start	(const BufferView& current
 	m_curContentPos += requestLine.size() + delimiter.size();
 
 	if (m_curContentPos > m_curContentLength)
-		return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+		return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 
 	if (requestLine.size() != boundaryView.size() + 2) // must be the size of boundary + "--"
-		return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
+		return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 
 	if (requestLine.find("--", 2, 0) != 0) // must start with this
-		return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
+		return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 
 	if (requestLine.find(boundaryView, 0) != 2) // must have boundary at position 2
-		return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
-	////std::cout << "survived body start" << std::endl;
-	// success, move to next pointer
+		return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
+
+		// success, move to next pointer
 	m_parsingFunction = &Request::mf_parseMultipartBody_Headers;
 	return (mf_parseMultipartBody_Headers(remaining));
 }
@@ -115,10 +115,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			m_findPivot = std::max((int)remaining.size() - (int)delimiter.size(), 0);
 			// HARD LIMIT, single header size cannot be bigger than the buffer capacity
 			if (remaining.size() >= m_readBuffer->capacity())
-			{
-				////std::cout << "payload too large" << std::endl;
-				return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
-			}
+				return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 			return (remaining); // push the remaining data back to the beginning
 
 		}
@@ -135,7 +132,7 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 			if (m_curContentPos > m_curContentLength ||
 				(m_data.multipart_Name.empty() && m_data.multipart_Filename.empty()))
 			{
-				return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
+				return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 			}
 
 			
@@ -149,23 +146,24 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 		m_curContentPos += (thisHeader.size() + delimiter.size());
 
 		if (m_curContentPos > m_curContentLength)
-			return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+			return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 
 		size_t keyPos = thisHeader.find(": ");
 		if (keyPos == BufferView::npos)
-			return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
+			return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 
 		BufferView key = thisHeader.substr(0, keyPos).trim(" \r\v\t\n").modify_ToCapitalized();
 
-		if (key != BufferView(contentDispositionFind))
+		if (key != contentDispositionFind)
 			continue ;
 		{	// getting the "name" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			const BufferView nameFind(contentDispositionNameFind);
-			size_t nameStart = value.find(nameFind);
+			size_t nameStart = value.find(contentDispositionNameFind);
 			if (nameStart != BufferView::npos)
 			{
-				value = value.substr(nameStart + nameFind.size(), value.size() - nameStart - nameFind.size());
+				value = value.substr(nameStart 
+									+ contentDispositionNameFind.size(), 
+									value.size() - nameStart - contentDispositionNameFind.size());
 				size_t nameEnd = value.find('\"');
 				if (nameEnd != BufferView::npos)
 					m_data.multipart_Name = value.substr(0, nameEnd).to_string();
@@ -174,11 +172,12 @@ BufferView Http::Request::mf_parseMultipartBody_Headers	(const BufferView& curre
 
 		{	// getting the "filename" variable
 			BufferView value = thisHeader.substr(keyPos + 2, thisHeader.size() - keyPos - 2);
-			const BufferView filenameFind(contentDispositionFilenameFind);
-			size_t nameStart = value.find(filenameFind);
+			size_t nameStart = value.find(contentDispositionFilenameFind);
 			if (nameStart != BufferView::npos)
 			{
-				value = value.substr(nameStart + filenameFind.size(), value.size() - nameStart - filenameFind.size());
+				value = value.substr(nameStart + 
+						contentDispositionFilenameFind.size(), 
+						value.size() - nameStart - contentDispositionFilenameFind.size());
 				size_t nameEnd = value.find('\"');
 				if (nameEnd != BufferView::npos)
 					m_data.multipart_Filename = value.substr(0, nameEnd).to_string();
@@ -209,7 +208,7 @@ Http::Request::mf_parseMultipartBody_Check(const BufferView& receivedView)
 	remaining = remaining.substr(moveForward, remaining.size() - moveForward);
 	m_curContentPos += moveForward;
 	if (m_curContentPos > m_curContentLength)
-		return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+		return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 		
 	if (m_httpResponse)	// send EOF to signal end of part
 		m_httpResponse->receiveRequestBody(BufferView());
@@ -246,7 +245,7 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 	size_t 		moveForward = m_data.multipart_Boundary.size() + bodyDelimiter.size();
 	size_t 		chunkEnd;
 
-	if (remaining.size() <= moveForward) // can't checkout "--" + boundary, may save accidentallys
+	if (remaining.size() <= moveForward)
 		return (remaining);
 
 	size_t doubleHifenBoundary = findDelimiterAndBoundary(remaining, bodyDelimiter, BufferView(m_data.multipart_Boundary));
@@ -256,27 +255,25 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 		chunkEnd = doubleHifenBoundary;
 
 	if (m_curContentPos + (int)chunkEnd > m_curContentLength)
-		return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+		return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 
-	//std::cout << "sending actual data, size: " << chunkEnd << std::endl;
 	if (m_httpResponse && chunkEnd > 0)
         unconsumed = m_httpResponse->receiveRequestBody(currentView.substr(0, chunkEnd));
 
 	size_t bytesConsumed = chunkEnd - unconsumed.size();
-	//std::cout << "unconsumed: " << unconsumed.size() << " bytesConsumed: " << bytesConsumed << std::endl;
+
 	remaining = remaining.substr(bytesConsumed, remaining.size() - bytesConsumed);
 
 	m_curContentPos += bytesConsumed;
-	//std::cout << "m_curContentPos: " << m_curContentPos << " m_curContentLength: " << m_curContentLength << std::endl;
+
 	if (bytesConsumed == doubleHifenBoundary)
 	{
 		remaining = remaining.substr(moveForward, remaining.size() - moveForward);
 		m_curContentPos += moveForward;
 		if (m_curContentPos > m_curContentLength)
-			return (mf_parseBodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
+			return (mf_bodyExitError(remaining, Http::Status::PAYLOAD_TOO_LARGE));
 		
 		// this is a file, send end of file here
-		//std::cout << "sending EOF" << std::endl;
 		if (m_httpResponse)
 			m_httpResponse->receiveRequestBody(BufferView());
 
@@ -292,7 +289,6 @@ BufferView Http::Request::mf_parseMultipartBody_Content	(const BufferView& curre
 */
 BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& currentView)
 {
-	////std::cout << "multipart again: " << currentView << std::endl;
 	BufferView remaining = currentView;
 	BufferView found;
 	const BufferView continueDelim("\r\n", 2);
@@ -300,25 +296,20 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 
 	if (remaining.size() < finalDelim.size())
 		return (remaining);
-	////std::cout << "finding end of multipart" << std::endl;
 	if (remaining.find(finalDelim, 0) == 0)
 	{
-		////std::cout << "found end of multipart" << std::endl;
 		found = finalDelim;
 		m_findPivot = 0;
 		m_parsingState = COMPLETED;
 		m_parsingFunction = &Request::mf_handleNothing;
-		////std::cout << "m_curContentPos: " << m_curContentPos << " m_curContentLength: " << m_curContentLength << std::endl;
-		if (m_curContentPos + found.size() != (size_t)m_curContentLength) // + 2 punched in, forgot to count somewhere.......
-			return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
-		////std::cout << "first signaling end of file" << std::endl;
-		// double signaling, one for end of this file, below to end of request
 
-		//std::cout << "sending EOF" << std::endl;
-
+		if (m_curContentPos + found.size() != (size_t)m_curContentLength)
+			return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
+			
 		m_data.multipart_Name.clear();
 		m_data.multipart_Filename.clear();
-
+			
+		// double signaling, one for end of this file, below to end of request
 		if (m_httpResponse)
 			m_httpResponse->receiveRequestBody(BufferView());
 
@@ -326,22 +317,18 @@ BufferView 			Http::Request::mf_parseMultipartBody_End		(const BufferView& curre
 	}
 	else if (remaining.find(continueDelim, 0) == 0)
 	{
-		////std::cout << "found end of file" << std::endl;
 		found = continueDelim;
 		m_findPivot = 0;
 		m_parsingFunction = &Request::mf_parseMultipartBody_Headers;
 	}
 	else
-	{
-		////std::cout << "error in end of file" << std::endl;
-		return (mf_parseBodyExitError(remaining, Http::Status::BAD_REQUEST));
-	}
+		return (mf_bodyExitError(remaining, Http::Status::BAD_REQUEST));
 	
 	remaining = remaining.substr(found.size(), remaining.size() - found.size());
 	m_curContentPos += found.size();
 	m_data.multipart_Name.clear();
 	m_data.multipart_Filename.clear();
-	////std::cout << "next: " << remaining << std::endl;
+
 	return ((this->*m_parsingFunction)(remaining));
 }
 

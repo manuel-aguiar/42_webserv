@@ -45,11 +45,9 @@ namespace Http
 			return (BufferView());
 		}
 
+		// form data, ignore
 		if (m_responseData.requestData->multipart_Filename.empty())
-		{
-			//std::cout << "form data, ignore" << std::endl;
 			return (BufferView());
-		}
 
 		std::string	fullPath;
 		

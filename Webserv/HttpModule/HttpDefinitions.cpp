@@ -27,7 +27,22 @@ namespace Http
             return ALLOWED_METHODS;
         }
     }
+/*
+		const Http::RequestData*	        requestData;
+		Http::Status::Number		        requestStatus;
+		const ServerBlock*			        serverBlock;
+		const ServerLocation*		        serverLocation;
+		std::map<HeaderKey, HeaderValue>	headers;
+		ResponseType				        responseType;
+		std::string                         targetPath;
+		std::string							targetExtension;
+		FilesUtils::FileType                targetType;
+		bool								indexAppended;
+		std::string							errorMessage;
+		bool								cgiPass;			
 
+		bool                                closeAfterSending;
+*/
     ResponseData::ResponseData() 
     : requestData(NULL)
     , requestStatus(Http::Status::OK)
