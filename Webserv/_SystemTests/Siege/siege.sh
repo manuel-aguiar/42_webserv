@@ -13,7 +13,7 @@ SERVER_LOG="$SCRIPT_DIR/server.log"
 RUN_TIME="10s"  # Duration for siege
 CONCURRENCY="100" # Concurrent users for siege
 
-make -C ../../../
+make debug -C ../../../
 # Start the web server
 echo "Starting web server..."
 valgrind --track-fds=yes $SERVER_BINARY $CONFIG_FILE > $SERVER_LOG 2>&1 &
