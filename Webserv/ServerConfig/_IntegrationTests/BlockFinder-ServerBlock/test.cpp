@@ -48,7 +48,6 @@ int main()
 
             // Create BlockFinder and add the server block
             BlockFinder finder(2);
-            BlockFinder finder(2);
             finder.addServerBlock(serverBlock);
 
             // Test finding the block with exact match
@@ -72,7 +71,6 @@ int main()
 
             ServerBlock serverBlock;
             BlockFinder finder(2);
-            BlockFinder finder(2);
 
             // adding one more block with configuration set
             ServerBlock serverBlock2;
@@ -90,7 +88,6 @@ int main()
 
             // now searching for the block with configuration set
             const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
-            const ServerBlock* found = finder.findServerBlock(*(struct sockaddr*)&addr2, "example-domain.com");
 
             EXPECT_EQUAL(found == &serverBlock2, true, "Block should be found");
 
@@ -104,7 +101,6 @@ int main()
     {
         try {
             TEST_INTRO(testNumber++);
-            BlockFinder finder(4);
             BlockFinder finder(4);
 
             // First block
