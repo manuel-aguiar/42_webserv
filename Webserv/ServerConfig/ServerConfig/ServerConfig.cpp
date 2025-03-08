@@ -466,9 +466,6 @@ void		ServerConfig::addCgiInterpreter(const std::string &value)
 		
 	m_cgiInterpreters[extension] = path;
 
-exitSuccess:
-	return ;
-
 exitError:
 	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
 	return ;
