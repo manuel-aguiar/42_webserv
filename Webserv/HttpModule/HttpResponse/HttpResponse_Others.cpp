@@ -127,17 +127,21 @@ namespace Http
 	void
 	Response::mf_prepareErrorMessage()
 	{
-		if (m_responseData.serverBlock != NULL)
-		{
-			if (m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus) != m_responseData.serverBlock->getErrorPages().end())
-			{
-				mf_prepareStaticFile(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str());
-				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus)->second.c_str()));
+		std::map<int, std::string>::const_iterator customPage;
+		if (m_responseData.serverBlock == NULL)
+			goto defaultError;
+		customPage = m_responseData.serverBlock->getErrorPages().find(m_responseData.requestStatus);
+		if (customPage == m_responseData.serverBlock->getErrorPages().end())
+			goto defaultError;
+		
+		if (!mf_prepareStaticFile(customPage->second.c_str()))
+			goto defaultError;
 
-				m_fillFunctionBody = &Response::mf_sendStaticFile;
-				return ;
-			}
-		}
+		mf_addContentHeaders(m_file.size(), getMimeType(customPage->second.c_str()));
+		m_fillFunctionBody = &Response::mf_sendStaticFile;
+		return ;
+
+	defaultError:
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
 		m_fillFunctionBody = &Response::mf_fillDefaultPage;

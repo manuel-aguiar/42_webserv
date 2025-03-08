@@ -38,10 +38,10 @@ namespace Http
 				// finished
 				m_fillFunction = &Response::mf_fillResponseLine;
 				m_processFunction = &Response::mf_processBodyIgnore;
-				mf_prepareErrorMessage();
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
-				m_responseData.requestStatus = Http::Status::OK;
+				m_responseData.requestStatus = Http::Status::CREATED;
 				m_responseData.errorMessage = "File uploaded";
+				mf_prepareErrorMessage();
 			}
 			return (BufferView());
 		}

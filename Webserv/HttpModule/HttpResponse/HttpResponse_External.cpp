@@ -72,8 +72,6 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
-				//m_defaultPageContent = DirectoryListing(m_responseData.targetPath);
-
 				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
 				m_responseData.headers.insert(std::make_pair("transfer-encoding", "chunked"));
 				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
