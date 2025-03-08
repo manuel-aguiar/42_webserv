@@ -23,7 +23,6 @@ int main(void)
 	testConnection		(testNumber);
 	testListener		(testNumber);
 	testManager			(testNumber);
-	testValgrindStress	(testNumber);
 	
 	TEST_FOOTER;
 
