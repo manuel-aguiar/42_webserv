@@ -15,11 +15,12 @@ namespace Http
 		// Last-Modified
 		char	buffer[32];
 		time_t	lastmodified = m_file.getLastModified();
+		std::cout << "open file fd: " << m_file.fd();
 		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", gmtime(&lastmodified));
 		m_responseData.headers.insert(std::make_pair("last-modified", buffer));
 		
 		// ETag
-		std::string	etag = mf_generateEtag(m_file, m_file.getLastModified());
+		std::string	etag = mf_generateEtag(m_file, lastmodified);
 		m_responseData.headers.insert(std::make_pair("etag", etag));
 		std::map<std::string, std::string>::const_iterator it = m_responseData.requestData->headers.find("If-None-Match");
 		if (it != m_responseData.requestData->headers.end() && it->second == etag)

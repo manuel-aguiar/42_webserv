@@ -55,13 +55,15 @@ namespace Http
 		switch (m_responseData.responseType)
 		{
 			case ResponseData::STATIC:
+			{
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
-
 				if (mf_addCacheControlHeaders())
 					m_fillFunctionBody = &Response::mf_fillFinish;
 				else
 					m_fillFunctionBody = &Response::mf_sendStaticFile;
+
 				break ;
+			}
 			case ResponseData::CGI:
 				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
