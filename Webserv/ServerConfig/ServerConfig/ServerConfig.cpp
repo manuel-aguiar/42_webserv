@@ -471,7 +471,7 @@ exitSuccess:
 
 exitError:
 	throw (std::invalid_argument("Invalid 'cgi' value. The input should be in 'extension:path' format."));
-	goto exitSuccess; // just messing with ya
+	return ;
 }
 
 void	ServerConfig::m_setDefaults()

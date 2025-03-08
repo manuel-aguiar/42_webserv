@@ -76,7 +76,7 @@ int	main(void)
 {
     ServerBlock	block;
 
-    BlockFinder	bfinder1(1000); // just a dumb number to fit all
+    BlockFinder	bfinder1(1000); // just a number to fit all
     testSingle(bfinder1);
 
     BlockFinder	bfinder2(1000); 

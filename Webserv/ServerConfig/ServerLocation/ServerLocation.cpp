@@ -17,7 +17,6 @@ ServerLocation::DirectiveToSetter::DirectiveToSetter() :
 {
 	map["path"]				= &ServerLocation::setPath;
 	map["root"]				= &ServerLocation::setRoot;
-	map["type"]				= &ServerLocation::setType;
 	map["auto_index"]		= &ServerLocation::setAutoindex;
 	map["methods"]			= &ServerLocation::addMethod;
 	map["cgi"]				= &ServerLocation::addCgiInterpreter;
@@ -109,11 +108,6 @@ bool	ServerLocation::getAutoIndex() const
 const std::set<std::string>&	ServerLocation::getMethods() const
 {
 	return (m_methods);
-}
-
-const std::string&	ServerLocation::getType() const
-{
-	return (m_type);
 }
 
 bool	ServerLocation::getAllowUpload() const
@@ -260,7 +254,6 @@ void		ServerLocation::printLocationConfig() const
 	std::cout << "║ │ ┌─ Location ──┐\n";
 	std::cout << "║ │ │ path: " << getPath() << "\n";
 	std::cout << "║ │ │ root: " << getRoot() << "\n";
-	std::cout << "║ │ │ type: " << getType() << "\n";
 	std::cout << "║ │ │ autoIndex: " << getAutoIndex() << "\n";
 	std::cout << "║ │ └ methods: ";
 	for (std::set<std::string>::const_iterator it = getMethods().begin(); it != getMethods().end(); it++)

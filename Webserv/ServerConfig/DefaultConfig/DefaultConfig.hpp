@@ -15,7 +15,7 @@ struct DefaultConfig
 {
 	DefaultConfig();
 
-	//blabla all default and public, it is just a macro bearer, getters and setters are a waste;
+	// all default and public, it is just a macro bearer, getters and setters are a waste;
 
 	// Program
 	const int	server_maxConnections;
