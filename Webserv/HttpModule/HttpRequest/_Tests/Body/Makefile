@@ -109,7 +109,7 @@ SRCS_COMMON				=		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.c
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp \
-								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp \
+								-MMD -MP$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp \
 								$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp \
@@ -145,12 +145,7 @@ RESET =		\033[0m
 
 TAG =		$(CYAN)[$(NAME)]$(RESET)
 
-#=== RULES ===#
-
-all: $(TARGET_TEST) # $(TARGET_DEBUG)
-
-$(TARGET_DEBUG): $(OBJS_COMMON) $(OBJS_DEBUG)
-	@echo "$(CYAN)[$(TARGET_DEBUG)]$(RESET) Making Program"
+#=== RULES ===#-MMD -MP
 	@$(CXX) $(CXXFLAGS) $(OBJS_COMMON) $(OBJS_DEBUG) -o $(TARGET_DEBUG)
 
 $(TARGET_TEST): $(OBJS_COMMON) $(OBJS_TEST)

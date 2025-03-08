@@ -89,7 +89,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:
-				m_fillFunction = &Response::mf_fillNothingToSend;
+				m_fillFunction = &Response::mf_fillExpectContinue;
 				m_processFunction = &Response::mf_processBodyUpload;
 				break ;
 			case ResponseData::ERROR:
