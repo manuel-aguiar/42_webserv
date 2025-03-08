@@ -49,7 +49,8 @@ namespace Http
 	Http::IOStatus::Type
 	CgiResponse::fillWriteBuffer(BaseBuffer& writeBuffer)
 	{
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone
+		&& m_fillFunction != &CgiResponse::mf_fillExpectContinue)
 			return (Http::IOStatus::WAITING);
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
