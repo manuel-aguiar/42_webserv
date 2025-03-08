@@ -18,141 +18,34 @@
             <li><a href="/">Home</a></li>
             <li><a href="/images/">Images</a></li>
             <li><a href="/docs/">Documents</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#demo-tests">Demo Tests</a></li>
-            <li><a href="/docs/about.html">About</a></li>
         </ul>
     </nav>
 
     <div class="container">
         <main>
-            <section class="demo-intro">
-                <h2>Webserv Demonstration</h2>
-                <div class="demo-meta">Technical Demonstration | <span class="tag">HTTP/1.1</span> <span class="tag">C++</span> <span class="tag">42 Project</span></div>
-                <p>
-                    Welcome to the interactive demonstration of our custom HTTP/1.1 server.
-                    This page showcases the technical capabilities and features of our server
-                    implementation developed as part of the 42 curriculum.
-                </p>
-                <p>
-                    Use the demos below to test various server features in real-time.
-                </p>
-            </section>
-
-            <section id="features" class="feature-showcase">
-                <h2>Server Capabilities</h2>
-                <ul>
-                    <li><strong>HTTP/1.1 Compliance</strong> - Standard-compliant request and response handling</li>
-                    <li><strong>Multiple Virtual Servers</strong> - Support for different server configurations</li>
-                    <li><strong>Static File Serving</strong> - Efficiently serving various file types</li>
-                    <li><strong>Directory Listing</strong> - Auto-indexing of directories</li>
-                    <li><strong>HTTP Redirections</strong> - Support for 301, 302, 307, and 308 redirects</li>
-                    <li><strong>Custom Error Pages</strong> - Configurable error responses</li>
-                    <li><strong>File Uploads</strong> - Support for multipart form data</li>
-                    <li><strong>CGI Execution</strong> - Dynamic content generation via script interpreters</li>
-                    <li><strong>Configurable Limits</strong> - Control resource usage with configurable limits</li>
-                </ul>
-                <p>
-                    See the <a href="/server_config.html">technical documentation</a> for detailed configuration options.
-                </p>
-            </section>
-
             <section id="demo-tests" class="interactive-demos">
-                <h2>Interactive Demonstrations</h2>
 
                 <div class="demo-section">
-                    <h3>HTTP Redirection Demo</h3>
-                    <p>Test different types of HTTP redirects and see how they behave:</p>
-                    <ul>
-                        <li><a href="/redir-tests">Try Various Redirection Types</a></li>
-                    </ul>
+                    <a href="/redir-tests"><h3>HTTP Redirection Demo</h3></a>
                 </div>
 
                 <div class="demo-section">
-                    <h3>Static Content Features</h3>
-                    <ul>
-                        <li><a href="/images/gallery.html">Image Gallery & Upload Demo</a> - Test file uploads and viewing</li>
-                        <li><a href="/images/">Directory Listing Demo</a> - See auto-indexing in action</li>
-                        <li><a href="/large-file.bin">Large File Transfer Demo</a> - Test chunked transfer encoding</li>
-                    </ul>
+                    <a href="/cgi-tests"><h3>CGI Demonstration</h3></a>
                 </div>
 
                 <div class="demo-section">
-                    <h3>HTTP Method Testing</h3>
-                    <p>Try different HTTP methods with these forms:</p>
-                    <ul>
-                        <li>
-                            <form action="/form-test" method="POST">
-                                <input type="text" name="test_field" placeholder="Enter text">
-                                <button type="submit">Test POST Method</button>
-                            </form>
-                        </li>
-                        <li>
-                            <form action="/upload" method="POST" enctype="multipart/form-data">
-                                <input type="file" name="test_file">
-                                <button type="submit">Test File Upload</button>
-                            </form>
-                        </li>
-                    </ul>
+                    <a href="/nono-existant-url"><h3>Custom error page</h3></a>
                 </div>
 
                 <div class="demo-section">
-                    <h3>CGI Demonstrations</h3>
-                    <p class="note" style="background-color: #e8f4fc; padding: 10px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
-                        <strong>Note:</strong> These demos require proper CGI configuration:
-                        <br>1) File extensions (.py, .php) mapped to interpreters
-                        <br>2) CGI execution enabled for these locations
-                        <br>3) Proper permissions on script files
-                    </p>
-                    <ul>
-                        <li><a href="/cgi-bin/calculator.py">Interactive Calculator Demo</a> - Test form processing</li>
-                        <li><a href="/cgi-bin/info.py">Server Information Demo</a> - View environment details</li>
-                        <li><a href="/cgi-bin/env.py">Environment Variables Demo</a> - See all ENV variables</li>
-                        <li>
-                            <form action="/cgi-bin/form.py" method="POST">
-                                <input type="text" name="user_input" placeholder="Your name">
-                                <button type="submit">Try CGI Form Processing</button>
-                            </form>
-                        </li>
-                    </ul>
+                    <a href="/error-page-method-not-allowed"><h3>Default error page</h3></a>
                 </div>
             </section>
         </main>
-
-        <aside>
-            <section class="sidebar-section">
-                <h3>Technical Info</h3>
-                <p>This demo showcases a custom HTTP/1.1 server built in C++ as part of the 42 curriculum.</p>
-                <p><a href="/docs/about.html">Technical details</a></p>
-            </section>
-
-            <section class="sidebar-section">
-                <h3>Server Status</h3>
-                <ul>
-                    <li>Status: <span style="color: green;">Running</span></li>
-                    <li>Uptime: <span id="uptime">Loading...</span></li>
-                    <li>Active connections: <span id="connections">Loading...</span></li>
-                </ul>
-                <script>
-                    // Simple mock for demonstration
-                    document.getElementById('uptime').textContent = Math.floor(Math.random() * 24) + ' hours';
-                    document.getElementById('connections').textContent = Math.floor(Math.random() * 10);
-                </script>
-            </section>
-
-            <section class="sidebar-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#features">Server Capabilities</a></li>
-                    <li><a href="#demo-tests">Interactive Demos</a></li>
-                    <li><a href="https://github.com/manuel-aguiar/42_webserv.git" target="_blank">GitHub Repository</a></li>
-                </ul>
-            </section>
-        </aside>
     </div>
 
     <footer>
-        <p>&copy; 2023 42 Webserv Demonstration - A technical showcase of our HTTP/1.1 server</p>
+        <p>&copy; 2024 42 Webserv Demonstration </p>
     </footer>
 </body>
 </html>

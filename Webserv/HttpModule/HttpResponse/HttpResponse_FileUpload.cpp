@@ -41,6 +41,7 @@ namespace Http
 				mf_prepareErrorMessage();
 				m_fillFunctionBody = &Response::mf_fillDefaultPage;
 				m_responseData.requestStatus = Http::Status::OK;
+				m_responseData.errorMessage = "File uploaded";
 			}
 			return (BufferView());
 		}

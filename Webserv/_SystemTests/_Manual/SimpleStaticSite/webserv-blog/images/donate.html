@@ -100,7 +100,7 @@
 </head>
 <body>
     <header>
-        <h1>Image Donation Gallery</h1>
+        <h1>Image Donation</h1>
         <p>Contribute to our community image collection</p>
     </header>
 
@@ -109,7 +109,6 @@
             <li><a href="/">Home</a></li>
             <li><a href="/images/">Images</a></li>
             <li><a href="/docs/">Documents</a></li>
-            <li><a href="/docs/about.html">About</a></li>
         </ul>
     </nav>
 
@@ -131,82 +130,16 @@
                 <h2>Donate an Image</h2>
                 <p>Share your images with our community. Please only upload appropriate content.</p>
 
-                <form class="upload-form" action="/images/upload" method="POST" enctype="multipart/form-data">
+                <form class="upload-form" action="/image/donate" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="image">Select Image:</label>
                         <input type="file" id="image" name="image" accept="image/*" required>
                         <div class="error-message" id="image-error"></div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="title">Image Title:</label>
-                        <input type="text" id="title" name="title" placeholder="Enter a title for your image" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea id="description" name="description" rows="3" placeholder="Describe your image"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contributor">Your Name:</label>
-                        <input type="text" id="contributor" name="contributor" placeholder="Your name (optional)">
-                    </div>
-
                     <button type="submit">Upload Image</button>
                     <div id="upload-status"></div>
                 </form>
-            </section>
-
-            <h2>Recent Donations</h2>
-            <section class="gallery-container">
-                <div class="gallery-item">
-                    <img src="/images/sample1.jpg" alt="Server Architecture">
-                    <h3>Server Architecture</h3>
-                    <p>A diagram of our Webserv architecture</p>
-                    <small>Donated by: Team Member 1</small>
-                </div>
-
-                <div class="gallery-item">
-                    <img src="/images/sample2.jpg" alt="HTTP Flow" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22250%22 height%3D%22200%22%3E%3Crect width%3D%22250%22 height%3D%22200%22 fill%3D%22%23f1f8e9%22%2F%3E%3Ctext x%3D%22125%22 y%3D%22100%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%22 font-size%3D%2264%22 fill%3D%22%238bc34a%22%3E%F0%9F%96%A5%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E';">
-                    <h3>HTTP Flow</h3>
-                    <p>Visualization of HTTP request/response cycle</p>
-                    <small>Donated by: Team Member 2</small>
-                </div>
-
-                <div class="gallery-item">
-                    <img src="/images/sample3.jpg" alt="CGI Processing" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%22250%22 height%3D%22200%22%3E%3Crect width%3D%22250%22 height%3D%22200%22 fill%3D%22%23fffde7%22%2F%3E%3Ctext x%3D%22125%22 y%3D%22100%22 dominant-baseline%3D%22middle%22 text-anchor%3D%22middle%22 font-family%3D%22Arial%22 font-size%3D%2264%22 fill%3D%22%23ffc107%22%3E%F0%9F%94%84%3C%2Ftext%3E%3C%2Fsvg%3E';">
-                    <h3>CGI Processing</h3>
-                    <p>How CGI scripts are processed by Webserv</p>
-                    <small>Donated by: Team Member 3</small>
-                </div>
-
-                <div class="gallery-item">
-                    <div style="background-color: #fce4ec; height: 200px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 3em; color: #e91e63;">⚙️</span>
-                    </div>
-                    <h3>Configuration</h3>
-                    <p>Example configuration for different scenarios</p>
-                    <small>Waiting for your donation!</small>
-                </div>
-
-                <div class="gallery-item">
-                    <div style="background-color: #e8eaf6; height: 200px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 3em; color: #3f51b5;">📊</span>
-                    </div>
-                    <h3>Performance Metrics</h3>
-                    <p>Benchmarks of Webserv performance</p>
-                    <small>Waiting for your donation!</small>
-                </div>
-
-                <div class="gallery-item">
-                    <div style="background-color: #e0f2f1; height: 200px; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 3em; color: #009688;">🔍</span>
-                    </div>
-                    <h3>Directory Listing</h3>
-                    <p>Example of the directory listing feature</p>
-                    <small>Waiting for your donation!</small>
-                </div>
             </section>
         </main>
 
@@ -222,15 +155,6 @@
             </section>
 
             <section class="sidebar-section">
-                <h3>Image Stats</h3>
-                <ul>
-                    <li>Total uploads: <span id="total-uploads">6</span></li>
-                    <li>Your uploads: <span id="user-uploads">0</span></li>
-                    <li>Storage used: <span id="storage-used">15.2 MB</span></li>
-                </ul>
-            </section>
-
-            <section class="sidebar-section">
                 <h3>Directory Navigation</h3>
                 <p>
                     Use the <a href="/images/">directory listing</a> to browse all images
@@ -241,7 +165,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2023 42 Webserv Project - Created by a team of three 42 students</p>
+        <p>&copy; 2024 42 Webserv Project</p>
     </footer>
 
     <script>
@@ -271,8 +195,6 @@
         });
 
         uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
             uploadStatus.className = '';
             uploadStatus.textContent = 'Uploading...';
 
