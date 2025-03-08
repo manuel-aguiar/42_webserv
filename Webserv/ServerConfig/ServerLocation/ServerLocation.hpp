@@ -48,7 +48,6 @@ class ServerLocation
 		const std::string&				getRoot() const;
 		bool							getAutoIndex() const;
 		const std::set<std::string>&	getMethods() const;
-		const std::string&				getType() const;
 		const Config::CgiInterpreterMap&
 										getCgiInterpreters() const;
 		const std::string&				getIndex() const;

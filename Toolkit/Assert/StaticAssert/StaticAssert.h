@@ -20,7 +20,7 @@
 # endif
 
 /*
-    Thanks chatgpt. If the condition is false, the template fails to expand and results in a compile error,
+    If the condition is false, the template fails to expand and results in a compile error,
     and you will see the "message" (sort of, enough to make it clear)
     THIS ONLY WORKS FOR CONSTANT EXPRESSIONS, everything else at runtime must be found with assert()
 */
