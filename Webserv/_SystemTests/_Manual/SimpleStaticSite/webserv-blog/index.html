@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>42 Webserv Project</title>
+    <title>42 Webserv Demo</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>
-        <h1>42 Webserv Project</h1>
-        <p>A custom HTTP/1.1 server implementation</p>
+        <h1>42 Webserv Demo Site</h1>
+        <p>Demonstration of our HTTP/1.1 server capabilities</p>
     </header>
 
     <nav>
@@ -19,25 +19,28 @@
             <li><a href="/images/">Images</a></li>
             <li><a href="/docs/">Documents</a></li>
             <li><a href="#features">Features</a></li>
-            <li><a href="#tests">Test Cases</a></li>
+            <li><a href="#demo-tests">Demo Tests</a></li>
             <li><a href="/docs/about.html">About</a></li>
         </ul>
     </nav>
 
     <div class="container">
         <main>
-            <article class="blog-post">
-                <h2>Welcome to Our Webserv Project</h2>
-                <div class="post-meta">42 School Project | Tags: <span class="tag">webserv</span> <span class="tag">http</span> <span class="tag">c++</span></div>
+            <section class="demo-intro">
+                <h2>Webserv Demonstration</h2>
+                <div class="demo-meta">Technical Demonstration | <span class="tag">HTTP/1.1</span> <span class="tag">C++</span> <span class="tag">42 Project</span></div>
                 <p>
-                    Welcome to the demonstration site for our custom HTTP/1.1 server implementation.
-                    This static site showcases the capabilities of our server developed as part of the
-                    42 curriculum by a team of three students.
+                    Welcome to the interactive demonstration of our custom HTTP/1.1 server.
+                    This page showcases the technical capabilities and features of our server
+                    implementation developed as part of the 42 curriculum.
                 </p>
-            </article>
+                <p>
+                    Use the demos below to test various server features in real-time.
+                </p>
+            </section>
 
-            <section id="features" class="blog-post">
-                <h2>Webserv Features</h2>
+            <section id="features" class="feature-showcase">
+                <h2>Server Capabilities</h2>
                 <ul>
                     <li><strong>HTTP/1.1 Compliance</strong> - Standard-compliant request and response handling</li>
                     <li><strong>Multiple Virtual Servers</strong> - Support for different server configurations</li>
@@ -50,70 +53,77 @@
                     <li><strong>Configurable Limits</strong> - Control resource usage with configurable limits</li>
                 </ul>
                 <p>
-                    Learn more about <a href="/server_config.html">server configuration options</a> and how to set up your own Webserv instance.
+                    See the <a href="/server_config.html">technical documentation</a> for detailed configuration options.
                 </p>
             </section>
 
-            <section id="tests" class="blog-post">
-                <h2>Test Cases</h2>
+            <section id="demo-tests" class="interactive-demos">
+                <h2>Interactive Demonstrations</h2>
 
-                <h3>HTTP Redirection Tests</h3>
-                <ul>
-                    <li><a href="/301-test"><h3>HTTP Redirection Tests</h3></a></li>
-                </ul>
+                <div class="demo-section">
+                    <h3>HTTP Redirection Demo</h3>
+                    <p>Test different types of HTTP redirects and see how they behave:</p>
+                    <ul>
+                        <li><a href="/redir-tests">Try Various Redirection Types</a></li>
+                    </ul>
+                </div>
 
-                <h3>Server Feature Tests</h3>
-                <ul>
-                    <li><a href="/images/gallery.html">Image Gallery & Upload Bucket</a> - Upload and view images</li>
-                    <li><a href="/error_demo.html">Error Pages Demo</a> - Test our custom error handling</li>
-                    <li><a href="/server_config.html">Server Configuration</a> - Learn how to configure Webserv features</li>
-                    <li><a href="/images/">Directory Listing Example</a> - Auto-indexing demonstration</li>
-                    <li><a href="/large-file.bin">Large File Download</a> - Chunked transfer encoding</li>
-                </ul>
+                <div class="demo-section">
+                    <h3>Static Content Features</h3>
+                    <ul>
+                        <li><a href="/images/gallery.html">Image Gallery & Upload Demo</a> - Test file uploads and viewing</li>
+                        <li><a href="/images/">Directory Listing Demo</a> - See auto-indexing in action</li>
+                        <li><a href="/large-file.bin">Large File Transfer Demo</a> - Test chunked transfer encoding</li>
+                    </ul>
+                </div>
 
-                <h3>HTTP Method Tests</h3>
-                <ul>
-                    <li>
-                        <form action="/form-test" method="POST">
-                            <input type="text" name="test_field" placeholder="Enter text">
-                            <button type="submit">Test POST Method</button>
-                        </form>
-                    </li>
-                    <li>
-                        <form action="/upload" method="POST" enctype="multipart/form-data">
-                            <input type="file" name="test_file">
-                            <button type="submit">Test File Upload</button>
-                        </form>
-                    </li>
-                </ul>
+                <div class="demo-section">
+                    <h3>HTTP Method Testing</h3>
+                    <p>Try different HTTP methods with these forms:</p>
+                    <ul>
+                        <li>
+                            <form action="/form-test" method="POST">
+                                <input type="text" name="test_field" placeholder="Enter text">
+                                <button type="submit">Test POST Method</button>
+                            </form>
+                        </li>
+                        <li>
+                            <form action="/upload" method="POST" enctype="multipart/form-data">
+                                <input type="file" name="test_file">
+                                <button type="submit">Test File Upload</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
 
-                <h3>CGI Tests</h3>
-                <p class="note" style="background-color: #e8f4fc; padding: 10px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
-                    <strong>Note:</strong> CGI scripts require proper server configuration to run. The server must be configured to:
-                    <br>1) Map file extensions (.py, .php) to appropriate interpreters
-                    <br>2) Allow CGI execution in specific locations
-                    <br>3) Set proper permissions on script files
-                    <br>See our <a href="/server_config.html#basic-cgi">CGI Configuration Guide</a> for details.
-                </p>
-                <ul>
-                    <li><a href="/cgi-bin/calculator.py">Interactive Calculator</a> - Form processing with calculation</li>
-                    <li><a href="/cgi-bin/info.py">Server Information Script</a> - Environment details</li>
-                    <li><a href="/cgi-bin/env.py">Environment Variables</a> - View all ENV variables</li>
-                    <li>
-                        <form action="/cgi-bin/form.py" method="POST">
-                            <input type="text" name="user_input" placeholder="Your name">
-                            <button type="submit">CGI Form Processing</button>
-                        </form>
-                    </li>
-                </ul>
+                <div class="demo-section">
+                    <h3>CGI Demonstrations</h3>
+                    <p class="note" style="background-color: #e8f4fc; padding: 10px; border-left: 4px solid #2196f3; margin-bottom: 15px;">
+                        <strong>Note:</strong> These demos require proper CGI configuration:
+                        <br>1) File extensions (.py, .php) mapped to interpreters
+                        <br>2) CGI execution enabled for these locations
+                        <br>3) Proper permissions on script files
+                    </p>
+                    <ul>
+                        <li><a href="/cgi-bin/calculator.py">Interactive Calculator Demo</a> - Test form processing</li>
+                        <li><a href="/cgi-bin/info.py">Server Information Demo</a> - View environment details</li>
+                        <li><a href="/cgi-bin/env.py">Environment Variables Demo</a> - See all ENV variables</li>
+                        <li>
+                            <form action="/cgi-bin/form.py" method="POST">
+                                <input type="text" name="user_input" placeholder="Your name">
+                                <button type="submit">Try CGI Form Processing</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </section>
         </main>
 
         <aside>
             <section class="sidebar-section">
-                <h3>About The Team</h3>
-                <p>This webserver was built by a team of three 42 students as part of the curriculum's system programming track.</p>
-                <p><a href="/docs/about.html">Learn more about us</a></p>
+                <h3>Technical Info</h3>
+                <p>This demo showcases a custom HTTP/1.1 server built in C++ as part of the 42 curriculum.</p>
+                <p><a href="/docs/about.html">Technical details</a></p>
             </section>
 
             <section class="sidebar-section">
@@ -133,8 +143,8 @@
             <section class="sidebar-section">
                 <h3>Quick Links</h3>
                 <ul>
-                    <li><a href="#features">Server Features</a></li>
-                    <li><a href="#tests">Test Cases</a></li>
+                    <li><a href="#features">Server Capabilities</a></li>
+                    <li><a href="#demo-tests">Interactive Demos</a></li>
                     <li><a href="https://github.com/manuel-aguiar/42_webserv.git" target="_blank">GitHub Repository</a></li>
                 </ul>
             </section>
@@ -142,7 +152,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2023 42 Webserv Project - Created by a team of three 42 students</p>
+        <p>&copy; 2023 42 Webserv Demonstration - A technical showcase of our HTTP/1.1 server</p>
     </footer>
 </body>
 </html>
