@@ -23,6 +23,7 @@ SRCS					=	$(SRC_PATH)/Webserv/ServerConfig/_IntegrationTests/BlockFinder-Server
 							$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfig.cpp \
 							$(SRC_PATH)/Webserv/ServerConfig/ServerConfig/ServerConfigDNSLookup.cpp \
 							$(SRC_PATH)/Webserv/GenericUtils/StringUtils/StringUtils.cpp \
+							$(SRC_PATH)/Webserv/GenericUtils/Files/FilesUtils.cpp \
 							$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp \
 							$(SRC_PATH)/Webserv/GenericUtils/Validation/Validation.cpp
 
