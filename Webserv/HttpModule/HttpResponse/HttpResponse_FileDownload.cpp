@@ -17,7 +17,7 @@ namespace Http
 			m_responseData.responseType = ResponseData::ERROR;
 			m_responseData.errorMessage = "Could not open file";
 			m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
-			m_fillFunctionBody = &Response::mf_fillDefaultPage;
+			m_fillBody = &Response::mf_fillDefaultPage;
 			return (false);
 		}
 

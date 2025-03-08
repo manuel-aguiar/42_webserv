@@ -65,10 +65,10 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 
 		ASSERT_EQUAL(m_fillFunction == NULL, false, "Response::mf_fillHeaders: m_fillFunction is NULL");
-		ASSERT_EQUAL(m_fillFunctionBody == NULL, false, "Response::mf_fillHeaders: m_fillFunctionBody is NULL");
+		ASSERT_EQUAL(m_fillBody == NULL, false, "Response::mf_fillHeaders: m_fillBody is NULL");
 
 		// go to next stage
-		m_fillFunction = m_fillFunctionBody;
+		m_fillFunction = m_fillBody;
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
 

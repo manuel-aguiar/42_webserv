@@ -26,7 +26,7 @@ namespace Http
 		if (it != m_responseData.requestData->headers.end() && it->second == etag)
 		{
 			m_responseData.requestStatus = Http::Status::NOT_MODIFIED;
-			m_fillFunctionBody = NULL;
+			m_fillBody = NULL;
 			return (true);
 		}
 		return (false);

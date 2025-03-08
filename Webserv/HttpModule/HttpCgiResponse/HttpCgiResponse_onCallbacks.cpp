@@ -58,7 +58,7 @@ namespace Http
 		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
 
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyForward)
 			return (Cgi::IO::CLOSE);
 		return (Cgi::IO::CONTINUE);
 	}

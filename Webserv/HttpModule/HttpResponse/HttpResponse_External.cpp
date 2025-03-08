@@ -33,8 +33,7 @@ namespace Http
 		if (m_responseData.requestStatus != Http::Status::OK 
 			|| !mf_resolveServerAndLocation()
 			|| !mf_checkPermissions()
-			|| mf_checkRedirect()
-			|| mf_checkUpload())
+			|| mf_checkRedirect())
 			return ;
 
 		mf_validateTargetPath();
@@ -58,23 +57,24 @@ namespace Http
 			{
 				mf_addContentHeaders(m_file.size(), getMimeType(m_responseData.targetPath));
 				if (mf_addCacheControlHeaders())
-					m_fillFunctionBody = &Response::mf_fillFinish;
+					m_fillBody = &Response::mf_fillFinish;
 				else
-					m_fillFunctionBody = &Response::mf_sendStaticFile;
+					m_fillBody = &Response::mf_sendStaticFile;
 
 				break ;
 			}
 			case ResponseData::CGI:
+				std::cout << "cgi resource" << std::endl;
 				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
 				m_defaultPageContent = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-				m_fillFunctionBody = &Response::mf_fillRedirect;
+				m_fillBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
 				m_responseData.headers.insert(std::make_pair("content-type", "text/html"));
 				m_responseData.headers.insert(std::make_pair("transfer-encoding", "chunked"));
-				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
+				m_fillBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:
 				m_fillFunction = &Response::mf_fillExpectContinue;
@@ -86,7 +86,7 @@ namespace Http
 				break ;
 			case ResponseData::NO_CONTENT:
 				mf_addHeader("content-length", "0");
-				m_fillFunctionBody = &Response::mf_fillFinish;
+				m_fillBody = &Response::mf_fillFinish;
 				break ;
 			case ResponseData::UNDEFINED:
 				m_processFunction = &Response::mf_processBodyIgnore;
@@ -146,7 +146,7 @@ namespace Http
 	{
 		m_responseData.reset();
 		m_fillFunction = &Response::mf_fillNothingToSend;
-		m_fillFunctionBody = NULL;
+		m_fillBody = NULL;
 		m_processFunction = &Response::mf_processBodyNone;
 		m_pendingWrite.clear();
 		m_ioStatus = IOStatus::WAITING;
