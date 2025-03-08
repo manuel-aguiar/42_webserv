@@ -116,7 +116,7 @@ namespace Http
 		}
 
 		// PATH_INFO
-		m_cgiRequest->setEnvBase(Cgi::Env::Enum::PATH_INFO, data.path);
+		m_cgiRequest->setEnvBase(Cgi::Env::Enum::PATH_INFO, responseData.targetPath);
 
 		// QUERY_STRING
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::QUERY_STRING, data.queryString);

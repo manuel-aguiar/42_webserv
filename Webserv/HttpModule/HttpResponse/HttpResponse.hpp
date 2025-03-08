@@ -90,6 +90,7 @@ namespace Http
 			Http::IOStatus::Type		mf_fillHeaders(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillRedirect(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillExpectContinue(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
 			void						mf_addContentHeaders(const size_t size, const std::string mimeType);

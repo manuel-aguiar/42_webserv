@@ -103,6 +103,35 @@ namespace Http
 		return (mf_fillFinish(writeBuffer));
 	}
 
+	Http::IOStatus::Type
+	Response::mf_fillExpectContinue(BaseBuffer& writeBuffer)
+	{
+		std::map<std::string, std::string>::const_iterator expectHeader =
+		m_responseData.requestData->headers.find("Expect");
+		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
+			+ 3 + 1
+			+ std::strlen(getStatusMessage(Http::Status::CONTINUE)) + 2;
+
+		if (expectHeader == m_responseData.requestData->headers.end())
+			goto waitUpload;
+			
+		if (writeBuffer.available() < writeSize)
+			return (Http::IOStatus::WRITING);
+
+		writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(StringUtils::to_string(Http::Status::CONTINUE).c_str(), 3); // always 3 digits status code
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(getStatusMessage(Http::Status::CONTINUE), std::strlen(getStatusMessage(Http::Status::CONTINUE)));
+		writeBuffer.push("\r\n", 2);
+		writeBuffer.push("Content-Length: 0\r\n", 19);
+		writeBuffer.push("\r\n", 2);
+
+	waitUpload:
+		m_fillFunction = &Response::mf_fillNothingToSend;
+		return (Http::IOStatus::WRITING);
+	}
+
     Http::IOStatus::Type
     Response::mf_fillCgiResponse(BaseBuffer& writeBuffer)
     {

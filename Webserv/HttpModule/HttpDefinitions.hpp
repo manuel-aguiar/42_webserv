@@ -25,8 +25,11 @@ namespace Http
     {
         typedef enum
         {
-            _TOTAL_CODES = 37,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+            _TOTAL_CODES = 38,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
+
+			//
+			CONTINUE = 100,
 
 			// 2xx
 			OK = 200,

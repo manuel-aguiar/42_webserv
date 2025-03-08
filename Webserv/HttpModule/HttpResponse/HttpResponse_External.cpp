@@ -89,7 +89,7 @@ namespace Http
 				m_fillFunctionBody = &Response::mf_fillDirectoryListing_Head;
 				break ;
 			case ResponseData::FILE_UPLOAD:
-				m_fillFunction = &Response::mf_fillNothingToSend;
+				m_fillFunction = &Response::mf_fillExpectContinue;
 				m_processFunction = &Response::mf_processBodyUpload;
 				break ;
 			case ResponseData::ERROR:
@@ -100,7 +100,9 @@ namespace Http
 				mf_addHeader("content-length", "0");
 				m_fillFunctionBody = &Response::mf_fillFinish;
 				break ;
-			default:
+			case ResponseData::UNDEFINED:
+				m_processFunction = &Response::mf_processBodyIgnore;
+				mf_prepareErrorMessage();
 				break ;
 		}
 

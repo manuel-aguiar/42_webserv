@@ -9,12 +9,7 @@
 #include "../../../../GenericUtils/BufferView/BufferView.hpp"
 #include "../../../../GenericUtils/StringUtils/StringUtils.hpp"
 
-# include "texts.cpp"
-
-extern const char potato_text[];
-extern const char orange_text[];
-extern const size_t potato_text_size;
-extern const size_t orange_text_size;
+# include "texts.hpp"
 
 ///////////////////////////////////////////////////////////
 

@@ -24,6 +24,7 @@ namespace Http
 		"Connection",
 		"Content-Length",
 		"Content-Type",
+		"Expect",
 		"Host",
 		"If-Modified-Since",
 		"If-None-Match",

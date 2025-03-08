@@ -53,7 +53,7 @@ namespace Http
 			Http::IOStatus::Type	mf_fillBodyTemp(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type	mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type	mf_fillErrorResponse(BaseBuffer& writeBuffer);
-
+			Http::IOStatus::Type	mf_fillFinish(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type	mf_fillErrorDefaultPage(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type	mf_fillErrorFile(BaseBuffer& writeBuffer);
 			

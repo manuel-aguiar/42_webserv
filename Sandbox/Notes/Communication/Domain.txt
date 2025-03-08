@@ -1,0 +1,15 @@
+
+COMMUNICATION DOMAIN
+
+Communication domain is the context within which communication occurs
+	addressing scheme and protocols
+
+	
+
+In the context of socket:
+####################################################################
+
+	AF_UNIX (AF_LOCAL) -> local communication between processes on the same localhost
+		-> utilizes the file system (pathnames) to communicate instead of the network
+	AF_INET -> IPv4 Internet protocols
+	AF_INET6 -> IPv6 Internet Protocols
