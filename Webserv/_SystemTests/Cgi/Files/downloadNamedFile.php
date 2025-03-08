@@ -17,7 +17,7 @@ header("Content-Type: application/octet-stream");
 header("Content-Disposition: attachment; filename=$filename");
 
 // Generate random content
-$size = rand(1024, 4000000); // Random file size between 1KB and 4KB
+$size = rand(1024, 4000000); // Random file size between 1KB and 4MB
 $data = '';
 
 for ($i = 0; $i < $size; $i++) {
