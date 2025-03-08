@@ -94,8 +94,12 @@ namespace Http
 
 	bool Response::mf_checkUpload()
 	{
+		std::map<std::string, std::string>::const_iterator contentType =
+		m_responseData.requestData->headers.find("Content-Type");
+
 		if (m_responseData.requestData->method == "POST"
-			&& m_responseData.requestData->headers.find("Content-Type")->second.compare(0, 19, "multipart/form-data") == 0)
+			&& contentType != m_responseData.requestData->headers.end()
+			&& contentType->second.compare(0, 19, "multipart/form-data") == 0)
 		{
 			if (m_responseData.serverLocation != NULL
 				&& m_responseData.serverLocation->getAllowUpload() == true)
@@ -166,10 +170,11 @@ namespace Http
 				}
 				else if (m_responseData.requestData->method == "DELETE")
 				{
-					if (!unlink(m_responseData.targetPath.c_str()))
+					if (!::unlink(m_responseData.targetPath.c_str()))
 					{
 						m_responseData.requestStatus = Http::Status::NO_CONTENT;
-						m_responseData.responseType = ResponseData::STATIC;
+						m_responseData.responseType = ResponseData::NO_CONTENT;
+						return ;
 					}
 					else
 					{
@@ -179,7 +184,6 @@ namespace Http
 						return ;
 					}
 				}
-				m_responseData.responseType = ResponseData::STATIC;
 				break ;
 			case FilesUtils::DIRECTORY:
 				if (m_responseData.requestData->method == "POST")
