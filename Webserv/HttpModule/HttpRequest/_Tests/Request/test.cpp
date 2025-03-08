@@ -267,7 +267,7 @@ void testErrorCodes(int &testNumber)
 			buffer1.push("GET /index.html HTTP/2.0\r\n\r\n");
 			request1.setBuffer_ReadFd(buffer1, Ws::FD_NONE);
 			request1.parse();
-			EXPECT_EQUAL(request1.getStatus(), Http::Status::BAD_REQUEST, "Should return BAD_REQUEST for invalid HTTP version");
+			EXPECT_EQUAL(request1.getStatus(), Http::Status::HTTP_VERSION_NOT_SUPPORTED, "Should return HTTP_VERSION_NOT_SUPPORTED for invalid HTTP version");
 
 			// Malformed request line
 			Http::Request request2(serverContext);
