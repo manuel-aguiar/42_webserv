@@ -82,12 +82,12 @@
                 <div class="gallery-container">
                     <div class="gallery-item">
                         <img src="./donated/cat.jpeg" alt="Image 1">
-                        <button class="delete-button" onclick="deleteImage('./donated/cat.jpeg')">Delete Image</button>
+                        <button class="delete-button" onclick="deleteImage('cat.jpeg')">Delete Image</button>
                     </div>
 
                     <div class="gallery-item">
                         <img src="./donated/dog.png" alt="Image 1">
-                        <button class="delete-button" onclick="deleteImage('./donated/cat.jpeg')">Delete Image</button>
+                        <button class="delete-button" onclick="deleteImage('dog.png')">Delete Image</button>
                     </div>
                 </div>
             </section>
@@ -113,12 +113,11 @@
             if (!confirmation) return;
 
             try {
-                const response = await fetch('/image/moderate', {
+                const response = await fetch(`/image/moderate/${imagePath}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ image: imagePath })
+                    }
                 });
 
                 const data = await response.json();
