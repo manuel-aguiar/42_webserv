@@ -38,7 +38,7 @@ namespace Http
 				// finished
 				m_fillFunction = &Response::mf_fillResponseLine;
 				m_processFunction = &Response::mf_processBodyIgnore;
-				m_fillFunctionBody = &Response::mf_fillDefaultPage;
+				m_fillBody = &Response::mf_fillDefaultPage;
 				m_responseData.requestStatus = Http::Status::CREATED;
 				m_responseData.errorMessage = "File uploaded";
 				mf_prepareErrorMessage();
@@ -90,7 +90,7 @@ namespace Http
 		m_responseData.errorMessage = "Upload failed";
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		m_processFunction = &Response::mf_processBodyIgnore;
-		m_fillFunction = &Response::mf_fillDefaultPage;
+		m_fillBody = &Response::mf_fillDefaultPage;
 		return (view);
 	}
 
@@ -99,6 +99,6 @@ namespace Http
 	Response::mf_processBodyCgi(const BufferView& view)
 	{
 		ASSERT_EQUAL(m_cgiResponse != NULL, true, "Response: CgiResponse not set");
-		return (m_cgiResponse->sendHttpBody(view));
+		return (m_cgiResponse->receiveHttpBody(view));
 	}
 }

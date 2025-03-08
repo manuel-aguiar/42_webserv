@@ -38,6 +38,7 @@ namespace Http
 		if (FilesUtils::isDirectory(m_responseData.targetPath.c_str())
 			&& m_responseData.serverLocation != NULL
 			&& *m_responseData.requestData->path.rbegin() == '/'
+			&& m_responseData.requestData->method == "GET"
 			&& !m_responseData.serverLocation->getIndex().empty()) 
 			{
 			m_responseData.targetPath += m_responseData.serverLocation->getIndex();

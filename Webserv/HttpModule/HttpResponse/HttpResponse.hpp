@@ -138,7 +138,7 @@ namespace Http
 			std::string					m_defaultPageContent; // Load the default pages in here (Directory Listing, Error Page)
 
 			FillFunction				m_fillFunction;
-			FillFunction				m_fillFunctionBody;
+			FillFunction				m_fillBody;
 			ProcessBodyFunction			m_processFunction;
 
 			size_t						m_staticReadCounter;

@@ -33,7 +33,7 @@ namespace Http
 			Http::IOStatus::Type
 									fillWriteBuffer(BaseBuffer& writeBuffer);
 
-			BufferView				sendHttpBody(const BufferView& view);
+			BufferView				receiveHttpBody(const BufferView& view);
 
 			// execution after callbacks
 			void 					onCgiSuccess();
@@ -60,7 +60,7 @@ namespace Http
 			
 			BufferView					mf_HttpBodyNone(const BufferView& view);
 			BufferView					mf_HttpBodyIgnore(const BufferView& view);
-			BufferView					mf_HttpBodySend(const BufferView& view);	
+			BufferView					mf_HttpBodyForward(const BufferView& view);	
 
 			void						mf_finishAndRelease();
 

@@ -138,13 +138,13 @@ namespace Http
 			goto defaultError;
 
 		mf_addContentHeaders(m_file.size(), getMimeType(customPage->second.c_str()));
-		m_fillFunctionBody = &Response::mf_sendStaticFile;
+		m_fillBody = &Response::mf_sendStaticFile;
 		return ;
 
 	defaultError:
 		m_defaultPageContent = mf_generateDefaultErrorPage(m_responseData.requestStatus, m_responseData.errorMessage);
 		mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
-		m_fillFunctionBody = &Response::mf_fillDefaultPage;
+		m_fillBody = &Response::mf_fillDefaultPage;
 	}
 
 	void
