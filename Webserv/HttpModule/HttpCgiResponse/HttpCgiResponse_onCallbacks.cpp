@@ -19,7 +19,6 @@ extern const char* getStatusMessage(int statusCode);
 namespace Http
 {
 
-
 	void
 	CgiResponse::onCgiSuccess()
 	{
@@ -35,10 +34,9 @@ namespace Http
 		m_responseData->cgiPass = false;
 		m_responseData->closeAfterSending = true;
 		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
-		{
 			m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
 			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
-		}
 	}
 
 	Cgi::IO::State

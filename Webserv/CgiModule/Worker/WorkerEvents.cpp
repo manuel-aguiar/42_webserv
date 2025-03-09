@@ -74,6 +74,9 @@ void	Worker::mf_readScript()
 			return (mf_recycleRuntimeFailure());
 
 		Cgi::HeaderData::ParsingState parseStatus = m_headerParser.parse(m_headerBuffer);
+		if (parseStatus == Cgi::HeaderData::NEED_MORE_DATA)
+			return ;
+		
 		switch (parseStatus)
 		{
 			case::Cgi::HeaderData::NEED_MORE_DATA:
