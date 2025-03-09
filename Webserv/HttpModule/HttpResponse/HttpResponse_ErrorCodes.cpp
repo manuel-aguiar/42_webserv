@@ -47,6 +47,7 @@ const char* getStatusMessage(int statusCode)
 		codes[i] = Http::Status::PAYLOAD_TOO_LARGE; 				messages[i] = "Payload Too Large"; 					i++;
 		codes[i] = Http::Status::URI_TOO_LONG; 						messages[i] = "URI Too Long"; 						i++;
 		codes[i] = Http::Status::UNSUPPORTED_MEDIA_TYPE; 			messages[i] = "Unsupported Media Type"; 			i++;
+		codes[i] = Http::Status::EXPECTATION_FAIL;					messages[i] = "Expectation Fail";					i++;
 		codes[i] = Http::Status::TOO_MANY_REQUESTS; 				messages[i] = "Too Many Requests"; 					i++;
 		codes[i] = Http::Status::REQUEST_HEADER_FIELDS_TOO_LARGE; 	messages[i] = "Request Header Fields Too Large";	i++;
 		codes[i] = Http::Status::UNAVAILABLE_FOR_LEGAL_REASONS; 	messages[i] = "Unavailable For Legal Reasons"; 		i++;

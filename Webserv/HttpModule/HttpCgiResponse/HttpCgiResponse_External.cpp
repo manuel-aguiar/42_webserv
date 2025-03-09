@@ -60,7 +60,7 @@ namespace Http
 	{
 		m_responseData = &responseData;
 		m_httpRequest = &request;
-
+		
 		const Http::RequestData& data = *responseData.requestData;
 
 		Http::RequestData::headerContainer::const_iterator finder;
