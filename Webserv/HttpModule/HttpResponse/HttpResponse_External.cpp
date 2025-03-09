@@ -30,10 +30,9 @@ namespace Http
 
 	void	Response::mf_resolveRequestData()
 	{	
-		if (m_responseData.requestStatus != Http::Status::OK 
-			|| !mf_resolveServerAndLocation()
-			|| !mf_checkPermissions()
-			|| mf_checkRedirect())
+		if (!mf_resolveServerAndLocation()
+		|| !mf_checkPermissions()
+		|| mf_checkRedirect())
 			return ;
 
 		mf_validateTargetPath();
@@ -45,7 +44,14 @@ namespace Http
 		m_responseData.requestStatus = data.status;
 		m_fillFunction = &Response::mf_fillResponseLine;
 
-		mf_resolveRequestData();
+		if (m_responseData.requestStatus != Http::Status::OK)
+		{
+			// bad parsing, close the connection to protect the server
+			m_responseData.responseType = ResponseData::ERROR;
+			m_responseData.closeAfterSending = true;
+		}
+		else
+			mf_resolveRequestData();
 
 		mf_addHeader("server", SERVER_NAME_VERSION);
 		mf_addHeader("date", mf_getCurrentDate());
@@ -64,11 +70,16 @@ namespace Http
 				break ;
 			}
 			case ResponseData::CGI:
-				std::cout << "cgi resource" << std::endl;
 				return (mf_prepareCgiExecution());
 			case ResponseData::REDIRECT:
 				m_defaultPageContent = mf_generateRedirectPage(m_responseData.requestStatus, m_responseData.headers["location"]);
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
+				if (m_responseData.requestData->method == "POST")
+				{
+					m_responseData.headers["connection"] = "close";
+					m_responseData.closeAfterSending = true;
+				}
+				m_fillFunction = &Response::mf_fillResponseLine;
 				m_fillBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior

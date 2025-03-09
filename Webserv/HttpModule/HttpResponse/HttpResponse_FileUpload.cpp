@@ -16,7 +16,11 @@ namespace Http
 	Response::mf_processBodyIgnore(const BufferView& view)
 	{
 		//returns empty view, tells Request "all processed" but does nothing with it
-		(void)view;
+		if (view.size() == 0)
+		{
+			m_fillFunction = &Response::mf_fillResponseLine;
+			m_processFunction = &Response::mf_processBodyNone;
+		}
 
 		return (BufferView());
 	}

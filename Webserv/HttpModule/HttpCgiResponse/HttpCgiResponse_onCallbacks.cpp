@@ -34,8 +34,11 @@ namespace Http
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		m_responseData->cgiPass = false;
 		m_responseData->closeAfterSending = true;
-		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
-		m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
+		{
+			m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+		}
 	}
 
 	Cgi::IO::State
