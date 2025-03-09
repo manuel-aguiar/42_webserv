@@ -76,10 +76,9 @@ namespace Http
 				mf_addContentHeaders(m_defaultPageContent.size(), "text/html");
 				if (m_responseData.requestData->method == "POST")
 				{
-					m_responseData.headers["connection"] = "close";
-					m_responseData.closeAfterSending = true;
+					m_fillFunction = &Response::mf_fillExpectFail;
+					m_processFunction = &Response::mf_processBodyIgnore;
 				}
-				m_fillFunction = &Response::mf_fillResponseLine;
 				m_fillBody = &Response::mf_fillRedirect;
 				break ;
 			case ResponseData::DIRECTORY_LISTING: // Directory Listing and Error have similar behavior
