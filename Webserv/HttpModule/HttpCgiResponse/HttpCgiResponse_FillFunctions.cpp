@@ -7,8 +7,8 @@
 
 extern int          checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool         isHeaderIgnored(const Cgi::Header& header);
-extern const char*  getStatusMessage(int statusCode);
-extern std::string  generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
+extern BufferView  getStatusMessage(Http::Status::Number statusCode);
+extern std::string  generateDefaultErrorPage(Http::Status::Number statusCode, const std::string& serverName, const std::string& errorMessage);
 extern std::string  getCurrentDate();
 
 namespace Http
@@ -211,9 +211,12 @@ namespace Http
 	{
 		std::map<std::string, std::string>::const_iterator expectHeader =
 		m_responseData->requestData->headers.find("Expect");
+
+        const BufferView expectMessage = getStatusMessage(Http::Status::CONTINUE);
+
 		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
 			+ 3 + 1
-			+ std::strlen(getStatusMessage(Http::Status::CONTINUE)) + 2;
+			+ expectMessage.size() + 2;
 
 		if (expectHeader == m_responseData->requestData->headers.end())
 			goto waitUpload;
@@ -225,7 +228,7 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(StringUtils::to_string(Http::Status::CONTINUE).c_str(), 3); // always 3 digits status code
 		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(Http::Status::CONTINUE), std::strlen(getStatusMessage(Http::Status::CONTINUE)));
+		writeBuffer.push(expectMessage);
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Content-Length: 0\r\n", 19);
 		writeBuffer.push("\r\n", 2);

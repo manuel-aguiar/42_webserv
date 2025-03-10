@@ -1,4 +1,8 @@
-http://localhost:8080/downloadRandom.php?name=yoyo
-http://localhost:8080/downloadRandom.php?name=yaman
-http://localhost:8080/downloadRandom.php?name=ops
-http://localhost:8080/downloadRandom.php?name=broda
+Http://localhost:8080/phpCgi_httpfail.php
+Http://localhost:8080/phpCgi_invalid.php
+Http://localhost:8080/phpCgi_syntaxError.php
+Http://localhost:8080/phpCgi_valid.php
+Http://localhost:8080/py_long.py
+Http://localhost:8080/py_longSyntaxError.py
+Http://localhost:8080/py_syntaxError.py
+Http://localhost:8080/py_valid.py

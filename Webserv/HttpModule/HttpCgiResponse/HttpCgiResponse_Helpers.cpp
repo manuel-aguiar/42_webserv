@@ -3,13 +3,15 @@
 # include <sstream>
 # include <iomanip>
 # include <ctime>
+# include "../../GenericUtils/BufferView/BufferView.hpp"
+# include "../HttpDefinitions.hpp"
 
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 
-std::string generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage)
+std::string generateDefaultErrorPage(Http::Status::Number statusCode, const std::string& serverName, const std::string& errorMessage)
 {
     std::stringstream ss;
-    const char* statusText = getStatusMessage(statusCode);
+    BufferView statusText = getStatusMessage(statusCode);
 
     ss << "<!DOCTYPE html>\n"
     << "<html>\n"
@@ -63,8 +65,9 @@ std::string getCurrentDate()
     time_t rawTime;
     std::time(&rawTime);
 
-    // Convert time to UTC (GMT)
-    std::tm* gmtTime = std::gmtime(&rawTime);
+    // Convert time to UTC (GMT) in a thread-safe manner
+    std::tm gmtTime;
+    ::gmtime_r(&rawTime, &gmtTime);
 
     // Days of the week and months as required by HTTP format
     const char* days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -72,13 +75,13 @@ std::string getCurrentDate()
 
     // Format the date string in the desired HTTP format
     std::stringstream dateStream;
-    dateStream << days[gmtTime->tm_wday] << ", "
-            << std::setw(2) << std::setfill('0') << gmtTime->tm_mday << " "
-            << months[gmtTime->tm_mon] << " "
-            << (1900 + gmtTime->tm_year) << " "
-            << std::setw(2) << std::setfill('0') << gmtTime->tm_hour << ":"
-            << std::setw(2) << std::setfill('0') << gmtTime->tm_min << ":"
-            << std::setw(2) << std::setfill('0') << gmtTime->tm_sec << " GMT";
+    dateStream << days[gmtTime.tm_wday] << ", "
+            << std::setw(2) << std::setfill('0') << gmtTime.tm_mday << " "
+            << months[gmtTime.tm_mon] << " "
+            << (1900 + gmtTime.tm_year) << " "
+            << std::setw(2) << std::setfill('0') << gmtTime.tm_hour << ":"
+            << std::setw(2) << std::setfill('0') << gmtTime.tm_min << ":"
+            << std::setw(2) << std::setfill('0') << gmtTime.tm_sec << " GMT";
 
-    return (dateStream.str());
+    return dateStream.str();
 }

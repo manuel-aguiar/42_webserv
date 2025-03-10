@@ -8,7 +8,66 @@
 
 // Project headers
 #include "HttpRequest.hpp"
+#include "../../../Toolkit/Assert/AssertEqual/AssertEqual.h"
 
+namespace Http
+{
+    static BufferView allowedMethods[] = {
+        BufferView("DELETE"),
+        BufferView("GET"),
+        BufferView("POST")
+    };
+}
+
+#ifndef NDEBUG
+
+    static int testHeadersOfInterest();
+
+    static const int g_testHeadersOfInterest = testHeadersOfInterest();
+
+    static int testHeadersOfInterest()
+    {
+        for (size_t i = 0; i < sizeof(Http::allowedMethods) / sizeof(Http::allowedMethods[0]); ++i)
+        {
+            if (i > 0)
+                ASSERT_EQUAL(Http::allowedMethods[i] > Http::allowedMethods[i - 1], true, "allowedmethods are repeated/not sorted");
+            
+            std::string copy = Http::allowedMethods[i].to_string();
+            ASSERT_EQUAL(BufferView(copy).trim(" \t\v\n\r").modify_ToUpperCase() == Http::allowedMethods[i], 
+            true, "allowedmethods is not correctly formated, must have no leading/trailing spaces and be capitalized");
+        }
+        return (0);
+    }
+
+#endif
+
+// binary search into headersOfInterest to see if we find our target
+static int binSearch(const BufferView lookup[], size_t sizeOfLookup, const BufferView& target)
+{
+	int        		low = 0;
+	int        		high = sizeOfLookup - 1;
+	int        		mid;
+	BufferView 		midView;
+
+	if (sizeOfLookup <= 0)
+		return (-1);
+
+	while (low < high)
+	{
+		mid = low + ((high - low) / 2);
+		midView = lookup[mid];
+		if (midView == target)
+			return (mid);
+		else if (midView > target)
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+	if (target != lookup[low])
+		return (-1);
+
+	return (low);
+}
 
 // URL decoding utilities
 static int hexToInt(char c)
@@ -104,8 +163,8 @@ Http::Request::mf_parseRequestLine(const BufferView& line)
 
         // Check if method is allowed using HttpDefinitions
         // TODO: later get this from server config
-        const std::set<std::string>& allowedMethods = Http::AllowedRequestMethods::getAllowedMethods();
-        if (allowedMethods.find(m_data.method) == allowedMethods.end())
+
+        if (binSearch(allowedMethods, sizeof(allowedMethods) / sizeof(allowedMethods[0]), m_data.method) == -1)
             return Http::Status::METHOD_NOT_ALLOWED;
 
         // TODO: later get this from server config
