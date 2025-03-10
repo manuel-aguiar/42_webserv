@@ -21,6 +21,7 @@ namespace Http
 		
 		// ETag
 		std::string	etag = mf_generateEtag(m_file, lastmodified);
+		std::string	etag = mf_generateEtag(m_file, lastmodified);
 		m_responseData.headers.insert(std::make_pair("etag", etag));
 		std::map<std::string, std::string>::const_iterator it = m_responseData.requestData->headers.find("If-None-Match");
 		if (it != m_responseData.requestData->headers.end() && it->second == etag)
