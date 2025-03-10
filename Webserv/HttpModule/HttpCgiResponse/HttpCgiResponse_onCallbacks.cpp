@@ -28,7 +28,6 @@ namespace Http
 	void
 	CgiResponse::onCgiError()
 	{
-		std::cout << "received error" << std::endl;
 		m_cgiRequest->setNotify_onError(NULL);
 		mf_finishAndRelease();
 		m_statusCode = Http::Status::BAD_GATEWAY;
