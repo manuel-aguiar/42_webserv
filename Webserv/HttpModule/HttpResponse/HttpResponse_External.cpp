@@ -66,7 +66,6 @@ namespace Http
 					m_fillBody = &Response::mf_fillFinish;
 				else
 					m_fillBody = &Response::mf_sendStaticFile;
-
 				break ;
 			}
 			case ResponseData::CGI:
