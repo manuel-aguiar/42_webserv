@@ -7,4 +7,5 @@ echo "<br>Current server time: " . date('Y-m-d H:i:s');
 
 // PHP info link
 echo "<br><a href='info.php'>PHP Info</a>";
+asgASGasg
 ?>

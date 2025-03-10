@@ -52,6 +52,7 @@ namespace Http
 	void
 	CgiResponse::reset()
 	{
+		std::cout << "reset" << std::endl;
 		m_cgiRequest = NULL;
 		m_canRead = false;
 		m_canWrite = false;

@@ -157,7 +157,7 @@ namespace Http
 
         writeBuffer.push(thisPush);
         writeBuffer.push("\r\n", 2);
-
+        
         return (Http::IOStatus::WRITING);
     }
 
@@ -169,9 +169,6 @@ namespace Http
         int scriptBytesRead = 0;
         const int hexHeaderSize = 10;   // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
 
-        if (!m_canRead)
-            return (Http::IOStatus::WAITING);
-
         if (m_readFd == Ws::FD_NONE)
         {
             if (writeBuffer.available() < 5)
@@ -181,7 +178,10 @@ namespace Http
             m_fillFunction = &CgiResponse::mf_fillNothingToSend;
             return (Http::IOStatus::FINISHED);
         }
-            
+
+        if (!m_canRead)
+            return (Http::IOStatus::WAITING);
+
         if (writeBuffer.available() < hexHeaderSize + 1 + 2) // +1 byte to send minimum, + 2 for \r\n
             return (Http::IOStatus::WAITING);
         
@@ -191,6 +191,7 @@ namespace Http
         scriptBytesRead = writeBuffer.readAppend(m_readFd, writeBuffer.available() - 2);
         if (scriptBytesRead <= 0)
         {
+            std::cout << "read finished" << std::endl;
             writeBuffer.pop(hexHeaderSize);
             writeBuffer.push("0\r\n\r\n", 5);
             mf_finishAndRelease();
