@@ -54,8 +54,8 @@ void	Worker::mf_readScript()
 	{
 		if (m_headerParser.getParsingState() == Cgi::HeaderData::NEED_MORE_DATA)
 			return (mf_recycleRuntimeFailure());
-		mf_disableAndWait(*m_readEvent);
 		(m_curRequestData->getReadBodyFromScript_Callback())(m_curRequestData->getUser(), Ws::FD_NONE);
+		mf_disableAndWait(*m_readEvent);
 	}
 
 	if (!(triggeredEvents & Events::Monitor::READ))
