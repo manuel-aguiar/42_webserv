@@ -4,7 +4,11 @@
 # include "../../Webserv/Globals/Globals.hpp"
 # include "../../Webserv/SignalHandler/SignalHandler.hpp"
 # include "../../Webserv/ServerConfig/ServerConfig/ServerConfig.hpp"
+<<<<<<< HEAD
 # include "../../Webserv/GenericUtils/FileDescriptor/FileDescriptor.hpp"
+=======
+
+>>>>>>> main
 # include "../../Toolkit/ThreadPool/ThreadPool.hpp"
 
 // C++ headers
@@ -51,8 +55,12 @@ int	MultiServerRun(const char* programName, ServerConfig& config, Globals& globa
 	sigaddset(&threadSigSet, SIGQUIT);
 	sigaddset(&threadSigSet, SIGTERM);
 
+<<<<<<< HEAD
 	// explicitely block sigint/quit for new threads
 	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);		
+=======
+	pthread_sigmask(SIG_BLOCK , &threadSigSet, NULL);		// explicitely block sigint/quit for new threads		UNPROTECTED
+>>>>>>> main
 	ThreadPoolHeap servers(numServers, numServers);
 	pthread_sigmask(SIG_UNBLOCK, &threadSigSet, NULL);
 
@@ -63,6 +71,7 @@ int	MultiServerRun(const char* programName, ServerConfig& config, Globals& globa
 		servers.addTask(tasks[i], true);
 	}
 
+<<<<<<< HEAD
 	char readBuffer;
 	Ws::fd signalListener = g_SignalHandler.getSignalListener(numServers);
 	FileDescriptor::setBlocking(signalListener);
@@ -70,6 +79,10 @@ int	MultiServerRun(const char* programName, ServerConfig& config, Globals& globa
 	// block read, until signal handler writes to it
 	int bytesRead = ::read(signalListener, &readBuffer, 1);
 	(void)bytesRead;
+=======
+	while (!g_SignalHandler.getSignal())
+		::usleep(1000);
+>>>>>>> main
 
 	servers.destroy(true);
 
