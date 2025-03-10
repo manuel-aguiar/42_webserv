@@ -15,8 +15,3 @@ print("<pre>")
 print(os.getenv("SERVER_NAME", "Unknown Server"))
 print("</pre>")
 print("</body></html>")
-
-for i in range(0, 1000000000):
-	continue
-
-asgasgasg
