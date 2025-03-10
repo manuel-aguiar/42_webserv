@@ -11,7 +11,7 @@
 
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool isHeaderIgnored(const Cgi::Header& header);
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 
 namespace Http
 {
@@ -27,7 +27,7 @@ namespace Http
 		, m_file()
 		, m_staticReadCounter(0)
 		, m_defaultErrorPage()
-		, m_statusCode(-1)
+		, m_statusCode(Http::Status::OK)
 		, m_headers(NULL)
 		, m_tempBody()	
 		, m_currentHeader(-1)
@@ -62,7 +62,7 @@ namespace Http
 		m_file.reset();
 		m_staticReadCounter = 0;
 		m_defaultErrorPage.clear();
-		m_statusCode = -1;
+		m_statusCode = Http::Status::OK;
 		m_headers = NULL;
 		m_tempBody = BufferView();
 		m_currentHeader = -1;

@@ -4,7 +4,7 @@
 # include "../../../../../Toolkit/TestHelpers/TestHelpers.h"
 # include "../../../HttpDefinitions.hpp"
 # include "../../../../GenericUtils/BufferView/BufferView.hpp"
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 
 int main()
 {

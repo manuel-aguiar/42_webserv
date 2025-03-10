@@ -8,8 +8,8 @@
 
 extern int          checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool         isHeaderIgnored(const Cgi::Header& header);
-extern const char*  getStatusMessage(int statusCode);
-extern std::string  generateDefaultErrorPage(int statusCode, const std::string& serverName, const std::string& errorMessage);
+extern BufferView   getStatusMessage(Http::Status::Number statusCode);
+extern std::string  generateDefaultErrorPage(Http::Status::Number statusCode, const std::string& serverName, const std::string& errorMessage);
 extern std::string  getCurrentDate();
 extern std::string  getMimeType(const std::string &path);
 

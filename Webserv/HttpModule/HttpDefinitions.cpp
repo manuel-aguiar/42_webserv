@@ -10,23 +10,7 @@
 
 namespace Http
 {
-    namespace AllowedRequestMethods
-    {
-        static std::set<std::string> initAllowedMethods()
-        {
-            std::set<std::string> methods;
-            methods.insert("GET");
-            methods.insert("POST");
-            methods.insert("DELETE");
-            return methods;
-        }
 
-        const std::set<std::string>& getAllowedMethods()
-        {
-            static const std::set<std::string> ALLOWED_METHODS = initAllowedMethods();
-            return ALLOWED_METHODS;
-        }
-    }
 /*
 		const Http::RequestData*	        requestData;
 		Http::Status::Number		        requestStatus;

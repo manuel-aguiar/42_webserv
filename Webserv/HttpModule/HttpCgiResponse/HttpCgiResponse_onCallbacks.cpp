@@ -14,7 +14,7 @@
 
 extern int checkForbiddenHeaders(const std::vector<Cgi::Header>& headers);
 extern bool isHeaderIgnored(const Cgi::Header& header);
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 
 namespace Http
 {
@@ -67,10 +67,10 @@ namespace Http
 	Cgi::IO::State
 	CgiResponse::onCgiReceiveHeaders(const Cgi::HeaderData& headers)
 	{
-		m_statusCode = headers.getStatusCode();
+		m_statusCode = (Http::Status::Number)headers.getStatusCode();
 		m_headers = &headers;
 		m_tempBody = headers.getTempBody();
-		if (m_statusCode != Cgi::RequestConsts::Status::SUCCESS
+		if (headers.getStatusCode() != Cgi::RequestConsts::Status::SUCCESS
 		||	!checkForbiddenHeaders(headers.getHeaders()))
 		{
 			m_cgiRequest->setNotify_onError(NULL);

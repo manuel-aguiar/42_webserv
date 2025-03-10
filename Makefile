@@ -29,6 +29,7 @@ SRCS 					=																			\
 																									\
 		$(SRC_PATH)/Webserv/main.cpp																\
 		$(SRC_PATH)/Webserv/Run/WebservRun.cpp														\
+		$(SRC_PATH)/Webserv/Run/SingleServerRun.cpp													\
 																									\
 																									\
 		$(SRC_PATH)/Webserv/TimerTracker/Timer/Timer.cpp											\
@@ -47,54 +48,54 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/ServerContext/ServerContext.cpp											\
 																									\
 																									\
-								\
-		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_CommonParsing.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyChunked.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillDirectoryListing.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ResolveRequestData.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FindLocation.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Etag.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AddHeaders.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/CgiHandlers.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp \
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp \
-		\
-		$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp \
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection.cpp 							\
+		$(SRC_PATH)/Webserv/HttpModule/HttpConnection/HttpConnection_ReadWrite.cpp 					\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule.cpp 									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpModule/HttpModule_InitClose.cpp 							\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest.cpp 									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_CommonParsing.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_header_line.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_request_line.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyChunked.cpp				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyRegular.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpRequest/HttpRequest_parse_BodyMultipart.cpp 				\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse.cpp 								\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_External.cpp 						\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ErrorCodes.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Redirect.cpp 						\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillDirectoryListing.cpp 			\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileUpload.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FileDownload.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FillFunctions.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_CurrentDate.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ResolveRequestData.cpp 			\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_ValidateAcceptType.cpp 			\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Others.cpp 						\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AssembleTargetPath.cpp 			\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_FindLocation.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_Etag.cpp 							\
+		$(SRC_PATH)/Webserv/HttpModule/HttpResponse/HttpResponse_AddHeaders.cpp 					\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpTransaction/HttpTransaction.cpp 							\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpDefinitions.cpp 											\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/CgiHandlers.cpp 								\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse.cpp 							\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Validate.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillFunctions.cpp 			\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_FillErrorMessage.cpp 		\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_External.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_Helpers.cpp 					\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_onCallbacks.cpp 				\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiResponse/HttpCgiResponse_ProcessHttpBody.cpp 			\
+																									\
+		$(SRC_PATH)/Webserv/HttpModule/HttpCgiInterface/HttpCgiInterface.cpp 						\
 																									\
 																									\
 		$(SRC_PATH)/Webserv/ServerConfig/ServerBlock/ServerBlock.cpp								\
@@ -133,25 +134,25 @@ SRCS 					=																			\
 		$(SRC_PATH)/Webserv/GenericUtils/Buffer/BaseBuffer.cpp										\
 		$(SRC_PATH)/Webserv/GenericUtils/Buffer/HeapBuffer.cpp										\
 		$(SRC_PATH)/Webserv/GenericUtils/BufferView/BufferView.cpp									\
-		\
-		$(SRC_PATH)/Webserv/CgiModule/CgiNamespace.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Request/RequestExternal.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReq.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReqGetSetAccess.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Worker/Worker.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerEvents.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp \
-		$(SRC_PATH)/Webserv/CgiModule/HeaderData/HeaderData.cpp \
+																									\
+		$(SRC_PATH)/Webserv/CgiModule/CgiNamespace.cpp 												\
+		$(SRC_PATH)/Webserv/CgiModule/Module/Module.cpp 											\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModule.cpp 									\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleExternal.cpp 							\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleInternal.cpp 							\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleGetSetAccess.cpp 						\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleRecycle.cpp 								\
+		$(SRC_PATH)/Webserv/CgiModule/ImplModule/ImplModuleReturn.cpp 								\
+		$(SRC_PATH)/Webserv/CgiModule/Request/Request.cpp 											\
+		$(SRC_PATH)/Webserv/CgiModule/Request/RequestExternal.cpp 									\
+		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReq.cpp 									\
+		$(SRC_PATH)/Webserv/CgiModule/InternalReq/InternalReqGetSetAccess.cpp 						\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/Worker.cpp 											\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerEvents.cpp 										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerExecute.cpp 										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerHelpers.cpp 										\
+		$(SRC_PATH)/Webserv/CgiModule/Worker/WorkerToImplModule.cpp 								\
+		$(SRC_PATH)/Webserv/CgiModule/HeaderData/HeaderData.cpp 									\
 		
 								
 

@@ -78,7 +78,7 @@ namespace Http
 			size_t						m_staticReadCounter;
 			std::string					m_defaultErrorPage;
 
-			int							m_statusCode;
+			Http::Status::Number		m_statusCode;
 			const Cgi::HeaderData* 		m_headers;
 			BufferView					m_tempBody;
 			int							m_currentHeader;

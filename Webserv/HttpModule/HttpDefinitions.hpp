@@ -90,13 +90,6 @@ namespace Http
 		const std::string HTTP_VERSION = "HTTP/1.1"; // Supported http versions
 	}
 
-	// Supported request methods
-	namespace AllowedRequestMethods
-	{
-		const std::set<std::string>& getAllowedMethods();
-	}
-
-
 	namespace IOStatus
 	{
 		typedef enum

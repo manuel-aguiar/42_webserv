@@ -11,7 +11,7 @@
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
 #include "../../GenericUtils/Buffer/Buffer.hpp"
 
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 extern std::string getMimeType(const std::string &path);
 # define SERVER_NAME_VERSION "webserv/1.0"
 
@@ -22,10 +22,10 @@ namespace Http
 		return (m_responseData);
 	}
 
-	std::string			Response::mf_generateRedirectPage(int statusCode, const std::string& location)
+	std::string			Response::mf_generateRedirectPage(Http::Status::Number statusCode, const std::string& location)
 	{
 		std::stringstream ss;
-		const char* statusText = getStatusMessage(statusCode);
+		BufferView statusText = getStatusMessage(statusCode);
 
 		ss << "<!DOCTYPE html>\n"
 		<< "<html>\n"
@@ -72,10 +72,10 @@ namespace Http
 		return (ss.str());
 	}
 
-	std::string Http::Response::mf_generateDefaultErrorPage(int statusCode, const std::string& errorMessage)
+	std::string Http::Response::mf_generateDefaultErrorPage(Http::Status::Number statusCode, const std::string& errorMessage)
 	{
 		std::stringstream ss;
-		const char* statusText = getStatusMessage(statusCode);
+		BufferView statusText = getStatusMessage(statusCode);
 
 		ss << "<!DOCTYPE html>\n"
 		<< "<html>\n"

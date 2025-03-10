@@ -3,7 +3,7 @@
 # include "../../GenericUtils/StringUtils/StringUtils.hpp"
 # include "../../CgiModule/HeaderData/HeaderData.hpp"
 # include <cstring>
-extern const char* getStatusMessage(int statusCode);
+extern BufferView getStatusMessage(Http::Status::Number statusCode);
 
 namespace Http
 {
@@ -17,9 +17,10 @@ namespace Http
 	Http::IOStatus::Type
 	Response::mf_fillResponseLine(BaseBuffer& writeBuffer)
 	{
+		const BufferView statusMessage = getStatusMessage(m_responseData.requestStatus);
 		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
 			+ 3 + 1
-			+ std::strlen(getStatusMessage(m_responseData.requestStatus)) + 2;
+			+ statusMessage.size() + 2;
 
 		if (writeBuffer.available() < writeSize)
 			return (Http::IOStatus::WRITING);
@@ -28,7 +29,7 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(StringUtils::to_string(m_responseData.requestStatus).c_str(), 3); // always 3 digits status code
 		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(m_responseData.requestStatus), std::strlen(getStatusMessage(m_responseData.requestStatus)));
+		writeBuffer.push(statusMessage);
 		writeBuffer.push("\r\n", 2);
 
 		// go to next stage
@@ -108,9 +109,12 @@ namespace Http
 	{
 		std::map<std::string, std::string>::const_iterator expectHeader =
 		m_responseData.requestData->headers.find("Expect");
+
+		const BufferView expectMessage = getStatusMessage(Http::Status::CONTINUE);
+
 		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
 			+ 3 + 1
-			+ std::strlen(getStatusMessage(Http::Status::CONTINUE)) + 2;
+			+ expectMessage.size() + 2;
 
 		if (expectHeader == m_responseData.requestData->headers.end())
 			goto waitUpload;
@@ -122,7 +126,7 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(StringUtils::to_string(Http::Status::CONTINUE).c_str(), 3); // always 3 digits status code
 		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(Http::Status::CONTINUE), std::strlen(getStatusMessage(Http::Status::CONTINUE)));
+		writeBuffer.push(expectMessage);
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Content-Length: 0\r\n", 19);
 		writeBuffer.push("\r\n", 2);
@@ -137,9 +141,10 @@ namespace Http
 	{
 		std::map<std::string, std::string>::const_iterator expectHeader =
 		m_responseData.requestData->headers.find("Expect");
+		const BufferView expectMessage = getStatusMessage(Http::Status::EXPECTATION_FAIL);
 		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
 			+ 3 + 1
-			+ std::strlen(getStatusMessage(Http::Status::EXPECTATION_FAIL)) + 2;
+			+ expectMessage.size() + 2;
 
 		if (expectHeader == m_responseData.requestData->headers.end())
 			goto waitUpload;
@@ -151,7 +156,7 @@ namespace Http
 		writeBuffer.push(" ", 1);
 		writeBuffer.push(StringUtils::to_string(Http::Status::EXPECTATION_FAIL).c_str(), 3); // always 3 digits status code
 		writeBuffer.push(" ", 1);
-		writeBuffer.push(getStatusMessage(Http::Status::EXPECTATION_FAIL), std::strlen(getStatusMessage(Http::Status::EXPECTATION_FAIL)));
+		writeBuffer.push(expectMessage);
 		writeBuffer.push("\r\n", 2);
 		writeBuffer.push("Content-Length: 0\r\n", 19);
 		writeBuffer.push("\r\n", 2);
