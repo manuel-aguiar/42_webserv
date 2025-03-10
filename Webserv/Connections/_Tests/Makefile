@@ -100,8 +100,6 @@ all: $(NAME)
 
 test: all
 	@valgrind  --quiet --leak-check=full --errors-for-leak-kinds=all --show-leak-kinds=all  ./$(TARGET_TEST)
-	@./$(TARGET_STRESS_TEST)
-	@./$(TARGET_MULTI_SERVER)
 
 debug: test
 

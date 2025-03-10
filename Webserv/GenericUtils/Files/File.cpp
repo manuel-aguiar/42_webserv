@@ -43,19 +43,17 @@ void	File::reset()
 bool	File::open(const char *path, int flags, int permissions)
 {
 	ASSERT_EQUAL(m_fd == Ws::FD_NONE, true, "File: File already open");
+	
 	m_fd = ::open(path, flags, permissions);
-	if (m_fd == Ws::FD_NONE) 
-		std::cerr << "Error opening file: " << path << std::endl;
+	if (m_fd == Ws::FD_NONE)
+		return (false);
 	
 	m_path = path;
-
-
 
 	struct stat info;
 
 	if (::stat(path, &info) != 0)
 	{
-		std::cerr << "File: error getting file size" << std::endl;
 		this->close();
 		return (false);
 	}

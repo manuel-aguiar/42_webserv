@@ -40,7 +40,7 @@ namespace Http
 	//           -> engage the fill function pointers
 
 	BufferView
-	CgiResponse::sendHttpBody(const BufferView& view)
+	CgiResponse::receiveHttpBody(const BufferView& view)
 	{
 		return ((this->*m_processHttpBody)(view));
 	}
@@ -60,7 +60,7 @@ namespace Http
 	{
 		m_responseData = &responseData;
 		m_httpRequest = &request;
-
+		
 		const Http::RequestData& data = *responseData.requestData;
 
 		Http::RequestData::headerContainer::const_iterator finder;
@@ -143,7 +143,7 @@ namespace Http
 		m_cgiRequest->setEnvBase(Cgi::Env::Enum::SERVER_SOFTWARE, "42_webserv");
 		
 		m_fillFunction = &CgiResponse::mf_fillExpectContinue;
-        m_processHttpBody = &CgiResponse::mf_HttpBodySend;
+        m_processHttpBody = &CgiResponse::mf_HttpBodyForward;
 
 		m_module.enqueueRequest(*m_cgiRequest, true);
 

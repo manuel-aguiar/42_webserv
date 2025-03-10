@@ -27,7 +27,7 @@ namespace Http
 		m_responseData		(),
 		m_ioStatus			(Http::IOStatus::WAITING),
 		m_fillFunction		(&Response::mf_fillNothingToSend),
-		m_fillFunctionBody	(NULL),
+		m_fillBody	(NULL),
 		m_processFunction	(&Response::mf_processBodyNone),
 		m_staticReadCounter	(0),
 		m_file				(),

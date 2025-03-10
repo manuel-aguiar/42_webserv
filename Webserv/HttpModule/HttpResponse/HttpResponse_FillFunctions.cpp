@@ -65,10 +65,10 @@ namespace Http
 		writeBuffer.push("\r\n", 2);
 
 		ASSERT_EQUAL(m_fillFunction == NULL, false, "Response::mf_fillHeaders: m_fillFunction is NULL");
-		ASSERT_EQUAL(m_fillFunctionBody == NULL, false, "Response::mf_fillHeaders: m_fillFunctionBody is NULL");
+		ASSERT_EQUAL(m_fillBody == NULL, false, "Response::mf_fillHeaders: m_fillBody is NULL");
 
 		// go to next stage
-		m_fillFunction = m_fillFunctionBody;
+		m_fillFunction = m_fillBody;
 		return ((this->*m_fillFunction)(writeBuffer));
 	}
 
@@ -127,6 +127,35 @@ namespace Http
 		writeBuffer.push("Content-Length: 0\r\n", 19);
 		writeBuffer.push("\r\n", 2);
 
+	waitUpload:
+		m_fillFunction = &Response::mf_fillNothingToSend;
+		return (Http::IOStatus::WRITING);
+	}
+
+	Http::IOStatus::Type
+	Response::mf_fillExpectFail(BaseBuffer& writeBuffer)
+	{
+		std::map<std::string, std::string>::const_iterator expectHeader =
+		m_responseData.requestData->headers.find("Expect");
+		size_t writeSize = Http::HttpStandard::HTTP_VERSION.size() + 1
+			+ 3 + 1
+			+ std::strlen(getStatusMessage(Http::Status::EXPECTATION_FAIL)) + 2;
+
+		if (expectHeader == m_responseData.requestData->headers.end())
+			goto waitUpload;
+			
+		if (writeBuffer.available() < writeSize)
+			return (Http::IOStatus::WRITING);
+
+		writeBuffer.push(Http::HttpStandard::HTTP_VERSION.c_str(), Http::HttpStandard::HTTP_VERSION.size());
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(StringUtils::to_string(Http::Status::EXPECTATION_FAIL).c_str(), 3); // always 3 digits status code
+		writeBuffer.push(" ", 1);
+		writeBuffer.push(getStatusMessage(Http::Status::EXPECTATION_FAIL), std::strlen(getStatusMessage(Http::Status::EXPECTATION_FAIL)));
+		writeBuffer.push("\r\n", 2);
+		writeBuffer.push("Content-Length: 0\r\n", 19);
+		writeBuffer.push("\r\n", 2);
+		
 	waitUpload:
 		m_fillFunction = &Response::mf_fillNothingToSend;
 		return (Http::IOStatus::WRITING);

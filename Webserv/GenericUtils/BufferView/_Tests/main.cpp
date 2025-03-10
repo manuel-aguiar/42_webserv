@@ -31,7 +31,7 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 	if (sizeOfLookup <= 0)
 		return (-1);
 
-	while (low <= high)
+	while (low < high)
 	{
 		mid = low + ((high - low) / 2);
 		midView = BufferView(lookup[mid]);
@@ -43,9 +43,7 @@ static int binSearch(const char** lookup, size_t sizeOfLookup, const BufferView&
 			low = mid + 1;
 	}
 
-	if (low >= sizeOfLookup
-	|| high < 0
-	|| target != BufferView(lookup[low]))
+	if (target != BufferView(lookup[low]))
 		return (-1);
 
 	return (low);

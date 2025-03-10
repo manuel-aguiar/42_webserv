@@ -113,7 +113,7 @@ Http::Request::mf_parseRequestLine(const BufferView& line)
             return Http::Status::URI_TOO_LONG;
 
         if (m_data.httpVersion != Http::HttpStandard::HTTP_VERSION)
-            return Http::Status::BAD_REQUEST;
+            return Http::Status::HTTP_VERSION_NOT_SUPPORTED;
 
         return mf_parseUriComponents(m_data.uri);
     }

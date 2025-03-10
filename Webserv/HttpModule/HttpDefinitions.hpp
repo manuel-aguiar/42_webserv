@@ -25,7 +25,7 @@ namespace Http
     {
         typedef enum
         {
-            _TOTAL_CODES = 38,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
+            _TOTAL_CODES = 39,                    // UPDATE THIS NUMBER HERE IF YOU ADD MORE STATUS CODES (no c++98 way to count enums at compile time)
 
 
 			//
@@ -59,6 +59,7 @@ namespace Http
             PRECONDITION_FAILED = 412,
             PAYLOAD_TOO_LARGE = 413,
             UNSUPPORTED_MEDIA_TYPE = 415,
+			EXPECTATION_FAIL = 417,
             TOO_MANY_REQUESTS = 429,
             REQUEST_HEADER_FIELDS_TOO_LARGE = 431,
             UNAVAILABLE_FOR_LEGAL_REASONS = 451,

@@ -33,7 +33,7 @@ namespace Http
     }
 
     BufferView
-    CgiResponse::mf_HttpBodySend(const BufferView& view)
+    CgiResponse::mf_HttpBodyForward(const BufferView& view)
     {
 		if (view.size() == 0)
         {

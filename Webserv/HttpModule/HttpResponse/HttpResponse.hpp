@@ -91,6 +91,7 @@ namespace Http
 			Http::IOStatus::Type		mf_fillBodyStream(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillRedirect(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillExpectContinue(BaseBuffer& writeBuffer);
+			Http::IOStatus::Type		mf_fillExpectFail(BaseBuffer& writeBuffer);
 			Http::IOStatus::Type		mf_fillDefaultPage(BaseBuffer& writeBuffer);
 
 			void						mf_addContentHeaders(const size_t size, const std::string mimeType);
@@ -138,7 +139,7 @@ namespace Http
 			std::string					m_defaultPageContent; // Load the default pages in here (Directory Listing, Error Page)
 
 			FillFunction				m_fillFunction;
-			FillFunction				m_fillFunctionBody;
+			FillFunction				m_fillBody;
 			ProcessBodyFunction			m_processFunction;
 
 			size_t						m_staticReadCounter;

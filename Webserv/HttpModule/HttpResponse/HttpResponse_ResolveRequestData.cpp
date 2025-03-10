@@ -105,14 +105,14 @@ namespace Http
 				&& m_responseData.serverLocation->getAllowUpload() == true)
 			{
 				m_responseData.responseType = ResponseData::FILE_UPLOAD;
-				return (true);
 			}
 			else
 			{
 				m_responseData.requestStatus = Http::Status::FORBIDDEN;
 				m_responseData.responseType = ResponseData::ERROR;
-				return (true);
+				m_responseData.errorMessage = "Upload not allowed";
 			}
+			return (true);
 		}
 		return (false);
 	}
@@ -134,6 +134,7 @@ namespace Http
 					m_responseData.responseType = ResponseData::CGI;
 					return ;
 				}
+
 				if (m_responseData.requestData->method == "POST")
 				{
 					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
@@ -141,6 +142,7 @@ namespace Http
 					m_responseData.errorMessage = "POST method not implemented for this type of resource";
 					return ;
 				}
+				
 				if (m_responseData.requestData->method == "GET")
 				{
 					// Check Accept header
@@ -188,9 +190,12 @@ namespace Http
 			case FilesUtils::DIRECTORY:
 				if (m_responseData.requestData->method == "POST")
 				{
-					m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
-					m_responseData.responseType = ResponseData::ERROR;
-					m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					if (!mf_checkUpload())
+					{
+						m_responseData.requestStatus = Http::Status::NOT_IMPLEMENTED;
+						m_responseData.responseType = ResponseData::ERROR;
+						m_responseData.errorMessage = "POST method not implemented for this type of resource";
+					}
 					return ;
 				}
 				if (*m_responseData.targetPath.rbegin() != '/')

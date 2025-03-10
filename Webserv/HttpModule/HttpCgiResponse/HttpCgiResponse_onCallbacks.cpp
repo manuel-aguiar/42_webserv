@@ -19,7 +19,6 @@ extern const char* getStatusMessage(int statusCode);
 namespace Http
 {
 
-
 	void
 	CgiResponse::onCgiSuccess()
 	{
@@ -34,8 +33,10 @@ namespace Http
 		m_statusCode = Http::Status::BAD_GATEWAY;
 		m_responseData->cgiPass = false;
 		m_responseData->closeAfterSending = true;
-		m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
-		m_fillFunction = &CgiResponse::mf_fillErrorResponse;
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyNone)
+			m_processHttpBody = &CgiResponse::mf_HttpBodyNone;
+		if (m_fillFunction == &CgiResponse::mf_fillNothingToSend)
+			m_fillFunction = &CgiResponse::mf_fillErrorResponse;
 	}
 
 	Cgi::IO::State
@@ -58,7 +59,7 @@ namespace Http
 		if (m_httpRequest->forceParse() == Http::IOStatus::FINISHED)
 			return (Cgi::IO::CLOSE);
 
-		if (m_processHttpBody != &CgiResponse::mf_HttpBodySend)
+		if (m_processHttpBody != &CgiResponse::mf_HttpBodyForward)
 			return (Cgi::IO::CLOSE);
 		return (Cgi::IO::CONTINUE);
 	}
