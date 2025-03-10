@@ -5,6 +5,11 @@
 
 static int addFlags(Ws::fd fd, const int flags);
 
+int	FileDescriptor::setBlocking(Ws::fd fd)
+{
+	return (addFlags(fd, 0));
+}
+
 int  FileDescriptor::setNonBlocking(Ws::fd fd)
 {
 	return (addFlags(fd, O_NONBLOCK));

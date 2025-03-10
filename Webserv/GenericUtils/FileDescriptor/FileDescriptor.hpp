@@ -9,10 +9,11 @@
 
 namespace FileDescriptor
 {
-	int  setNonBlocking                  (Ws::fd fd);
-	int  setCloseOnExec                  (Ws::fd fd);
-	int  setFdFlags                      (Ws::fd fd, const int flags);
-	int  setCloseOnExec_NonBlocking      (Ws::fd fd);
+	int  setBlocking                   		(Ws::fd fd);
+	int  setNonBlocking                  	(Ws::fd fd);
+	int  setCloseOnExec                  	(Ws::fd fd);
+	int  setFdFlags                      	(Ws::fd fd, const int flags);
+	int  setCloseOnExec_NonBlocking      	(Ws::fd fd);
 }
 
 #endif

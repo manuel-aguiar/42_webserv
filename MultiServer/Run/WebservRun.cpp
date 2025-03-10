@@ -23,8 +23,8 @@ int	WebservRun(const char* programName, ServerConfig& config)
 
 	int numServers = config.getMaxWorkers();
 
-	// setup signal handling
-	g_SignalHandler.openSignalListeners(numServers, &globals);
+	// extra pipe for the main thread
+	g_SignalHandler.openSignalListeners(numServers + 1, &globals);
 	g_SignalHandler.registerSignal(SIGINT, &globals);
 	g_SignalHandler.registerSignal(SIGTERM, &globals);
 	g_SignalHandler.registerSignal(SIGQUIT, &globals);
