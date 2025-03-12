@@ -4,3 +4,4 @@ http://localhost:8080/phpCgi_valid.php
 http://localhost:8080/statusfixed.log
 http://localhost:8080/py_valid.py
 http://localhost:8080/downloadRandom.php
+http://localhost:8080/
