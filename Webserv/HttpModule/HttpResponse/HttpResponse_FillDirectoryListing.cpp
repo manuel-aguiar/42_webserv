@@ -4,6 +4,7 @@
 // Project headers
 #include "../../../Toolkit/Arrays/DynArray/DynArray.hpp"
 #include "../../GenericUtils/StringUtils/StringUtils.hpp"
+#include "../../GenericUtils/BufferView/BufferView.hpp"
 
 // C++ headers
 #include <string>
@@ -18,60 +19,50 @@
 
 
 // Header
-static const char* DirList_Header1 = 	"<!DOCTYPE html>\n"
+static const BufferView DirList_Header1("<!DOCTYPE html>\n"
 										"<html>\n<head>\n"
-										"<title>Index of ";
+										"<title>Index of ");
 										//path
-static const char* DirList_Header2 = 	"</title>\n"
+static const BufferView DirList_Header2("</title>\n"
 										"<style>body{font-family:Arial;}table{width:100%;border-collapse:collapse;}th,td{padding:8px;border:1px solid #ccc;}</style>\n"
 										"</head>\n<body>\n"
-										"<h1>Index of ";
+										"<h1>Index of ");
 										//path
-static const char* DirList_Header3 = 	"</h1>\n"
+static const BufferView DirList_Header3("</h1>\n"
 										"<table>\n"
 										"<tr><th>Name</th><th>Size</th><th>Last Modified</th></tr>\n"
-										"<tr><td><a href=\"../\">../ (Parent Directory)</a></td><td>-</td><td>-</td></tr>\n";
+										"<tr><td><a href=\"../\">../ (Parent Directory)</a></td><td>-</td><td>-</td></tr>\n");
 
-static const size_t DirList_Header1_len = std::strlen(DirList_Header1);
-static const size_t DirList_Header2_len = std::strlen(DirList_Header2);
-static const size_t DirList_Header3_len = std::strlen(DirList_Header3);
 
 static const size_t DirList_Header_FixedLen = 
-					DirList_Header1_len +
-					DirList_Header2_len +
-					DirList_Header3_len;
+					DirList_Header1.size() +
+					DirList_Header2.size() +
+					DirList_Header3.size();
 // Folders
 
-static const char *DirList_Folder1 = 	"<tr><td><a href=\"";
+static const BufferView DirList_Folder1("<tr><td><a href=\"");
 										// dir name
 										// space or slash
-static const char *DirList_Folder2 = 	"\">";
+static const BufferView DirList_Folder2("\">");
 										// dir name
 										//space or slash
-static const char *DirList_Folder3 = 	"</a></td>"
-										"<td>";
+static const BufferView DirList_Folder3("</a></td>"
+										"<td>");
 										// file size
-static const char *DirList_Folder4 = 	"</td>"
-										"<td>";
+static const BufferView DirList_Folder4("</td>"
+										"<td>");
 										// last modified
-static const char *DirList_Folder5 =	"</td></tr>\n";
-
-static const size_t DirList_Folder1_len = std::strlen(DirList_Folder1);
-static const size_t DirList_Folder2_len = std::strlen(DirList_Folder2);
-static const size_t DirList_Folder3_len = std::strlen(DirList_Folder3);
-static const size_t DirList_Folder4_len = std::strlen(DirList_Folder4);
-static const size_t DirList_Folder5_len = std::strlen(DirList_Folder5);
+static const BufferView DirList_Folder5("</td></tr>\n");
 
 static const size_t DirList_Folder_FixedLen =
-									DirList_Folder1_len +
-									DirList_Folder2_len +
-									DirList_Folder3_len +
-									DirList_Folder4_len +
-									DirList_Folder5_len;
+									DirList_Folder1.size() +
+									DirList_Folder2.size() +
+									DirList_Folder3.size() +
+									DirList_Folder4.size() +
+									DirList_Folder5.size();
 
 // Footer
-static const char*	DirList_Footer = "</table>\n</body>\n</html>\n";
-static const size_t DirList_Footer_len = std::strlen(DirList_Footer);
+static const BufferView	DirList_Footer = ("</table>\n</body>\n</html>\n");
 
     static void fillHexHeader(char* hexHeader, int hexheaderSize, int chunkSize)
     {
@@ -117,11 +108,11 @@ namespace Http
 
         fillHexHeader((char*)&writeBuffer[currentPosition], hexHeaderSize, dirHead_len);
         
-        writeBuffer.push(DirList_Header1, DirList_Header1_len);
+        writeBuffer.push(DirList_Header1);
 		writeBuffer.push(targetPath);
-		writeBuffer.push(DirList_Header2, DirList_Header2_len);
+		writeBuffer.push(DirList_Header2);
 		writeBuffer.push(targetPath);
-		writeBuffer.push(DirList_Header3, DirList_Header3_len);
+		writeBuffer.push(DirList_Header3);
         writeBuffer.push("\r\n", 2);
 
 		m_dirListing_target = ::opendir(targetPath.c_str());
@@ -191,8 +182,8 @@ namespace Http
 
 			totalSize = 0;
 			///////////////////////////////////////////////
-			writeBuffer.push(DirList_Folder1, DirList_Folder1_len);
-				totalSize += DirList_Folder1_len;
+			writeBuffer.push(DirList_Folder1);
+				totalSize += DirList_Folder1.size();
 			///////////////////////////////////////////////            
 			writeBuffer.push(m_dirListing_curEntry->d_name, entryNameLen);
 				totalSize += entryNameLen;
@@ -203,8 +194,8 @@ namespace Http
 				totalSize++;
 			}
 			///////////////////////////////////////////////
-			writeBuffer.push(DirList_Folder2, DirList_Folder2_len);
-				totalSize += DirList_Folder2_len;
+			writeBuffer.push(DirList_Folder2);
+				totalSize += DirList_Folder2.size();
 			///////////////////////////////////////////////
 			writeBuffer.push(m_dirListing_curEntry->d_name, entryNameLen);
 				totalSize += entryNameLen;
@@ -215,8 +206,8 @@ namespace Http
 				totalSize++;
 			}
 			///////////////////////////////////////////////
-			writeBuffer.push(DirList_Folder3, DirList_Folder3_len);
-				totalSize += DirList_Folder3_len;
+			writeBuffer.push(DirList_Folder3);
+				totalSize += DirList_Folder3.size();
 			///////////////////////////////////////////////
 			if (isDirectory)
 			{
@@ -230,8 +221,8 @@ namespace Http
 				totalSize += fileSize.size();
 			}
 			///////////////////////////////////////////////
-			writeBuffer.push(DirList_Folder4, DirList_Folder4_len);
-				totalSize += DirList_Folder4_len;
+			writeBuffer.push(DirList_Folder4);
+				totalSize += DirList_Folder4.size();
 			///////////////////////////////////////////////
 			const char* lastModified = std::asctime(std::localtime(&st.st_mtime));
 			size_t lastMod_len = std::strlen(lastModified);
@@ -239,8 +230,8 @@ namespace Http
 			writeBuffer.push(lastModified, lastMod_len);
 				totalSize += lastMod_len;
 			///////////////////////////////////////////////
-			writeBuffer.push(DirList_Folder5, DirList_Folder5_len);
-				totalSize += DirList_Folder5_len;
+			writeBuffer.push(DirList_Folder5);
+				totalSize += DirList_Folder5.size();
 			///////////////////////////////////////////////
 
 			totalWritten += totalSize;
@@ -280,7 +271,7 @@ namespace Http
 	Response::mf_fillDirectoryListing_Tail(BaseBuffer& writeBuffer)
 	{
 		const size_t hexHeaderSize = 10; // 10 bytes for the hex header (8 bytes for the size, 2 for \r\n)
-		size_t totalLength = hexHeaderSize + DirList_Footer_len + 2 + 5;
+		size_t totalLength = hexHeaderSize + DirList_Footer.size() + 2 + 5;
 
 		if (m_dirListing_target != NULL)
 		{
@@ -296,9 +287,9 @@ namespace Http
         size_t currentPosition = writeBuffer.size();
         writeBuffer.push("0", hexHeaderSize); // make room for the hex header
 
-        fillHexHeader((char*)&writeBuffer[currentPosition], hexHeaderSize, DirList_Footer_len);
+        fillHexHeader((char*)&writeBuffer[currentPosition], hexHeaderSize, DirList_Footer.size());
         
-        writeBuffer.push(DirList_Footer, DirList_Footer_len);
+        writeBuffer.push(DirList_Footer);
         writeBuffer.push("\r\n", 2);
 		writeBuffer.push("0\r\n\r\n", 5);
 
